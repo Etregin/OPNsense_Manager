@@ -1,0 +1,119 @@
+name: opnsense_manager
+description: "OPNsense Manager - A professional Flutter mobile application for managing OPNsense firewall routers."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.10.4 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # HTTP & API
+  dio: ^5.4.0
+  
+  # State Management
+  provider: ^6.1.1
+  
+  # Secure Storage
+  flutter_secure_storage: ^10.0.0
+  
+  # Local Storage
+  shared_preferences: ^2.2.2
+  
+  # Charts
+  fl_chart: ^1.1.1
+  
+  # JSON Serialization
+  json_annotation: ^4.8.1
+  
+  # UI Components
+  cupertino_icons: ^1.0.8
+  
+  # Utilities
+  intl: ^0.20.2
+  uuid: ^4.5.1
+  
+  # Biometric Authentication
+  local_auth: ^3.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.4.7
+  json_serializable: ^6.7.1
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.7
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # Assets
+  assets:
+    - assets/images/
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/to/resolution-aware-images
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/to/asset-from-package
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/to/font-from-package
+
+# App Icon Configuration
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/opnsense_manager.png"
+  adaptive_icon_background: "#1a1a2e"  # Dark blue from your dragon image
+  adaptive_icon_foreground: "assets/images/opnsense_manager.png"
+  remove_alpha_ios: true
+
+# Splash Screen Configuration
+flutter_native_splash:
+  color: "#1a1a2e"  # Dark blue background matching your image
+  image: assets/images/opnsense_manager.png
+  android: true
+  ios: true
+  web: false
+  
+  # Android 12+ specific configuration
+  android_12:
+    color: "#1a1a2e"
+    image: assets/images/opnsense_manager.png
+    icon_background_color: "#1a1a2e"
+  
+  # iOS specific configuration
+  ios_content_mode: center
+  
+  # Fullscreen mode (optional - removes status bar during splash)
+  fullscreen: true
