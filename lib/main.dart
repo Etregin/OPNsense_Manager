@@ -28,13 +28,15 @@ import 'utils/constants.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Initialize services
-  await StorageService().init();
-  await AuthService().init();
-  await ProfileService().init();
+  // Initialize services in parallel for faster startup
+  await Future.wait([
+    StorageService().init(),
+    AuthService().init(),
+    ProfileService().init(),
+  ]);
   
-  // Migrate from old storage to profile-based storage
-  await ProfileService().migrateFromOldStorage();
+  // Migrate from old storage to profile-based storage (non-blocking)
+  ProfileService().migrateFromOldStorage();
   
   runApp(const OPNsenseManagerApp());
 }
@@ -52,14 +54,17 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
   @override
   void initState() {
     super.initState();
+    // Load theme mode asynchronously without blocking UI
     _loadThemeMode();
   }
 
   Future<void> _loadThemeMode() async {
     final themeModeString = await StorageService().loadString('theme_mode') ?? 'system';
-    setState(() {
-      _themeMode = _getThemeModeFromString(themeModeString);
-    });
+    if (mounted) {
+      setState(() {
+        _themeMode = _getThemeModeFromString(themeModeString);
+      });
+    }
   }
 
   ThemeMode _getThemeModeFromString(String mode) {

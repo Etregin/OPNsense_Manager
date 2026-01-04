@@ -43,9 +43,6 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _initialize() async {
-    // Show splash for at least 2 seconds
-    await Future.delayed(const Duration(seconds: 2));
-
     if (!mounted) return;
 
     final authService = context.read<AuthService>();
@@ -93,8 +90,16 @@ class _SplashScreenState extends State<SplashScreen> {
       // Initialize API service with active profile
       apiService.init(activeProfile.toOPNsenseConfig());
 
-      // Test connection
-      final isConnected = await apiService.testConnection();
+      // Test connection with timeout for faster startup
+      bool isConnected = false;
+      try {
+        isConnected = await apiService.testConnection().timeout(
+          const Duration(seconds: 3),
+          onTimeout: () => false,
+        );
+      } catch (e) {
+        isConnected = false;
+      }
 
       if (!ctx.mounted) return;
 

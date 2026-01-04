@@ -78,20 +78,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
     try {
       final apiService = context.read<OPNsenseApiService>();
       
-      // Load system info
-      final systemInfo = await apiService.getSystemInfo();
-      
-      // Load services (placeholder - will implement API call)
-      final services = await _loadServices();
-      
-      // Load gateways (placeholder - will implement API call)
-      final gateways = await _loadGateways();
+      // Load all data in parallel for faster loading
+      final results = await Future.wait([
+        apiService.getSystemInfo(),
+        _loadServices(),
+        _loadGateways(),
+      ]);
 
       if (mounted) {
         setState(() {
-          _systemInfo = systemInfo;
-          _servicesData = services;
-          _gateways = gateways;
+          _systemInfo = results[0] as SystemInfo;
+          _servicesData = results[1] as Map<String, dynamic>;
+          _gateways = results[2] as List<Map<String, dynamic>>;
           _isLoading = false;
         });
       }
