@@ -96,11 +96,23 @@ On your OPNsense firewall:
 1. Go to **System → Access → Users**
 2. Create a new user or edit existing
 3. Generate API credentials (Key + Secret)
-4. Assign appropriate permissions:
-   - **Firewall: Filter** - For firewall rule management
-   - **Diagnostics: System** - For system information and logs
-   - **System: Status** - For system status and services
-   - **Core: Firmware** - For firmware information
+4. Configure user permissions using **one of these methods**:
+
+#### Option 1: Admin Group (Recommended - Simplest)
+- Add the API user to the **"admins"** group under **Group Membership**
+- This grants full access to all features in both the OPNsense web interface and the mobile app
+- ✅ Best for users who want complete management capabilities
+- ✅ No permission configuration needed
+- ✅ Works across all OPNsense versions
+
+#### Option 2: Custom Permissions (Advanced)
+Configure individual permissions based on what you want to access. The app requires the same permissions as the OPNsense web interface:
+
+**Important**: If you can access a feature in the OPNsense web GUI with your API user, the mobile app will also be able to access it. If you cannot access it in the web GUI, the app won't be able to access it either.
+
+> **💡 Tip**: To verify permissions are working, log in to the OPNsense web interface with your API user credentials. Any page you can access in the web GUI will also work in the mobile app. Any page you cannot access will return a 403 error in the app.
+
+> **⚠️ Note**: After changing permissions, you must log out and log back in to OPNsense for changes to take effect. Also restart the mobile app completely.
 
 <a id="installation"></a>
 ### 📥 Installation
@@ -249,7 +261,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed build instructions.
 <a id="roadmap"></a>
 ## 🗺️ Roadmap
 - [ ] Get Firewall rules to work with ALL rules
-- [ ] VPN connection management (OpenVPN, WireGuard)
+- [x] **VPN connection management** (OpenVPN, Tailscale) - *For additional VPN types (WireGuard, IPsec), please open a feature request*
 - [ ] Push notifications for system alerts
 - [ ] Backup/restore configuration functionality
 - [ ] Package management interface
@@ -371,16 +383,16 @@ If you discover a security vulnerability, please email Etreginwow@gmail.com inst
 
 
 <!-- GitHub Badges -->
-[contributors-shield]: https://img.shields.io/badge/contributors-—-green?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/Etregin/OPNsense_Manager.svg?style=for-the-badge&color=green
 [contributors-url]: https://github.com/Etregin/OPNsense_Manager/graphs/contributors
 
-[forks-shield]: https://img.shields.io/badge/forks-—-blue?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/Etregin/OPNsense_Manager.svg?style=for-the-badge&color=blue
 [forks-url]: https://github.com/Etregin/OPNsense_Manager/network/members
 
-[stars-shield]: https://img.shields.io/badge/stars-—-blue?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/Etregin/OPNsense_Manager.svg?style=for-the-badge&color=yellow
 [stars-url]: https://github.com/Etregin/OPNsense_Manager/stargazers
 
-[issues-shield]: https://img.shields.io/badge/issues-—-yellow?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/Etregin/OPNsense_Manager.svg?style=for-the-badge&color=red
 [issues-url]: https://github.com/Etregin/OPNsense_Manager/issues
 
 [license-shield]: https://img.shields.io/badge/License-GPLv3-blue
