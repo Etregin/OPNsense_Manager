@@ -27,6 +27,7 @@ import '../screens/profile_selection_screen.dart';
 import '../screens/system_info_screen.dart';
 import '../screens/firewall_rules_screen.dart';
 import '../screens/firewall_logs_screen.dart';
+import '../screens/vpn_connections_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/settings_screen.dart';
 import '../screens/pin_lock_screen.dart';
@@ -139,6 +140,22 @@ class AppDrawer extends StatelessWidget {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => const FirewallLogsScreen(),
+                  ),
+                );
+              } else {
+                Navigator.pop(context);
+              }
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.vpn_lock),
+            title: const Text('VPN Connections'),
+            selected: currentRoute == 'vpn_connections',
+            onTap: () {
+              if (currentRoute != 'vpn_connections') {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const VPNConnectionsScreen(),
                   ),
                 );
               } else {

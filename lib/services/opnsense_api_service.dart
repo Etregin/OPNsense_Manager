@@ -23,6 +23,7 @@ import 'package:dio/io.dart';
 import '../models/opnsense_config.dart';
 import '../models/system_info.dart';
 import '../models/firewall_rule.dart';
+import '../models/vpn_connection.dart';
 import '../utils/constants.dart';
 
 /// Service for interacting with OPNsense API
@@ -33,6 +34,7 @@ class OPNsenseApiService {
 
   Dio? _dio;
   OPNsenseConfig? _config;
+  
 
   /// Parse storage string like "8.0G" or "40G" to bytes
   int _parseStorageString(String value) {
@@ -1083,6 +1085,190 @@ class OPNsenseApiService {
         return ApiException('Unknown error: ${e.message}', null);
       default:
         return ApiException('Request failed: ${e.message}', null);
+    }
+  }
+
+  /// Get all VPN connections (OpenVPN and Tailscale)
+  Future<List<VPNConnection>> getVPNConnections() async {
+    _ensureInitialized();
+
+    try {
+      final connections = <VPNConnection>[];
+      final errors = <String, String>{};
+
+      // Get VPN services from the service list (using correct endpoint without /api prefix)
+      try {
+        final servicesResponse = await _dio!.get('/core/service/search');
+        
+        if (servicesResponse.statusCode == 200 && servicesResponse.data != null) {
+          final data = servicesResponse.data as Map<String, dynamic>;
+          final rows = data['rows'] as List<dynamic>? ?? [];
+          
+          for (final row in rows) {
+            final rowData = row as Map<String, dynamic>;
+            final serviceName = rowData['name']?.toString().toLowerCase() ?? '';
+            final serviceId = rowData['id']?.toString() ?? '';
+            final isRunning = rowData['running']?.toString() == '1' || rowData['running'] == true;
+            
+            // Check if this is Tailscale VPN service
+            if (serviceName == 'tailscale') {
+              connections.add(VPNConnection(
+                id: serviceId,
+                name: 'Tailscale',
+                type: serviceName,
+                status: isRunning ? 'up' : 'down',
+                description: rowData['description']?.toString() ?? 'Tailscale VPN Service',
+                enabled: isRunning,
+              ));
+            }
+          }
+        }
+      } catch (e) {
+        errors['Services'] = e.toString();
+      }
+
+      // Get OpenVPN sessions (active connections)
+      try {
+        final openVpnConnections = await _getOpenVPNSessions();
+        connections.addAll(openVpnConnections);
+      } catch (e) {
+        errors['OpenVPN'] = e.toString();
+      }
+
+      return connections;
+    } catch (e) {
+      throw ApiException('Failed to get VPN connections: ${e.toString()}', null);
+    }
+  }
+
+  /// Get OpenVPN instances and sessions
+  Future<List<VPNConnection>> _getOpenVPNSessions() async {
+    try {
+      final connections = <VPNConnection>[];
+      
+      // Get OpenVPN instances (servers and clients)
+      try {
+        final response = await _dio!.get('/openvpn/service/searchSessions');
+        
+        if (response.statusCode == 200 && response.data != null) {
+          final data = response.data as Map<String, dynamic>;
+          final rows = data['rows'] as List<dynamic>? ?? [];
+          
+          for (final row in rows) {
+            final rowData = row as Map<String, dynamic>;
+            final instanceType = rowData['type']?.toString() ?? '';
+            final status = rowData['status']?.toString() ?? '';
+            
+            // This endpoint returns both server instances and client sessions
+            if (instanceType == 'server' || instanceType == 'client') {
+              // This is an OpenVPN server or client instance
+              connections.add(VPNConnection(
+                id: rowData['id']?.toString() ?? '',
+                name: rowData['description']?.toString() ?? 'OpenVPN ${instanceType[0].toUpperCase()}${instanceType.substring(1)}',
+                type: 'openvpn',
+                status: status == 'ok' ? 'up' : 'down',
+                description: rowData['description']?.toString(),
+                enabled: status == 'ok',
+              ));
+            } else {
+              // This is a connected client session
+              connections.add(VPNConnection(
+                id: rowData['id']?.toString() ?? '',
+                name: rowData['common_name']?.toString() ?? 'OpenVPN Client',
+                type: 'openvpn',
+                status: 'up',
+                description: rowData['common_name']?.toString(),
+                remoteAddress: rowData['real_address']?.toString(),
+                virtualAddress: rowData['virtual_address']?.toString(),
+                bytesReceived: int.tryParse(rowData['bytes_received']?.toString() ?? '0'),
+                bytesSent: int.tryParse(rowData['bytes_sent']?.toString() ?? '0'),
+                connectedSince: rowData['connected_since'] != null
+                    ? DateTime.tryParse(rowData['connected_since'].toString())
+                    : null,
+                enabled: true,
+              ));
+            }
+          }
+        }
+      } catch (e) {
+        // Silent fail
+      }
+      
+      return connections;
+    } catch (e) {
+      return [];
+    }
+  }
+
+
+  /// Toggle VPN connection (connect/disconnect)
+  Future<bool> toggleVPNConnection(String id, String type, bool currentStatus) async {
+    _ensureInitialized();
+
+    try {
+      String action = currentStatus ? 'stop' : 'start';
+
+      // Use the core service control endpoint for all services
+      final response = await _dio!.post('/core/service/$action/$id');
+      
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>?;
+        return data?['result'] == 'ok' || data?['status'] == 'ok';
+      }
+      
+      return false;
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to toggle VPN connection: ${e.toString()}', null);
+    }
+  }
+
+  /// Restart VPN service
+  Future<bool> restartVPNService(String type) async {
+    _ensureInitialized();
+
+    try {
+      String endpoint;
+
+      switch (type.toLowerCase()) {
+        case 'openvpn':
+          endpoint = '/api/openvpn/service/restart';
+          break;
+        case 'tailscale':
+          endpoint = '/api/tailscale/service/restart';
+          break;
+        default:
+          throw ApiException('Unknown VPN type: $type', null);
+      }
+
+      final response = await _dio!.post(endpoint);
+      
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>?;
+        return data?['result'] == 'ok' || data?['status'] == 'ok';
+      }
+      
+      return false;
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to restart VPN service: ${e.toString()}', null);
+    }
+  }
+
+  /// Get VPN connection details
+  Future<VPNConnection?> getVPNConnectionDetails(String id, String type) async {
+    _ensureInitialized();
+
+    try {
+      final connections = await getVPNConnections();
+      return connections.firstWhere(
+        (conn) => conn.id == id && conn.type.toLowerCase() == type.toLowerCase(),
+        orElse: () => throw ApiException('VPN connection not found', 404),
+      );
+    } catch (e) {
+      throw ApiException('Failed to get VPN connection details: ${e.toString()}', null);
     }
   }
 
