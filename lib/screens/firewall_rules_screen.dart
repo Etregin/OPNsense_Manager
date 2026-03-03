@@ -25,6 +25,7 @@ import '../services/opnsense_api_service.dart';
 import '../utils/constants.dart';
 import '../widgets/app_drawer.dart';
 import 'firewall_rule_form_screen.dart';
+import '../l10n/app_localizations.dart';
 
 /// Firewall rules management screen
 class FirewallRulesScreen extends StatefulWidget {
@@ -114,38 +115,40 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
   }
 
   Future<void> _toggleRule(FirewallRule rule) async {
+    final l10n = AppLocalizations.of(context)!;
     // Prevent toggling system-generated rules
     if (rule.isSystemGenerated) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('System-generated rules cannot be modified'),
+        SnackBar(
+          content: Text(l10n.systemGeneratedRulesCannotBeModified),
           backgroundColor: Colors.orange,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
         ),
       );
       return;
     }
 
     // Show confirmation dialog
-    final action = rule.isEnabled ? 'disable' : 'enable';
+    final action = rule.isEnabled ? l10n.disable : l10n.enable;
+    final actionTitle = rule.isEnabled ? l10n.disableRule : l10n.enableRule;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('${action[0].toUpperCase()}${action.substring(1)} Rule'),
+        title: Text(actionTitle),
         content: Text(
-          'Are you sure you want to $action the rule "${rule.description.isEmpty ? 'Unnamed Rule' : rule.description}"?',
+          l10n.deleteRuleConfirmation(rule.description.isEmpty ? l10n.unnamedRule : rule.description),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: ElevatedButton.styleFrom(
               backgroundColor: rule.isEnabled ? Colors.orange : Colors.green,
             ),
-            child: Text(action[0].toUpperCase() + action.substring(1)),
+            child: Text(action),
           ),
         ],
       ),
@@ -161,7 +164,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${action[0].toUpperCase()}${action.substring(1)}ing rule...'),
+            content: Text(rule.isEnabled ? l10n.disablingRule : l10n.enablingRule),
             duration: const Duration(seconds: 2),
           ),
         );
@@ -176,7 +179,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              rule.isEnabled ? 'Rule disabled successfully' : 'Rule enabled successfully',
+              rule.isEnabled ? l10n.ruleDisabledSuccessfully : l10n.ruleEnabledSuccessfully,
             ),
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 2),
@@ -189,7 +192,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error toggling rule: $e'),
+            content: Text(l10n.errorTogglingRule(e.toString())),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 3),
           ),
@@ -199,13 +202,14 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
   }
 
   Future<void> _deleteRule(FirewallRule rule) async {
+    final l10n = AppLocalizations.of(context)!;
     // Prevent deleting system-generated rules
     if (rule.isSystemGenerated) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('System-generated rules cannot be deleted'),
+        SnackBar(
+          content: Text(l10n.systemGeneratedRulesCannotBeDeleted),
           backgroundColor: Colors.orange,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
         ),
       );
       return;
@@ -214,19 +218,19 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Rule'),
+        title: Text(l10n.deleteRule),
         content: Text(
-          'Are you sure you want to delete the rule "${rule.description}"?',
+          l10n.deleteRuleConfirmation(rule.description),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
+            child: Text(l10n.delete),
           ),
         ],
       ),
@@ -239,14 +243,14 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Rule deleted')),
+            SnackBar(content: Text(l10n.ruleDeleted)),
           );
           _loadRules();
         }
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error deleting rule: $e')),
+            SnackBar(content: Text(l10n.errorDeletingRule(e.toString()))),
           );
         }
       }
@@ -254,6 +258,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
   }
 
   void _showRuleDetails(FirewallRule rule) {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -272,7 +277,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
                   children: [
                     Expanded(
                       child: Text(
-                        'Rule Details',
+                        l10n.ruleDetails,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
@@ -285,18 +290,18 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                _buildDetailRow('Description', rule.description),
-                _buildDetailRow('Type', rule.typeDisplayName),
-                _buildDetailRow('Interface', rule.interfaceName),
-                _buildDetailRow('Protocol', rule.protocolDisplayName),
-                _buildDetailRow('Source', '${rule.source}${rule.sourcePort != 'any' && rule.sourcePort.isNotEmpty ? ':${rule.sourcePort}' : ''}'),
-                _buildDetailRow('Destination', '${rule.destination}${rule.destinationPort != 'any' && rule.destinationPort.isNotEmpty ? ':${rule.destinationPort}' : ''}'),
+                _buildDetailRow(l10n.description, rule.description),
+                _buildDetailRow(l10n.type, rule.typeDisplayName),
+                _buildDetailRow(l10n.interface, rule.interfaceName),
+                _buildDetailRow(l10n.protocol, rule.protocolDisplayName),
+                _buildDetailRow(l10n.source, '${rule.source}${rule.sourcePort != 'any' && rule.sourcePort.isNotEmpty ? ':${rule.sourcePort}' : ''}'),
+                _buildDetailRow(l10n.destination, '${rule.destination}${rule.destinationPort != 'any' && rule.destinationPort.isNotEmpty ? ':${rule.destinationPort}' : ''}'),
                 if (rule.sourcePort != 'any' && rule.sourcePort.isNotEmpty)
-                  _buildDetailRow('Source Port', rule.sourcePort),
+                  _buildDetailRow(l10n.sourcePort, rule.sourcePort),
                 if (rule.destinationPort != 'any' && rule.destinationPort.isNotEmpty)
-                  _buildDetailRow('Destination Port', rule.destinationPort),
-                _buildDetailRow('Status', rule.isEnabled ? 'Enabled' : 'Disabled'),
-                _buildDetailRow('Sequence', rule.sequence.toString()),
+                  _buildDetailRow(l10n.destinationPort, rule.destinationPort),
+                _buildDetailRow(l10n.status, rule.isEnabled ? l10n.enabled : l10n.disabled),
+                _buildDetailRow(l10n.sequence, rule.sequence.toString()),
                 const SizedBox(height: 24),
                 if (rule.isSystemGenerated)
                   Container(
@@ -312,7 +317,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            'This is a system-generated rule and cannot be modified or deleted.',
+                            l10n.systemGeneratedRule,
                             style: TextStyle(
                               color: Colors.orange[700],
                               fontSize: 12,
@@ -338,7 +343,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
                             ).then((_) => _loadRules());
                           },
                           icon: const Icon(Icons.edit),
-                          label: const Text('Edit'),
+                          label: Text(l10n.edit),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -349,7 +354,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
                             _deleteRule(rule);
                           },
                           icon: const Icon(Icons.delete),
-                          label: const Text('Delete'),
+                          label: Text(l10n.delete),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.red,
                             foregroundColor: Colors.white,
@@ -392,14 +397,15 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Firewall Rules'),
+        title: Text(l10n.firewallRules),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _isLoading ? null : _loadRules,
-            tooltip: 'Refresh',
+            tooltip: l10n.refresh,
           ),
         ],
       ),
@@ -417,7 +423,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
           ).then((_) => _loadRules());
         },
         icon: const Icon(Icons.add),
-        label: const Text('New Rule'),
+        label: Text(l10n.newRule),
       ),
     );
   }
@@ -428,13 +434,14 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
     }
 
     if (_errorMessage != null) {
+      final l10n = AppLocalizations.of(context)!;
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
             const SizedBox(height: 16),
-            Text('Error loading rules',
+            Text(l10n.errorLoadingRules,
                 style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 8),
             Padding(
@@ -447,7 +454,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
             ElevatedButton.icon(
               onPressed: _loadRules,
               icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
+              label: Text(l10n.retry),
             ),
           ],
         ),
@@ -455,6 +462,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
     }
 
     if (_rules.isEmpty) {
+      final l10n = AppLocalizations.of(context)!;
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -462,12 +470,12 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
             Icon(Icons.security, size: 64, color: Colors.grey[400]),
             const SizedBox(height: 16),
             Text(
-              'No automation rules found',
+              l10n.noAutomationRulesFound,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Text(
-              'Create your first automation rule to get started',
+              l10n.createFirstAutomationRule,
               style: TextStyle(color: Colors.grey[600]),
             ),
           ],
@@ -476,6 +484,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
     }
 
     if (_rulesByInterface.isEmpty) {
+      final l10n = AppLocalizations.of(context)!;
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -483,7 +492,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
             Icon(Icons.security, size: 64, color: Colors.grey[400]),
             const SizedBox(height: 16),
             Text(
-              'No interfaces with automation rules',
+              l10n.noInterfacesWithAutomationRules,
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ],
@@ -511,12 +520,17 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Select Interface',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[600],
-                    ),
+              Builder(
+                builder: (context) {
+                  final l10n = AppLocalizations.of(context)!;
+                  return Text(
+                    l10n.selectInterface,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[600],
+                        ),
+                  );
+                }
               ),
               const SizedBox(height: 8),
               SingleChildScrollView(
@@ -554,8 +568,9 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
   }
 
   Widget _buildRulesList() {
+    final l10n = AppLocalizations.of(context)!;
     if (_selectedInterface == null) {
-      return const Center(child: Text('Select an interface to view rules'));
+      return Center(child: Text(l10n.selectInterfaceToViewRules));
     }
 
     final rules = _rulesByInterface[_selectedInterface] ?? [];
@@ -568,7 +583,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
             Icon(Icons.security, size: 64, color: Colors.grey[400]),
             const SizedBox(height: 16),
             Text(
-              'No rules for $_selectedInterface',
+              l10n.noRulesForInterface(_selectedInterface!),
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ],
@@ -645,14 +660,19 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          rule.description.isEmpty
-                              ? 'Unnamed Rule'
-                              : rule.description,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
+                        Builder(
+                          builder: (context) {
+                            final l10n = AppLocalizations.of(context)!;
+                            return Text(
+                              rule.description.isEmpty
+                                  ? l10n.unnamedRule
+                                  : rule.description,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            );
+                          }
                         ),
                         const SizedBox(height: 4),
                         Text(
@@ -687,7 +707,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
                       children: [
                         Expanded(
                           child: _buildRuleInfo(
-                            'Source',
+                            AppLocalizations.of(context)!.source,
                             '${rule.source}${rule.sourcePort != 'any' && rule.sourcePort.isNotEmpty ? ':${rule.sourcePort}' : ''}',
                             Icons.arrow_forward,
                           ),
@@ -701,7 +721,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
                         ),
                         Expanded(
                           child: _buildRuleInfo(
-                            'Destination',
+                            AppLocalizations.of(context)!.destination,
                             '${rule.destination}${rule.destinationPort != 'any' && rule.destinationPort.isNotEmpty ? ':${rule.destinationPort}' : ''}',
                             Icons.location_on,
                           ),

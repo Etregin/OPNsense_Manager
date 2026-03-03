@@ -17,9 +17,12 @@
  */
 
 
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:path/path.dart' as path;
 import '../models/system_info.dart';
 import '../models/profile.dart';
 import '../models/opnsense_config.dart';
@@ -28,8 +31,10 @@ import '../services/storage_service.dart';
 import '../services/auth_service.dart';
 import '../services/profile_service.dart';
 import '../utils/constants.dart';
+import '../utils/formatters.dart';
 import '../utils/validators.dart';
 import '../widgets/app_drawer.dart';
+import '../l10n/app_localizations.dart';
 
 /// Enhanced Settings screen with tabs for General and Profiles
 class SettingsScreen extends StatefulWidget {
@@ -40,9 +45,19 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProviderStateMixin {
+  // Platform-specific error codes for file operations
+  // Unix/Linux/macOS error codes
+  static const int _errNoSpaceUnix = 28;      // ENOSPC - No space left on device
+  static const int _errAccessDeniedUnix = 13; // EACCES - Permission denied
+  static const int _errReadOnlyUnix = 30;     // EROFS - Read-only file system
+  
+  // Windows error codes
+  static const int _errAccessDeniedWindows = 5; // ERROR_ACCESS_DENIED
+  
   late TabController _tabController;
   SystemInfo? _systemInfo;
   String _themeMode = 'system'; // 'system', 'light', or 'dark'
+  String? _locale; // null means system default
   
   // Auth settings
   bool _pinEnabled = false;
@@ -62,6 +77,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
     _tabController = TabController(length: 2, vsync: this);
     _loadSystemInfo();
     _loadThemeMode();
+    _loadLocale();
     _loadAuthSettings();
     _loadProfiles();
   }
@@ -91,6 +107,15 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
     if (mounted) {
       setState(() {
         _themeMode = themeMode;
+      });
+    }
+  }
+
+  Future<void> _loadLocale() async {
+    final locale = await StorageService().loadString('locale');
+    if (mounted) {
+      setState(() {
+        _locale = locale;
       });
     }
   }
@@ -141,6 +166,14 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
     updateTheme(value);
   }
 
+  void _updateLocale(String? value) {
+    setState(() {
+      _locale = value;
+    });
+    final updateLocale = context.read<Function(String?)>();
+    updateLocale(value);
+  }
+
   Future<void> _togglePinLock(bool value) async {
     if (value) {
       // Show PIN setup dialog
@@ -160,8 +193,9 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
         _biometricEnabled = false;
       });
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('PIN lock disabled. Biometric lock also disabled.')),
+          SnackBar(content: Text(l10n.pinLockDisabled)),
         );
       }
     }
@@ -174,31 +208,33 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
 
     final result = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Set PIN'),
-        content: Form(
+      builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
+        return AlertDialog(
+          title: Text(l10n.setPin),
+          content: Form(
           key: formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextFormField(
                 controller: pinController,
-                decoration: const InputDecoration(
-                  labelText: 'Enter PIN (4-6 digits)',
-                  prefixIcon: Icon(Icons.lock),
+                decoration: InputDecoration(
+                  labelText: l10n.enterPinLabel,
+                  prefixIcon: const Icon(Icons.lock),
                 ),
                 keyboardType: TextInputType.number,
                 obscureText: true,
                 maxLength: 6,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a PIN';
+                    return l10n.fieldRequired;
                   }
                   if (value.length < 4) {
-                    return 'PIN must be at least 4 digits';
+                    return l10n.pinTooShort;
                   }
                   if (!RegExp(r'^\d+$').hasMatch(value)) {
-                    return 'PIN must contain only numbers';
+                    return l10n.invalidPIN;
                   }
                   return null;
                 },
@@ -206,16 +242,16 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
               const SizedBox(height: 16),
               TextFormField(
                 controller: confirmPinController,
-                decoration: const InputDecoration(
-                  labelText: 'Confirm PIN',
-                  prefixIcon: Icon(Icons.lock_outline),
+                decoration: InputDecoration(
+                  labelText: l10n.confirmPin,
+                  prefixIcon: const Icon(Icons.lock_outline),
                 ),
                 keyboardType: TextInputType.number,
                 obscureText: true,
                 maxLength: 6,
                 validator: (value) {
                   if (value != pinController.text) {
-                    return 'PINs do not match';
+                    return l10n.pinMismatch;
                   }
                   return null;
                 },
@@ -223,21 +259,22 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
             ],
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-                Navigator.of(context).pop(true);
-              }
-            },
-            child: const Text('Set PIN'),
-          ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(l10n.cancel),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  Navigator.of(context).pop(true);
+                }
+              },
+              child: Text(l10n.setPin),
+            ),
+          ],
+        );
+      },
     );
 
     if (result == true && mounted) {
@@ -247,8 +284,9 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
         _pinEnabled = true;
       });
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('PIN lock enabled')),
+          SnackBar(content: Text(l10n.pinLockEnabled)),
         );
       }
     }
@@ -259,11 +297,12 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
     final newPinController = TextEditingController();
     final confirmPinController = TextEditingController();
     final formKey = GlobalKey<FormState>();
+    final l10n = AppLocalizations.of(context)!;
 
     final result = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Change PIN'),
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.changePinTitle),
         content: Form(
           key: formKey,
           child: Column(
@@ -271,16 +310,16 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
             children: [
               TextFormField(
                 controller: currentPinController,
-                decoration: const InputDecoration(
-                  labelText: 'Current PIN',
-                  prefixIcon: Icon(Icons.lock_open),
+                decoration: InputDecoration(
+                  labelText: l10n.currentPin,
+                  prefixIcon: const Icon(Icons.lock_open),
                 ),
                 keyboardType: TextInputType.number,
                 obscureText: true,
                 maxLength: 6,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your current PIN';
+                    return l10n.pleaseEnterCurrentPin;
                   }
                   return null;
                 },
@@ -288,25 +327,25 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
               const SizedBox(height: 16),
               TextFormField(
                 controller: newPinController,
-                decoration: const InputDecoration(
-                  labelText: 'New PIN (4-6 digits)',
-                  prefixIcon: Icon(Icons.lock),
+                decoration: InputDecoration(
+                  labelText: l10n.newPin,
+                  prefixIcon: const Icon(Icons.lock),
                 ),
                 keyboardType: TextInputType.number,
                 obscureText: true,
                 maxLength: 6,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a new PIN';
+                    return l10n.pleaseEnterNewPin;
                   }
                   if (value.length < 4) {
-                    return 'PIN must be at least 4 digits';
+                    return l10n.pinTooShort;
                   }
                   if (!RegExp(r'^\d+$').hasMatch(value)) {
-                    return 'PIN must contain only numbers';
+                    return l10n.pinMustContainOnlyNumbers;
                   }
                   if (value == currentPinController.text) {
-                    return 'New PIN must be different';
+                    return l10n.newPinMustBeDifferent;
                   }
                   return null;
                 },
@@ -314,16 +353,16 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
               const SizedBox(height: 16),
               TextFormField(
                 controller: confirmPinController,
-                decoration: const InputDecoration(
-                  labelText: 'Confirm New PIN',
-                  prefixIcon: Icon(Icons.lock_outline),
+                decoration: InputDecoration(
+                  labelText: l10n.confirmNewPin,
+                  prefixIcon: const Icon(Icons.lock_outline),
                 ),
                 keyboardType: TextInputType.number,
                 obscureText: true,
                 maxLength: 6,
                 validator: (value) {
                   if (value != newPinController.text) {
-                    return 'PINs do not match';
+                    return l10n.pinMismatch;
                   }
                   return null;
                 },
@@ -333,16 +372,16 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () {
               if (formKey.currentState!.validate()) {
-                Navigator.of(context).pop(true);
+                Navigator.of(dialogContext).pop(true);
               }
             },
-            child: const Text('Change PIN'),
+            child: Text(l10n.changePinTitle),
           ),
         ],
       ),
@@ -357,8 +396,8 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
       if (!isCurrentValid) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Current PIN is incorrect'),
+            SnackBar(
+              content: Text(l10n.currentPinIncorrect),
               backgroundColor: Colors.red,
             ),
           );
@@ -371,8 +410,8 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('PIN changed successfully'),
+          SnackBar(
+            content: Text(l10n.pinChangedSuccessfully),
             backgroundColor: Colors.green,
           ),
         );
@@ -386,9 +425,10 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
     // Check if PIN is enabled first
     if (!_pinEnabled) {
       if (mounted) {
+        final l10n2 = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please enable PIN lock first before using biometric'),
+          SnackBar(
+            content: Text(l10n2.enablePinLockFirst),
             backgroundColor: Colors.orange,
           ),
         );
@@ -401,9 +441,10 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
       final isAvailable = await authService.isBiometricAvailable();
       if (!isAvailable) {
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Biometric authentication is not available on this device'),
+            SnackBar(
+              content: Text(l10n.biometricNotAvailable),
               backgroundColor: Colors.red,
             ),
           );
@@ -422,18 +463,20 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
           _biometricEnabled = true;
         });
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Biometric lock enabled'),
+            SnackBar(
+              content: Text(l10n.biometricLockEnabled),
               backgroundColor: Colors.green,
             ),
           );
         }
       } else {
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Biometric authentication failed or was cancelled'),
+            SnackBar(
+              content: Text(l10n.biometricAuthFailed),
               backgroundColor: Colors.red,
             ),
           );
@@ -445,8 +488,9 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
         _biometricEnabled = false;
       });
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Biometric lock disabled')),
+          SnackBar(content: Text(l10n.biometricLockDisabled)),
         );
       }
     }
@@ -463,14 +507,15 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text(l10n.settings),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'General', icon: Icon(Icons.settings)),
-            Tab(text: 'Profiles', icon: Icon(Icons.dns)),
+          tabs: [
+            Tab(text: l10n.general, icon: const Icon(Icons.settings)),
+            Tab(text: l10n.profiles, icon: const Icon(Icons.dns)),
           ],
         ),
       ),
@@ -500,6 +545,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
   }
 
   Widget _buildAppearanceCard() {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(AppConstants.standardPadding),
@@ -507,7 +553,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Appearance',
+              l10n.appearance,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -522,32 +568,62 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                         : Icons.brightness_auto,
                 color: Theme.of(context).primaryColor,
               ),
-              title: const Text('Theme'),
+              title: Text(l10n.theme),
               subtitle: Text(
                 _themeMode == 'system'
-                    ? 'Follow system theme'
+                    ? l10n.systemDefault
                     : _themeMode == 'light'
-                        ? 'Light mode'
-                        : 'Dark mode',
+                        ? l10n.lightMode
+                        : l10n.darkMode,
               ),
               trailing: DropdownButton<String>(
                 value: _themeMode,
                 underline: const SizedBox(),
-                items: const [
+                items: [
                   DropdownMenuItem(
                     value: 'system',
-                    child: Text('System'),
+                    child: Text(l10n.systemDefault),
                   ),
                   DropdownMenuItem(
                     value: 'light',
-                    child: Text('Light'),
+                    child: Text(l10n.lightMode),
                   ),
                   DropdownMenuItem(
                     value: 'dark',
-                    child: Text('Dark'),
+                    child: Text(l10n.darkMode),
                   ),
                 ],
                 onChanged: _updateThemeMode,
+              ),
+            ),
+            const Divider(),
+            ListTile(
+              leading: Icon(
+                Icons.language,
+                color: Theme.of(context).primaryColor,
+              ),
+              title: Text(l10n.language),
+              subtitle: Text(
+                _locale == null
+                    ? l10n.systemDefault
+                    : (AppConstants.supportedLanguages[_locale] ?? _locale!),
+              ),
+              trailing: DropdownButton<String?>(
+                value: _locale,
+                underline: const SizedBox(),
+                items: [
+                  DropdownMenuItem(
+                    value: null,
+                    child: Text(l10n.systemDefault),
+                  ),
+                  ...AppConstants.supportedLanguages.entries.map(
+                    (entry) => DropdownMenuItem(
+                      value: entry.key,
+                      child: Text(entry.value),
+                    ),
+                  ),
+                ],
+                onChanged: _updateLocale,
               ),
             ),
           ],
@@ -557,6 +633,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
   }
 
   Widget _buildSecurityCard() {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(AppConstants.standardPadding),
@@ -564,15 +641,15 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Security',
+              l10n.security,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
             ),
             const SizedBox(height: 16),
             SwitchListTile(
-              title: const Text('PIN Lock'),
-              subtitle: const Text('Require PIN to unlock app'),
+              title: Text(l10n.pinLockTitle),
+              subtitle: Text(l10n.requirePinToUnlock),
               secondary: Icon(
                 Icons.pin,
                 color: Theme.of(context).primaryColor,
@@ -587,8 +664,8 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                   Icons.edit,
                   color: Theme.of(context).primaryColor,
                 ),
-                title: const Text('Change PIN'),
-                subtitle: const Text('Update your PIN code'),
+                title: Text(l10n.changePinTitle),
+                subtitle: Text(l10n.updatePinCode),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: _showChangePinDialog,
               ),
@@ -596,10 +673,10 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
             if (_biometricAvailable) ...[
               const Divider(),
               SwitchListTile(
-                title: Text('${_getBiometricName()} Lock'),
+                title: Text(l10n.biometricLockTitle(_getBiometricName())),
                 subtitle: Text(_pinEnabled
-                    ? 'Use ${_getBiometricName()} to unlock app'
-                    : 'Enable PIN lock first to use biometric'),
+                    ? l10n.useBiometricToUnlock(_getBiometricName())
+                    : l10n.enablePinLockFirstBiometric),
                 secondary: Icon(
                   Icons.fingerprint,
                   color: Theme.of(context).primaryColor,
@@ -615,18 +692,18 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                   Icons.timer,
                   color: Theme.of(context).primaryColor,
                 ),
-                title: const Text('Lock Timeout'),
-                subtitle: Text('Lock after $_lockTimeout ${_lockTimeout == 1 ? 'minute' : 'minutes'} of inactivity'),
+                title: Text(l10n.lockTimeoutLabel),
+                subtitle: Text(l10n.lockAfterMinutes(_lockTimeout)),
                 trailing: DropdownButton<int>(
                   value: _lockTimeout,
-                  items: const [
-                    DropdownMenuItem(value: 1, child: Text('1 min')),
-                    DropdownMenuItem(value: 2, child: Text('2 min')),
-                    DropdownMenuItem(value: 5, child: Text('5 min')),
-                    DropdownMenuItem(value: 10, child: Text('10 min')),
-                    DropdownMenuItem(value: 15, child: Text('15 min')),
-                    DropdownMenuItem(value: 30, child: Text('30 min')),
-                    DropdownMenuItem(value: 60, child: Text('1 hour')),
+                  items: [
+                    DropdownMenuItem(value: 1, child: Text(l10n.oneMin)),
+                    DropdownMenuItem(value: 2, child: Text(l10n.twoMin)),
+                    DropdownMenuItem(value: 5, child: Text(l10n.fiveMin)),
+                    DropdownMenuItem(value: 10, child: Text(l10n.tenMin)),
+                    DropdownMenuItem(value: 15, child: Text(l10n.fifteenMin)),
+                    DropdownMenuItem(value: 30, child: Text(l10n.thirtyMin)),
+                    DropdownMenuItem(value: 60, child: Text(l10n.oneHour)),
                   ],
                   onChanged: (value) async {
                     if (value != null) {
@@ -638,7 +715,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('Lock timeout set to $value ${value == 1 ? 'minute' : 'minutes'}'),
+                            content: Text(l10n.lockTimeoutSet(value)),
                           ),
                         );
                       }
@@ -682,14 +759,14 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
           ),
           const SizedBox(height: 16),
           Text(
-            'No Profiles',
+            AppLocalizations.of(context)!.noProfiles,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Colors.grey[600],
                 ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Add a profile to manage OPNsense instances',
+            AppLocalizations.of(context)!.addProfileToManageInstances,
             style: TextStyle(color: Colors.grey[600]),
           ),
         ],
@@ -743,33 +820,33 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
               },
               itemBuilder: (context) => [
                 if (!isActive)
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: 'activate',
                     child: Row(
                       children: [
-                        Icon(Icons.check_circle, size: 20),
-                        SizedBox(width: 12),
-                        Text('Activate'),
+                        const Icon(Icons.check_circle, size: 20),
+                        const SizedBox(width: 12),
+                        Text(AppLocalizations.of(context)!.activate),
                       ],
                     ),
                   ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'edit',
                   child: Row(
                     children: [
-                      Icon(Icons.edit, size: 20),
-                      SizedBox(width: 12),
-                      Text('Edit'),
+                      const Icon(Icons.edit, size: 20),
+                      const SizedBox(width: 12),
+                      Text(AppLocalizations.of(context)!.edit),
                     ],
                   ),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'delete',
                   child: Row(
                     children: [
-                      Icon(Icons.delete, size: 20, color: Colors.red),
-                      SizedBox(width: 12),
-                      Text('Delete', style: TextStyle(color: Colors.red)),
+                      const Icon(Icons.delete, size: 20, color: Colors.red),
+                      const SizedBox(width: 12),
+                      Text(AppLocalizations.of(context)!.delete, style: const TextStyle(color: Colors.red)),
                     ],
                   ),
                 ),
@@ -796,13 +873,46 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
         ],
       ),
       child: SafeArea(
-        child: ElevatedButton.icon(
-          onPressed: () => _showProfileDialog(),
-          icon: const Icon(Icons.add),
-          label: const Text('Add Profile'),
-          style: ElevatedButton.styleFrom(
-            minimumSize: const Size(double.infinity, 48),
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Import/Export buttons row
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _importProfiles,
+                    icon: const Icon(Icons.upload_file, size: 20),
+                    label: Text(AppLocalizations.of(context)!.import),
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size(0, 44),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _profiles.isEmpty ? null : _exportProfiles,
+                    icon: const Icon(Icons.download, size: 20),
+                    label: Text(AppLocalizations.of(context)!.export),
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size(0, 44),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            // Add Profile button
+            ElevatedButton.icon(
+              onPressed: () => _showProfileDialog(),
+              icon: const Icon(Icons.add),
+              label: Text(AppLocalizations.of(context)!.addProfile),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 48),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -813,13 +923,13 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => const AlertDialog(
+      builder: (context) => AlertDialog(
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('Activating profile...'),
+            const CircularProgressIndicator(),
+            const SizedBox(height: 16),
+            Text(AppLocalizations.of(context)!.activatingProfile),
           ],
         ),
       ),
@@ -844,18 +954,20 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
       if (isConnected) {
         await _loadProfiles();
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Activated profile: ${profile.name}'),
+              content: Text(l10n.activatedProfile(profile.name)),
               backgroundColor: Colors.green,
             ),
           );
         }
       } else {
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Connection test failed'),
+            SnackBar(
+              content: Text(l10n.connectionTestFailed),
               backgroundColor: Colors.red,
             ),
           );
@@ -875,6 +987,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
   }
 
   void _showProfileDialog({Profile? profile}) {
+    final l10n = AppLocalizations.of(context)!;
     final isEdit = profile != null;
     final formKey = GlobalKey<FormState>();
     final nameController = TextEditingController(text: profile?.name ?? '');
@@ -893,7 +1006,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          title: Text(isEdit ? 'Edit Profile' : 'Add Profile'),
+          title: Text(isEdit ? l10n.editProfile : l10n.addProfile),
           content: SingleChildScrollView(
             child: Form(
               key: formKey,
@@ -902,13 +1015,13 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                 children: [
                   TextFormField(
                     controller: nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Profile Name',
-                      prefixIcon: Icon(Icons.label),
+                    decoration: InputDecoration(
+                      labelText: l10n.profileNameLabel,
+                      prefixIcon: const Icon(Icons.label),
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Profile name is required';
+                        return l10n.profileNameRequired;
                       }
                       return null;
                     },
@@ -916,25 +1029,25 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: hostController,
-                    decoration: const InputDecoration(
-                      labelText: 'Host/IP Address',
-                      prefixIcon: Icon(Icons.dns),
+                    decoration: InputDecoration(
+                      labelText: l10n.hostIpAddressLabel,
+                      prefixIcon: const Icon(Icons.dns),
                     ),
                     validator: Validators.validateHost,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: portController,
-                    decoration: const InputDecoration(
-                      labelText: 'Port',
-                      prefixIcon: Icon(Icons.settings_ethernet),
+                    decoration: InputDecoration(
+                      labelText: l10n.portLabel,
+                      prefixIcon: const Icon(Icons.settings_ethernet),
                     ),
                     keyboardType: TextInputType.number,
                     validator: Validators.validatePort,
                   ),
                   const SizedBox(height: 16),
                   SwitchListTile(
-                    title: const Text('Use HTTPS'),
+                    title: Text(l10n.useHttpsLabel),
                     value: useHttps,
                     onChanged: (value) {
                       setDialogState(() {
@@ -945,9 +1058,9 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: apiKeyController,
-                    decoration: const InputDecoration(
-                      labelText: 'API Key',
-                      prefixIcon: Icon(Icons.vpn_key),
+                    decoration: InputDecoration(
+                      labelText: l10n.apiKeyLabel,
+                      prefixIcon: const Icon(Icons.vpn_key),
                     ),
                     validator: Validators.validateApiKey,
                   ),
@@ -955,7 +1068,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                   TextFormField(
                     controller: apiSecretController,
                     decoration: InputDecoration(
-                      labelText: 'API Secret',
+                      labelText: l10n.apiSecretLabel,
                       prefixIcon: const Icon(Icons.password),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -980,7 +1093,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: Text(l10n.cancel),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -997,7 +1110,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                   );
                 }
               },
-              child: Text(isEdit ? 'Save' : 'Add'),
+              child: Text(isEdit ? l10n.save : l10n.add),
             ),
           ],
         ),
@@ -1031,32 +1144,285 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
     await _loadProfiles();
 
     if (mounted) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(id == null ? 'Profile added' : 'Profile updated'),
+          content: Text(id == null ? l10n.profileAdded : l10n.profileUpdated),
           backgroundColor: Colors.green,
         ),
       );
     }
   }
 
+  // ==================== Export/Import Methods ====================
+
+  /// Export all profiles to a JSON file
+  Future<void> _exportProfiles() async {
+    try {
+      final l10n = AppLocalizations.of(context)!;
+      // Show confirmation dialog for including credentials
+      final includeCredentials = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: Text(l10n.exportProfilesTitle),
+          content: Text(l10n.exportProfilesContent),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(l10n.withoutCredentials),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.orange,
+              ),
+              child: Text(l10n.includeCredentials),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(null),
+              child: Text(l10n.cancel),
+            ),
+          ],
+        ),
+      );
+      
+      // User cancelled
+      if (includeCredentials == null) return;
+      
+      final profileService = ProfileService();
+      final jsonString = await profileService.exportProfiles(
+        includeCredentials: includeCredentials,
+      );
+      
+      // Create filename with timestamp
+      final timestamp = Formatters.formatTimestampForFilename(DateTime.now());
+      final suggestedName = 'opnsense_profiles_$timestamp.json';
+      
+      // Let user choose directory to save the file
+      final directoryPath = await FilePicker.platform.getDirectoryPath(
+        dialogTitle: 'Choose Export Location',
+      );
+      
+      if (directoryPath == null) {
+        // User cancelled the directory picker
+        return;
+      }
+      
+      // Create full file path
+      final filePath = path.join(directoryPath, suggestedName);
+      
+      // Write file to chosen location
+      final file = File(filePath);
+      try {
+        await file.writeAsString(jsonString, flush: true);
+      } on FileSystemException catch (e) {
+        // Handle specific file system errors using osError type
+        String errorMessage;
+        final osError = e.osError;
+        
+        // Check for specific error types using osError errorCode
+        // ENOSPC (No space left on device) - typically 28 on Unix-like systems
+        // EACCES (Permission denied) - typically 13 on Unix-like systems
+        // EROFS (Read-only file system) - typically 30 on Unix-like systems
+        if (osError != null) {
+          final errorCode = osError.errorCode;
+          // Check for platform-specific error codes
+          if (errorCode == _errNoSpaceUnix) {
+            errorMessage = 'Export failed: Insufficient disk space';
+          } else if ((Platform.isWindows && errorCode == _errAccessDeniedWindows) ||
+                     (!Platform.isWindows && errorCode == _errAccessDeniedUnix)) {
+            errorMessage = 'Export failed: Permission denied. Please choose a different location';
+          } else if (errorCode == _errReadOnlyUnix && !Platform.isWindows) {
+            errorMessage = 'Export failed: Cannot write to read-only location';
+          } else {
+            errorMessage = 'Export failed: ${e.message}';
+          }
+        } else {
+          errorMessage = 'Export failed: ${e.message}';
+        }
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(errorMessage),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 5),
+            ),
+          );
+        }
+        return;
+      }
+      
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.exportSuccess),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 5),
+            action: SnackBarAction(
+              label: 'OK',
+              textColor: Colors.white,
+              onPressed: () {},
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      _showErrorSnackBar('Export failed: ${e.toString()}');
+    }
+  }
+
+  /// Show error SnackBar with consistent styling
+  void _showErrorSnackBar(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  /// Import profiles from a JSON file
+  Future<void> _importProfiles() async {
+    try {
+      // Pick a file
+      final pickerResult = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+        allowMultiple: false,
+      );
+      
+      if (pickerResult == null || pickerResult.files.isEmpty) {
+        return; // User cancelled
+      }
+      
+      // Check if path is null before accessing it
+      if (pickerResult.files.first.path == null) {
+        if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.unableToAccessFilePath),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return;
+      }
+      
+      final file = File(pickerResult.files.first.path!);
+      final jsonString = await file.readAsString();
+      
+      // Validate file format
+      final profileService = ProfileService();
+      final validationError = profileService.validateImportFile(jsonString);
+      
+      if (validationError != null) {
+        if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.invalidFileFormat(validationError)),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return;
+      }
+      
+      // Show import options dialog
+      if (!mounted) return;
+      final overwrite = await showDialog<bool>(
+        context: context,
+        builder: (context) {
+          final l10n = AppLocalizations.of(context)!;
+          return AlertDialog(
+            title: Text(l10n.importProfilesTitle),
+            content: Text(l10n.importProfilesDialog),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(null),
+                child: Text(l10n.cancel),
+              ),
+              OutlinedButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(l10n.keepBoth),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(l10n.overwrite),
+              ),
+            ],
+          );
+        },
+      );
+      
+      if (overwrite == null) return; // User cancelled
+      
+      // Import profiles
+      final result = await profileService.importProfiles(
+        jsonString,
+        overwrite: overwrite,
+      );
+      
+      // Reload profiles
+      await _loadProfiles();
+      
+      // Show result
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        final successCount = result['success'] as int;
+        final failedCount = result['failed'] as int;
+        final errors = result['errors'] as List<String>;
+        
+        String message;
+        Color backgroundColor;
+        
+        if (failedCount == 0) {
+          message = l10n.successfullyImportedProfiles(successCount);
+          backgroundColor = Colors.green;
+        } else if (successCount == 0) {
+          message = l10n.importFailedWithErrors(errors.join(', '));
+          backgroundColor = Colors.red;
+        } else {
+          message = l10n.importedWithFailures(successCount, failedCount);
+          backgroundColor = Colors.orange;
+        }
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: backgroundColor,
+            duration: const Duration(seconds: 5),
+          ),
+        );
+      }
+    } catch (e) {
+      _showErrorSnackBar('Import failed: ${e.toString()}');
+    }
+  }
+
   Future<void> _deleteProfile(Profile profile) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Profile'),
-        content: Text('Are you sure you want to delete "${profile.name}"?'),
+        title: Text(l10n.deleteProfileTitle),
+        content: Text(l10n.deleteProfileConfirmation(profile.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
             ),
-            child: const Text('Delete'),
+            child: Text(l10n.delete),
           ),
         ],
       ),
@@ -1069,8 +1435,8 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profile deleted'),
+          SnackBar(
+            content: Text(l10n.profileDeleted),
             backgroundColor: Colors.orange,
           ),
         );

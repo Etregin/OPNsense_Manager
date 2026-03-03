@@ -31,6 +31,7 @@ import '../screens/vpn_connections_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/settings_screen.dart';
 import '../screens/pin_lock_screen.dart';
+import '../l10n/app_localizations.dart';
 
 /// Reusable app drawer for navigation
 class AppDrawer extends StatelessWidget {
@@ -45,6 +46,7 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -84,7 +86,7 @@ class AppDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.dashboard),
-            title: const Text('Dashboard'),
+            title: Text(l10n.dashboard),
             selected: currentRoute == 'dashboard',
             onTap: () {
               if (currentRoute != 'dashboard') {
@@ -101,7 +103,7 @@ class AppDrawer extends StatelessWidget {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.info_outline),
-            title: const Text('System Information'),
+            title: Text(l10n.systemInformation),
             selected: currentRoute == 'system_info',
             onTap: () {
               if (currentRoute != 'system_info') {
@@ -117,7 +119,7 @@ class AppDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.security),
-            title: const Text('Firewall Rules'),
+            title: Text(l10n.firewallRules),
             selected: currentRoute == 'firewall_rules',
             onTap: () {
               if (currentRoute != 'firewall_rules') {
@@ -133,7 +135,7 @@ class AppDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.article),
-            title: const Text('Firewall Logs'),
+            title: Text(l10n.firewallLogs),
             selected: currentRoute == 'firewall_logs',
             onTap: () {
               if (currentRoute != 'firewall_logs') {
@@ -149,7 +151,7 @@ class AppDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.vpn_lock),
-            title: const Text('VPN Connections'),
+            title: Text(l10n.vpnConnections),
             selected: currentRoute == 'vpn_connections',
             onTap: () {
               if (currentRoute != 'vpn_connections') {
@@ -166,7 +168,7 @@ class AppDrawer extends StatelessWidget {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.settings),
-            title: const Text('Settings'),
+            title: Text(l10n.settings),
             selected: currentRoute == 'settings',
             onTap: () {
               if (currentRoute != 'settings') {
@@ -182,7 +184,7 @@ class AppDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.restart_alt, color: Colors.red),
-            title: const Text('Reboot Firewall', style: TextStyle(color: Colors.red)),
+            title: Text(l10n.rebootSystem, style: const TextStyle(color: Colors.red)),
             onTap: () {
               Navigator.pop(context);
               _rebootFirewall(context);
@@ -190,7 +192,7 @@ class AppDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.help_outline),
-            title: const Text('About'),
+            title: Text(l10n.about),
             onTap: () {
               Navigator.pop(context);
               _showAboutDialog(context);
@@ -199,7 +201,7 @@ class AppDrawer extends StatelessWidget {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.swap_horiz),
-            title: const Text('Change Profile'),
+            title: Text(l10n.switchProfile),
             onTap: () {
               Navigator.pop(context);
               _changeProfile(context);
@@ -211,7 +213,7 @@ class AppDrawer extends StatelessWidget {
               if (snapshot.data == true) {
                 return ListTile(
                   leading: const Icon(Icons.lock),
-                  title: const Text('Lock App'),
+                  title: Text(l10n.lockApp),
                   onTap: () {
                     Navigator.pop(context);
                     _lockApp(context);
@@ -227,29 +229,27 @@ class AppDrawer extends StatelessWidget {
   }
 
   Future<void> _rebootFirewall(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.warning, color: Colors.orange),
-            SizedBox(width: 8),
-            Text('Reboot Firewall'),
+            const Icon(Icons.warning, color: Colors.orange),
+            const SizedBox(width: 8),
+            Text(l10n.rebootSystem),
           ],
         ),
-        content: const Text(
-          'Are you sure you want to reboot the firewall?\n\n'
-          'This will temporarily interrupt network connectivity and all active connections will be lost.',
-        ),
+        content: Text(l10n.rebootConfirmation),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Reboot'),
+            child: Text(l10n.restart),
           ),
         ],
       ),
@@ -261,13 +261,13 @@ class AppDrawer extends StatelessWidget {
         showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (context) => const AlertDialog(
+          builder: (context) => AlertDialog(
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 16),
-                Text('Rebooting firewall...'),
+                const CircularProgressIndicator(),
+                const SizedBox(height: 16),
+                Text(l10n.loading),
               ],
             ),
           ),
@@ -280,9 +280,9 @@ class AppDrawer extends StatelessWidget {
           Navigator.of(context).pop(); // Close loading dialog
           
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Firewall reboot initiated. The system will be back online shortly.'),
-              duration: Duration(seconds: 5),
+            SnackBar(
+              content: Text(l10n.rebootSuccess),
+              duration: const Duration(seconds: 5),
               backgroundColor: Colors.red,
             ),
           );
@@ -293,7 +293,7 @@ class AppDrawer extends StatelessWidget {
           
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Error rebooting firewall: $e'),
+              content: Text(l10n.rebootFailedWithError(l10n.rebootFailed, e.toString())),
               backgroundColor: Colors.red,
             ),
           );
@@ -303,83 +303,67 @@ class AppDrawer extends StatelessWidget {
   }
 
   void _showAboutDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     showAboutDialog(
       context: context,
       applicationName: AppConstants.appName,
-      applicationVersion: '1.0.0',
+      applicationVersion: AppConstants.appVersion,
       applicationIcon: const Icon(Icons.router, size: 48),
-      applicationLegalese: '© 2026 OPNsense Manager\n\n'
-          'Licensed under GNU General Public License v3.0\n\n'
-          'This program is free software: you can redistribute it and/or modify '
-          'it under the terms of the GNU General Public License as published by '
-          'the Free Software Foundation, either version 3 of the License, or '
-          '(at your option) any later version.',
+      applicationLegalese: l10n.applicationLegalese,
       children: [
         const SizedBox(height: 16),
-        const Text(
-          'A professional Flutter mobile application for managing OPNsense firewall routers.',
-          style: TextStyle(fontSize: 14),
+        Text(
+          l10n.aboutDescription,
+          style: const TextStyle(fontSize: 14),
         ),
         const SizedBox(height: 16),
-        const Text(
-          'Features:',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        Text(
+          l10n.featuresTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
-        const Text(
-          '• System monitoring and management\n'
-          '• Firewall rule configuration\n'
-          '• Service control\n'
-          '• Real-time logs\n'
-          '• Multi-profile support\n'
-          '• Secure authentication',
-          style: TextStyle(fontSize: 13),
+        Text(
+          l10n.featuresList,
+          style: const TextStyle(fontSize: 13),
         ),
         const SizedBox(height: 16),
         Builder(
-          builder: (builderContext) => TextButton.icon(
-            onPressed: () {
-              showDialog(
-                context: builderContext,
-                builder: (dialogContext) => AlertDialog(
-                  title: const Text('GNU General Public License v3.0'),
-                  content: const SingleChildScrollView(
-                    child: Text(
-                      'This program is free software: you can redistribute it and/or modify '
-                      'it under the terms of the GNU General Public License as published by '
-                      'the Free Software Foundation, either version 3 of the License, or '
-                      '(at your option) any later version.\n\n'
-                      'This program is distributed in the hope that it will be useful, '
-                      'but WITHOUT ANY WARRANTY; without even the implied warranty of '
-                      'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the '
-                      'GNU General Public License for more details.\n\n'
-                      'You should have received a copy of the GNU General Public License '
-                      'along with this program. If not, see <https://www.gnu.org/licenses/>.\n\n'
-                      'Why GPLv3?\n\n'
-                      '• Ensures the software remains free and open source\n'
-                      '• Any modifications or derivatives must also be open source\n'
-                      '• Users have the freedom to use, study, share, and modify the software\n'
-                      '• The community benefits from improvements and contributions',
-                      style: TextStyle(fontSize: 13),
-                    ),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(dialogContext).pop(),
-                      child: const Text('Close'),
-                    ),
-                  ],
-                ),
-              );
-            },
-            icon: const Icon(Icons.gavel),
-            label: const Text('View Full License'),
-          ),
+          builder: (builderContext) {
+            final l10n = AppLocalizations.of(builderContext)!;
+            return TextButton.icon(
+              onPressed: () {
+                showDialog(
+                  context: builderContext,
+                  builder: (dialogContext) {
+                    final l10n = AppLocalizations.of(dialogContext)!;
+                    return AlertDialog(
+                      title: Text(l10n.gnuLicenseTitle),
+                      content: SingleChildScrollView(
+                        child: Text(
+                          l10n.gnuLicenseText,
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(dialogContext).pop(),
+                          child: Text(l10n.close),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              icon: const Icon(Icons.gavel),
+              label: Text(l10n.viewFullLicense),
+            );
+          },
         ),
       ],
     );
   }
 
   Future<void> _changeProfile(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     // Get services BEFORE showing dialog (while context is still active)
     final profileService = context.read<ProfileService>();
     final apiService = context.read<OPNsenseApiService>();
@@ -388,16 +372,16 @@ class AppDrawer extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Change Profile'),
-        content: const Text('Switch to a different OPNsense instance?'),
+        title: Text(l10n.switchProfile),
+        content: Text(l10n.switchProfileConfirmation),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Change'),
+            child: Text(l10n.ok),
           ),
         ],
       ),

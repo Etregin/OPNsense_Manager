@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'screens/splash_screen.dart';
 import 'services/storage_service.dart';
@@ -24,6 +25,7 @@ import 'services/opnsense_api_service.dart';
 import 'services/auth_service.dart';
 import 'services/profile_service.dart';
 import 'utils/constants.dart';
+import 'l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,12 +52,16 @@ class OPNsenseManagerApp extends StatefulWidget {
 
 class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
   ThemeMode _themeMode = ThemeMode.system;
+  Locale? _locale;
+  bool _isUpdatingLocale = false;
+  bool _isUpdatingThemeMode = false;
 
   @override
   void initState() {
     super.initState();
-    // Load theme mode asynchronously without blocking UI
+    // Load theme mode and locale asynchronously without blocking UI
     _loadThemeMode();
+    _loadLocale();
   }
 
   Future<void> _loadThemeMode() async {
@@ -64,6 +70,20 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
       setState(() {
         _themeMode = _getThemeModeFromString(themeModeString);
       });
+    }
+  }
+
+  Future<void> _loadLocale() async {
+    final localeString = await StorageService().loadString('locale');
+    if (mounted && localeString != null) {
+      // Validate locale against supported languages
+      final supportedLanguages = AppConstants.supportedLanguages.keys.toList();
+      if (supportedLanguages.contains(localeString)) {
+        setState(() {
+          _locale = Locale(localeString);
+        });
+      }
+      // If invalid, fall back to null (system default)
     }
   }
 
@@ -79,11 +99,42 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
     }
   }
 
-  void _updateThemeMode(String mode) {
-    setState(() {
-      _themeMode = _getThemeModeFromString(mode);
-    });
-    StorageService().saveString('theme_mode', mode);
+  Future<void> _updateThemeMode(String mode) async {
+    // Prevent race conditions from rapid theme changes
+    if (_isUpdatingThemeMode) return;
+    
+    _isUpdatingThemeMode = true;
+    try {
+      setState(() {
+        _themeMode = _getThemeModeFromString(mode);
+      });
+      await StorageService().saveString('theme_mode', mode);
+    } finally {
+      if (mounted) {
+        _isUpdatingThemeMode = false;
+      }
+    }
+  }
+
+  Future<void> _updateLocale(String? localeCode) async {
+    // Prevent race conditions from rapid locale changes
+    if (_isUpdatingLocale) return;
+    
+    _isUpdatingLocale = true;
+    try {
+      setState(() {
+        _locale = localeCode != null ? Locale(localeCode) : null;
+      });
+      if (localeCode != null) {
+        await StorageService().saveString('locale', localeCode);
+      } else {
+        await StorageService().remove('locale');
+      }
+    } finally {
+      if (mounted) {
+        _isUpdatingLocale = false;
+      }
+    }
   }
 
   @override
@@ -105,11 +156,28 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
         Provider<Function(String)>(
           create: (_) => _updateThemeMode,
         ),
+        Provider<Function(String?)>(
+          create: (_) => _updateLocale,
+        ),
       ],
       child: MaterialApp(
         title: AppConstants.appName,
         debugShowCheckedModeBanner: false,
         themeMode: _themeMode,
+        locale: _locale,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en'), // English
+          Locale('ar'), // Arabic
+          Locale('es'), // Spanish
+          Locale('fr'), // French
+          Locale('de'), // German
+        ],
         theme: ThemeData(
           primaryColor: const Color(AppConstants.primaryColorValue),
           colorScheme: ColorScheme.fromSeed(

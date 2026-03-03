@@ -265,7 +265,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed build instructions.
 - [ ] Push notifications for system alerts
 - [ ] Backup/restore configuration functionality
 - [ ] Package management interface
-- [ ] Multi-language support (i18n)
+- [x] **Multi-language support (i18n)** - Supports English, Arabic, Spanish, French, and German with easy extensibility for more languages
 - [ ] Tablet-optimized layouts
 - [ ] Traffic monitoring with detailed charts
 - [ ] Bandwidth quota management
@@ -276,7 +276,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed build instructions.
 - [ ] User management interface
 - [ ] Scheduled tasks/cron jobs
 - [ ] Plugin management
-- [ ] Export/import profiles
+- [x] **Export/import profiles** - Export and import connection profiles as JSON files
 
 See the [open issues](issues-url) for a full list of proposed features (and known issues).
 

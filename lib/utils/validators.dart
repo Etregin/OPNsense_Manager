@@ -17,6 +17,9 @@
  */
 
 
+import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
+
 /// Utility class for input validation
 class Validators {
   /// Validate IP address (IPv4)
@@ -166,53 +169,97 @@ class Validators {
   }
   
   /// Get error message for host validation
-  static String? validateHost(String? value) {
+  /// Note: BuildContext is optional for backward compatibility, but should always be provided
+  static String? validateHost(String? value, [BuildContext? context]) {
+    // If context is not provided, return a generic error (not recommended for production)
+    if (context == null) {
+      if (value == null || value.isEmpty) return 'Required';
+      if (!isValidHostname(value)) return 'Invalid';
+      return null;
+    }
+    
+    final l10n = AppLocalizations.of(context)!;
     if (value == null || value.isEmpty) {
-      return 'Host is required';
+      return l10n.hostIsRequired;
     }
     if (!isValidHostname(value)) {
-      return 'Invalid hostname or IP address';
+      return l10n.invalidHostnameOrIp;
     }
     return null;
   }
   
   /// Get error message for port validation
-  static String? validatePort(String? value) {
+  /// Note: BuildContext is optional for backward compatibility, but should always be provided
+  static String? validatePort(String? value, [BuildContext? context]) {
+    // If context is not provided, return a generic error (not recommended for production)
+    if (context == null) {
+      if (value == null || value.isEmpty) return 'Required';
+      if (!isValidPort(value)) return 'Invalid';
+      return null;
+    }
+    
+    final l10n = AppLocalizations.of(context)!;
     if (value == null || value.isEmpty) {
-      return 'Port is required';
+      return l10n.portIsRequired;
     }
     if (!isValidPort(value)) {
-      return 'Port must be between 1 and 65535';
+      return l10n.portMustBeBetween;
     }
     return null;
   }
   
   /// Get error message for API key validation
-  static String? validateApiKey(String? value) {
+  /// Note: BuildContext is optional for backward compatibility, but should always be provided
+  static String? validateApiKey(String? value, [BuildContext? context]) {
+    // If context is not provided, return a generic error (not recommended for production)
+    if (context == null) {
+      if (value == null || value.isEmpty) return 'Required';
+      if (!isValidApiKey(value)) return 'Invalid';
+      return null;
+    }
+    
+    final l10n = AppLocalizations.of(context)!;
     if (value == null || value.isEmpty) {
-      return 'API Key is required';
+      return l10n.apiKeyIsRequired;
     }
     if (!isValidApiKey(value)) {
-      return 'Invalid API Key format';
+      return l10n.invalidApiKeyFormat;
     }
     return null;
   }
   
   /// Get error message for API secret validation
-  static String? validateApiSecret(String? value) {
+  /// Note: BuildContext is optional for backward compatibility, but should always be provided
+  static String? validateApiSecret(String? value, [BuildContext? context]) {
+    // If context is not provided, return a generic error (not recommended for production)
+    if (context == null) {
+      if (value == null || value.isEmpty) return 'Required';
+      if (!isValidApiSecret(value)) return 'Invalid';
+      return null;
+    }
+    
+    final l10n = AppLocalizations.of(context)!;
     if (value == null || value.isEmpty) {
-      return 'API Secret is required';
+      return l10n.apiSecretIsRequired;
     }
     if (!isValidApiSecret(value)) {
-      return 'Invalid API Secret format';
+      return l10n.invalidApiSecretFormat;
     }
     return null;
   }
   
   /// Get error message for required field validation
-  static String? validateRequired(String? value, String fieldName) {
+  /// Note: BuildContext is optional for backward compatibility, but should always be provided
+  static String? validateRequired(String? value, String fieldName, [BuildContext? context]) {
+    // If context is not provided, return a generic error (not recommended for production)
+    if (context == null) {
+      if (value == null || value.trim().isEmpty) return 'Required';
+      return null;
+    }
+    
+    final l10n = AppLocalizations.of(context)!;
     if (value == null || value.trim().isEmpty) {
-      return '$fieldName is required';
+      return l10n.fieldIsRequired(fieldName);
     }
     return null;
   }

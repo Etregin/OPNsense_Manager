@@ -20,6 +20,7 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../utils/constants.dart';
+import '../l10n/app_localizations.dart';
 
 /// PIN lock screen for app authentication
 class PinLockScreen extends StatefulWidget {
@@ -58,10 +59,11 @@ class _PinLockScreenState extends State<PinLockScreen> {
 
   Future<void> _tryBiometricAuth() async {
     final biometricEnabled = await _authService.isBiometricEnabled();
-    if (!biometricEnabled) return;
+    if (!biometricEnabled || !mounted) return;
 
+    final l10n = AppLocalizations.of(context)!;
     final authenticated = await _authService.authenticateWithBiometrics(
-      localizedReason: 'Authenticate to unlock OPNsense Manager',
+      localizedReason: l10n.authenticateToUnlock,
     );
 
     if (authenticated) {
@@ -75,9 +77,11 @@ class _PinLockScreenState extends State<PinLockScreen> {
   }
 
   Future<void> _verifyPin() async {
+    final l10n = AppLocalizations.of(context)!;
+    
     if (_pinController.text.isEmpty) {
       setState(() {
-        _errorMessage = 'Please enter your PIN';
+        _errorMessage = l10n.pleaseEnterYourPin;
       });
       return;
     }
@@ -99,7 +103,7 @@ class _PinLockScreenState extends State<PinLockScreen> {
     } else {
       setState(() {
         _isAuthenticating = false;
-        _errorMessage = 'Incorrect PIN';
+        _errorMessage = l10n.incorrectPin;
         _pinController.clear();
       });
     }
@@ -107,6 +111,7 @@ class _PinLockScreenState extends State<PinLockScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? Theme.of(context).scaffoldBackgroundColor : Theme.of(context).primaryColor;
     final textColor = isDark ? Theme.of(context).textTheme.bodyLarge?.color ?? Colors.white : Colors.white;
@@ -161,7 +166,7 @@ class _PinLockScreenState extends State<PinLockScreen> {
 
                   // Title
                   Text(
-                    'Enter PIN',
+                    l10n.enterPin,
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -170,7 +175,7 @@ class _PinLockScreenState extends State<PinLockScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Unlock OPNsense Manager',
+                    l10n.unlockOPNsenseManager,
                     style: TextStyle(
                       fontSize: 16,
                       color: textColor.withValues(alpha: 0.7),
@@ -242,9 +247,9 @@ class _PinLockScreenState extends State<PinLockScreen> {
                                 color: isDark ? Colors.white : Theme.of(context).primaryColor,
                               ),
                             )
-                          : const Text(
-                              'Unlock',
-                              style: TextStyle(
+                          : Text(
+                              l10n.unlock,
+                              style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -263,7 +268,7 @@ class _PinLockScreenState extends State<PinLockScreen> {
                         size: 32,
                       ),
                       label: Text(
-                        'Use Biometric',
+                        l10n.useBiometric,
                         style: TextStyle(
                           color: textColor,
                           fontSize: 16,

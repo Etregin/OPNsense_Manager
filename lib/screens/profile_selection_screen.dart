@@ -25,6 +25,7 @@ import '../services/opnsense_api_service.dart';
 import '../utils/constants.dart';
 import 'dashboard_screen.dart';
 import 'login_screen.dart';
+import '../l10n/app_localizations.dart';
 
 /// Profile selection screen - shown after logout or on first launch
 class ProfileSelectionScreen extends StatefulWidget {
@@ -73,10 +74,13 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
         );
       }
     } catch (e) {
-      setState(() {
-        _errorMessage = 'Connection failed: ${e.toString()}';
-        _isLoading = false;
-      });
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        setState(() {
+          _errorMessage = l10n.connectionFailedError(e.toString());
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -110,6 +114,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
   }
 
   Widget _buildContent(List<Profile> profiles) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? Theme.of(context).textTheme.bodyLarge?.color ?? Colors.white : Colors.white;
 
@@ -145,7 +150,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'OPNsense Manager',
+                      AppConstants.appName,
                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                             color: textColor,
                             fontWeight: FontWeight.bold,
@@ -153,7 +158,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Select a profile or create a new one',
+                      l10n.selectAProfileOrCreateNewOne,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             color: textColor.withValues(alpha: 0.9),
                           ),
@@ -201,8 +206,8 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                   child: _isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : profiles.isEmpty
-                          ? _buildEmptyState()
-                          : _buildProfileList(profiles),
+                          ? _buildEmptyState(l10n)
+                          : _buildProfileList(profiles, l10n),
                 ),
               ),
 
@@ -214,7 +219,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                   child: ElevatedButton.icon(
                     onPressed: _isLoading ? null : _createNewProfile,
                     icon: const Icon(Icons.add),
-                    label: const Text('Create New Profile'),
+                    label: Text(l10n.createNewProfile),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: isDark
                           ? Theme.of(context).primaryColor
@@ -237,7 +242,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(AppLocalizations l10n) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32.0),
@@ -251,7 +256,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'No Profiles Yet',
+              l10n.noProfilesYet,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: Colors.grey.shade700,
                     fontWeight: FontWeight.bold,
@@ -259,7 +264,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Create your first OPNsense profile to get started',
+              l10n.createYourFirstProfile,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Colors.grey.shade600,
@@ -271,7 +276,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
     );
   }
 
-  Widget _buildProfileList(List<Profile> profiles) {
+  Widget _buildProfileList(List<Profile> profiles, AppLocalizations l10n) {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: profiles.length,
@@ -304,7 +309,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
               children: [
                 const SizedBox(height: 4),
                 Text(
-                  '${profile.useHttps ? 'https' : 'http'}://${profile.host}:${profile.port}',
+                  '${profile.useHttps ? l10n.https : l10n.http}://${profile.host}:${profile.port}',
                   style: TextStyle(
                     color: Colors.grey.shade600,
                     fontSize: 14,
@@ -313,7 +318,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                 if (profile.lastUsed != null) ...[
                   const SizedBox(height: 4),
                   Text(
-                    'Last used: ${_formatDate(profile.lastUsed!)}',
+                    l10n.lastUsed(_formatDate(profile.lastUsed!, l10n)),
                     style: TextStyle(
                       color: Colors.grey.shade500,
                       fontSize: 12,
@@ -334,20 +339,18 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
     );
   }
 
-  String _formatDate(DateTime date) {
+  String _formatDate(DateTime date, AppLocalizations l10n) {
     final now = DateTime.now();
     final difference = now.difference(date);
 
     if (difference.inMinutes < 1) {
-      return 'Just now';
+      return l10n.justNow;
     } else if (difference.inHours < 1) {
-      return '${difference.inMinutes}m ago';
+      return l10n.minutesAgo(difference.inMinutes.toString());
     } else if (difference.inDays < 1) {
-      return '${difference.inHours}h ago';
-    } else if (difference.inDays < 7) {
-      return '${difference.inDays}d ago';
+      return l10n.hoursAgo(difference.inHours.toString());
     } else {
-      return '${date.day}/${date.month}/${date.year}';
+      return l10n.daysAgo(difference.inDays.toString());
     }
   }
 }

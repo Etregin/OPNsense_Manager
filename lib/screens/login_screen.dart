@@ -26,6 +26,7 @@ import '../services/profile_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../utils/constants.dart';
 import '../utils/validators.dart';
+import '../l10n/app_localizations.dart';
 
 /// Login screen for OPNsense connection configuration
 class LoginScreen extends StatefulWidget {
@@ -113,24 +114,25 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.of(context).pop(true);
         }
       } else {
+        if (!mounted) return;
+        final l10n = AppLocalizations.of(context)!;
         setState(() {
-          _errorMessage = 'Connection failed. Check console logs for details.\n\n'
-              'Common issues:\n'
-              '• Device not on same network as OPNsense\n'
-              '• Wrong IP address or port\n'
-              '• Firewall blocking connection\n'
-              '• Invalid API credentials';
+          _errorMessage = l10n.connectionFailed;
           _isLoading = false;
         });
       }
     } on ApiException catch (e) {
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       setState(() {
-        _errorMessage = 'API Error: ${e.message}';
+        _errorMessage = l10n.apiError(e.message);
         _isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       setState(() {
-        _errorMessage = 'Error: ${e.toString()}';
+        _errorMessage = l10n.errorPrefix(e.toString());
         _isLoading = false;
       });
     }
@@ -138,6 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -169,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   
                   // Subtitle
                   Text(
-                    'Connect to your OPNsense firewall',
+                    l10n.connectToYourOPNsenseFirewall,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: Theme.of(context).textTheme.bodySmall?.color,
@@ -180,10 +183,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Profile Name Field (Optional)
                   TextFormField(
                     controller: _nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Profile Name (Optional)',
-                      hintText: 'My OPNsense Router',
-                      prefixIcon: Icon(Icons.label),
+                    decoration: InputDecoration(
+                      labelText: l10n.profileNameOptional,
+                      hintText: l10n.myOPNsenseRouter,
+                      prefixIcon: const Icon(Icons.label),
                     ),
                     enabled: !_isLoading,
                   ),
@@ -192,10 +195,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Host Field
                   TextFormField(
                     controller: _hostController,
-                    decoration: const InputDecoration(
-                      labelText: 'Host / IP Address',
-                      hintText: '192.168.1.1 or firewall.example.com',
-                      prefixIcon: Icon(Icons.dns),
+                    decoration: InputDecoration(
+                      labelText: l10n.hostIpAddress,
+                      hintText: l10n.hostPlaceholder,
+                      prefixIcon: const Icon(Icons.dns),
                     ),
                     keyboardType: TextInputType.url,
                     validator: Validators.validateHost,
@@ -206,10 +209,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Port Field
                   TextFormField(
                     controller: _portController,
-                    decoration: const InputDecoration(
-                      labelText: 'Port',
-                      hintText: '443',
-                      prefixIcon: Icon(Icons.settings_ethernet),
+                    decoration: InputDecoration(
+                      labelText: l10n.port,
+                      hintText: l10n.portPlaceholder,
+                      prefixIcon: const Icon(Icons.settings_ethernet),
                     ),
                     keyboardType: TextInputType.number,
                     validator: Validators.validatePort,
@@ -219,8 +222,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   
                   // HTTPS Toggle
                   SwitchListTile(
-                    title: const Text('Use HTTPS'),
-                    subtitle: const Text('Recommended for secure connections'),
+                    title: Text(l10n.useHttps),
+                    subtitle: Text(l10n.recommendedForSecureConnections),
                     value: _useHttps,
                     onChanged: _isLoading ? null : (value) {
                       setState(() {
@@ -233,10 +236,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   // API Key Field
                   TextFormField(
                     controller: _apiKeyController,
-                    decoration: const InputDecoration(
-                      labelText: 'API Key',
-                      hintText: 'Enter your API key',
-                      prefixIcon: Icon(Icons.vpn_key),
+                    decoration: InputDecoration(
+                      labelText: l10n.apiKey,
+                      hintText: l10n.enterYourApiKey,
+                      prefixIcon: const Icon(Icons.vpn_key),
                     ),
                     validator: Validators.validateApiKey,
                     enabled: !_isLoading,
@@ -247,8 +250,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextFormField(
                     controller: _apiSecretController,
                     decoration: InputDecoration(
-                      labelText: 'API Secret',
-                      hintText: 'Enter your API secret',
+                      labelText: l10n.apiSecret,
+                      hintText: l10n.enterYourApiSecret,
                       prefixIcon: const Icon(Icons.lock),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -308,24 +311,24 @@ class _LoginScreenState extends State<LoginScreen> {
                               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
                           )
-                        : const Text(
-                            'Connect',
-                            style: TextStyle(
+                        : Text(
+                            l10n.connect,
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                  ),
-                  const SizedBox(height: 24),
-                  
-                  // Help Text
-                  Text(
-                    'Need help? Check the OPNsense documentation for API key generation.',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.grey[600],
-                        ),
-                  ),
+                 ),
+                 const SizedBox(height: 24),
+                 
+                 // Help Text
+                 Text(
+                   l10n.needHelpCheckDocumentation,
+                   textAlign: TextAlign.center,
+                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                         color: Colors.grey[600],
+                       ),
+                 ),
                 ],
               ),
             ),

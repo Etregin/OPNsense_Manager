@@ -26,6 +26,7 @@ import '../utils/constants.dart';
 import '../utils/formatters.dart';
 import '../widgets/stat_card.dart';
 import '../widgets/app_drawer.dart';
+import '../l10n/app_localizations.dart';
 
 /// Main dashboard screen showing system overview
 class DashboardScreen extends StatefulWidget {
@@ -124,17 +125,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Future<void> _controlService(String serviceId, String action, String serviceName) async {
+    final l10n = AppLocalizations.of(context)!;
     // Show confirmation dialog
-    final actionText = action[0].toUpperCase() + action.substring(1);
+    final actionText = action == 'start' ? l10n.start : action == 'stop' ? l10n.stop : l10n.restart;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('$actionText Service'),
-        content: Text('Are you sure you want to $action "$serviceName"?'),
+        title: Text(l10n.actionService(actionText)),
+        content: Text(l10n.confirmServiceAction(actionText, serviceName)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(true),
@@ -157,7 +159,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       // Show loading indicator
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('$actionText $serviceName...'),
+          content: Text(l10n.actioningService(actionText, serviceName)),
           duration: const Duration(seconds: 2),
         ),
       );
@@ -166,9 +168,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
       if (mounted) {
         if (success) {
+          final successMsg = action == 'start' ? l10n.serviceStarted :
+                           action == 'stop' ? l10n.serviceStopped : l10n.serviceRestarted;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Successfully ${action}ed $serviceName'),
+              content: Text(successMsg),
               backgroundColor: Colors.green,
               duration: const Duration(seconds: 2),
             ),
@@ -181,7 +185,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to $action $serviceName'),
+              content: Text(l10n.serviceActionFailed),
               backgroundColor: Colors.red,
               duration: const Duration(seconds: 3),
             ),
@@ -192,7 +196,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString()}'),
+            content: Text('${l10n.error}: ${e.toString()}'),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 3),
           ),
@@ -204,6 +208,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppConstants.appName),
@@ -211,7 +216,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _isLoading ? null : _loadDashboardData,
-            tooltip: 'Refresh',
+            tooltip: l10n.refresh,
           ),
         ],
       ),
@@ -234,6 +239,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
 
     if (_errorMessage != null && _systemInfo == null) {
+      final l10n = AppLocalizations.of(context)!;
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -245,7 +251,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Error loading system information',
+              l10n.error,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
@@ -261,19 +267,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ElevatedButton.icon(
               onPressed: _loadDashboardData,
               icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
+              label: Text(l10n.retry),
             ),
           ],
         ),
       );
     }
 
+    final l10n = AppLocalizations.of(context)!;
     return ListView(
       padding: const EdgeInsets.all(AppConstants.standardPadding),
       children: [
         // Resource Usage Section
         Text(
-          'Resource Usage',
+          '${l10n.cpuUsage} / ${l10n.memoryUsage}',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -285,7 +292,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         
         // Services Section
         Text(
-          'Services',
+          l10n.services,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -297,7 +304,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         
         // Gateways Section
         Text(
-          'Gateways',
+          l10n.gateways,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -312,12 +319,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildResourceCards() {
     if (_systemInfo == null) return const SizedBox.shrink();
+    final l10n = AppLocalizations.of(context)!;
 
     return Column(
       children: [
         // CPU Usage
         ProgressStatCard(
-          title: 'CPU Usage',
+          title: l10n.cpuUsage,
           value: Formatters.formatPercentage(_systemInfo!.cpuUsage),
           progress: _systemInfo!.cpuUsage / 100,
           icon: Icons.speed,
@@ -326,9 +334,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         
         // Memory Usage
         ProgressStatCard(
-          title: 'Memory Usage',
-          value: '${Formatters.formatMemoryGB(_systemInfo!.memoryUsed)} / '
-              '${Formatters.formatMemoryGB(_systemInfo!.memoryTotal)}',
+          title: l10n.memoryUsage,
+          value: '${Formatters.formatMemoryGB(_systemInfo!.memoryUsed, context)} / '
+              '${Formatters.formatMemoryGB(_systemInfo!.memoryTotal, context)}',
           progress: _systemInfo!.memoryUsagePercentage / 100,
           icon: Icons.memory,
           subtitle: Formatters.formatPercentage(
@@ -340,9 +348,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         // Disk Usage
         if (_systemInfo!.diskTotal > 0)
           ProgressStatCard(
-            title: 'Disk Usage',
-            value: '${Formatters.formatMemoryGB(_systemInfo!.diskUsed)} / '
-                '${Formatters.formatMemoryGB(_systemInfo!.diskTotal)}',
+            title: l10n.diskUsage,
+            value: '${Formatters.formatMemoryGB(_systemInfo!.diskUsed, context)} / '
+                '${Formatters.formatMemoryGB(_systemInfo!.diskTotal, context)}',
             progress: _systemInfo!.diskUsagePercentage / 100,
             icon: Icons.storage,
             subtitle: Formatters.formatPercentage(
@@ -356,6 +364,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 
   Widget _buildServicesWidget() {
+    final l10n = AppLocalizations.of(context)!;
     final services = _servicesData['services'] as List<dynamic>? ?? [];
     
     return Card(
@@ -363,8 +372,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         children: [
           ListTile(
             leading: const Icon(Icons.apps),
-            title: const Text('Services'),
-            subtitle: Text('${services.length} services'),
+            title: Text(l10n.services),
+            subtitle: Text('${services.length} ${l10n.services}'),
             trailing: Icon(
               _servicesExpanded ? Icons.expand_less : Icons.expand_more,
             ),
@@ -384,8 +393,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildServiceTile(Map<String, dynamic> service) {
+    final l10n = AppLocalizations.of(context)!;
     // Handle different possible field names from OPNsense API
-    final name = (service['name'] ?? service['description'] ?? service['id'] ?? 'Unknown').toString();
+    final name = (service['name'] ?? service['description'] ?? service['id'] ?? l10n.unknown).toString();
     final serviceId = (service['id'] ?? service['name'] ?? name).toString();
     final status = (service['status'] ?? service['running'] ?? 'unknown').toString();
     final isRunning = status.toLowerCase() == 'running' ||
@@ -401,7 +411,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         size: 20,
       ),
       title: Text(name),
-      subtitle: Text(isRunning ? 'Running' : 'Stopped'),
+      subtitle: Text(isRunning ? l10n.running : l10n.stopped),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -411,12 +421,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
               size: 20,
             ),
             onPressed: () => _controlService(serviceId, isRunning ? 'stop' : 'start', name),
-            tooltip: isRunning ? 'Stop' : 'Start',
+            tooltip: isRunning ? l10n.stop : l10n.start,
           ),
           IconButton(
             icon: const Icon(Icons.refresh, size: 20),
             onPressed: () => _controlService(serviceId, 'restart', name),
-            tooltip: 'Restart',
+            tooltip: l10n.restart,
           ),
         ],
       ),
@@ -424,13 +434,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildGatewaysWidget() {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       child: Column(
         children: [
           ListTile(
             leading: const Icon(Icons.router),
-            title: const Text('Gateways'),
-            subtitle: Text('${_gateways.length} gateways'),
+            title: Text(l10n.gateways),
+            subtitle: Text('${_gateways.length} ${l10n.gateways}'),
             trailing: Icon(
               _gatewaysExpanded ? Icons.expand_less : Icons.expand_more,
             ),
@@ -450,12 +461,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildGatewayTile(Map<String, dynamic> gateway) {
+    final l10n = AppLocalizations.of(context)!;
     // Handle different possible field names from OPNsense API
-    final name = (gateway['name'] ?? gateway['gateway'] ?? gateway['interface'] ?? 'Unknown').toString();
-    final address = (gateway['address'] ?? gateway['gateway_ip'] ?? gateway['ip'] ?? 'N/A').toString();
-    final status = (gateway['status'] ?? gateway['status_translated'] ?? 'unknown').toString().toLowerCase();
-    final delay = (gateway['delay'] ?? gateway['rtt'] ?? gateway['latency'] ?? 'N/A').toString();
-    final loss = (gateway['loss'] ?? gateway['loss_percentage'] ?? gateway['packet_loss'] ?? 'N/A').toString();
+    final name = (gateway['name'] ?? gateway['gateway'] ?? gateway['interface'] ?? l10n.unknown).toString();
+    final address = (gateway['address'] ?? gateway['gateway_ip'] ?? gateway['ip'] ?? l10n.notAvailable).toString();
+    final status = (gateway['status'] ?? gateway['status_translated'] ?? l10n.unknown).toString().toLowerCase();
+    final delay = (gateway['delay'] ?? gateway['rtt'] ?? gateway['latency'] ?? l10n.notAvailable).toString();
+    final loss = (gateway['loss'] ?? gateway['loss_percentage'] ?? gateway['packet_loss'] ?? l10n.notAvailable).toString();
     
     // Check various status indicators
     final isOnline = status.contains('online') ||
