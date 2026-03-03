@@ -24,6 +24,7 @@ import '../services/opnsense_api_service.dart';
 import '../utils/constants.dart';
 import '../utils/formatters.dart';
 import '../widgets/app_drawer.dart';
+import '../l10n/app_localizations.dart';
 
 /// System information screen showing detailed system data
 class SystemInfoScreen extends StatefulWidget {
@@ -72,14 +73,15 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('System Information'),
+        title: Text(l10n.systemInformation),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _isLoading ? null : _loadSystemInfo,
-            tooltip: 'Refresh',
+            tooltip: l10n.refresh,
           ),
         ],
       ),
@@ -102,6 +104,7 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
     }
 
     if (_errorMessage != null && _systemInfo == null) {
+      final l10n = AppLocalizations.of(context)!;
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -113,7 +116,7 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Error loading system information',
+              l10n.errorLoadingSystemInfo,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
@@ -129,36 +132,37 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
             ElevatedButton.icon(
               onPressed: _loadSystemInfo,
               icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
+              label: Text(l10n.retry),
             ),
           ],
         ),
       );
     }
 
+    final l10n = AppLocalizations.of(context)!;
     return ListView(
       padding: const EdgeInsets.all(AppConstants.standardPadding),
       children: [
         _buildInfoCard(
-          'System Information',
+          l10n.systemInformation,
           [
-            _buildInfoRow(Icons.computer, 'Hostname', _systemInfo!.hostname),
-            _buildInfoRow(Icons.dns, 'Type', _systemInfo!.type),
-            _buildInfoRow(Icons.info_outline, 'Version', _systemInfo!.version),
-            _buildInfoRow(Icons.architecture, 'Architecture', _systemInfo!.architecture),
-            _buildInfoRow(Icons.memory, 'Platform', _systemInfo!.platform),
+            _buildInfoRow(Icons.computer, l10n.hostname, _systemInfo!.hostname),
+            _buildInfoRow(Icons.dns, l10n.systemType, _systemInfo!.type),
+            _buildInfoRow(Icons.info_outline, l10n.versionLabel, _systemInfo!.version),
+            _buildInfoRow(Icons.architecture, l10n.architecture, _systemInfo!.architecture),
+            _buildInfoRow(Icons.memory, l10n.platform, _systemInfo!.platform),
             if (_systemInfo!.commit.isNotEmpty)
-              _buildInfoRow(Icons.commit, 'Commit', _systemInfo!.commit),
+              _buildInfoRow(Icons.commit, l10n.gitCommit, _systemInfo!.commit),
             if (_systemInfo!.mirror.isNotEmpty)
-              _buildInfoRow(Icons.cloud, 'Mirror', _systemInfo!.mirror),
+              _buildInfoRow(Icons.cloud, l10n.packageMirror, _systemInfo!.mirror),
             if (_systemInfo!.repositories.isNotEmpty)
-              _buildInfoRow(Icons.source, 'Repositories', _systemInfo!.repositories),
+              _buildInfoRow(Icons.source, l10n.repository, _systemInfo!.repositories),
             if (_systemInfo!.updatedOn != null && _systemInfo!.updatedOn!.isNotEmpty)
-              _buildInfoRow(Icons.update, 'Updated on', _systemInfo!.updatedOn!),
+              _buildInfoRow(Icons.update, l10n.lastUpdate, _systemInfo!.updatedOn!),
             _buildInfoRow(
               Icons.access_time,
-              'Uptime',
-              Formatters.formatUptime(_systemInfo!.uptime),
+              l10n.uptime,
+              Formatters.formatUptime(_systemInfo!.uptime, context),
             ),
           ],
         ),

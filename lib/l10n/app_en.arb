@@ -1,0 +1,814 @@
+{
+  "@@locale": "en",
+  "appName": "OPNsense Manager",
+  "@appName": {
+    "description": "The application name"
+  },
+  
+  "dashboard": "Dashboard",
+  "firewallRules": "Firewall Rules",
+  "firewallLogs": "Firewall Logs",
+  "systemInfo": "System Information",
+  "vpnConnections": "VPN Connections",
+  "settings": "Settings",
+  
+  "hostname": "Hostname",
+  "versionLabel": "Version",
+  "platform": "Platform",
+  "uptime": "Uptime",
+  "cpuUsage": "CPU Usage",
+  "memoryUsage": "Memory Usage",
+  
+  "services": "Services",
+  "gateways": "Gateways",
+  "running": "Running",
+  "stopped": "Stopped",
+  "online": "Online",
+  "offline": "Offline",
+  
+  "start": "Start",
+  "stop": "Stop",
+  "restart": "Restart",
+  "enable": "Enable",
+  "disable": "Disable",
+  "delete": "Delete",
+  "edit": "Edit",
+  "save": "Save",
+  "cancel": "Cancel",
+  "ok": "OK",
+  "yes": "Yes",
+  "no": "No",
+  "close": "Close",
+  "refresh": "Refresh",
+  "apply": "Apply",
+  
+  "login": "Login",
+  "logout": "Logout",
+  "host": "Host",
+  "port": "Port",
+  "apiKey": "API Key",
+  "apiSecret": "API Secret",
+  "useHttps": "Use HTTPS",
+  "allowSelfSigned": "Allow Self-Signed Certificate",
+  "testConnection": "Test Connection",
+  "connectionSuccessful": "Connection Successful",
+  "connectionFailed": "Connection Failed",
+  
+  "profiles": "Profiles",
+  "addProfile": "Add Profile",
+  "editProfile": "Edit Profile",
+  "deleteProfile": "Delete Profile",
+  "profileName": "Profile Name",
+  "activeProfile": "Active Profile",
+  "switchProfile": "Switch Profile",
+  "exportProfiles": "Export Profiles",
+  "importProfiles": "Import Profiles",
+  
+  "security": "Security",
+  "pinLock": "PIN Lock",
+  "changePIN": "Change PIN",
+  "biometricAuth": "Biometric Authentication",
+  "sessionTimeout": "Session Timeout",
+  "lockApp": "Lock App",
+  
+  "appearance": "Appearance",
+  "theme": "Theme",
+  "language": "Language",
+  "lightMode": "Light Mode",
+  "darkMode": "Dark Mode",
+  "systemDefault": "System Default",
+  
+  "general": "General",
+  "about": "About",
+  "licenses": "Licenses",
+  
+  "firewallRuleDetails": "Firewall Rule Details",
+  "createRule": "Create Rule",
+  "editRule": "Edit Rule",
+  "deleteRule": "Delete Rule",
+  "action": "Action",
+  "interface": "Interface",
+  "protocol": "Protocol",
+  "source": "Source",
+  "destination": "Destination",
+  "sourcePort": "Source Port",
+  "destinationPort": "Destination Port",
+  "description": "Description",
+  "enabled": "Enabled",
+  "disabled": "Disabled",
+  
+  "pass": "Pass",
+  "block": "Block",
+  "reject": "Reject",
+  
+  "logs": "Logs",
+  "filterByAction": "Filter by Action",
+  "showAll": "Show All",
+  "autoRefresh": "Auto Refresh",
+  "logLimit": "Log Limit",
+  
+  "paused": "Paused",
+  "live": "Live",
+  "entries": "entries",
+  "selected": "selected",
+  "selectAll": "Select All",
+  "copy": "Copy",
+  "historySize": "History Size",
+  "enableAutoScroll": "Enable Auto-scroll",
+  "disableAutoScroll": "Disable Auto-scroll",
+  "clearLogs": "Clear Logs",
+  "pause": "Pause",
+  "resume": "Resume",
+  "copiedLogEntries": "Copied {count} log {count, plural, =1{entry} other{entries}}",
+  "@copiedLogEntries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pauseLiveViewToSelect": "Pause live view to select log entries",
+  "errorLoadingLogs": "Error loading logs",
+  "noLogsAvailable": "No logs available",
+  "logsWillAppear": "Logs will appear here as they are generated",
+  "selectNumberOfEntries": "Select the number of log entries to display:",
+  "reason": "Reason",
+  
+  "newRule": "New Rule",
+  "ruleDetails": "Rule Details",
+  "type": "Type",
+  "sequence": "Sequence",
+  "status": "Status",
+  "systemGeneratedRule": "This is a system-generated rule and cannot be modified or deleted.",
+  "systemGeneratedRulesCannotBeModified": "System-generated rules cannot be modified",
+  "systemGeneratedRulesCannotBeDeleted": "System-generated rules cannot be deleted",
+  "enableRule": "Enable Rule",
+  "disableRule": "Disable Rule",
+  "enablingRule": "Enabling rule...",
+  "disablingRule": "Disabling rule...",
+  "ruleEnabledSuccessfully": "Rule enabled successfully",
+  "ruleDisabledSuccessfully": "Rule disabled successfully",
+  "errorTogglingRule": "Error toggling rule: {error}",
+  "@errorTogglingRule": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteRuleConfirmation": "Are you sure you want to delete the rule \"{description}\"?",
+  "@deleteRuleConfirmation": {
+    "placeholders": {
+      "description": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleDeleted": "Rule deleted",
+  "errorDeletingRule": "Error deleting rule: {error}",
+  "@errorDeletingRule": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorLoadingRules": "Error loading rules",
+  "noAutomationRulesFound": "No automation rules found",
+  "createFirstAutomationRule": "Create your first automation rule to get started",
+  "noInterfacesWithAutomationRules": "No interfaces with automation rules",
+  "selectInterface": "Select Interface",
+  "selectInterfaceToViewRules": "Select an interface to view rules",
+  "noRulesForInterface": "No rules for {interface}",
+  "@noRulesForInterface": {
+    "placeholders": {
+      "interface": {
+        "type": "String"
+      }
+    }
+  },
+  "unnamedRule": "Unnamed Rule",
+  
+  "systemInformation": "System Information",
+  "firmwareDetails": "Firmware Details",
+  "systemType": "System Type",
+  "architecture": "Architecture",
+  "gitCommit": "Git Commit",
+  "packageMirror": "Package Mirror",
+  "repository": "Repository",
+  "lastUpdate": "Last Update",
+  "errorLoadingSystemInfo": "Error loading system information",
+  
+  "errorLoadingVPNConnections": "Error loading VPN connections",
+  "noVPNConnectionsFound": "No VPN connections found",
+  "noConnectionsFound": "No {type} connections found",
+  "@noConnectionsFound": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "vpnConnectionsWillAppear": "VPN connections will appear here when configured",
+  "totalVPNs": "Total VPNs",
+  "filterByType": "Filter by type",
+  "allVPNs": "All VPNs",
+  "connectVPN": "Connect VPN",
+  "disconnectVPN": "Disconnect VPN",
+  "connectingVPN": "Connecting {name}...",
+  "@connectingVPN": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "disconnectingVPN": "Disconnecting {name}...",
+  "@disconnectingVPN": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "successfullyConnected": "Successfully connected {name}",
+  "@successfullyConnected": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "successfullyDisconnected": "Successfully disconnected {name}",
+  "@successfullyDisconnected": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "failedToConnect": "Failed to connect {name}",
+  "@failedToConnect": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "failedToDisconnect": "Failed to disconnect {name}",
+  "@failedToDisconnect": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "restartVPNService": "Restart VPN Service",
+  "restartServiceConfirmation": "Are you sure you want to restart the {type} service?\n\nThis will temporarily disconnect all active connections.",
+  "@restartServiceConfirmation": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "restartingService": "Restarting {type} service...",
+  "@restartingService": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "successfullyRestartedService": "Successfully restarted {type} service",
+  "@successfullyRestartedService": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "failedToRestartService": "Failed to restart {type} service",
+  "@failedToRestartService": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "editRule": "Edit Rule",
+  "newRule": "New Rule",
+  "description": "Description",
+  "enterRuleDescription": "Enter rule description",
+  "action": "Action",
+  "pass": "Pass",
+  "block": "Block",
+  "reject": "Reject",
+  "interface": "Interface",
+  "loading": "Loading...",
+  "protocol": "Protocol",
+  "any": "Any",
+  "source": "Source",
+  "anyIpAddressCidrOrAlias": "any, IP address, CIDR, or alias",
+  "examplesAnyIpCidr": "Examples: any, 192.168.1.0/24, 10.0.0.1",
+  "sourceIsRequired": "Source is required",
+  "invalidSourceFormat": "Invalid source format",
+  "sourcePortOptional": "Source Port (Optional)",
+  "anyPortNumberRangeOrAlias": "any, port number, range, or alias",
+  "examplesAnyPortRange": "Examples: any, 80, 1024-65535",
+  "invalidPortFormat": "Invalid port format",
+  "destination": "Destination",
+  "destinationIsRequired": "Destination is required",
+  "invalidDestinationFormat": "Invalid destination format",
+  "destinationPortOptional": "Destination Port (Optional)",
+  "examplesAnyPortRangeHttp": "Examples: any, 80, 80-443, http",
+  "enabled": "Enabled",
+  "ruleWillBeActiveWhenEnabled": "Rule will be active when enabled",
+  "ruleGuidelines": "Rule Guidelines",
+  "ruleGuidelinesText": "• Use \"any\" to match all addresses or ports\n• CIDR notation: 192.168.1.0/24\n• Port ranges: 80-443\n• Rules are processed in sequence order\n• Changes are applied immediately",
+  "updateRule": "Update Rule",
+  "createRule": "Create Rule",
+  "ruleUpdated": "Rule updated",
+  "ruleCreated": "Rule created",
+  "errorSavingRule": "Error saving rule: {error}",
+  "@errorSavingRule": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "connectToYourOPNsenseFirewall": "Connect to your OPNsense firewall",
+  "profileNameOptional": "Profile Name (Optional)",
+  "myOPNsenseRouter": "My OPNsense Router",
+  "hostIpAddress": "Host / IP Address",
+  "hostPlaceholder": "192.168.1.1 or firewall.example.com",
+  "portPlaceholder": "443",
+  "useHttps": "Use HTTPS",
+  "recommendedForSecureConnections": "Recommended for secure connections",
+  "enterYourApiKey": "Enter your API key",
+  "enterYourApiSecret": "Enter your API secret",
+  "connect": "Connect",
+  "connectionFailed": "Connection failed. Check console logs for details.\n\nCommon issues:\n• Device not on same network as OPNsense\n• Wrong IP address or port\n• Firewall blocking connection\n• Invalid API credentials",
+  "apiError": "API Error: {message}",
+  "@apiError": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "needHelpCheckDocumentation": "Need help? Check the OPNsense documentation for API key generation.",
+  
+  "selectAProfileOrCreateNewOne": "Select a profile or create a new one",
+  "createNewProfile": "Create New Profile",
+  "noProfilesYet": "No Profiles Yet",
+  "createYourFirstProfile": "Create your first OPNsense profile to get started",
+  "lastUsed": "Last used: {date}",
+  "@lastUsed": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "justNow": "Just now",
+  "minutesAgo": "{minutes}m ago",
+  "@minutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "hoursAgo": "{hours}h ago",
+  "@hoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "daysAgo": "{days}d ago",
+  "@daysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "connectionFailedError": "Connection failed: {error}",
+  "@connectionFailedError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "enterPin": "Enter PIN",
+  "unlockOPNsenseManager": "Unlock OPNsense Manager",
+  "pleaseEnterYourPin": "Please enter your PIN",
+  "incorrectPin": "Incorrect PIN",
+  "unlock": "Unlock",
+  "useBiometric": "Use Biometric",
+  "authenticateToUnlock": "Authenticate to unlock OPNsense Manager",
+  "version": "Version {version}",
+  "@version": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "failedToRestartService": "Failed to restart {type} service",
+  "@failedToRestartService": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "remoteAddress": "Remote Address",
+  "localAddress": "Local Address",
+  "received": "Received",
+  "sent": "Sent",
+  "port": "Port",
+  
+  "vpnStatus": "VPN Status",
+  "connected": "Connected",
+  "disconnected": "Disconnected",
+  "connect": "Connect",
+  "disconnect": "Disconnect",
+  "vpnType": "VPN Type",
+  "clientAddress": "Client Address",
+  "virtualAddress": "Virtual Address",
+  "bytesReceived": "Bytes Received",
+  "bytesSent": "Bytes Sent",
+  "connectedSince": "Connected Since",
+  
+  "rebootSystem": "Reboot System",
+  "rebootConfirmation": "Are you sure you want to reboot the system?",
+  "rebootSuccess": "System reboot initiated",
+  "rebootFailed": "Failed to reboot system",
+  
+  "error": "Error",
+  "success": "Success",
+  "warning": "Warning",
+  "info": "Information",
+  "loading": "Loading...",
+  "noData": "No data available",
+  "retry": "Retry",
+  
+  "confirmDelete": "Confirm Delete",
+  "deleteConfirmation": "Are you sure you want to delete this item?",
+  "cannotBeUndone": "This action cannot be undone.",
+  
+  "enterPIN": "Enter PIN",
+  "confirmPIN": "Confirm PIN",
+  "pinMismatch": "PINs do not match",
+  "pinTooShort": "PIN must be at least 4 digits",
+  "invalidPIN": "Invalid PIN",
+  
+  "minutes": "minutes",
+  "seconds": "seconds",
+  "hours": "hours",
+  "days": "days",
+  
+  "required": "Required",
+  "optional": "Optional",
+  "invalidInput": "Invalid input",
+  "fieldRequired": "This field is required",
+  
+  "exportSuccess": "Export successful",
+  "exportFailed": "Export failed",
+  "importSuccess": "Import successful",
+  "importFailed": "Import failed",
+  "importedProfiles": "Imported {count} profile(s)",
+  "@importedProfiles": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  
+  "noProfilesFound": "No profiles found",
+  "createFirstProfile": "Create your first profile to get started",
+  
+  "serviceStarted": "Service started successfully",
+  "serviceStopped": "Service stopped successfully",
+  "serviceRestarted": "Service restarted successfully",
+  "serviceActionFailed": "Service action failed",
+  
+  "ruleCreated": "Rule created successfully",
+  "ruleUpdated": "Rule updated successfully",
+  "ruleDeleted": "Rule deleted successfully",
+  "ruleActionFailed": "Rule action failed",
+  
+  "profileSaved": "Profile saved successfully",
+  "profileDeleted": "Profile deleted successfully",
+  "profileActivated": "Profile activated successfully",
+  
+  "authenticationRequired": "Authentication Required",
+  "authenticateToUnlock": "Authenticate to unlock the app",
+  "authenticationFailed": "Authentication failed",
+  
+  "networkError": "Network error occurred",
+  "serverError": "Server error occurred",
+  "unauthorized": "Unauthorized access",
+  "forbidden": "Access forbidden",
+  "notFound": "Resource not found",
+  "timeout": "Request timeout",
+  
+  "any": "Any",
+  "none": "None",
+  
+  "diskUsage": "Disk Usage",
+  "pinLockDisabled": "PIN lock disabled. Biometric lock also disabled.",
+  "setPin": "Set PIN",
+  "pinLockTitle": "PIN Lock",
+  "requirePinToUnlock": "Require PIN to unlock app",
+  "changePinTitle": "Change PIN",
+  "updatePinCode": "Update your PIN code",
+  "lockTimeoutLabel": "Lock Timeout",
+  "lockAfterMinutes": "Lock after {minutes} {minutes, plural, =1{minute} other{minutes}} of inactivity",
+  "@lockAfterMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "minute": "minute",
+  "add": "Add",
+  "profileAdded": "Profile added",
+  "profileUpdated": "Profile updated",
+  "exportProfilesTitle": "Export Profiles",
+  "chooseExportLocation": "Choose Export Location",
+  "profilesExportedSuccessfully": "Profiles exported successfully!\n{path}",
+  "@profilesExportedSuccessfully": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "exportFailedError": "Export failed: {error}",
+  "@exportFailedError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "importProfilesTitle": "Import Profiles",
+  "invalidFileError": "Invalid file: {error}",
+  "@invalidFileError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "importProfilesDialog": "How should existing profiles be handled?\n\n• Keep Both: Import with new IDs\n• Overwrite: Replace existing profiles",
+  "keepBoth": "Keep Both",
+  "overwrite": "Overwrite",
+  "successfullyImportedProfiles": "Successfully imported {count} profile{count, plural, =1{} other{s}}",
+  "@successfullyImportedProfiles": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importFailedWithErrors": "Import failed: {errors}",
+  "@importFailedWithErrors": {
+    "placeholders": {
+      "errors": {
+        "type": "String"
+      }
+    }
+  },
+  "importedWithFailures": "Imported {success} profile{success, plural, =1{} other{s}}, {failed} failed",
+  "@importedWithFailures": {
+    "placeholders": {
+      "success": {
+        "type": "int"
+      },
+      "failed": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteProfileTitle": "Delete Profile",
+  "deleteProfileConfirmation": "Are you sure you want to delete \"{name}\"?",
+  "@deleteProfileConfirmation": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "applicationLegalese": "© 2026 OPNsense Manager\n\nLicensed under GNU General Public License v3.0\n\nThis program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.",
+  "aboutDescription": "A professional Flutter mobile application for managing OPNsense firewall routers.",
+  "featuresTitle": "Features",
+  "featuresList": "• System monitoring and management\n• Firewall rule configuration\n• Service control\n• Real-time logs\n• Multi-profile support\n• Secure authentication",
+  "viewFullLicense": "View Full License",
+  "gnuLicenseTitle": "GNU General Public License v3.0",
+  "gnuLicenseText": "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.\n\nWhy GPLv3?\n\n• Ensures the software remains free and open source\n• Any modifications or derivatives must also be open source\n• Users have the freedom to use, study, share, and modify the software\n• The community benefits from improvements and contributions",
+  
+  "enterPinLabel": "Enter PIN (4-6 digits)",
+  "confirmPin": "Confirm PIN",
+  "pinLockEnabled": "PIN lock enabled",
+  "currentPin": "Current PIN",
+  "newPin": "New PIN (4-6 digits)",
+  "confirmNewPin": "Confirm New PIN",
+  "currentPinIncorrect": "Current PIN is incorrect",
+  "pinChangedSuccessfully": "PIN changed successfully",
+  "pleaseEnterCurrentPin": "Please enter your current PIN",
+  "pleaseEnterNewPin": "Please enter a new PIN",
+  "pinMustContainOnlyNumbers": "PIN must contain only numbers",
+  "newPinMustBeDifferent": "New PIN must be different from current PIN",
+  "enablePinLockFirst": "Please enable PIN lock first before using biometric",
+  "biometricNotAvailable": "Biometric authentication is not available on this device",
+  "biometricLockEnabled": "Biometric lock enabled",
+  "biometricAuthFailed": "Biometric authentication failed or was cancelled",
+  "biometricLockDisabled": "Biometric lock disabled",
+  "biometricLockTitle": "{biometricType} Lock",
+  "@biometricLockTitle": {
+    "placeholders": {
+      "biometricType": {
+        "type": "String"
+      }
+    }
+  },
+  "useBiometricToUnlock": "Use {biometricType} to unlock app",
+  "@useBiometricToUnlock": {
+    "placeholders": {
+      "biometricType": {
+        "type": "String"
+      }
+    }
+  },
+  "enablePinLockFirstBiometric": "Enable PIN lock first to use biometric",
+  "oneMin": "1 min",
+  "twoMin": "2 min",
+  "fiveMin": "5 min",
+  "tenMin": "10 min",
+  "fifteenMin": "15 min",
+  "thirtyMin": "30 min",
+  "oneHour": "1 hour",
+  "lockTimeoutSet": "Lock timeout set to {value} {value, plural, =1{minute} other{minutes}}",
+  "@lockTimeoutSet": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "activate": "Activate",
+  "import": "Import",
+  "export": "Export",
+  "addProfile": "Add Profile",
+  "activatingProfile": "Activating profile...",
+  "activatedProfile": "Activated profile: {name}",
+  "@activatedProfile": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "connectionTestFailed": "Connection test failed",
+  "profileNameLabel": "Profile Name",
+  "hostIpAddressLabel": "Host/IP Address",
+  "portLabel": "Port",
+  "useHttpsLabel": "Use HTTPS",
+  "apiKeyLabel": "API Key",
+  "apiSecretLabel": "API Secret",
+  "profileNameRequired": "Profile name is required",
+  "exportProfilesContent": "Do you want to include API credentials in the export?\n\nWARNING: Including credentials will store API keys and secrets in plain text. Only include credentials if you will store the file securely.",
+  "withoutCredentials": "Without Credentials",
+  "includeCredentials": "Include Credentials",
+  "unableToAccessFilePath": "Unable to access file path",
+  "invalidFileFormat": "Invalid file: {error}",
+  "@invalidFileFormat": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "importProfilesTitle": "Import Profiles",
+  "noProfiles": "No Profiles",
+  "addProfileToManageInstances": "Add a profile to manage OPNsense instances",
+  
+  "unknown": "Unknown",
+  "http": "http",
+  "https": "https",
+  "errorPrefix": "Error: {message}",
+  "@errorPrefix": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "switchProfileConfirmation": "Switch profile?",
+  "rebootFailedWithError": "{message}: {error}",
+  "@rebootFailedWithError": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      },
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "zeroSeconds": "0 seconds",
+  "day": "day",
+  "days": "days",
+  "hour": "hour",
+  "hours": "hours",
+  "minute": "minute",
+  "minutes": "minutes",
+  "second": "second",
+  "seconds": "seconds",
+  
+  "hostIsRequired": "Host is required",
+  "invalidHostnameOrIp": "Invalid hostname or IP address",
+  "portIsRequired": "Port is required",
+  "portMustBeBetween": "Port must be between 1 and 65535",
+  "apiKeyIsRequired": "API Key is required",
+  "invalidApiKeyFormat": "Invalid API Key format",
+  "apiSecretIsRequired": "API Secret is required",
+  "invalidApiSecretFormat": "Invalid API Secret format",
+  "fieldIsRequired": "{fieldName} is required",
+  "@fieldIsRequired": {
+    "placeholders": {
+      "fieldName": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "actionService": "{action} Service",
+  "@actionService": {
+    "description": "Service action title (e.g., 'Start Service', 'Stop Service')",
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "confirmServiceAction": "{action} \"{name}\"?",
+  "@confirmServiceAction": {
+    "description": "Confirmation message for service action",
+    "placeholders": {
+      "action": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "actioningService": "{action} {name}...",
+  "@actioningService": {
+    "description": "Loading message while performing service action",
+    "placeholders": {
+      "action": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "notAvailable": "N/A",
+  "@notAvailable": {
+    "description": "Not available abbreviation"
+  },
+  
+  "unitBytes": "B",
+  "unitKilobytes": "KB",
+  "unitMegabytes": "MB",
+  "unitGigabytes": "GB",
+  "unitTerabytes": "TB",
+  "unitPetabytes": "PB",
+  "unitPerSecond": "/s",
+  "@unitPerSecond": {
+    "description": "Per second suffix for data rates"
+  },
+  
+  "hourAbbrev": "h",
+  "minuteAbbrev": "m",
+  "secondAbbrev": "s"
+}

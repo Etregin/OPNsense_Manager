@@ -18,6 +18,8 @@
 
 
 import 'dart:convert';
+import 'dart:developer' as developer;
+import 'dart:io' show Platform;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/profile.dart';
@@ -27,6 +29,9 @@ class ProfileService {
   static final ProfileService _instance = ProfileService._internal();
   factory ProfileService() => _instance;
   ProfileService._internal();
+
+  /// Export format version constant
+  static const String exportVersion = '1.0';
 
   final _secureStorage = const FlutterSecureStorage();
   SharedPreferences? _prefs;
@@ -265,6 +270,256 @@ class ProfileService {
     // Clear profiles list and active profile
     await _prefs!.remove(_keyProfiles);
     await clearActiveProfile();
+  }
+
+  // ==================== Export/Import Methods ====================
+
+  /// Export all profiles to JSON format
+  ///
+  /// [includeCredentials] - If true, API keys and secrets will be included in export.
+  /// WARNING: Exported files with credentials contain sensitive data in plain text.
+  /// Store such files securely and avoid sharing them.
+  /// Returns a JSON string containing all profiles
+  Future<String> exportProfiles({bool includeCredentials = false}) async {
+    final profiles = await getAllProfiles();
+    
+    // Log credential export for audit purposes
+    if (includeCredentials) {
+      final now = DateTime.now();
+      final timezone = now.timeZoneName;
+      final timestamp = now.toIso8601String();
+      developer.log(
+        'SECURITY: Exporting ${profiles.length} profile(s) WITH credentials | '
+        'Timestamp: $timestamp ($timezone) | '
+        'Platform: ${Platform.operatingSystem}',
+        name: 'ProfileService',
+        level: 900, // WARNING level
+      );
+    }
+    
+    // Create export data structure
+    final exportData = {
+      'version': exportVersion,
+      'exportDate': DateTime.now().toIso8601String(),
+      'includesCredentials': includeCredentials,
+      'profiles': profiles.map((profile) => _sanitizeProfileForExport(profile, includeCredentials)).toList(),
+    };
+    
+    // Add prominent security warning when credentials are included
+    if (includeCredentials) {
+      exportData['SECURITY_WARNING'] = 'This file contains sensitive API credentials (apiKey and apiSecret) in plain text. '
+          'Store this file securely, do not share it, and delete it when no longer needed. '
+          'Anyone with access to this file can control your OPNsense firewall.';
+    }
+    
+    return jsonEncode(exportData);
+  }
+
+  /// Export a single profile to JSON format
+  ///
+  /// WARNING: By default, exported files contain sensitive API credentials in plain text.
+  /// Store exported files securely and avoid sharing them.
+  ///
+  /// [includeCredentials] - If false, API keys and secrets will be excluded from export
+  /// Returns a JSON string containing the profile
+  Future<String> exportProfile(String profileId, {bool includeCredentials = true}) async {
+    final profile = await getProfile(profileId);
+    if (profile == null) {
+      throw Exception('Profile not found');
+    }
+    
+    // Log credential export for audit purposes
+    if (includeCredentials) {
+      final now = DateTime.now();
+      final timezone = now.timeZoneName;
+      final timestamp = now.toIso8601String();
+      developer.log(
+        'SECURITY: Exporting profile "${profile.name}" (${profile.id}) WITH credentials | '
+        'Timestamp: $timestamp ($timezone) | '
+        'Platform: ${Platform.operatingSystem}',
+        name: 'ProfileService',
+        level: 900, // WARNING level
+      );
+    }
+    
+    // Create export data structure
+    final exportData = {
+      'version': exportVersion,
+      'exportDate': DateTime.now().toIso8601String(),
+      'includesCredentials': includeCredentials,
+      'profiles': [_sanitizeProfileForExport(profile, includeCredentials)],
+    };
+    
+    // Add prominent security warning when credentials are included
+    if (includeCredentials) {
+      exportData['SECURITY_WARNING'] = 'This file contains sensitive API credentials (apiKey and apiSecret) in plain text. '
+          'Store this file securely, do not share it, and delete it when no longer needed. '
+          'Anyone with access to this file can control your OPNsense firewall.';
+    }
+    
+    return jsonEncode(exportData);
+  }
+
+  /// Sanitize profile data for export based on credential inclusion preference
+  Map<String, dynamic> _sanitizeProfileForExport(Profile profile, bool includeCredentials) {
+    final profileJson = profile.toJson();
+    
+    if (!includeCredentials) {
+      // Remove sensitive credentials from export
+      profileJson['apiKey'] = '';
+      profileJson['apiSecret'] = '';
+    }
+    
+    return profileJson;
+  }
+
+  /// Import profiles from JSON format
+  /// Returns a map with import results: {success: count, failed: count, errors: []}
+  Future<Map<String, dynamic>> importProfiles(String jsonString, {bool overwrite = false}) async {
+    int successCount = 0;
+    int failedCount = 0;
+    List<String> errors = [];
+    
+    // Validate import file before attempting to parse
+    final validationError = validateImportFile(jsonString);
+    if (validationError != null) {
+      return {
+        'success': 0,
+        'failed': 0,
+        'errors': [validationError],
+      };
+    }
+    
+    try {
+      final Map<String, dynamic> importData = jsonDecode(jsonString);
+      
+      // Validate import data structure
+      if (!importData.containsKey('version') || !importData.containsKey('profiles')) {
+        throw Exception('Invalid import file format');
+      }
+      
+      final List<dynamic> profilesList = importData['profiles'];
+      
+      // Check for empty profiles list
+      if (profilesList.isEmpty) {
+        return {
+          'success': 0,
+          'failed': 0,
+          'errors': ['No profiles found in import file'],
+        };
+      }
+      
+      // Validate credential completeness when credentials are included
+      if (importData['includesCredentials'] == true) {
+        for (var profileJson in profilesList) {
+          if ((profileJson['apiKey']?.isEmpty ?? true) ||
+              (profileJson['apiSecret']?.isEmpty ?? true)) {
+            errors.add('Profile ${profileJson['name']} has incomplete credentials');
+            failedCount++;
+            continue;
+          }
+        }
+      }
+      
+      final existingProfiles = await getAllProfiles();
+      
+      for (var profileJson in profilesList) {
+        try {
+          final profile = Profile.fromJson(profileJson);
+          
+          // Check if profile already exists
+          final existingProfile = existingProfiles.firstWhere(
+            (p) => p.id == profile.id,
+            orElse: () => Profile(
+              id: '',
+              name: '',
+              host: '',
+              port: 0,
+              apiKey: '',
+              apiSecret: '',
+              useHttps: true,
+              createdAt: DateTime.now(),
+            ),
+          );
+          
+          if (existingProfile.id.isNotEmpty && !overwrite) {
+            // Profile exists and overwrite is false, generate new ID
+            final newProfile = profile.copyWith(
+              id: generateProfileId(),
+              name: '${profile.name} (Imported)',
+              createdAt: DateTime.now(),
+            );
+            await saveProfile(newProfile);
+          } else {
+            // Save profile (either new or overwriting existing)
+            await saveProfile(profile);
+          }
+          
+          successCount++;
+        } catch (e) {
+          failedCount++;
+          errors.add('Failed to import profile: ${e.toString()}');
+        }
+      }
+      
+      return {
+        'success': successCount,
+        'failed': failedCount,
+        'errors': errors,
+      };
+    } catch (e) {
+      return {
+        'success': 0,
+        'failed': 0,
+        'errors': ['Failed to parse import file: ${e.toString()}'],
+      };
+    }
+  }
+
+  /// Validate import file format
+  /// Returns null if valid, error message if invalid
+  String? validateImportFile(String jsonString) {
+    try {
+      final Map<String, dynamic> importData = jsonDecode(jsonString);
+      
+      if (!importData.containsKey('version')) {
+        return 'Missing version field';
+      }
+      
+      if (!importData.containsKey('profiles')) {
+        return 'Missing profiles field';
+      }
+      
+      final List<dynamic> profilesList = importData['profiles'];
+      if (profilesList.isEmpty) {
+        return 'No profiles found in import file';
+      }
+      
+      // Track profile names to check for duplicates within the import file
+      final Set<String> profileNamesInFile = {};
+      
+      // Validate each profile has required fields
+      for (var profileJson in profilesList) {
+        if (!profileJson.containsKey('id') ||
+            !profileJson.containsKey('name') ||
+            !profileJson.containsKey('host') ||
+            !profileJson.containsKey('apiKey') ||
+            !profileJson.containsKey('apiSecret')) {
+          return 'Invalid profile data structure';
+        }
+        
+        // Check for duplicate names within the import file
+        final String profileName = profileJson['name'];
+        if (profileNamesInFile.contains(profileName)) {
+          return 'Duplicate profile name found in import file: "$profileName"';
+        }
+        profileNamesInFile.add(profileName);
+      }
+      
+      return null;
+    } catch (e) {
+      return 'Invalid JSON format: ${e.toString()}';
+    }
   }
 }
 

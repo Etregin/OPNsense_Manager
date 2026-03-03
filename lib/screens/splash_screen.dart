@@ -23,6 +23,7 @@ import '../services/opnsense_api_service.dart';
 import '../services/auth_service.dart';
 import '../services/profile_service.dart';
 import '../utils/constants.dart';
+import '../l10n/app_localizations.dart';
 import 'profile_selection_screen.dart';
 import 'dashboard_screen.dart';
 import 'pin_lock_screen.dart';
@@ -131,6 +132,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       backgroundColor: const Color(AppConstants.primaryColorValue),
       body: Center(
@@ -174,7 +177,7 @@ class _SplashScreenState extends State<SplashScreen> {
             const SizedBox(height: 8),
             // Version
             Text(
-              'Version ${AppConstants.appVersion}',
+              l10n.version(AppConstants.appVersion),
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.white.withValues(alpha: 0.8),

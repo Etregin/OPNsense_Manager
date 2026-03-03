@@ -57,6 +57,15 @@ class AppConstants {
   static const double buttonBorderRadius = 8.0;
   static const double iconSize = 24.0;
   static const double featureIconSize = 48.0;
+  
+  // Supported Languages
+  static const Map<String, String> supportedLanguages = {
+    'en': 'English',
+    'ar': 'العربية',
+    'es': 'Español',
+    'fr': 'Français',
+    'de': 'Deutsch',
+  };
 }
 
 /// App color constants

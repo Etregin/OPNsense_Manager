@@ -25,6 +25,7 @@ import '../models/system_info.dart';
 import '../services/opnsense_api_service.dart';
 import '../utils/constants.dart';
 import '../widgets/app_drawer.dart';
+import '../l10n/app_localizations.dart';
 
 /// Firewall logs screen with live log streaming
 class FirewallLogsScreen extends StatefulWidget {
@@ -228,9 +229,10 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
     await Clipboard.setData(ClipboardData(text: selectedLogs));
 
     if (mounted) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Copied ${_selectedIndices.length} log ${_selectedIndices.length == 1 ? 'entry' : 'entries'}'),
+          content: Text(l10n.copiedLogEntries(_selectedIndices.length)),
           duration: const Duration(seconds: 2),
         ),
       );
@@ -239,17 +241,18 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
   }
 
   void _showHistorySizeDialog() {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('History Size'),
+        title: Text(l10n.historySize),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Select the number of log entries to display:'),
+            Text(l10n.selectNumberOfEntries),
             const SizedBox(height: 16),
             ...[50, 100, 200, 500, 1000].map((size) => ListTile(
-              title: Text('$size entries'),
+              title: Text('$size ${l10n.entries}'),
               leading: Icon(
                 _historySize == size ? Icons.radio_button_checked : Icons.radio_button_unchecked,
                 color: _historySize == size ? Theme.of(context).primaryColor : null,
@@ -267,7 +270,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
         ],
       ),
@@ -302,6 +305,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         leading: _isSelectionMode
@@ -311,19 +315,19 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
               )
             : null,
         title: Text(_isSelectionMode
-            ? '${_selectedIndices.length} selected'
-            : 'Firewall Logs'),
+            ? '${_selectedIndices.length} ${l10n.selected}'
+            : l10n.firewallLogs),
         actions: _isSelectionMode
             ? [
                 IconButton(
                   icon: const Icon(Icons.select_all),
                   onPressed: _selectAll,
-                  tooltip: 'Select All',
+                  tooltip: l10n.selectAll,
                 ),
                 IconButton(
                   icon: const Icon(Icons.copy),
                   onPressed: _copySelected,
-                  tooltip: 'Copy',
+                  tooltip: l10n.copy,
                 ),
               ]
             : [
@@ -349,7 +353,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
                         children: [
                           const Icon(Icons.history, size: 20),
                           const SizedBox(width: 12),
-                          Text('History Size ($_historySize)'),
+                          Text('${l10n.historySize} ($_historySize)'),
                         ],
                       ),
                     ),
@@ -362,18 +366,18 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
                             size: 20,
                           ),
                           const SizedBox(width: 12),
-                          Text(_autoScroll ? 'Disable Auto-scroll' : 'Enable Auto-scroll'),
+                          Text(_autoScroll ? l10n.disableAutoScroll : l10n.enableAutoScroll),
                         ],
                       ),
                     ),
                     PopupMenuItem(
                       value: 'clear',
                       enabled: _logs.isNotEmpty,
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Icon(Icons.delete_sweep, size: 20),
-                          SizedBox(width: 12),
-                          Text('Clear Logs'),
+                          const Icon(Icons.delete_sweep, size: 20),
+                          const SizedBox(width: 12),
+                          Text(l10n.clearLogs),
                         ],
                       ),
                     ),
@@ -382,12 +386,12 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
                 IconButton(
                   icon: Icon(_isPaused ? Icons.play_arrow : Icons.pause),
                   onPressed: _togglePause,
-                  tooltip: _isPaused ? 'Resume' : 'Pause',
+                  tooltip: _isPaused ? l10n.resume : l10n.pause,
                 ),
                 IconButton(
                   icon: const Icon(Icons.refresh),
                   onPressed: _isLoading ? null : _loadLogs,
-                  tooltip: 'Refresh',
+                  tooltip: l10n.refresh,
                 ),
               ],
       ),
@@ -405,6 +409,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
   }
 
   Widget _buildStatusBar() {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: _isPaused ? Colors.orange.withValues(alpha: 0.1) : Colors.green.withValues(alpha: 0.1),
@@ -417,7 +422,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
           ),
           const SizedBox(width: 8),
           Text(
-            _isPaused ? 'Paused' : 'Live',
+            _isPaused ? l10n.paused : l10n.live,
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: _isPaused ? Colors.orange : Colors.green,
@@ -425,7 +430,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
           ),
           const Spacer(),
           Text(
-            '${_logs.length} entries',
+            '${_logs.length} ${l10n.entries}',
             style: TextStyle(
               fontSize: 12,
               color: Colors.grey[600],
@@ -444,6 +449,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
     }
 
     if (_errorMessage != null && _logs.isEmpty) {
+      final l10n = AppLocalizations.of(context)!;
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -455,7 +461,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Error loading logs',
+              l10n.errorLoadingLogs,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
@@ -471,7 +477,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
             ElevatedButton.icon(
               onPressed: _loadLogs,
               icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
+              label: Text(l10n.retry),
             ),
           ],
         ),
@@ -479,6 +485,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
     }
 
     if (_logs.isEmpty) {
+      final l10n = AppLocalizations.of(context)!;
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -490,12 +497,12 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'No logs available',
+              l10n.noLogsAvailable,
               style: TextStyle(color: Colors.grey[600]),
             ),
             const SizedBox(height: 8),
             Text(
-              'Logs will appear here as they are generated',
+              l10n.logsWillAppear,
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 12, color: Colors.grey[500]),
             ),
@@ -527,11 +534,12 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
         onTap: _isSelectionMode ? () => _toggleSelection(index) : null,
         onLongPress: () {
           if (!_isPaused) {
+            final l10n = AppLocalizations.of(context)!;
             // Show message that selection is only available when paused
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Pause live view to select log entries'),
-                duration: Duration(seconds: 2),
+              SnackBar(
+                content: Text(l10n.pauseLiveViewToSelect),
+                duration: const Duration(seconds: 2),
                 behavior: SnackBarBehavior.floating,
               ),
             );
@@ -582,14 +590,24 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 4),
-              Text(
-                'Protocol: ${log.protocol} | Interface: ${log.interface}',
-                style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+              Builder(
+                builder: (context) {
+                  final l10n = AppLocalizations.of(context)!;
+                  return Text(
+                    '${l10n.protocol}: ${log.protocol} | ${l10n.interface}: ${log.interface}',
+                    style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                  );
+                }
               ),
               if (log.reason.isNotEmpty)
-                Text(
-                  'Reason: ${log.reason}',
-                  style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                Builder(
+                  builder: (context) {
+                    final l10n = AppLocalizations.of(context)!;
+                    return Text(
+                      '${l10n.reason}: ${log.reason}',
+                      style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                    );
+                  }
                 ),
             ],
           ),

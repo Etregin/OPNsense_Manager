@@ -116,5 +116,3 @@ class VPNConnectionRequest {
 
   Map<String, dynamic> toJson() => _$VPNConnectionRequestToJson(this);
 }
-
-// Made with Bob

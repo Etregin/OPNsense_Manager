@@ -10,6 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   
   # HTTP & API
   dio: ^5.4.0
@@ -35,9 +37,16 @@ dependencies:
   # Utilities
   intl: ^0.20.2
   uuid: ^4.5.1
+  path: ^1.9.0
   
   # Biometric Authentication
   local_auth: ^3.0.0
+  
+  # File Picker for import/export
+  file_picker: ^8.1.4
+  
+  # Path Provider for file operations
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
@@ -58,6 +67,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  
+  # Enable generation of localization files
+  generate: true
 
   # Assets
   assets:

@@ -23,6 +23,7 @@ import '../models/firewall_rule.dart';
 import '../services/opnsense_api_service.dart';
 import '../utils/constants.dart';
 import '../utils/validators.dart';
+import '../l10n/app_localizations.dart';
 
 /// Form screen for creating or editing firewall rules
 class FirewallRuleFormScreen extends StatefulWidget {
@@ -151,10 +152,11 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
       }
 
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              widget.isEditing ? 'Rule updated' : 'Rule created',
+              widget.isEditing ? l10n.ruleUpdated : l10n.ruleCreated,
             ),
           ),
         );
@@ -162,11 +164,12 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         setState(() {
           _isLoading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error saving rule: $e')),
+          SnackBar(content: Text(l10n.errorSavingRule(e.toString()))),
         );
       }
     }
@@ -174,9 +177,10 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.isEditing ? 'Edit Rule' : 'New Rule'),
+        title: Text(widget.isEditing ? l10n.editRule : l10n.newRule),
       ),
       body: Form(
         key: _formKey,
@@ -186,13 +190,13 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
             // Description
             TextFormField(
               controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                hintText: 'Enter rule description',
-                prefixIcon: Icon(Icons.description),
+              decoration: InputDecoration(
+                labelText: l10n.description,
+                hintText: l10n.enterRuleDescription,
+                prefixIcon: const Icon(Icons.description),
               ),
               validator: (value) =>
-                  Validators.validateRequired(value, 'Description'),
+                  Validators.validateRequired(value, l10n.description),
               enabled: !_isLoading,
             ),
             const SizedBox(height: 16),
@@ -200,14 +204,14 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
             // Action Type
             DropdownButtonFormField<String>(
               initialValue: _selectedType,
-              decoration: const InputDecoration(
-                labelText: 'Action',
-                prefixIcon: Icon(Icons.rule),
+              decoration: InputDecoration(
+                labelText: l10n.action,
+                prefixIcon: const Icon(Icons.rule),
               ),
-              items: const [
-                DropdownMenuItem(value: 'pass', child: Text('Pass')),
-                DropdownMenuItem(value: 'block', child: Text('Block')),
-                DropdownMenuItem(value: 'reject', child: Text('Reject')),
+              items: [
+                DropdownMenuItem(value: 'pass', child: Text(l10n.pass)),
+                DropdownMenuItem(value: 'block', child: Text(l10n.block)),
+                DropdownMenuItem(value: 'reject', child: Text(l10n.reject)),
               ],
               onChanged: _isLoading
                   ? null
@@ -224,12 +228,12 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
             // Interface
             DropdownButtonFormField<String>(
               initialValue: _availableInterfaces.containsKey(_selectedInterface) ? _selectedInterface : null,
-              decoration: const InputDecoration(
-                labelText: 'Interface',
-                prefixIcon: Icon(Icons.network_check),
+              decoration: InputDecoration(
+                labelText: l10n.interface,
+                prefixIcon: const Icon(Icons.network_check),
               ),
               items: _loadingInterfaces
-                  ? [const DropdownMenuItem(value: 'loading', child: Text('Loading...'))]
+                  ? [DropdownMenuItem(value: 'loading', child: Text(l10n.loading))]
                   : _availableInterfaces.entries.map((entry) {
                       return DropdownMenuItem(
                         value: entry.key,
@@ -251,9 +255,9 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
             // Protocol
             DropdownButtonFormField<String>(
               initialValue: _selectedProtocol,
-              decoration: const InputDecoration(
-                labelText: 'Protocol',
-                prefixIcon: Icon(Icons.settings_ethernet),
+              decoration: InputDecoration(
+                labelText: l10n.protocol,
+                prefixIcon: const Icon(Icons.settings_ethernet),
               ),
               items: const [
                 DropdownMenuItem(value: 'any', child: Text('Any')),
@@ -285,18 +289,18 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
             // Source
             TextFormField(
               controller: _sourceController,
-              decoration: const InputDecoration(
-                labelText: 'Source',
-                hintText: 'any, IP address, CIDR, or alias',
-                prefixIcon: Icon(Icons.arrow_forward),
-                helperText: 'Examples: any, 192.168.1.0/24, 10.0.0.1',
+              decoration: InputDecoration(
+                labelText: l10n.source,
+                hintText: l10n.anyIpAddressCidrOrAlias,
+                prefixIcon: const Icon(Icons.arrow_forward),
+                helperText: l10n.examplesAnyIpCidr,
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Source is required';
+                  return l10n.sourceIsRequired;
                 }
                 if (!Validators.isValidSourceDestination(value)) {
-                  return 'Invalid source format';
+                  return l10n.invalidSourceFormat;
                 }
                 return null;
               },
@@ -310,18 +314,18 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                 _selectedProtocol.toLowerCase() == 'tcp/udp') ...[
               TextFormField(
                 controller: _sourcePortController,
-                decoration: const InputDecoration(
-                  labelText: 'Source Port (Optional)',
-                  hintText: 'any, port number, range, or alias',
-                  prefixIcon: Icon(Icons.input),
-                  helperText: 'Examples: any, 80, 1024-65535',
+                decoration: InputDecoration(
+                  labelText: l10n.sourcePortOptional,
+                  hintText: l10n.anyPortNumberRangeOrAlias,
+                  prefixIcon: const Icon(Icons.input),
+                  helperText: l10n.examplesAnyPortRange,
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return null; // Optional field
                   }
                   if (!Validators.isValidDestinationPort(value)) {
-                    return 'Invalid port format';
+                    return l10n.invalidPortFormat;
                   }
                   return null;
                 },
@@ -333,18 +337,18 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
             // Destination
             TextFormField(
               controller: _destinationController,
-              decoration: const InputDecoration(
-                labelText: 'Destination',
-                hintText: 'any, IP address, CIDR, or alias',
-                prefixIcon: Icon(Icons.location_on),
-                helperText: 'Examples: any, 192.168.1.0/24, 10.0.0.1',
+              decoration: InputDecoration(
+                labelText: l10n.destination,
+                hintText: l10n.anyIpAddressCidrOrAlias,
+                prefixIcon: const Icon(Icons.location_on),
+                helperText: l10n.examplesAnyIpCidr,
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Destination is required';
+                  return l10n.destinationIsRequired;
                 }
                 if (!Validators.isValidSourceDestination(value)) {
-                  return 'Invalid destination format';
+                  return l10n.invalidDestinationFormat;
                 }
                 return null;
               },
@@ -358,18 +362,18 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                 _selectedProtocol.toLowerCase() == 'tcp/udp') ...[
               TextFormField(
                 controller: _destinationPortController,
-                decoration: const InputDecoration(
-                  labelText: 'Destination Port (Optional)',
-                  hintText: 'any, port number, range, or alias',
-                  prefixIcon: Icon(Icons.settings_input_component),
-                  helperText: 'Examples: any, 80, 80-443, http',
+                decoration: InputDecoration(
+                  labelText: l10n.destinationPortOptional,
+                  hintText: l10n.anyPortNumberRangeOrAlias,
+                  prefixIcon: const Icon(Icons.settings_input_component),
+                  helperText: l10n.examplesAnyPortRangeHttp,
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return null; // Optional field
                   }
                   if (!Validators.isValidDestinationPort(value)) {
-                    return 'Invalid port format';
+                    return l10n.invalidPortFormat;
                   }
                   return null;
                 },
@@ -380,8 +384,8 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
 
             // Enabled Switch
             SwitchListTile(
-              title: const Text('Enabled'),
-              subtitle: const Text('Rule will be active when enabled'),
+              title: Text(l10n.enabled),
+              subtitle: Text(l10n.ruleWillBeActiveWhenEnabled),
               value: _enabled,
               onChanged: _isLoading
                   ? null
@@ -406,7 +410,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                         Icon(Icons.info_outline, color: Colors.blue[700]),
                         const SizedBox(width: 8),
                         Text(
-                          'Rule Guidelines',
+                          l10n.ruleGuidelines,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.blue[700],
@@ -416,11 +420,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '• Use "any" to match all addresses or ports\n'
-                      '• CIDR notation: 192.168.1.0/24\n'
-                      '• Port ranges: 80-443\n'
-                      '• Rules are processed in sequence order\n'
-                      '• Changes are applied immediately',
+                      l10n.ruleGuidelinesText,
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.blue[900],
@@ -450,7 +450,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                       ),
                     )
                   : Text(
-                      widget.isEditing ? 'Update Rule' : 'Create Rule',
+                      widget.isEditing ? l10n.updateRule : l10n.createRule,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
