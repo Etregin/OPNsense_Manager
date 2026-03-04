@@ -575,25 +575,40 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                     : _themeMode == 'light'
                         ? l10n.lightMode
                         : l10n.darkMode,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              trailing: DropdownButton<String>(
-                value: _themeMode,
-                underline: const SizedBox(),
-                items: [
-                  DropdownMenuItem(
-                    value: 'system',
-                    child: Text(l10n.systemDefault),
-                  ),
-                  DropdownMenuItem(
-                    value: 'light',
-                    child: Text(l10n.lightMode),
-                  ),
-                  DropdownMenuItem(
-                    value: 'dark',
-                    child: Text(l10n.darkMode),
-                  ),
-                ],
-                onChanged: _updateThemeMode,
+              trailing: SizedBox(
+                width: 140,
+                child: DropdownButton<String>(
+                  value: _themeMode,
+                  underline: const SizedBox(),
+                  isExpanded: true,
+                  items: [
+                    DropdownMenuItem(
+                      value: 'system',
+                      child: Text(
+                        l10n.systemDefault,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    DropdownMenuItem(
+                      value: 'light',
+                      child: Text(
+                        l10n.lightMode,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    DropdownMenuItem(
+                      value: 'dark',
+                      child: Text(
+                        l10n.darkMode,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                  onChanged: _updateThemeMode,
+                ),
               ),
             ),
             const Divider(),
@@ -607,23 +622,35 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                 _locale == null
                     ? l10n.systemDefault
                     : (AppConstants.supportedLanguages[_locale] ?? _locale!),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              trailing: DropdownButton<String?>(
-                value: _locale,
-                underline: const SizedBox(),
-                items: [
-                  DropdownMenuItem(
-                    value: null,
-                    child: Text(l10n.systemDefault),
-                  ),
-                  ...AppConstants.supportedLanguages.entries.map(
-                    (entry) => DropdownMenuItem(
-                      value: entry.key,
-                      child: Text(entry.value),
+              trailing: SizedBox(
+                width: 140,
+                child: DropdownButton<String?>(
+                  value: _locale,
+                  underline: const SizedBox(),
+                  isExpanded: true,
+                  items: [
+                    DropdownMenuItem(
+                      value: null,
+                      child: Text(
+                        l10n.systemDefault,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
-                ],
-                onChanged: _updateLocale,
+                    ...AppConstants.supportedLanguages.entries.map(
+                      (entry) => DropdownMenuItem(
+                        value: entry.key,
+                        child: Text(
+                          entry.value,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  ],
+                  onChanged: _updateLocale,
+                ),
               ),
             ),
           ],
