@@ -26,6 +26,7 @@ import 'package:path/path.dart' as path;
 import '../models/system_info.dart';
 import '../models/profile.dart';
 import '../models/opnsense_config.dart';
+import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../services/storage_service.dart';
 import '../services/auth_service.dart';
@@ -90,8 +91,8 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
 
   Future<void> _loadSystemInfo() async {
     try {
-      final apiService = context.read<OPNsenseApiService>();
-      final systemInfo = await apiService.getSystemInfo();
+      final demoApiService = context.read<DemoApiService>();
+      final systemInfo = await demoApiService.getSystemInfo();
       if (mounted) {
         setState(() {
           _systemInfo = systemInfo;
@@ -969,11 +970,19 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
       if (!mounted) return;
       
       // Update API service with new profile
-      final apiService = context.read<OPNsenseApiService>();
-      apiService.init(profile.toOPNsenseConfig());
+      final demoApiService = context.read<DemoApiService>();
+      final realApiService = context.read<OPNsenseApiService>();
+      
+      // Check if this is a demo profile
+      if (profile.isDemo) {
+        demoApiService.setDemoMode(true);
+      } else {
+        demoApiService.setDemoMode(false);
+        realApiService.init(profile.toOPNsenseConfig());
+      }
       
       // Test connection
-      final isConnected = await apiService.testConnection();
+      final isConnected = await demoApiService.testConnection();
       
       if (!mounted) return;
       Navigator.of(context).pop(); // Close loading dialog

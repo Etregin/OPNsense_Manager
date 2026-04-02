@@ -21,7 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/vpn_connection.dart';
 import '../models/system_info.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import '../utils/constants.dart';
 import '../utils/formatters.dart';
 import '../widgets/app_drawer.dart';
@@ -74,11 +74,11 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
     });
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final demoApiService = context.read<DemoApiService>();
       
       final results = await Future.wait([
-        apiService.getVPNConnections(),
-        apiService.getSystemInfo(),
+        demoApiService.getVPNConnections(),
+        demoApiService.getSystemInfo(),
       ]);
 
       if (mounted) {
@@ -128,7 +128,7 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
     if (confirmed != true || !mounted) return;
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final demoApiService = context.read<DemoApiService>();
       
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -137,7 +137,7 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
         ),
       );
 
-      final success = await apiService.toggleVPNConnection(
+      final success = await demoApiService.toggleVPNConnection(
         connection.id,
         connection.type,
         connection.isConnected,
@@ -207,7 +207,7 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
     if (confirmed != true || !mounted) return;
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final demoApiService = context.read<DemoApiService>();
       
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -216,7 +216,7 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
         ),
       );
 
-      final success = await apiService.restartVPNService(type);
+      final success = await demoApiService.restartVPNService(type);
 
       if (mounted) {
         if (success) {

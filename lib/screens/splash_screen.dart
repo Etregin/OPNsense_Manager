@@ -19,6 +19,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../services/auth_service.dart';
 import '../services/profile_service.dart';
@@ -48,7 +49,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
     final authService = context.read<AuthService>();
     final profileService = context.read<ProfileService>();
-    final apiService = context.read<OPNsenseApiService>();
+    final demoApiService = context.read<DemoApiService>();
+    final realApiService = context.read<OPNsenseApiService>();
 
     // Check if authentication is required
     final authRequired = await authService.isAuthenticationRequired();
@@ -59,42 +61,51 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => PinLockScreen(
-            onAuthenticated: (ctx) async {
+            onAuthenticated: (pinContext) async {
               // Navigate from the PIN lock screen context
-              await _proceedToAppWithContext(ctx, profileService, apiService);
+              await _proceedToAppWithContext(pinContext, profileService, demoApiService, realApiService);
             },
           ),
         ),
       );
     } else {
       // Proceed to app
-      await _proceedToApp(profileService, apiService);
+      await _proceedToApp(profileService, demoApiService, realApiService);
     }
   }
 
   Future<void> _proceedToApp(
     ProfileService profileService,
-    OPNsenseApiService apiService,
+    DemoApiService demoApiService,
+    OPNsenseApiService realApiService,
   ) async {
-    await _proceedToAppWithContext(context, profileService, apiService);
+    await _proceedToAppWithContext(context, profileService, demoApiService, realApiService);
   }
 
   Future<void> _proceedToAppWithContext(
-    BuildContext ctx,
+    BuildContext context,
     ProfileService profileService,
-    OPNsenseApiService apiService,
+    DemoApiService demoApiService,
+    OPNsenseApiService realApiService,
   ) async {
     // Check if there's an active profile
     final activeProfile = await profileService.getActiveProfile();
 
     if (activeProfile != null) {
-      // Initialize API service with active profile
-      apiService.init(activeProfile.toOPNsenseConfig());
+      // Check if this is a demo profile
+      if (activeProfile.isDemo) {
+        // Enable demo mode
+        demoApiService.setDemoMode(true);
+      } else {
+        // Disable demo mode and initialize real API service
+        demoApiService.setDemoMode(false);
+        realApiService.init(activeProfile.toOPNsenseConfig());
+      }
 
       // Test connection with timeout for faster startup
       bool isConnected = false;
       try {
-        isConnected = await apiService.testConnection().timeout(
+        isConnected = await demoApiService.testConnection().timeout(
           const Duration(seconds: 3),
           onTimeout: () => false,
         );
@@ -102,18 +113,18 @@ class _SplashScreenState extends State<SplashScreen> {
         isConnected = false;
       }
 
-      if (!ctx.mounted) return;
+      if (!context.mounted) return;
 
       if (isConnected) {
         // Navigate to dashboard
-        Navigator.of(ctx).pushReplacement(
+        Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => const DashboardScreen(),
           ),
         );
       } else {
         // Connection failed, go to profile selection
-        Navigator.of(ctx).pushReplacement(
+        Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => const ProfileSelectionScreen(),
           ),
@@ -121,8 +132,8 @@ class _SplashScreenState extends State<SplashScreen> {
       }
     } else {
       // No active profile, go to profile selection
-      if (!ctx.mounted) return;
-      Navigator.of(ctx).pushReplacement(
+      if (!context.mounted) return;
+      Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => const ProfileSelectionScreen(),
         ),

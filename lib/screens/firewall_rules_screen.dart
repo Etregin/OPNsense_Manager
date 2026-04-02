@@ -21,7 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/firewall_rule.dart';
 import '../models/system_info.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import '../utils/constants.dart';
 import '../widgets/app_drawer.dart';
 import 'firewall_rule_form_screen.dart';
@@ -58,8 +58,8 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
 
   Future<void> _loadSystemInfo() async {
     try {
-      final apiService = context.read<OPNsenseApiService>();
-      final systemInfo = await apiService.getSystemInfo();
+      final demoApiService = context.read<DemoApiService>();
+      final systemInfo = await demoApiService.getSystemInfo();
 
       if (mounted) {
         setState(() {
@@ -78,8 +78,8 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
     });
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
-      final allRules = await apiService.getFirewallRules();
+      final demoApiService = context.read<DemoApiService>();
+      final allRules = await demoApiService.getFirewallRules();
       
       // Filter to show only automation rules (non-system-generated)
       final automationRules = allRules.where((rule) => !rule.isSystemGenerated).toList();
@@ -158,7 +158,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
     if (!mounted) return;
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final demoApiService = context.read<DemoApiService>();
       
       // Show loading indicator
       if (mounted) {
@@ -170,7 +170,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
         );
       }
       
-      await apiService.toggleFirewallRule(rule.uuid);
+      await demoApiService.toggleFirewallRule(rule.uuid);
 
       // Wait a moment for OPNsense to process the change
       await Future.delayed(const Duration(milliseconds: 1500));
@@ -238,8 +238,8 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
 
     if (confirmed == true && mounted) {
       try {
-        final apiService = context.read<OPNsenseApiService>();
-        await apiService.deleteFirewallRule(rule.uuid);
+        final demoApiService = context.read<DemoApiService>();
+        await demoApiService.deleteFirewallRule(rule.uuid);
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(

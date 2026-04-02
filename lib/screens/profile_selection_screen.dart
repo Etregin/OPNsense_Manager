@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 import '../models/profile.dart';
 import '../services/profile_service.dart';
 import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import '../utils/constants.dart';
 import 'dashboard_screen.dart';
 import 'login_screen.dart';
@@ -58,12 +59,19 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
     try {
       final profileService = context.read<ProfileService>();
       final apiService = context.read<OPNsenseApiService>();
+      final demoApiService = context.read<DemoApiService>();
 
-      // Test connection
-      final config = profile.toOPNsenseConfig();
-      apiService.init(config);
-      
-      await apiService.getSystemInfo();
+      // Check if this is a demo profile
+      if (profile.isDemo) {
+        // Enable demo mode
+        demoApiService.setDemoMode(true);
+      } else {
+        // Disable demo mode and test real connection
+        demoApiService.setDemoMode(false);
+        final config = profile.toOPNsenseConfig();
+        apiService.init(config);
+        await demoApiService.getSystemInfo();
+      }
 
       // Set as active profile
       await profileService.setActiveProfile(profile.id);
@@ -93,6 +101,31 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
 
     if (result == true) {
       await _loadProfiles();
+    }
+  }
+
+  Future<void> _tryDemo() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final profileService = context.read<ProfileService>();
+      
+      // Create or get demo profile
+      final demoProfile = await profileService.createDemoProfile();
+      
+      // Select the demo profile
+      await _selectProfile(demoProfile);
+    } catch (e) {
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        setState(() {
+          _errorMessage = l10n.errorPrefix(e.toString());
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -211,28 +244,58 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                 ),
               ),
 
-              // Create new profile button
+              // Buttons
               Padding(
                 padding: const EdgeInsets.all(24.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: _isLoading ? null : _createNewProfile,
-                    icon: const Icon(Icons.add),
-                    label: Text(l10n.createNewProfile),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isDark
-                          ? Theme.of(context).primaryColor
-                          : Colors.white,
-                      foregroundColor: isDark
-                          ? Colors.white
-                          : AppColors.primary,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                child: Column(
+                  children: [
+                    // Try Demo button
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: _isLoading ? null : _tryDemo,
+                        icon: const Icon(Icons.play_circle_outline),
+                        label: const Text('Try Demo Mode'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: isDark
+                              ? Theme.of(context).primaryColor
+                              : Colors.white,
+                          side: BorderSide(
+                            color: isDark
+                                ? Theme.of(context).primaryColor
+                                : Colors.white,
+                            width: 2,
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 12),
+                    // Create new profile button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: _isLoading ? null : _createNewProfile,
+                        icon: const Icon(Icons.add),
+                        label: Text(l10n.createNewProfile),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: isDark
+                              ? Theme.of(context).primaryColor
+                              : Colors.white,
+                          foregroundColor: isDark
+                              ? Colors.white
+                              : AppColors.primary,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -293,16 +356,38 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
             leading: CircleAvatar(
               backgroundColor: AppColors.primary.withValues(alpha: 0.1),
               child: Icon(
-                Icons.router,
+                profile.isDemo ? Icons.play_circle_outline : Icons.router,
                 color: AppColors.primary,
               ),
             ),
-            title: Text(
-              profile.name,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+            title: Row(
+              children: [
+                Text(
+                  profile.name,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                if (profile.isDemo) ...[
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.shade100,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      'DEMO',
+                      style: TextStyle(
+                        color: Colors.orange.shade900,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
