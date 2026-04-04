@@ -1,4 +1,4 @@
-package com.opnsense.opnsense_manager
+package com.dt.opnsense_manager
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 
