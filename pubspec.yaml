@@ -2,7 +2,7 @@ name: opnsense_manager
 description: "OPNsense Manager - A professional Flutter mobile application for managing OPNsense firewall routers."
 publish_to: 'none'
 
-version: 1.4.0+6
+version: 1.4.1+7
 
 environment:
   sdk: '>=3.10.4 <4.0.0'
