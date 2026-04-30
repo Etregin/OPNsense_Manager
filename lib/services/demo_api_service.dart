@@ -19,6 +19,7 @@
 import '../models/system_info.dart';
 import '../models/firewall_rule.dart';
 import '../models/vpn_connection.dart';
+import '../models/network_host.dart';
 import 'demo_data_service.dart';
 import 'opnsense_api_service.dart';
 
@@ -223,6 +224,15 @@ class DemoApiService {
       }
     }
     return _realApiService.getVPNConnectionDetails(id, type);
+  }
+
+  /// Get network hosts with bandwidth usage
+  Future<List<NetworkHost>> getNetworkHosts({String interface = 'lan'}) async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 400));
+      return _demoDataService.generateNetworkHosts();
+    }
+    return _realApiService.getNetworkHosts(interface: interface);
   }
 
   /// Reboot system

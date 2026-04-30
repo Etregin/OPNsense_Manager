@@ -20,6 +20,7 @@ import 'dart:math';
 import '../models/system_info.dart';
 import '../models/firewall_rule.dart';
 import '../models/vpn_connection.dart';
+import '../models/network_host.dart';
 
 /// Service for generating realistic demo data
 class DemoDataService {
@@ -288,6 +289,107 @@ class DemoDataService {
   void toggleServiceState(String name) {
     _serviceStates[name] = !(_serviceStates[name] ?? true);
   }
+  /// Generate demo network hosts with bandwidth usage
+  List<NetworkHost> generateNetworkHosts() {
+    final hosts = <NetworkHost>[
+      NetworkHost(
+        address: '192.168.1.10',
+        hostname: 'desktop-gaming',
+        manufacturer: 'Intel Corporate',
+        macAddress: '00:1A:2B:3C:4D:5E',
+        rateIn: 15000000 + _random.nextInt(5000000), // 15-20 Mbps download
+        rateOut: 2000000 + _random.nextInt(1000000),  // 2-3 Mbps upload
+        leaseExpiry: DateTime.now().add(Duration(hours: 12 + _random.nextInt(12))),
+      ),
+      NetworkHost(
+        address: '192.168.1.15',
+        hostname: 'iphone-john',
+        manufacturer: 'Apple, Inc.',
+        macAddress: '00:1B:63:84:45:E6',
+        rateIn: 8000000 + _random.nextInt(4000000),  // 8-12 Mbps download
+        rateOut: 1000000 + _random.nextInt(500000),  // 1-1.5 Mbps upload
+        leaseExpiry: DateTime.now().add(Duration(hours: 6 + _random.nextInt(6))),
+      ),
+      NetworkHost(
+        address: '192.168.1.20',
+        hostname: 'smart-tv-living',
+        manufacturer: 'Samsung Electronics',
+        macAddress: '00:1C:42:00:00:09',
+        rateIn: 25000000 + _random.nextInt(10000000), // 25-35 Mbps (4K streaming)
+        rateOut: 500000 + _random.nextInt(300000),    // 0.5-0.8 Mbps upload
+        leaseExpiry: DateTime.now().add(Duration(hours: 24)),
+      ),
+      NetworkHost(
+        address: '192.168.1.25',
+        hostname: 'laptop-work',
+        manufacturer: 'Dell Inc.',
+        macAddress: '00:1D:60:B3:01:84',
+        rateIn: 5000000 + _random.nextInt(3000000),  // 5-8 Mbps download
+        rateOut: 800000 + _random.nextInt(400000),   // 0.8-1.2 Mbps upload
+        leaseExpiry: DateTime.now().add(Duration(hours: 8 + _random.nextInt(8))),
+      ),
+      NetworkHost(
+        address: '192.168.1.30',
+        hostname: 'nas-server',
+        manufacturer: 'Synology Inc.',
+        macAddress: '00:11:32:2C:A7:85',
+        rateIn: 3000000 + _random.nextInt(2000000),  // 3-5 Mbps download
+        rateOut: 10000000 + _random.nextInt(5000000), // 10-15 Mbps upload (backup)
+        leaseExpiry: DateTime.now().add(Duration(days: 7)),
+      ),
+      NetworkHost(
+        address: '192.168.1.35',
+        hostname: 'tablet-kids',
+        manufacturer: 'Amazon Technologies',
+        macAddress: '00:FC:8B:33:44:55',
+        rateIn: 4000000 + _random.nextInt(2000000),  // 4-6 Mbps download
+        rateOut: 300000 + _random.nextInt(200000),   // 0.3-0.5 Mbps upload
+        leaseExpiry: DateTime.now().add(Duration(hours: 4 + _random.nextInt(4))),
+      ),
+      NetworkHost(
+        address: '192.168.1.40',
+        hostname: 'security-camera-1',
+        manufacturer: 'Hikvision',
+        macAddress: '00:12:17:A0:B1:C2',
+        rateIn: 100000 + _random.nextInt(50000),     // 0.1-0.15 Mbps download
+        rateOut: 2000000 + _random.nextInt(1000000), // 2-3 Mbps upload (video)
+        leaseExpiry: DateTime.now().add(Duration(days: 30)),
+      ),
+      NetworkHost(
+        address: '192.168.1.45',
+        hostname: 'iot-hub',
+        manufacturer: 'Raspberry Pi Foundation',
+        macAddress: 'B8:27:EB:12:34:56',
+        rateIn: 200000 + _random.nextInt(100000),    // 0.2-0.3 Mbps download
+        rateOut: 150000 + _random.nextInt(100000),   // 0.15-0.25 Mbps upload
+        leaseExpiry: DateTime.now().add(Duration(days: 90)),
+      ),
+      NetworkHost(
+        address: '192.168.1.50',
+        hostname: 'android-tablet',
+        manufacturer: 'Google, Inc.',
+        macAddress: '00:1A:11:FF:EE:DD',
+        rateIn: 6000000 + _random.nextInt(3000000),  // 6-9 Mbps download
+        rateOut: 700000 + _random.nextInt(300000),   // 0.7-1 Mbps upload
+        leaseExpiry: DateTime.now().add(Duration(hours: 10 + _random.nextInt(10))),
+      ),
+      NetworkHost(
+        address: '192.168.1.55',
+        hostname: '192.168.1.55', // Unknown device (no hostname)
+        manufacturer: null,
+        macAddress: null,
+        rateIn: 1000000 + _random.nextInt(500000),   // 1-1.5 Mbps download
+        rateOut: 500000 + _random.nextInt(300000),   // 0.5-0.8 Mbps upload
+        leaseExpiry: null,
+      ),
+    ];
+
+    // Sort by total bandwidth usage (highest first)
+    hosts.sort((a, b) => b.totalRate.compareTo(a.totalRate));
+    
+    return hosts;
+  }
+
 
   /// Reset all demo states
   void reset() {

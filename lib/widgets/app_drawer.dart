@@ -28,6 +28,7 @@ import '../screens/system_info_screen.dart';
 import '../screens/firewall_rules_screen.dart';
 import '../screens/firewall_logs_screen.dart';
 import '../screens/vpn_connections_screen.dart';
+import '../screens/live_network_monitor_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/settings_screen.dart';
 import '../screens/pin_lock_screen.dart';
@@ -142,6 +143,22 @@ class AppDrawer extends StatelessWidget {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => const FirewallLogsScreen(),
+                  ),
+                );
+              } else {
+                Navigator.pop(context);
+              }
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.network_check),
+            title: Text(l10n.liveNetworkMonitor),
+            selected: currentRoute == 'live_network_monitor',
+            onTap: () {
+              if (currentRoute != 'live_network_monitor') {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const LiveNetworkMonitorScreen(),
                   ),
                 );
               } else {

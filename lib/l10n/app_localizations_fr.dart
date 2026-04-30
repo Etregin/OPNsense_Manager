@@ -1353,4 +1353,80 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get secondAbbrev => 's';
+
+  @override
+  String get liveNetworkMonitor => 'Live Network Monitor';
+
+  @override
+  String get searchHostnameOrIp => 'Search hostname or IP address...';
+
+  @override
+  String activeHosts(int count) {
+    return '$count active host(s)';
+  }
+
+  @override
+  String get noHostsFound => 'No hosts found';
+
+  @override
+  String get tryDifferentSearch => 'Try a different search term';
+
+  @override
+  String get download => 'Download';
+
+  @override
+  String get upload => 'Upload';
+
+  @override
+  String get totalBandwidth => 'Total Bandwidth';
+
+  @override
+  String get of1Gbps => 'of 1 Gbps';
+
+  @override
+  String get networkTotals => 'Network Totals';
+
+  @override
+  String get totalDownload => 'Total Download';
+
+  @override
+  String get totalUpload => 'Total Upload';
+
+  @override
+  String get activeDevices => 'Active Devices';
+
+  @override
+  String get sortBy => 'Sort By';
+
+  @override
+  String get sortByBandwidth => 'Bandwidth';
+
+  @override
+  String get sortByHostname => 'Hostname';
+
+  @override
+  String get sortByIP => 'IP Address';
+
+  @override
+  String get sortByManufacturer => 'Manufacturer';
+
+  @override
+  String get bandwidthLimit => 'Bandwidth Limit';
+
+  @override
+  String get bandwidthLimitMbps => 'Bandwidth Limit (Mbps)';
+
+  @override
+  String get enterBandwidthLimit =>
+      'Enter your connection bandwidth limit in Mbps';
+
+  @override
+  String get macAddress => 'MAC Address';
+
+  @override
+  String get monitorInterface => 'Monitor Interface';
+
+  @override
+  String get selectMultipleInterfaces =>
+      'Select one or more interfaces to monitor';
 }

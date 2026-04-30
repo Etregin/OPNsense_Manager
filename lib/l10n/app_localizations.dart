@@ -659,7 +659,7 @@ abstract class AppLocalizations {
   /// No description provided for @live.
   ///
   /// In en, this message translates to:
-  /// **'Live'**
+  /// **'LIVE'**
   String get live;
 
   /// No description provided for @entries.
@@ -2479,6 +2479,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'s'**
   String get secondAbbrev;
+
+  /// No description provided for @liveNetworkMonitor.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Network Monitor'**
+  String get liveNetworkMonitor;
+
+  /// No description provided for @searchHostnameOrIp.
+  ///
+  /// In en, this message translates to:
+  /// **'Search hostname or IP address...'**
+  String get searchHostnameOrIp;
+
+  /// No description provided for @activeHosts.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} active host(s)'**
+  String activeHosts(int count);
+
+  /// No description provided for @noHostsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No hosts found'**
+  String get noHostsFound;
+
+  /// No description provided for @tryDifferentSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different search term'**
+  String get tryDifferentSearch;
+
+  /// No description provided for @download.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get download;
+
+  /// No description provided for @upload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get upload;
+
+  /// No description provided for @totalBandwidth.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Bandwidth'**
+  String get totalBandwidth;
+
+  /// No description provided for @of1Gbps.
+  ///
+  /// In en, this message translates to:
+  /// **'of 1 Gbps'**
+  String get of1Gbps;
+
+  /// No description provided for @networkTotals.
+  ///
+  /// In en, this message translates to:
+  /// **'Network Totals'**
+  String get networkTotals;
+
+  /// No description provided for @totalDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Download'**
+  String get totalDownload;
+
+  /// No description provided for @totalUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Upload'**
+  String get totalUpload;
+
+  /// No description provided for @activeDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Devices'**
+  String get activeDevices;
+
+  /// No description provided for @sortBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort By'**
+  String get sortBy;
+
+  /// No description provided for @sortByBandwidth.
+  ///
+  /// In en, this message translates to:
+  /// **'Bandwidth'**
+  String get sortByBandwidth;
+
+  /// No description provided for @sortByHostname.
+  ///
+  /// In en, this message translates to:
+  /// **'Hostname'**
+  String get sortByHostname;
+
+  /// No description provided for @sortByIP.
+  ///
+  /// In en, this message translates to:
+  /// **'IP Address'**
+  String get sortByIP;
+
+  /// No description provided for @sortByManufacturer.
+  ///
+  /// In en, this message translates to:
+  /// **'Manufacturer'**
+  String get sortByManufacturer;
+
+  /// No description provided for @bandwidthLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Bandwidth Limit'**
+  String get bandwidthLimit;
+
+  /// No description provided for @bandwidthLimitMbps.
+  ///
+  /// In en, this message translates to:
+  /// **'Bandwidth Limit (Mbps)'**
+  String get bandwidthLimitMbps;
+
+  /// No description provided for @enterBandwidthLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your connection bandwidth limit in Mbps'**
+  String get enterBandwidthLimit;
+
+  /// No description provided for @macAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'MAC Address'**
+  String get macAddress;
+
+  /// No description provided for @monitorInterface.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitor Interface'**
+  String get monitorInterface;
+
+  /// No description provided for @selectMultipleInterfaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Select one or more interfaces to monitor'**
+  String get selectMultipleInterfaces;
 }
 
 class _AppLocalizationsDelegate
