@@ -2623,6 +2623,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select one or more interfaces to monitor'**
   String get selectMultipleInterfaces;
+
+  /// No description provided for @dhcpLeases.
+  ///
+  /// In en, this message translates to:
+  /// **'DHCP Leases'**
+  String get dhcpLeases;
+
+  /// No description provided for @searchHostnameIpOrMac.
+  ///
+  /// In en, this message translates to:
+  /// **'Search hostname, IP, or MAC address...'**
+  String get searchHostnameIpOrMac;
+
+  /// No description provided for @leasesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{filtered} of {total} lease(s)'**
+  String leasesCount(int filtered, int total);
+
+  /// No description provided for @noLeasesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No leases found'**
+  String get noLeasesFound;
+
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
+  /// No description provided for @active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get active;
+
+  /// No description provided for @expired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get expired;
+
+  /// No description provided for @expires.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires'**
+  String get expires;
+
+  /// No description provided for @ipAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'IP Address'**
+  String get ipAddress;
 }
 
 class _AppLocalizationsDelegate

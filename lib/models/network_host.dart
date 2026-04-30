@@ -74,8 +74,8 @@ class NetworkHost {
       hostname: lease['hostname'] as String? ?? address,
       manufacturer: lease['mac_info'] as String?,
       macAddress: lease['hwaddr'] as String? ?? lease['mac'] as String?,
-      rateIn: _parseRate(traffic['rate_bits_in']),
-      rateOut: _parseRate(traffic['rate_bits_out']),
+      rateIn: _parseRate(traffic['rate_bits_in'] ?? traffic['rate_in']),
+      rateOut: _parseRate(traffic['rate_bits_out'] ?? traffic['rate_out']),
       leaseExpiry: _parseExpiry(lease['expire']),
     );
   }
@@ -89,8 +89,8 @@ class NetworkHost {
       hostname: address, // Use IP as hostname when no lease data
       manufacturer: null,
       macAddress: null,
-      rateIn: _parseRate(traffic['rate_bits_in']),
-      rateOut: _parseRate(traffic['rate_bits_out']),
+      rateIn: _parseRate(traffic['rate_bits_in'] ?? traffic['rate_in']),
+      rateOut: _parseRate(traffic['rate_bits_out'] ?? traffic['rate_out']),
       leaseExpiry: null,
     );
   }

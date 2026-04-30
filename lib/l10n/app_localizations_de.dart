@@ -1428,4 +1428,33 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get selectMultipleInterfaces =>
       'Select one or more interfaces to monitor';
+
+  @override
+  String get dhcpLeases => 'DHCP Leases';
+
+  @override
+  String get searchHostnameIpOrMac => 'Search hostname, IP, or MAC address...';
+
+  @override
+  String leasesCount(int filtered, int total) {
+    return '$filtered of $total lease(s)';
+  }
+
+  @override
+  String get noLeasesFound => 'No leases found';
+
+  @override
+  String get all => 'All';
+
+  @override
+  String get active => 'Active';
+
+  @override
+  String get expired => 'Expired';
+
+  @override
+  String get expires => 'Expires';
+
+  @override
+  String get ipAddress => 'IP Address';
 }

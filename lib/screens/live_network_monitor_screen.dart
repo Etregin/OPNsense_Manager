@@ -604,7 +604,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
     required Color color,
   }) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
@@ -618,13 +618,13 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
         children: [
           Row(
             children: [
-              Icon(icon, size: 16, color: color),
+              Icon(icon, size: 14, color: color),
               const SizedBox(width: 4),
               Expanded(
                 child: Text(
                   label,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: 10,
                     color: color,
                     fontWeight: FontWeight.bold,
                   ),
@@ -633,11 +633,11 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Text(
             value,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 13,
               fontWeight: FontWeight.bold,
               color: color,
             ),
@@ -654,130 +654,121 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
     final history = _rateHistory[host.address] ?? [];
     
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header: Hostname and IP
-            Row(
-              children: [
-                Icon(
-                  Icons.computer,
-                  color: Theme.of(context).colorScheme.primary,
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        host.hostname,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      if (host.hostname != host.address)
+      margin: const EdgeInsets.only(bottom: 8),
+      child: InkWell(
+        onTap: () => _showHostDetails(host),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header: Hostname and IP
+              Row(
+                children: [
+                  Icon(
+                    Icons.computer,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 18,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Text(
-                          host.address,
+                          host.hostname,
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        if (host.hostname != host.address)
+                          Text(
+                            host.address,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: Colors.grey[600],
+                                  fontSize: 11,
+                                ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    Icons.chevron_right,
+                    size: 20,
+                    color: Colors.grey[400],
+                  ),
+                ],
+              ),
+              
+              // Manufacturer and MAC in one line
+              if (host.manufacturer != null || host.macAddress != null) ...[
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    if (host.manufacturer != null) ...[
+                      Icon(
+                        Icons.business,
+                        size: 12,
+                        color: Colors.grey[600],
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          host.manufacturer!,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                 color: Colors.grey[600],
+                                fontSize: 11,
                               ),
+                          overflow: TextOverflow.ellipsis,
                         ),
+                      ),
                     ],
-                  ),
+                  ],
                 ),
               ],
-            ),
-            
-            // Manufacturer
-            if (host.manufacturer != null) ...[
+              
+              const SizedBox(height: 10),
+              
+              // Bandwidth usage
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildBandwidthIndicator(
+                      label: l10n.download,
+                      rate: host.rateIn,
+                      icon: Icons.arrow_downward,
+                      color: Colors.green,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildBandwidthIndicator(
+                      label: l10n.upload,
+                      rate: host.rateOut,
+                      icon: Icons.arrow_upward,
+                      color: Colors.blue,
+                    ),
+                  ),
+                ],
+              ),
+              
               const SizedBox(height: 8),
-              Row(
-                children: [
-                  Icon(
-                    Icons.business,
-                    size: 14,
-                    color: Colors.grey[600],
-                  ),
-                  const SizedBox(width: 4),
-                  Expanded(
-                    child: Text(
-                      host.manufacturer!,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.grey[600],
-                          ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-            
-            // MAC Address
-            if (host.macAddress != null) ...[
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Icon(
-                    Icons.router,
-                    size: 14,
-                    color: Colors.grey[600],
-                  ),
-                  const SizedBox(width: 4),
-                  Expanded(
-                    child: Text(
-                      '${l10n.macAddress}: ${host.macAddress}',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.grey[600],
-                            fontFamily: 'monospace',
-                          ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-            
-            const SizedBox(height: 16),
-            
-            // Bandwidth usage
-            Row(
-              children: [
-                Expanded(
-                  child: _buildBandwidthIndicator(
-                    label: l10n.download,
-                    rate: host.rateIn,
-                    icon: Icons.arrow_downward,
-                    color: Colors.green,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: _buildBandwidthIndicator(
-                    label: l10n.upload,
-                    rate: host.rateOut,
-                    icon: Icons.arrow_upward,
-                    color: Colors.blue,
-                  ),
+              
+              // Progress bar showing usage relative to bandwidth limit
+              _buildUsageProgressBar(host.totalRate),
+              
+              // Sparkline (if we have history)
+              if (history.length > 1) ...[
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 60,
+                  child: _buildSparkline(history),
                 ),
               ],
-            ),
-            
-            const SizedBox(height: 12),
-            
-            // Progress bar showing usage relative to 1Gbps
-            _buildUsageProgressBar(host.totalRate),
-            
-            // Sparkline (if we have history)
-            if (history.length > 1) ...[
-              const SizedBox(height: 12),
-              _buildSparkline(history),
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -790,33 +781,33 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
     required Color color,
   }) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(6),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, size: 16, color: color),
+              Icon(icon, size: 14, color: color),
               const SizedBox(width: 4),
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 11,
                   color: color,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Text(
             Formatters.formatBytesPerSecond(rate, context, decimals: 1),
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: FontWeight.bold,
               color: color,
             ),
@@ -874,6 +865,108 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
     if (progress < 0.75) return Colors.orange;
     return Colors.red;
   }
+
+  void _showHostDetails(NetworkHost host) {
+    final l10n = AppLocalizations.of(context)!;
+    final history = _rateHistory[host.address] ?? [];
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(
+              Icons.computer,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                host.hostname,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildDetailRow('IP Address', host.address),
+              if (host.macAddress != null)
+                _buildDetailRow(l10n.macAddress, host.macAddress!),
+              if (host.manufacturer != null)
+                _buildDetailRow('Manufacturer', host.manufacturer!),
+              const Divider(height: 24),
+              _buildDetailRow(
+                l10n.download,
+                Formatters.formatBytesPerSecond(host.rateIn, context, decimals: 2),
+              ),
+              _buildDetailRow(
+                l10n.upload,
+                Formatters.formatBytesPerSecond(host.rateOut, context, decimals: 2),
+              ),
+              _buildDetailRow(
+                l10n.totalBandwidth,
+                Formatters.formatBytesPerSecond(host.totalRate, context, decimals: 2),
+              ),
+              if (history.isNotEmpty) ...[
+                const Divider(height: 24),
+                Text(
+                  'Bandwidth History',
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  height: 100,
+                  child: _buildSparkline(history),
+                ),
+              ],
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.close),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[700],
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontFamily: 'monospace',
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showSettingsDialog() {
     final l10n = AppLocalizations.of(context)!;
     final controller = TextEditingController(text: _bandwidthLimitMbps.toString());
@@ -980,33 +1073,147 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
   Widget _buildSparkline(List<int> history) {
     if (history.isEmpty) return const SizedBox.shrink();
     
-    final maxRate = history.reduce((a, b) => a > b ? a : b);
-    if (maxRate == 0) return const SizedBox.shrink();
+    // Use bandwidth limit as max value instead of auto-scaling
+    // Convert Mbps to bytes per second: Mbps * 1,000,000 / 8
+    final maxRate = (_bandwidthLimitMbps * 1000000 / 8).toDouble();
     
-    return SizedBox(
-      height: 40,
-      child: CustomPaint(
-        painter: SparklinePainter(
-          data: history,
-          maxValue: maxRate.toDouble(),
-          color: Theme.of(context).colorScheme.primary,
-        ),
-        child: Container(),
+    return InteractiveSparkline(
+      data: history,
+      maxValue: maxRate,
+      color: Theme.of(context).colorScheme.primary,
+    );
+  }
+}
+/// Interactive sparkline widget with tap-to-show-value functionality
+class InteractiveSparkline extends StatefulWidget {
+  final List<int> data;
+  final double maxValue;
+  final Color color;
+  final double? height;
+
+  const InteractiveSparkline({
+    super.key,
+    required this.data,
+    required this.maxValue,
+    required this.color,
+    this.height,
+  });
+
+  @override
+  State<InteractiveSparkline> createState() => _InteractiveSparklineState();
+}
+
+class _InteractiveSparklineState extends State<InteractiveSparkline> {
+  int? _selectedIndex;
+  Offset? _tapPosition;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (details) {
+        final RenderBox box = context.findRenderObject() as RenderBox;
+        final localPosition = box.globalToLocal(details.globalPosition);
+        final stepX = box.size.width / (widget.data.length - 1);
+        final index = (localPosition.dx / stepX).round().clamp(0, widget.data.length - 1);
+        
+        setState(() {
+          _selectedIndex = index;
+          _tapPosition = localPosition;
+        });
+      },
+      onTapUp: (_) {
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) {
+            setState(() {
+              _selectedIndex = null;
+              _tapPosition = null;
+            });
+          }
+        });
+      },
+      child: Stack(
+        children: [
+          CustomPaint(
+            painter: SparklinePainter(
+              data: widget.data,
+              maxValue: widget.maxValue,
+              color: widget.color,
+              selectedIndex: _selectedIndex,
+            ),
+            child: Container(),
+          ),
+          if (_selectedIndex != null && _tapPosition != null)
+            Builder(
+              builder: (context) {
+                // Calculate tooltip position to keep it visible
+                final tooltipWidth = 120.0;
+                final tooltipHeight = 32.0;
+                
+                // Determine if tooltip should be above or below the point
+                final showAbove = _tapPosition!.dy > tooltipHeight + 10;
+                final topPosition = showAbove
+                    ? _tapPosition!.dy - tooltipHeight - 10
+                    : _tapPosition!.dy + 10;
+                
+                // Keep tooltip horizontally centered but within bounds
+                var leftPosition = _tapPosition!.dx - (tooltipWidth / 2);
+                final RenderBox? box = context.findRenderObject() as RenderBox?;
+                if (box != null) {
+                  if (leftPosition < 0) leftPosition = 0;
+                  if (leftPosition + tooltipWidth > box.size.width) {
+                    leftPosition = box.size.width - tooltipWidth;
+                  }
+                }
+                
+                return Positioned(
+                  left: leftPosition,
+                  top: topPosition,
+                  child: Container(
+                    width: tooltipWidth,
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.black87,
+                      borderRadius: BorderRadius.circular(4),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      Formatters.formatBytesPerSecond(widget.data[_selectedIndex!], context, decimals: 2),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              },
+            ),
+        ],
       ),
     );
   }
 }
+
 
 /// Custom painter for sparkline chart
 class SparklinePainter extends CustomPainter {
   final List<int> data;
   final double maxValue;
   final Color color;
+  final int? selectedIndex;
 
   SparklinePainter({
     required this.data,
     required this.maxValue,
     required this.color,
+    this.selectedIndex,
   });
 
   @override
@@ -1053,12 +1260,32 @@ class SparklinePainter extends CustomPainter {
     // Draw fill first, then line
     canvas.drawPath(fillPath, fillPaint);
     canvas.drawPath(path, paint);
+    
+    // Draw selected point highlight
+    if (selectedIndex != null && selectedIndex! < data.length) {
+      final x = selectedIndex! * stepX;
+      final normalizedValue = data[selectedIndex!] / maxValue;
+      final y = size.height - (normalizedValue * size.height);
+      
+      // Draw outer circle
+      final outerCirclePaint = Paint()
+        ..color = color.withValues(alpha: 0.3)
+        ..style = PaintingStyle.fill;
+      canvas.drawCircle(Offset(x, y), 8, outerCirclePaint);
+      
+      // Draw inner circle
+      final innerCirclePaint = Paint()
+        ..color = color
+        ..style = PaintingStyle.fill;
+      canvas.drawCircle(Offset(x, y), 4, innerCirclePaint);
+    }
   }
 
   @override
   bool shouldRepaint(SparklinePainter oldDelegate) {
     return oldDelegate.data != data ||
            oldDelegate.maxValue != maxValue ||
+           oldDelegate.selectedIndex != selectedIndex ||
            oldDelegate.color != color;
   }
 }

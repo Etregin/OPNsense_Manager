@@ -235,6 +235,15 @@ class DemoApiService {
     return _realApiService.getNetworkHosts(interface: interface);
   }
 
+  /// Get DHCP leases
+  Future<List<Map<String, dynamic>>> getDhcpLeases() async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 400));
+      return _demoDataService.generateDhcpLeases();
+    }
+    return _realApiService.getDhcpLeases();
+  }
+
   /// Reboot system
   Future<void> rebootSystem() async {
     if (_isDemoMode) {

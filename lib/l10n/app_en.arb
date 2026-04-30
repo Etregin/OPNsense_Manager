@@ -845,5 +845,25 @@
   "macAddress": "MAC Address",
   "monitorInterface": "Monitor Interface",
   "selectInterface": "Select Interface",
-  "selectMultipleInterfaces": "Select one or more interfaces to monitor"
+  "selectMultipleInterfaces": "Select one or more interfaces to monitor",
+  
+  "dhcpLeases": "DHCP Leases",
+  "searchHostnameIpOrMac": "Search hostname, IP, or MAC address...",
+  "leasesCount": "{filtered} of {total} lease(s)",
+  "@leasesCount": {
+    "placeholders": {
+      "filtered": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "noLeasesFound": "No leases found",
+  "all": "All",
+  "active": "Active",
+  "expired": "Expired",
+  "expires": "Expires",
+  "ipAddress": "IP Address"
 }
