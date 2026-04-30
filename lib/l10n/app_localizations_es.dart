@@ -1355,124 +1355,125 @@ class AppLocalizationsEs extends AppLocalizations {
   String get secondAbbrev => 's';
 
   @override
-  String get liveNetworkMonitor => 'Live Network Monitor';
+  String get liveNetworkMonitor => 'Monitor de Red en Vivo';
 
   @override
-  String get searchHostnameOrIp => 'Search hostname or IP address...';
+  String get searchHostnameOrIp => 'Buscar nombre de host o dirección IP...';
 
   @override
   String activeHosts(int count) {
-    return '$count active host(s)';
+    return '$count host(s) activo(s)';
   }
 
   @override
-  String get noHostsFound => 'No hosts found';
+  String get noHostsFound => 'No se encontraron hosts';
 
   @override
-  String get tryDifferentSearch => 'Try a different search term';
+  String get tryDifferentSearch =>
+      'Intente con un término de búsqueda diferente';
 
   @override
-  String get download => 'Download';
+  String get download => 'Descarga';
 
   @override
-  String get upload => 'Upload';
+  String get upload => 'Carga';
 
   @override
-  String get totalBandwidth => 'Total Bandwidth';
+  String get totalBandwidth => 'Ancho de Banda Total';
 
   @override
-  String get of1Gbps => 'of 1 Gbps';
+  String get of1Gbps => 'de 1 Gbps';
 
   @override
-  String get networkTotals => 'Network Totals';
+  String get networkTotals => 'Totales de Red';
 
   @override
-  String get totalDownload => 'Total Download';
+  String get totalDownload => 'Descarga Total';
 
   @override
-  String get totalUpload => 'Total Upload';
+  String get totalUpload => 'Carga Total';
 
   @override
-  String get activeDevices => 'Active Devices';
+  String get activeDevices => 'Dispositivos Activos';
 
   @override
-  String get sortBy => 'Sort By';
+  String get sortBy => 'Ordenar por';
 
   @override
-  String get sortByBandwidth => 'Bandwidth';
+  String get sortByBandwidth => 'Ancho de Banda';
 
   @override
-  String get sortByHostname => 'Hostname';
+  String get sortByHostname => 'Nombre de Host';
 
   @override
-  String get sortByIP => 'IP Address';
+  String get sortByIP => 'Dirección IP';
 
   @override
-  String get sortByManufacturer => 'Manufacturer';
+  String get sortByManufacturer => 'Fabricante';
 
   @override
-  String get bandwidthLimit => 'Bandwidth Limit';
+  String get bandwidthLimit => 'Límite de Ancho de Banda';
 
   @override
-  String get bandwidthLimitMbps => 'Bandwidth Limit (Mbps)';
+  String get bandwidthLimitMbps => 'Límite de Ancho de Banda (Mbps)';
 
   @override
   String get enterBandwidthLimit =>
-      'Enter your connection bandwidth limit in Mbps';
+      'Ingrese el límite de ancho de banda de su conexión en Mbps';
 
   @override
-  String get macAddress => 'MAC Address';
+  String get macAddress => 'Dirección MAC';
 
   @override
-  String get monitorInterface => 'Monitor Interface';
+  String get monitorInterface => 'Interfaz de Monitoreo';
 
   @override
   String get selectMultipleInterfaces =>
-      'Select one or more interfaces to monitor';
+      'Seleccione una o más interfaces para monitorear';
 
   @override
-  String get dhcpLeases => 'DHCP Leases';
+  String get dhcpLeases => 'Arrendamientos DHCP';
 
   @override
-  String get searchHostnameIpOrMac => 'Search hostname, IP, or MAC address...';
+  String get searchHostnameIpOrMac => 'Buscar nombre de host, IP o MAC...';
 
   @override
   String leasesCount(int filtered, int total) {
-    return '$filtered of $total lease(s)';
+    return '$filtered de $total arrendamiento(s)';
   }
 
   @override
-  String get noLeasesFound => 'No leases found';
+  String get noLeasesFound => 'No se encontraron arrendamientos';
 
   @override
-  String get all => 'All';
+  String get all => 'Todos';
 
   @override
-  String get active => 'Active';
+  String get active => 'Activo';
 
   @override
-  String get expired => 'Expired';
+  String get expired => 'Expirado';
 
   @override
-  String get expires => 'Expires';
+  String get expires => 'Expira';
 
   @override
-  String get ipAddress => 'IP Address';
+  String get ipAddress => 'Dirección IP';
 
   @override
-  String get blockHost => 'Block Host';
+  String get blockHost => 'Bloquear host';
 
   @override
   String blockHostConfirmation(String hostname, String ip) {
-    return 'Are you sure you want to block $hostname ($ip)?\n\nThis will create a firewall rule to block all traffic from this host.';
+    return '¿Está seguro de que desea bloquear $hostname ($ip)?\n\nEsto creará una regla de firewall para bloquear todo el tráfico de este host.';
   }
 
   @override
-  String get blockingHost => 'Blocking host...';
+  String get blockingHost => 'Bloqueando host...';
 
   @override
-  String get hostBlocked => 'Host blocked successfully';
+  String get hostBlocked => 'Host bloqueado exitosamente';
 
   @override
-  String get failedToBlockHost => 'Failed to block host';
+  String get failedToBlockHost => 'Error al bloquear el host';
 }

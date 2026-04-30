@@ -1337,124 +1337,123 @@ class AppLocalizationsAr extends AppLocalizations {
   String get secondAbbrev => 'ث';
 
   @override
-  String get liveNetworkMonitor => 'Live Network Monitor';
+  String get liveNetworkMonitor => 'مراقب الشبكة المباشر';
 
   @override
-  String get searchHostnameOrIp => 'Search hostname or IP address...';
+  String get searchHostnameOrIp => 'البحث عن اسم المضيف أو عنوان IP...';
 
   @override
   String activeHosts(int count) {
-    return '$count active host(s)';
+    return '$count مضيف نشط';
   }
 
   @override
-  String get noHostsFound => 'No hosts found';
+  String get noHostsFound => 'لم يتم العثور على مضيفين';
 
   @override
-  String get tryDifferentSearch => 'Try a different search term';
+  String get tryDifferentSearch => 'جرب مصطلح بحث مختلف';
 
   @override
-  String get download => 'Download';
+  String get download => 'التنزيل';
 
   @override
-  String get upload => 'Upload';
+  String get upload => 'الرفع';
 
   @override
-  String get totalBandwidth => 'Total Bandwidth';
+  String get totalBandwidth => 'إجمالي النطاق الترددي';
 
   @override
-  String get of1Gbps => 'of 1 Gbps';
+  String get of1Gbps => 'من 1 جيجابت في الثانية';
 
   @override
-  String get networkTotals => 'Network Totals';
+  String get networkTotals => 'إجماليات الشبكة';
 
   @override
-  String get totalDownload => 'Total Download';
+  String get totalDownload => 'إجمالي التنزيل';
 
   @override
-  String get totalUpload => 'Total Upload';
+  String get totalUpload => 'إجمالي الرفع';
 
   @override
-  String get activeDevices => 'Active Devices';
+  String get activeDevices => 'الأجهزة النشطة';
 
   @override
-  String get sortBy => 'Sort By';
+  String get sortBy => 'ترتيب حسب';
 
   @override
-  String get sortByBandwidth => 'Bandwidth';
+  String get sortByBandwidth => 'النطاق الترددي';
 
   @override
-  String get sortByHostname => 'Hostname';
+  String get sortByHostname => 'اسم المضيف';
 
   @override
-  String get sortByIP => 'IP Address';
+  String get sortByIP => 'عنوان IP';
 
   @override
-  String get sortByManufacturer => 'Manufacturer';
+  String get sortByManufacturer => 'الشركة المصنعة';
 
   @override
-  String get bandwidthLimit => 'Bandwidth Limit';
+  String get bandwidthLimit => 'حد النطاق الترددي';
 
   @override
-  String get bandwidthLimitMbps => 'Bandwidth Limit (Mbps)';
+  String get bandwidthLimitMbps => 'حد النطاق الترددي (ميجابت في الثانية)';
 
   @override
   String get enterBandwidthLimit =>
-      'Enter your connection bandwidth limit in Mbps';
+      'أدخل حد النطاق الترددي للاتصال بالميجابت في الثانية';
 
   @override
-  String get macAddress => 'MAC Address';
+  String get macAddress => 'عنوان MAC';
 
   @override
-  String get monitorInterface => 'Monitor Interface';
+  String get monitorInterface => 'واجهة المراقبة';
 
   @override
-  String get selectMultipleInterfaces =>
-      'Select one or more interfaces to monitor';
+  String get selectMultipleInterfaces => 'حدد واجهة واحدة أو أكثر للمراقبة';
 
   @override
-  String get dhcpLeases => 'DHCP Leases';
+  String get dhcpLeases => 'عقود DHCP';
 
   @override
-  String get searchHostnameIpOrMac => 'Search hostname, IP, or MAC address...';
+  String get searchHostnameIpOrMac => 'البحث عن اسم المضيف أو IP أو MAC...';
 
   @override
   String leasesCount(int filtered, int total) {
-    return '$filtered of $total lease(s)';
+    return '$filtered من $total عقد';
   }
 
   @override
-  String get noLeasesFound => 'No leases found';
+  String get noLeasesFound => 'لم يتم العثور على عقود';
 
   @override
-  String get all => 'All';
+  String get all => 'الكل';
 
   @override
-  String get active => 'Active';
+  String get active => 'نشط';
 
   @override
-  String get expired => 'Expired';
+  String get expired => 'منتهي';
 
   @override
-  String get expires => 'Expires';
+  String get expires => 'ينتهي';
 
   @override
-  String get ipAddress => 'IP Address';
+  String get ipAddress => 'عنوان IP';
 
   @override
-  String get blockHost => 'Block Host';
+  String get blockHost => 'حظر المضيف';
 
   @override
   String blockHostConfirmation(String hostname, String ip) {
-    return 'Are you sure you want to block $hostname ($ip)?\n\nThis will create a firewall rule to block all traffic from this host.';
+    return 'هل أنت متأكد من حظر $hostname ($ip)؟\n\nسيؤدي هذا إلى إنشاء قاعدة جدار ناري لحظر جميع حركة المرور من هذا المضيف.';
   }
 
   @override
-  String get blockingHost => 'Blocking host...';
+  String get blockingHost => 'جاري حظر المضيف...';
 
   @override
-  String get hostBlocked => 'Host blocked successfully';
+  String get hostBlocked => 'تم حظر المضيف بنجاح';
 
   @override
-  String get failedToBlockHost => 'Failed to block host';
+  String get failedToBlockHost => 'فشل حظر المضيف';
 }
