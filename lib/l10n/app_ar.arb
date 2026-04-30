@@ -505,6 +505,8 @@
   "expired": "منتهي",
   "expires": "ينتهي",
   "ipAddress": "عنوان IP",
+  "staticLease": "ثابت",
+  "dynamicLease": "ديناميكي",
   
   "blockHost": "حظر المضيف",
   "blockHostConfirmation": "هل أنت متأكد من حظر {hostname} ({ip})؟\n\nسيؤدي هذا إلى إنشاء قاعدة جدار ناري لحظر جميع حركة المرور من هذا المضيف.",

@@ -505,6 +505,9 @@
   "expired": "Expirado",
   "expires": "Expira",
   "ipAddress": "Dirección IP",
+  "staticLease": "Estático",
+  "dynamicLease": "Dinámico",
+  
   
   "blockHost": "Bloquear host",
   "blockHostConfirmation": "¿Está seguro de que desea bloquear {hostname} ({ip})?\n\nEsto creará una regla de firewall para bloquear todo el tráfico de este host.",

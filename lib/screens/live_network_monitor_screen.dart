@@ -688,7 +688,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                           Text(
                             host.address,
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Colors.grey[600],
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                                   fontSize: 11,
                                 ),
                           ),
@@ -712,14 +712,14 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                       Icon(
                         Icons.business,
                         size: 12,
-                        color: Colors.grey[600],
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
                           host.manufacturer!,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Colors.grey[600],
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 fontSize: 11,
                               ),
                           overflow: TextOverflow.ellipsis,
@@ -822,6 +822,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
     final l10n = AppLocalizations.of(context)!;
     // Convert Mbps to bytes per second: Mbps * 1,000,000 / 8
     final maxRate = (_bandwidthLimitMbps * 1000000 / 8).round();
+    final actualPercentage = (totalRate / maxRate) * 100;
     final progress = (totalRate / maxRate).clamp(0.0, 1.0);
     
     return Column(
@@ -833,13 +834,13 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
             Text(
               l10n.totalBandwidth,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.grey[600],
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
             ),
             Text(
-              '${(progress * 100).toStringAsFixed(1)}% of $_bandwidthLimitMbps Mbps',
+              '${actualPercentage.toStringAsFixed(1)}% of $_bandwidthLimitMbps Mbps',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.grey[600],
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.bold,
                   ),
             ),
@@ -1345,7 +1346,7 @@ class SparklinePainter extends CustomPainter {
     
     for (var i = 0; i < data.length; i++) {
       final x = i * stepX;
-      final normalizedValue = data[i] / maxValue;
+      final normalizedValue = (data[i] / maxValue).clamp(0.0, 1.0);
       final y = size.height - (normalizedValue * size.height);
       
       if (i == 0) {
@@ -1393,5 +1394,3 @@ class SparklinePainter extends CustomPainter {
            oldDelegate.color != color;
   }
 }
-
-// Made with Bob

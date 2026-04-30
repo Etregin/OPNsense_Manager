@@ -866,6 +866,8 @@
   "expired": "Expired",
   "expires": "Expires",
   "ipAddress": "IP Address",
+  "staticLease": "Static",
+  "dynamicLease": "Dynamic",
   
   "blockHost": "Block Host",
   "blockHostConfirmation": "Are you sure you want to block {hostname} ({ip})?\n\nThis will create a firewall rule to block all traffic from this host.",

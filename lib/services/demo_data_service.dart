@@ -405,6 +405,7 @@ class DemoDataService {
         'expire': now.add(const Duration(hours: 24)).millisecondsSinceEpoch ~/ 1000,
         'state': 'active',
         'if': 'lan',
+        'type': 'static',
       },
       {
         'address': '192.168.1.15',
@@ -416,6 +417,7 @@ class DemoDataService {
         'expire': now.add(const Duration(hours: 12)).millisecondsSinceEpoch ~/ 1000,
         'state': 'active',
         'if': 'lan',
+        'type': 'dynamic',
       },
       {
         'address': '192.168.1.20',
@@ -427,6 +429,7 @@ class DemoDataService {
         'expire': now.add(const Duration(hours: 24)).millisecondsSinceEpoch ~/ 1000,
         'state': 'active',
         'if': 'lan',
+        'type': 'dynamic',
       },
       {
         'address': '192.168.1.25',
@@ -438,6 +441,7 @@ class DemoDataService {
         'expire': now.add(const Duration(hours: 16)).millisecondsSinceEpoch ~/ 1000,
         'state': 'active',
         'if': 'lan',
+        'type': 'dynamic',
       },
       {
         'address': '192.168.1.30',
@@ -449,6 +453,7 @@ class DemoDataService {
         'expire': now.add(const Duration(days: 7)).millisecondsSinceEpoch ~/ 1000,
         'state': 'active',
         'if': 'lan',
+        'type': 'static',
       },
       {
         'address': '192.168.1.35',
@@ -460,6 +465,7 @@ class DemoDataService {
         'expire': now.add(const Duration(hours: 6)).millisecondsSinceEpoch ~/ 1000,
         'state': 'active',
         'if': 'lan',
+        'type': 'dynamic',
       },
       {
         'address': '192.168.1.40',
@@ -471,6 +477,7 @@ class DemoDataService {
         'expire': now.add(const Duration(days: 30)).millisecondsSinceEpoch ~/ 1000,
         'state': 'active',
         'if': 'lan',
+        'type': 'static',
       },
       {
         'address': '192.168.1.45',
@@ -482,6 +489,7 @@ class DemoDataService {
         'expire': now.add(const Duration(days: 90)).millisecondsSinceEpoch ~/ 1000,
         'state': 'active',
         'if': 'lan',
+        'type': 'static',
       },
       {
         'address': '192.168.1.50',
@@ -493,6 +501,7 @@ class DemoDataService {
         'expire': now.add(const Duration(hours: 18)).millisecondsSinceEpoch ~/ 1000,
         'state': 'active',
         'if': 'lan',
+        'type': 'dynamic',
       },
       {
         'address': '192.168.1.100',
@@ -504,6 +513,7 @@ class DemoDataService {
         'expire': now.subtract(const Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000,
         'state': 'expired',
         'if': 'lan',
+        'type': 'dynamic',
       },
       {
         'address': '192.168.1.101',

@@ -157,5 +157,3 @@ class NetworkHost {
     );
   }
 }
-
-// Made with Bob

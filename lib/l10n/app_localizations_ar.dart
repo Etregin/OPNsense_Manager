@@ -1441,6 +1441,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ipAddress => 'عنوان IP';
 
   @override
+  String get staticLease => 'ثابت';
+
+  @override
+  String get dynamicLease => 'ديناميكي';
+
+  @override
   String get blockHost => 'حظر المضيف';
 
   @override

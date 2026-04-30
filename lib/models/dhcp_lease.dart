@@ -53,9 +53,12 @@ class DhcpLease {
   @JsonKey(name: 'cltt')
   final int? clientLastTransactionTime;
   
-  /// Whether this is a static mapping
+  /// Network interface
   @JsonKey(name: 'if')
   final String? interface;
+  
+  /// Lease type (static or dynamic)
+  final String? type;
 
   DhcpLease({
     required this.address,
@@ -68,6 +71,7 @@ class DhcpLease {
     this.state,
     this.clientLastTransactionTime,
     this.interface,
+    this.type,
   });
 
   factory DhcpLease.fromJson(Map<String, dynamic> json) =>
@@ -104,6 +108,9 @@ class DhcpLease {
   bool get isActive {
     return state?.toLowerCase() == 'active' || !isExpired;
   }
+  
+  /// Check if this is a static lease
+  bool get isStatic {
+    return type?.toLowerCase() == 'static';
+  }
 }
-
-// Made with Bob

@@ -1459,6 +1459,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get ipAddress => 'IP-Adresse';
 
   @override
+  String get staticLease => 'Statisch';
+
+  @override
+  String get dynamicLease => 'Dynamisch';
+
+  @override
   String get blockHost => 'Host blockieren';
 
   @override

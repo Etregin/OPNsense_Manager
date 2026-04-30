@@ -2678,6 +2678,18 @@ abstract class AppLocalizations {
   /// **'IP Address'**
   String get ipAddress;
 
+  /// No description provided for @staticLease.
+  ///
+  /// In en, this message translates to:
+  /// **'Static'**
+  String get staticLease;
+
+  /// No description provided for @dynamicLease.
+  ///
+  /// In en, this message translates to:
+  /// **'Dynamic'**
+  String get dynamicLease;
+
   /// No description provided for @blockHost.
   ///
   /// In en, this message translates to:

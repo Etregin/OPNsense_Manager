@@ -17,6 +17,7 @@ DhcpLease _$DhcpLeaseFromJson(Map<String, dynamic> json) => DhcpLease(
   state: json['state'] as String?,
   clientLastTransactionTime: (json['cltt'] as num?)?.toInt(),
   interface: json['if'] as String?,
+  type: json['type'] as String?,
 );
 
 Map<String, dynamic> _$DhcpLeaseToJson(DhcpLease instance) => <String, dynamic>{
@@ -30,4 +31,5 @@ Map<String, dynamic> _$DhcpLeaseToJson(DhcpLease instance) => <String, dynamic>{
   'state': instance.state,
   'cltt': instance.clientLastTransactionTime,
   'if': instance.interface,
+  'type': instance.type,
 };

@@ -17,5 +17,3 @@ class MainActivity : FlutterFragmentActivity() {
         }
     }
 }
-
-// Made with Bob

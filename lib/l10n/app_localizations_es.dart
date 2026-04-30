@@ -1461,6 +1461,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ipAddress => 'Dirección IP';
 
   @override
+  String get staticLease => 'Estático';
+
+  @override
+  String get dynamicLease => 'Dinámico';
+
+  @override
   String get blockHost => 'Bloquear host';
 
   @override

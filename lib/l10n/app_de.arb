@@ -505,6 +505,8 @@
   "expired": "Abgelaufen",
   "expires": "Läuft ab",
   "ipAddress": "IP-Adresse",
+  "staticLease": "Statisch",
+  "dynamicLease": "Dynamisch",
   
   "blockHost": "Host blockieren",
   "blockHostConfirmation": "Möchten Sie {hostname} ({ip}) wirklich blockieren?\n\nDies erstellt eine Firewall-Regel, um den gesamten Datenverkehr von diesem Host zu blockieren.",
