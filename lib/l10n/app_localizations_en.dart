@@ -1446,4 +1446,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ipAddress => 'IP Address';
+
+  @override
+  String get blockHost => 'Block Host';
+
+  @override
+  String blockHostConfirmation(String hostname, String ip) {
+    return 'Are you sure you want to block $hostname ($ip)?\n\nThis will create a firewall rule to block all traffic from this host.';
+  }
+
+  @override
+  String get blockingHost => 'Blocking host...';
+
+  @override
+  String get hostBlocked => 'Host blocked successfully';
+
+  @override
+  String get failedToBlockHost => 'Failed to block host';
 }

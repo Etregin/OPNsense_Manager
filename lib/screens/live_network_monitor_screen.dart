@@ -21,6 +21,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/network_host.dart';
+import '../models/firewall_rule.dart';
 import '../services/demo_api_service.dart';
 import '../services/storage_service.dart';
 import '../utils/constants.dart';
@@ -933,6 +934,17 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
             onPressed: () => Navigator.of(context).pop(),
             child: Text(l10n.close),
           ),
+          TextButton.icon(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _blockHost(host);
+            },
+            icon: const Icon(Icons.block, color: Colors.red),
+            label: Text(
+              l10n.blockHost,
+              style: const TextStyle(color: Colors.red),
+            ),
+          ),
         ],
       ),
     );
@@ -965,6 +977,98 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _blockHost(NetworkHost host) async {
+    final l10n = AppLocalizations.of(context)!;
+    
+    // Show confirmation dialog
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            const Icon(Icons.block, color: Colors.red),
+            const SizedBox(width: 8),
+            Text(l10n.blockHost),
+          ],
+        ),
+        content: Text(
+          l10n.blockHostConfirmation(host.hostname, host.address),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: Text(l10n.blockHost),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    // Show loading indicator
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.blockingHost),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
+
+    if (!mounted) return;
+    
+    try {
+      final demoApiService = context.read<DemoApiService>();
+      
+      // Create a firewall rule to block the host
+      // The rule will block all traffic from the source IP
+      final request = FirewallRuleRequest(
+        type: 'block',
+        interfaceName: 'lan',
+        protocol: 'any',
+        source: host.address,
+        destination: 'any',
+        destinationPort: '',
+        description: 'Block ${host.hostname} (${host.address}) - Created from Live Network Monitor',
+        enabled: '1',
+      );
+      
+      await demoApiService.createFirewallRule(request);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.hostBlocked),
+            backgroundColor: Colors.green,
+            action: SnackBarAction(
+              label: l10n.ok,
+              textColor: Colors.white,
+              onPressed: () {},
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${l10n.failedToBlockHost}: $e'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+    }
   }
 
   void _showSettingsDialog() {

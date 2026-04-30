@@ -2677,6 +2677,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'IP Address'**
   String get ipAddress;
+
+  /// No description provided for @blockHost.
+  ///
+  /// In en, this message translates to:
+  /// **'Block Host'**
+  String get blockHost;
+
+  /// No description provided for @blockHostConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to block {hostname} ({ip})?\n\nThis will create a firewall rule to block all traffic from this host.'**
+  String blockHostConfirmation(String hostname, String ip);
+
+  /// No description provided for @blockingHost.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocking host...'**
+  String get blockingHost;
+
+  /// No description provided for @hostBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Host blocked successfully'**
+  String get hostBlocked;
+
+  /// No description provided for @failedToBlockHost.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to block host'**
+  String get failedToBlockHost;
 }
 
 class _AppLocalizationsDelegate

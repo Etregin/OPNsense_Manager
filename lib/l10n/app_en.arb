@@ -865,5 +865,21 @@
   "active": "Active",
   "expired": "Expired",
   "expires": "Expires",
-  "ipAddress": "IP Address"
+  "ipAddress": "IP Address",
+  
+  "blockHost": "Block Host",
+  "blockHostConfirmation": "Are you sure you want to block {hostname} ({ip})?\n\nThis will create a firewall rule to block all traffic from this host.",
+  "@blockHostConfirmation": {
+    "placeholders": {
+      "hostname": {
+        "type": "String"
+      },
+      "ip": {
+        "type": "String"
+      }
+    }
+  },
+  "blockingHost": "Blocking host...",
+  "hostBlocked": "Host blocked successfully",
+  "failedToBlockHost": "Failed to block host"
 }
