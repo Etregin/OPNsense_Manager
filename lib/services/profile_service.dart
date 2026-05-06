@@ -198,6 +198,40 @@ class ProfileService {
     return null;
   }
 
+  // ==================== Demo Profile ====================
+
+  /// Create a demo profile
+  Future<Profile> createDemoProfile() async {
+    const demoId = 'demo-profile';
+    
+    // Check if demo profile already exists
+    final existingDemo = await getProfile(demoId);
+    if (existingDemo != null) {
+      return existingDemo;
+    }
+
+    final demoProfile = Profile(
+      id: demoId,
+      name: 'Demo Mode',
+      host: 'demo.opnsense.local',
+      port: 443,
+      apiKey: 'demo-key',
+      apiSecret: 'demo-secret',
+      useHttps: true,
+      isDemo: true,
+      createdAt: DateTime.now(),
+      lastUsed: DateTime.now(),
+    );
+
+    await saveProfile(demoProfile);
+    return demoProfile;
+  }
+
+  /// Check if a profile is a demo profile
+  bool isDemoProfile(Profile profile) {
+    return profile.isDemo;
+  }
+
   // ==================== Migration from Old Storage ====================
 
   /// Migrate from old single-config storage to profile-based storage

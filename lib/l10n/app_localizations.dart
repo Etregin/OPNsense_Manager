@@ -659,7 +659,7 @@ abstract class AppLocalizations {
   /// No description provided for @live.
   ///
   /// In en, this message translates to:
-  /// **'Live'**
+  /// **'LIVE'**
   String get live;
 
   /// No description provided for @entries.
@@ -2479,6 +2479,246 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'s'**
   String get secondAbbrev;
+
+  /// No description provided for @liveNetworkMonitor.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Network Monitor'**
+  String get liveNetworkMonitor;
+
+  /// No description provided for @searchHostnameOrIp.
+  ///
+  /// In en, this message translates to:
+  /// **'Search hostname or IP address...'**
+  String get searchHostnameOrIp;
+
+  /// No description provided for @activeHosts.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} active host(s)'**
+  String activeHosts(int count);
+
+  /// No description provided for @noHostsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No hosts found'**
+  String get noHostsFound;
+
+  /// No description provided for @tryDifferentSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different search term'**
+  String get tryDifferentSearch;
+
+  /// No description provided for @download.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get download;
+
+  /// No description provided for @upload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get upload;
+
+  /// No description provided for @totalBandwidth.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Bandwidth'**
+  String get totalBandwidth;
+
+  /// No description provided for @of1Gbps.
+  ///
+  /// In en, this message translates to:
+  /// **'of 1 Gbps'**
+  String get of1Gbps;
+
+  /// No description provided for @networkTotals.
+  ///
+  /// In en, this message translates to:
+  /// **'Network Totals'**
+  String get networkTotals;
+
+  /// No description provided for @totalDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Download'**
+  String get totalDownload;
+
+  /// No description provided for @totalUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Upload'**
+  String get totalUpload;
+
+  /// No description provided for @activeDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Devices'**
+  String get activeDevices;
+
+  /// No description provided for @sortBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort By'**
+  String get sortBy;
+
+  /// No description provided for @sortByBandwidth.
+  ///
+  /// In en, this message translates to:
+  /// **'Bandwidth'**
+  String get sortByBandwidth;
+
+  /// No description provided for @sortByHostname.
+  ///
+  /// In en, this message translates to:
+  /// **'Hostname'**
+  String get sortByHostname;
+
+  /// No description provided for @sortByIP.
+  ///
+  /// In en, this message translates to:
+  /// **'IP Address'**
+  String get sortByIP;
+
+  /// No description provided for @sortByManufacturer.
+  ///
+  /// In en, this message translates to:
+  /// **'Manufacturer'**
+  String get sortByManufacturer;
+
+  /// No description provided for @bandwidthLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Bandwidth Limit'**
+  String get bandwidthLimit;
+
+  /// No description provided for @bandwidthLimitMbps.
+  ///
+  /// In en, this message translates to:
+  /// **'Bandwidth Limit (Mbps)'**
+  String get bandwidthLimitMbps;
+
+  /// No description provided for @enterBandwidthLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your connection bandwidth limit in Mbps'**
+  String get enterBandwidthLimit;
+
+  /// No description provided for @macAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'MAC Address'**
+  String get macAddress;
+
+  /// No description provided for @monitorInterface.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitor Interface'**
+  String get monitorInterface;
+
+  /// No description provided for @selectMultipleInterfaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Select one or more interfaces to monitor'**
+  String get selectMultipleInterfaces;
+
+  /// No description provided for @dhcpLeases.
+  ///
+  /// In en, this message translates to:
+  /// **'DHCP Leases'**
+  String get dhcpLeases;
+
+  /// No description provided for @searchHostnameIpOrMac.
+  ///
+  /// In en, this message translates to:
+  /// **'Search hostname, IP, or MAC address...'**
+  String get searchHostnameIpOrMac;
+
+  /// No description provided for @leasesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{filtered} of {total} lease(s)'**
+  String leasesCount(int filtered, int total);
+
+  /// No description provided for @noLeasesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No leases found'**
+  String get noLeasesFound;
+
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
+  /// No description provided for @active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get active;
+
+  /// No description provided for @expired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get expired;
+
+  /// No description provided for @expires.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires'**
+  String get expires;
+
+  /// No description provided for @ipAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'IP Address'**
+  String get ipAddress;
+
+  /// No description provided for @staticLease.
+  ///
+  /// In en, this message translates to:
+  /// **'Static'**
+  String get staticLease;
+
+  /// No description provided for @dynamicLease.
+  ///
+  /// In en, this message translates to:
+  /// **'Dynamic'**
+  String get dynamicLease;
+
+  /// No description provided for @blockHost.
+  ///
+  /// In en, this message translates to:
+  /// **'Block Host'**
+  String get blockHost;
+
+  /// No description provided for @blockHostConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to block {hostname} ({ip})?\n\nThis will create a firewall rule to block all traffic from this host.'**
+  String blockHostConfirmation(String hostname, String ip);
+
+  /// No description provided for @blockingHost.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocking host...'**
+  String get blockingHost;
+
+  /// No description provided for @hostBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Host blocked successfully'**
+  String get hostBlocked;
+
+  /// No description provided for @failedToBlockHost.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to block host'**
+  String get failedToBlockHost;
 }
 
 class _AppLocalizationsDelegate

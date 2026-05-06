@@ -1352,4 +1352,132 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get secondAbbrev => 's';
+
+  @override
+  String get liveNetworkMonitor => 'Live-Netzwerkmonitor';
+
+  @override
+  String get searchHostnameOrIp => 'Hostname oder IP-Adresse suchen...';
+
+  @override
+  String activeHosts(int count) {
+    return '$count aktive(r) Host(s)';
+  }
+
+  @override
+  String get noHostsFound => 'Keine Hosts gefunden';
+
+  @override
+  String get tryDifferentSearch => 'Versuchen Sie einen anderen Suchbegriff';
+
+  @override
+  String get download => 'Download';
+
+  @override
+  String get upload => 'Upload';
+
+  @override
+  String get totalBandwidth => 'Gesamtbandbreite';
+
+  @override
+  String get of1Gbps => 'von 1 Gbps';
+
+  @override
+  String get networkTotals => 'Netzwerk-Summen';
+
+  @override
+  String get totalDownload => 'Gesamt-Download';
+
+  @override
+  String get totalUpload => 'Gesamt-Upload';
+
+  @override
+  String get activeDevices => 'Aktive Geräte';
+
+  @override
+  String get sortBy => 'Sortieren nach';
+
+  @override
+  String get sortByBandwidth => 'Bandbreite';
+
+  @override
+  String get sortByHostname => 'Hostname';
+
+  @override
+  String get sortByIP => 'IP-Adresse';
+
+  @override
+  String get sortByManufacturer => 'Hersteller';
+
+  @override
+  String get bandwidthLimit => 'Bandbreitenlimit';
+
+  @override
+  String get bandwidthLimitMbps => 'Bandbreitenlimit (Mbps)';
+
+  @override
+  String get enterBandwidthLimit =>
+      'Geben Sie Ihr Verbindungsbandbreitenlimit in Mbps ein';
+
+  @override
+  String get macAddress => 'MAC-Adresse';
+
+  @override
+  String get monitorInterface => 'Überwachungsschnittstelle';
+
+  @override
+  String get selectMultipleInterfaces =>
+      'Wählen Sie eine oder mehrere Schnittstellen zur Überwachung aus';
+
+  @override
+  String get dhcpLeases => 'DHCP-Leases';
+
+  @override
+  String get searchHostnameIpOrMac => 'Hostname, IP oder MAC suchen...';
+
+  @override
+  String leasesCount(int filtered, int total) {
+    return '$filtered von $total Lease(s)';
+  }
+
+  @override
+  String get noLeasesFound => 'Keine Leases gefunden';
+
+  @override
+  String get all => 'Alle';
+
+  @override
+  String get active => 'Aktiv';
+
+  @override
+  String get expired => 'Abgelaufen';
+
+  @override
+  String get expires => 'Läuft ab';
+
+  @override
+  String get ipAddress => 'IP-Adresse';
+
+  @override
+  String get staticLease => 'Statisch';
+
+  @override
+  String get dynamicLease => 'Dynamisch';
+
+  @override
+  String get blockHost => 'Host blockieren';
+
+  @override
+  String blockHostConfirmation(String hostname, String ip) {
+    return 'Möchten Sie $hostname ($ip) wirklich blockieren?\n\nDies erstellt eine Firewall-Regel, um den gesamten Datenverkehr von diesem Host zu blockieren.';
+  }
+
+  @override
+  String get blockingHost => 'Host wird blockiert...';
+
+  @override
+  String get hostBlocked => 'Host erfolgreich blockiert';
+
+  @override
+  String get failedToBlockHost => 'Host konnte nicht blockiert werden';
 }

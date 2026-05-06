@@ -810,5 +810,78 @@
   
   "hourAbbrev": "h",
   "minuteAbbrev": "m",
-  "secondAbbrev": "s"
+  "secondAbbrev": "s",
+  
+  "liveNetworkMonitor": "Live Network Monitor",
+  "searchHostnameOrIp": "Search hostname or IP address...",
+  "activeHosts": "{count} active host(s)",
+  "@activeHosts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "live": "LIVE",
+  "noHostsFound": "No hosts found",
+  "tryDifferentSearch": "Try a different search term",
+  "download": "Download",
+  "upload": "Upload",
+  "totalBandwidth": "Total Bandwidth",
+  "of1Gbps": "of 1 Gbps",
+  "systemInformation": "System Information",
+  "networkTotals": "Network Totals",
+  "totalDownload": "Total Download",
+  "totalUpload": "Total Upload",
+  "activeDevices": "Active Devices",
+  "sortBy": "Sort By",
+  "sortByBandwidth": "Bandwidth",
+  "sortByHostname": "Hostname",
+  "sortByIP": "IP Address",
+  "sortByManufacturer": "Manufacturer",
+  "bandwidthLimit": "Bandwidth Limit",
+  "bandwidthLimitMbps": "Bandwidth Limit (Mbps)",
+  "enterBandwidthLimit": "Enter your connection bandwidth limit in Mbps",
+  "macAddress": "MAC Address",
+  "monitorInterface": "Monitor Interface",
+  "selectInterface": "Select Interface",
+  "selectMultipleInterfaces": "Select one or more interfaces to monitor",
+  
+  "dhcpLeases": "DHCP Leases",
+  "searchHostnameIpOrMac": "Search hostname, IP, or MAC address...",
+  "leasesCount": "{filtered} of {total} lease(s)",
+  "@leasesCount": {
+    "placeholders": {
+      "filtered": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "noLeasesFound": "No leases found",
+  "all": "All",
+  "active": "Active",
+  "expired": "Expired",
+  "expires": "Expires",
+  "ipAddress": "IP Address",
+  "staticLease": "Static",
+  "dynamicLease": "Dynamic",
+  
+  "blockHost": "Block Host",
+  "blockHostConfirmation": "Are you sure you want to block {hostname} ({ip})?\n\nThis will create a firewall rule to block all traffic from this host.",
+  "@blockHostConfirmation": {
+    "placeholders": {
+      "hostname": {
+        "type": "String"
+      },
+      "ip": {
+        "type": "String"
+      }
+    }
+  },
+  "blockingHost": "Blocking host...",
+  "hostBlocked": "Host blocked successfully",
+  "failedToBlockHost": "Failed to block host"
 }

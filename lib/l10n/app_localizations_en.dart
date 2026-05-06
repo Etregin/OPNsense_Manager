@@ -286,7 +286,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paused => 'Paused';
 
   @override
-  String get live => 'Live';
+  String get live => 'LIVE';
 
   @override
   String get entries => 'entries';
@@ -1341,4 +1341,132 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get secondAbbrev => 's';
+
+  @override
+  String get liveNetworkMonitor => 'Live Network Monitor';
+
+  @override
+  String get searchHostnameOrIp => 'Search hostname or IP address...';
+
+  @override
+  String activeHosts(int count) {
+    return '$count active host(s)';
+  }
+
+  @override
+  String get noHostsFound => 'No hosts found';
+
+  @override
+  String get tryDifferentSearch => 'Try a different search term';
+
+  @override
+  String get download => 'Download';
+
+  @override
+  String get upload => 'Upload';
+
+  @override
+  String get totalBandwidth => 'Total Bandwidth';
+
+  @override
+  String get of1Gbps => 'of 1 Gbps';
+
+  @override
+  String get networkTotals => 'Network Totals';
+
+  @override
+  String get totalDownload => 'Total Download';
+
+  @override
+  String get totalUpload => 'Total Upload';
+
+  @override
+  String get activeDevices => 'Active Devices';
+
+  @override
+  String get sortBy => 'Sort By';
+
+  @override
+  String get sortByBandwidth => 'Bandwidth';
+
+  @override
+  String get sortByHostname => 'Hostname';
+
+  @override
+  String get sortByIP => 'IP Address';
+
+  @override
+  String get sortByManufacturer => 'Manufacturer';
+
+  @override
+  String get bandwidthLimit => 'Bandwidth Limit';
+
+  @override
+  String get bandwidthLimitMbps => 'Bandwidth Limit (Mbps)';
+
+  @override
+  String get enterBandwidthLimit =>
+      'Enter your connection bandwidth limit in Mbps';
+
+  @override
+  String get macAddress => 'MAC Address';
+
+  @override
+  String get monitorInterface => 'Monitor Interface';
+
+  @override
+  String get selectMultipleInterfaces =>
+      'Select one or more interfaces to monitor';
+
+  @override
+  String get dhcpLeases => 'DHCP Leases';
+
+  @override
+  String get searchHostnameIpOrMac => 'Search hostname, IP, or MAC address...';
+
+  @override
+  String leasesCount(int filtered, int total) {
+    return '$filtered of $total lease(s)';
+  }
+
+  @override
+  String get noLeasesFound => 'No leases found';
+
+  @override
+  String get all => 'All';
+
+  @override
+  String get active => 'Active';
+
+  @override
+  String get expired => 'Expired';
+
+  @override
+  String get expires => 'Expires';
+
+  @override
+  String get ipAddress => 'IP Address';
+
+  @override
+  String get staticLease => 'Static';
+
+  @override
+  String get dynamicLease => 'Dynamic';
+
+  @override
+  String get blockHost => 'Block Host';
+
+  @override
+  String blockHostConfirmation(String hostname, String ip) {
+    return 'Are you sure you want to block $hostname ($ip)?\n\nThis will create a firewall rule to block all traffic from this host.';
+  }
+
+  @override
+  String get blockingHost => 'Blocking host...';
+
+  @override
+  String get hostBlocked => 'Host blocked successfully';
+
+  @override
+  String get failedToBlockHost => 'Failed to block host';
 }

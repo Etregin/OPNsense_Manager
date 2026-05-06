@@ -1353,4 +1353,132 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get secondAbbrev => 's';
+
+  @override
+  String get liveNetworkMonitor => 'Moniteur Réseau en Direct';
+
+  @override
+  String get searchHostnameOrIp => 'Rechercher nom d\'hôte ou adresse IP...';
+
+  @override
+  String activeHosts(int count) {
+    return '$count hôte(s) actif(s)';
+  }
+
+  @override
+  String get noHostsFound => 'Aucun hôte trouvé';
+
+  @override
+  String get tryDifferentSearch => 'Essayez un terme de recherche différent';
+
+  @override
+  String get download => 'Téléchargement';
+
+  @override
+  String get upload => 'Envoi';
+
+  @override
+  String get totalBandwidth => 'Bande Passante Totale';
+
+  @override
+  String get of1Gbps => 'sur 1 Gbps';
+
+  @override
+  String get networkTotals => 'Totaux Réseau';
+
+  @override
+  String get totalDownload => 'Téléchargement Total';
+
+  @override
+  String get totalUpload => 'Envoi Total';
+
+  @override
+  String get activeDevices => 'Appareils Actifs';
+
+  @override
+  String get sortBy => 'Trier par';
+
+  @override
+  String get sortByBandwidth => 'Bande Passante';
+
+  @override
+  String get sortByHostname => 'Nom d\'Hôte';
+
+  @override
+  String get sortByIP => 'Adresse IP';
+
+  @override
+  String get sortByManufacturer => 'Fabricant';
+
+  @override
+  String get bandwidthLimit => 'Limite de Bande Passante';
+
+  @override
+  String get bandwidthLimitMbps => 'Limite de Bande Passante (Mbps)';
+
+  @override
+  String get enterBandwidthLimit =>
+      'Entrez la limite de bande passante de votre connexion en Mbps';
+
+  @override
+  String get macAddress => 'Adresse MAC';
+
+  @override
+  String get monitorInterface => 'Interface de Surveillance';
+
+  @override
+  String get selectMultipleInterfaces =>
+      'Sélectionnez une ou plusieurs interfaces à surveiller';
+
+  @override
+  String get dhcpLeases => 'Baux DHCP';
+
+  @override
+  String get searchHostnameIpOrMac => 'Rechercher nom d\'hôte, IP ou MAC...';
+
+  @override
+  String leasesCount(int filtered, int total) {
+    return '$filtered sur $total bail/baux';
+  }
+
+  @override
+  String get noLeasesFound => 'Aucun bail trouvé';
+
+  @override
+  String get all => 'Tous';
+
+  @override
+  String get active => 'Actif';
+
+  @override
+  String get expired => 'Expiré';
+
+  @override
+  String get expires => 'Expire';
+
+  @override
+  String get ipAddress => 'Adresse IP';
+
+  @override
+  String get staticLease => 'Statique';
+
+  @override
+  String get dynamicLease => 'Dynamique';
+
+  @override
+  String get blockHost => 'Bloquer l\'hôte';
+
+  @override
+  String blockHostConfirmation(String hostname, String ip) {
+    return 'Êtes-vous sûr de vouloir bloquer $hostname ($ip)?\n\nCela créera une règle de pare-feu pour bloquer tout le trafic de cet hôte.';
+  }
+
+  @override
+  String get blockingHost => 'Blocage de l\'hôte...';
+
+  @override
+  String get hostBlocked => 'Hôte bloqué avec succès';
+
+  @override
+  String get failedToBlockHost => 'Échec du blocage de l\'hôte';
 }

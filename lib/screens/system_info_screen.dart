@@ -20,7 +20,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/system_info.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import '../utils/constants.dart';
 import '../utils/formatters.dart';
 import '../widgets/app_drawer.dart';
@@ -52,8 +52,8 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
     });
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
-      final systemInfo = await apiService.getSystemInfo();
+      final demoApiService = context.read<DemoApiService>();
+      final systemInfo = await demoApiService.getSystemInfo();
 
       if (mounted) {
         setState(() {

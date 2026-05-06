@@ -32,6 +32,7 @@ class Profile {
   final String apiKey;
   final String apiSecret;
   final bool useHttps;
+  final bool isDemo;
   final DateTime createdAt;
   final DateTime? lastUsed;
 
@@ -43,6 +44,7 @@ class Profile {
     required this.apiKey,
     required this.apiSecret,
     required this.useHttps,
+    this.isDemo = false,
     required this.createdAt,
     this.lastUsed,
   });
@@ -56,6 +58,7 @@ class Profile {
     String? apiKey,
     String? apiSecret,
     bool? useHttps,
+    bool? isDemo,
     DateTime? createdAt,
     DateTime? lastUsed,
   }) {
@@ -67,6 +70,7 @@ class Profile {
       apiKey: apiKey ?? this.apiKey,
       apiSecret: apiSecret ?? this.apiSecret,
       useHttps: useHttps ?? this.useHttps,
+      isDemo: isDemo ?? this.isDemo,
       createdAt: createdAt ?? this.createdAt,
       lastUsed: lastUsed ?? this.lastUsed,
     );

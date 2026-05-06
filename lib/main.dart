@@ -17,11 +17,13 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'screens/splash_screen.dart';
 import 'services/storage_service.dart';
 import 'services/opnsense_api_service.dart';
+import 'services/demo_api_service.dart';
 import 'services/auth_service.dart';
 import 'services/profile_service.dart';
 import 'utils/constants.dart';
@@ -29,6 +31,22 @@ import 'l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Enable edge-to-edge display for proper Android 15+ support
+  // This makes the app draw behind system bars (status bar and navigation bar)
+  SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.edgeToEdge,
+  );
+  
+  // Set system UI overlay style to be transparent
+  // This removes the deprecated status bar and navigation bar colors
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+    ),
+  );
   
   // Initialize services in parallel for faster startup
   await Future.wait([
@@ -146,6 +164,9 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
         ),
         Provider<OPNsenseApiService>(
           create: (_) => OPNsenseApiService(),
+        ),
+        ProxyProvider<OPNsenseApiService, DemoApiService>(
+          update: (_, apiService, previous) => previous ?? DemoApiService(apiService),
         ),
         Provider<AuthService>(
           create: (_) => AuthService(),

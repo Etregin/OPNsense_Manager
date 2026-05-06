@@ -23,6 +23,7 @@ import 'package:uuid/uuid.dart';
 import '../models/opnsense_config.dart';
 import '../models/profile.dart';
 import '../services/profile_service.dart';
+import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../utils/constants.dart';
 import '../utils/validators.dart';
@@ -79,12 +80,15 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       // Initialize API service
-      final apiService = context.read<OPNsenseApiService>();
-      apiService.init(config);
-
+      final demoApiService = context.read<DemoApiService>();
+      final realApiService = context.read<OPNsenseApiService>();
+      
+      // Disable demo mode and initialize real API service
+      demoApiService.setDemoMode(false);
+      realApiService.init(config);
 
       // Test connection
-      final isConnected = await apiService.testConnection();
+      final isConnected = await demoApiService.testConnection();
 
       if (!mounted) return;
 
@@ -121,18 +125,11 @@ class _LoginScreenState extends State<LoginScreen> {
           _isLoading = false;
         });
       }
-    } on ApiException catch (e) {
-      if (!mounted) return;
-      final l10n = AppLocalizations.of(context)!;
-      setState(() {
-        _errorMessage = l10n.apiError(e.message);
-        _isLoading = false;
-      });
     } catch (e) {
       if (!mounted) return;
       final l10n = AppLocalizations.of(context)!;
       setState(() {
-        _errorMessage = l10n.errorPrefix(e.toString());
+        _errorMessage = l10n.apiError(e.toString());
         _isLoading = false;
       });
     }

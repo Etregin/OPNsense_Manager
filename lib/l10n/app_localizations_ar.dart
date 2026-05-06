@@ -1335,4 +1335,131 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get secondAbbrev => 'ث';
+
+  @override
+  String get liveNetworkMonitor => 'مراقب الشبكة المباشر';
+
+  @override
+  String get searchHostnameOrIp => 'البحث عن اسم المضيف أو عنوان IP...';
+
+  @override
+  String activeHosts(int count) {
+    return '$count مضيف نشط';
+  }
+
+  @override
+  String get noHostsFound => 'لم يتم العثور على مضيفين';
+
+  @override
+  String get tryDifferentSearch => 'جرب مصطلح بحث مختلف';
+
+  @override
+  String get download => 'التنزيل';
+
+  @override
+  String get upload => 'الرفع';
+
+  @override
+  String get totalBandwidth => 'إجمالي النطاق الترددي';
+
+  @override
+  String get of1Gbps => 'من 1 جيجابت في الثانية';
+
+  @override
+  String get networkTotals => 'إجماليات الشبكة';
+
+  @override
+  String get totalDownload => 'إجمالي التنزيل';
+
+  @override
+  String get totalUpload => 'إجمالي الرفع';
+
+  @override
+  String get activeDevices => 'الأجهزة النشطة';
+
+  @override
+  String get sortBy => 'ترتيب حسب';
+
+  @override
+  String get sortByBandwidth => 'النطاق الترددي';
+
+  @override
+  String get sortByHostname => 'اسم المضيف';
+
+  @override
+  String get sortByIP => 'عنوان IP';
+
+  @override
+  String get sortByManufacturer => 'الشركة المصنعة';
+
+  @override
+  String get bandwidthLimit => 'حد النطاق الترددي';
+
+  @override
+  String get bandwidthLimitMbps => 'حد النطاق الترددي (ميجابت في الثانية)';
+
+  @override
+  String get enterBandwidthLimit =>
+      'أدخل حد النطاق الترددي للاتصال بالميجابت في الثانية';
+
+  @override
+  String get macAddress => 'عنوان MAC';
+
+  @override
+  String get monitorInterface => 'واجهة المراقبة';
+
+  @override
+  String get selectMultipleInterfaces => 'حدد واجهة واحدة أو أكثر للمراقبة';
+
+  @override
+  String get dhcpLeases => 'عقود DHCP';
+
+  @override
+  String get searchHostnameIpOrMac => 'البحث عن اسم المضيف أو IP أو MAC...';
+
+  @override
+  String leasesCount(int filtered, int total) {
+    return '$filtered من $total عقد';
+  }
+
+  @override
+  String get noLeasesFound => 'لم يتم العثور على عقود';
+
+  @override
+  String get all => 'الكل';
+
+  @override
+  String get active => 'نشط';
+
+  @override
+  String get expired => 'منتهي';
+
+  @override
+  String get expires => 'ينتهي';
+
+  @override
+  String get ipAddress => 'عنوان IP';
+
+  @override
+  String get staticLease => 'ثابت';
+
+  @override
+  String get dynamicLease => 'ديناميكي';
+
+  @override
+  String get blockHost => 'حظر المضيف';
+
+  @override
+  String blockHostConfirmation(String hostname, String ip) {
+    return 'هل أنت متأكد من حظر $hostname ($ip)؟\n\nسيؤدي هذا إلى إنشاء قاعدة جدار ناري لحظر جميع حركة المرور من هذا المضيف.';
+  }
+
+  @override
+  String get blockingHost => 'جاري حظر المضيف...';
+
+  @override
+  String get hostBlocked => 'تم حظر المضيف بنجاح';
+
+  @override
+  String get failedToBlockHost => 'فشل حظر المضيف';
 }

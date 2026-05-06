@@ -21,7 +21,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/system_info.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import '../utils/constants.dart';
 import '../utils/formatters.dart';
 import '../widgets/stat_card.dart';
@@ -77,11 +77,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final demoApiService = context.read<DemoApiService>();
       
       // Load all data in parallel for faster loading
       final results = await Future.wait([
-        apiService.getSystemInfo(),
+        demoApiService.getSystemInfo(),
         _loadServices(),
         _loadGateways(),
       ]);
@@ -106,8 +106,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<Map<String, dynamic>> _loadServices() async {
     try {
-      final apiService = context.read<OPNsenseApiService>();
-      final services = await apiService.getServices();
+      final demoApiService = context.read<DemoApiService>();
+      final services = await demoApiService.getServices();
       return {'services': services};
     } catch (e) {
       return {'services': []};
@@ -116,8 +116,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<List<Map<String, dynamic>>> _loadGateways() async {
     try {
-      final apiService = context.read<OPNsenseApiService>();
-      final gateways = await apiService.getGateways();
+      final demoApiService = context.read<DemoApiService>();
+      final gateways = await demoApiService.getGateways();
       return gateways.cast<Map<String, dynamic>>();
     } catch (e) {
       return [];
@@ -154,7 +154,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     try {
       // Get API service before async gap
-      final apiService = context.read<OPNsenseApiService>();
+      final demoApiService = context.read<DemoApiService>();
       
       // Show loading indicator
       ScaffoldMessenger.of(context).showSnackBar(
@@ -164,7 +164,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       );
 
-      final success = await apiService.controlService(serviceId, action);
+      final success = await demoApiService.controlService(serviceId, action);
 
       if (mounted) {
         if (success) {
@@ -209,6 +209,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final demoApiService = context.watch<DemoApiService>();
+    final isDemoMode = demoApiService.isDemoMode;
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppConstants.appName),
@@ -224,9 +227,43 @@ class _DashboardScreenState extends State<DashboardScreen> {
         currentRoute: 'dashboard',
         systemInfo: _systemInfo,
       ),
-      body: RefreshIndicator(
-        onRefresh: _loadDashboardData,
-        child: _buildBody(),
+      body: Column(
+        children: [
+          // Demo mode banner
+          if (isDemoMode)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.orange.shade400, Colors.orange.shade600],
+                ),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.play_circle_outline, color: Colors.white),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Text(
+                      'Demo Mode - Showing sample data',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Icon(Icons.info_outline, color: Colors.white.withValues(alpha: 0.8), size: 20),
+                ],
+              ),
+            ),
+          // Main content
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: _loadDashboardData,
+              child: _buildBody(),
+            ),
+          ),
+        ],
       ),
     );
   }

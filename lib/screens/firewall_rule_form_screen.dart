@@ -20,7 +20,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/firewall_rule.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import '../utils/constants.dart';
 import '../utils/validators.dart';
 import '../l10n/app_localizations.dart';
@@ -50,7 +50,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
   String _selectedProtocol = 'any';
   bool _enabled = true;
   bool _isLoading = false;
-  Map<String, String> _availableInterfaces = {};
+  Map<String, dynamic> _availableInterfaces = {};
   bool _loadingInterfaces = true;
 
   @override
@@ -69,8 +69,8 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
 
   Future<void> _loadInterfaces() async {
     try {
-      final apiService = context.read<OPNsenseApiService>();
-      final interfaces = await apiService.getAvailableInterfaces();
+      final demoApiService = context.read<DemoApiService>();
+      final interfaces = await demoApiService.getAvailableInterfaces();
       
       if (mounted) {
         setState(() {
@@ -131,7 +131,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
     });
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final demoApiService = context.read<DemoApiService>();
       
       final request = FirewallRuleRequest(
         type: _selectedType,
@@ -146,9 +146,9 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
       );
 
       if (widget.isEditing) {
-        await apiService.updateFirewallRule(widget.rule!.uuid, request);
+        await demoApiService.updateFirewallRule(widget.rule!.uuid, request);
       } else {
-        await apiService.createFirewallRule(request);
+        await demoApiService.createFirewallRule(request);
       }
 
       if (mounted) {
