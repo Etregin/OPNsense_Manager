@@ -47,6 +47,8 @@ If you find this project useful, consider supporting its development:
         <li><a href="#dashboard">📊 Dashboard</a></li>
         <li><a href="#firewall-management">🔥 Firewall Management (Currently only works with "Firewall > Automation > Filter" rules)</a></li>
         <li><a href="#firewall-logs">📋 Firewall Logs</a></li>
+        <li><a href="#live-network-monitoring">🌐 Live Network Monitoring</a></li>
+        <li><a href="#dhcp-leases">📡 DHCP Lease Management</a></li>
         <li><a href="#system-info">ℹ️ System Information</a></li>
         <li><a href="#service-management">🔧 Service Management</a></li>
         <li><a href="#settings">⚙️ Settings</a></li>
@@ -185,6 +187,34 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed build instructions.
 - **Auto-Refresh**: Configurable automatic log updates (5-60 seconds)
 - **Log Limit**: Adjustable number of log entries displayed
 <img src="screenshots/firewall_logs.png" width="250" alt="Firewall Logs">
+<a id="live-network-monitoring"></a>
+### 🌐 Live Network Monitoring
+- **Real-time Network Activity**: Monitor active connections and network traffic in real-time
+- **Device Discovery**: View all devices currently connected to your network
+- **Connection Details**: See detailed information about each connection including:
+  - Source and destination IP addresses
+  - Ports and protocols
+  - Connection state and duration
+  - Data transfer rates
+- **Device Blocking**: Quickly block devices directly from the network monitor
+- **Auto-Refresh**: Configurable automatic updates to track network changes
+- **Search & Filter**: Find specific devices or connections quickly
+<img src="screenshots/live_network_monitor.png" width="250" alt="Live Network Monitor">
+
+<a id="dhcp-leases"></a>
+### 📡 DHCP Lease Management
+- **Active Leases**: View all current DHCP leases on your network
+- **Lease Details**: Complete information for each lease including:
+  - IP address assignments
+  - MAC addresses
+  - Hostnames
+  - Lease start and end times
+  - Interface information
+- **Device Blocking**: Block devices directly from the DHCP leases view
+- **Search Functionality**: Quickly find specific devices by IP, MAC, or hostname
+- **Pull-to-Refresh**: Update lease information on demand
+<img src="screenshots/dhcp_leases.png" width="250" alt="DHCP Leases">
+
 
 <a id="system-info"></a>
 ### ℹ️ System Information
@@ -270,7 +300,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed build instructions.
 - [ ] Traffic monitoring with detailed charts
 - [ ] Bandwidth quota management
 - [ ] Interface statistics and graphs
-- [ ] DHCP lease management
+- [x] **DHCP lease management** - View active leases and block devices
+- [x] **Live network monitoring** - Real-time network activity monitoring with device blocking capability
 - [ ] DNS configuration
 - [ ] Certificate management
 - [ ] User management interface
