@@ -23,6 +23,9 @@ If you find this project useful, consider supporting its development:
 
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20me-ff5e5b?logo=kofi&logoColor=green)](https://ko-fi.com/Etregin)
 
+## 📱 Get the App
+
+[![Google Play](https://img.shields.io/badge/Google_Play-Download-414141?logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.dt.opnsense_manager)
 
 </div>
 
