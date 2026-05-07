@@ -32,9 +32,10 @@ jobs:
 
       - name: Build iOS App
         run: |
+          set -e
           flutter build ios --profile --no-codesign
           cd build/ios/iphoneos
-          mkdir Payload
+          mkdir -p Payload
           cd Payload
           ln -s ../Runner.app
           cd ..
