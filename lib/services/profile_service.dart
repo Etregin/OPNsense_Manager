@@ -392,12 +392,11 @@ class ProfileService {
 
   /// Export a single profile to JSON format
   ///
-  /// WARNING: By default, exported files contain sensitive API credentials in plain text.
-  /// Store exported files securely and avoid sharing them.
-  ///
-  /// [includeCredentials] - If false, API keys and secrets will be excluded from export
+  /// [includeCredentials] - If true, API keys and secrets will be included in export.
+  /// WARNING: Exported files with credentials contain sensitive data in plain text.
+  /// Store such files securely and avoid sharing them.
   /// Returns a JSON string containing the profile
-  Future<String> exportProfile(String profileId, {bool includeCredentials = true}) async {
+  Future<String> exportProfile(String profileId, {bool includeCredentials = false}) async {
     final profile = await getProfile(profileId);
     if (profile == null) {
       throw Exception('Profile not found');

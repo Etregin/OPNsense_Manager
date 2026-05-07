@@ -841,6 +841,9 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                   case 'edit':
                     _showProfileDialog(profile: profile);
                     break;
+                  case 'export':
+                    _exportSingleProfile(profile);
+                    break;
                   case 'delete':
                     _deleteProfile(profile);
                     break;
@@ -865,6 +868,16 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                       const Icon(Icons.edit, size: 20),
                       const SizedBox(width: 12),
                       Text(AppLocalizations.of(context)!.edit),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 'export',
+                  child: Row(
+                    children: [
+                      const Icon(Icons.download, size: 20),
+                      const SizedBox(width: 12),
+                      Text(AppLocalizations.of(context)!.export),
                     ],
                   ),
                 ),
@@ -1457,6 +1470,120 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
       }
     } catch (e) {
       _showErrorSnackBar('Import failed: ${e.toString()}');
+    }
+  }
+
+  /// Export a single profile to a JSON file
+  Future<void> _exportSingleProfile(Profile profile) async {
+    try {
+      final l10n = AppLocalizations.of(context)!;
+      // Show confirmation dialog for including credentials
+      final includeCredentials = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: Text(l10n.exportProfileTitle),
+          content: Text(l10n.exportProfileContent),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(l10n.withoutCredentials),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.orange,
+              ),
+              child: Text(l10n.includeCredentials),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(null),
+              child: Text(l10n.cancel),
+            ),
+          ],
+        ),
+      );
+      
+      // User cancelled
+      if (includeCredentials == null) return;
+      
+      final profileService = ProfileService();
+      final jsonString = await profileService.exportProfile(
+        profile.id,
+        includeCredentials: includeCredentials,
+      );
+      
+      // Create filename with timestamp and profile name
+      final timestamp = Formatters.formatTimestampForFilename(DateTime.now());
+      final sanitizedName = profile.name.replaceAll(RegExp(r'[^\w\s-]'), '').replaceAll(' ', '_');
+      final suggestedName = 'opnsense_profile_${sanitizedName}_$timestamp.json';
+      
+      // Let user choose directory to save the file
+      final directoryPath = await FilePicker.getDirectoryPath(
+        dialogTitle: 'Choose Export Location',
+      );
+      
+      if (directoryPath == null) {
+        // User cancelled the directory picker
+        return;
+      }
+      
+      // Create full file path
+      final filePath = path.join(directoryPath, suggestedName);
+      
+      // Write file to chosen location
+      final file = File(filePath);
+      try {
+        await file.writeAsString(jsonString, flush: true);
+      } on FileSystemException catch (e) {
+        // Handle specific file system errors using osError type
+        String errorMessage;
+        final osError = e.osError;
+        
+        if (osError != null) {
+          final errorCode = osError.errorCode;
+          if (errorCode == _errNoSpaceUnix) {
+            errorMessage = 'Export failed: Insufficient disk space';
+          } else if ((Platform.isWindows && errorCode == _errAccessDeniedWindows) ||
+                     (!Platform.isWindows && errorCode == _errAccessDeniedUnix)) {
+            errorMessage = 'Export failed: Permission denied. Please choose a different location';
+          } else if (errorCode == _errReadOnlyUnix && !Platform.isWindows) {
+            errorMessage = 'Export failed: Cannot write to read-only location';
+          } else {
+            errorMessage = 'Export failed: ${e.message}';
+          }
+        } else {
+          errorMessage = 'Export failed: ${e.message}';
+        }
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(errorMessage),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 5),
+            ),
+          );
+        }
+        return;
+      }
+      
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.exportSuccess),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 5),
+            action: SnackBarAction(
+              label: 'OK',
+              textColor: Colors.white,
+              onPressed: () {},
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      _showErrorSnackBar('Export failed: ${e.toString()}');
     }
   }
 

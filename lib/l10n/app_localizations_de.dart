@@ -1228,6 +1228,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get includeCredentials => 'Anmeldedaten Einschließen';
 
   @override
+  String get exportProfile => 'Profil Exportieren';
+
+  @override
+  String get exportProfileTitle => 'Profil Exportieren';
+
+  @override
+  String get exportProfileContent =>
+      'Möchten Sie API-Anmeldedaten in den Export einschließen?\n\nWARNUNG: Das Einschließen von Anmeldedaten speichert API-Schlüssel und Geheimnisse im Klartext. Schließen Sie Anmeldedaten nur ein, wenn Sie die Datei sicher speichern.';
+
+  @override
   String get unableToAccessFilePath => 'Zugriff auf Dateipfad nicht möglich';
 
   @override
