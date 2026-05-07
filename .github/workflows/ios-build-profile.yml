@@ -3,8 +3,18 @@ name: iOSProfileBuild
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'ios/**'
+      - 'lib/**'
+      - 'pubspec.yaml'
+      - '.github/workflows/ios-profile-build.yml'
   pull_request:
     branches: [ main ]
+    paths:
+      - 'ios/**'
+      - 'lib/**'
+      - 'pubspec.yaml'
+      - '.github/workflows/ios-profile-build.yml'
   workflow_dispatch:
 
 jobs:
