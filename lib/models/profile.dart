@@ -96,8 +96,29 @@ class Profile {
     );
   }
 
-  /// JSON serialization
+  /// JSON serialization for in-memory/export use, may include credentials.
   factory Profile.fromJson(Map<String, dynamic> json) => _$ProfileFromJson(json);
   Map<String, dynamic> toJson() => _$ProfileToJson(this);
+
+  /// JSON serialization for shared-preferences persistence.
+  /// Credentials are intentionally excluded and must be loaded from secure storage.
+  Map<String, dynamic> toStorageJson() {
+    final json = _$ProfileToJson(this);
+    json.remove('apiKey');
+    json.remove('apiSecret');
+    return json;
+  }
+
+  /// Create a profile from shared-preferences metadata plus credentials from secure storage.
+  factory Profile.fromStorageJson(
+    Map<String, dynamic> json, {
+    required String apiKey,
+    required String apiSecret,
+  }) {
+    final storageJson = Map<String, dynamic>.from(json)
+      ..['apiKey'] = apiKey
+      ..['apiSecret'] = apiSecret;
+    return _$ProfileFromJson(storageJson);
+  }
 }
 

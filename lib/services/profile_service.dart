@@ -54,7 +54,56 @@ class ProfileService {
 
     try {
       final List<dynamic> profilesList = jsonDecode(profilesJson);
-      return profilesList.map((json) => Profile.fromJson(json)).toList();
+      bool didSanitizeLegacyData = false;
+      final profiles = <Profile>[];
+
+      for (final item in profilesList) {
+        final profileJson = Map<String, dynamic>.from(item as Map);
+        final legacyApiKey = profileJson.remove('apiKey');
+        final legacyApiSecret = profileJson.remove('apiSecret');
+        final profileId = profileJson['id'] as String?;
+
+        if (legacyApiKey != null || legacyApiSecret != null) {
+          didSanitizeLegacyData = true;
+        }
+
+        if (profileId == null || profileId.isEmpty) {
+          continue;
+        }
+
+        final storedApiKey = await _secureStorage.read(
+          key: 'profile_${profileId}_api_key',
+        );
+        final storedApiSecret = await _secureStorage.read(
+          key: 'profile_${profileId}_api_secret',
+        );
+
+        final apiKey = storedApiKey ?? (legacyApiKey as String?) ?? '';
+        final apiSecret = storedApiSecret ?? (legacyApiSecret as String?) ?? '';
+
+        if ((storedApiKey == null && legacyApiKey != null) ||
+            (storedApiSecret == null && legacyApiSecret != null)) {
+          await _writeProfileCredentials(
+            profileId,
+            apiKey: apiKey,
+            apiSecret: apiSecret,
+          );
+        }
+
+        profiles.add(
+          Profile.fromStorageJson(
+            profileJson,
+            apiKey: apiKey,
+            apiSecret: apiSecret,
+          ),
+        );
+      }
+
+      if (didSanitizeLegacyData) {
+        await _persistProfilesMetadata(profiles);
+      }
+
+      return profiles;
     } catch (e) {
       return [];
     }
@@ -64,7 +113,7 @@ class ProfileService {
   Future<void> saveProfile(Profile profile) async {
     await init();
     final profiles = await getAllProfiles();
-    
+
     // Check if profile already exists
     final existingIndex = profiles.indexWhere((p) => p.id == profile.id);
     if (existingIndex >= 0) {
@@ -73,18 +122,11 @@ class ProfileService {
       profiles.add(profile);
     }
 
-    // Save profiles list
-    final profilesJson = jsonEncode(profiles.map((p) => p.toJson()).toList());
-    await _prefs!.setString(_keyProfiles, profilesJson);
-
-    // Save sensitive data (API keys) securely
-    await _secureStorage.write(
-      key: 'profile_${profile.id}_api_key',
-      value: profile.apiKey,
-    );
-    await _secureStorage.write(
-      key: 'profile_${profile.id}_api_secret',
-      value: profile.apiSecret,
+    await _persistProfilesMetadata(profiles);
+    await _writeProfileCredentials(
+      profile.id,
+      apiKey: profile.apiKey,
+      apiSecret: profile.apiSecret,
     );
   }
 
@@ -105,8 +147,7 @@ class ProfileService {
     profiles.removeWhere((p) => p.id == id);
 
     // Save updated profiles list
-    final profilesJson = jsonEncode(profiles.map((p) => p.toJson()).toList());
-    await _prefs!.setString(_keyProfiles, profilesJson);
+    await _persistProfilesMetadata(profiles);
 
     // Delete sensitive data
     await _secureStorage.delete(key: 'profile_${id}_api_key');
@@ -554,6 +595,28 @@ class ProfileService {
     } catch (e) {
       return 'Invalid JSON format: ${e.toString()}';
     }
+  }
+
+  Future<void> _persistProfilesMetadata(List<Profile> profiles) async {
+    final profilesJson = jsonEncode(
+      profiles.map((p) => p.toStorageJson()).toList(),
+    );
+    await _prefs!.setString(_keyProfiles, profilesJson);
+  }
+
+  Future<void> _writeProfileCredentials(
+    String profileId, {
+    required String apiKey,
+    required String apiSecret,
+  }) async {
+    await _secureStorage.write(
+      key: 'profile_${profileId}_api_key',
+      value: apiKey,
+    );
+    await _secureStorage.write(
+      key: 'profile_${profileId}_api_secret',
+      value: apiSecret,
+    );
   }
 }
 
