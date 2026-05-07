@@ -14,6 +14,7 @@ Profile _$ProfileFromJson(Map<String, dynamic> json) => Profile(
   apiKey: json['apiKey'] as String,
   apiSecret: json['apiSecret'] as String,
   useHttps: json['useHttps'] as bool,
+  allowSelfSignedCerts: json['allowSelfSignedCerts'] as bool? ?? false,
   isDemo: json['isDemo'] as bool? ?? false,
   createdAt: DateTime.parse(json['createdAt'] as String),
   lastUsed: json['lastUsed'] == null
@@ -29,6 +30,7 @@ Map<String, dynamic> _$ProfileToJson(Profile instance) => <String, dynamic>{
   'apiKey': instance.apiKey,
   'apiSecret': instance.apiSecret,
   'useHttps': instance.useHttps,
+  'allowSelfSignedCerts': instance.allowSelfSignedCerts,
   'isDemo': instance.isDemo,
   'createdAt': instance.createdAt.toIso8601String(),
   'lastUsed': instance.lastUsed?.toIso8601String(),

@@ -46,6 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _apiSecretController = TextEditingController();
   
   bool _useHttps = true;
+  bool _allowSelfSignedCerts = false;
   bool _isLoading = false;
   bool _obscureSecret = true;
   String? _errorMessage;
@@ -77,6 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
         apiKey: _apiKeyController.text.trim(),
         apiSecret: _apiSecretController.text.trim(),
         useHttps: _useHttps,
+        allowSelfSignedCerts: _allowSelfSignedCerts,
       );
 
       // Initialize API service
@@ -106,6 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
           apiKey: config.apiKey,
           apiSecret: config.apiSecret,
           useHttps: config.useHttps,
+          allowSelfSignedCerts: config.allowSelfSignedCerts,
           createdAt: DateTime.now(),
           lastUsed: DateTime.now(),
         );
@@ -229,7 +232,23 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  
+
+                  SwitchListTile(
+                    title: Text(l10n.allowSelfSigned),
+                    subtitle: Text(
+                      'WARNING: Disables TLS certificate validation for this profile. Only enable this if you trust the server and intentionally use a self-signed certificate.',
+                    ),
+                    value: _allowSelfSignedCerts,
+                    onChanged: !_useHttps || _isLoading
+                        ? null
+                        : (value) {
+                            setState(() {
+                              _allowSelfSignedCerts = value;
+                            });
+                          },
+                  ),
+                  const SizedBox(height: 16),
+                   
                   // API Key Field
                   TextFormField(
                     controller: _apiKeyController,

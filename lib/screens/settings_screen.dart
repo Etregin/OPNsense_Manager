@@ -1036,6 +1036,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
       text: profile?.apiSecret ?? '',
     );
     bool useHttps = profile?.useHttps ?? true;
+    bool allowSelfSignedCerts = profile?.allowSelfSignedCerts ?? false;
     bool obscureSecret = true;
 
     showDialog(
@@ -1092,6 +1093,21 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                     },
                   ),
                   const SizedBox(height: 16),
+                  SwitchListTile(
+                    title: Text('Allow self-signed certificates'),
+                    subtitle: Text(
+                      'WARNING: Disables TLS certificate validation for this profile. Only enable this if you trust the server and intentionally use a self-signed certificate.',
+                    ),
+                    value: allowSelfSignedCerts,
+                    onChanged: useHttps
+                        ? (value) {
+                            setDialogState(() {
+                              allowSelfSignedCerts = value;
+                            });
+                          }
+                        : null,
+                  ),
+                  const SizedBox(height: 16),
                   TextFormField(
                     controller: apiKeyController,
                     decoration: InputDecoration(
@@ -1143,6 +1159,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                     apiKey: apiKeyController.text.trim(),
                     apiSecret: apiSecretController.text.trim(),
                     useHttps: useHttps,
+                    allowSelfSignedCerts: allowSelfSignedCerts,
                   );
                 }
               },
@@ -1162,6 +1179,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
     required String apiKey,
     required String apiSecret,
     required bool useHttps,
+    required bool allowSelfSignedCerts,
   }) async {
     final profileService = ProfileService();
     
@@ -1173,6 +1191,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
       apiKey: apiKey,
       apiSecret: apiSecret,
       useHttps: useHttps,
+      allowSelfSignedCerts: allowSelfSignedCerts,
       createdAt: DateTime.now(),
     );
 
@@ -1490,6 +1509,7 @@ extension ProfileExtension on Profile {
       apiKey: apiKey,
       apiSecret: apiSecret,
       useHttps: useHttps,
+      allowSelfSignedCerts: allowSelfSignedCerts,
     );
   }
 }

@@ -30,6 +30,7 @@ class OPNsenseConfig {
   final String apiKey;
   final String apiSecret;
   final bool useHttps;
+  final bool allowSelfSignedCerts;
 
   OPNsenseConfig({
     required this.host,
@@ -37,6 +38,7 @@ class OPNsenseConfig {
     required this.apiKey,
     required this.apiSecret,
     this.useHttps = true,
+    this.allowSelfSignedCerts = false,
   });
 
   /// Get base URL for API requests
@@ -66,6 +68,7 @@ class OPNsenseConfig {
     String? apiKey,
     String? apiSecret,
     bool? useHttps,
+    bool? allowSelfSignedCerts,
   }) {
     return OPNsenseConfig(
       host: host ?? this.host,
@@ -73,12 +76,14 @@ class OPNsenseConfig {
       apiKey: apiKey ?? this.apiKey,
       apiSecret: apiSecret ?? this.apiSecret,
       useHttps: useHttps ?? this.useHttps,
+      allowSelfSignedCerts:
+          allowSelfSignedCerts ?? this.allowSelfSignedCerts,
     );
   }
 
   @override
   String toString() {
-    return 'OPNsenseConfig(host: $host, port: $port, useHttps: $useHttps)';
+    return 'OPNsenseConfig(host: $host, port: $port, useHttps: $useHttps, allowSelfSignedCerts: $allowSelfSignedCerts)';
   }
 
   @override
@@ -90,7 +95,8 @@ class OPNsenseConfig {
         other.port == port &&
         other.apiKey == apiKey &&
         other.apiSecret == apiSecret &&
-        other.useHttps == useHttps;
+        other.useHttps == useHttps &&
+        other.allowSelfSignedCerts == allowSelfSignedCerts;
   }
 
   @override
@@ -99,7 +105,8 @@ class OPNsenseConfig {
         port.hashCode ^
         apiKey.hashCode ^
         apiSecret.hashCode ^
-        useHttps.hashCode;
+        useHttps.hashCode ^
+        allowSelfSignedCerts.hashCode;
   }
 }
 
