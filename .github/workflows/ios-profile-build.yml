@@ -1,0 +1,69 @@
+name: iOSProfileBuild
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'ios/**'
+      - 'lib/**'
+      - 'pubspec.yaml'
+      - '.github/workflows/ios-profile-build.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'ios/**'
+      - 'lib/**'
+      - 'pubspec.yaml'
+      - '.github/workflows/ios-profile-build.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      # Updated to v4
+      - uses: actions/checkout@v4
+
+      # Updated to v4 (Java 12 is EOL; using 17 as a modern stable default)
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # Updated to v2 (The current recommended version for Flutter)
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true # Added caching to make your builds faster
+
+      - run: flutter pub get
+
+      - name: Extract version
+        id: version
+        run: echo "version=$(grep '^version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
+
+      - name: Build iOS App
+        run: |
+          set -e
+          flutter build ios --profile --no-codesign
+          if [ ! -d "build/ios/iphoneos/Runner.app" ]; then
+            echo "Error: Runner.app not found after build"
+            exit 1
+          fi
+          cd build/ios/iphoneos
+          mkdir -p Payload
+          cd Payload
+          cp -r ../Runner.app .
+          cd ..
+          zip -r app.ipa Payload
+
+      # Updated to v4 (Significantly faster upload speeds)
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: profile-ipa-${{ steps.version.outputs.version }}
+          path: build/ios/iphoneos/app.ipa
