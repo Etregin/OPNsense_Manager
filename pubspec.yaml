@@ -5,7 +5,7 @@ publish_to: 'none'
 version: 1.5.0+8
 
 environment:
-  sdk: '>=3.10.4 <4.0.0'
+  sdk: '>=3.11.5 <4.0.0'
 
 dependencies:
   flutter:
@@ -43,7 +43,7 @@ dependencies:
   local_auth: ^3.0.0
   
   # File Picker for import/export
-  file_picker: ^8.1.4
+  file_picker: ^11.0.2
   
   # Path Provider for file operations
   path_provider: ^2.1.5

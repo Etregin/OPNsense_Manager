@@ -1235,7 +1235,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
       final suggestedName = 'opnsense_profiles_$timestamp.json';
       
       // Let user choose directory to save the file
-      final directoryPath = await FilePicker.platform.getDirectoryPath(
+      final directoryPath = await FilePicker.getDirectoryPath(
         dialogTitle: 'Choose Export Location',
       );
       
@@ -1325,7 +1325,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
   Future<void> _importProfiles() async {
     try {
       // Pick a file
-      final pickerResult = await FilePicker.platform.pickFiles(
+      final pickerResult = await FilePicker.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['json'],
         allowMultiple: false,

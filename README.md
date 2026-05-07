@@ -25,7 +25,8 @@ If you find this project useful, consider supporting its development:
 
 ## 📱 Get the App
 
-[![Google Play](https://img.shields.io/badge/Google_Play-Download-414141?logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.dt.opnsense_manager)
+[![Google Play](https://img.shields.io/badge/Google_Play-Download-00C853?logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.dt.opnsense_manager)
+[![App Store](https://img.shields.io/badge/App_Store-Download-0D96F6?logo=app-store&logoColor=white)](https://apps.apple.com/app/opnsense-manager/id6738294106)
 
 </div>
 
@@ -76,10 +77,10 @@ OPNsense is a professional Flutter mobile application for managing OPNsense fire
 
 I could not find an mobile application that can do what I needed so I decided to create my own and share it with the community.
 
-![Flutter](https://img.shields.io/badge/Flutter-3.10.4-02569B?logo=flutter)
-![Dart](https://img.shields.io/badge/Dart-3.10.4-0175C2?logo=dart)
-![License](https://img.shields.io/badge/License-GPLv3-blue)
-![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-lightgrey)
+[![Flutter](https://img.shields.io/badge/Flutter-3.41.8-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-3.11.5-0175C2?logo=dart&logoColor=white)](https://dart.dev)
+[![License](https://img.shields.io/badge/License-GPLv3-blue)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-lightgrey?logo=flutter&logoColor=white)](https://flutter.dev/multi-platform)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
