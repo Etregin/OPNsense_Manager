@@ -20,6 +20,8 @@ on:
 jobs:
   build:
     runs-on: macos-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       # Updated to v4
       - uses: actions/checkout@v4
@@ -48,6 +50,10 @@ jobs:
         run: |
           set -e
           flutter build ios --profile --no-codesign
+          if [ ! -d "build/ios/iphoneos/Runner.app" ]; then
+            echo "Error: Runner.app not found after build"
+            exit 1
+          fi
           cd build/ios/iphoneos
           mkdir -p Payload
           cd Payload
