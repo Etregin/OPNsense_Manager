@@ -28,7 +28,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu' 
+          distribution: 'zulu'
           java-version: '17'
 
       # Updated to v2 (The current recommended version for Flutter)
