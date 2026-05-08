@@ -28,10 +28,13 @@ import '../services/opnsense_api_service.dart';
 import '../utils/constants.dart';
 import '../utils/validators.dart';
 import '../l10n/app_localizations.dart';
+import 'dashboard_screen.dart';
 
 /// Login screen for OPNsense connection configuration
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final Profile? profile; // Optional profile for editing
+  
+  const LoginScreen({super.key, this.profile});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -52,6 +55,21 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _errorMessage;
 
   @override
+  void initState() {
+    super.initState();
+    // Pre-populate form if editing existing profile
+    if (widget.profile != null) {
+      _nameController.text = widget.profile!.name;
+      _hostController.text = widget.profile!.host;
+      _portController.text = widget.profile!.port.toString();
+      _apiKeyController.text = widget.profile!.apiKey;
+      _apiSecretController.text = widget.profile!.apiSecret;
+      _useHttps = widget.profile!.useHttps;
+      _allowSelfSignedCerts = widget.profile!.allowSelfSignedCerts;
+    }
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     _hostController.dispose();
@@ -61,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Future<void> _testAndSaveConnection() async {
+  Future<void> _testAndSaveConnection({required bool connectAfterSave}) async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -96,29 +114,49 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (isConnected) {
         
-        // Create and save profile
+        // Create or update profile
         final profileService = context.read<ProfileService>();
-        final profile = Profile(
-          id: const Uuid().v4(),
-          name: _nameController.text.trim().isEmpty
-              ? '${config.host}:${config.port}'
-              : _nameController.text.trim(),
-          host: config.host,
-          port: config.port,
-          apiKey: config.apiKey,
-          apiSecret: config.apiSecret,
-          useHttps: config.useHttps,
-          allowSelfSignedCerts: config.allowSelfSignedCerts,
-          createdAt: DateTime.now(),
-          lastUsed: DateTime.now(),
-        );
+        final profile = widget.profile != null
+            ? widget.profile!.copyWith(
+                name: _nameController.text.trim().isEmpty
+                    ? '${config.host}:${config.port}'
+                    : _nameController.text.trim(),
+                host: config.host,
+                port: config.port,
+                apiKey: config.apiKey,
+                apiSecret: config.apiSecret,
+                useHttps: config.useHttps,
+                allowSelfSignedCerts: config.allowSelfSignedCerts,
+                lastUsed: DateTime.now(),
+              )
+            : Profile(
+                id: const Uuid().v4(),
+                name: _nameController.text.trim().isEmpty
+                    ? '${config.host}:${config.port}'
+                    : _nameController.text.trim(),
+                host: config.host,
+                port: config.port,
+                apiKey: config.apiKey,
+                apiSecret: config.apiSecret,
+                useHttps: config.useHttps,
+                allowSelfSignedCerts: config.allowSelfSignedCerts,
+                createdAt: DateTime.now(),
+                lastUsed: DateTime.now(),
+              );
         
         await profileService.saveProfile(profile);
         await profileService.setActiveProfile(profile.id);
 
-        // Return success to profile selection screen
         if (mounted) {
-          Navigator.of(context).pop(true);
+          if (connectAfterSave) {
+            // Navigate to dashboard
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => const DashboardScreen()),
+            );
+          } else {
+            // Return to profile selection screen
+            Navigator.of(context).pop(true);
+          }
         }
       } else {
         if (!mounted) return;
@@ -162,7 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   
                   // Title
                   Text(
-                    AppConstants.appName,
+                    widget.profile != null ? l10n.editProfile : AppConstants.appName,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.bold,
@@ -172,7 +210,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   
                   // Subtitle
                   Text(
-                    l10n.connectToYourOPNsenseFirewall,
+                    widget.profile != null
+                        ? 'Update your connection settings'
+                        : l10n.connectToYourOPNsenseFirewall,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: Theme.of(context).textTheme.bodySmall?.color,
@@ -310,9 +350,34 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   
+                  // Save Button (only show when editing)
+                  if (widget.profile != null) ...[
+                    OutlinedButton(
+                      onPressed: _isLoading ? null : () => _testAndSaveConnection(connectAfterSave: false),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        side: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                      ),
+                      child: _isLoading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Text(
+                              l10n.save,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                  
                   // Connect Button
                   ElevatedButton(
-                    onPressed: _isLoading ? null : _testAndSaveConnection,
+                    onPressed: _isLoading ? null : () => _testAndSaveConnection(connectAfterSave: true),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       backgroundColor: Theme.of(context).primaryColor,
@@ -328,7 +393,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           )
                         : Text(
-                            l10n.connect,
+                            widget.profile != null ? 'Save & Connect' : l10n.connect,
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,

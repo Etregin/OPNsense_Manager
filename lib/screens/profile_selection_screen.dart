@@ -70,7 +70,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
         demoApiService.setDemoMode(false);
         final config = profile.toOPNsenseConfig();
         apiService.init(config);
-        await demoApiService.getSystemInfo();
+        await apiService.testConnection();
       }
 
       // Set as active profile
@@ -412,16 +412,41 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                 ],
               ],
             ),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              color: AppColors.primary,
-              size: 20,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Edit button (only for non-demo profiles)
+                if (!profile.isDemo)
+                  IconButton(
+                    icon: const Icon(Icons.edit, size: 20),
+                    color: AppColors.primary,
+                    onPressed: () => _editProfile(profile),
+                    tooltip: l10n.edit,
+                  ),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: AppColors.primary,
+                  size: 20,
+                ),
+              ],
             ),
             onTap: () => _selectProfile(profile),
           ),
         );
       },
     );
+  }
+
+  Future<void> _editProfile(Profile profile) async {
+    final result = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => LoginScreen(profile: profile),
+      ),
+    );
+
+    if (result == true) {
+      await _loadProfiles();
+    }
   }
 
   String _formatDate(DateTime date, AppLocalizations l10n) {

@@ -22,6 +22,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
+import '../services/opnsense_api_service.dart';
+import '../services/profile_service.dart';
 import '../utils/constants.dart';
 import '../utils/formatters.dart';
 import '../widgets/stat_card.dart';
@@ -49,8 +51,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    _loadDashboardData();
+    _initializeAndLoad();
     _startAutoRefresh();
+  }
+
+  Future<void> _initializeAndLoad() async {
+    // Ensure API service is initialized with active profile
+    final profileService = context.read<ProfileService>();
+    final apiService = context.read<OPNsenseApiService>();
+    
+    final activeProfile = await profileService.getActiveProfile();
+    if (activeProfile != null && !activeProfile.isDemo) {
+      // Re-initialize API service to ensure it's ready
+      apiService.init(activeProfile.toOPNsenseConfig());
+    }
+    
+    await _loadDashboardData();
   }
 
   @override
