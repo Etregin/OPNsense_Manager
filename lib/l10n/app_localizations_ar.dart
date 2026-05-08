@@ -1211,16 +1211,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get includeCredentials => 'تضمين بيانات الاعتماد';
 
   @override
-  String get exportProfile => 'تصدير الملف التعريفي';
-
-  @override
-  String get exportProfileTitle => 'تصدير الملف التعريفي';
-
-  @override
-  String get exportProfileContent =>
-      'هل تريد تضمين بيانات اعتماد API في التصدير؟\n\nتحذير: سيؤدي تضمين بيانات الاعتماد إلى تخزين مفاتيح API والأسرار بنص عادي. قم بتضمين بيانات الاعتماد فقط إذا كنت ستخزن الملف بشكل آمن.';
-
-  @override
   String get unableToAccessFilePath => 'غير قادر على الوصول إلى مسار الملف';
 
   @override

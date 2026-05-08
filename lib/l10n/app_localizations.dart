@@ -2258,24 +2258,6 @@ abstract class AppLocalizations {
   /// **'Include Credentials'**
   String get includeCredentials;
 
-  /// No description provided for @exportProfile.
-  ///
-  /// In en, this message translates to:
-  /// **'Export Profile'**
-  String get exportProfile;
-
-  /// No description provided for @exportProfileTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Export Profile'**
-  String get exportProfileTitle;
-
-  /// No description provided for @exportProfileContent.
-  ///
-  /// In en, this message translates to:
-  /// **'Do you want to include API credentials in the export?\n\nWARNING: Including credentials will store API keys and secrets in plain text. Only include credentials if you will store the file securely.'**
-  String get exportProfileContent;
-
   /// No description provided for @unableToAccessFilePath.
   ///
   /// In en, this message translates to:

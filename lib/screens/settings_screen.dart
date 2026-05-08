@@ -1481,8 +1481,8 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
       final includeCredentials = await showDialog<bool>(
         context: context,
         builder: (dialogContext) => AlertDialog(
-          title: Text(l10n.exportProfileTitle),
-          content: Text(l10n.exportProfileContent),
+          title: Text(l10n.exportProfilesTitle),
+          content: Text(l10n.exportProfilesContent),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),

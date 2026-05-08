@@ -1217,16 +1217,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get includeCredentials => 'Include Credentials';
 
   @override
-  String get exportProfile => 'Export Profile';
-
-  @override
-  String get exportProfileTitle => 'Export Profile';
-
-  @override
-  String get exportProfileContent =>
-      'Do you want to include API credentials in the export?\n\nWARNING: Including credentials will store API keys and secrets in plain text. Only include credentials if you will store the file securely.';
-
-  @override
   String get unableToAccessFilePath => 'Unable to access file path';
 
   @override
