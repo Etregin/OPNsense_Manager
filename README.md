@@ -23,6 +23,20 @@ If you find this project useful, consider supporting its development:
 
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20me-ff5e5b?logo=kofi&logoColor=green)](https://ko-fi.com/Etregin)
 
+### 💰 Crypto Donations
+
+#### USDT BSC (BEP20)
+```
+0xe0b9015117a4a69131481c2e9c1553dde839df18
+```
+![USDT QR Code](https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=0xe0b9015117a4a69131481c2e9c1553dde839df18)
+
+#### USDC BSC (BEP20)
+```
+0xe0b9015117a4a69131481c2e9c1553dde839df18
+```
+![USDC QR Code](https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=0xe0b9015117a4a69131481c2e9c1553dde839df18)
+
 ## 📱 Get the App
 
 [![Google Play](https://img.shields.io/badge/Google_Play-Download-00C853?logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.dt.opnsense_manager)

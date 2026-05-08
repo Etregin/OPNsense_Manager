@@ -18,6 +18,7 @@
 
 
 import 'dart:io';
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:local_auth/local_auth.dart';
@@ -1283,6 +1284,35 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
       final file = File(filePath);
       try {
         await file.writeAsString(jsonString, flush: true);
+        
+        // Notify the system about the new file for proper indexing
+        if (Platform.isAndroid) {
+          // Trigger MediaStore scan on Android so file appears in file managers
+          try {
+            final ProcessResult result = await Process.run(
+              'am',
+              [
+                'broadcast',
+                '-a',
+                'android.intent.action.MEDIA_SCANNER_SCAN_FILE',
+                '-d',
+                'file://$filePath',
+              ],
+            );
+            // Log the result for debugging
+            if (result.exitCode != 0) {
+              developer.log(
+                'MediaStore scan failed: ${result.stderr}',
+                name: 'ProfileExport',
+              );
+            }
+          } catch (e) {
+            developer.log(
+              'Failed to trigger MediaStore scan: $e',
+              name: 'ProfileExport',
+            );
+          }
+        }
       } on FileSystemException catch (e) {
         // Handle specific file system errors using osError type
         String errorMessage;
@@ -1325,9 +1355,9 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
         final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(l10n.exportSuccess),
+            content: Text('${l10n.exportSuccess}\nSaved to: $filePath'),
             backgroundColor: Colors.green,
-            duration: const Duration(seconds: 5),
+            duration: const Duration(seconds: 8),
             action: SnackBarAction(
               label: 'OK',
               textColor: Colors.white,
@@ -1534,6 +1564,35 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
       final file = File(filePath);
       try {
         await file.writeAsString(jsonString, flush: true);
+        
+        // Notify the system about the new file for proper indexing
+        if (Platform.isAndroid) {
+          // Trigger MediaStore scan on Android so file appears in file managers
+          try {
+            final ProcessResult result = await Process.run(
+              'am',
+              [
+                'broadcast',
+                '-a',
+                'android.intent.action.MEDIA_SCANNER_SCAN_FILE',
+                '-d',
+                'file://$filePath',
+              ],
+            );
+            // Log the result for debugging
+            if (result.exitCode != 0) {
+              developer.log(
+                'MediaStore scan failed: ${result.stderr}',
+                name: 'ProfileExport',
+              );
+            }
+          } catch (e) {
+            developer.log(
+              'Failed to trigger MediaStore scan: $e',
+              name: 'ProfileExport',
+            );
+          }
+        }
       } on FileSystemException catch (e) {
         // Handle specific file system errors using osError type
         String errorMessage;
@@ -1571,9 +1630,9 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
         final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(l10n.exportSuccess),
+            content: Text('${l10n.exportSuccess}\nSaved to: $filePath'),
             backgroundColor: Colors.green,
-            duration: const Duration(seconds: 5),
+            duration: const Duration(seconds: 8),
             action: SnackBarAction(
               label: 'OK',
               textColor: Colors.white,
