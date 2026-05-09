@@ -19,6 +19,7 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'opnsense_config.dart';
+import 'dhcp_server_type.dart';
 
 part 'profile.g.dart';
 
@@ -36,6 +37,10 @@ class Profile {
   final bool isDemo;
   final DateTime createdAt;
   final DateTime? lastUsed;
+  
+  /// DHCP server type (dnsmasq, ISC, or KEA)
+  @JsonKey(defaultValue: DhcpServerType.dnsmasq)
+  final DhcpServerType dhcpServerType;
 
   Profile({
     required this.id,
@@ -49,6 +54,7 @@ class Profile {
     this.isDemo = false,
     required this.createdAt,
     this.lastUsed,
+    this.dhcpServerType = DhcpServerType.dnsmasq,
   });
 
   /// Create a copy with updated fields
@@ -64,6 +70,7 @@ class Profile {
     bool? isDemo,
     DateTime? createdAt,
     DateTime? lastUsed,
+    DhcpServerType? dhcpServerType,
   }) {
     return Profile(
       id: id ?? this.id,
@@ -78,6 +85,7 @@ class Profile {
       isDemo: isDemo ?? this.isDemo,
       createdAt: createdAt ?? this.createdAt,
       lastUsed: lastUsed ?? this.lastUsed,
+      dhcpServerType: dhcpServerType ?? this.dhcpServerType,
     );
   }
 
@@ -93,6 +101,7 @@ class Profile {
       apiSecret: apiSecret,
       useHttps: useHttps,
       allowSelfSignedCerts: allowSelfSignedCerts,
+      dhcpServerType: dhcpServerType,
     );
   }
 

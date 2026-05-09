@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../models/opnsense_config.dart';
 import '../models/profile.dart';
+import '../models/dhcp_server_type.dart';
 import '../services/profile_service.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
@@ -53,6 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   bool _obscureSecret = true;
   String? _errorMessage;
+  DhcpServerType _dhcpServerType = DhcpServerType.dnsmasq;
 
   @override
   void initState() {
@@ -66,6 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _apiSecretController.text = widget.profile!.apiSecret;
       _useHttps = widget.profile!.useHttps;
       _allowSelfSignedCerts = widget.profile!.allowSelfSignedCerts;
+      _dhcpServerType = widget.profile!.dhcpServerType;
     }
   }
 
@@ -127,6 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 apiSecret: config.apiSecret,
                 useHttps: config.useHttps,
                 allowSelfSignedCerts: config.allowSelfSignedCerts,
+                dhcpServerType: _dhcpServerType,
                 lastUsed: DateTime.now(),
               )
             : Profile(
@@ -140,6 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 apiSecret: config.apiSecret,
                 useHttps: config.useHttps,
                 allowSelfSignedCerts: config.allowSelfSignedCerts,
+                dhcpServerType: _dhcpServerType,
                 createdAt: DateTime.now(),
                 lastUsed: DateTime.now(),
               );
@@ -286,6 +291,41 @@ class _LoginScreenState extends State<LoginScreen> {
                               _allowSelfSignedCerts = value;
                             });
                           },
+                  ),
+                  const SizedBox(height: 16),
+
+                  // DHCP Server Type
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.dns),
+                    title: const Text('DHCP Server Type'),
+                    subtitle: Text(_dhcpServerType.displayName),
+                    trailing: DropdownButton<DhcpServerType>(
+                      value: _dhcpServerType,
+                      items: DhcpServerType.values.map((type) {
+                        return DropdownMenuItem(
+                          value: type,
+                          child: Text(type.displayName),
+                        );
+                      }).toList(),
+                      onChanged: _isLoading ? null : (value) {
+                        if (value != null) {
+                          setState(() {
+                            _dhcpServerType = value;
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      _dhcpServerType.description,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Colors.grey[600],
+                            fontStyle: FontStyle.italic,
+                          ),
+                    ),
                   ),
                   const SizedBox(height: 16),
                    

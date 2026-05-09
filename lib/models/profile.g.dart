@@ -11,8 +11,8 @@ Profile _$ProfileFromJson(Map<String, dynamic> json) => Profile(
   name: json['name'] as String,
   host: json['host'] as String,
   port: (json['port'] as num).toInt(),
-  apiKey: json['apiKey'] as String? ?? '',
-  apiSecret: json['apiSecret'] as String? ?? '',
+  apiKey: json['apiKey'] as String,
+  apiSecret: json['apiSecret'] as String,
   useHttps: json['useHttps'] as bool,
   allowSelfSignedCerts: json['allowSelfSignedCerts'] as bool? ?? false,
   isDemo: json['isDemo'] as bool? ?? false,
@@ -20,6 +20,9 @@ Profile _$ProfileFromJson(Map<String, dynamic> json) => Profile(
   lastUsed: json['lastUsed'] == null
       ? null
       : DateTime.parse(json['lastUsed'] as String),
+  dhcpServerType:
+      $enumDecodeNullable(_$DhcpServerTypeEnumMap, json['dhcpServerType']) ??
+      DhcpServerType.dnsmasq,
 );
 
 Map<String, dynamic> _$ProfileToJson(Profile instance) => <String, dynamic>{
@@ -34,4 +37,11 @@ Map<String, dynamic> _$ProfileToJson(Profile instance) => <String, dynamic>{
   'isDemo': instance.isDemo,
   'createdAt': instance.createdAt.toIso8601String(),
   'lastUsed': instance.lastUsed?.toIso8601String(),
+  'dhcpServerType': _$DhcpServerTypeEnumMap[instance.dhcpServerType]!,
+};
+
+const _$DhcpServerTypeEnumMap = {
+  DhcpServerType.dnsmasq: 'dnsmasq',
+  DhcpServerType.isc: 'isc',
+  DhcpServerType.kea: 'kea',
 };

@@ -362,11 +362,14 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
             ),
             title: Row(
               children: [
-                Text(
-                  profile.name,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                Expanded(
+                  child: Text(
+                    profile.name,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 if (profile.isDemo) ...[

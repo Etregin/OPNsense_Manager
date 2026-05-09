@@ -27,6 +27,7 @@ import 'package:path/path.dart' as path;
 import '../models/system_info.dart';
 import '../models/profile.dart';
 import '../models/opnsense_config.dart';
+import '../models/dhcp_server_type.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../services/storage_service.dart';
@@ -1052,6 +1053,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
     bool useHttps = profile?.useHttps ?? true;
     bool allowSelfSignedCerts = profile?.allowSelfSignedCerts ?? false;
     bool obscureSecret = true;
+    DhcpServerType dhcpServerType = profile?.dhcpServerType ?? DhcpServerType.dnsmasq;
 
     showDialog(
       context: context,
@@ -1122,6 +1124,39 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                         : null,
                   ),
                   const SizedBox(height: 16),
+                  ListTile(
+                    leading: const Icon(Icons.dns),
+                    title: const Text('DHCP Server Type'),
+                    subtitle: Text(dhcpServerType.displayName),
+                    trailing: DropdownButton<DhcpServerType>(
+                      value: dhcpServerType,
+                      items: DhcpServerType.values.map((type) {
+                        return DropdownMenuItem(
+                          value: type,
+                          child: Text(type.displayName),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setDialogState(() {
+                            dhcpServerType = value;
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      dhcpServerType.description,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Colors.grey[600],
+                            fontStyle: FontStyle.italic,
+                          ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   TextFormField(
                     controller: apiKeyController,
                     decoration: InputDecoration(
@@ -1174,6 +1209,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                     apiSecret: apiSecretController.text.trim(),
                     useHttps: useHttps,
                     allowSelfSignedCerts: allowSelfSignedCerts,
+                    dhcpServerType: dhcpServerType,
                   );
                 }
               },
@@ -1194,6 +1230,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
     required String apiSecret,
     required bool useHttps,
     required bool allowSelfSignedCerts,
+    required DhcpServerType dhcpServerType,
   }) async {
     final profileService = ProfileService();
     
@@ -1206,6 +1243,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
       apiSecret: apiSecret,
       useHttps: useHttps,
       allowSelfSignedCerts: allowSelfSignedCerts,
+      dhcpServerType: dhcpServerType,
       createdAt: DateTime.now(),
     );
 

@@ -26,6 +26,7 @@ import '../models/firewall_rule.dart';
 import '../models/vpn_connection.dart';
 import '../models/network_host.dart';
 import '../utils/constants.dart';
+import 'dhcp_lease_adapter.dart';
 
 /// Service for interacting with OPNsense API
 class OPNsenseApiService {
@@ -140,10 +141,28 @@ class OPNsenseApiService {
         }
       }
       
+      // Check for certificate validation errors and throw a more specific exception
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.unknown) {
+        if (e.message?.contains('CERTIFICATE_VERIFY_FAILED') == true ||
+            e.message?.contains('certificate') == true ||
+            e.error is HandshakeException) {
+          throw ApiException(
+            'Certificate validation failed. The server is using a self-signed certificate. '
+            'Please enable "Allow Self-Signed Certificates" in connection settings.',
+            null,
+          );
+        }
+      }
+      
       // Network errors (timeout, connection refused, etc.)
       return false;
-    } catch (_) {
-      // Silently handle error
+    } catch (e) {
+      // Re-throw ApiException so it can be caught by the caller
+      if (e is ApiException) {
+        rethrow;
+      }
+      // Silently handle other errors
       return false;
     }
   }
@@ -1081,7 +1100,32 @@ class OPNsenseApiService {
         }
       case DioExceptionType.cancel:
         return ApiException('Request cancelled', null);
+      case DioExceptionType.connectionError:
+        // Check for certificate validation errors
+        if (e.message?.contains('CERTIFICATE_VERIFY_FAILED') == true ||
+            e.message?.contains('certificate') == true ||
+            e.error is HandshakeException) {
+          return ApiException(
+            'Certificate validation failed. The server is using a self-signed certificate. '
+            'Please enable "Allow Self-Signed Certificates" in connection settings.',
+            null,
+          );
+        }
+        if (e.error is SocketException) {
+          return ApiException('Network error: Unable to connect', null);
+        }
+        return ApiException('Connection error: ${e.message}', null);
       case DioExceptionType.unknown:
+        // Check for certificate validation errors in unknown type as well
+        if (e.message?.contains('CERTIFICATE_VERIFY_FAILED') == true ||
+            e.message?.contains('certificate') == true ||
+            e.error is HandshakeException) {
+          return ApiException(
+            'Certificate validation failed. The server is using a self-signed certificate. '
+            'Please enable "Allow Self-Signed Certificates" in connection settings.',
+            null,
+          );
+        }
         if (e.error is SocketException) {
           return ApiException('Network error: Unable to connect', null);
         }
@@ -1274,40 +1318,24 @@ class OPNsenseApiService {
       throw ApiException('Failed to get VPN connection details: ${e.toString()}', null);
     }
   }
-  /// Get DHCP leases from dnsmasq
+  /// Get DHCP leases from configured DHCP server
   /// Returns a list of active DHCP leases with hostname, IP, and MAC info
-  /// Note: This requires the dnsmasq plugin to be installed and enabled
+  /// Supports dnsmasq, ISC DHCP, and KEA DHCP servers
   Future<List<Map<String, dynamic>>> getDhcpLeases() async {
     _ensureInitialized();
     
+    // Get the configured DHCP server type
+    final serverType = _config!.dhcpServerType;
+    
     try {
-      final response = await _dio!.get('/dnsmasq/leases/search');
+      // Use the appropriate API endpoint for the server type
+      final response = await _dio!.get(serverType.apiEndpoint);
       
       if (response.statusCode == 200) {
         final data = response.data;
         
-        // Handle different response formats
-        if (data is Map<String, dynamic>) {
-          // Check for rows array (common OPNsense format)
-          if (data.containsKey('rows') && data['rows'] is List) {
-            return List<Map<String, dynamic>>.from(data['rows']);
-          }
-          // Check for leases array
-          if (data.containsKey('leases') && data['leases'] is List) {
-            return List<Map<String, dynamic>>.from(data['leases']);
-          }
-          // If data itself is the lease info
-          if (data.containsKey('address') || data.containsKey('hostname')) {
-            return [data];
-          }
-        }
-        
-        // If response is directly a list
-        if (data is List) {
-          return List<Map<String, dynamic>>.from(data);
-        }
-        
-        return [];
+        // Use the adapter to parse leases based on server type
+        return DhcpLeaseAdapter.parseLeases(data, serverType);
       } else {
         throw ApiException(
           'Failed to get DHCP leases: HTTP ${response.statusCode}',

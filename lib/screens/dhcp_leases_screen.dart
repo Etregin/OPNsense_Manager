@@ -19,7 +19,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/dhcp_lease.dart';
+import '../models/dhcp_server_type.dart';
 import '../services/demo_api_service.dart';
+import '../services/profile_service.dart';
 import '../widgets/app_drawer.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/constants.dart';
@@ -43,10 +45,12 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
   String _filterStatus = 'all'; // all, active, expired
   String _sortBy = 'hostname'; // hostname, ip, expiry
   bool _sortAscending = true;
+  DhcpServerType? _dhcpServerType;
 
   @override
   void initState() {
     super.initState();
+    _loadDhcpServerType();
     _loadLeases();
     _searchController.addListener(_onSearchChanged);
   }
@@ -118,6 +122,20 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
       }
       return _sortAscending ? comparison : -comparison;
     });
+  }
+
+  Future<void> _loadDhcpServerType() async {
+    try {
+      final profileService = ProfileService();
+      final activeProfile = await profileService.getActiveProfile();
+      if (activeProfile != null && mounted) {
+        setState(() {
+          _dhcpServerType = activeProfile.dhcpServerType;
+        });
+      }
+    } catch (e) {
+      // Silently fail, will use default
+    }
   }
 
   Future<void> _loadLeases() async {
@@ -285,23 +303,48 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
             ),
           ),
           
-          // Lease count
+          // DHCP Server Type and Lease count
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppConstants.standardPadding),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.dns,
-                  size: 16,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  l10n.leasesCount(_filteredLeases.length, _leases.length),
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontWeight: FontWeight.bold,
+                if (_dhcpServerType != null) ...[
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.settings_ethernet,
+                        size: 16,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'DHCP Server: ${_dhcpServerType!.displayName}',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontWeight: FontWeight.w500,
+                            ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                ],
+                Row(
+                  children: [
+                    Icon(
+                      Icons.dns,
+                      size: 16,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      l10n.leasesCount(_filteredLeases.length, _leases.length),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ],
                 ),
               ],
             ),
