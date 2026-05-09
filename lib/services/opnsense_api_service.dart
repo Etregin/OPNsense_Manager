@@ -23,6 +23,7 @@ import 'package:dio/io.dart';
 import '../models/opnsense_config.dart';
 import '../models/system_info.dart';
 import '../models/firewall_rule.dart';
+import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
 import '../models/network_host.dart';
 import '../utils/constants.dart';
@@ -1486,6 +1487,499 @@ class OPNsenseApiService {
     }
   }
 
+  // ============================================================================
+  // Firewall Alias Methods
+  // ============================================================================
+
+  /// Get all firewall aliases
+  Future<List<FirewallAlias>> getFirewallAliases() async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.get('/api/firewall/alias/searchItem');
+      
+      if (response.statusCode == 200) {
+        final data = response.data;
+        
+        if (data is Map && data['rows'] != null) {
+          final rows = data['rows'] as List;
+          return rows.map((row) {
+            return FirewallAlias(
+              uuid: row['uuid'] ?? '',
+              name: row['name'] ?? '',
+              type: row['type'] ?? '',
+              content: row['content'] ?? '',
+              description: row['description'] ?? '',
+              enabled: row['enabled'] ?? '1',
+              counters: row['counters'] ?? '0',
+              proto: row['proto'] ?? '',
+              interface: row['interface'] ?? '',
+              categories: row['categories'] ?? '',
+            );
+          }).toList();
+        }
+        
+        return [];
+      } else {
+        throw ApiException(
+          'Failed to get firewall aliases: ${response.statusMessage}',
+          response.statusCode,
+        );
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to get firewall aliases: ${e.toString()}', null);
+    }
+  }
+
+  /// Get a specific firewall alias by UUID
+  Future<FirewallAlias> getFirewallAlias(String uuid) async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.get('/api/firewall/alias/getItem/$uuid');
+      
+      if (response.statusCode == 200) {
+        final data = response.data;
+        
+        if (data is Map && data['alias'] != null) {
+          final aliasData = data['alias'] as Map<String, dynamic>;
+          return FirewallAlias(
+            uuid: uuid,
+            name: _extractSelectedValue(aliasData['name']) as String? ?? '',
+            type: _extractSelectedValue(aliasData['type']) as String? ?? '',
+            content: _extractSelectedValue(aliasData['content']) as String? ?? '',
+            description: _extractSelectedValue(aliasData['description']) as String? ?? '',
+            enabled: _extractSelectedValue(aliasData['enabled']) as String? ?? '1',
+            counters: _extractSelectedValue(aliasData['counters']) as String? ?? '0',
+            proto: _extractSelectedValue(aliasData['proto']) as String? ?? '',
+            interface: _extractSelectedValue(aliasData['interface']) as String? ?? '',
+            categories: _extractSelectedValue(aliasData['categories']) as String? ?? '',
+          );
+        }
+        
+        throw ApiException('Invalid alias data received', response.statusCode);
+      } else {
+        throw ApiException(
+          'Failed to get firewall alias: ${response.statusMessage}',
+          response.statusCode,
+        );
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to get firewall alias: ${e.toString()}', null);
+    }
+  }
+
+  /// Get alias by name
+  Future<String?> getAliasUuidByName(String name) async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.get('/api/firewall/alias/get_alias_uuid/$name');
+      
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is Map && data['uuid'] != null) {
+          return data['uuid'] as String;
+        }
+        return null;
+      }
+      return null;
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to get alias UUID: ${e.toString()}', null);
+    }
+  }
+
+  /// Create a new firewall alias
+  Future<Map<String, dynamic>> createFirewallAlias(FirewallAliasRequest request) async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.post(
+        '/api/firewall/alias/addItem',
+        data: {'alias': request.toJson()},
+      );
+      
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is Map) {
+          // Apply changes after creating
+          if (data['result'] == 'saved') {
+            await applyFirewallChanges();
+          }
+          return data as Map<String, dynamic>;
+        }
+        throw ApiException('Invalid response format', response.statusCode);
+      } else {
+        throw ApiException(
+          'Failed to create firewall alias: ${response.statusMessage}',
+          response.statusCode,
+        );
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to create firewall alias: ${e.toString()}', null);
+    }
+  }
+
+  /// Update an existing firewall alias
+  Future<Map<String, dynamic>> updateFirewallAlias(
+    String uuid,
+    FirewallAliasRequest request,
+  ) async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.post(
+        '/api/firewall/alias/setItem/$uuid',
+        data: {'alias': request.toJson()},
+      );
+      
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is Map) {
+          // Apply changes after updating
+          if (data['result'] == 'saved') {
+            await applyFirewallChanges();
+          }
+          return data as Map<String, dynamic>;
+        }
+        throw ApiException('Invalid response format', response.statusCode);
+      } else {
+        throw ApiException(
+          'Failed to update firewall alias: ${response.statusMessage}',
+          response.statusCode,
+        );
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to update firewall alias: ${e.toString()}', null);
+    }
+  }
+
+  /// Toggle firewall alias enabled/disabled state
+  Future<void> toggleFirewallAlias(String uuid) async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.post('/api/firewall/alias/toggleItem/$uuid');
+      
+      if (response.statusCode == 200) {
+        await applyFirewallChanges();
+      } else {
+        throw ApiException(
+          'Failed to toggle firewall alias: ${response.statusMessage}',
+          response.statusCode,
+        );
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Delete a firewall alias
+  Future<void> deleteFirewallAlias(String uuid) async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.post('/api/firewall/alias/delItem/$uuid');
+      
+      if (response.statusCode == 200) {
+        await applyFirewallChanges();
+      } else {
+        throw ApiException(
+          'Failed to delete firewall alias: ${response.statusMessage}',
+          response.statusCode,
+        );
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Get GeoIP information
+  Future<Map<String, dynamic>> getGeoIP() async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.get('/api/firewall/alias/get_geoip');
+      
+      if (response.statusCode == 200 && response.data is Map) {
+        return response.data as Map<String, dynamic>;
+      }
+      throw ApiException('Failed to get GeoIP data', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to get GeoIP data: ${e.toString()}', null);
+    }
+  }
+
+  /// Get alias table size
+  Future<Map<String, dynamic>> getAliasTableSize() async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.get('/api/firewall/alias/get_table_size');
+      
+      if (response.statusCode == 200 && response.data is Map) {
+        return response.data as Map<String, dynamic>;
+      }
+      throw ApiException('Failed to get table size', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to get table size: ${e.toString()}', null);
+    }
+  }
+
+  /// List available categories
+  Future<List<AliasCategory>> listAliasCategories() async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.get('/api/firewall/alias/listCategories');
+      
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is Map && data['categories'] != null) {
+          final categories = data['categories'] as Map<String, dynamic>;
+          return categories.entries.map((entry) {
+            return AliasCategory(
+              name: entry.key,
+              description: entry.value.toString(),
+            );
+          }).toList();
+        }
+        return [];
+      }
+      throw ApiException('Failed to list categories', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to list categories: ${e.toString()}', null);
+    }
+  }
+
+  /// List available countries for GeoIP
+  Future<List<AliasCountry>> listAliasCountries() async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.get('/api/firewall/alias/listCountries');
+      
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is Map && data['countries'] != null) {
+          final countries = data['countries'] as Map<String, dynamic>;
+          return countries.entries.map((entry) {
+            return AliasCountry(
+              code: entry.key,
+              name: entry.value.toString(),
+            );
+          }).toList();
+        }
+        return [];
+      }
+      throw ApiException('Failed to list countries', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to list countries: ${e.toString()}', null);
+    }
+  }
+
+  /// List network aliases
+  Future<Map<String, dynamic>> listNetworkAliases() async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.get('/api/firewall/alias/listNetworkAliases');
+      
+      if (response.statusCode == 200 && response.data is Map) {
+        return response.data as Map<String, dynamic>;
+      }
+      throw ApiException('Failed to list network aliases', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to list network aliases: ${e.toString()}', null);
+    }
+  }
+
+  /// List user groups
+  Future<Map<String, dynamic>> listUserGroups() async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.get('/api/firewall/alias/listUserGroups');
+      
+      if (response.statusCode == 200 && response.data is Map) {
+        return response.data as Map<String, dynamic>;
+      }
+      throw ApiException('Failed to list user groups', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to list user groups: ${e.toString()}', null);
+    }
+  }
+
+  // ============================================================================
+  // Firewall Alias Utility Methods
+  // ============================================================================
+
+  /// Get all aliases (utility endpoint)
+  Future<Map<String, dynamic>> getAliasesUtil() async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.get('/api/firewall/alias_util/aliases');
+      
+      if (response.statusCode == 200 && response.data is Map) {
+        return response.data as Map<String, dynamic>;
+      }
+      throw ApiException('Failed to get aliases', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to get aliases: ${e.toString()}', null);
+    }
+  }
+
+  /// List alias table entries
+  Future<List<AliasTableEntry>> listAliasTable(String aliasName) async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.get('/api/firewall/alias_util/list/$aliasName');
+      
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is Map && data['rows'] != null) {
+          final rows = data['rows'] as List;
+          return rows.map((row) {
+            return AliasTableEntry(
+              ip: row['ip'] ?? '',
+              hostname: row['hostname'] ?? '',
+            );
+          }).toList();
+        }
+        return [];
+      }
+      throw ApiException('Failed to list alias table', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to list alias table: ${e.toString()}', null);
+    }
+  }
+
+  /// Add item to alias table
+  Future<Map<String, dynamic>> addToAliasTable(String aliasName, String address) async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.post(
+        '/api/firewall/alias_util/add/$aliasName',
+        data: {'address': address},
+      );
+      
+      if (response.statusCode == 200 && response.data is Map) {
+        return response.data as Map<String, dynamic>;
+      }
+      throw ApiException('Failed to add to alias table', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to add to alias table: ${e.toString()}', null);
+    }
+  }
+
+  /// Delete item from alias table
+  Future<Map<String, dynamic>> deleteFromAliasTable(String aliasName, String address) async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.post(
+        '/api/firewall/alias_util/delete/$aliasName',
+        data: {'address': address},
+      );
+      
+      if (response.statusCode == 200 && response.data is Map) {
+        return response.data as Map<String, dynamic>;
+      }
+      throw ApiException('Failed to delete from alias table', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to delete from alias table: ${e.toString()}', null);
+    }
+  }
+
+  /// Flush alias table
+  Future<Map<String, dynamic>> flushAliasTable(String aliasName) async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.post('/api/firewall/alias_util/flush/$aliasName');
+      
+      if (response.statusCode == 200 && response.data is Map) {
+        return response.data as Map<String, dynamic>;
+      }
+      throw ApiException('Failed to flush alias table', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to flush alias table: ${e.toString()}', null);
+    }
+  }
+
+  /// Find references to an alias
+  Future<Map<String, dynamic>> findAliasReferences(String aliasName) async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.post(
+        '/api/firewall/alias_util/find_references',
+        data: {'alias': aliasName},
+      );
+      
+      if (response.statusCode == 200 && response.data is Map) {
+        return response.data as Map<String, dynamic>;
+      }
+      throw ApiException('Failed to find alias references', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to find alias references: ${e.toString()}', null);
+    }
+  }
+
+  /// Update bogons
+  Future<Map<String, dynamic>> updateBogons() async {
+    _ensureInitialized();
+    
+    try {
+      final response = await _dio!.get('/api/firewall/alias_util/update_bogons');
+      
+      if (response.statusCode == 200 && response.data is Map) {
+        return response.data as Map<String, dynamic>;
+      }
+      throw ApiException('Failed to update bogons', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Failed to update bogons: ${e.toString()}', null);
+    }
+  }
 
   /// Clear configuration and reset service
   void clear() {

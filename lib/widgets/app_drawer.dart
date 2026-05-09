@@ -26,6 +26,7 @@ import '../utils/constants.dart';
 import '../screens/profile_selection_screen.dart';
 import '../screens/system_info_screen.dart';
 import '../screens/firewall_rules_screen.dart';
+import '../screens/firewall_aliases_screen.dart';
 import '../screens/firewall_logs_screen.dart';
 import '../screens/vpn_connections_screen.dart';
 import '../screens/live_network_monitor_screen.dart';
@@ -36,7 +37,7 @@ import '../screens/pin_lock_screen.dart';
 import '../l10n/app_localizations.dart';
 
 /// Reusable app drawer for navigation
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends StatefulWidget {
   final String currentRoute;
   final SystemInfo? systemInfo;
 
@@ -45,6 +46,20 @@ class AppDrawer extends StatelessWidget {
     required this.currentRoute,
     this.systemInfo,
   });
+
+  @override
+  State<AppDrawer> createState() => _AppDrawerState();
+}
+
+class _AppDrawerState extends State<AppDrawer> {
+  bool _firewallExpanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Auto-expand firewall section if on a firewall-related route
+    _firewallExpanded = widget.currentRoute.startsWith('firewall_');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +90,9 @@ class AppDrawer extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                if (systemInfo != null)
+                if (widget.systemInfo != null)
                   Text(
-                    systemInfo!.hostname,
+                    widget.systemInfo!.hostname,
                     style: const TextStyle(
                       color: Colors.white70,
                       fontSize: 14,
@@ -89,9 +104,9 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.dashboard),
             title: Text(l10n.dashboard),
-            selected: currentRoute == 'dashboard',
+            selected: widget.currentRoute == 'dashboard',
             onTap: () {
-              if (currentRoute != 'dashboard') {
+              if (widget.currentRoute != 'dashboard') {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => const DashboardScreen(),
@@ -106,9 +121,9 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.info_outline),
             title: Text(l10n.systemInformation),
-            selected: currentRoute == 'system_info',
+            selected: widget.currentRoute == 'system_info',
             onTap: () {
-              if (currentRoute != 'system_info') {
+              if (widget.currentRoute != 'system_info') {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => const SystemInfoScreen(),
@@ -119,44 +134,76 @@ class AppDrawer extends StatelessWidget {
               }
             },
           ),
-          ListTile(
+          // Firewall expandable section
+          ExpansionTile(
             leading: const Icon(Icons.security),
-            title: Text(l10n.firewallRules),
-            selected: currentRoute == 'firewall_rules',
-            onTap: () {
-              if (currentRoute != 'firewall_rules') {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const FirewallRulesScreen(),
-                  ),
-                );
-              } else {
-                Navigator.pop(context);
-              }
+            title: const Text('Firewall'),
+            initiallyExpanded: _firewallExpanded,
+            onExpansionChanged: (expanded) {
+              setState(() {
+                _firewallExpanded = expanded;
+              });
             },
-          ),
-          ListTile(
-            leading: const Icon(Icons.article),
-            title: Text(l10n.firewallLogs),
-            selected: currentRoute == 'firewall_logs',
-            onTap: () {
-              if (currentRoute != 'firewall_logs') {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const FirewallLogsScreen(),
-                  ),
-                );
-              } else {
-                Navigator.pop(context);
-              }
-            },
+            children: [
+              ListTile(
+                leading: const SizedBox(width: 16),
+                title: Text(l10n.firewallRules),
+                selected: widget.currentRoute == 'firewall_rules',
+                contentPadding: const EdgeInsets.only(left: 72, right: 16),
+                onTap: () {
+                  if (widget.currentRoute != 'firewall_rules') {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const FirewallRulesScreen(),
+                      ),
+                    );
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              ListTile(
+                leading: const SizedBox(width: 16),
+                title: const Text('Aliases'),
+                selected: widget.currentRoute == 'firewall_aliases',
+                contentPadding: const EdgeInsets.only(left: 72, right: 16),
+                onTap: () {
+                  if (widget.currentRoute != 'firewall_aliases') {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const FirewallAliasesScreen(),
+                      ),
+                    );
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              ListTile(
+                leading: const SizedBox(width: 16),
+                title: Text(l10n.firewallLogs),
+                selected: widget.currentRoute == 'firewall_logs',
+                contentPadding: const EdgeInsets.only(left: 72, right: 16),
+                onTap: () {
+                  if (widget.currentRoute != 'firewall_logs') {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const FirewallLogsScreen(),
+                      ),
+                    );
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+            ],
           ),
           ListTile(
             leading: const Icon(Icons.network_check),
             title: Text(l10n.liveNetworkMonitor),
-            selected: currentRoute == 'live_network_monitor',
+            selected: widget.currentRoute == 'live_network_monitor',
             onTap: () {
-              if (currentRoute != 'live_network_monitor') {
+              if (widget.currentRoute != 'live_network_monitor') {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => const LiveNetworkMonitorScreen(),
@@ -170,9 +217,9 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.dns),
             title: Text(l10n.dhcpLeases),
-            selected: currentRoute == 'dhcp_leases',
+            selected: widget.currentRoute == 'dhcp_leases',
             onTap: () {
-              if (currentRoute != 'dhcp_leases') {
+              if (widget.currentRoute != 'dhcp_leases') {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => const DhcpLeasesScreen(),
@@ -186,9 +233,9 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.vpn_lock),
             title: Text(l10n.vpnConnections),
-            selected: currentRoute == 'vpn_connections',
+            selected: widget.currentRoute == 'vpn_connections',
             onTap: () {
-              if (currentRoute != 'vpn_connections') {
+              if (widget.currentRoute != 'vpn_connections') {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => const VPNConnectionsScreen(),
@@ -203,9 +250,9 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.settings),
             title: Text(l10n.settings),
-            selected: currentRoute == 'settings',
+            selected: widget.currentRoute == 'settings',
             onTap: () {
-              if (currentRoute != 'settings') {
+              if (widget.currentRoute != 'settings') {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => const SettingsScreen(),

@@ -18,6 +18,7 @@
 
 import '../models/system_info.dart';
 import '../models/firewall_rule.dart';
+import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
 import '../models/network_host.dart';
 import 'demo_data_service.dart';
@@ -242,6 +243,67 @@ class DemoApiService {
       return _demoDataService.generateDhcpLeases();
     }
     return _realApiService.getDhcpLeases();
+  }
+
+  /// Get firewall aliases
+  Future<List<FirewallAlias>> getFirewallAliases() async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 400));
+      return _demoDataService.generateFirewallAliases();
+    }
+    return _realApiService.getFirewallAliases();
+  }
+
+  /// Get firewall alias by UUID
+  Future<FirewallAlias?> getFirewallAlias(String uuid) async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 200));
+      final aliases = _demoDataService.generateFirewallAliases();
+      try {
+        return aliases.firstWhere((alias) => alias.uuid == uuid);
+      } catch (e) {
+        return null;
+      }
+    }
+    return _realApiService.getFirewallAlias(uuid);
+  }
+
+  /// Toggle firewall alias
+  Future<void> toggleFirewallAlias(String uuid) async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 300));
+      _demoDataService.toggleFirewallAliasState(uuid);
+      return;
+    }
+    return _realApiService.toggleFirewallAlias(uuid);
+  }
+
+  /// Delete firewall alias
+  Future<void> deleteFirewallAlias(String uuid) async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 300));
+      _demoDataService.deleteFirewallAlias(uuid);
+      return;
+    }
+    return _realApiService.deleteFirewallAlias(uuid);
+  }
+
+  /// Create firewall alias
+  Future<Map<String, dynamic>> createFirewallAlias(FirewallAliasRequest request) async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 400));
+      return {'result': 'saved', 'uuid': 'demo-alias-${_demoDataService.getNextAliasId()}'};
+    }
+    return _realApiService.createFirewallAlias(request);
+  }
+
+  /// Update firewall alias
+  Future<Map<String, dynamic>> updateFirewallAlias(String uuid, FirewallAliasRequest request) async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 400));
+      return {'result': 'saved'};
+    }
+    return _realApiService.updateFirewallAlias(uuid, request);
   }
 
   /// Reboot system

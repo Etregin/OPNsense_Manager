@@ -19,6 +19,7 @@
 import 'dart:math';
 import '../models/system_info.dart';
 import '../models/firewall_rule.dart';
+import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
 import '../models/network_host.dart';
 
@@ -32,8 +33,11 @@ class DemoDataService {
   
   // Simulated state for demo mode
   final Map<String, bool> _firewallRuleStates = {};
+  final Map<String, bool> _firewallAliasStates = {};
+  final Set<String> _deletedAliases = {};
   final Map<String, bool> _vpnConnectionStates = {};
   final Map<String, bool> _serviceStates = {};
+  int _nextAliasId = 10;
 
   /// Generate demo system info
   SystemInfo generateSystemInfo() {
@@ -529,11 +533,115 @@ class DemoDataService {
     ];
   }
 
+  /// Generate demo firewall aliases
+  List<FirewallAlias> generateFirewallAliases() {
+    final aliases = <FirewallAlias>[
+      FirewallAlias(
+        uuid: 'demo-alias-1',
+        name: 'RFC1918_Networks',
+        type: 'network',
+        content: '10.0.0.0/8,172.16.0.0/12,192.168.0.0/16',
+        description: 'Private IPv4 address ranges',
+        enabled: _getFirewallAliasState('demo-alias-1', true) ? '1' : '0',
+        counters: '1',
+      ),
+      FirewallAlias(
+        uuid: 'demo-alias-2',
+        name: 'Trusted_Hosts',
+        type: 'host',
+        content: '192.168.1.10,192.168.1.15,192.168.1.20',
+        description: 'Trusted devices on LAN',
+        enabled: _getFirewallAliasState('demo-alias-2', true) ? '1' : '0',
+        counters: '1',
+      ),
+      FirewallAlias(
+        uuid: 'demo-alias-3',
+        name: 'Web_Ports',
+        type: 'port',
+        content: '80,443,8080,8443',
+        description: 'Common web service ports',
+        enabled: _getFirewallAliasState('demo-alias-3', true) ? '1' : '0',
+        proto: 'tcp',
+      ),
+      FirewallAlias(
+        uuid: 'demo-alias-4',
+        name: 'DNS_Servers',
+        type: 'host',
+        content: '8.8.8.8,8.8.4.4,1.1.1.1,1.0.0.1',
+        description: 'Public DNS servers (Google, Cloudflare)',
+        enabled: _getFirewallAliasState('demo-alias-4', true) ? '1' : '0',
+        counters: '1',
+      ),
+      FirewallAlias(
+        uuid: 'demo-alias-5',
+        name: 'Blocked_Countries',
+        type: 'geoip',
+        content: 'CN,RU,KP',
+        description: 'Countries to block',
+        enabled: _getFirewallAliasState('demo-alias-5', false) ? '1' : '0',
+      ),
+      FirewallAlias(
+        uuid: 'demo-alias-6',
+        name: 'Mail_Ports',
+        type: 'port',
+        content: '25,465,587,993,995',
+        description: 'Email service ports',
+        enabled: _getFirewallAliasState('demo-alias-6', true) ? '1' : '0',
+        proto: 'tcp',
+      ),
+      FirewallAlias(
+        uuid: 'demo-alias-7',
+        name: 'IoT_Devices',
+        type: 'host',
+        content: '192.168.1.40,192.168.1.45',
+        description: 'IoT and smart home devices',
+        enabled: _getFirewallAliasState('demo-alias-7', true) ? '1' : '0',
+        counters: '1',
+      ),
+      FirewallAlias(
+        uuid: 'demo-alias-8',
+        name: 'VPN_Ports',
+        type: 'port',
+        content: '1194,1723,500,4500',
+        description: 'VPN service ports (OpenVPN, PPTP, IPSec)',
+        enabled: _getFirewallAliasState('demo-alias-8', true) ? '1' : '0',
+        proto: 'udp',
+      ),
+    ];
+
+    // Filter out deleted aliases
+    return aliases.where((alias) => !_deletedAliases.contains(alias.uuid)).toList();
+  }
+
+  /// Get firewall alias state
+  bool _getFirewallAliasState(String uuid, bool defaultState) {
+    return _firewallAliasStates.putIfAbsent(uuid, () => defaultState);
+  }
+
+  /// Toggle firewall alias state
+  void toggleFirewallAliasState(String uuid) {
+    final currentState = _firewallAliasStates[uuid] ?? true;
+    _firewallAliasStates[uuid] = !currentState;
+  }
+
+  /// Delete firewall alias
+  void deleteFirewallAlias(String uuid) {
+    _deletedAliases.add(uuid);
+  }
+
+  /// Get next alias ID for creating new aliases
+  int getNextAliasId() {
+    return _nextAliasId++;
+  }
+
   /// Reset all demo states
   void reset() {
     _firewallRuleStates.clear();
+    _firewallAliasStates.clear();
+    _deletedAliases.clear();
     _vpnConnectionStates.clear();
     _serviceStates.clear();
+    _nextAliasId = 10;
   }
 }
 
