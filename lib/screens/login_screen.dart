@@ -17,9 +17,11 @@
  */
 
 
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:file_picker/file_picker.dart';
 import '../models/opnsense_config.dart';
 import '../models/profile.dart';
 import '../models/dhcp_server_type.dart';
@@ -178,6 +180,132 @@ class _LoginScreenState extends State<LoginScreen> {
         _errorMessage = l10n.apiError(e.toString());
         _isLoading = false;
       });
+    }
+  }
+
+  Future<void> _importProfiles() async {
+    try {
+      final l10n = AppLocalizations.of(context)!;
+      final profileService = context.read<ProfileService>();
+      
+      // Pick a file
+      final pickerResult = await FilePicker.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+        allowMultiple: false,
+      );
+      
+      if (pickerResult == null || pickerResult.files.isEmpty) {
+        return; // User cancelled
+      }
+      
+      // Check if path is null before accessing it
+      if (pickerResult.files.first.path == null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.unableToAccessFilePath),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return;
+      }
+      
+      final file = File(pickerResult.files.first.path!);
+      final jsonString = await file.readAsString();
+      
+      // Validate file format
+      final validationError = profileService.validateImportFile(jsonString);
+      
+      if (validationError != null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.invalidFileFormat(validationError)),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return;
+      }
+      
+      // Show import options dialog
+      if (!mounted) return;
+      final overwrite = await showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(l10n.importProfilesTitle),
+            content: Text(l10n.importProfilesDialog),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(null),
+                child: Text(l10n.cancel),
+              ),
+              OutlinedButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(l10n.keepBoth),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(l10n.overwrite),
+              ),
+            ],
+          );
+        },
+      );
+      
+      if (overwrite == null) return; // User cancelled
+      
+      // Import profiles
+      final result = await profileService.importProfiles(
+        jsonString,
+        overwrite: overwrite,
+      );
+      
+      // Show result
+      if (mounted) {
+        final successCount = result['success'] as int;
+        final failedCount = result['failed'] as int;
+        final errors = result['errors'] as List<String>;
+        
+        String message;
+        Color backgroundColor;
+        
+        if (failedCount == 0) {
+          message = l10n.successfullyImportedProfiles(successCount);
+          backgroundColor = Colors.green;
+        } else if (successCount == 0) {
+          message = l10n.importFailedWithErrors(errors.join(', '));
+          backgroundColor = Colors.red;
+        } else {
+          message = l10n.importedWithFailures(successCount, failedCount);
+          backgroundColor = Colors.orange;
+        }
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: backgroundColor,
+            duration: const Duration(seconds: 5),
+          ),
+        );
+        
+        // If import was successful, navigate back to profile selection
+        if (successCount > 0) {
+          Navigator.of(context).pop(true);
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Import failed: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -440,6 +568,22 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                  ),
+                 const SizedBox(height: 16),
+                 
+                 // Import Profiles button (only show when not editing)
+                 if (widget.profile == null)
+                   OutlinedButton.icon(
+                     onPressed: _isLoading ? null : _importProfiles,
+                     icon: const Icon(Icons.upload_file),
+                     label: Text(l10n.importProfiles),
+                     style: OutlinedButton.styleFrom(
+                       padding: const EdgeInsets.symmetric(vertical: 16),
+                       side: BorderSide(
+                         color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
+                         width: 1,
+                       ),
+                     ),
+                   ),
                  const SizedBox(height: 24),
                  
                  // Help Text

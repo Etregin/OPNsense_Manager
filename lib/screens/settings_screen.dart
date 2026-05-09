@@ -879,7 +879,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                     children: [
                       const Icon(Icons.download, size: 20),
                       const SizedBox(width: 12),
-                      Text(AppLocalizations.of(context)!.export),
+                      const Text('Export This Profile'),
                     ],
                   ),
                 ),
@@ -937,7 +937,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                   child: OutlinedButton.icon(
                     onPressed: _profiles.isEmpty ? null : _exportProfiles,
                     icon: const Icon(Icons.download, size: 20),
-                    label: Text(AppLocalizations.of(context)!.export),
+                    label: const Text('Export All'),
                     style: OutlinedButton.styleFrom(
                       minimumSize: const Size(0, 44),
                     ),
