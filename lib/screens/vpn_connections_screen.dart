@@ -41,7 +41,7 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
   bool _isLoading = true;
   String? _errorMessage;
   Timer? _refreshTimer;
-  String _filterType = 'all'; // 'all', 'openvpn', 'tailscale'
+  String _filterType = 'all'; // 'all', 'openvpn', 'tailscale', 'wireguard', 'ipsec'
 
   @override
   void initState() {
@@ -284,6 +284,14 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
               const PopupMenuItem(
                 value: 'openvpn',
                 child: Text('OpenVPN'),
+              ),
+              const PopupMenuItem(
+                value: 'wireguard',
+                child: Text('WireGuard'),
+              ),
+              const PopupMenuItem(
+                value: 'ipsec',
+                child: Text('IPsec'),
               ),
               const PopupMenuItem(
                 value: 'tailscale',
@@ -642,6 +650,10 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
     switch (type.toLowerCase()) {
       case 'openvpn':
         return Icons.vpn_key;
+      case 'wireguard':
+        return Icons.security;
+      case 'ipsec':
+        return Icons.shield;
       case 'tailscale':
         return Icons.cloud_queue;
       default:

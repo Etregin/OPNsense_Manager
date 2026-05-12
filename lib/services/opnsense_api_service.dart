@@ -1136,7 +1136,7 @@ class OPNsenseApiService {
     }
   }
 
-  /// Get all VPN connections (OpenVPN and Tailscale)
+  /// Get all VPN connections (OpenVPN, WireGuard, IPsec, and Tailscale)
   Future<List<VPNConnection>> getVPNConnections() async {
     _ensureInitialized();
 
@@ -1181,6 +1181,22 @@ class OPNsenseApiService {
         connections.addAll(openVpnConnections);
       } catch (e) {
         errors['OpenVPN'] = e.toString();
+      }
+
+      // Get WireGuard connections
+      try {
+        final wireguardConnections = await _getWireGuardConnections();
+        connections.addAll(wireguardConnections);
+      } catch (e) {
+        errors['WireGuard'] = e.toString();
+      }
+
+      // Get IPsec connections
+      try {
+        final ipsecConnections = await _getIPsecConnections();
+        connections.addAll(ipsecConnections);
+      } catch (e) {
+        errors['IPsec'] = e.toString();
       }
 
       return connections;
@@ -1247,6 +1263,127 @@ class OPNsenseApiService {
       return [];
     }
   }
+  /// Get WireGuard connections
+  Future<List<VPNConnection>> _getWireGuardConnections() async {
+    try {
+      final connections = <VPNConnection>[];
+
+      // Get WireGuard servers
+      try {
+        final servers = await getWireGuardServers();
+        for (var server in servers) {
+          final enabled = server['enabled'] == '1';
+          final name = server['name']?.toString() ?? 'WireGuard Server';
+          final uuid = server['uuid']?.toString() ?? '';
+          
+          connections.add(VPNConnection(
+            id: uuid,
+            name: name,
+            type: 'wireguard',
+            status: enabled ? 'up' : 'down',
+            description: 'WireGuard VPN Server',
+            localAddress: server['tunneladdress']?.toString(),
+            port: int.tryParse(server['port']?.toString() ?? ''),
+            enabled: enabled,
+          ));
+        }
+      } catch (e) {
+        // Silently handle error
+      }
+
+      // Get WireGuard clients
+      try {
+        final clients = await getWireGuardClients();
+        for (var client in clients) {
+          final enabled = client['enabled'] == '1';
+          final name = client['name']?.toString() ?? 'WireGuard Client';
+          final uuid = client['uuid']?.toString() ?? '';
+          
+          connections.add(VPNConnection(
+            id: uuid,
+            name: name,
+            type: 'wireguard',
+            status: enabled ? 'up' : 'down',
+            description: 'WireGuard VPN Client',
+            virtualAddress: client['tunneladdress']?.toString(),
+            enabled: enabled,
+          ));
+        }
+      } catch (e) {
+        // Silently handle error
+      }
+
+      return connections;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /// Get IPsec connections
+  Future<List<VPNConnection>> _getIPsecConnections() async {
+    try {
+      final connections = <VPNConnection>[];
+
+      // Get IPsec connections
+      try {
+        final ipsecConns = await getIPsecConnections();
+        for (var conn in ipsecConns) {
+          final enabled = conn['enabled'] == '1';
+          final description = conn['description']?.toString() ?? 'IPsec Connection';
+          final uuid = conn['uuid']?.toString() ?? '';
+          
+          connections.add(VPNConnection(
+            id: uuid,
+            name: description,
+            type: 'ipsec',
+            status: enabled ? 'up' : 'down',
+            description: description,
+            localAddress: conn['local_addrs']?.toString(),
+            remoteAddress: conn['remote_addrs']?.toString(),
+            enabled: enabled,
+          ));
+        }
+      } catch (e) {
+        // Silently handle error
+      }
+
+      // Get IPsec sessions to update status
+      try {
+        final sessions = await getIPsecSessionsPhase1();
+        for (var session in sessions) {
+          final sessionName = session['name']?.toString() ?? '';
+          final state = session['state']?.toString() ?? '';
+          
+          // Update connection status based on session state
+          for (var conn in connections) {
+            if (conn.name == sessionName && state == 'ESTABLISHED') {
+              final index = connections.indexOf(conn);
+              connections[index] = VPNConnection(
+                id: conn.id,
+                name: conn.name,
+                type: conn.type,
+                status: 'up',
+                description: conn.description,
+                localAddress: conn.localAddress,
+                remoteAddress: conn.remoteAddress,
+                enabled: conn.enabled,
+                connectedSince: DateTime.now().subtract(
+                  Duration(seconds: int.tryParse(session['established']?.toString() ?? '0') ?? 0)
+                ),
+              );
+            }
+          }
+        }
+      } catch (e) {
+        // Silently handle error
+      }
+
+      return connections;
+    } catch (e) {
+      return [];
+    }
+  }
+
 
 
   /// Toggle VPN connection (connect/disconnect)
@@ -1319,6 +1456,95 @@ class OPNsenseApiService {
       throw ApiException('Failed to get VPN connection details: ${e.toString()}', null);
     }
   }
+
+  // ==================== WireGuard VPN ====================
+
+  /// Get all WireGuard clients
+  Future<List<Map<String, dynamic>>> getWireGuardClients() async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.get('/wireguard/client/search_client');
+      
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        if (data.containsKey('rows') && data['rows'] is List) {
+          return List<Map<String, dynamic>>.from(data['rows']);
+        }
+        return [];
+      } else {
+        throw ApiException('Failed to get WireGuard clients', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Get all WireGuard servers
+  Future<List<Map<String, dynamic>>> getWireGuardServers() async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.get('/wireguard/server/search_server');
+      
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        if (data.containsKey('rows') && data['rows'] is List) {
+          return List<Map<String, dynamic>>.from(data['rows']);
+        }
+        return [];
+      } else {
+        throw ApiException('Failed to get WireGuard servers', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  // ==================== IPsec VPN ====================
+
+  /// Get all IPsec connections
+  Future<List<Map<String, dynamic>>> getIPsecConnections() async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.get('/ipsec/connections/search_connection');
+      
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        if (data.containsKey('rows') && data['rows'] is List) {
+          return List<Map<String, dynamic>>.from(data['rows']);
+        }
+        return [];
+      } else {
+        throw ApiException('Failed to get IPsec connections', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Get IPsec sessions (Phase 1)
+  Future<List<Map<String, dynamic>>> getIPsecSessionsPhase1() async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.get('/ipsec/sessions/search_phase1');
+      
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        if (data.containsKey('rows') && data['rows'] is List) {
+          return List<Map<String, dynamic>>.from(data['rows']);
+        }
+        return [];
+      } else {
+        throw ApiException('Failed to get IPsec Phase 1 sessions', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
   /// Get DHCP leases from configured DHCP server
   /// Returns a list of active DHCP leases with hostname, IP, and MAC info
   /// Supports dnsmasq, ISC DHCP, and KEA DHCP servers

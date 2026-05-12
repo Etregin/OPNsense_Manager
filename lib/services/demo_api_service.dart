@@ -227,6 +227,46 @@ class DemoApiService {
     return _realApiService.getVPNConnectionDetails(id, type);
   }
 
+  // ==================== WireGuard VPN ====================
+
+  /// Get WireGuard clients
+  Future<List<Map<String, dynamic>>> getWireGuardClients() async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 400));
+      return _demoDataService.generateWireGuardClients();
+    }
+    return _realApiService.getWireGuardClients();
+  }
+
+  /// Get WireGuard servers
+  Future<List<Map<String, dynamic>>> getWireGuardServers() async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 400));
+      return _demoDataService.generateWireGuardServers();
+    }
+    return _realApiService.getWireGuardServers();
+  }
+
+  // ==================== IPsec VPN ====================
+
+  /// Get IPsec connections
+  Future<List<Map<String, dynamic>>> getIPsecConnections() async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 400));
+      return _demoDataService.generateIPsecConnections();
+    }
+    return _realApiService.getIPsecConnections();
+  }
+
+  /// Get IPsec sessions (Phase 1)
+  Future<List<Map<String, dynamic>>> getIPsecSessionsPhase1() async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 400));
+      return _demoDataService.generateIPsecSessionsPhase1();
+    }
+    return _realApiService.getIPsecSessionsPhase1();
+  }
+
   /// Get network hosts with bandwidth usage
   Future<List<NetworkHost>> getNetworkHosts({String interface = 'lan'}) async {
     if (_isDemoMode) {
