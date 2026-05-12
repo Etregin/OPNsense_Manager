@@ -29,7 +29,9 @@ import '../l10n/app_localizations.dart';
 
 /// Screen for managing VPN connections
 class VPNConnectionsScreen extends StatefulWidget {
-  const VPNConnectionsScreen({super.key});
+  final String? vpnType;
+  
+  const VPNConnectionsScreen({super.key, this.vpnType});
 
   @override
   State<VPNConnectionsScreen> createState() => _VPNConnectionsScreenState();
@@ -46,6 +48,10 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
   @override
   void initState() {
     super.initState();
+    // Set initial filter based on vpnType parameter
+    if (widget.vpnType != null) {
+      _filterType = widget.vpnType!;
+    }
     _loadData();
     _startAutoRefresh();
   }
@@ -307,7 +313,7 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
         ],
       ),
       drawer: AppDrawer(
-        currentRoute: 'vpn_connections',
+        currentRoute: widget.vpnType != null ? 'vpn_${widget.vpnType}' : 'vpn_connections',
         systemInfo: _systemInfo,
       ),
       body: RefreshIndicator(

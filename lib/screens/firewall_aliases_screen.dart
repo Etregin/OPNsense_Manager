@@ -39,6 +39,8 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
   String? _errorMessage;
   String _searchQuery = '';
   String? _filterType;
+  // Track which aliases are currently being toggled
+  final Set<String> _togglingAliases = {};
 
   @override
   void initState() {
@@ -119,56 +121,45 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
     return _aliases.map((alias) => alias.type).toSet();
   }
 
-  Future<void> _toggleAlias(FirewallAlias alias) async {
-    final l10n = AppLocalizations.of(context)!;
-    
-    final action = alias.isEnabled ? l10n.disable : l10n.enable;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('$action Alias'),
-        content: Text(
-          'Are you sure you want to $action alias "${alias.name}"?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: alias.isEnabled ? Colors.orange : Colors.green,
-            ),
-            child: Text(action),
-          ),
-        ],
-      ),
-    );
+  Future<void> _toggleAlias(FirewallAlias alias, bool newValue) async {
+    // Prevent multiple simultaneous toggles
+    if (_togglingAliases.contains(alias.uuid)) {
+      return;
+    }
 
-    if (confirmed == true && mounted) {
-      try {
-        final demoApiService = context.read<DemoApiService>();
-        await demoApiService.toggleFirewallAlias(alias.uuid);
+    setState(() {
+      _togglingAliases.add(alias.uuid);
+    });
 
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Alias ${alias.isEnabled ? "disabled" : "enabled"} successfully'),
-              backgroundColor: Colors.green,
-            ),
-          );
-          _loadAliases();
-        }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to toggle alias: ${e.toString()}'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
+    try {
+      final demoApiService = context.read<DemoApiService>();
+      await demoApiService.toggleFirewallAlias(alias.uuid);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Alias ${alias.isEnabled ? "disabled" : "enabled"} successfully'),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+        await _loadAliases();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to toggle alias: ${e.toString()}'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _togglingAliases.remove(alias.uuid);
+        });
       }
     }
   }
@@ -410,6 +401,8 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                               itemCount: filteredAliases.length,
                               itemBuilder: (context, index) {
                                 final alias = filteredAliases[index];
+                                final isToggling = _togglingAliases.contains(alias.uuid);
+                                
                                 return Card(
                                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                                   child: ListTile(
@@ -447,52 +440,57 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                                         ),
                                       ],
                                     ),
-                                    trailing: PopupMenuButton<String>(
-                                      onSelected: (value) {
-                                        switch (value) {
-                                          case 'view':
-                                            _showAliasDetails(alias);
-                                            break;
-                                          case 'toggle':
-                                            _toggleAlias(alias);
-                                            break;
-                                          case 'delete':
-                                            _deleteAlias(alias);
-                                            break;
-                                        }
-                                      },
-                                      itemBuilder: (context) => [
-                                        const PopupMenuItem(
-                                          value: 'view',
-                                          child: Row(
-                                            children: [
-                                              Icon(Icons.visibility),
-                                              SizedBox(width: 8),
-                                              Text('View Details'),
-                                            ],
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        // Toggle switch with loading indicator
+                                        if (isToggling)
+                                          const SizedBox(
+                                            width: 24,
+                                            height: 24,
+                                            child: CircularProgressIndicator(strokeWidth: 2),
+                                          )
+                                        else
+                                          Switch(
+                                            value: alias.isEnabled,
+                                            onChanged: (value) => _toggleAlias(alias, value),
+                                            activeTrackColor: Colors.green,
                                           ),
-                                        ),
-                                        PopupMenuItem(
-                                          value: 'toggle',
-                                          child: Row(
-                                            children: [
-                                              Icon(alias.isEnabled
-                                                  ? Icons.toggle_on
-                                                  : Icons.toggle_off),
-                                              const SizedBox(width: 8),
-                                              Text(alias.isEnabled ? 'Disable' : 'Enable'),
-                                            ],
-                                          ),
-                                        ),
-                                        const PopupMenuItem(
-                                          value: 'delete',
-                                          child: Row(
-                                            children: [
-                                              Icon(Icons.delete, color: Colors.red),
-                                              SizedBox(width: 8),
-                                              Text('Delete', style: TextStyle(color: Colors.red)),
-                                            ],
-                                          ),
+                                        const SizedBox(width: 8),
+                                        // Menu button
+                                        PopupMenuButton<String>(
+                                          onSelected: (value) {
+                                            switch (value) {
+                                              case 'view':
+                                                _showAliasDetails(alias);
+                                                break;
+                                              case 'delete':
+                                                _deleteAlias(alias);
+                                                break;
+                                            }
+                                          },
+                                          itemBuilder: (context) => [
+                                            const PopupMenuItem(
+                                              value: 'view',
+                                              child: Row(
+                                                children: [
+                                                  Icon(Icons.visibility),
+                                                  SizedBox(width: 8),
+                                                  Text('View Details'),
+                                                ],
+                                              ),
+                                            ),
+                                            const PopupMenuItem(
+                                              value: 'delete',
+                                              child: Row(
+                                                children: [
+                                                  Icon(Icons.delete, color: Colors.red),
+                                                  SizedBox(width: 8),
+                                                  Text('Delete', style: TextStyle(color: Colors.red)),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),

@@ -53,12 +53,15 @@ class AppDrawer extends StatefulWidget {
 
 class _AppDrawerState extends State<AppDrawer> {
   bool _firewallExpanded = false;
+  bool _vpnExpanded = false;
 
   @override
   void initState() {
     super.initState();
     // Auto-expand firewall section if on a firewall-related route
     _firewallExpanded = widget.currentRoute.startsWith('firewall_');
+    // Auto-expand VPN section if on a VPN-related route
+    _vpnExpanded = widget.currentRoute.startsWith('vpn_');
   }
 
   @override
@@ -230,21 +233,86 @@ class _AppDrawerState extends State<AppDrawer> {
               }
             },
           ),
-          ListTile(
+          // VPN expandable section
+          ExpansionTile(
             leading: const Icon(Icons.vpn_lock),
             title: Text(l10n.vpnConnections),
-            selected: widget.currentRoute == 'vpn_connections',
-            onTap: () {
-              if (widget.currentRoute != 'vpn_connections') {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const VPNConnectionsScreen(),
-                  ),
-                );
-              } else {
-                Navigator.pop(context);
-              }
+            initiallyExpanded: _vpnExpanded,
+            onExpansionChanged: (expanded) {
+              setState(() {
+                _vpnExpanded = expanded;
+              });
             },
+            children: [
+              ListTile(
+                leading: const SizedBox(width: 16),
+                title: const Text('WireGuard'),
+                selected: widget.currentRoute == 'vpn_wireguard',
+                contentPadding: const EdgeInsets.only(left: 72, right: 16),
+                onTap: () {
+                  if (widget.currentRoute != 'vpn_wireguard') {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const VPNConnectionsScreen(vpnType: 'wireguard'),
+                      ),
+                    );
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              ListTile(
+                leading: const SizedBox(width: 16),
+                title: const Text('IPsec'),
+                selected: widget.currentRoute == 'vpn_ipsec',
+                contentPadding: const EdgeInsets.only(left: 72, right: 16),
+                onTap: () {
+                  if (widget.currentRoute != 'vpn_ipsec') {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const VPNConnectionsScreen(vpnType: 'ipsec'),
+                      ),
+                    );
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              ListTile(
+                leading: const SizedBox(width: 16),
+                title: const Text('OpenVPN'),
+                selected: widget.currentRoute == 'vpn_openvpn',
+                contentPadding: const EdgeInsets.only(left: 72, right: 16),
+                onTap: () {
+                  if (widget.currentRoute != 'vpn_openvpn') {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const VPNConnectionsScreen(vpnType: 'openvpn'),
+                      ),
+                    );
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              ListTile(
+                leading: const SizedBox(width: 16),
+                title: const Text('Tailscale'),
+                selected: widget.currentRoute == 'vpn_tailscale',
+                contentPadding: const EdgeInsets.only(left: 72, right: 16),
+                onTap: () {
+                  if (widget.currentRoute != 'vpn_tailscale') {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const VPNConnectionsScreen(vpnType: 'tailscale'),
+                      ),
+                    );
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+            ],
           ),
           const Divider(),
           ListTile(

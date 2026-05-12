@@ -911,6 +911,19 @@ class OPNsenseApiService {
     }
   }
 
+  /// Apply firewall alias changes
+  /// This must be called after creating, updating, toggling, or deleting aliases
+  /// to actually apply the changes to the running firewall configuration
+  Future<void> applyFirewallAliasChanges() async {
+    _ensureInitialized();
+
+    try {
+      await _dio!.post('/firewall/alias/reconfigure');
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
   // ==================== System Control ====================
 
   /// Reboot the OPNsense system
@@ -1722,27 +1735,76 @@ class OPNsenseApiService {
     _ensureInitialized();
     
     try {
-      final response = await _dio!.get('/api/firewall/alias/searchItem');
+      final response = await _dio!.get('/firewall/alias/get');
       
       if (response.statusCode == 200) {
         final data = response.data;
         
-        if (data is Map && data['rows'] != null) {
-          final rows = data['rows'] as List;
-          return rows.map((row) {
-            return FirewallAlias(
-              uuid: row['uuid'] ?? '',
-              name: row['name'] ?? '',
-              type: row['type'] ?? '',
-              content: row['content'] ?? '',
-              description: row['description'] ?? '',
-              enabled: row['enabled'] ?? '1',
-              counters: row['counters'] ?? '0',
-              proto: row['proto'] ?? '',
-              interface: row['interface'] ?? '',
-              categories: row['categories'] ?? '',
-            );
-          }).toList();
+        // Response structure: {"alias": {"aliases": {"alias": {...}}}}
+        // The "alias" map contains alias names as keys, each with nested properties
+        if (data is Map &&
+            data['alias'] != null &&
+            data['alias']['aliases'] != null &&
+            data['alias']['aliases']['alias'] != null) {
+          
+          final aliasesMap = data['alias']['aliases']['alias'] as Map<String, dynamic>;
+          final List<FirewallAlias> aliases = [];
+          
+          // Iterate through each alias entry
+          aliasesMap.forEach((aliasName, aliasData) {
+            if (aliasData is Map<String, dynamic>) {
+              // Extract the type - it's an object where one entry has "selected": 1
+              String aliasType = '';
+              if (aliasData['type'] is Map) {
+                final typeMap = aliasData['type'] as Map<String, dynamic>;
+                typeMap.forEach((key, value) {
+                  if (value is Map && value['selected'] == 1) {
+                    aliasType = key;
+                  }
+                });
+              }
+              
+              // Extract content from current_items if available
+              String content = '';
+              if (aliasData['content'] != null) {
+                content = aliasData['content'].toString();
+              } else if (aliasData['current_items'] != null) {
+                if (aliasData['current_items'] is List) {
+                  content = (aliasData['current_items'] as List).join(',');
+                } else {
+                  content = aliasData['current_items'].toString();
+                }
+              }
+              
+              // Extract description
+              String description = '';
+              if (aliasData['description'] != null) {
+                description = aliasData['description'].toString();
+              }
+              
+              // Extract enabled status
+              String enabled = '1';
+              if (aliasData['enabled'] != null) {
+                enabled = aliasData['enabled'].toString();
+              }
+              
+              // Use the alias name as UUID since the response doesn't include UUIDs
+              aliases.add(FirewallAlias(
+                uuid: aliasName,
+                name: aliasName,
+                type: aliasType,
+                content: content,
+                description: description,
+                enabled: enabled,
+                counters: aliasData['counters']?.toString() ?? '0',
+                proto: aliasData['proto']?.toString() ?? '',
+                interface: aliasData['interface']?.toString() ?? '',
+                categories: aliasData['categories']?.toString() ?? '',
+              ));
+            }
+          });
+          
+          return aliases;
         }
         
         return [];
@@ -1764,7 +1826,7 @@ class OPNsenseApiService {
     _ensureInitialized();
     
     try {
-      final response = await _dio!.get('/api/firewall/alias/getItem/$uuid');
+      final response = await _dio!.get('/firewall/alias/getItem/$uuid');
       
       if (response.statusCode == 200) {
         final data = response.data;
@@ -1827,7 +1889,7 @@ class OPNsenseApiService {
     
     try {
       final response = await _dio!.post(
-        '/api/firewall/alias/addItem',
+        '/firewall/alias/addItem',
         data: {'alias': request.toJson()},
       );
       
@@ -1836,7 +1898,7 @@ class OPNsenseApiService {
         if (data is Map) {
           // Apply changes after creating
           if (data['result'] == 'saved') {
-            await applyFirewallChanges();
+            await applyFirewallAliasChanges();
           }
           return data as Map<String, dynamic>;
         }
@@ -1863,7 +1925,7 @@ class OPNsenseApiService {
     
     try {
       final response = await _dio!.post(
-        '/api/firewall/alias/setItem/$uuid',
+        '/firewall/alias/setItem/$uuid',
         data: {'alias': request.toJson()},
       );
       
@@ -1872,7 +1934,7 @@ class OPNsenseApiService {
         if (data is Map) {
           // Apply changes after updating
           if (data['result'] == 'saved') {
-            await applyFirewallChanges();
+            await applyFirewallAliasChanges();
           }
           return data as Map<String, dynamic>;
         }
@@ -1895,10 +1957,10 @@ class OPNsenseApiService {
     _ensureInitialized();
     
     try {
-      final response = await _dio!.post('/api/firewall/alias/toggleItem/$uuid');
+      final response = await _dio!.post('/firewall/alias/toggleItem/$uuid');
       
       if (response.statusCode == 200) {
-        await applyFirewallChanges();
+        await applyFirewallAliasChanges();
       } else {
         throw ApiException(
           'Failed to toggle firewall alias: ${response.statusMessage}',
@@ -1915,10 +1977,10 @@ class OPNsenseApiService {
     _ensureInitialized();
     
     try {
-      final response = await _dio!.post('/api/firewall/alias/delItem/$uuid');
+      final response = await _dio!.post('/firewall/alias/delItem/$uuid');
       
       if (response.statusCode == 200) {
-        await applyFirewallChanges();
+        await applyFirewallAliasChanges();
       } else {
         throw ApiException(
           'Failed to delete firewall alias: ${response.statusMessage}',
