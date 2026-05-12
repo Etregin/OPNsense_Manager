@@ -5,7 +5,7 @@ allprojects {
     }
 }
 
-// Force all subprojects to use Java 17
+// Force all subprojects to use Java 17 and Kotlin JVM 17
 subprojects {
     afterEvaluate {
         if (project.hasProperty("android")) {
@@ -14,6 +14,13 @@ subprojects {
                     sourceCompatibility = JavaVersion.VERSION_17
                     targetCompatibility = JavaVersion.VERSION_17
                 }
+            }
+        }
+        
+        // Configure Kotlin JVM target for all subprojects using compilerOptions DSL
+        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+            compilerOptions {
+                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
             }
         }
     }

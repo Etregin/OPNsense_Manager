@@ -31,6 +31,9 @@ import '../screens/firewall_logs_screen.dart';
 import '../screens/vpn_connections_screen.dart';
 import '../screens/live_network_monitor_screen.dart';
 import '../screens/dhcp_leases_screen.dart';
+import '../screens/wireguard_servers_screen.dart';
+import '../screens/wireguard_clients_screen.dart';
+import '../screens/wireguard_peers_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/settings_screen.dart';
 import '../screens/pin_lock_screen.dart';
@@ -54,14 +57,30 @@ class AppDrawer extends StatefulWidget {
 class _AppDrawerState extends State<AppDrawer> {
   bool _firewallExpanded = false;
   bool _vpnExpanded = false;
+  bool _wireguardExpanded = false;
+  bool _ipsecExpanded = false;
+  bool _openvpnExpanded = false;
+  bool _tailscaleExpanded = false;
 
   @override
   void initState() {
     super.initState();
     // Auto-expand firewall section if on a firewall-related route
     _firewallExpanded = widget.currentRoute.startsWith('firewall_');
-    // Auto-expand VPN section if on a VPN-related route
-    _vpnExpanded = widget.currentRoute.startsWith('vpn_');
+    // Auto-expand VPN section if on a VPN-related or WireGuard-related route
+    _vpnExpanded = widget.currentRoute.startsWith('vpn_') ||
+                   widget.currentRoute.startsWith('wireguard_') ||
+                   widget.currentRoute.startsWith('ipsec_') ||
+                   widget.currentRoute.startsWith('openvpn_') ||
+                   widget.currentRoute.startsWith('tailscale_');
+    // Auto-expand WireGuard section if on a WireGuard-related route
+    _wireguardExpanded = widget.currentRoute.startsWith('wireguard_');
+    // Auto-expand IPsec section if on an IPsec-related route
+    _ipsecExpanded = widget.currentRoute.startsWith('ipsec_');
+    // Auto-expand OpenVPN section if on an OpenVPN-related route
+    _openvpnExpanded = widget.currentRoute.startsWith('openvpn_');
+    // Auto-expand Tailscale section if on a Tailscale-related route
+    _tailscaleExpanded = widget.currentRoute.startsWith('tailscale_');
   }
 
   @override
@@ -233,10 +252,10 @@ class _AppDrawerState extends State<AppDrawer> {
               }
             },
           ),
-          // VPN expandable section
+          // VPN expandable section with nested WireGuard submenu
           ExpansionTile(
             leading: const Icon(Icons.vpn_lock),
-            title: Text(l10n.vpnConnections),
+            title: const Text('VPN'),
             initiallyExpanded: _vpnExpanded,
             onExpansionChanged: (expanded) {
               setState(() {
@@ -244,73 +263,250 @@ class _AppDrawerState extends State<AppDrawer> {
               });
             },
             children: [
+              // VPN Connections overview (non-collapsible item)
               ListTile(
                 leading: const SizedBox(width: 16),
+                title: Text(l10n.vpnConnections),
+                selected: widget.currentRoute == 'vpn_connections',
+                contentPadding: const EdgeInsets.only(left: 72, right: 16),
+                onTap: () {
+                  if (widget.currentRoute != 'vpn_connections') {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const VPNConnectionsScreen(),
+                      ),
+                    );
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              // WireGuard nested expandable section
+              ExpansionTile(
+                leading: const Icon(Icons.vpn_key, size: 20),
                 title: const Text('WireGuard'),
-                selected: widget.currentRoute == 'vpn_wireguard',
-                contentPadding: const EdgeInsets.only(left: 72, right: 16),
-                onTap: () {
-                  if (widget.currentRoute != 'vpn_wireguard') {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => const VPNConnectionsScreen(vpnType: 'wireguard'),
-                      ),
-                    );
-                  } else {
-                    Navigator.pop(context);
-                  }
+                initiallyExpanded: _wireguardExpanded,
+                tilePadding: const EdgeInsets.only(left: 56, right: 16),
+                onExpansionChanged: (expanded) {
+                  setState(() {
+                    _wireguardExpanded = expanded;
+                  });
                 },
+                children: [
+                  ListTile(
+                    leading: const SizedBox(width: 16),
+                    title: const Text('Servers'),
+                    selected: widget.currentRoute == 'wireguard_servers',
+                    contentPadding: const EdgeInsets.only(left: 96, right: 16),
+                    onTap: () {
+                      if (widget.currentRoute != 'wireguard_servers') {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => const WireGuardServersScreen(),
+                          ),
+                        );
+                      } else {
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                  ListTile(
+                    leading: const SizedBox(width: 16),
+                    title: const Text('Clients'),
+                    selected: widget.currentRoute == 'wireguard_clients',
+                    contentPadding: const EdgeInsets.only(left: 96, right: 16),
+                    onTap: () {
+                      if (widget.currentRoute != 'wireguard_clients') {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => const WireGuardClientsScreen(),
+                          ),
+                        );
+                      } else {
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                  ListTile(
+                    leading: const SizedBox(width: 16),
+                    title: const Text('Peers'),
+                    selected: widget.currentRoute == 'wireguard_peers',
+                    contentPadding: const EdgeInsets.only(left: 96, right: 16),
+                    onTap: () {
+                      if (widget.currentRoute != 'wireguard_peers') {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => const WireGuardPeersScreen(),
+                          ),
+                        );
+                      } else {
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                ],
               ),
-              ListTile(
-                leading: const SizedBox(width: 16),
+              // IPsec nested expandable section
+              ExpansionTile(
+                leading: const Icon(Icons.security, size: 20),
                 title: const Text('IPsec'),
-                selected: widget.currentRoute == 'vpn_ipsec',
-                contentPadding: const EdgeInsets.only(left: 72, right: 16),
-                onTap: () {
-                  if (widget.currentRoute != 'vpn_ipsec') {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => const VPNConnectionsScreen(vpnType: 'ipsec'),
-                      ),
-                    );
-                  } else {
-                    Navigator.pop(context);
-                  }
+                initiallyExpanded: _ipsecExpanded,
+                tilePadding: const EdgeInsets.only(left: 56, right: 16),
+                onExpansionChanged: (expanded) {
+                  setState(() {
+                    _ipsecExpanded = expanded;
+                  });
                 },
+                children: [
+                  ListTile(
+                    leading: const SizedBox(width: 16),
+                    title: const Text('Tunnels'),
+                    selected: widget.currentRoute == 'ipsec_tunnels',
+                    contentPadding: const EdgeInsets.only(left: 96, right: 16),
+                    onTap: () {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('IPsec Tunnels - Coming soon'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: const SizedBox(width: 16),
+                    title: const Text('Phase 1'),
+                    selected: widget.currentRoute == 'ipsec_phase1',
+                    contentPadding: const EdgeInsets.only(left: 96, right: 16),
+                    onTap: () {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('IPsec Phase 1 - Coming soon'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: const SizedBox(width: 16),
+                    title: const Text('Phase 2'),
+                    selected: widget.currentRoute == 'ipsec_phase2',
+                    contentPadding: const EdgeInsets.only(left: 96, right: 16),
+                    onTap: () {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('IPsec Phase 2 - Coming soon'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
-              ListTile(
-                leading: const SizedBox(width: 16),
+              // OpenVPN nested expandable section
+              ExpansionTile(
+                leading: const Icon(Icons.vpn_lock_outlined, size: 20),
                 title: const Text('OpenVPN'),
-                selected: widget.currentRoute == 'vpn_openvpn',
-                contentPadding: const EdgeInsets.only(left: 72, right: 16),
-                onTap: () {
-                  if (widget.currentRoute != 'vpn_openvpn') {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => const VPNConnectionsScreen(vpnType: 'openvpn'),
-                      ),
-                    );
-                  } else {
-                    Navigator.pop(context);
-                  }
+                initiallyExpanded: _openvpnExpanded,
+                tilePadding: const EdgeInsets.only(left: 56, right: 16),
+                onExpansionChanged: (expanded) {
+                  setState(() {
+                    _openvpnExpanded = expanded;
+                  });
                 },
+                children: [
+                  ListTile(
+                    leading: const SizedBox(width: 16),
+                    title: const Text('Servers'),
+                    selected: widget.currentRoute == 'openvpn_servers',
+                    contentPadding: const EdgeInsets.only(left: 96, right: 16),
+                    onTap: () {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('OpenVPN Servers - Coming soon'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: const SizedBox(width: 16),
+                    title: const Text('Clients'),
+                    selected: widget.currentRoute == 'openvpn_clients',
+                    contentPadding: const EdgeInsets.only(left: 96, right: 16),
+                    onTap: () {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('OpenVPN Clients - Coming soon'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: const SizedBox(width: 16),
+                    title: const Text('Client Overrides'),
+                    selected: widget.currentRoute == 'openvpn_client_overrides',
+                    contentPadding: const EdgeInsets.only(left: 96, right: 16),
+                    onTap: () {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('OpenVPN Client Overrides - Coming soon'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
-              ListTile(
-                leading: const SizedBox(width: 16),
+              // Tailscale nested expandable section
+              ExpansionTile(
+                leading: const Icon(Icons.cloud, size: 20),
                 title: const Text('Tailscale'),
-                selected: widget.currentRoute == 'vpn_tailscale',
-                contentPadding: const EdgeInsets.only(left: 72, right: 16),
-                onTap: () {
-                  if (widget.currentRoute != 'vpn_tailscale') {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => const VPNConnectionsScreen(vpnType: 'tailscale'),
-                      ),
-                    );
-                  } else {
-                    Navigator.pop(context);
-                  }
+                initiallyExpanded: _tailscaleExpanded,
+                tilePadding: const EdgeInsets.only(left: 56, right: 16),
+                onExpansionChanged: (expanded) {
+                  setState(() {
+                    _tailscaleExpanded = expanded;
+                  });
                 },
+                children: [
+                  ListTile(
+                    leading: const SizedBox(width: 16),
+                    title: const Text('Status'),
+                    selected: widget.currentRoute == 'tailscale_status',
+                    contentPadding: const EdgeInsets.only(left: 96, right: 16),
+                    onTap: () {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Tailscale Status - Coming soon'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: const SizedBox(width: 16),
+                    title: const Text('Settings'),
+                    selected: widget.currentRoute == 'tailscale_settings',
+                    contentPadding: const EdgeInsets.only(left: 96, right: 16),
+                    onTap: () {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Tailscale Settings - Coming soon'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),

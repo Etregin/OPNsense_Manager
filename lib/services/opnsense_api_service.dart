@@ -26,6 +26,10 @@ import '../models/firewall_rule.dart';
 import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
 import '../models/network_host.dart';
+import '../models/wireguard_server.dart';
+import '../models/wireguard_client.dart';
+import '../models/wireguard_peer.dart';
+import '../models/wireguard_key_pair.dart';
 import '../utils/constants.dart';
 import 'dhcp_lease_adapter.dart';
 
@@ -1285,19 +1289,15 @@ class OPNsenseApiService {
       try {
         final servers = await getWireGuardServers();
         for (var server in servers) {
-          final enabled = server['enabled'] == '1';
-          final name = server['name']?.toString() ?? 'WireGuard Server';
-          final uuid = server['uuid']?.toString() ?? '';
-          
           connections.add(VPNConnection(
-            id: uuid,
-            name: name,
+            id: server.uuid,
+            name: server.name,
             type: 'wireguard',
-            status: enabled ? 'up' : 'down',
+            status: server.isEnabled ? 'up' : 'down',
             description: 'WireGuard VPN Server',
-            localAddress: server['tunneladdress']?.toString(),
-            port: int.tryParse(server['port']?.toString() ?? ''),
-            enabled: enabled,
+            localAddress: server.tunneladdress,
+            port: server.portNumber,
+            enabled: server.isEnabled,
           ));
         }
       } catch (e) {
@@ -1308,18 +1308,14 @@ class OPNsenseApiService {
       try {
         final clients = await getWireGuardClients();
         for (var client in clients) {
-          final enabled = client['enabled'] == '1';
-          final name = client['name']?.toString() ?? 'WireGuard Client';
-          final uuid = client['uuid']?.toString() ?? '';
-          
           connections.add(VPNConnection(
-            id: uuid,
-            name: name,
+            id: client.uuid,
+            name: client.name,
             type: 'wireguard',
-            status: enabled ? 'up' : 'down',
+            status: client.isEnabled ? 'up' : 'down',
             description: 'WireGuard VPN Client',
-            virtualAddress: client['tunneladdress']?.toString(),
-            enabled: enabled,
+            virtualAddress: client.tunneladdress,
+            enabled: client.isEnabled,
           ));
         }
       } catch (e) {
@@ -1472,17 +1468,140 @@ class OPNsenseApiService {
 
   // ==================== WireGuard VPN ====================
 
-  /// Get all WireGuard clients
-  Future<List<Map<String, dynamic>>> getWireGuardClients() async {
+  // Server Management Methods
+
+  /// Get all WireGuard servers
+  Future<List<WireGuardServer>> getWireGuardServers() async {
     _ensureInitialized();
 
     try {
-      final response = await _dio!.get('/wireguard/client/search_client');
+      final response = await _dio!.get('/api/wireguard/server/search_server');
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
         if (data.containsKey('rows') && data['rows'] is List) {
-          return List<Map<String, dynamic>>.from(data['rows']);
+          final rows = data['rows'] as List;
+          return rows.map((row) => WireGuardServer.fromJson(row as Map<String, dynamic>)).toList();
+        }
+        return [];
+      } else {
+        throw ApiException('Failed to get WireGuard servers', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Get a specific WireGuard server by UUID
+  Future<WireGuardServer> getWireGuardServer(String uuid) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.get('/api/wireguard/server/get_server/$uuid');
+      
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        if (data.containsKey('server')) {
+          return WireGuardServer.fromJson(data['server'] as Map<String, dynamic>);
+        }
+        throw ApiException('Server data not found in response', response.statusCode);
+      } else {
+        throw ApiException('Failed to get WireGuard server', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Create a new WireGuard server
+  Future<String> createWireGuardServer(WireGuardServerRequest request) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.post(
+        '/api/wireguard/server/add_server',
+        data: {'server': request.toJson()},
+      );
+      
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        if (data.containsKey('uuid')) {
+          return data['uuid'] as String;
+        }
+        throw ApiException('UUID not found in response', response.statusCode);
+      } else {
+        throw ApiException('Failed to create WireGuard server', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Update an existing WireGuard server
+  Future<void> updateWireGuardServer(String uuid, WireGuardServerRequest request) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.post(
+        '/api/wireguard/server/set_server/$uuid',
+        data: {'server': request.toJson()},
+      );
+      
+      if (response.statusCode != 200) {
+        throw ApiException('Failed to update WireGuard server', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Delete a WireGuard server
+  Future<void> deleteWireGuardServer(String uuid) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.post('/api/wireguard/server/del_server/$uuid');
+      
+      if (response.statusCode != 200) {
+        throw ApiException('Failed to delete WireGuard server', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Toggle WireGuard server enabled/disabled state
+  Future<void> toggleWireGuardServer(String uuid, bool enabled) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.post(
+        '/api/wireguard/server/toggle_server/$uuid',
+        data: {'enabled': enabled ? '1' : '0'},
+      );
+      
+      if (response.statusCode != 200) {
+        throw ApiException('Failed to toggle WireGuard server', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  // Client Management Methods
+
+  /// Get all WireGuard clients
+  Future<List<WireGuardClient>> getWireGuardClients() async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.get('/api/wireguard/client/search_client');
+      
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        if (data.containsKey('rows') && data['rows'] is List) {
+          final rows = data['rows'] as List;
+          return rows.map((row) => WireGuardClient.fromJson(row as Map<String, dynamic>)).toList();
         }
         return [];
       } else {
@@ -1493,21 +1612,328 @@ class OPNsenseApiService {
     }
   }
 
-  /// Get all WireGuard servers
-  Future<List<Map<String, dynamic>>> getWireGuardServers() async {
+  /// Get a specific WireGuard client by UUID
+  Future<WireGuardClient> getWireGuardClient(String uuid) async {
     _ensureInitialized();
 
     try {
-      final response = await _dio!.get('/wireguard/server/search_server');
+      final response = await _dio!.get('/api/wireguard/client/get_client/$uuid');
+      
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        if (data.containsKey('client')) {
+          return WireGuardClient.fromJson(data['client'] as Map<String, dynamic>);
+        }
+        throw ApiException('Client data not found in response', response.statusCode);
+      } else {
+        throw ApiException('Failed to get WireGuard client', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Create a new WireGuard client
+  Future<String> createWireGuardClient(WireGuardClientRequest request) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.post(
+        '/api/wireguard/client/add_client',
+        data: {'client': request.toJson()},
+      );
+      
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        if (data.containsKey('uuid')) {
+          return data['uuid'] as String;
+        }
+        throw ApiException('UUID not found in response', response.statusCode);
+      } else {
+        throw ApiException('Failed to create WireGuard client', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Update an existing WireGuard client
+  Future<void> updateWireGuardClient(String uuid, WireGuardClientRequest request) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.post(
+        '/api/wireguard/client/set_client/$uuid',
+        data: {'client': request.toJson()},
+      );
+      
+      if (response.statusCode != 200) {
+        throw ApiException('Failed to update WireGuard client', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Delete a WireGuard client
+  Future<void> deleteWireGuardClient(String uuid) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.post('/api/wireguard/client/del_client/$uuid');
+      
+      if (response.statusCode != 200) {
+        throw ApiException('Failed to delete WireGuard client', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Toggle WireGuard client enabled/disabled state
+  Future<void> toggleWireGuardClient(String uuid, bool enabled) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.post(
+        '/api/wireguard/client/toggle_client/$uuid',
+        data: {'enabled': enabled ? '1' : '0'},
+      );
+      
+      if (response.statusCode != 200) {
+        throw ApiException('Failed to toggle WireGuard client', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  // Peer Management Methods
+
+  /// Get all WireGuard peers
+  Future<List<WireGuardPeer>> getWireGuardPeers() async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.get('/api/wireguard/server/search_peer');
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
         if (data.containsKey('rows') && data['rows'] is List) {
-          return List<Map<String, dynamic>>.from(data['rows']);
+          final rows = data['rows'] as List;
+          return rows.map((row) => WireGuardPeer.fromJson(row as Map<String, dynamic>)).toList();
         }
         return [];
       } else {
-        throw ApiException('Failed to get WireGuard servers', response.statusCode);
+        throw ApiException('Failed to get WireGuard peers', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Get a specific WireGuard peer by UUID
+  Future<WireGuardPeer> getWireGuardPeer(String uuid) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.get('/api/wireguard/server/get_peer/$uuid');
+      
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        if (data.containsKey('peer')) {
+          return WireGuardPeer.fromJson(data['peer'] as Map<String, dynamic>);
+        }
+        throw ApiException('Peer data not found in response', response.statusCode);
+      } else {
+        throw ApiException('Failed to get WireGuard peer', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Create a new WireGuard peer
+  Future<String> createWireGuardPeer(WireGuardPeerRequest request) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.post(
+        '/api/wireguard/server/add_peer',
+        data: {'peer': request.toJson()},
+      );
+      
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        if (data.containsKey('uuid')) {
+          return data['uuid'] as String;
+        }
+        throw ApiException('UUID not found in response', response.statusCode);
+      } else {
+        throw ApiException('Failed to create WireGuard peer', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Update an existing WireGuard peer
+  Future<void> updateWireGuardPeer(String uuid, WireGuardPeerRequest request) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.post(
+        '/api/wireguard/server/set_peer/$uuid',
+        data: {'peer': request.toJson()},
+      );
+      
+      if (response.statusCode != 200) {
+        throw ApiException('Failed to update WireGuard peer', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Delete a WireGuard peer
+  Future<void> deleteWireGuardPeer(String uuid) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.post('/api/wireguard/server/del_peer/$uuid');
+      
+      if (response.statusCode != 200) {
+        throw ApiException('Failed to delete WireGuard peer', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Toggle WireGuard peer enabled/disabled state
+  Future<void> toggleWireGuardPeer(String uuid, bool enabled) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.post(
+        '/api/wireguard/server/toggle_peer/$uuid',
+        data: {'enabled': enabled ? '1' : '0'},
+      );
+      
+      if (response.statusCode != 200) {
+        throw ApiException('Failed to toggle WireGuard peer', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  // Key Generation and Service Control Methods
+
+  /// Generate a new WireGuard key pair
+  Future<WireGuardKeyPair> generateWireGuardKeyPair() async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.get('/api/wireguard/service/genkey');
+      
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        return WireGuardKeyPair.fromJson(data);
+      } else {
+        throw ApiException('Failed to generate WireGuard key pair', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Apply WireGuard configuration changes
+  Future<void> applyWireGuardConfiguration() async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.post('/api/wireguard/service/reconfigure');
+      
+      if (response.statusCode != 200) {
+        throw ApiException('Failed to apply WireGuard configuration', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Get WireGuard service status
+  Future<Map<String, dynamic>> getWireGuardStatus() async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.get('/api/wireguard/service/show');
+      
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        throw ApiException('Failed to get WireGuard status', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Restart WireGuard service
+  Future<void> restartWireGuardService() async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.post('/api/wireguard/service/restart');
+      
+      if (response.statusCode != 200) {
+        throw ApiException('Failed to restart WireGuard service', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Start a specific WireGuard instance
+  Future<void> startWireGuardInstance(String uuid) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.post('/api/wireguard/service/start/$uuid');
+      
+      if (response.statusCode != 200) {
+        throw ApiException('Failed to start WireGuard instance', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Stop a specific WireGuard instance
+  Future<void> stopWireGuardInstance(String uuid) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.post('/api/wireguard/service/stop/$uuid');
+      
+      if (response.statusCode != 200) {
+        throw ApiException('Failed to stop WireGuard instance', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Restart a specific WireGuard instance
+  Future<void> restartWireGuardInstance(String uuid) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.post('/api/wireguard/service/restart/$uuid');
+      
+      if (response.statusCode != 200) {
+        throw ApiException('Failed to restart WireGuard instance', response.statusCode);
       }
     } on DioException catch (e) {
       throw _handleDioError(e);

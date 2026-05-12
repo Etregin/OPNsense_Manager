@@ -47,6 +47,12 @@ dependencies:
   
   # Path Provider for file operations
   path_provider: ^2.1.5
+  
+  # QR Code generation for WireGuard configs
+  qr_flutter: ^4.1.0
+  
+  # Share files for WireGuard config export
+  share_plus: ^7.2.1
 
 dev_dependencies:
   flutter_test:

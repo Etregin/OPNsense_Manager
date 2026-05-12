@@ -21,6 +21,8 @@ import '../models/firewall_rule.dart';
 import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
 import '../models/network_host.dart';
+import '../models/wireguard_server.dart';
+import '../models/wireguard_client.dart';
 import 'demo_data_service.dart';
 import 'opnsense_api_service.dart';
 
@@ -230,19 +232,21 @@ class DemoApiService {
   // ==================== WireGuard VPN ====================
 
   /// Get WireGuard clients
-  Future<List<Map<String, dynamic>>> getWireGuardClients() async {
+  Future<List<WireGuardClient>> getWireGuardClients() async {
     if (_isDemoMode) {
       await Future.delayed(const Duration(milliseconds: 400));
-      return _demoDataService.generateWireGuardClients();
+      final demoData = _demoDataService.generateWireGuardClients();
+      return demoData.map((data) => WireGuardClient.fromJson(data)).toList();
     }
     return _realApiService.getWireGuardClients();
   }
 
   /// Get WireGuard servers
-  Future<List<Map<String, dynamic>>> getWireGuardServers() async {
+  Future<List<WireGuardServer>> getWireGuardServers() async {
     if (_isDemoMode) {
       await Future.delayed(const Duration(milliseconds: 400));
-      return _demoDataService.generateWireGuardServers();
+      final demoData = _demoDataService.generateWireGuardServers();
+      return demoData.map((data) => WireGuardServer.fromJson(data)).toList();
     }
     return _realApiService.getWireGuardServers();
   }

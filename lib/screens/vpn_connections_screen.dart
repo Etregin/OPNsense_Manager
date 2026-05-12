@@ -26,6 +26,7 @@ import '../utils/constants.dart';
 import '../utils/formatters.dart';
 import '../widgets/app_drawer.dart';
 import '../l10n/app_localizations.dart';
+import 'wireguard_servers_screen.dart';
 
 /// Screen for managing VPN connections
 class VPNConnectionsScreen extends StatefulWidget {
@@ -398,6 +399,29 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
 
     return Column(
       children: [
+        // Manage WireGuard button
+        if (_filterType == 'wireguard' || _filterType == 'all')
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const WireGuardServersScreen(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.settings),
+                label: const Text('Manage WireGuard'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+              ),
+            ),
+          ),
+        
         // Summary cards
         _buildSummaryCards(),
         

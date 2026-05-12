@@ -18,29 +18,28 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/firewall_alias.dart';
+import '../models/wireguard_server.dart';
 import '../models/system_info.dart';
-import '../services/demo_api_service.dart';
+import '../services/opnsense_api_service.dart';
 import '../widgets/app_drawer.dart';
 import '../l10n/app_localizations.dart';
+import 'wireguard_server_form_screen.dart';
 
-/// Firewall aliases management screen
-class FirewallAliasesScreen extends StatefulWidget {
-  const FirewallAliasesScreen({super.key});
+/// Screen for managing WireGuard servers
+class WireGuardServersScreen extends StatefulWidget {
+  const WireGuardServersScreen({super.key});
 
   @override
-  State<FirewallAliasesScreen> createState() => _FirewallAliasesScreenState();
+  State<WireGuardServersScreen> createState() => _WireGuardServersScreenState();
 }
 
-class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
-  List<FirewallAlias> _aliases = [];
+class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
+  List<WireGuardServer> _servers = [];
   SystemInfo? _systemInfo;
   bool _isLoading = true;
   String? _errorMessage;
   String _searchQuery = '';
-  String? _filterType;
-  // Track which aliases are currently being toggled
-  final Set<String> _togglingAliases = {};
+  final Set<String> _togglingServers = {};
 
   @override
   void initState() {
@@ -50,15 +49,15 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
 
   Future<void> _loadData() async {
     await Future.wait([
-      _loadAliases(),
+      _loadServers(),
       _loadSystemInfo(),
     ]);
   }
 
   Future<void> _loadSystemInfo() async {
     try {
-      final demoApiService = context.read<DemoApiService>();
-      final systemInfo = await demoApiService.getSystemInfo();
+      final apiService = context.read<OPNsenseApiService>();
+      final systemInfo = await apiService.getSystemInfo();
 
       if (mounted) {
         setState(() {
@@ -70,19 +69,19 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
     }
   }
 
-  Future<void> _loadAliases() async {
+  Future<void> _loadServers() async {
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
 
     try {
-      final demoApiService = context.read<DemoApiService>();
-      final aliases = await demoApiService.getFirewallAliases();
+      final apiService = context.read<OPNsenseApiService>();
+      final servers = await apiService.getWireGuardServers();
 
       if (mounted) {
         setState(() {
-          _aliases = aliases;
+          _servers = servers;
           _isLoading = false;
         });
       }
@@ -96,60 +95,47 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
     }
   }
 
-  List<FirewallAlias> get _filteredAliases {
-    var filtered = _aliases;
-
-    // Apply type filter
-    if (_filterType != null && _filterType!.isNotEmpty) {
-      filtered = filtered.where((alias) => alias.type == _filterType).toList();
+  List<WireGuardServer> get _filteredServers {
+    if (_searchQuery.isEmpty) {
+      return _servers;
     }
 
-    // Apply search filter
-    if (_searchQuery.isNotEmpty) {
-      final query = _searchQuery.toLowerCase();
-      filtered = filtered.where((alias) {
-        return alias.name.toLowerCase().contains(query) ||
-            alias.description.toLowerCase().contains(query) ||
-            alias.content.toLowerCase().contains(query);
-      }).toList();
-    }
-
-    return filtered;
+    final query = _searchQuery.toLowerCase();
+    return _servers.where((server) {
+      return server.name.toLowerCase().contains(query) ||
+          server.tunnelAddressList.any((addr) => addr.toLowerCase().contains(query)) ||
+          server.port.contains(query);
+    }).toList();
   }
 
-  Set<String> get _availableTypes {
-    return _aliases.map((alias) => alias.type).toSet();
-  }
-
-  Future<void> _toggleAlias(FirewallAlias alias, bool newValue) async {
-    // Prevent multiple simultaneous toggles
-    if (_togglingAliases.contains(alias.uuid)) {
+  Future<void> _toggleServer(WireGuardServer server) async {
+    if (_togglingServers.contains(server.uuid)) {
       return;
     }
 
     setState(() {
-      _togglingAliases.add(alias.uuid);
+      _togglingServers.add(server.uuid);
     });
 
     try {
-      final demoApiService = context.read<DemoApiService>();
-      await demoApiService.toggleFirewallAlias(alias.uuid);
+      final apiService = context.read<OPNsenseApiService>();
+      await apiService.toggleWireGuardServer(server.uuid, !server.isEnabled);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Alias ${alias.isEnabled ? "disabled" : "enabled"} successfully'),
+            content: Text('Server ${server.isEnabled ? "disabled" : "enabled"} successfully'),
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 2),
           ),
         );
-        await _loadAliases();
+        await _loadServers();
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to toggle alias: ${e.toString()}'),
+            content: Text('Failed to toggle server: ${e.toString()}'),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 3),
           ),
@@ -158,21 +144,21 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
     } finally {
       if (mounted) {
         setState(() {
-          _togglingAliases.remove(alias.uuid);
+          _togglingServers.remove(server.uuid);
         });
       }
     }
   }
 
-  Future<void> _deleteAlias(FirewallAlias alias) async {
+  Future<void> _deleteServer(WireGuardServer server) async {
     final l10n = AppLocalizations.of(context)!;
-    
+
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(l10n.deleteRule),
         content: Text(
-          'Are you sure you want to delete alias "${alias.name}"? This action cannot be undone.',
+          'Are you sure you want to delete server "${server.name}"? This action cannot be undone.',
         ),
         actions: [
           TextButton(
@@ -192,23 +178,23 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
 
     if (confirmed == true && mounted) {
       try {
-        final demoApiService = context.read<DemoApiService>();
-        await demoApiService.deleteFirewallAlias(alias.uuid);
+        final apiService = context.read<OPNsenseApiService>();
+        await apiService.deleteWireGuardServer(server.uuid);
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('Alias deleted successfully'),
+            const SnackBar(
+              content: Text('Server deleted successfully'),
               backgroundColor: Colors.green,
             ),
           );
-          _loadAliases();
+          _loadServers();
         }
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to delete alias: ${e.toString()}'),
+              content: Text('Failed to delete server: ${e.toString()}'),
               backgroundColor: Colors.red,
             ),
           );
@@ -217,35 +203,47 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
     }
   }
 
-  void _showAliasDetails(FirewallAlias alias) {
+  void _showServerDetails(WireGuardServer server) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(alias.name),
+        title: Text(server.name),
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildDetailRow('Type', alias.typeDisplayName),
-              _buildDetailRow('Description', alias.description.isEmpty ? 'N/A' : alias.description),
-              _buildDetailRow('Enabled', alias.isEnabled ? 'Yes' : 'No'),
-              if (alias.proto.isNotEmpty)
-                _buildDetailRow('Protocol', alias.proto.toUpperCase()),
-              if (alias.categories.isNotEmpty)
-                _buildDetailRow('Categories', alias.categories),
+              _buildDetailRow('Port', server.port.toString()),
+              _buildDetailRow('Enabled', server.isEnabled ? 'Yes' : 'No'),
+              _buildDetailRow('Public Key', '${server.pubkey.substring(0, 20)}...'),
+              if (server.mtuValue != null)
+                _buildDetailRow('MTU', server.mtuValue.toString()),
+              if (server.dnsList.isNotEmpty)
+                _buildDetailRow('DNS Servers', server.dnsList.join(', ')),
+              if (server.gateway.isNotEmpty)
+                _buildDetailRow('Gateway', server.gateway),
+              _buildDetailRow('Disable Routes', server.hasRoutesDisabled ? 'Yes' : 'No'),
               const Divider(),
               const Text(
-                'Content:',
+                'Tunnel Addresses:',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              ...alias.contentList.map((item) => Padding(
+              ...server.tunnelAddressList.map((addr) => Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 4),
-                child: Text('• $item'),
+                child: Text('• $addr'),
               )),
+              if (server.peers.isNotEmpty) ...[
+                const Divider(),
+                const Text(
+                  'Peers:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Text('${server.peerUuidList.length} peer(s) configured'),
+              ],
             ],
           ),
         ),
@@ -266,7 +264,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 100,
+            width: 120,
             child: Text(
               '$label:',
               style: const TextStyle(fontWeight: FontWeight.bold),
@@ -280,80 +278,56 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
     );
   }
 
+  void _navigateToForm([WireGuardServer? server]) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => WireGuardServerFormScreen(server: server),
+      ),
+    ).then((_) => _loadServers());
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final filteredAliases = _filteredAliases;
+    final filteredServers = _filteredServers;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Firewall Aliases'),
+        title: const Text('WireGuard Servers'),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: _loadAliases,
+            onPressed: _loadServers,
             tooltip: l10n.refresh,
           ),
         ],
       ),
       drawer: AppDrawer(
-        currentRoute: 'firewall_aliases',
+        currentRoute: 'wireguard_servers',
         systemInfo: _systemInfo,
       ),
       body: Column(
         children: [
-          // Search and filter bar
+          // Search bar
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search aliases...',
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        _searchQuery = value;
-                      });
-                    },
-                  ),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Search servers...',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                const SizedBox(width: 8),
-                PopupMenuButton<String>(
-                  icon: const Icon(Icons.filter_list),
-                  tooltip: 'Filter by type',
-                  onSelected: (value) {
-                    setState(() {
-                      _filterType = value == 'all' ? null : value;
-                    });
-                  },
-                  itemBuilder: (context) => [
-                    const PopupMenuItem(
-                      value: 'all',
-                      child: Text('All Types'),
-                    ),
-                    const PopupMenuDivider(),
-                    ..._availableTypes.map((type) => PopupMenuItem(
-                      value: type,
-                      child: Text(FirewallAlias(
-                        uuid: '',
-                        name: '',
-                        type: type,
-                        content: '',
-                      ).typeDisplayName),
-                    )),
-                  ],
-                ),
-              ],
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value;
+                });
+              },
             ),
           ),
-          // Aliases list
+          // Servers list
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -372,67 +346,61 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                             Text(_errorMessage!),
                             const SizedBox(height: 16),
                             ElevatedButton.icon(
-                              onPressed: _loadAliases,
+                              onPressed: _loadServers,
                               icon: const Icon(Icons.refresh),
                               label: Text(l10n.retry),
                             ),
                           ],
                         ),
                       )
-                    : filteredAliases.isEmpty
+                    : filteredServers.isEmpty
                         ? Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(Icons.inbox, size: 48, color: Colors.grey),
+                                const Icon(Icons.security, size: 48, color: Colors.grey),
                                 const SizedBox(height: 16),
                                 Text(
-                                  _searchQuery.isNotEmpty || _filterType != null
-                                      ? 'No aliases match your filters'
-                                      : 'No aliases configured',
+                                  _searchQuery.isNotEmpty
+                                      ? 'No servers match your search'
+                                      : 'No WireGuard servers configured',
                                   style: Theme.of(context).textTheme.titleMedium,
                                 ),
                               ],
                             ),
                           )
                         : RefreshIndicator(
-                            onRefresh: _loadAliases,
+                            onRefresh: _loadServers,
                             child: ListView.builder(
-                              itemCount: filteredAliases.length,
+                              itemCount: filteredServers.length,
                               itemBuilder: (context, index) {
-                                final alias = filteredAliases[index];
-                                final isToggling = _togglingAliases.contains(alias.uuid);
-                                
+                                final server = filteredServers[index];
+                                final isToggling = _togglingServers.contains(server.uuid);
+
                                 return Card(
                                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                                   child: ListTile(
                                     leading: CircleAvatar(
-                                      backgroundColor: alias.isEnabled
+                                      backgroundColor: server.isEnabled
                                           ? Colors.green
                                           : Colors.grey,
-                                      child: Icon(
-                                        _getIconForType(alias.type),
+                                      child: const Icon(
+                                        Icons.security,
                                         color: Colors.white,
                                         size: 20,
                                       ),
                                     ),
                                     title: Text(
-                                      alias.name,
+                                      server.name,
                                       style: const TextStyle(fontWeight: FontWeight.bold),
                                     ),
                                     subtitle: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(alias.typeDisplayName),
-                                        if (alias.description.isNotEmpty)
-                                          Text(
-                                            alias.description,
-                                            style: const TextStyle(fontSize: 12),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
+                                        Text('Port: ${server.port}'),
+                                        Text('Tunnel: ${server.tunnelAddressList.join(", ")}'),
                                         Text(
-                                          '${alias.contentList.length} item(s)',
+                                          '${server.peerUuidList.length} peer(s)',
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: Colors.grey[600],
@@ -443,7 +411,6 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                                     trailing: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        // Toggle switch with loading indicator
                                         if (isToggling)
                                           const SizedBox(
                                             width: 24,
@@ -452,20 +419,22 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                                           )
                                         else
                                           Switch(
-                                            value: alias.isEnabled,
-                                            onChanged: (value) => _toggleAlias(alias, value),
+                                            value: server.isEnabled,
+                                            onChanged: (value) => _toggleServer(server),
                                             activeTrackColor: Colors.green,
                                           ),
                                         const SizedBox(width: 8),
-                                        // Menu button
                                         PopupMenuButton<String>(
                                           onSelected: (value) {
                                             switch (value) {
                                               case 'view':
-                                                _showAliasDetails(alias);
+                                                _showServerDetails(server);
+                                                break;
+                                              case 'edit':
+                                                _navigateToForm(server);
                                                 break;
                                               case 'delete':
-                                                _deleteAlias(alias);
+                                                _deleteServer(server);
                                                 break;
                                             }
                                           },
@@ -477,6 +446,16 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                                                   Icon(Icons.visibility),
                                                   SizedBox(width: 8),
                                                   Text('View Details'),
+                                                ],
+                                              ),
+                                            ),
+                                            const PopupMenuItem(
+                                              value: 'edit',
+                                              child: Row(
+                                                children: [
+                                                  Icon(Icons.edit),
+                                                  SizedBox(width: 8),
+                                                  Text('Edit'),
                                                 ],
                                               ),
                                             ),
@@ -494,7 +473,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                                         ),
                                       ],
                                     ),
-                                    onTap: () => _showAliasDetails(alias),
+                                    onTap: () => _showServerDetails(server),
                                   ),
                                 );
                               },
@@ -504,37 +483,10 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Create alias feature coming soon'),
-              duration: Duration(seconds: 2),
-            ),
-          );
-        },
+        onPressed: () => _navigateToForm(),
         child: const Icon(Icons.add),
       ),
     );
-  }
-
-  IconData _getIconForType(String type) {
-    switch (type.toLowerCase()) {
-      case 'host':
-        return Icons.computer;
-      case 'network':
-        return Icons.lan;
-      case 'port':
-        return Icons.settings_ethernet;
-      case 'url':
-      case 'urltable':
-        return Icons.link;
-      case 'geoip':
-        return Icons.public;
-      case 'mac':
-        return Icons.devices;
-      default:
-        return Icons.label;
-    }
   }
 }
 
