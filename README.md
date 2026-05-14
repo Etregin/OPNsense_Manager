@@ -21,26 +21,22 @@
 
 If you find this project useful, consider supporting its development:
 
-[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20me-ff5e5b?logo=kofi&logoColor=green)](https://ko-fi.com/Etregin)
-
 ### 💰 Crypto Donations
 
-#### USDT BSC (BEP20)
+#### USDT / USDC (BEP20, BSC, ERC20, BASE, POL, ARBITRUM, AVAXC) : 
+
 ```
 0xe0b9015117a4a69131481c2e9c1553dde839df18
 ```
 ![USDT QR Code](https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=0xe0b9015117a4a69131481c2e9c1553dde839df18)
 
-#### USDC BSC (BEP20)
-```
-0xe0b9015117a4a69131481c2e9c1553dde839df18
-```
-![USDC QR Code](https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=0xe0b9015117a4a69131481c2e9c1553dde839df18)
+#### Also Binance Gift cards can work by sending it to the email etreginwow@gmail.com
+
 
 ## 📱 Get the App
 
 [![Google Play](https://img.shields.io/badge/Google_Play-Download-00C853?logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.dt.opnsense_manager)
-[![App Store](https://img.shields.io/badge/App_Store-Download-0D96F6?logo=app-store&logoColor=white)](https://apps.apple.com/app/opnsense-manager/id6738294106)
+[![App Store](https://img.shields.io/badge/App_Store-Download-0D96F6?logo=app-store&logoColor=white)](https://apps.apple.com/us/app/opnsense-manager/id6767634059)
 
 </div>
 
