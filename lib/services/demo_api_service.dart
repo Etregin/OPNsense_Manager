@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart';
 import '../models/system_info.dart';
 import '../models/firewall_rule.dart';
 import '../models/firewall_alias.dart';
@@ -23,6 +24,8 @@ import '../models/vpn_connection.dart';
 import '../models/network_host.dart';
 import '../models/wireguard_server.dart';
 import '../models/wireguard_client.dart';
+import '../models/tailscale_status.dart';
+import '../models/tailscale_settings.dart';
 import 'demo_data_service.dart';
 import 'opnsense_api_service.dart';
 
@@ -229,6 +232,31 @@ class DemoApiService {
     return _realApiService.getVPNConnectionDetails(id, type);
   }
 
+  /// Get Tailscale connection status
+  Future<VPNConnection?> getTailscaleStatus() async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 300));
+      final connections = _demoDataService.generateVPNConnections();
+      try {
+        return connections.firstWhere(
+          (conn) => conn.type.toLowerCase() == 'tailscale',
+        );
+      } catch (e) {
+        return null;
+      }
+    }
+    return _realApiService.getTailscaleStatus();
+  }
+
+  /// Get detailed Tailscale status and configuration
+  Future<TailscaleStatus> getTailscaleDetails() async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 400));
+      return _demoDataService.generateTailscaleStatus();
+    }
+    return _realApiService.getTailscaleDetails();
+  }
+
   // ==================== WireGuard VPN ====================
 
   /// Get WireGuard clients
@@ -357,6 +385,151 @@ class DemoApiService {
       throw ApiException('Cannot reboot in demo mode', 403);
     }
     return _realApiService.rebootSystem();
+  }
+  /// Control Tailscale service (start, stop, restart)
+  Future<bool> controlTailscaleService(String action) async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 500));
+      _demoDataService.updateTailscaleServiceState(action);
+      return true;
+    }
+    return _realApiService.controlTailscaleService(action);
+  }
+
+  /// Update Tailscale settings
+  Future<bool> updateTailscaleSettings(Map<String, dynamic> settings) async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 500));
+      _demoDataService.updateTailscaleSettings(settings);
+      return true;
+    }
+    return _realApiService.updateTailscaleSettings(settings);
+  }
+
+  /// Get Tailscale authentication settings
+  Future<Map<String, String?>> getTailscaleAuthentication() async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 300));
+      return {
+        'loginServer': 'https://login.tailscale.com',
+        'preAuthKey': 'tskey-auth-demo-XXXXXXXXXXXXXXXX',
+      };
+    }
+    return _realApiService.getTailscaleAuthentication();
+  }
+
+  /// Set Tailscale authentication settings
+  Future<bool> setTailscaleAuthentication(String loginServer, String preAuthKey) async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 500));
+      // In demo mode, just simulate success
+      return true;
+    }
+    return _realApiService.setTailscaleAuthentication(loginServer, preAuthKey);
+  }
+
+  /// Logout from Tailscale
+  Future<bool> logoutTailscale() async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 500));
+      _demoDataService.logoutTailscale();
+      return true;
+    }
+    return _realApiService.logoutTailscale();
+  }
+
+  // ==================== Tailscale Settings Management ====================
+
+  /// Get Tailscale settings
+  Future<TailscaleSettingsResponse> getTailscaleSettings() async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 300));
+      return _demoDataService.generateTailscaleSettings();
+    }
+    return _realApiService.getTailscaleSettings();
+  }
+
+  /// Set Tailscale settings
+  Future<Map<String, dynamic>> setTailscaleSettings(TailscaleSettings settings) async {
+    debugPrint('🌐 [DemoApiService] setTailscaleSettings called, isDemoMode: $_isDemoMode');
+    
+    if (_isDemoMode) {
+      try {
+        debugPrint('⏳ [DemoApiService] Simulating API delay...');
+        await Future.delayed(const Duration(milliseconds: 500));
+        
+        debugPrint('🔄 [DemoApiService] Updating demo data...');
+        _demoDataService.updateTailscaleSettingsData(settings);
+        
+        debugPrint('✅ [DemoApiService] Returning success response');
+        return {'result': 'saved'};
+      } catch (e, stackTrace) {
+        debugPrint('❌ [DemoApiService] Error in demo mode: $e');
+        debugPrint('❌ [DemoApiService] Stack trace: $stackTrace');
+        return {
+          'result': 'failed',
+          'message': e.toString(),
+        };
+      }
+    }
+    return _realApiService.setTailscaleSettings(settings);
+  }
+
+  /// Search Tailscale subnets
+  Future<TailscaleSubnetSearchResponse> searchTailscaleSubnets() async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 300));
+      return _demoDataService.generateTailscaleSubnetSearch();
+    }
+    return _realApiService.searchTailscaleSubnets();
+  }
+
+  /// Get a specific Tailscale subnet by UUID
+  Future<TailscaleSubnetResponse> getTailscaleSubnet(String uuid) async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 200));
+      return _demoDataService.generateTailscaleSubnet(uuid);
+    }
+    return _realApiService.getTailscaleSubnet(uuid);
+  }
+
+  /// Add a new Tailscale subnet
+  Future<Map<String, dynamic>> addTailscaleSubnet(TailscaleSubnet subnet) async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 400));
+      final uuid = _demoDataService.addTailscaleSubnet(subnet);
+      return {'result': 'saved', 'uuid': uuid};
+    }
+    return _realApiService.addTailscaleSubnet(subnet);
+  }
+
+  /// Update an existing Tailscale subnet
+  Future<Map<String, dynamic>> setTailscaleSubnet(String uuid, TailscaleSubnet subnet) async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 400));
+      _demoDataService.updateTailscaleSubnet(uuid, subnet);
+      return {'result': 'saved'};
+    }
+    return _realApiService.setTailscaleSubnet(uuid, subnet);
+  }
+
+  /// Delete a Tailscale subnet
+  Future<Map<String, dynamic>> deleteTailscaleSubnet(String uuid) async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 300));
+      _demoDataService.deleteTailscaleSubnet(uuid);
+      return {'result': 'deleted'};
+    }
+    return _realApiService.deleteTailscaleSubnet(uuid);
+  }
+
+  /// Reload Tailscale settings
+  Future<Map<String, dynamic>> reloadTailscaleSettings() async {
+    if (_isDemoMode) {
+      await Future.delayed(const Duration(milliseconds: 600));
+      return {'status': 'ok'};
+    }
+    return _realApiService.reloadTailscaleSettings();
   }
 
   /// Clear service state

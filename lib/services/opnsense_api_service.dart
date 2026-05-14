@@ -30,6 +30,8 @@ import '../models/wireguard_server.dart';
 import '../models/wireguard_client.dart';
 import '../models/wireguard_peer.dart';
 import '../models/wireguard_key_pair.dart';
+import '../models/tailscale_status.dart';
+import '../models/tailscale_settings.dart';
 import '../utils/constants.dart';
 import 'dhcp_lease_adapter.dart';
 
@@ -1222,6 +1224,202 @@ class OPNsenseApiService {
     }
   }
 
+  /// Get Tailscale connection status
+  Future<VPNConnection?> getTailscaleStatus() async {
+    _ensureInitialized();
+
+    try {
+      // Get VPN services from the service list
+      final servicesResponse = await _dio!.get('/core/service/search');
+      
+      if (servicesResponse.statusCode == 200 && servicesResponse.data != null) {
+        final data = servicesResponse.data as Map<String, dynamic>;
+        final rows = data['rows'] as List<dynamic>? ?? [];
+        
+        for (final row in rows) {
+          final rowData = row as Map<String, dynamic>;
+          final serviceName = rowData['name']?.toString().toLowerCase() ?? '';
+          final serviceId = rowData['id']?.toString() ?? '';
+          final isRunning = rowData['running']?.toString() == '1' || rowData['running'] == true;
+          
+          // Check if this is Tailscale VPN service
+          if (serviceName == 'tailscale') {
+            return VPNConnection(
+              id: serviceId,
+              name: 'Tailscale',
+              type: serviceName,
+              status: isRunning ? 'up' : 'down',
+              description: rowData['description']?.toString() ?? 'Tailscale VPN Service',
+              enabled: isRunning,
+            );
+          }
+        }
+      }
+      
+      // Return null if Tailscale service not found
+      return null;
+    } catch (e) {
+      // Return null on error - drawer will show "Unknown" status
+      return null;
+    }
+  }
+
+  /// Get detailed Tailscale status and configuration
+  Future<TailscaleStatus> getTailscaleDetails() async {
+    _ensureInitialized();
+
+    try {
+      // Get service status
+      final serviceStatusResponse = await _dio!.post('/tailscale/service/status');
+      
+      bool serviceRunning = false;
+      if (serviceStatusResponse.statusCode == 200 && serviceStatusResponse.data != null) {
+        final serviceData = serviceStatusResponse.data as Map<String, dynamic>;
+        final status = serviceData['status']?.toString().toLowerCase() ?? '';
+        serviceRunning = status == 'running';
+      }
+
+      // Get comprehensive Tailscale status
+      final statusResponse = await _dio!.get('/tailscale/status/status');
+      final statusData = statusResponse.data as Map<String, dynamic>? ?? {};
+
+      // Get Tailscale settings
+      final settingsResponse = await _dio!.get('/tailscale/settings/get');
+      final settingsData = settingsResponse.data as Map<String, dynamic>? ?? {};
+      // Fix: API returns 'settings' not 'tailscale'
+      final settings = settingsData['settings'] as Map<String, dynamic>? ?? {};
+
+      // Get authentication configuration
+      final authResponse = await _dio!.get('/tailscale/authentication/get');
+      final authData = authResponse.data as Map<String, dynamic>? ?? {};
+      final authentication = authData['authentication'] as Map<String, dynamic>? ?? {};
+      final loginServer = authentication['loginServer']?.toString();
+      final preAuthKey = authentication['preAuthKey']?.toString();
+
+      // Extract data from status response
+      final backendState = statusData['BackendState']?.toString() ?? 'Stopped';
+      final authUrl = statusData['AuthURL']?.toString();
+      final version = statusData['Version']?.toString();
+      
+      // Extract Self data
+      final selfData = statusData['Self'] as Map<String, dynamic>? ?? {};
+      final hostName = selfData['HostName']?.toString();
+      final dnsName = selfData['DNSName']?.toString();
+      final tailscaleIPs = selfData['TailscaleIPs'] as List<dynamic>? ?? [];
+      final ips = tailscaleIPs.map((ip) => ip.toString()).toList();
+      final rxBytes = selfData['RxBytes'] as int?;
+      final txBytes = selfData['TxBytes'] as int?;
+      
+      // Extract CurrentTailnet data
+      final currentTailnet = statusData['CurrentTailnet'] as Map<String, dynamic>? ?? {};
+      final tailnetName = currentTailnet['Name']?.toString();
+      final magicDnsEnabled = currentTailnet['MagicDNSEnabled'] == true;
+      
+      // Extract User data
+      final userMap = statusData['User'] as Map<String, dynamic>? ?? {};
+      String? userName;
+      if (userMap.isNotEmpty) {
+        // User map has userID as key, get first user
+        final firstUserData = userMap.values.first as Map<String, dynamic>? ?? {};
+        userName = firstUserData['LoginName']?.toString();
+      }
+      
+      // Extract Peer data for count
+      final peerMap = statusData['Peer'] as Map<String, dynamic>? ?? {};
+      final peersCount = peerMap.length;
+      
+      // Extract Health data
+      final healthList = statusData['Health'] as List<dynamic>? ?? [];
+      String? healthStatus;
+      if (healthList.isNotEmpty) {
+        healthStatus = healthList.join(', ');
+      }
+      
+      // Extract settings - Fix: Convert "1"/"0" strings to booleans
+      final acceptSubnetRoutes = settings['acceptSubnetRoutes']?.toString() == '1';
+      final acceptDNS = settings['acceptDNS']?.toString() == '1';
+      final enableSSH = settings['enableSSH']?.toString() == '1';
+      
+      // Fix: Parse exit node correctly
+      final useExitNodeData = settings['useExitNode'] as Map<String, dynamic>?;
+      String? exitNodeValue;
+      bool useExitNode = false;
+      if (useExitNodeData != null) {
+        // Find the selected exit node
+        for (final entry in useExitNodeData.entries) {
+          if (entry.value is Map && entry.value['selected'] == 1) {
+            exitNodeValue = entry.key.isEmpty ? null : entry.key;
+            useExitNode = exitNodeValue != null;
+            break;
+          }
+        }
+      }
+      
+      // Fix: Extract advertised subnets from nested structure
+      final subnetsData = settings['subnets'] as Map<String, dynamic>?;
+      String? advertiseRoutes;
+      if (subnetsData != null) {
+        final subnetList = <String>[];
+        // Handle subnet4 structure
+        final subnet4 = subnetsData['subnet4'] as Map<String, dynamic>?;
+        if (subnet4 != null) {
+          // Iterate through UUIDs
+          for (final entry in subnet4.values) {
+            if (entry is Map<String, dynamic>) {
+              final subnet = entry['subnet']?.toString();
+              if (subnet != null && subnet.isNotEmpty) {
+                subnetList.add(subnet);
+              }
+            }
+          }
+        }
+        if (subnetList.isNotEmpty) {
+          advertiseRoutes = subnetList.join(', ');
+        }
+      }
+      
+      // Determine authentication status
+      final authenticated = authUrl == null || authUrl.isEmpty;
+      final loginState = authenticated ? 'authenticated' : 'unauthenticated';
+      
+      return TailscaleStatus(
+        // Authentication fields
+        authenticated: authenticated,
+        loginState: loginState,
+        authUrl: authUrl,
+        tailnet: tailnetName,
+        user: userName,
+        deviceName: hostName ?? dnsName,
+        loginServer: loginServer,
+        preAuthKey: preAuthKey,
+        
+        // Settings fields
+        acceptRoutes: acceptSubnetRoutes,
+        advertiseRoutes: advertiseRoutes,
+        exitNode: exitNodeValue,
+        useExitNode: useExitNode,
+        dnsEnabled: acceptDNS,
+        magicDns: magicDnsEnabled,
+        sshEnabled: enableSSH,
+        tags: const [], // Tags not available in current API
+        hostname: _config?.host,
+        
+        // Status fields
+        serviceRunning: serviceRunning,
+        backendState: backendState,
+        ips: ips,
+        bytesReceived: rxBytes,
+        bytesSent: txBytes,
+        connectedSince: null, // Not available in current API
+        health: healthStatus,
+        peersCount: peersCount,
+        version: version,
+      );
+    } catch (e) {
+      throw ApiException('Failed to get Tailscale details: ${e.toString()}', null);
+    }
+  }
+
   /// Get OpenVPN instances and sessions
   Future<List<VPNConnection>> _getOpenVPNSessions() async {
     try {
@@ -1430,7 +1628,7 @@ class OPNsenseApiService {
           endpoint = '/api/openvpn/service/restart';
           break;
         case 'tailscale':
-          endpoint = '/api/tailscale/service/restart';
+          endpoint = '/tailscale/service/restart';
           break;
         default:
           throw ApiException('Unknown VPN type: $type', null);
@@ -1467,10 +1665,15 @@ class OPNsenseApiService {
   }
 
   // ==================== WireGuard VPN ====================
+  // Endpoints verified against OPNsense 24.x API
+  // All write operations use POST method
+  // Response format: {"result":"saved"} for success, {"result":"failed","validations":{...}} for errors
 
   // Server Management Methods
 
   /// Get all WireGuard servers
+  /// Endpoint: GET /api/wireguard/server/search_server
+  /// Returns: List of servers in {"rows": [...]} format
   Future<List<WireGuardServer>> getWireGuardServers() async {
     _ensureInitialized();
 
@@ -1493,6 +1696,8 @@ class OPNsenseApiService {
   }
 
   /// Get a specific WireGuard server by UUID
+  /// Endpoint: GET /api/wireguard/server/get_server/$uuid
+  /// Returns: Server object in {"server": {...}} format
   Future<WireGuardServer> getWireGuardServer(String uuid) async {
     _ensureInitialized();
 
@@ -1514,6 +1719,9 @@ class OPNsenseApiService {
   }
 
   /// Create a new WireGuard server
+  /// Endpoint: POST /api/wireguard/server/add_server
+  /// Requires: Full server object including privkey
+  /// Returns: UUID of created server
   Future<String> createWireGuardServer(WireGuardServerRequest request) async {
     _ensureInitialized();
 
@@ -1538,6 +1746,8 @@ class OPNsenseApiService {
   }
 
   /// Update an existing WireGuard server
+  /// Endpoint: POST /api/wireguard/server/set_server/$uuid
+  /// Note: Can also be used for creation, but add_server is more explicit
   Future<void> updateWireGuardServer(String uuid, WireGuardServerRequest request) async {
     _ensureInitialized();
 
@@ -1556,6 +1766,7 @@ class OPNsenseApiService {
   }
 
   /// Delete a WireGuard server
+  /// Endpoint: POST /api/wireguard/server/del_server/$uuid
   Future<void> deleteWireGuardServer(String uuid) async {
     _ensureInitialized();
 
@@ -1571,6 +1782,7 @@ class OPNsenseApiService {
   }
 
   /// Toggle WireGuard server enabled/disabled state
+  /// Endpoint: POST /api/wireguard/server/toggle_server/$uuid
   Future<void> toggleWireGuardServer(String uuid, bool enabled) async {
     _ensureInitialized();
 
@@ -1591,6 +1803,8 @@ class OPNsenseApiService {
   // Client Management Methods
 
   /// Get all WireGuard clients
+  /// Endpoint: GET /api/wireguard/client/search_client
+  /// Returns: List of clients in {"rows": [...]} format
   Future<List<WireGuardClient>> getWireGuardClients() async {
     _ensureInitialized();
 
@@ -1613,6 +1827,8 @@ class OPNsenseApiService {
   }
 
   /// Get a specific WireGuard client by UUID
+  /// Endpoint: GET /api/wireguard/client/get_client/$uuid
+  /// Returns: Client object in {"client": {...}} format
   Future<WireGuardClient> getWireGuardClient(String uuid) async {
     _ensureInitialized();
 
@@ -1634,6 +1850,9 @@ class OPNsenseApiService {
   }
 
   /// Create a new WireGuard client
+  /// Endpoint: POST /api/wireguard/client/add_client
+  /// Requires: Full client object including pubkey
+  /// Returns: UUID of created client
   Future<String> createWireGuardClient(WireGuardClientRequest request) async {
     _ensureInitialized();
 
@@ -1658,6 +1877,8 @@ class OPNsenseApiService {
   }
 
   /// Update an existing WireGuard client
+  /// Endpoint: POST /api/wireguard/client/set_client/$uuid
+  /// Note: Can also be used for creation, but add_client is more explicit
   Future<void> updateWireGuardClient(String uuid, WireGuardClientRequest request) async {
     _ensureInitialized();
 
@@ -1676,6 +1897,7 @@ class OPNsenseApiService {
   }
 
   /// Delete a WireGuard client
+  /// Endpoint: POST /api/wireguard/client/del_client/$uuid
   Future<void> deleteWireGuardClient(String uuid) async {
     _ensureInitialized();
 
@@ -1691,6 +1913,7 @@ class OPNsenseApiService {
   }
 
   /// Toggle WireGuard client enabled/disabled state
+  /// Endpoint: POST /api/wireguard/client/toggle_client/$uuid
   Future<void> toggleWireGuardClient(String uuid, bool enabled) async {
     _ensureInitialized();
 
@@ -1711,6 +1934,8 @@ class OPNsenseApiService {
   // Peer Management Methods
 
   /// Get all WireGuard peers
+  /// Endpoint: GET /api/wireguard/server/search_peer
+  /// Returns: List of peers in {"rows": [...]} format
   Future<List<WireGuardPeer>> getWireGuardPeers() async {
     _ensureInitialized();
 
@@ -1733,6 +1958,8 @@ class OPNsenseApiService {
   }
 
   /// Get a specific WireGuard peer by UUID
+  /// Endpoint: GET /api/wireguard/server/get_peer/$uuid
+  /// Returns: Peer object in {"peer": {...}} format
   Future<WireGuardPeer> getWireGuardPeer(String uuid) async {
     _ensureInitialized();
 
@@ -1754,6 +1981,8 @@ class OPNsenseApiService {
   }
 
   /// Create a new WireGuard peer
+  /// Endpoint: POST /api/wireguard/server/add_peer
+  /// Returns: UUID of created peer
   Future<String> createWireGuardPeer(WireGuardPeerRequest request) async {
     _ensureInitialized();
 
@@ -1778,6 +2007,8 @@ class OPNsenseApiService {
   }
 
   /// Update an existing WireGuard peer
+  /// Endpoint: POST /api/wireguard/server/set_peer/$uuid
+  /// Note: Can also be used for creation, but add_peer is more explicit
   Future<void> updateWireGuardPeer(String uuid, WireGuardPeerRequest request) async {
     _ensureInitialized();
 
@@ -1796,6 +2027,7 @@ class OPNsenseApiService {
   }
 
   /// Delete a WireGuard peer
+  /// Endpoint: POST /api/wireguard/server/del_peer/$uuid
   Future<void> deleteWireGuardPeer(String uuid) async {
     _ensureInitialized();
 
@@ -1811,6 +2043,7 @@ class OPNsenseApiService {
   }
 
   /// Toggle WireGuard peer enabled/disabled state
+  /// Endpoint: POST /api/wireguard/server/toggle_peer/$uuid
   Future<void> toggleWireGuardPeer(String uuid, bool enabled) async {
     _ensureInitialized();
 
@@ -1831,6 +2064,7 @@ class OPNsenseApiService {
   // Key Generation and Service Control Methods
 
   /// Generate a new WireGuard key pair
+  /// Endpoint: GET /api/wireguard/service/genkey
   Future<WireGuardKeyPair> generateWireGuardKeyPair() async {
     _ensureInitialized();
 
@@ -1849,6 +2083,7 @@ class OPNsenseApiService {
   }
 
   /// Apply WireGuard configuration changes
+  /// Endpoint: POST /api/wireguard/service/reconfigure
   Future<void> applyWireGuardConfiguration() async {
     _ensureInitialized();
 
@@ -1864,6 +2099,7 @@ class OPNsenseApiService {
   }
 
   /// Get WireGuard service status
+  /// Endpoint: GET /api/wireguard/service/show
   Future<Map<String, dynamic>> getWireGuardStatus() async {
     _ensureInitialized();
 
@@ -1881,6 +2117,7 @@ class OPNsenseApiService {
   }
 
   /// Restart WireGuard service
+  /// Endpoint: POST /api/wireguard/service/restart
   Future<void> restartWireGuardService() async {
     _ensureInitialized();
 
@@ -1896,6 +2133,7 @@ class OPNsenseApiService {
   }
 
   /// Start a specific WireGuard instance
+  /// Endpoint: POST /api/wireguard/service/start/$uuid
   Future<void> startWireGuardInstance(String uuid) async {
     _ensureInitialized();
 
@@ -1911,6 +2149,7 @@ class OPNsenseApiService {
   }
 
   /// Stop a specific WireGuard instance
+  /// Endpoint: POST /api/wireguard/service/stop/$uuid
   Future<void> stopWireGuardInstance(String uuid) async {
     _ensureInitialized();
 
@@ -1926,6 +2165,7 @@ class OPNsenseApiService {
   }
 
   /// Restart a specific WireGuard instance
+  /// Endpoint: POST /api/wireguard/service/restart/$uuid
   Future<void> restartWireGuardInstance(String uuid) async {
     _ensureInitialized();
 
@@ -2695,7 +2935,326 @@ class OPNsenseApiService {
     }
   }
 
-  /// Clear configuration and reset service
+  /// Control Tailscale service (start, stop, restart)
+  Future<bool> controlTailscaleService(String action) async {
+    _ensureInitialized();
+
+    try {
+      // Map action to Tailscale API service control endpoint
+      final endpoint = action == 'start'
+          ? '/tailscale/service/start'
+          : action == 'stop'
+              ? '/tailscale/service/stop'
+              : '/tailscale/service/restart';
+
+      final response = await _dio!.post(endpoint);
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>?;
+        final result = data?['response']?.toString() ?? '';
+        
+        // Handle success
+        if (result == 'OK') {
+          return true;
+        }
+        
+        // Handle error responses (e.g., "Error (1)" when service is already in desired state)
+        if (result.contains('Error')) {
+          // Service might already be in the desired state
+          // Return false to indicate no change was made
+          return false;
+        }
+        
+        return false;
+      }
+      return false;
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Update Tailscale settings
+  Future<bool> updateTailscaleSettings(Map<String, dynamic> settings) async {
+    _ensureInitialized();
+
+    try {
+      // Map settings to OPNsense Tailscale API format
+      final opnsenseSettings = <String, dynamic>{};
+      
+      // Map accept_routes to acceptSubnetRoutes
+      if (settings.containsKey('accept_routes')) {
+        opnsenseSettings['acceptSubnetRoutes'] = settings['accept_routes'] == true ? '1' : '0';
+      }
+      
+      // Map exit_node to useExitNode
+      if (settings.containsKey('exit_node')) {
+        final exitNode = settings['exit_node'];
+        if (exitNode != null && exitNode.toString().isNotEmpty) {
+          opnsenseSettings['useExitNode'] = '1';
+          opnsenseSettings['exitNode'] = exitNode.toString();
+        } else {
+          opnsenseSettings['useExitNode'] = '0';
+          opnsenseSettings['exitNode'] = '';
+        }
+      }
+      
+      // Map dns_enabled to acceptDNS
+      if (settings.containsKey('dns_enabled')) {
+        opnsenseSettings['acceptDNS'] = settings['dns_enabled'] == true ? '1' : '0';
+      }
+      
+      // Map ssh_enabled to enableSSH
+      if (settings.containsKey('ssh_enabled')) {
+        opnsenseSettings['enableSSH'] = settings['ssh_enabled'] == true ? '1' : '0';
+      }
+      
+      // Note: advertise_routes (subnets) requires separate subnet management API calls
+      // For now, we skip this field as it needs add_subnet/del_subnet/set_subnet endpoints
+      
+      final response = await _dio!.post(
+        '/api/tailscale/settings/set',
+        data: {'tailscale': opnsenseSettings},
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>?;
+        return data?['result'] == 'saved';
+      }
+      return false;
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Get Tailscale authentication URL
+  /// Get Tailscale authentication settings
+  /// Returns a map with 'loginServer' and 'preAuthKey' fields
+  Future<Map<String, String?>> getTailscaleAuthentication() async {
+    _ensureInitialized();
+
+    try {
+      final url = '/tailscale/authentication/get';
+      final response = await _dio!.get(url);
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>?;
+        final auth = data?['authentication'] as Map<String, dynamic>?;
+        
+        return {
+          'loginServer': auth?['loginServer'] as String?,
+          'preAuthKey': auth?['preAuthKey'] as String?,
+        };
+      }
+      return {'loginServer': null, 'preAuthKey': null};
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Set Tailscale authentication settings
+  /// Saves the login server and pre-authentication key
+  Future<bool> setTailscaleAuthentication(String loginServer, String preAuthKey) async {
+    _ensureInitialized();
+
+    try {
+      final url = '/tailscale/authentication/set';
+      final response = await _dio!.post(
+        url,
+        data: {
+          'authentication': {
+            'loginServer': loginServer,
+            'preAuthKey': preAuthKey,
+          },
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>?;
+        return data?['result'] == 'saved';
+      }
+      return false;
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Logout from Tailscale
+  /// Note: This functionality is not supported by the OPNsense Tailscale API.
+  /// The API does not provide a logout endpoint. To logout, you would need to
+  /// stop the service and manually remove authentication on the Tailscale admin console.
+  Future<bool> logoutTailscale() async {
+    _ensureInitialized();
+
+    try {
+      // The OPNsense Tailscale API does not provide a logout endpoint
+      // As a workaround, we could stop the service, but that's not a true logout
+      // Return false to indicate this operation is not supported
+      return false;
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  // ==================== Tailscale Settings Management ====================
+
+  /// Get Tailscale settings
+  /// Retrieves the current Tailscale configuration settings
+  Future<TailscaleSettingsResponse> getTailscaleSettings() async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.get('/tailscale/settings/get');
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        return TailscaleSettingsResponse.fromJson(data);
+      }
+      throw ApiException('Failed to get Tailscale settings', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Set Tailscale settings
+  /// Updates the Tailscale configuration with the provided settings
+  Future<Map<String, dynamic>> setTailscaleSettings(TailscaleSettings settings) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.post(
+        '/tailscale/settings/set',
+        data: {'settings': settings.toJson()},
+      );
+
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      }
+      throw ApiException('Failed to set Tailscale settings', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Search Tailscale subnets
+  /// Returns a paginated list of configured subnets
+  Future<TailscaleSubnetSearchResponse> searchTailscaleSubnets() async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.get('/tailscale/settings/search_subnet');
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        return TailscaleSubnetSearchResponse.fromJson(data);
+      }
+      throw ApiException('Failed to search Tailscale subnets', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Get a specific Tailscale subnet by UUID
+  /// Returns the subnet configuration for the given UUID
+  Future<TailscaleSubnetResponse> getTailscaleSubnet(String uuid) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.get('/tailscale/settings/get_subnet/$uuid');
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        return TailscaleSubnetResponse.fromJson(data);
+      }
+      throw ApiException('Failed to get Tailscale subnet', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Add a new Tailscale subnet
+  /// Creates a new subnet configuration
+  Future<Map<String, dynamic>> addTailscaleSubnet(TailscaleSubnet subnet) async {
+    _ensureInitialized();
+
+    try {
+      // Convert subnet to JSON and remove uuid field (not needed for add operation)
+      final subnetData = subnet.toJson();
+      subnetData.remove('uuid');
+      
+      final response = await _dio!.post(
+        '/tailscale/settings/add_subnet',
+        data: {'subnet4': subnetData},
+      );
+      
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      }
+      throw ApiException('Failed to add Tailscale subnet', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Update an existing Tailscale subnet
+  /// Modifies the subnet configuration for the given UUID
+  Future<Map<String, dynamic>> setTailscaleSubnet(String uuid, TailscaleSubnet subnet) async {
+    _ensureInitialized();
+
+    try {
+      // Convert subnet to JSON and remove uuid field (UUID is in the URL path)
+      final subnetData = subnet.toJson();
+      subnetData.remove('uuid');
+      
+      final response = await _dio!.post(
+        '/tailscale/settings/set_subnet/$uuid',
+        data: {'subnet4': subnetData},
+      );
+      
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      }
+      throw ApiException('Failed to update Tailscale subnet', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Delete a Tailscale subnet
+  /// Removes the subnet configuration for the given UUID
+  Future<Map<String, dynamic>> deleteTailscaleSubnet(String uuid) async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.post(
+        '/tailscale/settings/del_subnet/$uuid',
+      );
+      
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      }
+      throw ApiException('Failed to delete Tailscale subnet', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Reload Tailscale settings
+  /// Applies the current configuration and restarts the service if needed
+  Future<Map<String, dynamic>> reloadTailscaleSettings() async {
+    _ensureInitialized();
+
+    try {
+      final response = await _dio!.get('/tailscale/settings/reload');
+
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      }
+      throw ApiException('Failed to reload Tailscale settings', response.statusCode);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
   void clear() {
     _dio = null;
     _config = null;

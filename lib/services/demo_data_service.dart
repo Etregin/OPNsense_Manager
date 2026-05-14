@@ -17,11 +17,14 @@
  */
 
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import '../models/system_info.dart';
 import '../models/firewall_rule.dart';
 import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
 import '../models/network_host.dart';
+import '../models/tailscale_status.dart';
+import '../models/tailscale_settings.dart';
 
 /// Service for generating realistic demo data
 class DemoDataService {
@@ -38,6 +41,36 @@ class DemoDataService {
   final Map<String, bool> _vpnConnectionStates = {};
   final Map<String, bool> _serviceStates = {};
   int _nextAliasId = 10;
+  
+  // Tailscale state
+  bool _tailscaleServiceRunning = true;
+  bool _tailscaleAuthenticated = true;
+  Map<String, dynamic> _tailscaleSettings = {
+    'accept_routes': true,
+    'advertise_routes': '192.168.1.0/24,10.0.0.0/24',
+    'exit_node': '',
+    'use_exit_node': false,
+    'dns_enabled': true,
+    'magic_dns': true,
+    'ssh_enabled': true,
+    'tags': ['tag:server', 'tag:firewall'],
+    'hostname': 'demo-opnsense',
+  };
+  
+  // Tailscale subnets storage
+  final Map<String, TailscaleSubnet> _tailscaleSubnets = {
+    'demo-subnet-1': TailscaleSubnet(
+      uuid: 'demo-subnet-1',
+      subnet: '192.168.1.0/24',
+      description: 'LAN Network',
+    ),
+    'demo-subnet-2': TailscaleSubnet(
+      uuid: 'demo-subnet-2',
+      subnet: '10.0.0.0/24',
+      description: 'Internal Services',
+    ),
+  };
+  int _nextSubnetId = 3;
 
   /// Generate demo system info
   SystemInfo generateSystemInfo() {
@@ -209,6 +242,63 @@ class DemoDataService {
         enabled: true,
       ),
     ];
+  }
+
+  /// Generate demo Tailscale status
+  TailscaleStatus generateTailscaleStatus() {
+    final isConnected = _tailscaleServiceRunning && _tailscaleAuthenticated;
+    
+    return TailscaleStatus(
+      // Authentication fields - matching real API structure
+      authenticated: _tailscaleAuthenticated,
+      loginState: _tailscaleAuthenticated ? 'authenticated' : 'unauthenticated',
+      // authUrl comes from status.AuthURL (empty when authenticated)
+      authUrl: _tailscaleAuthenticated ? null : 'https://login.tailscale.com/admin/machines/auth/demo-key-12345',
+      // tailnet comes from status.CurrentTailnet.Name
+      tailnet: _tailscaleAuthenticated ? 'demo-network.ts.net' : null,
+      // user comes from status.User[userID].LoginName
+      user: _tailscaleAuthenticated ? 'demo-user@example.com' : null,
+      // deviceName comes from status.Self.HostName
+      deviceName: _tailscaleAuthenticated ? 'demo-opnsense' : null,
+      
+      // Settings fields - matching real API structure from settings endpoint
+      // acceptRoutes from settings.acceptSubnetRoutes
+      acceptRoutes: _tailscaleSettings['accept_routes'] as bool,
+      // advertiseRoutes from settings.subnets (comma-separated)
+      advertiseRoutes: _tailscaleSettings['advertise_routes'] as String?,
+      // exitNode from settings.exitNode
+      exitNode: (_tailscaleSettings['exit_node'] as String?)?.isEmpty == true
+          ? null
+          : _tailscaleSettings['exit_node'] as String?,
+      // useExitNode from settings.useExitNode
+      useExitNode: _tailscaleSettings['use_exit_node'] as bool,
+      // dnsEnabled from settings.acceptDNS
+      dnsEnabled: _tailscaleSettings['dns_enabled'] as bool,
+      // magicDns from status.CurrentTailnet.MagicDNSEnabled
+      magicDns: _tailscaleSettings['magic_dns'] as bool,
+      // sshEnabled from settings.enableSSH
+      sshEnabled: _tailscaleSettings['ssh_enabled'] as bool,
+      tags: List<String>.from(_tailscaleSettings['tags'] as List),
+      hostname: _tailscaleSettings['hostname'] as String?,
+      
+      // Status fields - matching real API structure
+      serviceRunning: _tailscaleServiceRunning,
+      // backendState from status.BackendState
+      backendState: isConnected ? 'Running' : _tailscaleServiceRunning ? 'Starting' : 'Stopped',
+      // ips from status.Self.TailscaleIPs
+      ips: isConnected ? ['100.64.0.1', 'fd7a:115c:a1e0::1'] : [],
+      // bytesReceived from status.Self.RxBytes
+      bytesReceived: isConnected ? 1024 * 1024 * 95 + _random.nextInt(1024 * 1024 * 20) : null,
+      // bytesSent from status.Self.TxBytes
+      bytesSent: isConnected ? 1024 * 1024 * 62 + _random.nextInt(1024 * 1024 * 15) : null,
+      connectedSince: isConnected ? DateTime.now().subtract(Duration(days: 14, hours: _random.nextInt(24))) : null,
+      // health from status.Health array (null or empty = healthy)
+      health: null,
+      // peersCount from status.Peer object count
+      peersCount: isConnected ? 5 + _random.nextInt(3) : 0,
+      // version from status.Version
+      version: '1.56.1',
+    );
   }
 
   /// Generate demo WireGuard clients
@@ -899,6 +989,166 @@ class DemoDataService {
     return _nextAliasId++;
   }
 
+  /// Update Tailscale service state
+  void updateTailscaleServiceState(String action) {
+    switch (action) {
+      case 'start':
+        _tailscaleServiceRunning = true;
+        break;
+      case 'stop':
+        _tailscaleServiceRunning = false;
+        break;
+      case 'restart':
+        _tailscaleServiceRunning = true;
+        break;
+    }
+  }
+
+  /// Update Tailscale settings
+  void updateTailscaleSettings(Map<String, dynamic> settings) {
+    _tailscaleSettings = Map<String, dynamic>.from(settings);
+  }
+
+  /// Logout from Tailscale
+  void logoutTailscale() {
+    _tailscaleAuthenticated = false;
+  }
+
+  // ==================== Tailscale Settings Management ====================
+
+  /// Generate Tailscale settings response
+  TailscaleSettingsResponse generateTailscaleSettings() {
+    return TailscaleSettingsResponse(
+      settings: TailscaleSettings(
+        enabled: _tailscaleServiceRunning,
+        loginTimeout: '60',
+        listenPort: '41641',
+        acceptDNS: _tailscaleSettings['dns_enabled'] as bool,
+        advertiseExitNode: false,
+        useExitNode: _buildExitNodeMap(),
+        acceptSubnetRoutes: _tailscaleSettings['accept_routes'] as bool,
+        enableSSH: _tailscaleSettings['ssh_enabled'] as bool,
+        disableSNAT: false,
+        subnets: Map<String, TailscaleSubnet>.from(_tailscaleSubnets),
+      ),
+    );
+  }
+
+  /// Build exit node map structure
+  Map<String, TailscaleExitNode> _buildExitNodeMap() {
+    final exitNode = _tailscaleSettings['exit_node'] as String?;
+    if (exitNode == null || exitNode.isEmpty) {
+      return {
+        '': TailscaleExitNode(value: 'None', selected: true),
+      };
+    }
+    return {
+      '': TailscaleExitNode(value: 'None', selected: false),
+      exitNode: TailscaleExitNode(value: exitNode, selected: true),
+    };
+  }
+
+  /// Update Tailscale settings data
+  void updateTailscaleSettingsData(TailscaleSettings settings) {
+    debugPrint('🔄 [DemoDataService] Updating Tailscale settings...');
+    debugPrint('🔍 [DemoDataService] Settings: enabled=${settings.enabled}, acceptDNS=${settings.acceptDNS}');
+    
+    try {
+      if (settings.enabled != null) {
+        debugPrint('✓ [DemoDataService] Updating enabled: ${settings.enabled}');
+        _tailscaleServiceRunning = settings.enabled!;
+      }
+      if (settings.acceptDNS != null) {
+        debugPrint('✓ [DemoDataService] Updating acceptDNS: ${settings.acceptDNS}');
+        _tailscaleSettings['dns_enabled'] = settings.acceptDNS!;
+      }
+      if (settings.acceptSubnetRoutes != null) {
+        debugPrint('✓ [DemoDataService] Updating acceptSubnetRoutes: ${settings.acceptSubnetRoutes}');
+        _tailscaleSettings['accept_routes'] = settings.acceptSubnetRoutes!;
+      }
+      if (settings.enableSSH != null) {
+        debugPrint('✓ [DemoDataService] Updating enableSSH: ${settings.enableSSH}');
+        _tailscaleSettings['ssh_enabled'] = settings.enableSSH!;
+      }
+      
+      // Update exit node if provided
+      if (settings.useExitNode != null) {
+        debugPrint('🔍 [DemoDataService] Processing useExitNode: ${settings.useExitNode}');
+        try {
+          final selectedNode = settings.selectedExitNode;
+          debugPrint('🔍 [DemoDataService] Selected node: $selectedNode');
+          
+          if (selectedNode != null && selectedNode.value != null && selectedNode.value != 'None') {
+            debugPrint('✓ [DemoDataService] Setting exit node: ${selectedNode.value}');
+            _tailscaleSettings['exit_node'] = selectedNode.value!;
+            _tailscaleSettings['use_exit_node'] = true;
+          } else {
+            debugPrint('✓ [DemoDataService] Clearing exit node');
+            _tailscaleSettings['exit_node'] = '';
+            _tailscaleSettings['use_exit_node'] = false;
+          }
+        } catch (exitNodeError) {
+          debugPrint('❌ [DemoDataService] Error processing exit node: $exitNodeError');
+          rethrow;
+        }
+      }
+      
+      debugPrint('✅ [DemoDataService] Settings updated successfully');
+    } catch (e, stackTrace) {
+      debugPrint('❌ [DemoDataService] Error updating settings: $e');
+      debugPrint('❌ [DemoDataService] Stack trace: $stackTrace');
+      rethrow;
+    }
+  }
+
+  /// Generate subnet search response
+  TailscaleSubnetSearchResponse generateTailscaleSubnetSearch() {
+    final subnetList = _tailscaleSubnets.values.toList();
+    return TailscaleSubnetSearchResponse(
+      rows: subnetList,
+      rowCount: subnetList.length,
+      total: subnetList.length,
+      current: 1,
+    );
+  }
+
+  /// Generate a specific subnet response
+  TailscaleSubnetResponse generateTailscaleSubnet(String uuid) {
+    final subnet = _tailscaleSubnets[uuid];
+    if (subnet == null) {
+      throw Exception('Subnet not found: $uuid');
+    }
+    return TailscaleSubnetResponse(subnet: subnet);
+  }
+
+  /// Add a new Tailscale subnet
+  String addTailscaleSubnet(TailscaleSubnet subnet) {
+    final uuid = 'demo-subnet-$_nextSubnetId';
+    _nextSubnetId++;
+    _tailscaleSubnets[uuid] = TailscaleSubnet(
+      uuid: uuid,
+      subnet: subnet.subnet,
+      description: subnet.description,
+    );
+    return uuid;
+  }
+
+  /// Update an existing Tailscale subnet
+  void updateTailscaleSubnet(String uuid, TailscaleSubnet subnet) {
+    if (_tailscaleSubnets.containsKey(uuid)) {
+      _tailscaleSubnets[uuid] = TailscaleSubnet(
+        uuid: uuid,
+        subnet: subnet.subnet,
+        description: subnet.description,
+      );
+    }
+  }
+
+  /// Delete a Tailscale subnet
+  void deleteTailscaleSubnet(String uuid) {
+    _tailscaleSubnets.remove(uuid);
+  }
+
   /// Reset all demo states
   void reset() {
     _firewallRuleStates.clear();
@@ -907,6 +1157,33 @@ class DemoDataService {
     _vpnConnectionStates.clear();
     _serviceStates.clear();
     _nextAliasId = 10;
+    // Reset Tailscale state
+    _tailscaleServiceRunning = true;
+    _tailscaleAuthenticated = true;
+    _tailscaleSettings = {
+      'accept_routes': true,
+      'advertise_routes': '192.168.1.0/24,10.0.0.0/24',
+      'exit_node': '',
+      'use_exit_node': false,
+      'dns_enabled': true,
+      'magic_dns': true,
+      'ssh_enabled': true,
+      'tags': ['tag:server', 'tag:firewall'],
+      'hostname': 'demo-opnsense',
+    };
+    // Reset Tailscale subnets
+    _tailscaleSubnets.clear();
+    _tailscaleSubnets['demo-subnet-1'] = TailscaleSubnet(
+      uuid: 'demo-subnet-1',
+      subnet: '192.168.1.0/24',
+      description: 'LAN Network',
+    );
+    _tailscaleSubnets['demo-subnet-2'] = TailscaleSubnet(
+      uuid: 'demo-subnet-2',
+      subnet: '10.0.0.0/24',
+      description: 'Internal Services',
+    );
+    _nextSubnetId = 3;
   }
 }
 

@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/vpn_connection.dart';
 import '../models/system_info.dart';
+import '../models/tailscale_status.dart';
 import '../services/demo_api_service.dart';
 import '../utils/constants.dart';
 import '../utils/formatters.dart';
@@ -41,10 +42,14 @@ class VPNConnectionsScreen extends StatefulWidget {
 class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
   List<VPNConnection> _connections = [];
   SystemInfo? _systemInfo;
+  TailscaleStatus? _tailscaleStatus;
   bool _isLoading = true;
   String? _errorMessage;
   Timer? _refreshTimer;
   String _filterType = 'all'; // 'all', 'openvpn', 'tailscale', 'wireguard', 'ipsec'
+
+  /// Check if we're in Tailscale-specific mode
+  bool get _isTailscaleMode => widget.vpnType == 'tailscale';
 
   @override
   void initState() {
@@ -83,17 +88,34 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
     try {
       final demoApiService = context.read<DemoApiService>();
       
-      final results = await Future.wait([
-        demoApiService.getVPNConnections(),
-        demoApiService.getSystemInfo(),
-      ]);
+      if (_isTailscaleMode) {
+        // Load Tailscale-specific data
+        final results = await Future.wait([
+          demoApiService.getTailscaleDetails(),
+          demoApiService.getSystemInfo(),
+        ]);
 
-      if (mounted) {
-        setState(() {
-          _connections = results[0] as List<VPNConnection>;
-          _systemInfo = results[1] as SystemInfo;
-          _isLoading = false;
-        });
+        if (mounted) {
+          setState(() {
+            _tailscaleStatus = results[0] as TailscaleStatus;
+            _systemInfo = results[1] as SystemInfo;
+            _isLoading = false;
+          });
+        }
+      } else {
+        // Load regular VPN connections
+        final results = await Future.wait([
+          demoApiService.getVPNConnections(),
+          demoApiService.getSystemInfo(),
+        ]);
+
+        if (mounted) {
+          setState(() {
+            _connections = results[0] as List<VPNConnection>;
+            _systemInfo = results[1] as SystemInfo;
+            _isLoading = false;
+          });
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -275,37 +297,39 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
       appBar: AppBar(
         title: Text(l10n.vpnConnections),
         actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.filter_list),
-            tooltip: l10n.filterByType,
-            onSelected: (value) {
-              setState(() {
-                _filterType = value;
-              });
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'all',
-                child: Text(l10n.allVPNs),
-              ),
-              const PopupMenuItem(
-                value: 'openvpn',
-                child: Text('OpenVPN'),
-              ),
-              const PopupMenuItem(
-                value: 'wireguard',
-                child: Text('WireGuard'),
-              ),
-              const PopupMenuItem(
-                value: 'ipsec',
-                child: Text('IPsec'),
-              ),
-              const PopupMenuItem(
-                value: 'tailscale',
-                child: Text('Tailscale'),
-              ),
-            ],
-          ),
+          // Hide filter dropdown in Tailscale mode
+          if (!_isTailscaleMode)
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.filter_list),
+              tooltip: l10n.filterByType,
+              onSelected: (value) {
+                setState(() {
+                  _filterType = value;
+                });
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 'all',
+                  child: Text(l10n.allVPNs),
+                ),
+                const PopupMenuItem(
+                  value: 'openvpn',
+                  child: Text('OpenVPN'),
+                ),
+                const PopupMenuItem(
+                  value: 'wireguard',
+                  child: Text('WireGuard'),
+                ),
+                const PopupMenuItem(
+                  value: 'ipsec',
+                  child: Text('IPsec'),
+                ),
+                const PopupMenuItem(
+                  value: 'tailscale',
+                  child: Text('Tailscale'),
+                ),
+              ],
+            ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _isLoading ? null : _loadData,
@@ -325,13 +349,13 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
   }
 
   Widget _buildBody() {
-    if (_isLoading && _connections.isEmpty) {
+    if (_isLoading && (_isTailscaleMode ? _tailscaleStatus == null : _connections.isEmpty)) {
       return const Center(
         child: CircularProgressIndicator(),
       );
     }
 
-    if (_errorMessage != null && _connections.isEmpty) {
+    if (_errorMessage != null && (_isTailscaleMode ? _tailscaleStatus == null : _connections.isEmpty)) {
       final l10n = AppLocalizations.of(context)!;
       return Center(
         child: Column(
@@ -368,6 +392,11 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
     }
 
     final filteredConnections = _filteredConnections;
+
+    // Tailscale mode - show dedicated UI
+    if (_isTailscaleMode) {
+      return _buildTailscaleBody();
+    }
 
     if (filteredConnections.isEmpty) {
       final l10n = AppLocalizations.of(context)!;
@@ -689,5 +718,225 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
       default:
         return Icons.vpn_lock_outlined;
     }
+  }
+
+  // ==================== Tailscale-Specific UI ====================
+
+  Widget _buildTailscaleBody() {
+    if (_tailscaleStatus == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    return ListView(
+      padding: const EdgeInsets.all(AppConstants.standardPadding),
+      children: [
+        _buildAuthenticationSection(),
+        const SizedBox(height: 16),
+        _buildSettingsSection(),
+        const SizedBox(height: 16),
+        _buildStatusSection(),
+      ],
+    );
+  }
+
+  Widget _buildAuthenticationSection() {
+    final status = _tailscaleStatus!;
+
+    return Card(
+      child: ExpansionTile(
+        initiallyExpanded: true,
+        leading: Icon(
+          status.authenticated ? Icons.verified_user : Icons.warning,
+          color: status.authenticated ? Colors.green : Colors.orange,
+          size: 32,
+        ),
+        title: const Text(
+          'Authentication',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+        subtitle: Text(
+          status.authenticated ? 'Authenticated' : 'Not Authenticated',
+          style: TextStyle(
+            color: status.authenticated ? Colors.green : Colors.orange,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDetailRow('Service State', status.serviceRunning ? 'Running' : 'Stopped'),
+                const SizedBox(height: 8),
+                _buildDetailRow('Auth Status', status.statusDisplay),
+                const SizedBox(height: 8),
+                if (status.tailnet != null) ...[
+                  _buildDetailRow('Tailnet', status.tailnet!),
+                  const SizedBox(height: 8),
+                ],
+                if (status.deviceName != null) ...[
+                  _buildDetailRow('Device Name', status.deviceName!),
+                  const SizedBox(height: 8),
+                ],
+                if (status.user != null) ...[
+                  _buildDetailRow('User', status.user!),
+                  const SizedBox(height: 8),
+                ],
+                if (status.authUrl != null) ...[
+                  const SizedBox(height: 8),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      // In a real app, this would open the auth URL
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Auth URL: ${status.authUrl}')),
+                      );
+                    },
+                    icon: const Icon(Icons.open_in_browser),
+                    label: const Text('Authenticate'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSettingsSection() {
+    final status = _tailscaleStatus!;
+    final l10n = AppLocalizations.of(context)!;
+
+    return Card(
+      child: ExpansionTile(
+        initiallyExpanded: true,
+        leading: const Icon(
+          Icons.settings,
+          color: Colors.blue,
+          size: 32,
+        ),
+        title: Text(
+          l10n.settings,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDetailRow('Accept Routes', status.acceptRoutes ? l10n.enabled : l10n.disabled),
+                const SizedBox(height: 8),
+                if (status.advertiseRoutes != null) ...[
+                  _buildDetailRow('Advertise Routes', status.advertiseRoutes!),
+                  const SizedBox(height: 8),
+                ],
+                _buildDetailRow('Exit Node', status.exitNode ?? 'None'),
+                const SizedBox(height: 8),
+                _buildDetailRow('Use Exit Node', status.useExitNode ? l10n.enabled : l10n.disabled),
+                const SizedBox(height: 8),
+                _buildDetailRow('DNS Enabled', status.dnsEnabled ? l10n.enabled : l10n.disabled),
+                const SizedBox(height: 8),
+                _buildDetailRow('MagicDNS', status.magicDns ? l10n.enabled : l10n.disabled),
+                const SizedBox(height: 8),
+                _buildDetailRow('SSH Enabled', status.sshEnabled ? l10n.enabled : l10n.disabled),
+                const SizedBox(height: 8),
+                if (status.tags.isNotEmpty) ...[
+                  _buildDetailRow('Tags', status.tags.join(', ')),
+                  const SizedBox(height: 8),
+                ],
+                if (status.hostname != null) ...[
+                  _buildDetailRow(l10n.hostname, status.hostname!),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusSection() {
+    final status = _tailscaleStatus!;
+    final l10n = AppLocalizations.of(context)!;
+
+    return Card(
+      child: ExpansionTile(
+        initiallyExpanded: true,
+        leading: Icon(
+          status.isConnected ? Icons.cloud_done : Icons.cloud_off,
+          color: status.isConnected ? Colors.green : Colors.grey,
+          size: 32,
+        ),
+        title: Text(
+          l10n.status,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+        subtitle: Text(
+          status.backendState,
+          style: TextStyle(
+            color: status.isConnected ? Colors.green : Colors.grey,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDetailRow('Connection State', status.backendState),
+                const SizedBox(height: 8),
+                if (status.ips.isNotEmpty) ...[
+                  _buildDetailRow('IP Addresses', status.ips.join(', ')),
+                  const SizedBox(height: 8),
+                ],
+                if (status.bytesReceived != null || status.bytesSent != null) ...[
+                  Row(
+                    children: [
+                      if (status.bytesReceived != null)
+                        Expanded(
+                          child: _buildDetailRow(
+                            l10n.received,
+                            Formatters.formatBytes(status.bytesReceived!, context),
+                          ),
+                        ),
+                      if (status.bytesSent != null)
+                        Expanded(
+                          child: _buildDetailRow(
+                            l10n.sent,
+                            Formatters.formatBytes(status.bytesSent!, context),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                if (status.connectedSince != null) ...[
+                  _buildDetailRow(
+                    l10n.connectedSince,
+                    Formatters.formatDateTime(status.connectedSince!),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                _buildDetailRow('Peers Count', status.peersCount.toString()),
+                const SizedBox(height: 8),
+                _buildDetailRow('Health', status.healthDisplay),
+                const SizedBox(height: 8),
+                if (status.version != null) ...[
+                  _buildDetailRow('Version', status.version!),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

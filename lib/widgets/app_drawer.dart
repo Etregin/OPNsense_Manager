@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/system_info.dart';
+import '../models/vpn_connection.dart';
 import '../services/opnsense_api_service.dart';
 import '../services/profile_service.dart';
 import '../services/auth_service.dart';
@@ -28,12 +29,14 @@ import '../screens/system_info_screen.dart';
 import '../screens/firewall_rules_screen.dart';
 import '../screens/firewall_aliases_screen.dart';
 import '../screens/firewall_logs_screen.dart';
-import '../screens/vpn_connections_screen.dart';
 import '../screens/live_network_monitor_screen.dart';
 import '../screens/dhcp_leases_screen.dart';
 import '../screens/wireguard_servers_screen.dart';
 import '../screens/wireguard_clients_screen.dart';
 import '../screens/wireguard_peers_screen.dart';
+import '../screens/tailscale_authentication_screen.dart';
+import '../screens/tailscale_settings_screen.dart';
+import '../screens/tailscale_status_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/settings_screen.dart';
 import '../screens/pin_lock_screen.dart';
@@ -43,11 +46,13 @@ import '../l10n/app_localizations.dart';
 class AppDrawer extends StatefulWidget {
   final String currentRoute;
   final SystemInfo? systemInfo;
+  final Future<bool> Function()? onBeforeNavigate;
 
   const AppDrawer({
     super.key,
     required this.currentRoute,
     this.systemInfo,
+    this.onBeforeNavigate,
   });
 
   @override
@@ -61,6 +66,8 @@ class _AppDrawerState extends State<AppDrawer> {
   bool _ipsecExpanded = false;
   bool _openvpnExpanded = false;
   bool _tailscaleExpanded = false;
+  VPNConnection? _tailscaleStatus;
+  bool _loadingTailscale = false;
 
   @override
   void initState() {
@@ -81,6 +88,51 @@ class _AppDrawerState extends State<AppDrawer> {
     _openvpnExpanded = widget.currentRoute.startsWith('openvpn_');
     // Auto-expand Tailscale section if on a Tailscale-related route
     _tailscaleExpanded = widget.currentRoute.startsWith('tailscale_');
+    // Load Tailscale status
+    _loadTailscaleStatus();
+  }
+
+  /// Helper method to handle navigation with unsaved changes check
+  Future<void> _navigateWithCheck(Widget destination) async {
+    // Check if there's a callback and if navigation should proceed
+    if (widget.onBeforeNavigate != null) {
+      final shouldNavigate = await widget.onBeforeNavigate!();
+      if (!shouldNavigate) return;
+    }
+    
+    // Close drawer and navigate
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => destination),
+      );
+    }
+  }
+
+  Future<void> _loadTailscaleStatus() async {
+    if (!mounted) return;
+    
+    setState(() {
+      _loadingTailscale = true;
+    });
+
+    try {
+      final apiService = context.read<OPNsenseApiService>();
+      final status = await apiService.getTailscaleStatus();
+      
+      if (mounted) {
+        setState(() {
+          _tailscaleStatus = status;
+          _loadingTailscale = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _tailscaleStatus = null;
+          _loadingTailscale = false;
+        });
+      }
+    }
   }
 
   @override
@@ -144,13 +196,9 @@ class _AppDrawerState extends State<AppDrawer> {
             leading: const Icon(Icons.info_outline),
             title: Text(l10n.systemInformation),
             selected: widget.currentRoute == 'system_info',
-            onTap: () {
+            onTap: () async {
               if (widget.currentRoute != 'system_info') {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const SystemInfoScreen(),
-                  ),
-                );
+                await _navigateWithCheck(const SystemInfoScreen());
               } else {
                 Navigator.pop(context);
               }
@@ -263,24 +311,6 @@ class _AppDrawerState extends State<AppDrawer> {
               });
             },
             children: [
-              // VPN Connections overview (non-collapsible item)
-              ListTile(
-                leading: const SizedBox(width: 16),
-                title: Text(l10n.vpnConnections),
-                selected: widget.currentRoute == 'vpn_connections',
-                contentPadding: const EdgeInsets.only(left: 72, right: 16),
-                onTap: () {
-                  if (widget.currentRoute != 'vpn_connections') {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => const VPNConnectionsScreen(),
-                      ),
-                    );
-                  } else {
-                    Navigator.pop(context);
-                  }
-                },
-              ),
               // WireGuard nested expandable section
               ExpansionTile(
                 leading: const Icon(Icons.vpn_key, size: 20),
@@ -467,7 +497,69 @@ class _AppDrawerState extends State<AppDrawer> {
               // Tailscale nested expandable section
               ExpansionTile(
                 leading: const Icon(Icons.cloud, size: 20),
-                title: const Text('Tailscale'),
+                title: Row(
+                  children: [
+                    const Expanded(
+                      child: Text(
+                        'Tailscale',
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    if (_loadingTailscale)
+                      const SizedBox(
+                        width: 12,
+                        height: 12,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    else if (_tailscaleStatus != null)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: _tailscaleStatus!.isConnected
+                              ? Colors.green.withValues(alpha: 0.2)
+                              : Colors.grey.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: _tailscaleStatus!.isConnected
+                                ? Colors.green
+                                : Colors.grey,
+                            width: 1,
+                          ),
+                        ),
+                        child: Text(
+                          _tailscaleStatus!.isConnected ? 'Connected' : 'Disconnected',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: _tailscaleStatus!.isConnected
+                                ? Colors.green.shade700
+                                : Colors.grey.shade700,
+                          ),
+                        ),
+                      )
+                    else
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: Colors.orange,
+                            width: 1,
+                          ),
+                        ),
+                        child: Text(
+                          'Unknown',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange.shade700,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
                 initiallyExpanded: _tailscaleExpanded,
                 tilePadding: const EdgeInsets.only(left: 56, right: 16),
                 onExpansionChanged: (expanded) {
@@ -478,17 +570,15 @@ class _AppDrawerState extends State<AppDrawer> {
                 children: [
                   ListTile(
                     leading: const SizedBox(width: 16),
-                    title: const Text('Status'),
-                    selected: widget.currentRoute == 'tailscale_status',
+                    title: const Text('Authentication'),
+                    selected: widget.currentRoute == 'tailscale_authentication',
                     contentPadding: const EdgeInsets.only(left: 96, right: 16),
-                    onTap: () {
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Tailscale Status - Coming soon'),
-                          duration: Duration(seconds: 2),
-                        ),
-                      );
+                    onTap: () async {
+                      if (widget.currentRoute != 'tailscale_authentication') {
+                        await _navigateWithCheck(const TailscaleAuthenticationScreen());
+                      } else {
+                        Navigator.pop(context);
+                      }
                     },
                   ),
                   ListTile(
@@ -497,13 +587,32 @@ class _AppDrawerState extends State<AppDrawer> {
                     selected: widget.currentRoute == 'tailscale_settings',
                     contentPadding: const EdgeInsets.only(left: 96, right: 16),
                     onTap: () {
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Tailscale Settings - Coming soon'),
-                          duration: Duration(seconds: 2),
-                        ),
-                      );
+                      if (widget.currentRoute != 'tailscale_settings') {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => const TailscaleSettingsScreen(),
+                          ),
+                        );
+                      } else {
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                  ListTile(
+                    leading: const SizedBox(width: 16),
+                    title: const Text('Status'),
+                    selected: widget.currentRoute == 'tailscale_status',
+                    contentPadding: const EdgeInsets.only(left: 96, right: 16),
+                    onTap: () {
+                      if (widget.currentRoute != 'tailscale_status') {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => const TailscaleStatusScreen(),
+                          ),
+                        );
+                      } else {
+                        Navigator.pop(context);
+                      }
                     },
                   ),
                 ],
