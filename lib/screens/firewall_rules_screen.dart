@@ -22,8 +22,12 @@ import 'package:provider/provider.dart';
 import '../models/firewall_rule.dart';
 import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
+import '../services/firewall/firewall_rule_filter.dart';
 import '../utils/constants.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/firewall/firewall_rule_card.dart';
+import '../widgets/firewall/interface_selector.dart';
+import '../widgets/firewall/rule_detail_sheet.dart';
 import 'firewall_rule_form_screen.dart';
 import '../l10n/app_localizations.dart';
 
@@ -81,25 +85,16 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
       final demoApiService = context.read<DemoApiService>();
       final allRules = await demoApiService.getFirewallRules();
       
-      // Filter to show only automation rules (non-system-generated)
-      final automationRules = allRules.where((rule) => !rule.isSystemGenerated).toList();
-      
-      // Group rules by interface
-      final Map<String, List<FirewallRule>> rulesByInterface = {};
-      for (var rule in automationRules) {
-        if (!rulesByInterface.containsKey(rule.interfaceName)) {
-          rulesByInterface[rule.interfaceName] = [];
-        }
-        rulesByInterface[rule.interfaceName]!.add(rule);
-      }
+      // Use filter utility to process rules
+      final rulesByInterface = FirewallRuleFilter.filterAndGroup(allRules);
 
       if (mounted) {
         setState(() {
-          _rules = automationRules;
+          _rules = FirewallRuleFilter.filterAutomationRules(allRules);
           _rulesByInterface = rulesByInterface;
           // Set default selected interface to the first one if available
           if (_selectedInterface == null && rulesByInterface.isNotEmpty) {
-            _selectedInterface = rulesByInterface.keys.first;
+            _selectedInterface = FirewallRuleFilter.getFirstInterface(rulesByInterface);
           }
           _isLoading = false;
         });
@@ -258,140 +253,23 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
   }
 
   void _showRuleDetails(FirewallRule rule) {
-    final l10n = AppLocalizations.of(context)!;
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.6,
-        minChildSize: 0.4,
-        maxChildSize: 0.9,
-        expand: false,
-        builder: (context, scrollController) {
-          return Container(
-            padding: const EdgeInsets.all(AppConstants.standardPadding * 2),
-            child: ListView(
-              controller: scrollController,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        l10n.ruleDetails,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                _buildDetailRow(l10n.description, rule.description),
-                _buildDetailRow(l10n.type, rule.typeDisplayName),
-                _buildDetailRow(l10n.interface, rule.interfaceName),
-                _buildDetailRow(l10n.protocol, rule.protocolDisplayName),
-                _buildDetailRow(l10n.source, '${rule.source}${rule.sourcePort != 'any' && rule.sourcePort.isNotEmpty ? ':${rule.sourcePort}' : ''}'),
-                _buildDetailRow(l10n.destination, '${rule.destination}${rule.destinationPort != 'any' && rule.destinationPort.isNotEmpty ? ':${rule.destinationPort}' : ''}'),
-                if (rule.sourcePort != 'any' && rule.sourcePort.isNotEmpty)
-                  _buildDetailRow(l10n.sourcePort, rule.sourcePort),
-                if (rule.destinationPort != 'any' && rule.destinationPort.isNotEmpty)
-                  _buildDetailRow(l10n.destinationPort, rule.destinationPort),
-                _buildDetailRow(l10n.status, rule.isEnabled ? l10n.enabled : l10n.disabled),
-                _buildDetailRow(l10n.sequence, rule.sequence.toString()),
-                const SizedBox(height: 24),
-                if (rule.isSystemGenerated)
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.orange.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.info_outline, color: Colors.orange[700], size: 20),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            l10n.systemGeneratedRule,
-                            style: TextStyle(
-                              color: Colors.orange[700],
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                else
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => FirewallRuleFormScreen(
-                                  rule: rule,
-                                ),
-                              ),
-                            ).then((_) => _loadRules());
-                          },
-                          icon: const Icon(Icons.edit),
-                          label: Text(l10n.edit),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            _deleteRule(rule);
-                          },
-                          icon: const Icon(Icons.delete),
-                          label: Text(l10n.delete),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            foregroundColor: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 140,
-            child: Text(
-              label,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.grey,
-              ),
+    RuleDetailSheet.show(
+      context,
+      rule: rule,
+      onEdit: () {
+        Navigator.of(context).pop();
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => FirewallRuleFormScreen(
+              rule: rule,
             ),
           ),
-          Expanded(
-            child: Text(value),
-          ),
-        ],
-      ),
+        ).then((_) => _loadRules());
+      },
+      onDelete: () {
+        Navigator.of(context).pop();
+        _deleteRule(rule);
+      },
     );
   }
 
@@ -434,130 +312,30 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
     }
 
     if (_errorMessage != null) {
-      final l10n = AppLocalizations.of(context)!;
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
-            const SizedBox(height: 16),
-            Text(l10n.errorLoadingRules,
-                style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Text(_errorMessage!,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey[600])),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: _loadRules,
-              icon: const Icon(Icons.refresh),
-              label: Text(l10n.retry),
-            ),
-          ],
-        ),
-      );
+      return _buildErrorState();
     }
 
     if (_rules.isEmpty) {
-      final l10n = AppLocalizations.of(context)!;
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.security, size: 64, color: Colors.grey[400]),
-            const SizedBox(height: 16),
-            Text(
-              l10n.noAutomationRulesFound,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.createFirstAutomationRule,
-              style: TextStyle(color: Colors.grey[600]),
-            ),
-          ],
-        ),
-      );
+      return _buildEmptyState();
     }
 
     if (_rulesByInterface.isEmpty) {
-      final l10n = AppLocalizations.of(context)!;
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.security, size: 64, color: Colors.grey[400]),
-            const SizedBox(height: 16),
-            Text(
-              l10n.noInterfacesWithAutomationRules,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-          ],
-        ),
-      );
+      return _buildNoInterfacesState();
     }
 
     return Column(
       children: [
         // Interface selector
-        Container(
-          padding: const EdgeInsets.all(AppConstants.standardPadding),
-          decoration: BoxDecoration(
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.grey[850]
-                : Colors.grey[100],
-            border: Border(
-              bottom: BorderSide(
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.grey[700]!
-                    : Colors.grey[300]!,
-              ),
-            ),
+        InterfaceSelector(
+          interfaceRuleCounts: _rulesByInterface.map(
+            (key, value) => MapEntry(key, value.length),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Builder(
-                builder: (context) {
-                  final l10n = AppLocalizations.of(context)!;
-                  return Text(
-                    l10n.selectInterface,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[600],
-                        ),
-                  );
-                }
-              ),
-              const SizedBox(height: 8),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: _rulesByInterface.keys.map((interface) {
-                    final isSelected = interface == _selectedInterface;
-                    final ruleCount = _rulesByInterface[interface]!.length;
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: FilterChip(
-                        label: Text('$interface ($ruleCount)'),
-                        selected: isSelected,
-                        onSelected: (selected) {
-                          setState(() {
-                            _selectedInterface = interface;
-                          });
-                        },
-                        selectedColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
-                        checkmarkColor: Theme.of(context).primaryColor,
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ],
-          ),
+          selectedInterface: _selectedInterface,
+          onInterfaceSelected: (interface) {
+            setState(() {
+              _selectedInterface = interface;
+            });
+          },
         ),
         // Rules list for selected interface
         Expanded(
@@ -567,13 +345,83 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
     );
   }
 
+  Widget _buildErrorState() {
+    final l10n = AppLocalizations.of(context)!;
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
+          const SizedBox(height: 16),
+          Text(l10n.errorLoadingRules,
+              style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Text(_errorMessage!,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey[600])),
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: _loadRules,
+            icon: const Icon(Icons.refresh),
+            label: Text(l10n.retry),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    final l10n = AppLocalizations.of(context)!;
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.security, size: 64, color: Colors.grey[400]),
+          const SizedBox(height: 16),
+          Text(
+            l10n.noAutomationRulesFound,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.createFirstAutomationRule,
+            style: TextStyle(color: Colors.grey[600]),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNoInterfacesState() {
+    final l10n = AppLocalizations.of(context)!;
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.security, size: 64, color: Colors.grey[400]),
+          const SizedBox(height: 16),
+          Text(
+            l10n.noInterfacesWithAutomationRules,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildRulesList() {
     final l10n = AppLocalizations.of(context)!;
     if (_selectedInterface == null) {
       return Center(child: Text(l10n.selectInterfaceToViewRules));
     }
 
-    final rules = _rulesByInterface[_selectedInterface] ?? [];
+    final rules = FirewallRuleFilter.getRulesForInterface(
+      _rulesByInterface,
+      _selectedInterface,
+    );
 
     if (rules.isEmpty) {
       return Center(
@@ -599,181 +447,15 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
         separatorBuilder: (context, index) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
           final rule = rules[index];
-          return _buildRuleCard(rule);
+          return FirewallRuleCard(
+            rule: rule,
+            onTap: () => _showRuleDetails(rule),
+            onToggle: (_) => _toggleRule(rule),
+          );
         },
       ),
     );
   }
-
-  Widget _buildRuleCard(FirewallRule rule) {
-    Color getTypeColor() {
-      switch (rule.type.toLowerCase()) {
-        case 'pass':
-          return Colors.green;
-        case 'block':
-          return Colors.red;
-        case 'reject':
-          return Colors.orange;
-        default:
-          return Colors.grey;
-      }
-    }
-
-    IconData getTypeIcon() {
-      switch (rule.type.toLowerCase()) {
-        case 'pass':
-          return Icons.check_circle;
-        case 'block':
-          return Icons.block;
-        case 'reject':
-          return Icons.cancel;
-        default:
-          return Icons.help;
-      }
-    }
-
-    return Card(
-      child: InkWell(
-        onTap: () => _showRuleDetails(rule),
-        borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
-        child: Padding(
-          padding: const EdgeInsets.all(AppConstants.standardPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: getTypeColor().withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(
-                      getTypeIcon(),
-                      color: getTypeColor(),
-                      size: 20,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Builder(
-                          builder: (context) {
-                            final l10n = AppLocalizations.of(context)!;
-                            return Text(
-                              rule.description.isEmpty
-                                  ? l10n.unnamedRule
-                                  : rule.description,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            );
-                          }
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${rule.typeDisplayName} • ${rule.interfaceName} • ${rule.protocolDisplayName}',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Switch(
-                    value: rule.isEnabled,
-                    onChanged: rule.isSystemGenerated ? null : (_) => _toggleRule(rule),
-                    activeTrackColor: Colors.green,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.grey[800]
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildRuleInfo(
-                            AppLocalizations.of(context)!.source,
-                            '${rule.source}${rule.sourcePort != 'any' && rule.sourcePort.isNotEmpty ? ':${rule.sourcePort}' : ''}',
-                            Icons.arrow_forward,
-                          ),
-                        ),
-                        Icon(
-                          Icons.arrow_forward,
-                          size: 16,
-                          color: Theme.of(context).brightness == Brightness.dark
-                              ? Colors.grey[400]
-                              : Colors.grey[600],
-                        ),
-                        Expanded(
-                          child: _buildRuleInfo(
-                            AppLocalizations.of(context)!.destination,
-                            '${rule.destination}${rule.destinationPort != 'any' && rule.destinationPort.isNotEmpty ? ':${rule.destinationPort}' : ''}',
-                            Icons.location_on,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRuleInfo(String label, String value, IconData icon) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 14,
-          color: isDark ? Colors.grey[400] : Colors.grey[600],
-        ),
-        const SizedBox(width: 6),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 10,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
-                ),
-              ),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: isDark ? Colors.grey[200] : Colors.black87,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
 }
+
 

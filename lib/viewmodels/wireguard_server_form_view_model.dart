@@ -1,0 +1,92 @@
+/*
+ * OPNsense Manager - Flutter application for managing OPNsense firewalls
+ * Copyright (C) 2026 OPNsense Manager
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import '../models/wireguard_server.dart';
+import '../models/wireguard_peer.dart';
+import '../models/wireguard_key_pair.dart';
+import '../services/opnsense_api_service.dart';
+import 'base/base_form_view_model.dart';
+
+/// ViewModel for WireGuard server form
+class WireGuardServerFormViewModel extends BaseFormViewModel {
+  final OPNsenseApiService _apiService;
+  final WireGuardServer? _existingServer;
+
+  List<WireGuardPeer> _availablePeers = [];
+  bool _isGeneratingKeys = false;
+  bool _loadingPeers = true;
+
+  List<WireGuardPeer> get availablePeers => _availablePeers;
+  bool get isGeneratingKeys => _isGeneratingKeys;
+  bool get loadingPeers => _loadingPeers;
+  bool get isEditing => _existingServer != null;
+  WireGuardServer? get existingServer => _existingServer;
+
+  WireGuardServerFormViewModel({
+    required OPNsenseApiService apiService,
+    WireGuardServer? existingServer,
+  })  : _apiService = apiService,
+        _existingServer = existingServer;
+
+  /// Load available peers from API
+  Future<void> loadPeers() async {
+    _loadingPeers = true;
+    notifyListeners();
+
+    try {
+      _availablePeers = await _apiService.getWireGuardPeers();
+      _loadingPeers = false;
+      notifyListeners();
+    } catch (e) {
+      _loadingPeers = false;
+      setError('Failed to load peers: $e');
+    }
+  }
+
+  /// Generate new WireGuard key pair
+  Future<WireGuardKeyPair?> generateKeyPair() async {
+    _isGeneratingKeys = true;
+    notifyListeners();
+
+    try {
+      final keyPair = await _apiService.generateWireGuardKeyPair();
+      _isGeneratingKeys = false;
+      notifyListeners();
+      return keyPair;
+    } catch (e) {
+      _isGeneratingKeys = false;
+      setError('Failed to generate keys: $e');
+      return null;
+    }
+  }
+
+  /// Save server (create or update)
+  Future<bool> saveServer(WireGuardServerRequest request) async {
+    final result = await executeWithLoading(() async {
+      if (isEditing) {
+        await _apiService.updateWireGuardServer(_existingServer!.uuid, request);
+      } else {
+        await _apiService.createWireGuardServer(request);
+      }
+      return true;
+    });
+    return result == true;
+  }
+}
+
+// Made with Bob

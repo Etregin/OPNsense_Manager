@@ -17,12 +17,19 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../models/wireguard_client.dart';
 import '../services/opnsense_api_service.dart';
+import '../viewmodels/wireguard_client_form_view_model.dart';
+import '../widgets/common/loading_overlay.dart';
+import '../widgets/common/form_section_container.dart';
+import '../widgets/wireguard/key_pair_section.dart';
+import '../widgets/wireguard/list_manager_card.dart';
+import '../widgets/wireguard/client_server_settings_card.dart';
+import '../widgets/wireguard/client_additional_settings_card.dart';
+import '../utils/wireguard_validators.dart';
 
-/// Form screen for creating/editing WireGuard clients
+/// Refactored form screen for creating/editing WireGuard clients
 class WireGuardClientFormScreen extends StatefulWidget {
   final WireGuardClient? client;
 
@@ -45,14 +52,18 @@ class _WireGuardClientFormScreenState extends State<WireGuardClientFormScreen> {
   final _keepaliveController = TextEditingController();
   final _pskController = TextEditingController();
 
+  late WireGuardClientFormViewModel _viewModel;
   List<String> _tunnelAddresses = [];
   bool _enabled = true;
-  bool _isLoading = false;
-  bool _isGeneratingKeys = false;
 
   @override
   void initState() {
     super.initState();
+    _viewModel = WireGuardClientFormViewModel(
+      apiService: context.read<OPNsenseApiService>(),
+      existingClient: widget.client,
+    );
+    
     if (widget.isEditing) {
       _loadClientData();
     } else {
@@ -89,47 +100,26 @@ class _WireGuardClientFormScreenState extends State<WireGuardClientFormScreen> {
     _privateKeyController.dispose();
     _keepaliveController.dispose();
     _pskController.dispose();
+    _viewModel.dispose();
     super.dispose();
   }
 
   Future<void> _generateKeys() async {
-    setState(() {
-      _isGeneratingKeys = true;
-    });
+    final keyPair = await _viewModel.generateKeyPair();
+    
+    if (keyPair != null && mounted) {
+      setState(() {
+        _publicKeyController.text = keyPair.publicKey;
+        _privateKeyController.text = keyPair.privateKey;
+      });
 
-    try {
-      final apiService = context.read<OPNsenseApiService>();
-      final keyPair = await apiService.generateWireGuardKeyPair();
-
-      if (mounted) {
-        setState(() {
-          _publicKeyController.text = keyPair.publicKey;
-          _privateKeyController.text = keyPair.privateKey;
-          _isGeneratingKeys = false;
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Keys generated successfully'),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isGeneratingKeys = false;
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to generate keys: ${e.toString()}'),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
-          ),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Keys generated successfully'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
   }
 
@@ -148,428 +138,201 @@ class _WireGuardClientFormScreenState extends State<WireGuardClientFormScreen> {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    final request = WireGuardClientRequest(
+      name: _nameController.text.trim(),
+      pubkey: _publicKeyController.text.trim(),
+      privkey: _privateKeyController.text.trim(),
+      tunneladdress: _tunnelAddresses.join(','),
+      serveraddress: _serverAddressController.text.trim(),
+      serverport: _serverPortController.text.trim(),
+      serverpubkey: _serverPublicKeyController.text.trim(),
+      enabled: _enabled ? '1' : '0',
+      keepalive: _keepaliveController.text.trim(),
+      psk: _pskController.text.trim(),
+    );
 
-    try {
-      final apiService = context.read<OPNsenseApiService>();
+    final success = await _viewModel.saveClient(request);
 
-      final request = WireGuardClientRequest(
-        name: _nameController.text.trim(),
-        pubkey: _publicKeyController.text.trim(),
-        privkey: _privateKeyController.text.trim(),
-        tunneladdress: _tunnelAddresses.join(','),
-        serveraddress: _serverAddressController.text.trim(),
-        serverport: _serverPortController.text.trim(),
-        serverpubkey: _serverPublicKeyController.text.trim(),
-        enabled: _enabled ? '1' : '0',
-        keepalive: _keepaliveController.text.trim(),
-        psk: _pskController.text.trim(),
+    if (success && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            widget.isEditing ? 'Client updated successfully' : 'Client created successfully',
+          ),
+          backgroundColor: Colors.green,
+        ),
       );
-
-      if (widget.isEditing) {
-        await apiService.updateWireGuardClient(widget.client!.uuid, request);
-      } else {
-        await apiService.createWireGuardClient(request);
-      }
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              widget.isEditing ? 'Client updated successfully' : 'Client created successfully',
-            ),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.of(context).pop();
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to save client: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      Navigator.of(context).pop();
+    } else if (_viewModel.errorMessage != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_viewModel.errorMessage!),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
-  void _addTunnelAddress() {
-    showDialog(
+  void _addTunnelAddress() async {
+    final address = await AddItemDialog.show(
       context: context,
-      builder: (context) {
-        final controller = TextEditingController();
-        return AlertDialog(
-          title: const Text('Add Tunnel Address'),
-          content: TextField(
-            controller: controller,
-            decoration: const InputDecoration(
-              labelText: 'Tunnel Address (CIDR)',
-              hintText: '10.10.10.2/24',
-              helperText: 'Example: 10.10.10.2/24 or fd00::2/64',
-            ),
-            autofocus: true,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                final address = controller.text.trim();
-                if (address.isNotEmpty && _isValidCIDR(address)) {
-                  setState(() {
-                    _tunnelAddresses.add(address);
-                  });
-                  Navigator.of(context).pop();
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Invalid CIDR notation'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-              },
-              child: const Text('Add'),
-            ),
-          ],
-        );
+      title: 'Add Tunnel Address',
+      labelText: 'Tunnel Address (CIDR)',
+      hintText: '10.10.10.2/24',
+      helperText: 'Example: 10.10.10.2/24 or fd00::2/64',
+      validator: (value) {
+        if (value.isEmpty) {
+          return 'Address is required';
+        }
+        if (!WireGuardValidators.isValidCIDR(value)) {
+          return 'Invalid CIDR notation';
+        }
+        return null;
       },
     );
+
+    if (address != null && mounted) {
+      setState(() {
+        _tunnelAddresses.add(address);
+      });
+    }
   }
 
-  bool _isValidCIDR(String cidr) {
-    final parts = cidr.split('/');
-    if (parts.length != 2) return false;
-
-    final prefix = int.tryParse(parts[1]);
-    if (prefix == null) return false;
-
-    // Check for IPv4
-    if (_isValidIP(parts[0])) {
-      return prefix >= 0 && prefix <= 32;
-    }
-
-    // Check for IPv6
-    if (_isValidIPv6(parts[0])) {
-      return prefix >= 0 && prefix <= 128;
-    }
-
-    return false;
-  }
-
-  bool _isValidIP(String ip) {
-    final parts = ip.split('.');
-    if (parts.length != 4) return false;
-
-    for (final part in parts) {
-      final num = int.tryParse(part);
-      if (num == null || num < 0 || num > 255) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  bool _isValidIPv6(String ip) {
-    // Simplified IPv6 validation
-    final ipv6Pattern = RegExp(r'^([0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4}$');
-    return ipv6Pattern.hasMatch(ip);
-  }
-
-  String? _validatePort(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Port is required';
-    }
-    final port = int.tryParse(value);
-    if (port == null || port < 1 || port > 65535) {
-      return 'Port must be between 1 and 65535';
-    }
-    return null;
-  }
-
-  String? _validateKeepalive(String? value) {
-    if (value == null || value.isEmpty) {
-      return null; // Optional field
-    }
-    final keepalive = int.tryParse(value);
-    if (keepalive == null || keepalive < 0 || keepalive > 65535) {
-      return 'Keepalive must be between 0 and 65535';
-    }
-    return null;
-  }
-
-  String? _validateWireGuardKey(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Key is required';
-    }
-    if (value.length != 44) {
-      return 'Invalid key length (must be 44 characters)';
-    }
-    // Basic base64 validation
-    final base64Pattern = RegExp(r'^[A-Za-z0-9+/]+=*$');
-    if (!base64Pattern.hasMatch(value)) {
-      return 'Invalid key format (must be base64)';
-    }
-    return null;
-  }
-
-  String? _validateServerAddress(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Server address is required';
-    }
-    // Allow IP addresses or hostnames
-    if (_isValidIP(value) || _isValidIPv6(value)) {
-      return null;
-    }
-    // Basic hostname validation
-    final hostnamePattern = RegExp(r'^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*$');
-    if (hostnamePattern.hasMatch(value)) {
-      return null;
-    }
-    return 'Invalid server address';
+  void _removeTunnelAddress(String address) {
+    setState(() {
+      _tunnelAddresses.remove(address);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.isEditing ? 'Edit WireGuard Client' : 'New WireGuard Client'),
-      ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            // Name
-            TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Name',
-                hintText: 'My WireGuard Client',
-                prefixIcon: Icon(Icons.label),
+    return ChangeNotifierProvider.value(
+      value: _viewModel,
+      child: Consumer<WireGuardClientFormViewModel>(
+        builder: (context, viewModel, child) {
+          return LoadingOverlay(
+            isLoading: viewModel.isLoading,
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text(widget.isEditing ? 'Edit WireGuard Client' : 'New WireGuard Client'),
               ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Name is required';
-                }
-                return null;
-              },
-              enabled: !_isLoading,
-            ),
-            const SizedBox(height: 16),
+              body: Form(
+                key: _formKey,
+                child: ListView(
+                  padding: const EdgeInsets.all(16),
+                  children: [
+                    // Name
+                    FormSectionContainer(
+                      title: 'Basic Information',
+                      children: [
+                        TextFormField(
+                          controller: _nameController,
+                          decoration: const InputDecoration(
+                            labelText: 'Name',
+                            hintText: 'My WireGuard Client',
+                            prefixIcon: Icon(Icons.label),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Name is required';
+                            }
+                            return null;
+                          },
+                          enabled: !viewModel.isLoading,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
 
-            // Server Address
-            TextFormField(
-              controller: _serverAddressController,
-              decoration: const InputDecoration(
-                labelText: 'Server Address',
-                hintText: 'vpn.example.com or 203.0.113.1',
-                prefixIcon: Icon(Icons.dns),
-                helperText: 'IP address or hostname of the WireGuard server',
-              ),
-              validator: _validateServerAddress,
-              enabled: !_isLoading,
-            ),
-            const SizedBox(height: 16),
+                    // Server Connection Settings
+                    FormSectionContainer(
+                      title: 'Server Connection',
+                      children: [
+                        ClientServerSettingsCard(
+                          serverAddressController: _serverAddressController,
+                          serverPortController: _serverPortController,
+                          serverPublicKeyController: _serverPublicKeyController,
+                          isLoading: viewModel.isLoading,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
 
-            // Server Port
-            TextFormField(
-              controller: _serverPortController,
-              decoration: const InputDecoration(
-                labelText: 'Server Port',
-                hintText: '51820',
-                prefixIcon: Icon(Icons.settings_ethernet),
-              ),
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              validator: _validatePort,
-              enabled: !_isLoading,
-            ),
-            const SizedBox(height: 16),
+                    // Client Keys
+                    FormSectionContainer(
+                      title: 'Client Keys',
+                      children: [
+                        KeyPairSection(
+                          publicKeyController: _publicKeyController,
+                          privateKeyController: _privateKeyController,
+                          onGenerateKeys: _generateKeys,
+                          isLoading: viewModel.isLoading,
+                          isGenerating: viewModel.isGeneratingKeys,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
 
-            // Server Public Key
-            TextFormField(
-              controller: _serverPublicKeyController,
-              decoration: const InputDecoration(
-                labelText: 'Server Public Key',
-                prefixIcon: Icon(Icons.vpn_key),
-                helperText: 'Public key of the WireGuard server',
-              ),
-              validator: _validateWireGuardKey,
-              enabled: !_isLoading,
-              maxLines: 2,
-            ),
-            const SizedBox(height: 24),
+                    // Tunnel Addresses
+                    FormSectionContainer(
+                      title: 'Tunnel Addresses',
+                      children: [
+                        ListManagerCard(
+                          title: 'Tunnel Addresses',
+                          items: _tunnelAddresses,
+                          onAdd: _addTunnelAddress,
+                          onRemove: _removeTunnelAddress,
+                          isLoading: viewModel.isLoading,
+                          emptyMessage: 'No tunnel addresses configured',
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
 
-            const Divider(),
-            const Text(
-              'Client Keys',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
+                    // Additional Settings
+                    FormSectionContainer(
+                      title: 'Additional Settings',
+                      children: [
+                        ClientAdditionalSettingsCard(
+                          keepaliveController: _keepaliveController,
+                          pskController: _pskController,
+                          enabled: _enabled,
+                          onEnabledChanged: (value) {
+                            setState(() {
+                              _enabled = value;
+                            });
+                          },
+                          isLoading: viewModel.isLoading,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
 
-            // Public Key
-            TextFormField(
-              controller: _publicKeyController,
-              decoration: const InputDecoration(
-                labelText: 'Public Key',
-                prefixIcon: Icon(Icons.vpn_key),
-                helperText: 'Client public key',
-              ),
-              validator: _validateWireGuardKey,
-              enabled: !_isLoading && !_isGeneratingKeys,
-              maxLines: 2,
-            ),
-            const SizedBox(height: 16),
-
-            // Private Key
-            TextFormField(
-              controller: _privateKeyController,
-              decoration: const InputDecoration(
-                labelText: 'Private Key',
-                prefixIcon: Icon(Icons.lock),
-                helperText: 'Client private key (keep secret)',
-              ),
-              validator: _validateWireGuardKey,
-              enabled: !_isLoading && !_isGeneratingKeys,
-              obscureText: true,
-              maxLines: 1,
-            ),
-            const SizedBox(height: 8),
-
-            // Generate Keys Button
-            ElevatedButton.icon(
-              onPressed: _isLoading || _isGeneratingKeys ? null : _generateKeys,
-              icon: _isGeneratingKeys
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.refresh),
-              label: Text(_isGeneratingKeys ? 'Generating...' : 'Generate Key Pair'),
-            ),
-            const SizedBox(height: 24),
-
-            const Divider(),
-            // Tunnel Addresses
-            const Text(
-              'Tunnel Addresses',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            if (_tunnelAddresses.isEmpty)
-              const Text(
-                'No tunnel addresses configured',
-                style: TextStyle(color: Colors.grey),
-              )
-            else
-              ..._tunnelAddresses.map((address) => Card(
-                    child: ListTile(
-                      title: Text(address),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: _isLoading
-                            ? null
-                            : () {
-                                setState(() {
-                                  _tunnelAddresses.remove(address);
-                                });
-                              },
+                    // Save Button
+                    ElevatedButton(
+                      onPressed: viewModel.isLoading ? null : _saveClient,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: Theme.of(context).primaryColor,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: Text(
+                        widget.isEditing ? 'Update Client' : 'Create Client',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  )),
-            const SizedBox(height: 8),
-            OutlinedButton.icon(
-              onPressed: _isLoading ? null : _addTunnelAddress,
-              icon: const Icon(Icons.add),
-              label: const Text('Add Tunnel Address'),
-            ),
-            const SizedBox(height: 24),
-
-            // Keepalive
-            TextFormField(
-              controller: _keepaliveController,
-              decoration: const InputDecoration(
-                labelText: 'Keepalive Interval (Optional)',
-                hintText: '25',
-                prefixIcon: Icon(Icons.timer),
-                helperText: 'Seconds (0-65535). Recommended: 25 for NAT traversal',
+                  ],
+                ),
               ),
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              validator: _validateKeepalive,
-              enabled: !_isLoading,
             ),
-            const SizedBox(height: 16),
-
-            // Pre-shared Key
-            TextFormField(
-              controller: _pskController,
-              decoration: const InputDecoration(
-                labelText: 'Pre-shared Key (Optional)',
-                prefixIcon: Icon(Icons.security),
-                helperText: 'Additional layer of symmetric encryption',
-              ),
-              obscureText: true,
-              enabled: !_isLoading,
-            ),
-            const SizedBox(height: 16),
-
-            // Enabled Switch
-            SwitchListTile(
-              title: const Text('Enabled'),
-              subtitle: const Text('Client will be active when enabled'),
-              value: _enabled,
-              onChanged: _isLoading
-                  ? null
-                  : (value) {
-                      setState(() {
-                        _enabled = value;
-                      });
-                    },
-            ),
-            const SizedBox(height: 24),
-
-            // Save Button
-            ElevatedButton(
-              onPressed: _isLoading ? null : _saveClient,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                backgroundColor: Theme.of(context).primaryColor,
-                foregroundColor: Colors.white,
-              ),
-              child: _isLoading
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    )
-                  : Text(
-                      widget.isEditing ? 'Update Client' : 'Create Client',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 }
 
-
+// Made with Bob

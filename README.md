@@ -69,6 +69,7 @@ If you find this project useful, consider supporting its development:
         <li><a href="#additional-features">🔄 Additional Features</a></li>
       </ul>
     <li><a href="#security-considerations">🛡️ Security Considerations</a></li>
+    <li><a href="#architecture">🏗️ Architecture</a></li>
     <li><a href="#roadmap">🗺️ Roadmap</a></li>
     <li><a href="#contributing">🤝 Contributing</a></li>
     <li><a href="#troubleshooting">🐛 Troubleshooting</a></li>
@@ -324,6 +325,63 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed build instructions.
 - [x] **Export/import profiles** - Export and import connection profiles as JSON files
 
 See the [open issues](issues-url) for a full list of proposed features (and known issues).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+<a id="architecture"></a>
+## 🏗️ Architecture
+
+This project follows modern Flutter best practices with a clean, maintainable architecture:
+
+### MVVM Pattern
+- **Models**: Data classes with JSON serialization (`lib/models/`)
+- **Views**: UI components and screens (`lib/screens/`, `lib/widgets/`)
+- **ViewModels**: Business logic and state management (`lib/viewmodels/`)
+
+### Key Features
+- ✅ **Modular Design**: Reusable components and services
+- ✅ **Separation of Concerns**: Clear boundaries between UI and business logic
+- ✅ **Base Classes**: `BaseFormViewModel` and `BaseListViewModel` for consistency
+- ✅ **Service Layer**: Organized services following Single Responsibility Principle
+- ✅ **Widget Components**: 42+ reusable UI components
+- ✅ **Type Safety**: Full Dart null-safety support
+
+### Project Structure
+```
+lib/
+├── models/           # Data models with JSON serialization
+├── screens/          # Main screen widgets
+├── viewmodels/       # Business logic and state management
+│   └── base/        # Base ViewModel classes
+├── widgets/          # Reusable UI components
+│   ├── common/      # Shared widgets
+│   ├── login/       # Login-specific widgets
+│   ├── dashboard/   # Dashboard widgets
+│   ├── firewall/    # Firewall management widgets
+│   ├── settings/    # Settings widgets
+│   ├── tailscale/   # Tailscale widgets
+│   ├── vpn/         # VPN widgets
+│   └── wireguard/   # WireGuard widgets
+├── services/         # API and business services
+│   ├── base/        # Base service classes
+│   ├── demo/        # Demo mode services
+│   ├── firewall/    # Firewall services
+│   ├── network/     # Network services
+│   ├── profile/     # Profile management
+│   ├── settings/    # Settings services
+│   ├── system/      # System services
+│   └── vpn/         # VPN services
+└── utils/           # Utility functions and validators
+```
+
+### Code Quality
+- **Static Analysis**: 0 issues with `flutter analyze`
+- **Code Reduction**: ~2,827 lines reduced through refactoring
+- **Maintainability**: Average file size reduced from ~350 to ~250 lines
+- **Documentation**: Comprehensive inline documentation
+
+For detailed information about the architecture and refactoring process, see [REFACTORING_SUMMARY.md](REFACTORING_SUMMARY.md).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

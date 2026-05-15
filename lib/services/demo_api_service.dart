@@ -28,6 +28,7 @@ import '../models/tailscale_status.dart';
 import '../models/tailscale_settings.dart';
 import 'demo_data_service.dart';
 import 'opnsense_api_service.dart';
+import 'demo/demo_api_decorator.dart';
 
 /// Wrapper service that provides demo data when in demo mode
 class DemoApiService {
@@ -49,488 +50,498 @@ class DemoApiService {
   bool get isDemoMode => _isDemoMode;
 
   /// Test connection - always succeeds in demo mode
-  Future<bool> testConnection() async {
-    if (_isDemoMode) {
-      // Simulate network delay
-      await Future.delayed(const Duration(milliseconds: 500));
-      return true;
-    }
-    return _realApiService.testConnection();
-  }
+  Future<bool> testConnection() => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => true,
+        realAction: () => _realApiService.testConnection(),
+        delayMs: 500,
+      );
 
   /// Get system info
-  Future<SystemInfo> getSystemInfo() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 300));
-      return _demoDataService.generateSystemInfo();
-    }
-    return _realApiService.getSystemInfo();
-  }
+  Future<SystemInfo> getSystemInfo() => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _demoDataService.generateSystemInfo(),
+        realAction: () => _realApiService.getSystemInfo(),
+      );
 
   /// Get firewall rules
-  Future<List<FirewallRule>> getFirewallRules() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      return _demoDataService.generateFirewallRules();
-    }
-    return _realApiService.getFirewallRules();
-  }
+  Future<List<FirewallRule>> getFirewallRules() => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _demoDataService.generateFirewallRules(),
+        realAction: () => _realApiService.getFirewallRules(),
+        delayMs: 400,
+      );
 
   /// Get available interfaces
-  Future<Map<String, dynamic>> getAvailableInterfaces() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 200));
-      return _demoDataService.generateAvailableInterfaces();
-    }
-    return _realApiService.getAvailableInterfaces();
-  }
+  Future<Map<String, dynamic>> getAvailableInterfaces() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _demoDataService.generateAvailableInterfaces(),
+        realAction: () => _realApiService.getAvailableInterfaces(),
+        delayMs: 200,
+      );
 
   /// Get firewall rule by UUID
-  Future<FirewallRule?> getFirewallRule(String uuid) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 200));
-      final rules = _demoDataService.generateFirewallRules();
-      try {
-        return rules.firstWhere((rule) => rule.uuid == uuid);
-      } catch (e) {
-        return null;
-      }
-    }
-    return _realApiService.getFirewallRule(uuid);
-  }
+  Future<FirewallRule?> getFirewallRule(String uuid) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          final rules = _demoDataService.generateFirewallRules();
+          try {
+            return rules.firstWhere((rule) => rule.uuid == uuid);
+          } catch (e) {
+            return null;
+          }
+        },
+        realAction: () => _realApiService.getFirewallRule(uuid),
+        delayMs: 200,
+      );
 
   /// Toggle firewall rule
-  Future<void> toggleFirewallRule(String uuid) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 300));
-      _demoDataService.toggleFirewallRuleState(uuid);
-      return;
-    }
-    return _realApiService.toggleFirewallRule(uuid);
-  }
+  Future<void> toggleFirewallRule(String uuid) => DemoApiDecorator.executeVoid(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _demoDataService.toggleFirewallRuleState(uuid),
+        realAction: () => _realApiService.toggleFirewallRule(uuid),
+      );
 
   /// Create a new firewall rule
-  Future<String> createFirewallRule(FirewallRuleRequest request) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 600));
-      // In demo mode, just return a fake UUID
-      return 'demo-rule-${DateTime.now().millisecondsSinceEpoch}';
-    }
-    return _realApiService.createFirewallRule(request);
-  }
+  Future<String> createFirewallRule(FirewallRuleRequest request) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async =>
+            'demo-rule-${DateTime.now().millisecondsSinceEpoch}',
+        realAction: () => _realApiService.createFirewallRule(request),
+        delayMs: 600,
+      );
 
   /// Update an existing firewall rule
-  Future<void> updateFirewallRule(String uuid, FirewallRuleRequest request) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 600));
-      // In demo mode, just simulate success
-      return;
-    }
-    return _realApiService.updateFirewallRule(uuid, request);
-  }
+  Future<void> updateFirewallRule(String uuid, FirewallRuleRequest request) =>
+      DemoApiDecorator.executeVoid(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.updateFirewallRule(uuid, request),
+        delayMs: 600,
+      );
 
   /// Delete firewall rule
-  Future<void> deleteFirewallRule(String uuid) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 300));
-      // In demo mode, we just pretend to delete
-      return;
-    }
-    return _realApiService.deleteFirewallRule(uuid);
-  }
+  Future<void> deleteFirewallRule(String uuid) => DemoApiDecorator.executeVoid(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.deleteFirewallRule(uuid),
+      );
 
   /// Apply firewall changes
-  Future<void> applyFirewallChanges() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 500));
-      return;
-    }
-    return _realApiService.applyFirewallChanges();
-  }
+  Future<void> applyFirewallChanges() => DemoApiDecorator.executeVoid(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.applyFirewallChanges(),
+        delayMs: 500,
+      );
 
   /// Get firewall logs
-  Future<List<dynamic>> getFirewallLogs({int limit = 100}) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      return _demoDataService.generateFirewallLogs(limit: limit);
-    }
-    return _realApiService.getFirewallLogs(limit: limit);
-  }
+  Future<List<dynamic>> getFirewallLogs({int limit = 100}) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async =>
+            _demoDataService.generateFirewallLogs(limit: limit),
+        realAction: () => _realApiService.getFirewallLogs(limit: limit),
+        delayMs: 400,
+      );
 
   /// Get services
-  Future<List<dynamic>> getServices() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 300));
-      final services = _demoDataService.generateServices();
-      return services['services'] as List<dynamic>;
-    }
-    return _realApiService.getServices();
-  }
+  Future<List<dynamic>> getServices() => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          final services = _demoDataService.generateServices();
+          return services['services'] as List<dynamic>;
+        },
+        realAction: () => _realApiService.getServices(),
+      );
 
   /// Get gateways
-  Future<List<dynamic>> getGateways() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 300));
-      return _demoDataService.generateGateways();
-    }
-    return _realApiService.getGateways();
-  }
+  Future<List<dynamic>> getGateways() => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _demoDataService.generateGateways(),
+        realAction: () => _realApiService.getGateways(),
+      );
 
   /// Control service (start/stop/restart)
-  Future<bool> controlService(String serviceName, String action) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 500));
-      if (action == 'start' || action == 'stop') {
-        _demoDataService.toggleServiceState(serviceName);
-      }
-      return true;
-    }
-    return _realApiService.controlService(serviceName, action);
-  }
+  Future<bool> controlService(String serviceName, String action) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          if (action == 'start' || action == 'stop') {
+            _demoDataService.toggleServiceState(serviceName);
+          }
+          return true;
+        },
+        realAction: () => _realApiService.controlService(serviceName, action),
+        delayMs: 500,
+      );
 
   /// Get VPN connections
-  Future<List<VPNConnection>> getVPNConnections() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      return _demoDataService.generateVPNConnections();
-    }
-    return _realApiService.getVPNConnections();
-  }
+  Future<List<VPNConnection>> getVPNConnections() => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _demoDataService.generateVPNConnections(),
+        realAction: () => _realApiService.getVPNConnections(),
+        delayMs: 400,
+      );
 
   /// Toggle VPN connection
-  Future<bool> toggleVPNConnection(String id, String type, bool currentStatus) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 500));
-      _demoDataService.toggleVPNConnectionState(id);
-      return true;
-    }
-    return _realApiService.toggleVPNConnection(id, type, currentStatus);
-  }
+  Future<bool> toggleVPNConnection(
+          String id, String type, bool currentStatus) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          _demoDataService.toggleVPNConnectionState(id);
+          return true;
+        },
+        realAction: () =>
+            _realApiService.toggleVPNConnection(id, type, currentStatus),
+        delayMs: 500,
+      );
 
   /// Restart VPN service
-  Future<bool> restartVPNService(String type) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 800));
-      return true;
-    }
-    return _realApiService.restartVPNService(type);
-  }
+  Future<bool> restartVPNService(String type) => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => true,
+        realAction: () => _realApiService.restartVPNService(type),
+        delayMs: 800,
+      );
 
   /// Get VPN connection details
-  Future<VPNConnection?> getVPNConnectionDetails(String id, String type) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 300));
-      final connections = _demoDataService.generateVPNConnections();
-      try {
-        return connections.firstWhere(
-          (conn) => conn.id == id && conn.type.toLowerCase() == type.toLowerCase(),
-        );
-      } catch (e) {
-        return null;
-      }
-    }
-    return _realApiService.getVPNConnectionDetails(id, type);
-  }
+  Future<VPNConnection?> getVPNConnectionDetails(String id, String type) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          final connections = _demoDataService.generateVPNConnections();
+          try {
+            return connections.firstWhere(
+              (conn) =>
+                  conn.id == id && conn.type.toLowerCase() == type.toLowerCase(),
+            );
+          } catch (e) {
+            return null;
+          }
+        },
+        realAction: () => _realApiService.getVPNConnectionDetails(id, type),
+      );
 
   /// Get Tailscale connection status
-  Future<VPNConnection?> getTailscaleStatus() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 300));
-      final connections = _demoDataService.generateVPNConnections();
-      try {
-        return connections.firstWhere(
-          (conn) => conn.type.toLowerCase() == 'tailscale',
-        );
-      } catch (e) {
-        return null;
-      }
-    }
-    return _realApiService.getTailscaleStatus();
-  }
+  Future<VPNConnection?> getTailscaleStatus() => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          final connections = _demoDataService.generateVPNConnections();
+          try {
+            return connections.firstWhere(
+              (conn) => conn.type.toLowerCase() == 'tailscale',
+            );
+          } catch (e) {
+            return null;
+          }
+        },
+        realAction: () => _realApiService.getTailscaleStatus(),
+      );
 
   /// Get detailed Tailscale status and configuration
-  Future<TailscaleStatus> getTailscaleDetails() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      return _demoDataService.generateTailscaleStatus();
-    }
-    return _realApiService.getTailscaleDetails();
-  }
+  Future<TailscaleStatus> getTailscaleDetails() => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _demoDataService.generateTailscaleStatus(),
+        realAction: () => _realApiService.getTailscaleDetails(),
+        delayMs: 400,
+      );
 
   // ==================== WireGuard VPN ====================
 
   /// Get WireGuard clients
-  Future<List<WireGuardClient>> getWireGuardClients() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      final demoData = _demoDataService.generateWireGuardClients();
-      return demoData.map((data) => WireGuardClient.fromJson(data)).toList();
-    }
-    return _realApiService.getWireGuardClients();
-  }
+  Future<List<WireGuardClient>> getWireGuardClients() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          final demoData = _demoDataService.generateWireGuardClients();
+          return demoData.map((data) => WireGuardClient.fromJson(data)).toList();
+        },
+        realAction: () => _realApiService.getWireGuardClients(),
+        delayMs: 400,
+      );
 
   /// Get WireGuard servers
-  Future<List<WireGuardServer>> getWireGuardServers() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      final demoData = _demoDataService.generateWireGuardServers();
-      return demoData.map((data) => WireGuardServer.fromJson(data)).toList();
-    }
-    return _realApiService.getWireGuardServers();
-  }
+  Future<List<WireGuardServer>> getWireGuardServers() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          final demoData = _demoDataService.generateWireGuardServers();
+          return demoData.map((data) => WireGuardServer.fromJson(data)).toList();
+        },
+        realAction: () => _realApiService.getWireGuardServers(),
+        delayMs: 400,
+      );
 
   // ==================== IPsec VPN ====================
 
   /// Get IPsec connections
-  Future<List<Map<String, dynamic>>> getIPsecConnections() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      return _demoDataService.generateIPsecConnections();
-    }
-    return _realApiService.getIPsecConnections();
-  }
+  Future<List<Map<String, dynamic>>> getIPsecConnections() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _demoDataService.generateIPsecConnections(),
+        realAction: () => _realApiService.getIPsecConnections(),
+        delayMs: 400,
+      );
 
   /// Get IPsec sessions (Phase 1)
-  Future<List<Map<String, dynamic>>> getIPsecSessionsPhase1() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      return _demoDataService.generateIPsecSessionsPhase1();
-    }
-    return _realApiService.getIPsecSessionsPhase1();
-  }
+  Future<List<Map<String, dynamic>>> getIPsecSessionsPhase1() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _demoDataService.generateIPsecSessionsPhase1(),
+        realAction: () => _realApiService.getIPsecSessionsPhase1(),
+        delayMs: 400,
+      );
 
   /// Get network hosts with bandwidth usage
-  Future<List<NetworkHost>> getNetworkHosts({String interface = 'lan'}) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      return _demoDataService.generateNetworkHosts();
-    }
-    return _realApiService.getNetworkHosts(interface: interface);
-  }
+  Future<List<NetworkHost>> getNetworkHosts({String interface = 'lan'}) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _demoDataService.generateNetworkHosts(),
+        realAction: () => _realApiService.getNetworkHosts(interface: interface),
+        delayMs: 400,
+      );
 
   /// Get DHCP leases
-  Future<List<Map<String, dynamic>>> getDhcpLeases() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      return _demoDataService.generateDhcpLeases();
-    }
-    return _realApiService.getDhcpLeases();
-  }
+  Future<List<Map<String, dynamic>>> getDhcpLeases() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _demoDataService.generateDhcpLeases(),
+        realAction: () => _realApiService.getDhcpLeases(),
+        delayMs: 400,
+      );
 
   /// Get firewall aliases
-  Future<List<FirewallAlias>> getFirewallAliases() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      return _demoDataService.generateFirewallAliases();
-    }
-    return _realApiService.getFirewallAliases();
-  }
+  Future<List<FirewallAlias>> getFirewallAliases() => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _demoDataService.generateFirewallAliases(),
+        realAction: () => _realApiService.getFirewallAliases(),
+        delayMs: 400,
+      );
 
   /// Get firewall alias by UUID
-  Future<FirewallAlias?> getFirewallAlias(String uuid) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 200));
-      final aliases = _demoDataService.generateFirewallAliases();
-      try {
-        return aliases.firstWhere((alias) => alias.uuid == uuid);
-      } catch (e) {
-        return null;
-      }
-    }
-    return _realApiService.getFirewallAlias(uuid);
-  }
+  Future<FirewallAlias?> getFirewallAlias(String uuid) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          final aliases = _demoDataService.generateFirewallAliases();
+          try {
+            return aliases.firstWhere((alias) => alias.uuid == uuid);
+          } catch (e) {
+            return null;
+          }
+        },
+        realAction: () => _realApiService.getFirewallAlias(uuid),
+        delayMs: 200,
+      );
 
   /// Toggle firewall alias
-  Future<void> toggleFirewallAlias(String uuid) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 300));
-      _demoDataService.toggleFirewallAliasState(uuid);
-      return;
-    }
-    return _realApiService.toggleFirewallAlias(uuid);
-  }
+  Future<void> toggleFirewallAlias(String uuid) => DemoApiDecorator.executeVoid(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _demoDataService.toggleFirewallAliasState(uuid),
+        realAction: () => _realApiService.toggleFirewallAlias(uuid),
+      );
 
   /// Delete firewall alias
-  Future<void> deleteFirewallAlias(String uuid) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 300));
-      _demoDataService.deleteFirewallAlias(uuid);
-      return;
-    }
-    return _realApiService.deleteFirewallAlias(uuid);
-  }
+  Future<void> deleteFirewallAlias(String uuid) => DemoApiDecorator.executeVoid(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _demoDataService.deleteFirewallAlias(uuid),
+        realAction: () => _realApiService.deleteFirewallAlias(uuid),
+      );
 
   /// Create firewall alias
-  Future<Map<String, dynamic>> createFirewallAlias(FirewallAliasRequest request) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      return {'result': 'saved', 'uuid': 'demo-alias-${_demoDataService.getNextAliasId()}'};
-    }
-    return _realApiService.createFirewallAlias(request);
-  }
+  Future<Map<String, dynamic>> createFirewallAlias(
+          FirewallAliasRequest request) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {
+          'result': 'saved',
+          'uuid': 'demo-alias-${_demoDataService.getNextAliasId()}'
+        },
+        realAction: () => _realApiService.createFirewallAlias(request),
+        delayMs: 400,
+      );
 
   /// Update firewall alias
-  Future<Map<String, dynamic>> updateFirewallAlias(String uuid, FirewallAliasRequest request) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      return {'result': 'saved'};
-    }
-    return _realApiService.updateFirewallAlias(uuid, request);
-  }
+  Future<Map<String, dynamic>> updateFirewallAlias(
+          String uuid, FirewallAliasRequest request) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'result': 'saved'},
+        realAction: () => _realApiService.updateFirewallAlias(uuid, request),
+        delayMs: 400,
+      );
 
   /// Reboot system
-  Future<void> rebootSystem() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 500));
-      throw ApiException('Cannot reboot in demo mode', 403);
-    }
-    return _realApiService.rebootSystem();
-  }
+  Future<void> rebootSystem() => DemoApiDecorator.executeVoid(
+        isDemoMode: _isDemoMode,
+        demoAction: () async =>
+            throw ApiException('Cannot reboot in demo mode', 403),
+        realAction: () => _realApiService.rebootSystem(),
+        delayMs: 500,
+      );
+
   /// Control Tailscale service (start, stop, restart)
-  Future<bool> controlTailscaleService(String action) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 500));
-      _demoDataService.updateTailscaleServiceState(action);
-      return true;
-    }
-    return _realApiService.controlTailscaleService(action);
-  }
+  Future<bool> controlTailscaleService(String action) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          _demoDataService.updateTailscaleServiceState(action);
+          return true;
+        },
+        realAction: () => _realApiService.controlTailscaleService(action),
+        delayMs: 500,
+      );
 
   /// Update Tailscale settings
-  Future<bool> updateTailscaleSettings(Map<String, dynamic> settings) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 500));
-      _demoDataService.updateTailscaleSettings(settings);
-      return true;
-    }
-    return _realApiService.updateTailscaleSettings(settings);
-  }
+  Future<bool> updateTailscaleSettings(Map<String, dynamic> settings) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          _demoDataService.updateTailscaleSettings(settings);
+          return true;
+        },
+        realAction: () => _realApiService.updateTailscaleSettings(settings),
+        delayMs: 500,
+      );
 
   /// Get Tailscale authentication settings
-  Future<Map<String, String?>> getTailscaleAuthentication() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 300));
-      return {
-        'loginServer': 'https://login.tailscale.com',
-        'preAuthKey': 'tskey-auth-demo-XXXXXXXXXXXXXXXX',
-      };
-    }
-    return _realApiService.getTailscaleAuthentication();
-  }
+  Future<Map<String, String?>> getTailscaleAuthentication() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {
+          'loginServer': 'https://login.tailscale.com',
+          'preAuthKey': 'tskey-auth-demo-XXXXXXXXXXXXXXXX',
+        },
+        realAction: () => _realApiService.getTailscaleAuthentication(),
+      );
 
   /// Set Tailscale authentication settings
-  Future<bool> setTailscaleAuthentication(String loginServer, String preAuthKey) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 500));
-      // In demo mode, just simulate success
-      return true;
-    }
-    return _realApiService.setTailscaleAuthentication(loginServer, preAuthKey);
-  }
+  Future<bool> setTailscaleAuthentication(
+          String loginServer, String preAuthKey) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => true,
+        realAction: () =>
+            _realApiService.setTailscaleAuthentication(loginServer, preAuthKey),
+        delayMs: 500,
+      );
 
   /// Logout from Tailscale
-  Future<bool> logoutTailscale() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 500));
-      _demoDataService.logoutTailscale();
-      return true;
-    }
-    return _realApiService.logoutTailscale();
-  }
+  Future<bool> logoutTailscale() => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          _demoDataService.logoutTailscale();
+          return true;
+        },
+        realAction: () => _realApiService.logoutTailscale(),
+        delayMs: 500,
+      );
 
   // ==================== Tailscale Settings Management ====================
 
   /// Get Tailscale settings
-  Future<TailscaleSettingsResponse> getTailscaleSettings() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 300));
-      return _demoDataService.generateTailscaleSettings();
-    }
-    return _realApiService.getTailscaleSettings();
-  }
+  Future<TailscaleSettingsResponse> getTailscaleSettings() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _demoDataService.generateTailscaleSettings(),
+        realAction: () => _realApiService.getTailscaleSettings(),
+      );
 
   /// Set Tailscale settings
-  Future<Map<String, dynamic>> setTailscaleSettings(TailscaleSettings settings) async {
-    debugPrint('🌐 [DemoApiService] setTailscaleSettings called, isDemoMode: $_isDemoMode');
-    
-    if (_isDemoMode) {
-      try {
-        debugPrint('⏳ [DemoApiService] Simulating API delay...');
-        await Future.delayed(const Duration(milliseconds: 500));
-        
-        debugPrint('🔄 [DemoApiService] Updating demo data...');
-        _demoDataService.updateTailscaleSettingsData(settings);
-        
-        debugPrint('✅ [DemoApiService] Returning success response');
-        return {'result': 'saved'};
-      } catch (e, stackTrace) {
-        debugPrint('❌ [DemoApiService] Error in demo mode: $e');
-        debugPrint('❌ [DemoApiService] Stack trace: $stackTrace');
-        return {
-          'result': 'failed',
-          'message': e.toString(),
-        };
-      }
-    }
-    return _realApiService.setTailscaleSettings(settings);
+  Future<Map<String, dynamic>> setTailscaleSettings(
+      TailscaleSettings settings) async {
+    debugPrint(
+        '🌐 [DemoApiService] setTailscaleSettings called, isDemoMode: $_isDemoMode');
+
+    return DemoApiDecorator.execute(
+      isDemoMode: _isDemoMode,
+      demoAction: () async {
+        try {
+          debugPrint('🔄 [DemoApiService] Updating demo data...');
+          _demoDataService.updateTailscaleSettingsData(settings);
+          debugPrint('✅ [DemoApiService] Returning success response');
+          return {'result': 'saved'};
+        } catch (e, stackTrace) {
+          debugPrint('❌ [DemoApiService] Error in demo mode: $e');
+          debugPrint('❌ [DemoApiService] Stack trace: $stackTrace');
+          return {
+            'result': 'failed',
+            'message': e.toString(),
+          };
+        }
+      },
+      realAction: () => _realApiService.setTailscaleSettings(settings),
+      delayMs: 500,
+    );
   }
 
   /// Search Tailscale subnets
-  Future<TailscaleSubnetSearchResponse> searchTailscaleSubnets() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 300));
-      return _demoDataService.generateTailscaleSubnetSearch();
-    }
-    return _realApiService.searchTailscaleSubnets();
-  }
+  Future<TailscaleSubnetSearchResponse> searchTailscaleSubnets() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async =>
+            _demoDataService.generateTailscaleSubnetSearch(),
+        realAction: () => _realApiService.searchTailscaleSubnets(),
+      );
 
   /// Get a specific Tailscale subnet by UUID
-  Future<TailscaleSubnetResponse> getTailscaleSubnet(String uuid) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 200));
-      return _demoDataService.generateTailscaleSubnet(uuid);
-    }
-    return _realApiService.getTailscaleSubnet(uuid);
-  }
+  Future<TailscaleSubnetResponse> getTailscaleSubnet(String uuid) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _demoDataService.generateTailscaleSubnet(uuid),
+        realAction: () => _realApiService.getTailscaleSubnet(uuid),
+        delayMs: 200,
+      );
 
   /// Add a new Tailscale subnet
-  Future<Map<String, dynamic>> addTailscaleSubnet(TailscaleSubnet subnet) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      final uuid = _demoDataService.addTailscaleSubnet(subnet);
-      return {'result': 'saved', 'uuid': uuid};
-    }
-    return _realApiService.addTailscaleSubnet(subnet);
-  }
+  Future<Map<String, dynamic>> addTailscaleSubnet(TailscaleSubnet subnet) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          final uuid = _demoDataService.addTailscaleSubnet(subnet);
+          return {'result': 'saved', 'uuid': uuid};
+        },
+        realAction: () => _realApiService.addTailscaleSubnet(subnet),
+        delayMs: 400,
+      );
 
   /// Update an existing Tailscale subnet
-  Future<Map<String, dynamic>> setTailscaleSubnet(String uuid, TailscaleSubnet subnet) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      _demoDataService.updateTailscaleSubnet(uuid, subnet);
-      return {'result': 'saved'};
-    }
-    return _realApiService.setTailscaleSubnet(uuid, subnet);
-  }
+  Future<Map<String, dynamic>> setTailscaleSubnet(
+          String uuid, TailscaleSubnet subnet) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          _demoDataService.updateTailscaleSubnet(uuid, subnet);
+          return {'result': 'saved'};
+        },
+        realAction: () => _realApiService.setTailscaleSubnet(uuid, subnet),
+        delayMs: 400,
+      );
 
   /// Delete a Tailscale subnet
-  Future<Map<String, dynamic>> deleteTailscaleSubnet(String uuid) async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 300));
-      _demoDataService.deleteTailscaleSubnet(uuid);
-      return {'result': 'deleted'};
-    }
-    return _realApiService.deleteTailscaleSubnet(uuid);
-  }
+  Future<Map<String, dynamic>> deleteTailscaleSubnet(String uuid) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          _demoDataService.deleteTailscaleSubnet(uuid);
+          return {'result': 'deleted'};
+        },
+        realAction: () => _realApiService.deleteTailscaleSubnet(uuid),
+      );
 
   /// Reload Tailscale settings
-  Future<Map<String, dynamic>> reloadTailscaleSettings() async {
-    if (_isDemoMode) {
-      await Future.delayed(const Duration(milliseconds: 600));
-      return {'status': 'ok'};
-    }
-    return _realApiService.reloadTailscaleSettings();
-  }
+  Future<Map<String, dynamic>> reloadTailscaleSettings() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'status': 'ok'},
+        realAction: () => _realApiService.reloadTailscaleSettings(),
+        delayMs: 600,
+      );
 
   /// Clear service state
   void clear() {
@@ -538,4 +549,5 @@ class DemoApiService {
     _realApiService.clear();
   }
 }
+
 

@@ -1,0 +1,117 @@
+/*
+ * OPNsense Manager - Flutter application for managing OPNsense firewalls
+ * Copyright (C) 2026 OPNsense Manager
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
+
+/// Widget for login form action buttons
+class LoginFormActions extends StatelessWidget {
+  final bool isEditing;
+  final bool isLoading;
+  final VoidCallback onSave;
+  final VoidCallback onConnect;
+  final VoidCallback? onImport;
+
+  const LoginFormActions({
+    super.key,
+    required this.isEditing,
+    required this.isLoading,
+    required this.onSave,
+    required this.onConnect,
+    this.onImport,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Save Button (only show when editing)
+        if (isEditing) ...[
+          OutlinedButton(
+            onPressed: isLoading ? null : onSave,
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              side: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+            ),
+            child: isLoading
+                ? const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Text(
+                    l10n.save,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+          ),
+          const SizedBox(height: 12),
+        ],
+
+        // Connect Button
+        ElevatedButton(
+          onPressed: isLoading ? null : onConnect,
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            backgroundColor: Theme.of(context).primaryColor,
+            foregroundColor: Colors.white,
+          ),
+          child: isLoading
+              ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                )
+              : Text(
+                  isEditing ? 'Save & Connect' : l10n.connect,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+        ),
+        const SizedBox(height: 16),
+
+        // Import Profiles button (only show when not editing)
+        if (!isEditing && onImport != null)
+          OutlinedButton.icon(
+            onPressed: isLoading ? null : onImport,
+            icon: const Icon(Icons.upload_file),
+            label: Text(l10n.importProfiles),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              side: BorderSide(
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
+                width: 1,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+// Made with Bob
