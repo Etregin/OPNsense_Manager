@@ -182,18 +182,83 @@ class DemoFirewallDataGenerator {
     final protocols = ['tcp', 'udp', 'icmp'];
     final sources = ['192.168.1.100', '192.168.1.101', '203.0.113.50', '198.51.100.75', '10.0.0.25'];
     final destinations = ['192.168.1.1', '8.8.8.8', '1.1.1.1', '192.168.1.50'];
+    
+    // Define rule mappings for realistic log entries
+    final ruleMapping = {
+      'pass_wan_443': {
+        'rule_id': 'demo-rule-1',
+        'rule_description': 'Allow HTTPS from WAN',
+        'interface': 'wan',
+        'action': 'pass',
+        'protocol': 'tcp',
+        'destPort': 443,
+      },
+      'pass_lan_any': {
+        'rule_id': 'demo-rule-2',
+        'rule_description': 'Allow LAN to any',
+        'interface': 'lan',
+        'action': 'pass',
+        'protocol': 'tcp',
+      },
+      'block_wan_22': {
+        'rule_id': 'demo-rule-3',
+        'rule_description': 'Block SSH from WAN',
+        'interface': 'wan',
+        'action': 'block',
+        'protocol': 'tcp',
+        'destPort': 22,
+      },
+      'pass_wan_80': {
+        'rule_id': 'demo-rule-4',
+        'rule_description': 'Allow HTTP from WAN',
+        'interface': 'wan',
+        'action': 'pass',
+        'protocol': 'tcp',
+        'destPort': 80,
+      },
+      'default_block': {
+        'rule_id': 'default-block',
+        'rule_description': 'Default deny rule',
+        'action': 'block',
+      },
+    };
 
     for (int i = 0; i < limit; i++) {
       final timestamp = DateTime.now().subtract(Duration(minutes: i * 2));
+      final action = actions[_random.nextInt(actions.length)];
+      final interface = interfaces[_random.nextInt(interfaces.length)];
+      final protocol = protocols[_random.nextInt(protocols.length)];
+      final destPort = [80, 443, 22, 53, 123][_random.nextInt(5)];
+      
+      // Select appropriate rule based on action, interface, and port
+      Map<String, dynamic>? matchedRule;
+      if (action == 'pass' && interface == 'wan' && destPort == 443) {
+        matchedRule = ruleMapping['pass_wan_443'];
+      } else if (action == 'pass' && interface == 'wan' && destPort == 80) {
+        matchedRule = ruleMapping['pass_wan_80'];
+      } else if (action == 'block' && interface == 'wan' && destPort == 22) {
+        matchedRule = ruleMapping['block_wan_22'];
+      } else if (action == 'pass' && interface == 'lan') {
+        matchedRule = ruleMapping['pass_lan_any'];
+      } else {
+        matchedRule = ruleMapping['default_block'];
+      }
+      
       logs.add({
         'timestamp': timestamp.toIso8601String(),
-        'action': actions[_random.nextInt(actions.length)],
-        'interface': interfaces[_random.nextInt(interfaces.length)],
-        'protocol': protocols[_random.nextInt(protocols.length)],
-        'source': sources[_random.nextInt(sources.length)],
-        'destination': destinations[_random.nextInt(destinations.length)],
-        'sourcePort': 1024 + _random.nextInt(64000),
-        'destinationPort': [80, 443, 22, 53, 123][_random.nextInt(5)],
+        'action': action,
+        'interface': interface,
+        'protocol': protocol,
+        'src': sources[_random.nextInt(sources.length)],
+        'dst': destinations[_random.nextInt(destinations.length)],
+        'srcport': 1024 + _random.nextInt(64000),
+        'dstport': destPort,
+        'rule_id': matchedRule?['rule_id'] ?? '',
+        'rule_description': matchedRule?['rule_description'] ?? '',
+        'label': matchedRule?['rule_description'] ?? '',
+        'direction': _random.nextBool() ? 'in' : 'out',
+        'length': 40 + _random.nextInt(1460),
+        'tcpflags': protocol == 'tcp' ? ['S', 'A', 'SA', 'F', 'R'][_random.nextInt(5)] : '',
       });
     }
 
