@@ -43,7 +43,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     _loadSystemInfo();
   }
 
@@ -83,23 +83,14 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
         title: Text(l10n.settings),
         bottom: TabBar(
           controller: _tabController,
-          isScrollable: true,
           tabs: [
             Tab(
               text: l10n.general,
               icon: const Icon(Icons.settings),
             ),
             Tab(
-              text: l10n.security,
-              icon: const Icon(Icons.security),
-            ),
-            Tab(
               text: l10n.profiles,
               icon: const Icon(Icons.dns),
-            ),
-            const Tab(
-              text: 'Import/Export',
-              icon: Icon(Icons.import_export),
             ),
           ],
         ),
@@ -111,10 +102,8 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
       body: TabBarView(
         controller: _tabController,
         children: [
-          const GeneralSettingsScreen(),
-          const SecuritySettingsScreen(),
-          ProfileManagementScreen(key: ValueKey(_profilesTabIndex)),
-          ProfileImportExportScreen(
+          _GeneralAndSecurityTab(),
+          _ProfilesTab(
             key: ValueKey(_profilesTabIndex),
             onProfilesChanged: _onProfilesChanged,
           ),
@@ -124,4 +113,59 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
   }
 }
 
+/// Combined General and Security settings tab
+class _GeneralAndSecurityTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const GeneralSettingsScreen(),
+          const SizedBox(height: 16),
+          const SecuritySettingsScreen(),
+        ],
+      ),
+    );
+  }
+}
 
+/// Combined Profiles and Import/Export tab
+class _ProfilesTab extends StatelessWidget {
+  final VoidCallback onProfilesChanged;
+
+  const _ProfilesTab({
+    super.key,
+    required this.onProfilesChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Column(
+        children: [
+          TabBar(
+            labelColor: Theme.of(context).primaryColor,
+            unselectedLabelColor: Colors.grey,
+            tabs: const [
+              Tab(text: 'Manage Profiles'),
+              Tab(text: 'Import/Export'),
+            ],
+          ),
+          Expanded(
+            child: TabBarView(
+              children: [
+                ProfileManagementScreen(),
+                ProfileImportExportScreen(
+                  onProfilesChanged: onProfilesChanged,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Made with Bob

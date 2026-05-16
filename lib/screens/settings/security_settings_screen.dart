@@ -399,6 +399,8 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
     final l10n = AppLocalizations.of(context)!;
     
     return ListView(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.all(AppConstants.standardPadding),
       children: [
         SettingsSection(

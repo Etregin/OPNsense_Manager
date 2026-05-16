@@ -75,6 +75,8 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
     final l10n = AppLocalizations.of(context)!;
     
     return ListView(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.all(AppConstants.standardPadding),
       children: [
         SettingsSection(
