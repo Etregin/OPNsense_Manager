@@ -53,7 +53,7 @@ class LogDetailSheet extends StatelessWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -302,7 +302,7 @@ class LogDetailSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (icon != null) ...[
-            Icon(icon, size: 18, color: Colors.grey[600]),
+            Icon(icon, size: 18, color: Theme.of(context).colorScheme.onSurfaceVariant),
             const SizedBox(width: 8),
           ],
           Expanded(
@@ -311,7 +311,7 @@ class LogDetailSheet extends StatelessWidget {
               label,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                color: Colors.grey[700],
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ),
@@ -323,7 +323,7 @@ class LogDetailSheet extends StatelessWidget {
                   child: Text(
                     value,
                     style: TextStyle(
-                      color: valueColor ?? Colors.black87,
+                      color: valueColor ?? Theme.of(context).colorScheme.onSurface,
                       fontWeight: valueColor != null ? FontWeight.bold : FontWeight.normal,
                     ),
                   ),

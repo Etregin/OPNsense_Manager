@@ -434,7 +434,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
             '${_logs.length} ${l10n.entries}',
             style: TextStyle(
               fontSize: 12,
-              color: Colors.grey[600],
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ],
@@ -471,7 +471,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
               child: Text(
                 _errorMessage!,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey[600]),
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
             ),
             const SizedBox(height: 24),
@@ -499,13 +499,13 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
             const SizedBox(height: 16),
             Text(
               l10n.noLogsAvailable,
-              style: TextStyle(color: Colors.grey[600]),
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: 8),
             Text(
               l10n.logsWillAppear,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+              style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
             ),
           ],
         ),
@@ -597,14 +597,14 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
               if (log.ruleDescription.isNotEmpty) ...[
                 Row(
                   children: [
-                    Icon(Icons.rule, size: 12, color: Colors.blue[700]),
+                    Icon(Icons.rule, size: 12, color: Theme.of(context).colorScheme.primary),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
                         log.ruleDescription,
                         style: TextStyle(
                           fontSize: 11,
-                          color: Colors.blue[700],
+                          color: Theme.of(context).colorScheme.primary,
                           fontWeight: FontWeight.w500,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -619,7 +619,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
                   final l10n = AppLocalizations.of(context)!;
                   return Text(
                     '${l10n.protocol}: ${log.protocol} | ${l10n.interface}: ${log.interface}',
-                    style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                    style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant),
                   );
                 }
               ),
@@ -629,7 +629,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
                     final l10n = AppLocalizations.of(context)!;
                     return Text(
                       '${l10n.reason}: ${log.reason}',
-                      style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                      style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant),
                     );
                   }
                 ),
@@ -641,14 +641,14 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
             children: [
               Text(
                 log.timestamp,
-                style: TextStyle(fontSize: 10, color: Colors.grey[500]),
+                style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
               ),
               if (!_isSelectionMode) ...[
                 const SizedBox(height: 4),
                 Icon(
                   Icons.info_outline,
                   size: 16,
-                  color: Colors.grey[400],
+                  color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
                 ),
               ],
             ],

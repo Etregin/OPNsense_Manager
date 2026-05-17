@@ -886,6 +886,9 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
               child: Text(
                 host.hostname,
                 overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
               ),
             ),
           ],
@@ -919,6 +922,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                   'Bandwidth History',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                 ),
                 const SizedBox(height: 12),
@@ -940,10 +944,15 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
               Navigator.of(context).pop();
               _blockHost(host);
             },
-            icon: const Icon(Icons.block, color: Colors.red),
+            icon: Icon(
+              Icons.block,
+              color: Theme.of(context).colorScheme.error,
+            ),
             label: Text(
               l10n.blockHost,
-              style: const TextStyle(color: Colors.red),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.error,
+              ),
             ),
           ),
         ],
@@ -963,15 +972,16 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
               label,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.grey[700],
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: 'monospace',
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ),
@@ -989,13 +999,24 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
       builder: (context) => AlertDialog(
         title: Row(
           children: [
-            const Icon(Icons.block, color: Colors.red),
+            Icon(
+              Icons.block,
+              color: Theme.of(context).colorScheme.error,
+            ),
             const SizedBox(width: 8),
-            Text(l10n.blockHost),
+            Text(
+              l10n.blockHost,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
           ],
         ),
         content: Text(
           l10n.blockHostConfirmation(host.hostname, host.address),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
         ),
         actions: [
           TextButton(
@@ -1005,8 +1026,8 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
             ),
             child: Text(l10n.blockHost),
           ),
@@ -1050,10 +1071,10 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(l10n.hostBlocked),
-            backgroundColor: Colors.green,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             action: SnackBarAction(
               label: l10n.ok,
-              textColor: Colors.white,
+              textColor: Theme.of(context).colorScheme.onPrimary,
               onPressed: () {},
             ),
           ),
@@ -1064,7 +1085,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('${l10n.failedToBlockHost}: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
             duration: const Duration(seconds: 4),
           ),
         );
