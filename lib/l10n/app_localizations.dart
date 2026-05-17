@@ -374,6 +374,90 @@ abstract class AppLocalizations {
   /// **'Connection failed. Check console logs for details.\n\nCommon issues:\n• Device not on same network as OPNsense\n• Wrong IP address or port\n• Firewall blocking connection\n• Invalid API credentials'**
   String get connectionFailed;
 
+  /// Message shown when testing a connection endpoint
+  ///
+  /// In en, this message translates to:
+  /// **'Testing connection {current} of {total}: {endpoint}'**
+  String testingConnection(String current, String total, String endpoint);
+
+  /// Message shown when connection is successful
+  ///
+  /// In en, this message translates to:
+  /// **'Connected successfully via: {endpoint}'**
+  String connectedSuccessfullyVia(String endpoint);
+
+  /// Message shown when verifying a connection
+  ///
+  /// In en, this message translates to:
+  /// **'Verifying connection to {endpoint}...'**
+  String verifyingConnection(String endpoint);
+
+  /// No description provided for @unableToConnectToAnyEndpoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to connect to any configured endpoints. Please check your network settings and try again.'**
+  String get unableToConnectToAnyEndpoint;
+
+  /// No description provided for @testProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Profile'**
+  String get testProfile;
+
+  /// No description provided for @testConnections.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Connections'**
+  String get testConnections;
+
+  /// No description provided for @testingAllConnections.
+  ///
+  /// In en, this message translates to:
+  /// **'Testing all connection points...'**
+  String get testingAllConnections;
+
+  /// No description provided for @connectionTestResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Test Results'**
+  String get connectionTestResults;
+
+  /// No description provided for @allConnectionsSuccessful.
+  ///
+  /// In en, this message translates to:
+  /// **'All connections tested successfully'**
+  String get allConnectionsSuccessful;
+
+  /// No description provided for @someConnectionsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Some connections failed'**
+  String get someConnectionsFailed;
+
+  /// No description provided for @saveWithoutTesting.
+  ///
+  /// In en, this message translates to:
+  /// **'Save without testing'**
+  String get saveWithoutTesting;
+
+  /// No description provided for @saveAndConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Save & Connect'**
+  String get saveAndConnect;
+
+  /// No description provided for @profileSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile saved successfully'**
+  String get profileSaved;
+
+  /// No description provided for @savingProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving profile...'**
+  String get savingProfile;
+
   /// No description provided for @profiles.
   ///
   /// In en, this message translates to:
@@ -1718,12 +1802,6 @@ abstract class AppLocalizations {
   /// **'Rule action failed'**
   String get ruleActionFailed;
 
-  /// No description provided for @profileSaved.
-  ///
-  /// In en, this message translates to:
-  /// **'Profile saved successfully'**
-  String get profileSaved;
-
   /// No description provided for @profileDeleted.
   ///
   /// In en, this message translates to:
@@ -2309,7 +2387,7 @@ abstract class AppLocalizations {
   /// No description provided for @switchProfileConfirmation.
   ///
   /// In en, this message translates to:
-  /// **'Switch profile?'**
+  /// **'Are you sure you want to switch profiles? You will be returned to the profile selection screen.'**
   String get switchProfileConfirmation;
 
   /// No description provided for @rebootFailedWithError.

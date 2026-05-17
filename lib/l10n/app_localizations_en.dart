@@ -145,6 +145,55 @@ class AppLocalizationsEn extends AppLocalizations {
       'Connection failed. Check console logs for details.\n\nCommon issues:\n• Device not on same network as OPNsense\n• Wrong IP address or port\n• Firewall blocking connection\n• Invalid API credentials';
 
   @override
+  String testingConnection(String current, String total, String endpoint) {
+    return 'Testing connection $current of $total: $endpoint';
+  }
+
+  @override
+  String connectedSuccessfullyVia(String endpoint) {
+    return 'Connected successfully via: $endpoint';
+  }
+
+  @override
+  String verifyingConnection(String endpoint) {
+    return 'Verifying connection to $endpoint...';
+  }
+
+  @override
+  String get unableToConnectToAnyEndpoint =>
+      'Unable to connect to any configured endpoints. Please check your network settings and try again.';
+
+  @override
+  String get testProfile => 'Test Profile';
+
+  @override
+  String get testConnections => 'Test Connections';
+
+  @override
+  String get testingAllConnections => 'Testing all connection points...';
+
+  @override
+  String get connectionTestResults => 'Connection Test Results';
+
+  @override
+  String get allConnectionsSuccessful => 'All connections tested successfully';
+
+  @override
+  String get someConnectionsFailed => 'Some connections failed';
+
+  @override
+  String get saveWithoutTesting => 'Save without testing';
+
+  @override
+  String get saveAndConnect => 'Save & Connect';
+
+  @override
+  String get profileSaved => 'Profile saved successfully';
+
+  @override
+  String get savingProfile => 'Saving profile...';
+
+  @override
   String get profiles => 'Profiles';
 
   @override
@@ -887,9 +936,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ruleActionFailed => 'Rule action failed';
 
   @override
-  String get profileSaved => 'Profile saved successfully';
-
-  @override
   String get profileDeleted => 'Profile deleted successfully';
 
   @override
@@ -1246,7 +1292,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get switchProfileConfirmation => 'Switch profile?';
+  String get switchProfileConfirmation =>
+      'Are you sure you want to switch profiles? You will be returned to the profile selection screen.';
 
   @override
   String rebootFailedWithError(String message, String error) {

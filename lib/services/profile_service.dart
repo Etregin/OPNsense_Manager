@@ -17,6 +17,7 @@
  */
 
 import '../models/profile.dart';
+import '../models/connection_endpoint.dart';
 import 'profile/profile_storage_service.dart';
 import 'profile/profile_export_import_service.dart';
 import 'profile/profile_validation_service.dart';
@@ -176,8 +177,13 @@ class ProfileService {
     final demoProfile = Profile(
       id: demoId,
       name: 'Demo Mode',
-      host: 'demo.opnsense.local',
-      port: 443,
+      connections: const [
+        ConnectionEndpoint(
+          host: 'demo.opnsense.local',
+          port: 443,
+          isActive: true,
+        ),
+      ],
       apiKey: 'demo-key',
       apiSecret: 'demo-secret',
       useHttps: true,

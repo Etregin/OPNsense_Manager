@@ -53,6 +53,51 @@
   "testConnection": "Test Connection",
   "connectionSuccessful": "Connection Successful",
   "connectionFailed": "Connection Failed",
+  "testingConnection": "Testing connection {current} of {total}: {endpoint}",
+  "@testingConnection": {
+    "description": "Message shown when testing a connection endpoint",
+    "placeholders": {
+      "current": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "endpoint": {
+        "type": "String"
+      }
+    }
+  },
+  "connectedSuccessfullyVia": "Connected successfully via: {endpoint}",
+  "@connectedSuccessfullyVia": {
+    "description": "Message shown when connection is successful",
+    "placeholders": {
+      "endpoint": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyingConnection": "Verifying connection to {endpoint}...",
+  "@verifyingConnection": {
+    "description": "Message shown when verifying a connection",
+    "placeholders": {
+      "endpoint": {
+        "type": "String"
+      }
+    }
+  },
+  "unableToConnectToAnyEndpoint": "Unable to connect to any configured endpoints. Please check your network settings and try again.",
+  
+  "testProfile": "Test Profile",
+  "testConnections": "Test Connections",
+  "testingAllConnections": "Testing all connection points...",
+  "connectionTestResults": "Connection Test Results",
+  "allConnectionsSuccessful": "All connections tested successfully",
+  "someConnectionsFailed": "Some connections failed",
+  "saveWithoutTesting": "Save without testing",
+  "saveAndConnect": "Save & Connect",
+  "profileSaved": "Profile saved successfully",
+  "savingProfile": "Saving profile...",
   
   "profiles": "Profiles",
   "addProfile": "Add Profile",
@@ -718,7 +763,7 @@
       }
     }
   },
-  "switchProfileConfirmation": "Switch profile?",
+  "switchProfileConfirmation": "Are you sure you want to switch profiles? You will be returned to the profile selection screen.",
   "rebootFailedWithError": "{message}: {error}",
   "@rebootFailedWithError": {
     "placeholders": {

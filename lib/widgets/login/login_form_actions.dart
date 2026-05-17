@@ -23,6 +23,8 @@ import '../../l10n/app_localizations.dart';
 class LoginFormActions extends StatelessWidget {
   final bool isEditing;
   final bool isLoading;
+  final String? loadingButton; // Which button is currently loading: 'test', 'save', or 'connect'
+  final VoidCallback onTest;
   final VoidCallback onSave;
   final VoidCallback onConnect;
   final VoidCallback? onImport;
@@ -31,6 +33,8 @@ class LoginFormActions extends StatelessWidget {
     super.key,
     required this.isEditing,
     required this.isLoading,
+    this.loadingButton,
+    required this.onTest,
     required this.onSave,
     required this.onConnect,
     this.onImport,
@@ -43,56 +47,126 @@ class LoginFormActions extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Save Button (only show when editing)
+        // Three buttons when editing
         if (isEditing) ...[
-          OutlinedButton(
-            onPressed: isLoading ? null : onSave,
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              side: BorderSide(color: Theme.of(context).primaryColor, width: 2),
-            ),
-            child: isLoading
+          // Test Profile Button
+          OutlinedButton.icon(
+            onPressed: isLoading ? null : onTest,
+            icon: loadingButton == 'test'
                 ? const SizedBox(
-                    height: 20,
-                    width: 20,
+                    height: 16,
+                    width: 16,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : Text(
+                : const Icon(Icons.network_check, size: 20),
+            label: Text(
+              l10n.testProfile,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              side: BorderSide(
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
+                width: 1.5,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Two buttons in a row: Save and Save & Connect
+          Row(
+            children: [
+              // Save Button
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: isLoading ? null : onSave,
+                  icon: loadingButton == 'save'
+                      ? const SizedBox(
+                          height: 16,
+                          width: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.save, size: 20),
+                  label: Text(
                     l10n.save,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-          ),
-          const SizedBox(height: 12),
-        ],
-
-        // Connect Button
-        ElevatedButton(
-          onPressed: isLoading ? null : onConnect,
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            backgroundColor: Theme.of(context).primaryColor,
-            foregroundColor: Colors.white,
-          ),
-          child: isLoading
-              ? const SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  ),
-                )
-              : Text(
-                  isEditing ? 'Save & Connect' : l10n.connect,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    side: BorderSide(
+                      color: Theme.of(context).primaryColor,
+                      width: 2,
+                    ),
                   ),
                 ),
-        ),
+              ),
+              const SizedBox(width: 12),
+
+              // Save & Connect Button
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: isLoading ? null : onConnect,
+                  icon: loadingButton == 'connect'
+                      ? const SizedBox(
+                          height: 16,
+                          width: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Icon(Icons.login, size: 20),
+                  label: Text(
+                    l10n.saveAndConnect,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: Theme.of(context).primaryColor,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+
+        // Connect Button (only show when not editing)
+        if (!isEditing)
+          ElevatedButton(
+            onPressed: isLoading ? null : onConnect,
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.white,
+            ),
+            child: isLoading
+                ? const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  )
+                : Text(
+                    l10n.connect,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+          ),
+
         const SizedBox(height: 16),
 
         // Import Profiles button (only show when not editing)

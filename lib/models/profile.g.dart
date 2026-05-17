@@ -9,8 +9,9 @@ part of 'profile.dart';
 Profile _$ProfileFromJson(Map<String, dynamic> json) => Profile(
   id: json['id'] as String,
   name: json['name'] as String,
-  host: json['host'] as String,
-  port: (json['port'] as num).toInt(),
+  connections: (json['connections'] as List<dynamic>)
+      .map((e) => ConnectionEndpoint.fromJson(e as Map<String, dynamic>))
+      .toList(),
   apiKey: json['apiKey'] as String,
   apiSecret: json['apiSecret'] as String,
   useHttps: json['useHttps'] as bool,
@@ -28,8 +29,7 @@ Profile _$ProfileFromJson(Map<String, dynamic> json) => Profile(
 Map<String, dynamic> _$ProfileToJson(Profile instance) => <String, dynamic>{
   'id': instance.id,
   'name': instance.name,
-  'host': instance.host,
-  'port': instance.port,
+  'connections': instance.connections.map((e) => e.toJson()).toList(),
   'apiKey': instance.apiKey,
   'apiSecret': instance.apiSecret,
   'useHttps': instance.useHttps,

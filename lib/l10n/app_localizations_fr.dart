@@ -145,6 +145,56 @@ class AppLocalizationsFr extends AppLocalizations {
       'Échec de la connexion. Vérifiez les journaux de la console pour plus de détails.\n\nProblèmes courants :\n• L\'appareil n\'est pas sur le même réseau qu\'OPNsense\n• Adresse IP ou port incorrect\n• Pare-feu bloquant la connexion\n• Identifiants API invalides';
 
   @override
+  String testingConnection(String current, String total, String endpoint) {
+    return 'Test de connexion $current sur $total: $endpoint';
+  }
+
+  @override
+  String connectedSuccessfullyVia(String endpoint) {
+    return 'Connecté avec succès via: $endpoint';
+  }
+
+  @override
+  String verifyingConnection(String endpoint) {
+    return 'Vérification de la connexion à $endpoint...';
+  }
+
+  @override
+  String get unableToConnectToAnyEndpoint =>
+      'Impossible de se connecter à l\'un des points de terminaison configurés. Veuillez vérifier vos paramètres réseau et réessayer.';
+
+  @override
+  String get testProfile => 'Tester le profil';
+
+  @override
+  String get testConnections => 'Tester les connexions';
+
+  @override
+  String get testingAllConnections => 'Test de tous les points de connexion...';
+
+  @override
+  String get connectionTestResults => 'Résultats du test de connexion';
+
+  @override
+  String get allConnectionsSuccessful =>
+      'Toutes les connexions testées avec succès';
+
+  @override
+  String get someConnectionsFailed => 'Certaines connexions ont échoué';
+
+  @override
+  String get saveWithoutTesting => 'Enregistrer sans tester';
+
+  @override
+  String get saveAndConnect => 'Enregistrer et connecter';
+
+  @override
+  String get profileSaved => 'Profil enregistré avec succès';
+
+  @override
+  String get savingProfile => 'Enregistrement du profil...';
+
+  @override
   String get profiles => 'Profils';
 
   @override
@@ -896,9 +946,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get ruleActionFailed => 'Action de règle échouée';
 
   @override
-  String get profileSaved => 'Profil enregistré avec succès';
-
-  @override
   String get profileDeleted => 'Profil supprimé avec succès';
 
   @override
@@ -1258,7 +1305,8 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get switchProfileConfirmation => 'Changer de profil?';
+  String get switchProfileConfirmation =>
+      'Êtes-vous sûr de vouloir changer de profil ? Vous serez redirigé vers l\'écran de sélection de profil.';
 
   @override
   String rebootFailedWithError(String message, String error) {

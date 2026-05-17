@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/profile.dart';
+import '../models/connection_endpoint.dart';
 import '../models/dhcp_server_type.dart';
 import '../services/profile_service.dart';
 import '../services/demo_api_service.dart';
@@ -26,7 +27,7 @@ import '../services/opnsense_api_service.dart';
 import '../services/settings/profile_import_service.dart';
 import '../viewmodels/login_view_model.dart';
 import '../widgets/common/error_display.dart';
-import '../widgets/login/connection_fields_section.dart';
+import '../widgets/login/connection_endpoints_manager.dart';
 import '../widgets/login/credentials_fields_section.dart';
 import '../widgets/login/dhcp_server_selector.dart';
 import '../widgets/login/login_form_actions.dart';
@@ -47,18 +48,20 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  final _hostController = TextEditingController();
-  final _portController = TextEditingController(text: '443');
   final _apiKeyController = TextEditingController();
   final _apiSecretController = TextEditingController();
 
   late LoginViewModel _viewModel;
   late ProfileImportService _importService;
 
+  List<ConnectionEndpoint> _connections = [
+    const ConnectionEndpoint(host: '', port: 443, isActive: true),
+  ];
   bool _useHttps = true;
   bool _allowSelfSignedCerts = false;
   bool _obscureSecret = true;
   DhcpServerType _dhcpServerType = DhcpServerType.dnsmasq;
+  String? _loadingButton; // Track which button is loading
 
   @override
   void initState() {
@@ -87,8 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _populateFormIfEditing() {
     if (widget.profile != null) {
       _nameController.text = widget.profile!.name;
-      _hostController.text = widget.profile!.host;
-      _portController.text = widget.profile!.port.toString();
+      _connections = List.from(widget.profile!.connections);
       _apiKeyController.text = widget.profile!.apiKey;
       _apiSecretController.text = widget.profile!.apiSecret;
       _useHttps = widget.profile!.useHttps;
@@ -108,24 +110,139 @@ class _LoginScreenState extends State<LoginScreen> {
     _viewModel.removeListener(_onViewModelChanged);
     _viewModel.dispose();
     _nameController.dispose();
-    _hostController.dispose();
-    _portController.dispose();
     _apiKeyController.dispose();
     _apiSecretController.dispose();
     super.dispose();
   }
 
-  Future<void> _handleSaveAndConnect({required bool connectAfterSave}) async {
+  Future<void> _handleTestProfile() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    final success = await _viewModel.testAndSaveConnection(
+    // Validate that we have at least one connection with a valid host
+    if (_connections.isEmpty || _connections.every((c) => c.host.trim().isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please add at least one connection endpoint'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() => _loadingButton = 'test');
+
+    final result = await _viewModel.testAllConnections(
+      connections: _connections,
+      apiKey: _apiKeyController.text.trim(),
+      apiSecret: _apiSecretController.text.trim(),
+      useHttps: _useHttps,
+      allowSelfSignedCerts: _allowSelfSignedCerts,
+    );
+
+    setState(() => _loadingButton = null);
+
+    if (!mounted) return;
+
+    // Show test results dialog
+    _showTestResultsDialog(result);
+  }
+
+  void _showTestResultsDialog(Map<String, dynamic> result) {
+    final l10n = AppLocalizations.of(context)!;
+    final results = result['results'] as List<Map<String, dynamic>>;
+    final successCount = result['successCount'] as int;
+    final totalCount = result['totalCount'] as int;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.connectionTestResults),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Summary
+              Text(
+                successCount == totalCount
+                    ? l10n.allConnectionsSuccessful
+                    : l10n.someConnectionsFailed,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: successCount == totalCount ? Colors.green : Colors.orange,
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Individual results
+              ...results.map((r) {
+                final success = r['success'] as bool;
+                final endpoint = r['endpoint'] as String;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    children: [
+                      Icon(
+                        success ? Icons.check_circle : Icons.error,
+                        color: success ? Colors.green : Colors.red,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          endpoint,
+                          style: TextStyle(
+                            color: success ? Colors.green : Colors.red,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.close),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _handleSaveProfile() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    // Validate that we have at least one connection with a valid host
+    if (_connections.isEmpty || _connections.every((c) => c.host.trim().isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please add at least one connection endpoint'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Get the active connection for the default name
+    final activeConnection = _connections.firstWhere(
+      (c) => c.isActive,
+      orElse: () => _connections.first,
+    );
+
+    setState(() => _loadingButton = 'save');
+
+    final success = await _viewModel.saveProfile(
       name: _nameController.text.trim().isEmpty
-          ? '${_hostController.text.trim()}:${_portController.text.trim()}'
+          ? '${activeConnection.host}:${activeConnection.port}'
           : _nameController.text.trim(),
-      host: _hostController.text.trim(),
-      port: int.parse(_portController.text.trim()),
+      connections: _connections,
       apiKey: _apiKeyController.text.trim(),
       apiSecret: _apiSecretController.text.trim(),
       useHttps: _useHttps,
@@ -133,16 +250,66 @@ class _LoginScreenState extends State<LoginScreen> {
       dhcpServerType: _dhcpServerType,
     );
 
+    setState(() => _loadingButton = null);
+
     if (!mounted) return;
 
     if (success) {
-      if (connectAfterSave) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const DashboardScreen()),
-        );
-      } else {
-        Navigator.of(context).pop(true);
-      }
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.profileSaved),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.of(context).pop(true);
+    }
+  }
+
+  Future<void> _handleSaveAndConnect() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    // Validate that we have at least one connection with a valid host
+    if (_connections.isEmpty || _connections.every((c) => c.host.trim().isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please add at least one connection endpoint'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Get the active connection for the default name
+    final activeConnection = _connections.firstWhere(
+      (c) => c.isActive,
+      orElse: () => _connections.first,
+    );
+
+    setState(() => _loadingButton = 'connect');
+
+    final success = await _viewModel.testAndSaveConnection(
+      name: _nameController.text.trim().isEmpty
+          ? '${activeConnection.host}:${activeConnection.port}'
+          : _nameController.text.trim(),
+      connections: _connections,
+      apiKey: _apiKeyController.text.trim(),
+      apiSecret: _apiSecretController.text.trim(),
+      useHttps: _useHttps,
+      allowSelfSignedCerts: _allowSelfSignedCerts,
+      dhcpServerType: _dhcpServerType,
+    );
+
+    setState(() => _loadingButton = null);
+
+    if (!mounted) return;
+
+    if (success) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const DashboardScreen()),
+      );
     }
   }
 
@@ -280,16 +447,32 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Connection Fields
-                  ConnectionFieldsSection(
-                    hostController: _hostController,
-                    portController: _portController,
-                    useHttps: _useHttps,
-                    allowSelfSignedCerts: _allowSelfSignedCerts,
-                    isLoading: _viewModel.isLoading,
-                    onHttpsChanged: (value) => setState(() => _useHttps = value),
-                    onSelfSignedChanged: (value) =>
-                        setState(() => _allowSelfSignedCerts = value),
+                  // Connection Endpoints Manager
+                  ConnectionEndpointsManager(
+                    connections: _connections,
+                    onConnectionsChanged: (connections) {
+                      setState(() => _connections = connections);
+                    },
+                    enabled: !_viewModel.isLoading,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // HTTPS and Self-Signed Certs Options
+                  SwitchListTile(
+                    title: const Text('Use HTTPS'),
+                    subtitle: const Text('Use secure HTTPS connection'),
+                    value: _useHttps,
+                    onChanged: _viewModel.isLoading
+                        ? null
+                        : (value) => setState(() => _useHttps = value),
+                  ),
+                  SwitchListTile(
+                    title: const Text('Allow Self-Signed Certificates'),
+                    subtitle: const Text('Accept self-signed SSL certificates'),
+                    value: _allowSelfSignedCerts,
+                    onChanged: _viewModel.isLoading
+                        ? null
+                        : (value) => setState(() => _allowSelfSignedCerts = value),
                   ),
                   const SizedBox(height: 16),
 
@@ -323,8 +506,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   LoginFormActions(
                     isEditing: _viewModel.isEditing,
                     isLoading: _viewModel.isLoading,
-                    onSave: () => _handleSaveAndConnect(connectAfterSave: false),
-                    onConnect: () => _handleSaveAndConnect(connectAfterSave: true),
+                    loadingButton: _loadingButton,
+                    onTest: _handleTestProfile,
+                    onSave: _handleSaveProfile,
+                    onConnect: _handleSaveAndConnect,
                     onImport: _viewModel.isEditing ? null : _handleImportProfiles,
                   ),
                   const SizedBox(height: 24),

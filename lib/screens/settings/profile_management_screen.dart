@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/profile.dart';
+import '../../models/connection_endpoint.dart';
 import '../../models/dhcp_server_type.dart';
 import '../../services/demo_api_service.dart';
 import '../../services/opnsense_api_service.dart';
@@ -27,6 +28,7 @@ import '../../services/settings/file_operations_service.dart';
 import '../../utils/constants.dart';
 import '../../utils/validators.dart';
 import '../../widgets/settings/profile_card.dart';
+import '../../widgets/login/connection_endpoints_manager.dart';
 import '../../l10n/app_localizations.dart';
 
 /// Screen for managing OPNsense connection profiles
@@ -138,14 +140,13 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
     final isEdit = profile != null;
     final formKey = GlobalKey<FormState>();
     final nameController = TextEditingController(text: profile?.name ?? '');
-    final hostController = TextEditingController(text: profile?.host ?? '');
-    final portController = TextEditingController(
-      text: profile?.port.toString() ?? '443',
-    );
     final apiKeyController = TextEditingController(text: profile?.apiKey ?? '');
     final apiSecretController = TextEditingController(
       text: profile?.apiSecret ?? '',
     );
+    List<ConnectionEndpoint> connections = profile?.connections ?? [
+      const ConnectionEndpoint(host: '', port: 443, isActive: true),
+    ];
     bool useHttps = profile?.useHttps ?? true;
     bool allowSelfSignedCerts = profile?.allowSelfSignedCerts ?? false;
     bool obscureSecret = true;
@@ -156,12 +157,14 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
           title: Text(isEdit ? l10n.editProfile : l10n.addProfile),
-          content: SingleChildScrollView(
-            child: Form(
-              key: formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
+          content: SizedBox(
+            width: 600,
+            child: SingleChildScrollView(
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
                   TextFormField(
                     controller: nameController,
                     decoration: InputDecoration(
@@ -176,23 +179,14 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  TextFormField(
-                    controller: hostController,
-                    decoration: InputDecoration(
-                      labelText: l10n.hostIpAddressLabel,
-                      prefixIcon: const Icon(Icons.dns),
-                    ),
-                    validator: Validators.validateHost,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: portController,
-                    decoration: InputDecoration(
-                      labelText: l10n.portLabel,
-                      prefixIcon: const Icon(Icons.settings_ethernet),
-                    ),
-                    keyboardType: TextInputType.number,
-                    validator: Validators.validatePort,
+                  ConnectionEndpointsManager(
+                    connections: connections,
+                    onConnectionsChanged: (newConnections) {
+                      setDialogState(() {
+                        connections = newConnections;
+                      });
+                    },
+                    enabled: true,
                   ),
                   const SizedBox(height: 16),
                   SwitchListTile(
@@ -287,6 +281,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
               ),
             ),
           ),
+        ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -295,12 +290,22 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
             ElevatedButton(
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
+                  // Validate connections
+                  if (connections.isEmpty || connections.every((c) => c.host.trim().isEmpty)) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please add at least one connection endpoint'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+                  
                   Navigator.of(context).pop();
                   await _saveProfile(
                     id: profile?.id,
                     name: nameController.text.trim(),
-                    host: hostController.text.trim(),
-                    port: int.parse(portController.text.trim()),
+                    connections: connections,
                     apiKey: apiKeyController.text.trim(),
                     apiSecret: apiSecretController.text.trim(),
                     useHttps: useHttps,
@@ -320,8 +325,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
   Future<void> _saveProfile({
     String? id,
     required String name,
-    required String host,
-    required int port,
+    required List<ConnectionEndpoint> connections,
     required String apiKey,
     required String apiSecret,
     required bool useHttps,
@@ -331,8 +335,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
     final result = await _profileManager.saveProfile(
       id: id,
       name: name,
-      host: host,
-      port: port,
+      connections: connections,
       apiKey: apiKey,
       apiSecret: apiSecret,
       useHttps: useHttps,

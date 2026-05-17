@@ -18,6 +18,7 @@
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../models/profile.dart';
+import '../../models/connection_endpoint.dart';
 import 'profile_storage_service.dart';
 
 /// Service for migrating from old storage format to profile-based storage
@@ -51,8 +52,13 @@ class ProfileMigrationService {
       final defaultProfile = Profile(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         name: 'Default',
-        host: oldHost,
-        port: int.tryParse(oldPort ?? '443') ?? 443,
+        connections: [
+          ConnectionEndpoint(
+            host: oldHost,
+            port: int.tryParse(oldPort ?? '443') ?? 443,
+            isActive: true,
+          ),
+        ],
         apiKey: oldApiKey,
         apiSecret: oldApiSecret,
         useHttps: oldUseHttps == 'true',

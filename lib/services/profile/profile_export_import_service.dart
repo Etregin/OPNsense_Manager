@@ -147,8 +147,7 @@ class ProfileExportImportService {
             orElse: () => Profile(
               id: '',
               name: '',
-              host: '',
-              port: 0,
+              connections: const [],
               apiKey: '',
               apiSecret: '',
               useHttps: true,

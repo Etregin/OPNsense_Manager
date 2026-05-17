@@ -20,9 +20,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/profile.dart';
+import '../models/connection_endpoint.dart';
+import '../models/opnsense_config.dart';
 import '../services/profile_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../services/demo_api_service.dart';
+import '../services/connection/connection_manager_service.dart';
 import '../utils/constants.dart';
 import 'dashboard_screen.dart';
 import 'login_screen.dart';
@@ -39,6 +42,7 @@ class ProfileSelectionScreen extends StatefulWidget {
 class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
   bool _isLoading = false;
   String? _errorMessage;
+  String? _connectionStatus;
 
   @override
   void initState() {
@@ -54,39 +58,151 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
     setState(() {
       _isLoading = true;
       _errorMessage = null;
+      _connectionStatus = null;
     });
 
     try {
       final profileService = context.read<ProfileService>();
-      final apiService = context.read<OPNsenseApiService>();
-      final demoApiService = context.read<DemoApiService>();
 
-      // Check if this is a demo profile
+      // Handle demo profiles
       if (profile.isDemo) {
-        // Enable demo mode
+        final demoApiService = context.read<DemoApiService>();
         demoApiService.setDemoMode(true);
-      } else {
-        // Disable demo mode and test real connection
-        demoApiService.setDemoMode(false);
-        final config = profile.toOPNsenseConfig();
-        apiService.init(config);
-        await apiService.testConnection();
+        await profileService.setActiveProfile(profile.id);
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const DashboardScreen()),
+          );
+        }
+        return;
       }
 
-      // Set as active profile
-      await profileService.setActiveProfile(profile.id);
+      // Disable demo mode for real profiles
+      final demoApiService = context.read<DemoApiService>();
+      demoApiService.setDemoMode(false);
 
+      // Validate that profile has connections
+      if (profile.connections.isEmpty) {
+        throw Exception('Profile has no connection endpoints configured');
+      }
+
+      // Test each connection endpoint with proper progress messages
+      final connectionManager = ConnectionManagerService();
+      
+      // Sort connections by priority (active first, then by last successful connection)
+      final sortedConnections = connectionManager.sortConnectionsByPriority(profile.connections);
+      final totalConnections = sortedConnections.length;
+      
+      debugPrint('Testing $totalConnections connection(s) for profile: ${profile.name}');
+      
+      ConnectionEndpoint? workingConnection;
+      
+      for (int i = 0; i < sortedConnections.length; i++) {
+        final connection = sortedConnections[i];
+        final currentAttempt = i + 1;
+        
+        debugPrint('Testing connection $currentAttempt/$totalConnections: ${connection.displayName} (${connection.host}:${connection.port})');
+        
+        // Update status with localized progress message
+        if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
+          setState(() {
+            _connectionStatus = l10n.testingConnection(
+              currentAttempt.toString(),
+              totalConnections.toString(),
+              connection.displayName,
+            );
+          });
+        }
+        
+        // Create config for this specific connection with all profile settings
+        final config = OPNsenseConfig(
+          host: connection.host,
+          port: connection.port,
+          apiKey: profile.apiKey,
+          apiSecret: profile.apiSecret,
+          useHttps: profile.useHttps,
+          allowSelfSignedCerts: profile.allowSelfSignedCerts,
+          dhcpServerType: profile.dhcpServerType,
+        );
+        
+        // Test this connection
+        final testResult = await connectionManager.testConnectionDetailed(connection, config);
+        final isWorking = testResult.isSuccess;
+        
+        debugPrint(
+          'Connection test result: ${isWorking ? "SUCCESS" : "FAILED"}'
+          '${isWorking ? "" : " - ${testResult.summary}"}',
+        );
+        
+        if (!isWorking) {
+          debugPrint(
+            'Connection failure details for ${connection.displayName}: '
+            '${testResult.toLogMap()}',
+          );
+        }
+        
+        if (isWorking) {
+          workingConnection = connection.copyWith(
+            isActive: true,
+            lastSuccessfulConnection: DateTime.now(),
+          );
+          debugPrint('Found working connection: ${workingConnection.displayName}');
+          break;
+        }
+      }
+      
+      if (workingConnection == null) {
+        final lastFailure = connectionManager.getLastTestResult();
+        debugPrint('ERROR: No working connection found');
+        if (lastFailure != null) {
+          debugPrint('Last connection failure summary: ${lastFailure.summary}');
+          debugPrint('Last connection failure details: ${lastFailure.toLogMap()}');
+        }
+        if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
+          throw Exception(l10n.unableToConnectToAnyEndpoint);
+        }
+        throw Exception('Unable to connect to any configured endpoints');
+      }
+      
+      // Update profile with working connection
+      final updatedConnections = profile.connections.map((conn) {
+        if (conn.host == workingConnection!.host && conn.port == workingConnection.port) {
+          return workingConnection;
+        }
+        return conn.copyWith(isActive: false);
+      }).toList();
+      
+      final updatedProfile = profile.copyWith(connections: updatedConnections);
+      await profileService.saveProfile(updatedProfile);
+      
+      debugPrint('Profile saved with active connection: ${workingConnection.displayName}');
+      
+      // Initialize API service and navigate
+      if (mounted) {
+        final apiService = context.read<OPNsenseApiService>();
+        apiService.init(updatedProfile.toOPNsenseConfig());
+      }
+      
+      await profileService.setActiveProfile(updatedProfile.id);
+      
+      debugPrint('Navigating to dashboard...');
+      
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const DashboardScreen()),
         );
       }
-    } catch (e) {
+      
+    } catch (e, stackTrace) {
+      debugPrint('ERROR in _selectProfile: $e');
+      debugPrint('Stack trace: $stackTrace');
       if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
         setState(() {
-          _errorMessage = l10n.connectionFailedError(e.toString());
+          _errorMessage = 'Connection failed: ${e.toString()}';
           _isLoading = false;
+          _connectionStatus = null;
         });
       }
     }
@@ -216,6 +332,42 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                             child: Text(
                               _errorMessage!,
                               style: TextStyle(color: Colors.red.shade700),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+              // Connection status
+              if (_connectionStatus != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Card(
+                    color: Colors.blue.shade50,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.blue.shade700,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              _connectionStatus!,
+                              style: TextStyle(
+                                color: Colors.blue.shade700,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ],

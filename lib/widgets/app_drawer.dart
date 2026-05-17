@@ -22,15 +22,19 @@ import '../models/system_info.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/system_info_screen.dart';
 import '../screens/settings_screen.dart';
+import '../screens/profile_selection_screen.dart';
 import '../l10n/app_localizations.dart';
 import '../services/navigation/navigation_service.dart';
 import '../services/opnsense_api_service.dart';
+import '../services/profile_service.dart';
+import '../services/auth_service.dart';
 import '../utils/constants.dart';
 import 'drawer/drawer_header_widget.dart';
 import 'drawer/navigation_tile.dart';
 import 'drawer/firewall_navigation_section.dart';
 import 'drawer/network_navigation_section.dart';
 import 'drawer/vpn_navigation_section.dart';
+import 'common/confirmation_dialog.dart';
 
 /// Reusable app drawer for navigation
 class AppDrawer extends StatefulWidget {
@@ -113,7 +117,7 @@ class _AppDrawerState extends State<AppDrawer> {
             },
           ),
           
-          // 5. VPN navigation section
+          // 4. VPN navigation section
           VPNNavigationSection(
             currentRoute: widget.currentRoute,
             isExpanded: _vpnExpanded,
@@ -125,7 +129,7 @@ class _AppDrawerState extends State<AppDrawer> {
             onBeforeNavigate: widget.onBeforeNavigate,
           ),
           
-          // 6. Settings (individual tile)
+          // 5. Settings (individual tile)
           NavigationTile(
             icon: Icons.settings,
             title: l10n.settings,
@@ -135,6 +139,15 @@ class _AppDrawerState extends State<AppDrawer> {
           ),
           
           const Divider(),
+
+          // 6. Switch Profile
+          NavigationTile(
+            icon: Icons.swap_horiz,
+            title: l10n.switchProfile,
+            currentRoute: widget.currentRoute,
+            targetRoute: 'switch_profile',
+            onTap: () => _handleSwitchProfile(context),
+          ),
           
           // 7. Reboot System (individual tile)
           ListTile(
@@ -161,6 +174,64 @@ class _AppDrawerState extends State<AppDrawer> {
         ],
       ),
     );
+  }
+
+  Future<void> _handleSwitchProfile(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    
+    // CRITICAL FIX: Capture the navigator BEFORE closing drawer or showing dialog
+    // The context becomes unmounted after dialogs, so we need to get the navigator early
+    final navigator = Navigator.of(context, rootNavigator: true);
+    
+    // Close the drawer first
+    Navigator.pop(context);
+    
+    // Wait a bit for drawer to close
+    await Future.delayed(const Duration(milliseconds: 150));
+    
+    if (!context.mounted) {
+      return;
+    }
+    
+    // Show confirmation dialog
+    final confirmed = await ConfirmationDialog.show(
+      context: context,
+      title: l10n.switchProfile,
+      message: l10n.switchProfileConfirmation,
+      confirmText: l10n.switchProfile,
+      cancelText: l10n.cancel,
+      isDestructive: false,
+    );
+
+    if (confirmed == true) {
+      try {
+        // Clear the active profile
+        await ProfileService().clearActiveProfile();
+        
+        // Clear auth session
+        await AuthService().clearSession();
+        
+        // Navigate to profile selection screen and clear the navigation stack
+        // Use the navigator we captured earlier (before context became unmounted)
+        await navigator.pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const ProfileSelectionScreen(),
+          ),
+          (route) => false, // Remove all previous routes
+        );
+      } catch (e) {
+        // Try to show error message if context is still valid
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to switch profile: ${e.toString()}'),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 5),
+            ),
+          );
+        }
+      }
+    }
   }
 
   Future<void> _rebootFirewall(BuildContext context) async {

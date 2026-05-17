@@ -21,6 +21,7 @@ import '../profile_service.dart';
 import '../demo_api_service.dart';
 import '../opnsense_api_service.dart';
 import '../../models/profile.dart';
+import '../../models/connection_endpoint.dart';
 import '../../models/opnsense_config.dart';
 import '../../models/dhcp_server_type.dart';
 
@@ -114,13 +115,12 @@ class ProfileManagerService {
   }
 
   /// Save a profile (create or update)
-  /// 
+  ///
   /// Validates the profile data and saves it to storage
   Future<SaveResult> saveProfile({
     String? id,
     required String name,
-    required String host,
-    required int port,
+    required List<ConnectionEndpoint> connections,
     required String apiKey,
     required String apiSecret,
     required bool useHttps,
@@ -128,11 +128,17 @@ class ProfileManagerService {
     required DhcpServerType dhcpServerType,
   }) async {
     try {
+      // Get active connection for validation
+      final activeConnection = connections.firstWhere(
+        (c) => c.isActive,
+        orElse: () => connections.first,
+      );
+
       // Validate profile data
       final validationError = _profileService.validateProfile(
         name: name,
-        host: host,
-        port: port.toString(),
+        host: activeConnection.host,
+        port: activeConnection.port.toString(),
         apiKey: apiKey,
         apiSecret: apiSecret,
         excludeId: id,
@@ -162,8 +168,7 @@ class ProfileManagerService {
       final profile = Profile(
         id: id ?? _profileService.generateProfileId(),
         name: name,
-        host: host,
-        port: port,
+        connections: connections,
         apiKey: apiKey,
         apiSecret: apiSecret,
         useHttps: useHttps,

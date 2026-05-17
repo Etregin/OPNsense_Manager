@@ -145,6 +145,55 @@ class AppLocalizationsAr extends AppLocalizations {
       'فشل الاتصال. تحقق من سجلات وحدة التحكم للحصول على التفاصيل.\n\nالمشاكل الشائعة:\n• الجهاز ليس على نفس الشبكة مثل OPNsense\n• عنوان IP أو المنفذ خاطئ\n• جدار الحماية يحظر الاتصال\n• بيانات اعتماد API غير صالحة';
 
   @override
+  String testingConnection(String current, String total, String endpoint) {
+    return 'اختبار الاتصال $current من $total: $endpoint';
+  }
+
+  @override
+  String connectedSuccessfullyVia(String endpoint) {
+    return 'تم الاتصال بنجاح عبر: $endpoint';
+  }
+
+  @override
+  String verifyingConnection(String endpoint) {
+    return 'التحقق من الاتصال بـ $endpoint...';
+  }
+
+  @override
+  String get unableToConnectToAnyEndpoint =>
+      'تعذر الاتصال بأي من نقاط النهاية المكونة. يرجى التحقق من إعدادات الشبكة والمحاولة مرة أخرى.';
+
+  @override
+  String get testProfile => 'اختبار الملف الشخصي';
+
+  @override
+  String get testConnections => 'اختبار الاتصالات';
+
+  @override
+  String get testingAllConnections => 'اختبار جميع نقاط الاتصال...';
+
+  @override
+  String get connectionTestResults => 'نتائج اختبار الاتصال';
+
+  @override
+  String get allConnectionsSuccessful => 'تم اختبار جميع الاتصالات بنجاح';
+
+  @override
+  String get someConnectionsFailed => 'فشلت بعض الاتصالات';
+
+  @override
+  String get saveWithoutTesting => 'حفظ بدون اختبار';
+
+  @override
+  String get saveAndConnect => 'حفظ واتصال';
+
+  @override
+  String get profileSaved => 'تم حفظ الملف الشخصي بنجاح';
+
+  @override
+  String get savingProfile => 'جاري حفظ الملف الشخصي...';
+
+  @override
   String get profiles => 'الملفات الشخصية';
 
   @override
@@ -882,9 +931,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ruleActionFailed => 'فشل إجراء القاعدة';
 
   @override
-  String get profileSaved => 'تم حفظ الملف الشخصي بنجاح';
-
-  @override
   String get profileDeleted => 'تم حذف الملف الشخصي بنجاح';
 
   @override
@@ -1240,7 +1286,8 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get switchProfileConfirmation => 'تبديل الملف التعريفي؟';
+  String get switchProfileConfirmation =>
+      'هل أنت متأكد من رغبتك في تبديل الملفات الشخصية؟ سيتم إرجاعك إلى شاشة اختيار الملف الشخصي.';
 
   @override
   String rebootFailedWithError(String message, String error) {
