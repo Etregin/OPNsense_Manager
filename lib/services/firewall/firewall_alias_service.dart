@@ -16,7 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:dio/dio.dart';
 import '../../models/firewall_alias.dart';
+import '../../models/opnsense_config.dart';
 import 'alias/firewall_alias_crud_service.dart';
 import 'alias/firewall_alias_metadata_service.dart';
 import 'alias/firewall_alias_util_service.dart';
@@ -32,6 +34,13 @@ class FirewallAliasService {
       : _crudService = FirewallAliasCrudService(),
         _metadataService = FirewallAliasMetadataService(),
         _utilService = FirewallAliasUtilService();
+
+  /// Initialize the service with Dio instance and configuration
+  void init(Dio dio, OPNsenseConfig config) {
+    _crudService.init(dio, config);
+    _metadataService.init(dio, config);
+    _utilService.init(dio, config);
+  }
 
   // ==================== CRUD Operations ====================
 
@@ -150,6 +159,13 @@ class FirewallAliasService {
   /// Update bogons
   Future<Map<String, dynamic>> updateBogons() async {
     return await _utilService.updateBogons();
+  }
+
+  /// Clear service state
+  void clear() {
+    _crudService.clear();
+    _metadataService.clear();
+    _utilService.clear();
   }
 }
 

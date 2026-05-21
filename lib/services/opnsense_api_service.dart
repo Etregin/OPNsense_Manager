@@ -107,7 +107,7 @@ class OPNsenseApiService {
     // Initialize all specialized services
     _systemService.init(_dio!, config);
     _firewallService.init(_dio!, config);
-    // Note: FirewallAliasService doesn't need init - it uses sub-services
+    _firewallAliasService.init(_dio!, config);
     _vpnService.init(_dio!, config);
     _wireguardService.init(_dio!, config);
     _ipsecService.init(_dio!, config);
@@ -159,6 +159,20 @@ class OPNsenseApiService {
 
   /// Clear service state
   void clear() {
+    // Clear all specialized services
+    _systemService.clear();
+    _firewallService.clear();
+    _firewallAliasService.clear();
+    _vpnService.clear();
+    _wireguardService.clear();
+    _ipsecService.clear();
+    _networkService.clear();
+    _dhcpService.clear();
+    _gatewayService.clear();
+    _serviceControlService.clear();
+    _tailscaleService.clear();
+    
+    // Clear main service state
     _dio = null;
     _config = null;
   }
