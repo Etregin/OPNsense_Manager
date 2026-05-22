@@ -56,8 +56,10 @@ class _WireGuardServerFormScreenState
   List<String> _tunnelAddresses = [];
   List<String> _dnsServers = [];
   List<String> _selectedPeerUuids = [];
+  String _carpDependOn = '';
   bool _enabled = true;
   bool _disableRoutes = false;
+  bool _debug = false;
 
   @override
   void initState() {
@@ -68,6 +70,7 @@ class _WireGuardServerFormScreenState
     );
     _viewModel.addListener(_onViewModelChanged);
     _viewModel.loadPeers();
+    _viewModel.loadCarpVipOptions();
 
     if (_viewModel.isEditing) {
       _loadServerData();
@@ -104,17 +107,22 @@ class _WireGuardServerFormScreenState
     _selectedPeerUuids = List.from(server.peerUuidList);
     _enabled = server.isEnabled;
     _disableRoutes = server.hasRoutesDisabled;
+    _debug = server.debug == '1';
     if (server.mtuValue != null) {
       _mtuController.text = server.mtuValue.toString();
     }
     if (server.gateway.isNotEmpty) {
       _gatewayController.text = server.gateway;
     }
+    _carpDependOn = server.carpDependOn;
   }
 
   Future<void> _generateKeys() async {
     final keyPair = await _viewModel.generateKeyPair();
-    if (keyPair != null && mounted) {
+    
+    if (!mounted) return;
+    
+    if (keyPair != null) {
       setState(() {
         _publicKeyController.text = keyPair.publicKey;
         _privateKeyController.text = keyPair.privateKey;
@@ -124,6 +132,14 @@ class _WireGuardServerFormScreenState
           content: Text('Keys generated successfully'),
           backgroundColor: Colors.green,
           duration: Duration(seconds: 2),
+        ),
+      );
+    } else if (_viewModel.errorMessage != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_viewModel.errorMessage!),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 4),
         ),
       );
     }
@@ -154,6 +170,8 @@ class _WireGuardServerFormScreenState
       gateway: _gatewayController.text.trim(),
       mtu: _mtuController.text.trim(),
       dns: _dnsServers.join(','),
+      carpDependOn: _carpDependOn,
+      debug: _debug ? '1' : '0',
     );
 
     final success = await _viewModel.saveServer(request);
@@ -342,6 +360,31 @@ class _WireGuardServerFormScreenState
               ),
               const SizedBox(height: 16),
 
+              // CARP Depend On
+              DropdownButtonFormField<String>(
+                initialValue: _carpDependOn.isEmpty ? '' : _carpDependOn,
+                decoration: const InputDecoration(
+                  labelText: 'Depend on (CARP)',
+                  hintText: 'Select VHID',
+                  prefixIcon: Icon(Icons.link),
+                  helperText: 'CARP VHID to depend on',
+                ),
+                items: [
+                  const DropdownMenuItem<String>(
+                    value: '',
+                    child: Text('None'),
+                  ),
+                  ..._viewModel.carpVipOptions.map((option) => DropdownMenuItem<String>(
+                        value: option.vhid,
+                        child: Text(option.displayName),
+                      )),
+                ],
+                onChanged: _viewModel.isLoading || _viewModel.loadingCarpOptions
+                    ? null
+                    : (value) => setState(() => _carpDependOn = value ?? ''),
+              ),
+              const SizedBox(height: 16),
+
               // Peers
               const Text(
                 'Authorized Peers',
@@ -367,6 +410,14 @@ class _WireGuardServerFormScreenState
                 onChanged: _viewModel.isLoading
                     ? null
                     : (value) => setState(() => _disableRoutes = value),
+              ),
+              SwitchListTile(
+                title: const Text('Debug'),
+                subtitle: const Text('Enable debug logging'),
+                value: _debug,
+                onChanged: _viewModel.isLoading
+                    ? null
+                    : (value) => setState(() => _debug = value),
               ),
               SwitchListTile(
                 title: const Text('Enabled'),

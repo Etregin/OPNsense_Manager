@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart';
 import '../models/wireguard_server.dart';
 import '../models/wireguard_peer.dart';
 import '../models/wireguard_key_pair.dart';
@@ -28,12 +29,16 @@ class WireGuardServerFormViewModel extends BaseFormViewModel {
   final WireGuardServer? _existingServer;
 
   List<WireGuardPeer> _availablePeers = [];
+  List<CarpVipOption> _carpVipOptions = [];
   bool _isGeneratingKeys = false;
   bool _loadingPeers = true;
+  bool _loadingCarpOptions = true;
 
   List<WireGuardPeer> get availablePeers => _availablePeers;
+  List<CarpVipOption> get carpVipOptions => _carpVipOptions;
   bool get isGeneratingKeys => _isGeneratingKeys;
   bool get loadingPeers => _loadingPeers;
+  bool get loadingCarpOptions => _loadingCarpOptions;
   bool get isEditing => _existingServer != null;
   WireGuardServer? get existingServer => _existingServer;
 
@@ -58,6 +63,23 @@ class WireGuardServerFormViewModel extends BaseFormViewModel {
     }
   }
 
+  /// Load CARP VIP options from API
+  Future<void> loadCarpVipOptions() async {
+    _loadingCarpOptions = true;
+    notifyListeners();
+
+    try {
+      _carpVipOptions = await _apiService.getCarpVipOptions();
+      _loadingCarpOptions = false;
+      notifyListeners();
+    } catch (e) {
+      _loadingCarpOptions = false;
+      // Don't set error for CARP options as it's optional
+      // Just log it and continue
+      debugPrint('Failed to load CARP VIP options: $e');
+    }
+  }
+
   /// Generate new WireGuard key pair
   Future<WireGuardKeyPair?> generateKeyPair() async {
     _isGeneratingKeys = true;
@@ -66,11 +88,15 @@ class WireGuardServerFormViewModel extends BaseFormViewModel {
     try {
       final keyPair = await _apiService.generateWireGuardKeyPair();
       _isGeneratingKeys = false;
+      clearError(); // Clear any previous errors on success
       notifyListeners();
       return keyPair;
     } catch (e) {
       _isGeneratingKeys = false;
-      setError('Failed to generate keys: $e');
+      final errorMsg = 'Failed to generate keys: $e';
+      setError(errorMsg);
+      // Log the error for debugging
+      debugPrint('WireGuardServerFormViewModel.generateKeyPair error: $errorMsg');
       return null;
     }
   }

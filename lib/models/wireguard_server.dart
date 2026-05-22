@@ -64,6 +64,14 @@ class WireGuardServer {
   /// DNS servers for clients (comma-separated, optional)
   @JsonKey(defaultValue: '')
   final String dns;
+  
+  /// CARP VHID to depend on (optional)
+  @JsonKey(name: 'carp_depend_on', defaultValue: '')
+  final String carpDependOn;
+  
+  /// Enable debug logging ("1" = enabled, "0" = disabled)
+  @JsonKey(defaultValue: '0')
+  final String debug;
 
   WireGuardServer({
     required this.uuid,
@@ -78,6 +86,8 @@ class WireGuardServer {
     this.gateway = '',
     this.mtu = '',
     this.dns = '',
+    this.carpDependOn = '',
+    this.debug = '0',
   });
 
   /// Check if server is enabled
@@ -131,6 +141,8 @@ class WireGuardServer {
     String? gateway,
     String? mtu,
     String? dns,
+    String? carpDependOn,
+    String? debug,
   }) {
     return WireGuardServer(
       uuid: uuid ?? this.uuid,
@@ -145,6 +157,8 @@ class WireGuardServer {
       gateway: gateway ?? this.gateway,
       mtu: mtu ?? this.mtu,
       dns: dns ?? this.dns,
+      carpDependOn: carpDependOn ?? this.carpDependOn,
+      debug: debug ?? this.debug,
     );
   }
 
@@ -181,6 +195,14 @@ class WireGuardServerRequest {
   final String mtu;
   @JsonKey(defaultValue: '')
   final String dns;
+  
+  /// CARP VHID to depend on (optional)
+  @JsonKey(name: 'carp_depend_on', defaultValue: '')
+  final String carpDependOn;
+  
+  /// Enable debug logging ("1" = enabled, "0" = disabled)
+  @JsonKey(defaultValue: '0')
+  final String debug;
 
   WireGuardServerRequest({
     required this.name,
@@ -194,19 +216,17 @@ class WireGuardServerRequest {
     this.gateway = '',
     this.mtu = '',
     this.dns = '',
+    this.carpDependOn = '',
+    this.debug = '0',
   });
 
   factory WireGuardServerRequest.fromJson(Map<String, dynamic> json) =>
       _$WireGuardServerRequestFromJson(json);
 
   Map<String, dynamic> toJson() {
-    final json = _$WireGuardServerRequestToJson(this);
-    // Remove empty optional fields
-    json.removeWhere((key, value) => 
-      value is String && value.isEmpty && 
-      !['name', 'pubkey', 'privkey', 'port', 'tunneladdress'].contains(key)
-    );
-    return json;
+    // Return all fields including empty ones to match API expectations
+    // The API expects empty strings ("") for optional fields, not null or omitted
+    return _$WireGuardServerRequestToJson(this);
   }
 
   factory WireGuardServerRequest.fromServer(WireGuardServer server) {
@@ -222,6 +242,8 @@ class WireGuardServerRequest {
       gateway: server.gateway,
       mtu: server.mtu,
       dns: server.dns,
+      carpDependOn: server.carpDependOn,
+      debug: server.debug,
     );
   }
 }

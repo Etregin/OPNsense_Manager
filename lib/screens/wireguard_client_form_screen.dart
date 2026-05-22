@@ -107,7 +107,9 @@ class _WireGuardClientFormScreenState extends State<WireGuardClientFormScreen> {
   Future<void> _generateKeys() async {
     final keyPair = await _viewModel.generateKeyPair();
     
-    if (keyPair != null && mounted) {
+    if (!mounted) return;
+    
+    if (keyPair != null) {
       setState(() {
         _publicKeyController.text = keyPair.publicKey;
         _privateKeyController.text = keyPair.privateKey;
@@ -118,6 +120,14 @@ class _WireGuardClientFormScreenState extends State<WireGuardClientFormScreen> {
           content: Text('Keys generated successfully'),
           backgroundColor: Colors.green,
           duration: Duration(seconds: 2),
+        ),
+      );
+    } else if (_viewModel.errorMessage != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_viewModel.errorMessage!),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 4),
         ),
       );
     }

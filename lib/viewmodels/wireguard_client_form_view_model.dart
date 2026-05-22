@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart';
 import '../models/wireguard_client.dart';
 import '../models/wireguard_key_pair.dart';
 import '../services/opnsense_api_service.dart';
@@ -46,11 +47,15 @@ class WireGuardClientFormViewModel extends BaseFormViewModel {
     try {
       final keyPair = await _apiService.generateWireGuardKeyPair();
       _isGeneratingKeys = false;
+      clearError(); // Clear any previous errors on success
       notifyListeners();
       return keyPair;
     } catch (e) {
       _isGeneratingKeys = false;
-      setError('Failed to generate keys: $e');
+      final errorMsg = 'Failed to generate keys: $e';
+      setError(errorMsg);
+      // Log the error for debugging
+      debugPrint('WireGuardClientFormViewModel.generateKeyPair error: $errorMsg');
       return null;
     }
   }

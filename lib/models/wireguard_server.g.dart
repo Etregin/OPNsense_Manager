@@ -20,6 +20,8 @@ WireGuardServer _$WireGuardServerFromJson(Map<String, dynamic> json) =>
       gateway: json['gateway'] as String? ?? '',
       mtu: json['mtu'] as String? ?? '',
       dns: json['dns'] as String? ?? '',
+      carpDependOn: json['carp_depend_on'] as String? ?? '',
+      debug: json['debug'] as String? ?? '0',
     );
 
 Map<String, dynamic> _$WireGuardServerToJson(WireGuardServer instance) =>
@@ -36,6 +38,8 @@ Map<String, dynamic> _$WireGuardServerToJson(WireGuardServer instance) =>
       'gateway': instance.gateway,
       'mtu': instance.mtu,
       'dns': instance.dns,
+      'carp_depend_on': instance.carpDependOn,
+      'debug': instance.debug,
     };
 
 WireGuardServerRequest _$WireGuardServerRequestFromJson(
@@ -52,6 +56,8 @@ WireGuardServerRequest _$WireGuardServerRequestFromJson(
   gateway: json['gateway'] as String? ?? '',
   mtu: json['mtu'] as String? ?? '',
   dns: json['dns'] as String? ?? '',
+  carpDependOn: json['carp_depend_on'] as String? ?? '',
+  debug: json['debug'] as String? ?? '0',
 );
 
 Map<String, dynamic> _$WireGuardServerRequestToJson(
@@ -68,4 +74,6 @@ Map<String, dynamic> _$WireGuardServerRequestToJson(
   'gateway': instance.gateway,
   'mtu': instance.mtu,
   'dns': instance.dns,
+  'carp_depend_on': instance.carpDependOn,
+  'debug': instance.debug,
 };

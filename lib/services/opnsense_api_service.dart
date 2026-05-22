@@ -43,12 +43,14 @@ import 'vpn/ipsec_service.dart';
 import 'network/network_service.dart';
 import 'network/dhcp_service.dart';
 import 'network/gateway_service.dart';
+import 'network/vip_service.dart';
 import 'services/service_control_service.dart';
 import 'tailscale/tailscale_service.dart';
 
 // Re-export ApiException and helper classes for backward compatibility
 export 'base/api_exception.dart';
 export '../models/firewall_alias.dart' show AliasCategory, AliasCountry, AliasTableEntry;
+export 'network/vip_service.dart' show CarpVipOption;
 
 /// Facade service for interacting with OPNsense API
 /// 
@@ -69,6 +71,7 @@ class OPNsenseApiService {
   final NetworkService _networkService = NetworkService();
   final DHCPService _dhcpService = DHCPService();
   final GatewayService _gatewayService = GatewayService();
+  final VipService _vipService = VipService();
   final ServiceControlService _serviceControlService = ServiceControlService();
   final TailscaleService _tailscaleService = TailscaleService();
 
@@ -114,6 +117,7 @@ class OPNsenseApiService {
     _networkService.init(_dio!, config);
     _dhcpService.init(_dio!, config);
     _gatewayService.init(_dio!, config);
+    _vipService.init(_dio!, config);
     _serviceControlService.init(_dio!, config);
     _tailscaleService.init(_dio!, config);
   }
@@ -169,6 +173,7 @@ class OPNsenseApiService {
     _networkService.clear();
     _dhcpService.clear();
     _gatewayService.clear();
+    _vipService.clear();
     _serviceControlService.clear();
     _tailscaleService.clear();
     
@@ -348,6 +353,12 @@ class OPNsenseApiService {
   Future<List<Map<String, dynamic>>> getTrafficTop(String interface) => _networkService.getTrafficTop(interface);
   
   Future<List<NetworkHost>> getNetworkHosts({String interface = 'lan'}) => _networkService.getNetworkHosts(interface: interface);
+
+  // ============================================================================
+  // VIP Service Delegations
+  // ============================================================================
+
+  Future<List<CarpVipOption>> getCarpVipOptions() => _vipService.getCarpVipOptions();
 
   // ============================================================================
   // DHCP Service Delegations
