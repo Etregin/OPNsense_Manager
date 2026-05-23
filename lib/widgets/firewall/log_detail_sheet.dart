@@ -442,4 +442,4 @@ class LogDetailSheet extends StatelessWidget {
   }
 }
 
-// Made with Bob
+

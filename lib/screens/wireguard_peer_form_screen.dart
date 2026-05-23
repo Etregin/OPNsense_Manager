@@ -307,14 +307,14 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
                   ),
                 ),
                 validator: (value) {
-                  final trimmedValue = value?.trim() ?? '';
-                  if (trimmedValue.isEmpty) {
-                    return 'Key is required';
+                  final trimmed = value?.trim() ?? '';
+                  if (trimmed.isEmpty) {
+                    return 'Public key is required';
                   }
-                  // Only validate base64 format, no length restriction for peer keys
-                  final base64Pattern = RegExp(r'^[A-Za-z0-9+/]+=*$');
-                  if (!base64Pattern.hasMatch(trimmedValue)) {
-                    return 'Invalid key format (must be base64)';
+                  // Base64 pattern: allows A-Z, a-z, 0-9, +, /, and up to 2 = for padding
+                  final base64Pattern = RegExp(r'^[A-Za-z0-9+/]*={0,2}$');
+                  if (!base64Pattern.hasMatch(trimmed)) {
+                    return 'Invalid Base64 format';
                   }
                   return null;
                 },
@@ -345,14 +345,14 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
                   ),
                 ),
                 validator: (value) {
-                  final trimmedValue = value?.trim() ?? '';
-                  if (trimmedValue.isEmpty) {
+                  final trimmed = value?.trim() ?? '';
+                  if (trimmed.isEmpty) {
                     return null; // Optional field
                   }
-                  // Only validate base64 format, no length restriction for peer keys
-                  final base64Pattern = RegExp(r'^[A-Za-z0-9+/]+=*$');
-                  if (!base64Pattern.hasMatch(trimmedValue)) {
-                    return 'Invalid key format (must be base64)';
+                  // Base64 pattern: allows A-Z, a-z, 0-9, +, /, and up to 2 = for padding
+                  final base64Pattern = RegExp(r'^[A-Za-z0-9+/]*={0,2}$');
+                  if (!base64Pattern.hasMatch(trimmed)) {
+                    return 'Invalid Base64 format';
                   }
                   return null;
                 },
@@ -572,4 +572,4 @@ class _ServerSelectorDialogState extends State<_ServerSelectorDialog> {
   }
 }
 
-// Made with Bob
+

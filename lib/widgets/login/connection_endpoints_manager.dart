@@ -312,7 +312,7 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
   }
 }
 
-// Made with Bob
+
 /// Private StatefulWidget for the connection dialog
 /// 
 /// Manages TextEditingController lifecycle properly to avoid disposal issues

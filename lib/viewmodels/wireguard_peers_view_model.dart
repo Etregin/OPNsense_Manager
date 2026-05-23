@@ -97,4 +97,4 @@ class WireGuardPeersViewModel extends BaseListViewModel<WireGuardPeer> {
   Future<void> refreshPeers() => refresh();
 }
 
-// Made with Bob
+

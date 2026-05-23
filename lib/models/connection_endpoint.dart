@@ -100,5 +100,3 @@ class ConnectionEndpoint {
     );
   }
 }
-
-// Made with Bob

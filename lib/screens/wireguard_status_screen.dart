@@ -42,4 +42,4 @@ class _WireGuardStatusScreenState extends State<WireGuardStatusScreen> {
   }
 }
 
-// Made with Bob
+
