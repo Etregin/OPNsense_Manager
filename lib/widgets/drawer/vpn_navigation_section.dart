@@ -20,8 +20,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/vpn_connection.dart';
 import '../../screens/wireguard_servers_screen.dart';
-import '../../screens/wireguard_clients_screen.dart';
 import '../../screens/wireguard_peers_screen.dart';
+import '../../screens/wireguard_peer_generator_screen.dart';
+import '../../screens/wireguard_status_screen.dart';
+import '../../screens/wireguard_log_file_screen.dart';
 import '../../screens/tailscale_authentication_screen.dart';
 import '../../screens/tailscale_settings_screen.dart';
 import '../../screens/tailscale_status_screen.dart';
@@ -140,17 +142,31 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
-          title: 'Clients',
-          currentRoute: widget.currentRoute,
-          targetRoute: 'wireguard_clients',
-          destination: const WireGuardClientsScreen(),
-          contentPadding: const EdgeInsets.only(left: 96, right: 16),
-        ),
-        NavigationTile(
           title: 'Peers',
           currentRoute: widget.currentRoute,
           targetRoute: 'wireguard_peers',
           destination: const WireGuardPeersScreen(),
+          contentPadding: const EdgeInsets.only(left: 96, right: 16),
+        ),
+        NavigationTile(
+          title: 'Peer Generator',
+          currentRoute: widget.currentRoute,
+          targetRoute: 'wireguard_peer_generator',
+          destination: const WireGuardPeerGeneratorScreen(),
+          contentPadding: const EdgeInsets.only(left: 96, right: 16),
+        ),
+        NavigationTile(
+          title: 'Status',
+          currentRoute: widget.currentRoute,
+          targetRoute: 'wireguard_status',
+          destination: const WireGuardStatusScreen(),
+          contentPadding: const EdgeInsets.only(left: 96, right: 16),
+        ),
+        NavigationTile(
+          title: 'Logs',
+          currentRoute: widget.currentRoute,
+          targetRoute: 'wireguard_logs',
+          destination: const WireGuardLogFileScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
       ],

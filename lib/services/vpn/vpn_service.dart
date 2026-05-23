@@ -378,18 +378,18 @@ class VPNService extends BaseOPNsenseService {
         // Silently handle error
       }
 
-      // Get WireGuard clients
+      // Get WireGuard peers
       try {
-        final clients = await _wireguardService.getWireGuardClients();
-        for (var client in clients) {
+        final peers = await _wireguardService.getWireGuardPeers();
+        for (var peer in peers) {
           connections.add(VPNConnection(
-            id: client.uuid,
-            name: client.name,
+            id: peer.uuid,
+            name: peer.name,
             type: 'wireguard',
-            status: client.isEnabled ? 'up' : 'down',
-            description: 'WireGuard VPN Client',
-            virtualAddress: client.tunneladdress,
-            enabled: client.isEnabled,
+            status: peer.isEnabled ? 'up' : 'down',
+            description: 'WireGuard VPN Peer',
+            virtualAddress: peer.tunneladdress,
+            enabled: peer.isEnabled,
           ));
         }
       } catch (e) {

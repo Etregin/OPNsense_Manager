@@ -33,68 +33,84 @@ class WireGuardPeer {
   final String name;
   
   /// Peer's public key (base64 encoded)
-  final String pubkey;
+  final String? pubkey;
   
-  /// Pre-shared key for additional security (base64 encoded, optional)
-  @JsonKey(defaultValue: '')
-  final String psk;
+  /// Peer's private key (base64 encoded, sensitive)
+  final String? privkey;
   
-  /// Allowed tunnel addresses/IPs in CIDR notation (comma-separated)
-  /// Defines which IPs this peer is allowed to use
-  /// Example: "10.10.10.2/32,fd00::2/128"
-  final String tunneladdress;
+  /// Tunnel IP addresses in CIDR notation (comma-separated)
+  /// Example: "10.10.10.2/24"
+  final String? tunneladdress;
   
-  /// Peer endpoint address (IP:port, optional)
-  /// Only needed if peer is behind NAT and server needs to initiate
-  @JsonKey(defaultValue: '')
-  final String endpoint;
+  /// Remote server endpoint address (IP or hostname)
+  final String? serveraddress;
+  
+  /// Remote server port
+  final String? serverport;
+  
+  /// Remote server's public key (base64 encoded)
+  final String? serverpubkey;
+  
+  /// Endpoint address (alternative to serveraddress, optional)
+  final String? endpoint;
+  
+  /// Comma-separated list of server UUIDs (optional)
+  final String? servers;
   
   /// Persistent keepalive interval in seconds (optional)
   /// Recommended: 25 seconds for NAT traversal
-  @JsonKey(defaultValue: '')
-  final String keepalive;
+  final String? keepalive;
+  
+  /// Pre-shared key for additional security (base64 encoded, optional)
+  final String? psk;
+  
+  /// Server name (display name from API response)
+  @JsonKey(name: '%servers')
+  final String? serverName;
 
   WireGuardPeer({
     required this.uuid,
     required this.enabled,
     required this.name,
-    required this.pubkey,
-    this.psk = '',
-    required this.tunneladdress,
-    this.endpoint = '',
-    this.keepalive = '',
+    this.pubkey,
+    this.privkey,
+    this.tunneladdress,
+    this.serveraddress,
+    this.serverport,
+    this.serverpubkey,
+    this.endpoint,
+    this.servers,
+    this.keepalive,
+    this.psk,
+    this.serverName,
   });
 
   /// Check if peer is enabled
   bool get isEnabled => enabled == "1";
   
-  /// Get allowed tunnel addresses as a list
+  /// Get tunnel addresses as a list
   List<String> get tunnelAddressList {
-    if (tunneladdress.isEmpty) return [];
-    return tunneladdress.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+    if (tunneladdress == null || tunneladdress!.isEmpty) return [];
+    return tunneladdress!.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
   }
   
-  /// Check if endpoint is configured
-  bool get hasEndpoint => endpoint.isNotEmpty;
+  /// Get server port as integer
+  int get serverPortNumber => int.tryParse(serverport ?? '') ?? 51820;
   
   /// Get keepalive interval as integer (null if not set)
   int? get keepaliveInterval {
-    if (keepalive.isEmpty) return null;
-    return int.tryParse(keepalive);
+    if (keepalive == null || keepalive!.isEmpty) return null;
+    return int.tryParse(keepalive!);
+  }
+  
+  /// Get server UUIDs as a list
+  List<String> get serverUuidList {
+    if (servers == null || servers!.isEmpty) return [];
+    return servers!.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
   }
   
   /// Check if pre-shared key is configured
-  bool get hasPresharedKey => psk.isNotEmpty;
-  
-  /// Parse endpoint into host and port (returns null if not configured)
-  ({String host, int port})? get endpointParsed {
-    if (!hasEndpoint) return null;
-    final parts = endpoint.split(':');
-    if (parts.length != 2) return null;
-    final port = int.tryParse(parts[1]);
-    if (port == null) return null;
-    return (host: parts[0], port: port);
-  }
+  bool get hasPresharedKey => psk != null && psk!.isNotEmpty;
 
   factory WireGuardPeer.fromJson(Map<String, dynamic> json) =>
       _$WireGuardPeerFromJson(json);
@@ -106,25 +122,37 @@ class WireGuardPeer {
     String? enabled,
     String? name,
     String? pubkey,
-    String? psk,
+    String? privkey,
     String? tunneladdress,
+    String? serveraddress,
+    String? serverport,
+    String? serverpubkey,
     String? endpoint,
+    String? servers,
     String? keepalive,
+    String? psk,
+    String? serverName,
   }) {
     return WireGuardPeer(
       uuid: uuid ?? this.uuid,
       enabled: enabled ?? this.enabled,
       name: name ?? this.name,
       pubkey: pubkey ?? this.pubkey,
-      psk: psk ?? this.psk,
+      privkey: privkey ?? this.privkey,
       tunneladdress: tunneladdress ?? this.tunneladdress,
+      serveraddress: serveraddress ?? this.serveraddress,
+      serverport: serverport ?? this.serverport,
+      serverpubkey: serverpubkey ?? this.serverpubkey,
       endpoint: endpoint ?? this.endpoint,
+      servers: servers ?? this.servers,
       keepalive: keepalive ?? this.keepalive,
+      psk: psk ?? this.psk,
+      serverName: serverName ?? this.serverName,
     );
   }
 
   @override
-  String toString() => 'WireGuardPeer(uuid: $uuid, name: $name)';
+  String toString() => 'WireGuardPeer(uuid: $uuid, name: $name, server: $serveraddress:$serverport)';
 
   @override
   bool operator ==(Object other) {
@@ -141,24 +169,31 @@ class WireGuardPeer {
 class WireGuardPeerRequest {
   final String name;
   final String pubkey;
+  final String privkey;
   final String tunneladdress;
+  final String serveraddress;
+  final String serverport;
+  final String serverpubkey;
   @JsonKey(defaultValue: '1')
   final String enabled;
-  @JsonKey(defaultValue: '')
-  final String psk;
-  @JsonKey(defaultValue: '')
-  final String endpoint;
-  @JsonKey(defaultValue: '')
-  final String keepalive;
+  final String? endpoint;
+  final String? servers;
+  final String? keepalive;
+  final String? psk;
 
   WireGuardPeerRequest({
     required this.name,
     required this.pubkey,
+    required this.privkey,
     required this.tunneladdress,
+    required this.serveraddress,
+    required this.serverport,
+    required this.serverpubkey,
     this.enabled = '1',
-    this.psk = '',
-    this.endpoint = '',
-    this.keepalive = '',
+    this.endpoint,
+    this.servers,
+    this.keepalive,
+    this.psk,
   });
 
   factory WireGuardPeerRequest.fromJson(Map<String, dynamic> json) =>
@@ -166,23 +201,25 @@ class WireGuardPeerRequest {
 
   Map<String, dynamic> toJson() {
     final json = _$WireGuardPeerRequestToJson(this);
-    // Remove empty optional fields
-    json.removeWhere((key, value) => 
-      value is String && value.isEmpty && 
-      !['name', 'pubkey', 'tunneladdress'].contains(key)
-    );
+    // Remove null optional fields
+    json.removeWhere((key, value) => value == null);
     return json;
   }
 
   factory WireGuardPeerRequest.fromPeer(WireGuardPeer peer) {
     return WireGuardPeerRequest(
       name: peer.name,
-      pubkey: peer.pubkey,
-      tunneladdress: peer.tunneladdress,
+      pubkey: peer.pubkey ?? '',
+      privkey: peer.privkey ?? '',
+      tunneladdress: peer.tunneladdress ?? '',
+      serveraddress: peer.serveraddress ?? '',
+      serverport: peer.serverport ?? '',
+      serverpubkey: peer.serverpubkey ?? '',
       enabled: peer.enabled,
-      psk: peer.psk,
       endpoint: peer.endpoint,
+      servers: peer.servers,
       keepalive: peer.keepalive,
+      psk: peer.psk,
     );
   }
 }

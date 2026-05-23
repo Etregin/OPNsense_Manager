@@ -23,7 +23,7 @@ import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
 import '../models/network_host.dart';
 import '../models/wireguard_server.dart';
-import '../models/wireguard_client.dart';
+import '../models/wireguard_peer.dart';
 import '../models/tailscale_status.dart';
 import '../models/tailscale_settings.dart';
 import 'demo_data_service.dart';
@@ -253,15 +253,15 @@ class DemoApiService {
 
   // ==================== WireGuard VPN ====================
 
-  /// Get WireGuard clients
-  Future<List<WireGuardClient>> getWireGuardClients() =>
+  /// Get WireGuard peers
+  Future<List<WireGuardPeer>> getWireGuardPeers() =>
       DemoApiDecorator.execute(
         isDemoMode: _isDemoMode,
         demoAction: () async {
-          final demoData = _demoDataService.generateWireGuardClients();
-          return demoData.map((data) => WireGuardClient.fromJson(data)).toList();
+          final demoData = _demoDataService.generateWireGuardPeers();
+          return demoData.map((data) => WireGuardPeer.fromJson(data)).toList();
         },
-        realAction: () => _realApiService.getWireGuardClients(),
+        realAction: () => _realApiService.getWireGuardPeers(),
         delayMs: 400,
       );
 

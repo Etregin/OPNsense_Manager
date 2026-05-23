@@ -118,11 +118,11 @@ class DemoVPNDataGenerator {
     ];
   }
 
-  /// Generate demo WireGuard clients
-  List<Map<String, dynamic>> generateWireGuardClients() {
+  /// Generate demo WireGuard peers
+  List<Map<String, dynamic>> generateWireGuardPeers() {
     return [
       {
-        'uuid': 'wg-client-1',
+        'uuid': 'wg-peer-1',
         'enabled': '1',
         'name': 'Mobile Device',
         'pubkey': 'xTIBA5rboUvnH4htodjb6e697QjLERt1NAB4mZqp8Dg=',
@@ -132,7 +132,7 @@ class DemoVPNDataGenerator {
         'keepalive': '25',
       },
       {
-        'uuid': 'wg-client-2',
+        'uuid': 'wg-peer-2',
         'enabled': '1',
         'name': 'Laptop',
         'pubkey': 'HIgo9xNzJMWLKASShiTqIybxZ0U3wGLiUeJ1PKf8ykw=',
@@ -142,7 +142,7 @@ class DemoVPNDataGenerator {
         'keepalive': '25',
       },
       {
-        'uuid': 'wg-client-3',
+        'uuid': 'wg-peer-3',
         'enabled': '0',
         'name': 'Tablet',
         'pubkey': 'gN65BkIKy1eCE9pP1wdc8ROUtkHLF2PfAqYdyYBz6EA=',

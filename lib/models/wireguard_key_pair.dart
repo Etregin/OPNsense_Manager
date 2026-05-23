@@ -38,10 +38,12 @@ class WireGuardKeyPair {
 
   /// Validate key format (base64, 44 characters)
   static bool isValidKey(String key) {
-    if (key.length != 44) return false;
+    // Trim whitespace before validation
+    final trimmedKey = key.trim();
+    if (trimmedKey.length != 44) return false;
     // Base64 pattern with optional padding
     final base64Pattern = RegExp(r'^[A-Za-z0-9+/]{43}=$');
-    return base64Pattern.hasMatch(key);
+    return base64Pattern.hasMatch(trimmedKey);
   }
   
   /// Check if public key is valid

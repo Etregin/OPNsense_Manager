@@ -105,9 +105,9 @@ class DemoDataService {
   /// Generate demo VPN connections
   List<VPNConnection> generateVPNConnections() => _vpnGenerator.generateVPNConnections();
 
-  /// Generate demo WireGuard clients
-  List<Map<String, dynamic>> generateWireGuardClients() => 
-      _vpnGenerator.generateWireGuardClients();
+  /// Generate demo WireGuard peers
+  List<Map<String, dynamic>> generateWireGuardPeers() =>
+      _vpnGenerator.generateWireGuardPeers();
 
   /// Generate demo WireGuard servers
   List<Map<String, dynamic>> generateWireGuardServers() => 

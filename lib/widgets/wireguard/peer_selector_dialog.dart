@@ -74,7 +74,7 @@ class _PeerSelectorDialogState extends State<PeerSelectorDialog> {
                   
                   return CheckboxListTile(
                     title: Text(peer.name),
-                    subtitle: Text('${peer.pubkey.substring(0, 20)}...'),
+                    subtitle: Text('${peer.pubkey?.substring(0, 20) ?? "No key"}...'),
                     value: isSelected,
                     onChanged: (value) {
                       setState(() {

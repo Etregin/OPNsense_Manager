@@ -21,7 +21,9 @@ import 'package:provider/provider.dart';
 import '../models/wireguard_peer.dart';
 import '../models/system_info.dart';
 import '../services/opnsense_api_service.dart';
+import '../viewmodels/wireguard_peers_view_model.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/wireguard/peer_card.dart';
 import '../l10n/app_localizations.dart';
 import 'wireguard_peer_form_screen.dart';
 
@@ -34,22 +36,30 @@ class WireGuardPeersScreen extends StatefulWidget {
 }
 
 class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
-  List<WireGuardPeer> _peers = [];
+  late WireGuardPeersViewModel _viewModel;
   SystemInfo? _systemInfo;
-  bool _isLoading = true;
-  String? _errorMessage;
-  String _searchQuery = '';
-  final Set<String> _togglingPeers = {};
+  bool _isInitialized = false;
 
   @override
-  void initState() {
-    super.initState();
-    _loadData();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      final apiService = context.read<OPNsenseApiService>();
+      _viewModel = WireGuardPeersViewModel(apiService);
+      _isInitialized = true;
+      _loadData();
+    }
+  }
+
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
     await Future.wait([
-      _loadPeers(),
+      _viewModel.loadItems(),
       _loadSystemInfo(),
     ]);
   }
@@ -69,59 +79,9 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
     }
   }
 
-  Future<void> _loadPeers() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final apiService = context.read<OPNsenseApiService>();
-      final peers = await apiService.getWireGuardPeers();
-
-      if (mounted) {
-        setState(() {
-          _peers = peers;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  List<WireGuardPeer> get _filteredPeers {
-    if (_searchQuery.isEmpty) {
-      return _peers;
-    }
-
-    final query = _searchQuery.toLowerCase();
-    return _peers.where((peer) {
-      return peer.name.toLowerCase().contains(query) ||
-          peer.pubkey.toLowerCase().contains(query) ||
-          peer.tunnelAddressList.any((addr) => addr.toLowerCase().contains(query)) ||
-          (peer.hasEndpoint && peer.endpoint.toLowerCase().contains(query));
-    }).toList();
-  }
-
   Future<void> _togglePeer(WireGuardPeer peer) async {
-    if (_togglingPeers.contains(peer.uuid)) {
-      return;
-    }
-
-    setState(() {
-      _togglingPeers.add(peer.uuid);
-    });
-
     try {
-      final apiService = context.read<OPNsenseApiService>();
-      await apiService.toggleWireGuardPeer(peer.uuid, !peer.isEnabled);
-
+      await _viewModel.togglePeer(peer.uuid, !peer.isEnabled);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -130,7 +90,6 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
             duration: const Duration(seconds: 2),
           ),
         );
-        await _loadPeers();
       }
     } catch (e) {
       if (mounted) {
@@ -141,12 +100,6 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
             duration: const Duration(seconds: 3),
           ),
         );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _togglingPeers.remove(peer.uuid);
-        });
       }
     }
   }
@@ -179,9 +132,7 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
 
     if (confirmed == true && mounted) {
       try {
-        final apiService = context.read<OPNsenseApiService>();
-        await apiService.deleteWireGuardPeer(peer.uuid);
-
+        await _viewModel.deletePeer(peer.uuid);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -189,7 +140,6 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
               backgroundColor: Colors.green,
             ),
           );
-          _loadPeers();
         }
       } catch (e) {
         if (mounted) {
@@ -217,22 +167,34 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               _buildDetailRow('Enabled', peer.isEnabled ? 'Yes' : 'No'),
-              _buildDetailRow('Public Key', '${peer.pubkey.substring(0, 20)}...'),
-              if (peer.hasEndpoint)
-                _buildDetailRow('Endpoint', peer.endpoint),
+              if (peer.serverName != null && peer.serverName!.isNotEmpty)
+                _buildDetailRow('Server', peer.serverName!),
+              if (peer.tunneladdress != null && peer.tunneladdress!.isNotEmpty)
+                _buildDetailRow('Tunnel Address', peer.tunneladdress!),
+              if (peer.serveraddress != null && peer.serveraddress!.isNotEmpty)
+                _buildDetailRow('Server Address', peer.serveraddress!),
+              if (peer.serverport != null && peer.serverport!.isNotEmpty)
+                _buildDetailRow('Server Port', peer.serverport!),
+              if (peer.endpoint != null && peer.endpoint!.isNotEmpty)
+                _buildDetailRow('Endpoint', peer.endpoint!),
               if (peer.keepaliveInterval != null)
-                _buildDetailRow('Keepalive', '${peer.keepaliveInterval} seconds'),
-              _buildDetailRow('Pre-shared Key', peer.hasPresharedKey ? 'Configured' : 'Not configured'),
+                _buildDetailRow('Keepalive', '${peer.keepaliveInterval}s'),
+              if (peer.hasPresharedKey)
+                _buildDetailRow('Pre-shared Key', 'Configured'),
               const Divider(),
               const Text(
-                'Allowed Tunnel Addresses:',
+                'Public Key:',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              ...peer.tunnelAddressList.map((addr) => Padding(
-                padding: const EdgeInsets.only(left: 16, bottom: 4),
-                child: Text('• $addr'),
-              )),
+              if (peer.pubkey != null)
+                SelectableText(
+                  peer.pubkey!,
+                  style: const TextStyle(
+                    fontFamily: 'monospace',
+                    fontSize: 12,
+                  ),
+                ),
             ],
           ),
         ),
@@ -267,211 +229,147 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
     );
   }
 
-  void _navigateToForm([WireGuardPeer? peer]) {
-    Navigator.of(context).push(
+  Future<void> _navigateToForm([WireGuardPeer? peer]) async {
+    final result = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
-        builder: (context) => WireGuardPeerFormScreen(peer: peer),
+        builder: (context) => WireGuardPeerFormScreen(
+          peerUuid: peer?.uuid,
+        ),
       ),
-    ).then((_) => _loadPeers());
+    );
+
+    // Refresh the list if the form was saved successfully
+    if (result == true && mounted) {
+      await _viewModel.refreshPeers();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final filteredPeers = _filteredPeers;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('WireGuard Peers'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadPeers,
-            tooltip: l10n.refresh,
-          ),
-        ],
-      ),
-      drawer: AppDrawer(
-        currentRoute: 'wireguard_peers',
-        systemInfo: _systemInfo,
-      ),
-      body: Column(
-        children: [
-          // Search bar
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search peers...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        final peers = _viewModel.items;
+        final isLoading = _viewModel.isLoading;
+        final errorMessage = _viewModel.errorMessage;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('WireGuard Peers'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: _viewModel.refreshPeers,
+                tooltip: l10n.refresh,
               ),
-              onChanged: (value) {
-                setState(() {
-                  _searchQuery = value;
-                });
-              },
-            ),
+            ],
           ),
-          // Peers list
-          Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _errorMessage != null
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                            const SizedBox(height: 16),
-                            Text(
-                              l10n.error,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(_errorMessage!),
-                            const SizedBox(height: 16),
-                            ElevatedButton.icon(
-                              onPressed: _loadPeers,
-                              icon: const Icon(Icons.refresh),
-                              label: Text(l10n.retry),
-                            ),
-                          ],
-                        ),
-                      )
-                    : filteredPeers.isEmpty
+          drawer: AppDrawer(
+            currentRoute: 'wireguard_peers',
+            systemInfo: _systemInfo,
+          ),
+          body: Column(
+            children: [
+              // Search bar
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search peers...',
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                  ),
+                  onChanged: _viewModel.setSearchQuery,
+                ),
+              ),
+              // Peers list
+              Expanded(
+                child: isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : errorMessage != null
                         ? Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(Icons.people, size: 48, color: Colors.grey),
+                                const Icon(
+                                  Icons.error_outline,
+                                  size: 48,
+                                  color: Colors.red,
+                                ),
                                 const SizedBox(height: 16),
                                 Text(
-                                  _searchQuery.isNotEmpty
-                                      ? 'No peers match your search'
-                                      : 'No WireGuard peers configured',
-                                  style: Theme.of(context).textTheme.titleMedium,
+                                  l10n.error,
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                ),
+                                const SizedBox(height: 8),
+                                Text(errorMessage),
+                                const SizedBox(height: 16),
+                                ElevatedButton.icon(
+                                  onPressed: _viewModel.refreshPeers,
+                                  icon: const Icon(Icons.refresh),
+                                  label: Text(l10n.retry),
                                 ),
                               ],
                             ),
                           )
-                        : RefreshIndicator(
-                            onRefresh: _loadPeers,
-                            child: ListView.builder(
-                              itemCount: filteredPeers.length,
-                              itemBuilder: (context, index) {
-                                final peer = filteredPeers[index];
-                                final isToggling = _togglingPeers.contains(peer.uuid);
-
-                                return Card(
-                                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                                  child: ListTile(
-                                    leading: CircleAvatar(
-                                      backgroundColor: peer.isEnabled
-                                          ? Colors.green
-                                          : Colors.grey,
-                                      child: const Icon(
-                                        Icons.people,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
+                        : peers.isEmpty
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.vpn_key,
+                                      size: 48,
+                                      color: Colors.grey,
                                     ),
-                                    title: Text(
-                                      peer.name,
-                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      _viewModel.searchQuery.isNotEmpty
+                                          ? 'No peers match your search'
+                                          : 'No WireGuard peers configured',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
                                     ),
-                                    subtitle: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text('Key: ${peer.pubkey.substring(0, 20)}...'),
-                                        Text('Allowed IPs: ${peer.tunnelAddressList.join(", ")}'),
-                                        if (peer.hasEndpoint)
-                                          Text('Endpoint: ${peer.endpoint}'),
-                                      ],
-                                    ),
-                                    trailing: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        if (isToggling)
-                                          const SizedBox(
-                                            width: 24,
-                                            height: 24,
-                                            child: CircularProgressIndicator(strokeWidth: 2),
-                                          )
-                                        else
-                                          Switch(
-                                            value: peer.isEnabled,
-                                            onChanged: (value) => _togglePeer(peer),
-                                            activeTrackColor: Colors.green,
-                                          ),
-                                        const SizedBox(width: 8),
-                                        PopupMenuButton<String>(
-                                          onSelected: (value) {
-                                            switch (value) {
-                                              case 'view':
-                                                _showPeerDetails(peer);
-                                                break;
-                                              case 'edit':
-                                                _navigateToForm(peer);
-                                                break;
-                                              case 'delete':
-                                                _deletePeer(peer);
-                                                break;
-                                            }
-                                          },
-                                          itemBuilder: (context) => [
-                                            const PopupMenuItem(
-                                              value: 'view',
-                                              child: Row(
-                                                children: [
-                                                  Icon(Icons.visibility),
-                                                  SizedBox(width: 8),
-                                                  Text('View Details'),
-                                                ],
-                                              ),
-                                            ),
-                                            const PopupMenuItem(
-                                              value: 'edit',
-                                              child: Row(
-                                                children: [
-                                                  Icon(Icons.edit),
-                                                  SizedBox(width: 8),
-                                                  Text('Edit'),
-                                                ],
-                                              ),
-                                            ),
-                                            const PopupMenuItem(
-                                              value: 'delete',
-                                              child: Row(
-                                                children: [
-                                                  Icon(Icons.delete, color: Colors.red),
-                                                  SizedBox(width: 8),
-                                                  Text('Delete', style: TextStyle(color: Colors.red)),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    onTap: () => _showPeerDetails(peer),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
+                                  ],
+                                ),
+                              )
+                            : RefreshIndicator(
+                                onRefresh: _viewModel.refreshPeers,
+                                child: ListView.builder(
+                                  itemCount: peers.length,
+                                  itemBuilder: (context, index) {
+                                    final peer = peers[index];
+                                    return PeerCard(
+                                      peer: peer,
+                                      isToggling: _viewModel.isToggling(peer.uuid),
+                                      onTap: () => _showPeerDetails(peer),
+                                      onToggle: (value) => _togglePeer(peer),
+                                      onEdit: () => _navigateToForm(peer),
+                                      onDelete: () => _deletePeer(peer),
+                                    );
+                                  },
+                                ),
+                              ),
+              ),
+            ],
           ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _navigateToForm(),
-        child: const Icon(Icons.add),
-      ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => _navigateToForm(),
+            child: const Icon(Icons.add),
+          ),
+        );
+      },
     );
   }
 }
 
-
+// Made with Bob

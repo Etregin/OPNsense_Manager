@@ -17,90 +17,156 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../models/wireguard_peer.dart';
-import '../services/opnsense_api_service.dart';
 import '../viewmodels/wireguard_peer_form_view_model.dart';
 import '../widgets/common/loading_overlay.dart';
-import '../widgets/common/form_section_container.dart';
 import '../widgets/wireguard/list_manager_card.dart';
-import '../widgets/wireguard/peer_settings_card.dart';
+import '../utils/common_validators.dart';
 import '../utils/wireguard_validators.dart';
 
-/// Refactored form screen for creating/editing WireGuard peers
+/// Form screen for creating/editing WireGuard peers (clients)
 class WireGuardPeerFormScreen extends StatefulWidget {
-  final WireGuardPeer? peer;
+  final String? peerUuid;
 
-  const WireGuardPeerFormScreen({super.key, this.peer});
-
-  bool get isEditing => peer != null;
+  const WireGuardPeerFormScreen({super.key, this.peerUuid});
 
   @override
-  State<WireGuardPeerFormScreen> createState() => _WireGuardPeerFormScreenState();
+  State<WireGuardPeerFormScreen> createState() =>
+      _WireGuardPeerFormScreenState();
 }
 
 class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
+  late WireGuardPeerFormViewModel _viewModel;
   final _formKey = GlobalKey<FormState>();
+
+  // Controllers
   final _nameController = TextEditingController();
   final _publicKeyController = TextEditingController();
+  final _privateKeyController = TextEditingController(); // Dummy for KeyPairSection
+  final _pskController = TextEditingController();
+  final _serverAddressController = TextEditingController();
+  final _serverPortController = TextEditingController();
   final _endpointController = TextEditingController();
   final _keepaliveController = TextEditingController();
-  final _pskController = TextEditingController();
 
-  late WireGuardPeerFormViewModel _viewModel;
+  // State
   List<String> _tunnelAddresses = [];
+  List<String> _selectedServerUuids = [];
   bool _enabled = true;
+  bool _publicKeyVisible = false;
+  bool _pskVisible = false;
 
   @override
   void initState() {
     super.initState();
     _viewModel = WireGuardPeerFormViewModel(
-      apiService: context.read<OPNsenseApiService>(),
-      existingPeer: widget.peer,
+      apiService: context.read(),
+      existingPeerUuid: widget.peerUuid,
     );
-    
-    if (widget.isEditing) {
-      _loadPeerData();
-    }
-  }
+    _viewModel.addListener(_onViewModelChanged);
+    _viewModel.loadServers();
 
-  void _loadPeerData() {
-    final peer = widget.peer!;
-    _nameController.text = peer.name;
-    _publicKeyController.text = peer.pubkey;
-    _tunnelAddresses = List.from(peer.tunnelAddressList);
-    _enabled = peer.isEnabled;
-    if (peer.hasEndpoint) {
-      _endpointController.text = peer.endpoint;
-    }
-    if (peer.keepaliveInterval != null) {
-      _keepaliveController.text = peer.keepaliveInterval.toString();
-    }
-    if (peer.hasPresharedKey) {
-      _pskController.text = peer.psk;
+    if (_viewModel.isEditing) {
+      _loadPeerData();
+    } else {
+      _serverPortController.text = '51820';
     }
   }
 
   @override
   void dispose() {
+    _viewModel.removeListener(_onViewModelChanged);
+    _viewModel.dispose();
     _nameController.dispose();
     _publicKeyController.dispose();
+    _privateKeyController.dispose();
+    _pskController.dispose();
+    _serverAddressController.dispose();
+    _serverPortController.dispose();
     _endpointController.dispose();
     _keepaliveController.dispose();
-    _pskController.dispose();
-    _viewModel.dispose();
     super.dispose();
   }
 
-  Future<void> _savePeer() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
+  void _onViewModelChanged() {
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _loadPeerData() async {
+    await _viewModel.loadPeer(widget.peerUuid!);
+    
+    if (!mounted) return;
+    
+    final peerData = _viewModel.loadedPeerData;
+    if (peerData != null) {
+      debugPrint('WireGuardPeerFormScreen: Loading peer data');
+      debugPrint('WireGuardPeerFormScreen: PSK from peerData: "${peerData.psk}"');
+      debugPrint('WireGuardPeerFormScreen: PSK length: ${peerData.psk.length}');
+      
+      setState(() {
+        // Update all controllers and state together to ensure proper rebuild
+        _nameController.text = peerData.name;
+        _publicKeyController.text = peerData.pubkey;
+        _pskController.text = peerData.psk;
+        _serverAddressController.text = peerData.serveraddress;
+        _serverPortController.text = peerData.serverport;
+        _endpointController.text = peerData.endpoint;
+        _keepaliveController.text = peerData.keepalive;
+        _tunnelAddresses = peerData.getSelectedTunnelAddresses();
+        _selectedServerUuids = peerData.getSelectedServerUuids();
+        _enabled = peerData.enabled == '1';
+      });
+      
+      debugPrint('WireGuardPeerFormScreen: PSK controller text after set: "${_pskController.text}"');
     }
+  }
+
+  Future<void> _generatePsk() async {
+    final psk = await _viewModel.generatePsk();
+    
+    if (!mounted) return;
+    
+    if (psk != null) {
+      setState(() {
+        _pskController.text = psk;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Pre-shared key generated successfully'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    } else if (_viewModel.errorMessage != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_viewModel.errorMessage!),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 4),
+        ),
+      );
+    }
+  }
+
+  Future<void> _savePeer() async {
+    if (!_formKey.currentState!.validate()) return;
 
     if (_tunnelAddresses.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('At least one allowed tunnel address is required'),
+          content: Text('At least one tunnel address is required'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (_selectedServerUuids.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('At least one server must be selected'),
           backgroundColor: Colors.red,
         ),
       );
@@ -110,46 +176,61 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
     final request = WireGuardPeerRequest(
       name: _nameController.text.trim(),
       pubkey: _publicKeyController.text.trim(),
+      privkey: '', // Private key not needed for peer configuration
       tunneladdress: _tunnelAddresses.join(','),
+      serveraddress: _serverAddressController.text.trim(),
+      serverport: _serverPortController.text.trim(),
+      serverpubkey: '', // Server public key will be set by backend
       enabled: _enabled ? '1' : '0',
-      endpoint: _endpointController.text.trim(),
-      keepalive: _keepaliveController.text.trim(),
-      psk: _pskController.text.trim(),
+      endpoint: _endpointController.text.trim().isEmpty 
+          ? null 
+          : _endpointController.text.trim(),
+      servers: _selectedServerUuids.join(','),
+      keepalive: _keepaliveController.text.trim().isEmpty 
+          ? null 
+          : _keepaliveController.text.trim(),
+      psk: _pskController.text.trim().isEmpty 
+          ? null 
+          : _pskController.text.trim(),
     );
 
     final success = await _viewModel.savePeer(request);
 
-    if (success && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            widget.isEditing ? 'Peer updated successfully' : 'Peer created successfully',
+    if (mounted) {
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              _viewModel.isEditing
+                  ? 'Peer updated successfully'
+                  : 'Peer created successfully',
+            ),
+            backgroundColor: Colors.green,
           ),
-          backgroundColor: Colors.green,
-        ),
-      );
-      Navigator.of(context).pop();
-    } else if (_viewModel.errorMessage != null && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_viewModel.errorMessage!),
-          backgroundColor: Colors.red,
-        ),
-      );
+        );
+        Navigator.of(context).pop(true);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              _viewModel.errorMessage ?? 'Failed to save peer',
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
-  void _addTunnelAddress() async {
+  Future<void> _addTunnelAddress() async {
     final address = await AddItemDialog.show(
       context: context,
-      title: 'Add Allowed IP',
-      labelText: 'Allowed IP (CIDR)',
-      hintText: '10.10.10.0/24',
-      helperText: 'Example: 10.10.10.0/24 or fd00::/64',
+      title: 'Add Tunnel Address',
+      labelText: 'Tunnel Address (CIDR)',
+      hintText: '10.10.10.2/24',
+      helperText: 'Example: 10.10.10.2/24 or fd00::2/64',
       validator: (value) {
-        if (value.isEmpty) {
-          return 'Address is required';
-        }
+        if (value.isEmpty) return 'Address is required';
         if (!WireGuardValidators.isValidCIDR(value)) {
           return 'Invalid CIDR notation';
         }
@@ -158,137 +239,335 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
     );
 
     if (address != null && mounted) {
-      setState(() {
-        _tunnelAddresses.add(address);
-      });
+      setState(() => _tunnelAddresses.add(address));
     }
   }
 
-  void _removeTunnelAddress(String address) {
-    setState(() {
-      _tunnelAddresses.remove(address);
-    });
+  Future<void> _selectServers() async {
+    final selected = await showDialog<List<String>>(
+      context: context,
+      builder: (context) => _ServerSelectorDialog(
+        availableServers: _viewModel.availableServers,
+        selectedServerUuids: _selectedServerUuids,
+      ),
+    );
+
+    if (selected != null && mounted) {
+      setState(() => _selectedServerUuids = selected);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: _viewModel,
-      child: Consumer<WireGuardPeerFormViewModel>(
-        builder: (context, viewModel, child) {
-          return LoadingOverlay(
-            isLoading: viewModel.isLoading,
-            child: Scaffold(
-              appBar: AppBar(
-                title: Text(widget.isEditing ? 'Edit WireGuard Peer' : 'New WireGuard Peer'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          _viewModel.isEditing ? 'Edit WireGuard Peer' : 'New WireGuard Peer',
+        ),
+      ),
+      body: LoadingOverlay(
+        isLoading: _viewModel.isLoading || _viewModel.loadingPeer,
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              // Name
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                  hintText: 'My WireGuard Peer',
+                  prefixIcon: Icon(Icons.label),
+                ),
+                validator: (value) => CommonValidators.required(value, fieldName: 'Name'),
+                enabled: !_viewModel.isLoading,
               ),
-              body: Form(
-                key: _formKey,
-                child: ListView(
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    // Name
-                    FormSectionContainer(
-                      title: 'Basic Information',
-                      children: [
-                        TextFormField(
-                          controller: _nameController,
-                          decoration: const InputDecoration(
-                            labelText: 'Name',
-                            hintText: 'My WireGuard Peer',
-                            prefixIcon: Icon(Icons.label),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'Name is required';
-                            }
-                            return null;
-                          },
-                          enabled: !viewModel.isLoading,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
+              const SizedBox(height: 16),
 
-                    // Public Key
-                    FormSectionContainer(
-                      title: 'Peer Public Key',
-                      children: [
-                        TextFormField(
-                          controller: _publicKeyController,
-                          decoration: const InputDecoration(
-                            labelText: 'Public Key',
-                            prefixIcon: Icon(Icons.vpn_key),
-                            helperText: 'Base64 encoded public key of the peer',
-                          ),
-                          validator: WireGuardValidators.validateKey,
-                          enabled: !viewModel.isLoading,
-                          maxLines: 2,
-                        ),
-                      ],
+              // Public Key
+              TextFormField(
+                controller: _publicKeyController,
+                obscureText: !_publicKeyVisible,
+                maxLines: 1,
+                decoration: InputDecoration(
+                  labelText: 'Public Key',
+                  prefixIcon: const Icon(Icons.vpn_key),
+                  helperText: 'Base64 encoded public key',
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _publicKeyVisible ? Icons.visibility_off : Icons.visibility,
                     ),
-                    const SizedBox(height: 24),
+                    onPressed: () {
+                      setState(() {
+                        _publicKeyVisible = !_publicKeyVisible;
+                      });
+                    },
+                    tooltip: _publicKeyVisible ? 'Hide key' : 'Show key',
+                  ),
+                ),
+                validator: (value) {
+                  final trimmedValue = value?.trim() ?? '';
+                  if (trimmedValue.isEmpty) {
+                    return 'Key is required';
+                  }
+                  // Only validate base64 format, no length restriction for peer keys
+                  final base64Pattern = RegExp(r'^[A-Za-z0-9+/]+=*$');
+                  if (!base64Pattern.hasMatch(trimmedValue)) {
+                    return 'Invalid key format (must be base64)';
+                  }
+                  return null;
+                },
+                enabled: !_viewModel.isLoading,
+              ),
+              const SizedBox(height: 16),
 
-                    // Allowed IPs (Tunnel Addresses)
-                    FormSectionContainer(
-                      title: 'Allowed IPs',
-                      subtitle: 'IP addresses/networks that can communicate through this peer',
-                      children: [
-                        ListManagerCard(
-                          title: 'Allowed IPs',
-                          items: _tunnelAddresses,
-                          onAdd: _addTunnelAddress,
-                          onRemove: _removeTunnelAddress,
-                          isLoading: viewModel.isLoading,
-                          emptyMessage: 'No allowed IPs configured',
-                        ),
-                      ],
+              // Pre-shared Key (Optional)
+              TextFormField(
+                controller: _pskController,
+                obscureText: !_pskVisible,
+                maxLines: 1,
+                decoration: InputDecoration(
+                  labelText: 'Pre-shared Key (Optional)',
+                  hintText: 'Leave empty or generate',
+                  prefixIcon: const Icon(Icons.vpn_key),
+                  helperText: 'Optional base64 encoded pre-shared key',
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _pskVisible ? Icons.visibility_off : Icons.visibility,
                     ),
-                    const SizedBox(height: 24),
+                    onPressed: () {
+                      setState(() {
+                        _pskVisible = !_pskVisible;
+                      });
+                    },
+                    tooltip: _pskVisible ? 'Hide key' : 'Show key',
+                  ),
+                ),
+                validator: (value) {
+                  final trimmedValue = value?.trim() ?? '';
+                  if (trimmedValue.isEmpty) {
+                    return null; // Optional field
+                  }
+                  // Only validate base64 format, no length restriction for peer keys
+                  final base64Pattern = RegExp(r'^[A-Za-z0-9+/]+=*$');
+                  if (!base64Pattern.hasMatch(trimmedValue)) {
+                    return 'Invalid key format (must be base64)';
+                  }
+                  return null;
+                },
+                enabled: !_viewModel.isLoading,
+              ),
+              const SizedBox(height: 8),
 
-                    // Peer Settings
-                    FormSectionContainer(
-                      title: 'Peer Settings',
-                      children: [
-                        PeerSettingsCard(
-                          endpointController: _endpointController,
-                          keepaliveController: _keepaliveController,
-                          pskController: _pskController,
-                          enabled: _enabled,
-                          onEnabledChanged: (value) {
-                            setState(() {
-                              _enabled = value;
-                            });
-                          },
-                          isLoading: viewModel.isLoading,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Save Button
-                    ElevatedButton(
-                      onPressed: viewModel.isLoading ? null : _savePeer,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        backgroundColor: Theme.of(context).primaryColor,
-                        foregroundColor: Colors.white,
-                      ),
-                      child: Text(
-                        widget.isEditing ? 'Update Peer' : 'Create Peer',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
+              // Generate PSK Button
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: _viewModel.isLoading || _viewModel.isGeneratingPsk
+                      ? null
+                      : _generatePsk,
+                  icon: _viewModel.isGeneratingPsk
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.refresh),
+                  label: Text(
+                    _viewModel.isGeneratingPsk ? 'Generating...' : 'Generate Pre-shared Key',
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+              const SizedBox(height: 24),
+
+              // Tunnel Addresses
+              ListManagerCard(
+                title: 'Tunnel Addresses',
+                items: _tunnelAddresses,
+                onAdd: _addTunnelAddress,
+                onRemove: (address) => setState(() => _tunnelAddresses.remove(address)),
+                isLoading: _viewModel.isLoading,
+                emptyMessage: 'No tunnel addresses configured',
+              ),
+              const SizedBox(height: 24),
+
+              // Server Address
+              TextFormField(
+                controller: _serverAddressController,
+                decoration: const InputDecoration(
+                  labelText: 'Server Address',
+                  hintText: '192.168.1.1 or vpn.example.com',
+                  prefixIcon: Icon(Icons.dns),
+                ),
+                validator: (value) => CommonValidators.required(value, fieldName: 'Server Address'),
+                enabled: !_viewModel.isLoading,
+              ),
+              const SizedBox(height: 16),
+
+              // Server Port
+              TextFormField(
+                controller: _serverPortController,
+                decoration: const InputDecoration(
+                  labelText: 'Server Port',
+                  hintText: '51820',
+                  prefixIcon: Icon(Icons.settings_ethernet),
+                ),
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                validator: CommonValidators.port,
+                enabled: !_viewModel.isLoading,
+              ),
+              const SizedBox(height: 16),
+
+              // Endpoint (Optional)
+              TextFormField(
+                controller: _endpointController,
+                decoration: const InputDecoration(
+                  labelText: 'Endpoint (Optional)',
+                  hintText: 'vpn.example.com:51820',
+                  prefixIcon: Icon(Icons.public),
+                  helperText: 'Alternative endpoint address',
+                ),
+                validator: WireGuardValidators.validateEndpoint,
+                enabled: !_viewModel.isLoading,
+              ),
+              const SizedBox(height: 16),
+
+              // Keepalive
+              TextFormField(
+                controller: _keepaliveController,
+                decoration: const InputDecoration(
+                  labelText: 'Keepalive (Optional)',
+                  hintText: '25',
+                  prefixIcon: Icon(Icons.timer),
+                  helperText: 'Persistent keepalive in seconds (recommended: 25)',
+                ),
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                validator: WireGuardValidators.validateKeepalive,
+                enabled: !_viewModel.isLoading,
+              ),
+              const SizedBox(height: 16),
+
+              // Servers Selection
+              const Text(
+                'Assigned Servers',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Card(
+                child: ListTile(
+                  title: Text('${_selectedServerUuids.length} server(s) selected'),
+                  subtitle: _selectedServerUuids.isEmpty
+                      ? const Text('No servers selected')
+                      : null,
+                  trailing: const Icon(Icons.arrow_forward_ios),
+                  onTap: _viewModel.isLoading || _viewModel.loadingServers
+                      ? null
+                      : _selectServers,
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Enabled Switch
+              SwitchListTile(
+                title: const Text('Enabled'),
+                subtitle: const Text('Peer will be active when enabled'),
+                value: _enabled,
+                onChanged: _viewModel.isLoading
+                    ? null
+                    : (value) => setState(() => _enabled = value),
+              ),
+              const SizedBox(height: 24),
+
+              // Save Button
+              ElevatedButton(
+                onPressed: _viewModel.isLoading ? null : _savePeer,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: Text(
+                  _viewModel.isEditing ? 'Update Peer' : 'Create Peer',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
+    );
+  }
+}
+
+/// Dialog for selecting servers
+class _ServerSelectorDialog extends StatefulWidget {
+  final List availableServers;
+  final List<String> selectedServerUuids;
+
+  const _ServerSelectorDialog({
+    required this.availableServers,
+    required this.selectedServerUuids,
+  });
+
+  @override
+  State<_ServerSelectorDialog> createState() => _ServerSelectorDialogState();
+}
+
+class _ServerSelectorDialogState extends State<_ServerSelectorDialog> {
+  late List<String> _selected;
+
+  @override
+  void initState() {
+    super.initState();
+    _selected = List.from(widget.selectedServerUuids);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Select Servers'),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: widget.availableServers.isEmpty
+            ? const Center(child: Text('No servers available'))
+            : ListView.builder(
+                shrinkWrap: true,
+                itemCount: widget.availableServers.length,
+                itemBuilder: (context, index) {
+                  final server = widget.availableServers[index];
+                  final isSelected = _selected.contains(server.uuid);
+                  
+                  return CheckboxListTile(
+                    title: Text(server.name),
+                    subtitle: Text('${server.tunneladdress} (Port: ${server.port})'),
+                    value: isSelected,
+                    onChanged: (value) {
+                      setState(() {
+                        if (value == true) {
+                          _selected.add(server.uuid);
+                        } else {
+                          _selected.remove(server.uuid);
+                        }
+                      });
+                    },
+                  );
+                },
+              ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () => Navigator.of(context).pop(_selected),
+          child: const Text('Done'),
+        ),
+      ],
     );
   }
 }

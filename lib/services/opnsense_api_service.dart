@@ -26,7 +26,6 @@ import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
 import '../models/network_host.dart';
 import '../models/wireguard_server.dart';
-import '../models/wireguard_client.dart';
 import '../models/wireguard_peer.dart';
 import '../models/wireguard_key_pair.dart';
 import '../models/tailscale_status.dart';
@@ -300,19 +299,12 @@ class OPNsenseApiService {
   
   Future<void> toggleWireGuardServer(String uuid, bool enabled) => _wireguardService.toggleWireGuardServer(uuid, enabled);
   
-  Future<List<WireGuardClient>> getWireGuardClients() => _wireguardService.getWireGuardClients();
-  
-  Future<WireGuardClient> getWireGuardClient(String uuid) => _wireguardService.getWireGuardClient(uuid);
-  
-  Future<String> createWireGuardClient(WireGuardClientRequest request) => _wireguardService.createWireGuardClient(request);
-  
-  Future<void> updateWireGuardClient(String uuid, WireGuardClientRequest request) => _wireguardService.updateWireGuardClient(uuid, request);
-  
-  Future<void> deleteWireGuardClient(String uuid) => _wireguardService.deleteWireGuardClient(uuid);
-  
-  Future<void> toggleWireGuardClient(String uuid, bool enabled) => _wireguardService.toggleWireGuardClient(uuid, enabled);
+  Future<Map<String, dynamic>> searchWireGuardPeers({int current = 1, int rowCount = 50, Map<String, dynamic>? sort}) =>
+      _wireguardService.searchClients(current: current, rowCount: rowCount, sort: sort);
   
   Future<List<WireGuardPeer>> getWireGuardPeers() => _wireguardService.getWireGuardPeers();
+  
+  Future<Map<String, dynamic>> getPeer(String uuid) => _wireguardService.getPeer(uuid);
   
   Future<WireGuardPeer> getWireGuardPeer(String uuid) => _wireguardService.getWireGuardPeer(uuid);
   
@@ -326,7 +318,9 @@ class OPNsenseApiService {
   
   Future<WireGuardKeyPair> generateWireGuardKeyPair() => _wireguardService.generateWireGuardKeyPair();
   
-  Future<void> applyWireGuardConfiguration() => _wireguardService.applyWireGuardConfiguration();
+  Future<String> generateWireGuardPSK() => _wireguardService.generateWireGuardPSK();
+  
+  Future<void> applyWireGuardConfiguration() => _wireguardService.reconfigureWireGuard();
   
   Future<Map<String, dynamic>> getWireGuardStatus() => _wireguardService.getWireGuardStatus();
   

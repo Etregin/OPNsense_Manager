@@ -11,11 +11,17 @@ WireGuardPeer _$WireGuardPeerFromJson(Map<String, dynamic> json) =>
       uuid: json['uuid'] as String,
       enabled: json['enabled'] as String,
       name: json['name'] as String,
-      pubkey: json['pubkey'] as String,
-      psk: json['psk'] as String? ?? '',
-      tunneladdress: json['tunneladdress'] as String,
-      endpoint: json['endpoint'] as String? ?? '',
-      keepalive: json['keepalive'] as String? ?? '',
+      pubkey: json['pubkey'] as String?,
+      privkey: json['privkey'] as String?,
+      tunneladdress: json['tunneladdress'] as String?,
+      serveraddress: json['serveraddress'] as String?,
+      serverport: json['serverport'] as String?,
+      serverpubkey: json['serverpubkey'] as String?,
+      endpoint: json['endpoint'] as String?,
+      servers: json['servers'] as String?,
+      keepalive: json['keepalive'] as String?,
+      psk: json['psk'] as String?,
+      serverName: json['%servers'] as String?,
     );
 
 Map<String, dynamic> _$WireGuardPeerToJson(WireGuardPeer instance) =>
@@ -24,10 +30,16 @@ Map<String, dynamic> _$WireGuardPeerToJson(WireGuardPeer instance) =>
       'enabled': instance.enabled,
       'name': instance.name,
       'pubkey': instance.pubkey,
-      'psk': instance.psk,
+      'privkey': instance.privkey,
       'tunneladdress': instance.tunneladdress,
+      'serveraddress': instance.serveraddress,
+      'serverport': instance.serverport,
+      'serverpubkey': instance.serverpubkey,
       'endpoint': instance.endpoint,
+      'servers': instance.servers,
       'keepalive': instance.keepalive,
+      'psk': instance.psk,
+      '%servers': instance.serverName,
     };
 
 WireGuardPeerRequest _$WireGuardPeerRequestFromJson(
@@ -35,11 +47,16 @@ WireGuardPeerRequest _$WireGuardPeerRequestFromJson(
 ) => WireGuardPeerRequest(
   name: json['name'] as String,
   pubkey: json['pubkey'] as String,
+  privkey: json['privkey'] as String,
   tunneladdress: json['tunneladdress'] as String,
+  serveraddress: json['serveraddress'] as String,
+  serverport: json['serverport'] as String,
+  serverpubkey: json['serverpubkey'] as String,
   enabled: json['enabled'] as String? ?? '1',
-  psk: json['psk'] as String? ?? '',
-  endpoint: json['endpoint'] as String? ?? '',
-  keepalive: json['keepalive'] as String? ?? '',
+  endpoint: json['endpoint'] as String?,
+  servers: json['servers'] as String?,
+  keepalive: json['keepalive'] as String?,
+  psk: json['psk'] as String?,
 );
 
 Map<String, dynamic> _$WireGuardPeerRequestToJson(
@@ -47,9 +64,14 @@ Map<String, dynamic> _$WireGuardPeerRequestToJson(
 ) => <String, dynamic>{
   'name': instance.name,
   'pubkey': instance.pubkey,
+  'privkey': instance.privkey,
   'tunneladdress': instance.tunneladdress,
+  'serveraddress': instance.serveraddress,
+  'serverport': instance.serverport,
+  'serverpubkey': instance.serverpubkey,
   'enabled': instance.enabled,
-  'psk': instance.psk,
   'endpoint': instance.endpoint,
+  'servers': instance.servers,
   'keepalive': instance.keepalive,
+  'psk': instance.psk,
 };

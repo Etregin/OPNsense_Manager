@@ -18,17 +18,32 @@
 
 /// Validators specific to WireGuard configuration
 class WireGuardValidators {
-  /// Validate WireGuard key (public or private)
+  static const _wireGuardKeyLength = 44;
+  static final RegExp _base64KeyPattern = RegExp(r'^[A-Za-z0-9+/]+=*$');
+
+  /// Validate WireGuard key (public, private, or pre-shared)
   static String? validateKey(String? value) {
-    if (value == null || value.isEmpty) {
+    final trimmedValue = value?.trim() ?? '';
+    if (trimmedValue.isEmpty) {
       return 'Key is required';
     }
-    if (value.length != 44) {
+    return _validateTrimmedKey(trimmedValue);
+  }
+
+  /// Validate optional WireGuard key fields such as PSK
+  static String? validateOptionalKey(String? value) {
+    final trimmedValue = value?.trim() ?? '';
+    if (trimmedValue.isEmpty) {
+      return null;
+    }
+    return _validateTrimmedKey(trimmedValue);
+  }
+
+  static String? _validateTrimmedKey(String value) {
+    if (value.length != _wireGuardKeyLength) {
       return 'Invalid key length (must be 44 characters)';
     }
-    // Basic base64 validation
-    final base64Pattern = RegExp(r'^[A-Za-z0-9+/]+=*$');
-    if (!base64Pattern.hasMatch(value)) {
+    if (!_base64KeyPattern.hasMatch(value)) {
       return 'Invalid key format (must be base64)';
     }
     return null;
@@ -65,6 +80,18 @@ class WireGuardValidators {
     }
 
     return false;
+  }
+
+  /// Validate IP or CIDR notation (IPv4 or IPv6)
+  /// Accepts both plain IPs and CIDR notation
+  static bool isValidIPOrCIDR(String value) {
+    // Check if it's a CIDR notation
+    if (value.contains('/')) {
+      return isValidCIDR(value);
+    }
+    
+    // Check if it's a plain IP address
+    return isValidIPv4(value) || isValidIPv6(value);
   }
 
   /// Validate IPv4 address

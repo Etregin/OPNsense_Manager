@@ -21,7 +21,6 @@ import 'package:flutter/foundation.dart';
 import '../base/base_opnsense_service.dart';
 import '../base/api_exception.dart';
 import '../../models/wireguard_server.dart';
-import '../../models/wireguard_client.dart';
 import '../../models/wireguard_peer.dart';
 import '../../models/wireguard_key_pair.dart';
 
@@ -153,146 +152,50 @@ class WireGuardService extends BaseOPNsenseService {
     }
   }
 
-  // Client Management Methods
+  // Peer Management Methods (Legacy Client API)
+  // Note: OPNsense WireGuard plugin does not have a separate /wireguard/client/ API.
+  // "Peers" are managed under /wireguard/server/ endpoints.
+  // These methods are kept for backward compatibility but delegate to peer methods.
 
-  /// Get all WireGuard clients
-  /// Endpoint: GET /wireguard/client/search_client
-  /// Returns: List of clients in {"rows": [...]} format
-  Future<List<WireGuardClient>> getWireGuardClients() async {
-    ensureInitialized();
-
-    try {
-      final response = await dio.get('/wireguard/client/search_client');
-      
-      if (response.statusCode == 200) {
-        final data = response.data as Map<String, dynamic>;
-        if (data.containsKey('rows') && data['rows'] is List) {
-          final rows = data['rows'] as List;
-          return rows.map((row) => WireGuardClient.fromJson(row as Map<String, dynamic>)).toList();
-        }
-        return [];
-      } else {
-        throw ApiException('Failed to get WireGuard clients', response.statusCode);
-      }
-    } on DioException catch (e) {
-      throw handleDioError(e);
-    }
-  }
-
-  /// Get a specific WireGuard client by UUID
-  /// Endpoint: GET /wireguard/client/get_client/$uuid
-  /// Returns: Client object in {"client": {...}} format
-  Future<WireGuardClient> getWireGuardClient(String uuid) async {
-    ensureInitialized();
-
-    try {
-      final response = await dio.get('/wireguard/client/get_client/$uuid');
-      
-      if (response.statusCode == 200) {
-        final data = response.data as Map<String, dynamic>;
-        if (data.containsKey('client')) {
-          return WireGuardClient.fromJson(data['client'] as Map<String, dynamic>);
-        }
-        throw ApiException('Client data not found in response', response.statusCode);
-      } else {
-        throw ApiException('Failed to get WireGuard client', response.statusCode);
-      }
-    } on DioException catch (e) {
-      throw handleDioError(e);
-    }
-  }
-
-  /// Create a new WireGuard client
-  /// Endpoint: POST /wireguard/client/add_client
-  /// Requires: Full client object including pubkey
-  /// Returns: UUID of created client
-  Future<String> createWireGuardClient(WireGuardClientRequest request) async {
+  /// Search WireGuard peers with pagination support
+  /// Endpoint: POST /api/wireguard/client/search_client
+  /// Payload: {current: 1, rowCount: 50, sort: {}}
+  /// Returns: Paginated response with rows, rowCount, total, current
+  Future<Map<String, dynamic>> searchClients({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+  }) async {
     ensureInitialized();
 
     try {
       final response = await dio.post(
-        '/wireguard/client/add_client',
-        data: {'client': request.toJson()},
+        '/wireguard/client/search_client',
+        data: {
+          'current': current,
+          'rowCount': rowCount,
+          'sort': sort ?? {},
+        },
       );
       
       if (response.statusCode == 200) {
-        final data = response.data as Map<String, dynamic>;
-        if (data.containsKey('uuid')) {
-          return data['uuid'] as String;
-        }
-        throw ApiException('UUID not found in response', response.statusCode);
+        debugPrint('WireGuardService: searchClients response: ${response.data}');
+        return response.data as Map<String, dynamic>;
       } else {
-        throw ApiException('Failed to create WireGuard client', response.statusCode);
+        throw ApiException('Failed to search WireGuard peers', response.statusCode);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
     }
   }
 
-  /// Update an existing WireGuard client
-  /// Endpoint: POST /wireguard/client/set_client/$uuid
-  /// Note: Can also be used for creation, but add_client is more explicit
-  Future<void> updateWireGuardClient(String uuid, WireGuardClientRequest request) async {
-    ensureInitialized();
-
-    try {
-      final response = await dio.post(
-        '/wireguard/client/set_client/$uuid',
-        data: {'client': request.toJson()},
-      );
-      
-      if (response.statusCode != 200) {
-        throw ApiException('Failed to update WireGuard client', response.statusCode);
-      }
-    } on DioException catch (e) {
-      throw handleDioError(e);
-    }
-  }
-
-  /// Delete a WireGuard client
-  /// Endpoint: POST /wireguard/client/del_client/$uuid
-  Future<void> deleteWireGuardClient(String uuid) async {
-    ensureInitialized();
-
-    try {
-      final response = await dio.post('/wireguard/client/del_client/$uuid');
-      
-      if (response.statusCode != 200) {
-        throw ApiException('Failed to delete WireGuard client', response.statusCode);
-      }
-    } on DioException catch (e) {
-      throw handleDioError(e);
-    }
-  }
-
-  /// Toggle WireGuard client enabled/disabled state
-  /// Endpoint: POST /wireguard/client/toggle_client/$uuid
-  Future<void> toggleWireGuardClient(String uuid, bool enabled) async {
-    ensureInitialized();
-
-    try {
-      final response = await dio.post(
-        '/wireguard/client/toggle_client/$uuid',
-        data: {'enabled': enabled ? '1' : '0'},
-      );
-      
-      if (response.statusCode != 200) {
-        throw ApiException('Failed to toggle WireGuard client', response.statusCode);
-      }
-    } on DioException catch (e) {
-      throw handleDioError(e);
-    }
-  }
-
-  // Peer Management Methods
-
-  /// Get all WireGuard peers
-  /// Endpoint: GET /wireguard/server/search_peer
+  /// Get all WireGuard peers (delegates to getWireGuardPeers)
   /// Returns: List of peers in {"rows": [...]} format
   Future<List<WireGuardPeer>> getWireGuardPeers() async {
     ensureInitialized();
 
     try {
+      // Use peer endpoint
       final response = await dio.get('/wireguard/server/search_peer');
       
       if (response.statusCode == 200) {
@@ -311,12 +214,37 @@ class WireGuardService extends BaseOPNsenseService {
   }
 
   /// Get a specific WireGuard peer by UUID
-  /// Endpoint: GET /wireguard/server/get_peer/$uuid
+  /// Endpoint: GET /wireguard/client/get_client/$uuid
+  /// Returns: Peer object in {"client": {...}} format with complex nested structure
+  /// Note: tunneladdress and servers are Maps with selected=1 for active items
+  Future<Map<String, dynamic>> getPeer(String uuid) async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.get('/wireguard/client/get_client/$uuid');
+      
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        if (data.containsKey('client')) {
+          return data['client'] as Map<String, dynamic>;
+        }
+        throw ApiException('Peer data not found in response', response.statusCode);
+      } else {
+        throw ApiException('Failed to get WireGuard peer', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Get a specific WireGuard peer by UUID
   /// Returns: Peer object in {"peer": {...}} format
+  /// @deprecated Use getPeer() for the new API endpoint
   Future<WireGuardPeer> getWireGuardPeer(String uuid) async {
     ensureInitialized();
 
     try {
+      // Use peer endpoint
       final response = await dio.get('/wireguard/server/get_peer/$uuid');
       
       if (response.statusCode == 200) {
@@ -334,23 +262,62 @@ class WireGuardService extends BaseOPNsenseService {
   }
 
   /// Create a new WireGuard peer
-  /// Endpoint: POST /wireguard/server/add_peer
+  /// Endpoint: POST /wireguard/client/add_client
   /// Returns: UUID of created peer
   Future<String> createWireGuardPeer(WireGuardPeerRequest request) async {
     ensureInitialized();
 
     try {
-      final response = await dio.post(
-        '/wireguard/server/add_peer',
-        data: {'peer': request.toJson()},
+      final peerPayload = request.toJson();
+      debugPrint('WireGuardService: Creating peer with data: $peerPayload');
+      debugPrint(
+        'WireGuardService: Peer key lengths - pubkey=${request.pubkey.trim().length}, '
+        'psk=${request.psk?.trim().length ?? 0}, privkey=${request.privkey.trim().length}, '
+        'serverpubkey=${request.serverpubkey.trim().length}',
       );
-      
+
+      final response = await dio.post(
+        '/wireguard/client/add_client',
+        data: {'client': peerPayload},
+      );
+
+      debugPrint('WireGuardService: Create peer response status: ${response.statusCode}');
+      debugPrint('WireGuardService: Create peer response data: ${response.data}');
+
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
+
+        if (data.containsKey('result') && data['result'] == 'failed') {
+          final validations = data['validations'] as Map<String, dynamic>?;
+          final message = data['message'];
+
+          if (validations != null && validations.isNotEmpty) {
+            debugPrint('WireGuardService: Peer create validation errors: $validations');
+            final errors = validations.entries
+                .map((e) => '${e.key}: ${e.value}')
+                .join(', ');
+            throw ApiException('Validation failed: $errors', response.statusCode);
+          }
+
+          debugPrint('WireGuardService: Peer create failed message: $message');
+          throw ApiException(
+            'Failed to create peer: ${message ?? 'Unknown error'}',
+            response.statusCode,
+          );
+        }
+
         if (data.containsKey('uuid')) {
+          debugPrint('WireGuardService: Peer created with UUID: ${data['uuid']}');
           return data['uuid'] as String;
         }
-        throw ApiException('UUID not found in response', response.statusCode);
+
+        if (data.containsKey('result') && data['result'] == 'saved') {
+          debugPrint('WireGuardService: Peer saved successfully (no UUID returned)');
+          return '';
+        }
+
+        debugPrint('WireGuardService: Unexpected response format. Keys: ${data.keys.join(", ")}');
+        throw ApiException('Unexpected response format: ${data.toString()}', response.statusCode);
       } else {
         throw ApiException('Failed to create WireGuard peer', response.statusCode);
       }
@@ -360,32 +327,66 @@ class WireGuardService extends BaseOPNsenseService {
   }
 
   /// Update an existing WireGuard peer
-  /// Endpoint: POST /wireguard/server/set_peer/$uuid
-  /// Note: Can also be used for creation, but add_peer is more explicit
+  /// Endpoint: POST /wireguard/client/set_client/$uuid
   Future<void> updateWireGuardPeer(String uuid, WireGuardPeerRequest request) async {
     ensureInitialized();
 
     try {
-      final response = await dio.post(
-        '/wireguard/server/set_peer/$uuid',
-        data: {'peer': request.toJson()},
+      final peerPayload = request.toJson();
+      debugPrint('WireGuardService: Updating peer $uuid with data: $peerPayload');
+      debugPrint(
+        'WireGuardService: Update peer key lengths - pubkey=${request.pubkey.trim().length}, '
+        'psk=${request.psk?.trim().length ?? 0}, privkey=${request.privkey.trim().length}, '
+        'serverpubkey=${request.serverpubkey.trim().length}',
       );
-      
-      if (response.statusCode != 200) {
-        throw ApiException('Failed to update WireGuard peer', response.statusCode);
+
+      final response = await dio.post(
+        '/wireguard/client/set_client/$uuid',
+        data: {'client': peerPayload},
+      );
+
+      debugPrint('WireGuardService: Update peer response status: ${response.statusCode}');
+      debugPrint('WireGuardService: Update peer response data: ${response.data}');
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is Map<String, dynamic> &&
+            data.containsKey('result') &&
+            data['result'] == 'failed') {
+          final validations = data['validations'] as Map<String, dynamic>?;
+          final message = data['message'];
+
+          if (validations != null && validations.isNotEmpty) {
+            debugPrint('WireGuardService: Peer update validation errors: $validations');
+            final errors = validations.entries
+                .map((e) => '${e.key}: ${e.value}')
+                .join(', ');
+            throw ApiException('Validation failed: $errors', response.statusCode);
+          }
+
+          debugPrint('WireGuardService: Peer update failed message: $message');
+          throw ApiException(
+            'Failed to update peer: ${message ?? 'Unknown error'}',
+            response.statusCode,
+          );
+        }
+        return;
       }
+
+      throw ApiException('Failed to update WireGuard peer', response.statusCode);
     } on DioException catch (e) {
       throw handleDioError(e);
     }
   }
 
   /// Delete a WireGuard peer
-  /// Endpoint: POST /wireguard/server/del_peer/$uuid
+  /// Endpoint: POST /wireguard/client/del_client/$uuid
   Future<void> deleteWireGuardPeer(String uuid) async {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/wireguard/server/del_peer/$uuid');
+      // Use client endpoint
+      final response = await dio.post('/wireguard/client/del_client/$uuid');
       
       if (response.statusCode != 200) {
         throw ApiException('Failed to delete WireGuard peer', response.statusCode);
@@ -396,13 +397,14 @@ class WireGuardService extends BaseOPNsenseService {
   }
 
   /// Toggle WireGuard peer enabled/disabled state
-  /// Endpoint: POST /wireguard/server/toggle_peer/$uuid
+  /// Endpoint: POST /wireguard/client/toggle_client/$uuid
   Future<void> toggleWireGuardPeer(String uuid, bool enabled) async {
     ensureInitialized();
 
     try {
+      // Use client endpoint
       final response = await dio.post(
-        '/wireguard/server/toggle_peer/$uuid',
+        '/wireguard/client/toggle_client/$uuid',
         data: {'enabled': enabled ? '1' : '0'},
       );
       
@@ -414,80 +416,6 @@ class WireGuardService extends BaseOPNsenseService {
     }
   }
 
-  // Key Generation and Service Control Methods
-
-  /// Generate a new WireGuard key pair
-  /// Endpoint: GET /wireguard/server/key_pair
-  /// Note: Follows standard pattern - base URL already includes /api/ prefix
-  /// Response format: {"privkey": "...", "pubkey": "...", "status": "ok"}
-  Future<WireGuardKeyPair> generateWireGuardKeyPair() async {
-    ensureInitialized();
-
-    try {
-      debugPrint('WireGuardService: Calling /wireguard/server/key_pair');
-      final response = await dio.get('/wireguard/server/key_pair');
-      
-      debugPrint('WireGuardService: Response status: ${response.statusCode}');
-      debugPrint('WireGuardService: Response data type: ${response.data.runtimeType}');
-      
-      if (response.statusCode == 200) {
-        final data = response.data;
-        
-        // Handle different response formats
-        if (data is Map<String, dynamic>) {
-          debugPrint('WireGuardService: Response keys: ${data.keys.join(", ")}');
-          
-          // Check if keys are at root level
-          if (data.containsKey('pubkey') && data.containsKey('privkey')) {
-            debugPrint('WireGuardService: Found keys at root level');
-            return WireGuardKeyPair.fromJson(data);
-          }
-          // Check if keys are wrapped in a 'keypair' or similar object
-          if (data.containsKey('keypair')) {
-            debugPrint('WireGuardService: Found keys in keypair object');
-            return WireGuardKeyPair.fromJson(data['keypair'] as Map<String, dynamic>);
-          }
-          // Check if keys are wrapped in a 'data' object
-          if (data.containsKey('data')) {
-            debugPrint('WireGuardService: Found keys in data object');
-            return WireGuardKeyPair.fromJson(data['data'] as Map<String, dynamic>);
-          }
-          // If we have the data but can't find the keys, throw a descriptive error
-          final errorMsg = 'Unexpected response format. Keys found: ${data.keys.join(", ")}';
-          debugPrint('WireGuardService: ERROR - $errorMsg');
-          throw ApiException(errorMsg, response.statusCode);
-        }
-        
-        debugPrint('WireGuardService: ERROR - Invalid response format (not a Map)');
-        throw ApiException('Invalid response format', response.statusCode);
-      } else {
-        debugPrint('WireGuardService: ERROR - Non-200 status code: ${response.statusCode}');
-        throw ApiException('Failed to generate WireGuard key pair', response.statusCode);
-      }
-    } on DioException catch (e) {
-      debugPrint('WireGuardService: DioException - ${e.type}: ${e.message}');
-      throw handleDioError(e);
-    } catch (e) {
-      debugPrint('WireGuardService: Unexpected error - $e');
-      rethrow;
-    }
-  }
-
-  /// Apply WireGuard configuration changes
-  /// Endpoint: POST /wireguard/service/reconfigure
-  Future<void> applyWireGuardConfiguration() async {
-    ensureInitialized();
-
-    try {
-      final response = await dio.post('/wireguard/service/reconfigure');
-      
-      if (response.statusCode != 200) {
-        throw ApiException('Failed to apply WireGuard configuration', response.statusCode);
-      }
-    } on DioException catch (e) {
-      throw handleDioError(e);
-    }
-  }
 
   /// Get WireGuard service status
   /// Endpoint: GET /wireguard/service/show
@@ -507,21 +435,149 @@ class WireGuardService extends BaseOPNsenseService {
     }
   }
 
+  /// Start WireGuard service
+  /// Endpoint: POST /wireguard/service/start
+  Future<Map<String, dynamic>> startWireGuardService() async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post('/wireguard/service/start');
+      
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        throw ApiException('Failed to start WireGuard service', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Stop WireGuard service
+  /// Endpoint: POST /wireguard/service/stop
+  Future<Map<String, dynamic>> stopWireGuardService() async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post('/wireguard/service/stop');
+      
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        throw ApiException('Failed to stop WireGuard service', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
   /// Restart WireGuard service
   /// Endpoint: POST /wireguard/service/restart
-  Future<void> restartWireGuardService() async {
+  Future<Map<String, dynamic>> restartWireGuardService() async {
     ensureInitialized();
 
     try {
       final response = await dio.post('/wireguard/service/restart');
       
-      if (response.statusCode != 200) {
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
         throw ApiException('Failed to restart WireGuard service', response.statusCode);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
     }
   }
+
+  /// Reconfigure WireGuard (apply changes)
+  /// Endpoint: POST /wireguard/service/reconfigure
+  Future<Map<String, dynamic>> reconfigureWireGuard() async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post('/wireguard/service/reconfigure');
+      
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        throw ApiException('Failed to reconfigure WireGuard', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  // Key Generation Methods
+
+  /// Generate a new WireGuard key pair
+  /// Endpoint: GET /wireguard/client/key_pair
+  /// Response format: {"privkey": "...", "pubkey": "...", "status": "ok"}
+  Future<WireGuardKeyPair> generateWireGuardKeyPair() async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.get('/wireguard/client/key_pair');
+      
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        if (data.containsKey('privkey') && data.containsKey('pubkey')) {
+          return WireGuardKeyPair(
+            privateKey: data['privkey'] as String,
+            publicKey: data['pubkey'] as String,
+          );
+        }
+        throw ApiException('Key pair data not found in response', response.statusCode);
+      } else {
+        throw ApiException('Failed to generate WireGuard key pair', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+  /// Generate a pre-shared key (PSK) for WireGuard peers
+  /// Endpoint: GET /wireguard/client/psk
+  /// Response format: {"psk": "...", "status": "ok"}
+  Future<String> generateWireGuardPSK() async {
+    ensureInitialized();
+
+    try {
+      debugPrint('WireGuardService: Calling /wireguard/client/psk');
+      final response = await dio.get('/wireguard/client/psk');
+      
+      debugPrint('WireGuardService: Response status: ${response.statusCode}');
+      debugPrint('WireGuardService: Response data type: ${response.data.runtimeType}');
+      
+      if (response.statusCode == 200) {
+        final data = response.data;
+        
+        if (data is Map<String, dynamic>) {
+          debugPrint('WireGuardService: Response keys: ${data.keys.join(", ")}');
+          
+          if (data.containsKey('psk')) {
+            debugPrint('WireGuardService: Found PSK in response');
+            return data['psk'] as String;
+          }
+          
+          final errorMsg = 'PSK not found in response. Keys found: ${data.keys.join(", ")}';
+          debugPrint('WireGuardService: ERROR - $errorMsg');
+          throw ApiException(errorMsg, response.statusCode);
+        }
+        
+        debugPrint('WireGuardService: ERROR - Invalid response format (not a Map)');
+        throw ApiException('Invalid response format', response.statusCode);
+      } else {
+        debugPrint('WireGuardService: ERROR - Non-200 status code: ${response.statusCode}');
+        throw ApiException('Failed to generate WireGuard PSK', response.statusCode);
+      }
+    } on DioException catch (e) {
+      debugPrint('WireGuardService: DioException - ${e.type}: ${e.message}');
+      throw handleDioError(e);
+    } catch (e) {
+      debugPrint('WireGuardService: Unexpected error - $e');
+      rethrow;
+    }
+  }
+
 
   /// Start a specific WireGuard instance
   /// Endpoint: POST /wireguard/service/start/$uuid
