@@ -381,9 +381,9 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
               ),
               const SizedBox(height: 24),
 
-              // Tunnel Addresses
+              // Allowed IPs
               ListManagerCard(
-                title: 'Tunnel Addresses',
+                title: 'Allowed IPs',
                 items: _tunnelAddresses,
                 onAdd: _addTunnelAddress,
                 onRemove: (address) => setState(() => _tunnelAddresses.remove(address)),
@@ -392,44 +392,30 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
               ),
               const SizedBox(height: 24),
 
-              // Server Address
+              // Endpoint Address
               TextFormField(
                 controller: _serverAddressController,
                 decoration: const InputDecoration(
-                  labelText: 'Server Address',
+                  labelText: 'Endpoint Address',
                   hintText: '192.168.1.1 or vpn.example.com',
                   prefixIcon: Icon(Icons.dns),
                 ),
-                validator: (value) => CommonValidators.required(value, fieldName: 'Server Address'),
+                validator: (value) => CommonValidators.required(value, fieldName: 'Endpoint Address'),
                 enabled: !_viewModel.isLoading,
               ),
               const SizedBox(height: 16),
 
-              // Server Port
+              // Endpoint Port
               TextFormField(
                 controller: _serverPortController,
                 decoration: const InputDecoration(
-                  labelText: 'Server Port',
+                  labelText: 'Endpoint Port',
                   hintText: '51820',
                   prefixIcon: Icon(Icons.settings_ethernet),
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 validator: CommonValidators.port,
-                enabled: !_viewModel.isLoading,
-              ),
-              const SizedBox(height: 16),
-
-              // Endpoint (Optional)
-              TextFormField(
-                controller: _endpointController,
-                decoration: const InputDecoration(
-                  labelText: 'Endpoint (Optional)',
-                  hintText: 'vpn.example.com:51820',
-                  prefixIcon: Icon(Icons.public),
-                  helperText: 'Alternative endpoint address',
-                ),
-                validator: WireGuardValidators.validateEndpoint,
                 enabled: !_viewModel.isLoading,
               ),
               const SizedBox(height: 16),
@@ -452,7 +438,7 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
 
               // Servers Selection
               const Text(
-                'Assigned Servers',
+                'Instances',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),

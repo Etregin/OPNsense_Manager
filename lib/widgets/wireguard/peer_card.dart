@@ -70,7 +70,8 @@ class PeerCard extends StatelessWidget {
                 ),
               ),
             Text('Tunnel: ${peer.tunneladdress}'),
-            Text('Endpoint: ${peer.serveraddress}:${peer.serverport}'),
+            if (peer.serveraddress != null && peer.serveraddress!.isNotEmpty)
+              Text('Endpoint: ${peer.serveraddress}:${peer.serverport ?? "51820"}'),
             if (peer.keepaliveInterval != null)
               Text(
                 'Keepalive: ${peer.keepaliveInterval}s',

@@ -110,7 +110,7 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(l10n.deleteRule),
+        title: const Text('Delete Peer'),
         content: Text(
           'Are you sure you want to delete peer "${peer.name}"? This action cannot be undone.',
         ),
