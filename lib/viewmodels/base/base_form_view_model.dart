@@ -55,15 +55,23 @@ abstract class BaseFormViewModel extends ChangeNotifier {
 
   /// Execute an action with loading state management
   Future<T?> executeWithLoading<T>(Future<T> Function() action) async {
+    debugPrint('BaseFormViewModel: executeWithLoading START');
     setLoading(true);
     clearError();
     try {
+      debugPrint('BaseFormViewModel: Executing action...');
       final result = await action();
+      debugPrint('BaseFormViewModel: Action completed successfully, result type: ${result.runtimeType}');
       setLoading(false);
       return result;
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint('BaseFormViewModel: Action FAILED with exception');
+      debugPrint('  - Exception: $e');
+      debugPrint('  - Exception type: ${e.runtimeType}');
+      debugPrint('  - Stack trace: $stackTrace');
       setLoading(false);
       setError(e.toString());
+      debugPrint('BaseFormViewModel: Error message set to: ${e.toString()}');
       return null;
     }
   }

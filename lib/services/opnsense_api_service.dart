@@ -28,6 +28,7 @@ import '../models/network_host.dart';
 import '../models/wireguard_server.dart';
 import '../models/wireguard_peer.dart';
 import '../models/wireguard_key_pair.dart';
+import '../models/wireguard_client_builder.dart';
 import '../models/tailscale_status.dart';
 import '../models/tailscale_settings.dart';
 import '../utils/constants.dart';
@@ -329,6 +330,18 @@ class OPNsenseApiService {
   Future<void> startWireGuardInstance(String uuid) => _wireguardService.startWireGuardInstance(uuid);
   
   Future<void> stopWireGuardInstance(String uuid) => _wireguardService.stopWireGuardInstance(uuid);
+  
+  Future<WireGuardClientBuilder> getClientBuilder() => _wireguardService.getClientBuilder();
+  
+  Future<WireGuardServerInfo> getServerInfo(String uuid) => _wireguardService.getServerInfo(uuid);
+  
+  Future<void> addClientBuilder(WireGuardClientBuilderRequest request) => _wireguardService.addClientBuilder(request);
+  
+  Future<Map<String, dynamic>> reconfigureWireGuard() => _wireguardService.reconfigureWireGuard();
+  
+  Future<Map<String, dynamic>> startWireGuardService() => _wireguardService.startWireGuardService();
+  
+  Future<Map<String, dynamic>> stopWireGuardService() => _wireguardService.stopWireGuardService();
   
   Future<void> restartWireGuardInstance(String uuid) => _wireguardService.restartWireGuardInstance(uuid);
 

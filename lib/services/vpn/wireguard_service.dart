@@ -23,6 +23,7 @@ import '../base/api_exception.dart';
 import '../../models/wireguard_server.dart';
 import '../../models/wireguard_peer.dart';
 import '../../models/wireguard_key_pair.dart';
+import '../../models/wireguard_client_builder.dart';
 
 /// Service for WireGuard VPN operations
 class WireGuardService extends BaseOPNsenseService {
@@ -491,14 +492,27 @@ class WireGuardService extends BaseOPNsenseService {
 
   /// Reconfigure WireGuard (apply changes)
   /// Endpoint: POST /wireguard/service/reconfigure
+  /// This applies pending configuration changes to the running WireGuard service
   Future<Map<String, dynamic>> reconfigureWireGuard() async {
     ensureInitialized();
 
     try {
+      debugPrint('WireGuardService: Calling reconfigure endpoint');
       final response = await dio.post('/wireguard/service/reconfigure');
       
+      debugPrint('WireGuardService: Reconfigure response status: ${response.statusCode}');
+      debugPrint('WireGuardService: Reconfigure response data: ${response.data}');
+      
       if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
+        final data = response.data as Map<String, dynamic>;
+        
+        // Check for explicit failure in response
+        if (data.containsKey('status') && data['status'] == 'failed') {
+          final message = data['message'] ?? 'Unknown error';
+          throw ApiException('Failed to reconfigure WireGuard: $message', response.statusCode);
+        }
+        
+        return data;
       } else {
         throw ApiException('Failed to reconfigure WireGuard', response.statusCode);
       }
@@ -510,13 +524,13 @@ class WireGuardService extends BaseOPNsenseService {
   // Key Generation Methods
 
   /// Generate a new WireGuard key pair
-  /// Endpoint: GET /wireguard/client/key_pair
+  /// Endpoint: GET /wireguard/server/key_pair
   /// Response format: {"privkey": "...", "pubkey": "...", "status": "ok"}
   Future<WireGuardKeyPair> generateWireGuardKeyPair() async {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/wireguard/client/key_pair');
+      final response = await dio.get('/wireguard/server/key_pair');
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -621,6 +635,125 @@ class WireGuardService extends BaseOPNsenseService {
       
       if (response.statusCode != 200) {
         throw ApiException('Failed to restart WireGuard instance', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  // Client Builder Methods
+
+  /// Get client builder configuration data
+  /// Endpoint: GET /wireguard/client/get_client_builder
+  /// Returns: Builder configuration with available servers and defaults
+  Future<WireGuardClientBuilder> getClientBuilder() async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.get('/wireguard/client/get_client_builder');
+      
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        if (data.containsKey('configbuilder')) {
+          return WireGuardClientBuilder.fromJson(
+            data['configbuilder'] as Map<String, dynamic>,
+          );
+        }
+        throw ApiException('Config builder data not found in response', response.statusCode);
+      } else {
+        throw ApiException('Failed to get client builder', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Get server info for client builder
+  /// Endpoint: GET /wireguard/client/get_server_info/{uuid}
+  /// Returns: Server information including pubkey, endpoint, tunnel address, DNS
+  Future<WireGuardServerInfo> getServerInfo(String uuid) async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.get('/wireguard/client/get_server_info/$uuid');
+      
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        return WireGuardServerInfo.fromJson(data);
+      } else {
+        throw ApiException('Failed to get server info', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Add a client via the builder
+  /// Endpoint: POST /wireguard/client/add_client_builder
+  /// Payload: Wrapped under "configbuilder" key per API contract
+  /// Returns: Empty string on success (API returns {"result":"saved"})
+  Future<void> addClientBuilder(WireGuardClientBuilderRequest request) async {
+    ensureInitialized();
+
+    try {
+      // Build payload matching exact API contract
+      // API contract: enabled, name, pubkey, psk, tunneladdress, keepalive, server, endpoint
+      final innerPayload = {
+        'enabled': request.enabled,
+        'name': request.name,
+        'pubkey': request.pubkey,
+        'psk': request.psk.isEmpty ? '' : request.psk,
+        'tunneladdress': request.tunneladdress,
+        'keepalive': request.keepalive.isEmpty ? '' : request.keepalive,
+        'server': request.servers, // API expects 'server' (singular), not 'servers'
+        'endpoint': request.endpoint.isEmpty ? '' : request.endpoint,
+      };
+
+      // Wrap payload under "configbuilder" key as required by API
+      final payload = {'configbuilder': innerPayload};
+
+      debugPrint('[WireGuardService] addClientBuilder payload: $payload');
+
+      final response = await dio.post(
+        '/wireguard/client/add_client_builder',
+        data: payload,
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        debugPrint('[WireGuardService] addClientBuilder response: $data');
+
+        // Check for explicit failure
+        if (data.containsKey('result') && data['result'] == 'failed') {
+          final validations = data['validations'] as Map<String, dynamic>?;
+          final message = data['message'];
+
+          if (validations != null && validations.isNotEmpty) {
+            final errors = validations.entries
+                .map((e) => '${e.key}: ${e.value}')
+                .join(', ');
+            throw ApiException('Validation failed: $errors', response.statusCode);
+          }
+
+          throw ApiException(
+            'Failed to add client: ${message ?? 'Unknown error'}',
+            response.statusCode,
+          );
+        }
+
+        // Success case: {"result":"saved"} with HTTP 200
+        if (data.containsKey('result') && data['result'] == 'saved') {
+          return;
+        }
+
+        // Legacy UUID response (if API ever returns it)
+        if (data.containsKey('uuid')) {
+          return;
+        }
+
+        throw ApiException('Unexpected response format: ${data.toString()}', response.statusCode);
+      } else {
+        throw ApiException('Failed to add client via builder', response.statusCode);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
