@@ -64,16 +64,24 @@ class ResourceUsageSection extends StatelessWidget {
         ),
         const SizedBox(height: 12),
 
-        // Memory Usage
-        ProgressStatCard(
+        // Memory Usage with ARC visualization
+        StackedProgressStatCard(
           title: l10n.memoryUsage,
-          value: '${Formatters.formatMemoryGB(systemInfo.memoryUsed, context)} / '
+          value: '${Formatters.formatMemoryGB(systemInfo.memoryActualUsed, context)} / '
               '${Formatters.formatMemoryGB(systemInfo.memoryTotal, context)}',
-          progress: systemInfo.memoryUsagePercentage / 100,
+          primaryProgress: systemInfo.memoryUsagePercentage / 100,
+          secondaryProgress: systemInfo.memoryTotal > 0
+              ? (systemInfo.memoryArc / systemInfo.memoryTotal)
+              : 0.0,
           icon: Icons.memory,
-          subtitle: Formatters.formatPercentage(
-            systemInfo.memoryUsagePercentage,
-          ),
+          primaryLabel: 'Actual Used',
+          primaryValue: '${Formatters.formatPercentage(systemInfo.memoryUsagePercentage)} '
+              '(${Formatters.formatMemoryGB(systemInfo.memoryActualUsed, context)})',
+          secondaryLabel: systemInfo.memoryArc > 0 ? 'ARC Cache' : null,
+          secondaryValue: systemInfo.memoryArc > 0
+              ? '${Formatters.formatPercentage((systemInfo.memoryArc / systemInfo.memoryTotal) * 100)} '
+                  '(${Formatters.formatMemoryGB(systemInfo.memoryArc, context)})'
+              : null,
         ),
         const SizedBox(height: 12),
 

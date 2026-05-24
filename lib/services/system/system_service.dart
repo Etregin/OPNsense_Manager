@@ -290,10 +290,12 @@ class SystemService extends BaseOPNsenseService {
       // Memory values might be int or string, parse safely
       int memoryUsed = 0;
       int memoryTotal = 0;
+      int memoryArc = 0;
       
       if (memoryData != null) {
         final usedValue = memoryData['used'];
         final totalValue = memoryData['total'];
+        final arcValue = memoryData['arc'];
         
         if (usedValue is int) {
           memoryUsed = usedValue;
@@ -305,6 +307,12 @@ class SystemService extends BaseOPNsenseService {
           memoryTotal = totalValue;
         } else if (totalValue is String) {
           memoryTotal = int.tryParse(totalValue) ?? 0;
+        }
+        
+        if (arcValue is int) {
+          memoryArc = arcValue;
+        } else if (arcValue is String) {
+          memoryArc = int.tryParse(arcValue) ?? 0;
         }
       }
 
@@ -350,6 +358,7 @@ class SystemService extends BaseOPNsenseService {
         uptime: uptime,
         cpuUsage: cpuUsage,
         memoryUsed: memoryUsed,
+        memoryArc: memoryArc,
         diskUsed: diskUsed,
         diskTotal: diskTotal,
         memoryTotal: memoryTotal,

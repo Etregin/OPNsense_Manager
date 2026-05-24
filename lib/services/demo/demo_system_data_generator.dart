@@ -43,14 +43,20 @@ class DemoSystemDataGenerator {
     final memoryUsage = 40 + _random.nextInt(20); // 40-60%
     final diskUsage = 25 + _random.nextInt(30); // 25-55%
 
+    final memoryTotal = 8589934592; // 8GB
+    final memoryUsed = (memoryTotal * memoryUsage / 100).round();
+    // ARC typically uses 50-60% of used memory on ZFS systems
+    final memoryArc = (memoryUsed * (0.5 + _random.nextDouble() * 0.1)).round();
+
     return SystemInfo(
       hostname: 'demo-opnsense',
       version: '24.7.1',
       platform: 'amd64',
       uptime: uptime.inSeconds,
       cpuUsage: cpuUsage.toDouble(),
-      memoryTotal: 8589934592, // 8GB
-      memoryUsed: (8589934592 * memoryUsage / 100).round(),
+      memoryTotal: memoryTotal,
+      memoryUsed: memoryUsed,
+      memoryArc: memoryArc,
       diskTotal: 107374182400, // 100GB
       diskUsed: (107374182400 * diskUsage / 100).round(),
       type: 'opnsense',

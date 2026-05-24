@@ -209,6 +209,257 @@ class ProgressStatCard extends StatelessWidget {
   }
 }
 
+/// Stacked progress stat card with two progress segments (for memory with ARC)
+class StackedProgressStatCard extends StatelessWidget {
+  final String title;
+  final String value;
+  final double primaryProgress; // 0.0 to 1.0 (actual used memory)
+  final double secondaryProgress; // 0.0 to 1.0 (ARC memory)
+  final IconData icon;
+  final Color? primaryColor;
+  final Color? secondaryColor;
+  final String? subtitle;
+  
+  // New parameters for labeled sections
+  final String? primaryLabel;
+  final String? secondaryLabel;
+  final String? primaryValue;
+  final String? secondaryValue;
+
+  const StackedProgressStatCard({
+    super.key,
+    required this.title,
+    required this.value,
+    required this.primaryProgress,
+    required this.secondaryProgress,
+    required this.icon,
+    this.primaryColor,
+    this.secondaryColor,
+    this.subtitle,
+    this.primaryLabel,
+    this.secondaryLabel,
+    this.primaryValue,
+    this.secondaryValue,
+  });
+
+  Color _getPrimaryColor(BuildContext context) {
+    if (primaryColor != null) return primaryColor!;
+    
+    // Color based on primary progress only (actual memory usage)
+    if (primaryProgress >= 0.9) {
+      return const Color(AppConstants.errorColorValue);
+    } else if (primaryProgress >= 0.7) {
+      return const Color(AppConstants.warningColorValue);
+    } else {
+      return const Color(AppConstants.successColorValue);
+    }
+  }
+
+  Color _getSecondaryColor(BuildContext context) {
+    if (secondaryColor != null) return secondaryColor!;
+    
+    // Use a lighter shade of the primary color for ARC
+    final primary = _getPrimaryColor(context);
+    return primary.withValues(alpha: 0.4);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = _getPrimaryColor(context);
+    final secondary = _getSecondaryColor(context);
+    final totalProgress = (primaryProgress + secondaryProgress).clamp(0.0, 1.0);
+    final showLabels = primaryLabel != null || secondaryLabel != null;
+    
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppConstants.standardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    icon,
+                    color: primary,
+                    size: 28,
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  '${(primaryProgress * 100).toStringAsFixed(1)}%',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: primary,
+                      ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.grey[600],
+                  ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              value,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 12),
+            // Stacked progress bar
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: SizedBox(
+                height: 8,
+                child: Stack(
+                  children: [
+                    // Background
+                    Container(
+                      width: double.infinity,
+                      color: Colors.grey[200],
+                    ),
+                    // Total progress (primary + secondary)
+                    FractionallySizedBox(
+                      widthFactor: totalProgress,
+                      child: Container(
+                        color: secondary,
+                      ),
+                    ),
+                    // Primary progress (actual used)
+                    FractionallySizedBox(
+                      widthFactor: primaryProgress.clamp(0.0, 1.0),
+                      child: Container(
+                        color: primary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Section labels and values
+            if (showLabels) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  // Primary section
+                  if (primaryLabel != null)
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                width: 12,
+                                height: 12,
+                                decoration: BoxDecoration(
+                                  color: primary,
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Flexible(
+                                child: Text(
+                                  primaryLabel!,
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                        color: Colors.grey[700],
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                          if (primaryValue != null) ...[
+                            const SizedBox(height: 2),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 18),
+                              child: Text(
+                                primaryValue!,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Colors.grey[600],
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  // Spacing between sections
+                  if (primaryLabel != null && secondaryLabel != null)
+                    const SizedBox(width: 16),
+                  // Secondary section
+                  if (secondaryLabel != null)
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                width: 12,
+                                height: 12,
+                                decoration: BoxDecoration(
+                                  color: secondary,
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Flexible(
+                                child: Text(
+                                  secondaryLabel!,
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                        color: Colors.grey[700],
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                          if (secondaryValue != null) ...[
+                            const SizedBox(height: 2),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 18),
+                              child: Text(
+                                secondaryValue!,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Colors.grey[600],
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ],
+            if (subtitle != null && !showLabels) ...[
+              const SizedBox(height: 8),
+              Text(
+                subtitle!,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.grey[500],
+                    ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// Quick action card for navigation
 class QuickActionCard extends StatelessWidget {
   final String title;
