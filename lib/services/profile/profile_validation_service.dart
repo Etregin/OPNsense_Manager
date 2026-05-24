@@ -22,8 +22,7 @@ import 'profile_storage_service.dart';
 class ProfileValidationService {
   final ProfileStorageService _storageService;
 
-  ProfileValidationService({required ProfileStorageService storageService})
-      : _storageService = storageService;
+  ProfileValidationService({required this._storageService});
 
   /// Check if a profile name already exists
   Future<bool> profileNameExists(String name, {String? excludeId}) async {

@@ -29,8 +29,7 @@ class ProfileExportImportService {
   /// Export format version constant
   static const String exportVersion = '1.0';
 
-  ProfileExportImportService({required ProfileStorageService storageService})
-      : _storageService = storageService;
+  ProfileExportImportService({required this._storageService});
 
   /// Export all profiles to JSON format
   Future<String> exportProfiles({bool includeCredentials = false}) async {

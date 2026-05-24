@@ -27,10 +27,9 @@ class ProfileMigrationService {
   final FlutterSecureStorage _secureStorage;
 
   ProfileMigrationService({
-    required ProfileStorageService storageService,
+    required this._storageService,
     FlutterSecureStorage? secureStorage,
-  })  : _storageService = storageService,
-        _secureStorage = secureStorage ?? const FlutterSecureStorage();
+  }) : _secureStorage = secureStorage ?? const FlutterSecureStorage();
 
   /// Migrate from old single-config storage to profile-based storage
   Future<void> migrateFromOldStorage() async {

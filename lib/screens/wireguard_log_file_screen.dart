@@ -188,10 +188,12 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
       await file.writeAsString(buffer.toString());
 
       // Share the file
-      final result = await Share.shareXFiles(
-        [XFile(filePath)],
-        subject: 'WireGuard Logs Export',
-        text: 'WireGuard logs exported on ${dateFormatter.format(now)}',
+      final result = await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(filePath)],
+          subject: 'WireGuard Logs Export',
+          text: 'WireGuard logs exported on ${dateFormatter.format(now)}',
+        ),
       );
 
       if (mounted && result.status == ShareResultStatus.success) {

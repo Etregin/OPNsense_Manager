@@ -39,14 +39,11 @@ class LoginViewModel extends BaseFormViewModel {
   Profile? get existingProfile => _existingProfile;
 
   LoginViewModel({
-    required ProfileService profileService,
-    required DemoApiService demoApiService,
-    required OPNsenseApiService opnsenseApiService,
-    Profile? existingProfile,
-  })  : _profileService = profileService,
-        _demoApiService = demoApiService,
-        _opnsenseApiService = opnsenseApiService,
-        _existingProfile = existingProfile;
+    required this._profileService,
+    required this._demoApiService,
+    required this._opnsenseApiService,
+    this._existingProfile,
+  });
 
   /// Test all connections without saving
   Future<Map<String, dynamic>> testAllConnections({

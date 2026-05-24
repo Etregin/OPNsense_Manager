@@ -24,29 +24,27 @@ import '../profile_service.dart';
 class ProfileImportService {
   final ProfileService _profileService;
 
-  ProfileImportService({required ProfileService profileService})
-      : _profileService = profileService;
+  ProfileImportService({required this._profileService});
 
   /// Import profiles from a JSON file
   /// Returns a map with import results: success (int), failed (int), errors (List of String)
   Future<Map<String, dynamic>> importProfiles({required bool overwrite}) async {
     // Pick a file
-    final pickerResult = await FilePicker.pickFiles(
+    final pickerResult = await FilePicker.pickFile(
       type: FileType.custom,
       allowedExtensions: ['json'],
-      allowMultiple: false,
     );
 
-    if (pickerResult == null || pickerResult.files.isEmpty) {
+    if (pickerResult == null) {
       throw Exception('No file selected');
     }
 
     // Check if path is null before accessing it
-    if (pickerResult.files.first.path == null) {
+    if (pickerResult.path == null) {
       throw Exception('Unable to access file path');
     }
 
-    final file = File(pickerResult.files.first.path!);
+    final file = File(pickerResult.path!);
     final jsonString = await file.readAsString();
 
     // Validate file format

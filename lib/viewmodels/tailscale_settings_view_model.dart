@@ -38,10 +38,9 @@ class TailscaleSettingsViewModel extends BaseFormViewModel {
   bool get isDemoMode => _demoApiService.isDemoMode;
 
   TailscaleSettingsViewModel({
-    required DemoApiService demoApiService,
-    OPNsenseApiService? opnsenseApiService,
-  })  : _demoApiService = demoApiService,
-        _opnsenseApiService = opnsenseApiService;
+    required this._demoApiService,
+    this._opnsenseApiService,
+  });
 
   /// Load settings and system info from API
   Future<void> loadData() async {

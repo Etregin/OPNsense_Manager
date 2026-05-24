@@ -43,10 +43,9 @@ class WireGuardPeerFormViewModel extends BaseFormViewModel {
   WireGuardPeerResponse? get loadedPeerData => _loadedPeerData;
 
   WireGuardPeerFormViewModel({
-    required OPNsenseApiService apiService,
-    String? existingPeerUuid,
-  })  : _apiService = apiService,
-        _existingPeerUuid = existingPeerUuid;
+    required this._apiService,
+    this._existingPeerUuid,
+  });
 
   /// Load available servers from API
   Future<void> loadServers() async {

@@ -5,7 +5,7 @@ publish_to: 'none'
 version: 1.6.0+9
 
 environment:
-  sdk: '>=3.11.5 <4.0.0'
+  sdk: '>=3.12.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -43,7 +43,7 @@ dependencies:
   local_auth: ^3.0.0
   
   # File Picker for import/export
-  file_picker: ^11.0.2
+  file_picker: ^12.0.0-beta.4
   
   # Path Provider for file operations
   path_provider: ^2.1.5
@@ -52,7 +52,7 @@ dependencies:
   qr_flutter: ^4.1.0
   
   # Share files for WireGuard config export
-  share_plus: ^7.2.1
+  share_plus: ^13.1.0
   
   # URL Launcher for opening authentication URLs
   url_launcher: ^6.2.2

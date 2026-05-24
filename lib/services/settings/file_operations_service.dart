@@ -171,13 +171,12 @@ class FileOperationsService {
   Future<ImportResult> importProfiles({required bool overwrite}) async {
     try {
       // Pick a file
-      final pickerResult = await FilePicker.pickFiles(
+      final pickerResult = await FilePicker.pickFile(
         type: FileType.custom,
         allowedExtensions: ['json'],
-        allowMultiple: false,
       );
       
-      if (pickerResult == null || pickerResult.files.isEmpty) {
+      if (pickerResult == null) {
         return ImportResult(
           success: false,
           successCount: 0,
@@ -187,7 +186,7 @@ class FileOperationsService {
       }
       
       // Check if path is null before accessing it
-      if (pickerResult.files.first.path == null) {
+      if (pickerResult.path == null) {
         return ImportResult(
           success: false,
           successCount: 0,
@@ -196,7 +195,7 @@ class FileOperationsService {
         );
       }
       
-      final file = File(pickerResult.files.first.path!);
+      final file = File(pickerResult.path!);
       final jsonString = await file.readAsString();
       
       // Validate file format

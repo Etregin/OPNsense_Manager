@@ -47,8 +47,8 @@ class WireGuardPeerGeneratorViewModel extends BaseFormViewModel {
   bool get wireguardEnabled => _wireguardEnabled;
 
   WireGuardPeerGeneratorViewModel({
-    required OPNsenseApiService apiService,
-  }) : _apiService = apiService;
+    required this._apiService,
+  });
 
   /// Load builder data from API
   Future<void> loadBuilderData() async {
