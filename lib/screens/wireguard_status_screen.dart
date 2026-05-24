@@ -16,9 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// TODO: Implement WireGuard service status display
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../services/opnsense_api_service.dart';
+import '../viewmodels/wireguard_status_view_model.dart';
+import '../widgets/app_drawer.dart';
+import '../widgets/wireguard/status_card.dart';
 
 /// Screen for displaying WireGuard service status
 class WireGuardStatusScreen extends StatefulWidget {
@@ -29,15 +32,140 @@ class WireGuardStatusScreen extends StatefulWidget {
 }
 
 class _WireGuardStatusScreenState extends State<WireGuardStatusScreen> {
+  WireGuardStatusViewModel? _viewModel;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_viewModel == null) {
+      final apiService = context.read<OPNsenseApiService>();
+      _viewModel = WireGuardStatusViewModel(apiService);
+    }
+  }
+
+  @override
+  void dispose() {
+    _viewModel?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('WireGuard Status'),
-      ),
-      body: const Center(
-        child: Text('Status screen - to be implemented'),
-      ),
+    // Return loading indicator if view model is not yet initialized
+    if (_viewModel == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('WireGuard Status'),
+        ),
+        drawer: const AppDrawer(currentRoute: 'wireguard_status'),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    return ListenableBuilder(
+      listenable: _viewModel!,
+      builder: (context, _) {
+        final statusItems = _viewModel!.statusItems;
+        final isLoading = _viewModel!.isLoading;
+        final errorMessage = _viewModel!.errorMessage;
+        final hasData = _viewModel!.hasData;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('WireGuard Status'),
+            actions: [
+              // Refresh button
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: isLoading ? null : _viewModel!.refresh,
+                tooltip: 'Refresh',
+              ),
+            ],
+          ),
+          drawer: const AppDrawer(currentRoute: 'wireguard_status'),
+          body: isLoading && !hasData
+              ? const Center(child: CircularProgressIndicator())
+              : errorMessage != null && !hasData
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.error_outline,
+                            size: 48,
+                            color: Colors.red,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Error',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          const SizedBox(height: 8),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 32),
+                            child: Text(
+                              errorMessage,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton.icon(
+                            onPressed: _viewModel!.refresh,
+                            icon: const Icon(Icons.refresh),
+                            label: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    )
+                  : !hasData
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.vpn_lock,
+                                size: 48,
+                                color: Colors.grey,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'No WireGuard status data available',
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              const SizedBox(height: 8),
+                              const Text(
+                                'Check if WireGuard is configured and running',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        )
+                      : RefreshIndicator(
+                          onRefresh: _viewModel!.refresh,
+                          child: Column(
+                            children: [
+                              // Show loading indicator at top if refreshing
+                              if (isLoading) const LinearProgressIndicator(),
+                              
+                              // Card-based list
+                              Expanded(
+                                child: ListView.builder(
+                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  itemCount: statusItems.length,
+                                  itemBuilder: (context, index) {
+                                    final item = statusItems[index];
+                                    return StatusCard(
+                                      item: item,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+        );
+      },
     );
   }
 }

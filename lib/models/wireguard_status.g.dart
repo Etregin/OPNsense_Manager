@@ -6,6 +6,59 @@ part of 'wireguard_status.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+WireGuardStatusItem _$WireGuardStatusItemFromJson(Map<String, dynamic> json) =>
+    WireGuardStatusItem(
+      interfaceName: json['if'] as String,
+      type: json['type'] as String,
+      publicKey: json['public-key'] as String,
+      listenPort: json['listen-port'] as String,
+      fwmark: json['fwmark'] as String,
+      endpoint: json['endpoint'] as String,
+      status: json['status'] as String,
+      name: json['name'] as String?,
+      latestHandshakeAge: json['latest-handshake-age'] as String?,
+      latestHandshakeEpoch: (json['latest-handshake-epoch'] as num?)?.toInt(),
+      peerStatus: json['peer-status'] as String,
+      ifname: json['ifname'] as String,
+    );
+
+Map<String, dynamic> _$WireGuardStatusItemToJson(
+  WireGuardStatusItem instance,
+) => <String, dynamic>{
+  'if': instance.interfaceName,
+  'type': instance.type,
+  'public-key': instance.publicKey,
+  'listen-port': instance.listenPort,
+  'fwmark': instance.fwmark,
+  'endpoint': instance.endpoint,
+  'status': instance.status,
+  'name': instance.name,
+  'latest-handshake-age': instance.latestHandshakeAge,
+  'latest-handshake-epoch': instance.latestHandshakeEpoch,
+  'peer-status': instance.peerStatus,
+  'ifname': instance.ifname,
+};
+
+WireGuardStatusResponse _$WireGuardStatusResponseFromJson(
+  Map<String, dynamic> json,
+) => WireGuardStatusResponse(
+  total: (json['total'] as num).toInt(),
+  rowCount: (json['rowCount'] as num).toInt(),
+  current: (json['current'] as num).toInt(),
+  rows: (json['rows'] as List<dynamic>)
+      .map((e) => WireGuardStatusItem.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
+
+Map<String, dynamic> _$WireGuardStatusResponseToJson(
+  WireGuardStatusResponse instance,
+) => <String, dynamic>{
+  'total': instance.total,
+  'rowCount': instance.rowCount,
+  'current': instance.current,
+  'rows': instance.rows,
+};
+
 WireGuardStatus _$WireGuardStatusFromJson(Map<String, dynamic> json) =>
     WireGuardStatus(
       uuid: json['uuid'] as String,

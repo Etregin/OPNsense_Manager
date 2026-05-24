@@ -29,6 +29,7 @@ import '../models/wireguard_server.dart';
 import '../models/wireguard_peer.dart';
 import '../models/wireguard_key_pair.dart';
 import '../models/wireguard_client_builder.dart';
+import '../models/wireguard_status.dart';
 import '../models/tailscale_status.dart';
 import '../models/tailscale_settings.dart';
 import '../utils/constants.dart';
@@ -324,6 +325,8 @@ class OPNsenseApiService {
   Future<void> applyWireGuardConfiguration() => _wireguardService.reconfigureWireGuard();
   
   Future<Map<String, dynamic>> getWireGuardStatus() => _wireguardService.getWireGuardStatus();
+  
+  Future<WireGuardStatusResponse> getWireGuardStatusResponse() => _wireguardService.getStatus();
   
   Future<void> restartWireGuardService() => _wireguardService.restartWireGuardService();
   

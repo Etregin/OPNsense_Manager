@@ -21,6 +21,151 @@ import 'wireguard_peer_status.dart';
 
 part 'wireguard_status.g.dart';
 
+/// Represents a single WireGuard status item from the API response
+@JsonSerializable()
+class WireGuardStatusItem {
+  /// Interface name (e.g., "wg0")
+  @JsonKey(name: 'if')
+  final String interfaceName;
+  
+  /// Type: "interface" or "peer"
+  final String type;
+  
+  /// Public key (may be "(none)" for interfaces without keys)
+  @JsonKey(name: 'public-key')
+  final String publicKey;
+  
+  /// Listen port for the interface
+  @JsonKey(name: 'listen-port')
+  final String listenPort;
+  
+  /// Firewall mark setting
+  final String fwmark;
+  
+  /// Endpoint (same as listen-port for interfaces)
+  final String endpoint;
+  
+  /// Status: "up" or "down"
+  final String status;
+  
+  /// Name/description (may be empty)
+  final String? name;
+  
+  /// Latest handshake age in human-readable format (e.g., "2 minutes ago")
+  @JsonKey(name: 'latest-handshake-age')
+  final String? latestHandshakeAge;
+  
+  /// Latest handshake epoch timestamp
+  @JsonKey(name: 'latest-handshake-epoch')
+  final int? latestHandshakeEpoch;
+  
+  /// Peer status: "online" or "offline"
+  @JsonKey(name: 'peer-status')
+  final String peerStatus;
+  
+  /// Interface friendly name
+  final String ifname;
+
+  WireGuardStatusItem({
+    required this.interfaceName,
+    required this.type,
+    required this.publicKey,
+    required this.listenPort,
+    required this.fwmark,
+    required this.endpoint,
+    required this.status,
+    this.name,
+    this.latestHandshakeAge,
+    this.latestHandshakeEpoch,
+    required this.peerStatus,
+    required this.ifname,
+  });
+
+  /// Check if the interface/peer is up
+  bool get isUp => status.toLowerCase() == 'up';
+  
+  /// Check if this is an interface (not a peer)
+  bool get isInterface => type.toLowerCase() == 'interface';
+  
+  /// Check if this is a peer
+  bool get isPeer => type.toLowerCase() == 'peer';
+  
+  /// Check if peer is online
+  bool get isOnline => peerStatus.toLowerCase() == 'online';
+  
+  /// Get listen port as integer
+  int get listenPortNumber => int.tryParse(listenPort) ?? 0;
+  
+  /// Get latest handshake as DateTime (null if not available)
+  DateTime? get latestHandshakeDateTime {
+    if (latestHandshakeEpoch == null) return null;
+    return DateTime.fromMillisecondsSinceEpoch(latestHandshakeEpoch! * 1000);
+  }
+  
+  /// Check if public key is set (not "(none)")
+  bool get hasPublicKey => publicKey != '(none)' && publicKey.isNotEmpty;
+
+  factory WireGuardStatusItem.fromJson(Map<String, dynamic> json) =>
+      _$WireGuardStatusItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WireGuardStatusItemToJson(this);
+
+  @override
+  String toString() =>
+      'WireGuardStatusItem(if: $interfaceName, type: $type, status: $status, ifname: $ifname)';
+}
+
+/// Represents the API response from /api/wireguard/service/show
+@JsonSerializable()
+class WireGuardStatusResponse {
+  /// Total number of items
+  final int total;
+  
+  /// Number of rows per page
+  final int rowCount;
+  
+  /// Current page number
+  final int current;
+  
+  /// List of status items
+  final List<WireGuardStatusItem> rows;
+
+  WireGuardStatusResponse({
+    required this.total,
+    required this.rowCount,
+    required this.current,
+    required this.rows,
+  });
+
+  /// Check if there are any items
+  bool get hasItems => rows.isNotEmpty;
+  
+  /// Get all interface items
+  List<WireGuardStatusItem> get interfaces =>
+      rows.where((item) => item.isInterface).toList();
+  
+  /// Get all peer items
+  List<WireGuardStatusItem> get peers =>
+      rows.where((item) => item.isPeer).toList();
+  
+  /// Get all online items
+  List<WireGuardStatusItem> get onlineItems =>
+      rows.where((item) => item.isOnline).toList();
+  
+  /// Get all up interfaces
+  List<WireGuardStatusItem> get upInterfaces =>
+      rows.where((item) => item.isInterface && item.isUp).toList();
+
+  factory WireGuardStatusResponse.fromJson(Map<String, dynamic> json) =>
+      _$WireGuardStatusResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WireGuardStatusResponseToJson(this);
+
+  @override
+  String toString() =>
+      'WireGuardStatusResponse(total: $total, rows: ${rows.length})';
+}
+
 /// Represents runtime status of a WireGuard instance
 @JsonSerializable()
 class WireGuardStatus {

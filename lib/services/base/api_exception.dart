@@ -21,10 +21,7 @@ class ApiException implements Exception {
   final String message;
   final int? statusCode;
 
-  ApiException(this.message, this.statusCode) {
-    // Log when ApiException is created to track error origin
-    print('ApiException created: $message (Status: $statusCode)');
-  }
+  ApiException(this.message, this.statusCode);
 
   @override
   String toString() {
