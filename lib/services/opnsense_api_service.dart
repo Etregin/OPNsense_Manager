@@ -348,6 +348,16 @@ class OPNsenseApiService {
   
   Future<void> restartWireGuardInstance(String uuid) => _wireguardService.restartWireGuardInstance(uuid);
 
+  Future<Map<String, dynamic>> getWireGuardLogs({
+    int rowCount = 50,
+    List<String>? severity,
+    double? validFrom,
+  }) => _wireguardService.getWireGuardLogs(
+    rowCount: rowCount,
+    severity: severity,
+    validFrom: validFrom,
+  );
+
   // ============================================================================
   // IPsec Service Delegations
   // ============================================================================

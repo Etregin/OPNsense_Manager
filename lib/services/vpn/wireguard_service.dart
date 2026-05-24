@@ -27,6 +27,24 @@ import '../../models/wireguard_status.dart';
 
 /// Service for WireGuard VPN operations
 class WireGuardService extends BaseOPNsenseService {
+  // Severity level constants for log filtering
+  // Maps UI severity levels to API severity arrays (cumulative)
+  static const Map<String, List<String>> severityLevels = {
+    'Emergency': ['Emergency'],
+    'Alert': ['Emergency', 'Alert'],
+    'Critical': ['Emergency', 'Alert', 'Critical'],
+    'Error': ['Emergency', 'Alert', 'Critical', 'Error'],
+    'Warning': ['Emergency', 'Alert', 'Critical', 'Error', 'Warning'],
+    'Notice': ['Emergency', 'Alert', 'Critical', 'Error', 'Warning', 'Notice'],
+    'Informational': ['Emergency', 'Alert', 'Critical', 'Error', 'Warning', 'Notice', 'Informational'],
+    'Debug': ['Emergency', 'Alert', 'Critical', 'Error', 'Warning', 'Notice', 'Informational', 'Debug'],
+  };
+
+  // Time filter constants (in seconds)
+  static const int lastDaySeconds = 86400;      // 24 hours
+  static const int lastWeekSeconds = 604800;    // 7 days
+  static const int lastMonthSeconds = 2592000;  // 30 days
+
   Future<List<WireGuardServer>> getWireGuardServers() async {
     ensureInitialized();
 
@@ -739,6 +757,106 @@ class WireGuardService extends BaseOPNsenseService {
     } on DioException catch (e) {
       throw handleDioError(e);
     }
+  }
+
+  /// Get WireGuard logs with filtering capabilities
+  /// Endpoint: POST /api/diagnostics/log/core/wireguard
+  ///
+  /// Parameters:
+  /// - [rowCount]: Number of log entries to retrieve (default: 50)
+  /// - [severity]: List of severity levels to include (e.g., ['Emergency', 'Alert'])
+  ///               Use severityLevels constant for proper cumulative filtering
+  /// - [validFrom]: Optional Unix timestamp to filter logs from a specific time
+  ///                Use time filter constants (lastDaySeconds, lastWeekSeconds, lastMonthSeconds)
+  ///                or omit for no time limit
+  ///
+  /// Returns: Map containing:
+  /// - rows: List of log entries with timestamp, severity, process_name, line, etc.
+  /// - total_rows: Total number of matching log entries
+  /// - rowCount: Number of rows in current response
+  /// - current: Current page number
+  /// - total: Total number of entries
+  ///
+  /// Example:
+  /// ```dart
+  /// // Get last 100 logs with Error level and above from last day
+  /// final currentTime = DateTime.now().millisecondsSinceEpoch / 1000;
+  /// final logs = await getWireGuardLogs(
+  ///   rowCount: 100,
+  ///   severity: WireGuardService.severityLevels['Error']!,
+  ///   validFrom: currentTime - WireGuardService.lastDaySeconds,
+  /// );
+  /// ```
+  Future<Map<String, dynamic>> getWireGuardLogs({
+    int rowCount = 50,
+    List<String>? severity,
+    double? validFrom,
+  }) async {
+    ensureInitialized();
+
+    try {
+      // Build payload according to API specification
+      final payload = <String, dynamic>{
+        'current': 1,
+        'rowCount': rowCount,
+        'sort': {},
+        'severity': severity ?? severityLevels['Debug']!, // Default to all severity levels
+      };
+
+      // Add validFrom only if provided (for time filtering)
+      if (validFrom != null) {
+        payload['validFrom'] = validFrom;
+      }
+
+      final response = await dio.post(
+        '/diagnostics/log/core/wireguard',
+        data: payload,
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        
+        // Validate response structure
+        if (!data.containsKey('rows')) {
+          throw ApiException('Invalid response: missing rows field', response.statusCode);
+        }
+
+        return data;
+      } else {
+        throw ApiException('Failed to get WireGuard logs', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Helper method to get severity levels for a given severity name
+  /// Returns the cumulative list of severity levels up to and including the specified level
+  ///
+  /// Example:
+  /// ```dart
+  /// final errorLevels = getSeverityLevels('Error');
+  /// // Returns: ['Emergency', 'Alert', 'Critical', 'Error']
+  /// ```
+  static List<String> getSeverityLevels(String severityName) {
+    return severityLevels[severityName] ?? severityLevels['Debug']!;
+  }
+
+  /// Helper method to calculate Unix timestamp for time-based filtering
+  ///
+  /// Parameters:
+  /// - [secondsAgo]: Number of seconds to subtract from current time
+  ///
+  /// Returns: Unix timestamp (as double) for use with validFrom parameter
+  ///
+  /// Example:
+  /// ```dart
+  /// // Get timestamp for last day
+  /// final lastDay = getTimestampFromNow(WireGuardService.lastDaySeconds);
+  /// ```
+  static double getTimestampFromNow(int secondsAgo) {
+    final now = DateTime.now().millisecondsSinceEpoch / 1000;
+    return now - secondsAgo;
   }
 }
 
