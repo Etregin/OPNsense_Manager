@@ -125,10 +125,6 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
                   child: Text('WireGuard'),
                 ),
                 const PopupMenuItem(
-                  value: 'ipsec',
-                  child: Text('IPsec'),
-                ),
-                const PopupMenuItem(
                   value: 'tailscale',
                   child: Text('Tailscale'),
                 ),

@@ -306,7 +306,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed build instructions.
 <a id="roadmap"></a>
 ## 🗺️ Roadmap
 - [ ] Get Firewall rules to work with ALL rules
-- [x] **VPN connection management** (OpenVPN, Tailscale) - *For additional VPN types (WireGuard, IPsec), please open a feature request*
+- [x] **VPN connection management** (OpenVPN, Tailscale, WireGuard)
 - [ ] Push notifications for system alerts
 - [ ] Backup/restore configuration functionality
 - [ ] Package management interface

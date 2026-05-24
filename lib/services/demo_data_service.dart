@@ -35,7 +35,7 @@ import 'demo/demo_tailscale_data_generator.dart';
 /// This is a facade that delegates to specialized generators:
 /// - System data (info, services, gateways)
 /// - Firewall data (rules, aliases, logs)
-/// - VPN data (OpenVPN, IPsec, WireGuard)
+/// - VPN data (OpenVPN, WireGuard, Tailscale)
 /// - Network data (hosts, DHCP leases)
 /// - Tailscale data (status, settings, subnets)
 class DemoDataService {
@@ -112,22 +112,6 @@ class DemoDataService {
   /// Generate demo WireGuard servers
   List<Map<String, dynamic>> generateWireGuardServers() => 
       _vpnGenerator.generateWireGuardServers();
-
-  /// Generate demo IPsec connections
-  List<Map<String, dynamic>> generateIPsecConnections() => 
-      _vpnGenerator.generateIPsecConnections();
-
-  /// Generate demo IPsec Phase 1 sessions
-  List<Map<String, dynamic>> generateIPsecSessionsPhase1() => 
-      _vpnGenerator.generateIPsecSessionsPhase1();
-
-  /// Generate demo IPsec Phase 2 sessions
-  List<Map<String, dynamic>> generateIPsecSessionsPhase2() => 
-      _vpnGenerator.generateIPsecSessionsPhase2();
-
-  /// Generate demo IPsec leases
-  List<Map<String, dynamic>> generateIPsecLeases() => 
-      _vpnGenerator.generateIPsecLeases();
 
   /// Toggle VPN connection state
   void toggleVPNConnectionState(String id) => 

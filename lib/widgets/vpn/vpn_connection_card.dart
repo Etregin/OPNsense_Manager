@@ -116,8 +116,6 @@ class VPNConnectionCard extends StatelessWidget {
         return Icons.vpn_key;
       case 'wireguard':
         return Icons.security;
-      case 'ipsec':
-        return Icons.shield;
       case 'tailscale':
         return Icons.cloud_queue;
       default:

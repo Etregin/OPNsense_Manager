@@ -64,7 +64,6 @@ class _AppDrawerState extends State<AppDrawer> {
     _firewallExpanded = NavigationService.isRouteInSection(widget.currentRoute, 'firewall_');
     _vpnExpanded = NavigationService.isRouteInSection(widget.currentRoute, 'vpn_') ||
                    NavigationService.isRouteInSection(widget.currentRoute, 'wireguard_') ||
-                   NavigationService.isRouteInSection(widget.currentRoute, 'ipsec_') ||
                    NavigationService.isRouteInSection(widget.currentRoute, 'openvpn_') ||
                    NavigationService.isRouteInSection(widget.currentRoute, 'tailscale_');
   }

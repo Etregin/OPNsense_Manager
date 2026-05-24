@@ -40,7 +40,6 @@ import 'firewall/firewall_service.dart';
 import 'firewall/firewall_alias_service.dart' as alias_service;
 import 'vpn/vpn_service.dart';
 import 'vpn/wireguard_service.dart';
-import 'vpn/ipsec_service.dart';
 import 'network/network_service.dart';
 import 'network/dhcp_service.dart';
 import 'network/gateway_service.dart';
@@ -68,7 +67,6 @@ class OPNsenseApiService {
   final alias_service.FirewallAliasService _firewallAliasService = alias_service.FirewallAliasService();
   final VPNService _vpnService = VPNService();
   final WireGuardService _wireguardService = WireGuardService();
-  final IPsecService _ipsecService = IPsecService();
   final NetworkService _networkService = NetworkService();
   final DHCPService _dhcpService = DHCPService();
   final GatewayService _gatewayService = GatewayService();
@@ -114,7 +112,6 @@ class OPNsenseApiService {
     _firewallAliasService.init(_dio!, config);
     _vpnService.init(_dio!, config);
     _wireguardService.init(_dio!, config);
-    _ipsecService.init(_dio!, config);
     _networkService.init(_dio!, config);
     _dhcpService.init(_dio!, config);
     _gatewayService.init(_dio!, config);
@@ -170,7 +167,6 @@ class OPNsenseApiService {
     _firewallAliasService.clear();
     _vpnService.clear();
     _wireguardService.clear();
-    _ipsecService.clear();
     _networkService.clear();
     _dhcpService.clear();
     _gatewayService.clear();
@@ -357,14 +353,6 @@ class OPNsenseApiService {
     severity: severity,
     validFrom: validFrom,
   );
-
-  // ============================================================================
-  // IPsec Service Delegations
-  // ============================================================================
-
-  Future<List<Map<String, dynamic>>> getIPsecConnections() => _ipsecService.getIPsecConnections();
-  
-  Future<List<Map<String, dynamic>>> getIPsecSessionsPhase1() => _ipsecService.getIPsecSessionsPhase1();
 
   // ============================================================================
   // Network Service Delegations

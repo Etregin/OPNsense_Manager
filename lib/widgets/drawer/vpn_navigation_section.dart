@@ -53,7 +53,6 @@ class VPNNavigationSection extends StatefulWidget {
 
 class _VPNNavigationSectionState extends State<VPNNavigationSection> {
   bool _wireguardExpanded = false;
-  bool _ipsecExpanded = false;
   bool _openvpnExpanded = false;
   bool _tailscaleExpanded = false;
   VPNConnection? _tailscaleStatus;
@@ -64,7 +63,6 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
     super.initState();
     // Auto-expand sub-sections based on current route
     _wireguardExpanded = NavigationService.isRouteInSection(widget.currentRoute, 'wireguard_');
-    _ipsecExpanded = NavigationService.isRouteInSection(widget.currentRoute, 'ipsec_');
     _openvpnExpanded = NavigationService.isRouteInSection(widget.currentRoute, 'openvpn_');
     _tailscaleExpanded = NavigationService.isRouteInSection(widget.currentRoute, 'tailscale_');
     
@@ -109,9 +107,6 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
       children: [
         // WireGuard nested section
         _buildWireGuardSection(),
-        
-        // IPsec nested section
-        _buildIPsecSection(),
         
         // OpenVPN nested section
         _buildOpenVPNSection(),
@@ -168,43 +163,6 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
           targetRoute: 'wireguard_logs',
           destination: const WireGuardLogFileScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildIPsecSection() {
-    return ExpansionNavigationTile(
-      icon: Icons.security,
-      title: const Text('IPsec'),
-      initiallyExpanded: _ipsecExpanded,
-      tilePadding: const EdgeInsets.only(left: 56, right: 16),
-      onExpansionChanged: (expanded) {
-        setState(() {
-          _ipsecExpanded = expanded;
-        });
-      },
-      children: [
-        NavigationTile(
-          title: 'Tunnels',
-          currentRoute: widget.currentRoute,
-          targetRoute: 'ipsec_tunnels',
-          contentPadding: const EdgeInsets.only(left: 96, right: 16),
-          onTap: () => NavigationService.showComingSoon(context, 'IPsec Tunnels'),
-        ),
-        NavigationTile(
-          title: 'Phase 1',
-          currentRoute: widget.currentRoute,
-          targetRoute: 'ipsec_phase1',
-          contentPadding: const EdgeInsets.only(left: 96, right: 16),
-          onTap: () => NavigationService.showComingSoon(context, 'IPsec Phase 1'),
-        ),
-        NavigationTile(
-          title: 'Phase 2',
-          currentRoute: widget.currentRoute,
-          targetRoute: 'ipsec_phase2',
-          contentPadding: const EdgeInsets.only(left: 96, right: 16),
-          onTap: () => NavigationService.showComingSoon(context, 'IPsec Phase 2'),
         ),
       ],
     );

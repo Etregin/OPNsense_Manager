@@ -277,25 +277,6 @@ class DemoApiService {
         delayMs: 400,
       );
 
-  // ==================== IPsec VPN ====================
-
-  /// Get IPsec connections
-  Future<List<Map<String, dynamic>>> getIPsecConnections() =>
-      DemoApiDecorator.execute(
-        isDemoMode: _isDemoMode,
-        demoAction: () async => _demoDataService.generateIPsecConnections(),
-        realAction: () => _realApiService.getIPsecConnections(),
-        delayMs: 400,
-      );
-
-  /// Get IPsec sessions (Phase 1)
-  Future<List<Map<String, dynamic>>> getIPsecSessionsPhase1() =>
-      DemoApiDecorator.execute(
-        isDemoMode: _isDemoMode,
-        demoAction: () async => _demoDataService.generateIPsecSessionsPhase1(),
-        realAction: () => _realApiService.getIPsecSessionsPhase1(),
-        delayMs: 400,
-      );
 
   /// Get network hosts with bandwidth usage
   Future<List<NetworkHost>> getNetworkHosts({String interface = 'lan'}) =>

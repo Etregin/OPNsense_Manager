@@ -22,12 +22,10 @@ import '../base/api_exception.dart';
 import '../../models/vpn_connection.dart';
 import '../../models/tailscale_status.dart';
 import 'wireguard_service.dart';
-import 'ipsec_service.dart';
 
 /// Service for VPN operations
 class VPNService extends BaseOPNsenseService {
   final WireGuardService _wireguardService = WireGuardService();
-  final IPsecService _ipsecService = IPsecService();
 
   Future<List<VPNConnection>> getVPNConnections() async {
     ensureInitialized();
@@ -83,13 +81,6 @@ class VPNService extends BaseOPNsenseService {
         errors['WireGuard'] = e.toString();
       }
 
-      // Get IPsec connections
-      try {
-        final ipsecConnections = await _getIPsecConnections();
-        connections.addAll(ipsecConnections);
-      } catch (e) {
-        errors['IPsec'] = e.toString();
-      }
 
       return connections;
     } catch (e) {
@@ -401,75 +392,6 @@ class VPNService extends BaseOPNsenseService {
       return [];
     }
   }
-
-  /// Get IPsec connections
-  Future<List<VPNConnection>> _getIPsecConnections() async {
-    try {
-      final connections = <VPNConnection>[];
-
-      // Initialize IPsec service with same config
-      _ipsecService.init(dio, config);
-
-      // Get IPsec connections
-      try {
-        final ipsecConns = await _ipsecService.getIPsecConnections();
-        for (var conn in ipsecConns) {
-          final enabled = conn['enabled'] == '1';
-          final description = conn['description']?.toString() ?? 'IPsec Connection';
-          final uuid = conn['uuid']?.toString() ?? '';
-          
-          connections.add(VPNConnection(
-            id: uuid,
-            name: description,
-            type: 'ipsec',
-            status: enabled ? 'up' : 'down',
-            description: description,
-            localAddress: conn['local_addrs']?.toString(),
-            remoteAddress: conn['remote_addrs']?.toString(),
-            enabled: enabled,
-          ));
-        }
-      } catch (e) {
-        // Silently handle error
-      }
-
-      // Get IPsec sessions to update status
-      try {
-        final sessions = await _ipsecService.getIPsecSessionsPhase1();
-        for (var session in sessions) {
-          final sessionName = session['name']?.toString() ?? '';
-          final state = session['state']?.toString() ?? '';
-          
-          // Update connection status based on session state
-          for (var conn in connections) {
-            if (conn.name == sessionName && state == 'ESTABLISHED') {
-              final index = connections.indexOf(conn);
-              connections[index] = VPNConnection(
-                id: conn.id,
-                name: conn.name,
-                type: conn.type,
-                status: 'up',
-                description: conn.description,
-                localAddress: conn.localAddress,
-                remoteAddress: conn.remoteAddress,
-                enabled: conn.enabled,
-                connectedSince: DateTime.now().subtract(
-                  Duration(seconds: int.tryParse(session['established']?.toString() ?? '0') ?? 0)
-                ),
-              );
-            }
-          }
-        }
-      } catch (e) {
-        // Silently handle error
-      }
-
-      return connections;
-    } catch (e) {
-      return [];
-    }
-  }
-
 
 
   /// Toggle VPN connection (connect/disconnect)

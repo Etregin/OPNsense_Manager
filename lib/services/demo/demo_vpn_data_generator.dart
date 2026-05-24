@@ -23,9 +23,8 @@ import 'demo_state_manager.dart';
 /// Generator for VPN-related demo data
 /// 
 /// Handles generation of:
-/// - VPN connections (OpenVPN, IPsec, WireGuard, Tailscale)
+/// - VPN connections (OpenVPN, WireGuard, Tailscale)
 /// - WireGuard clients and servers
-/// - IPsec connections, sessions (Phase 1 & 2), and leases
 class DemoVPNDataGenerator {
   final DemoStateManager _stateManager;
   final Random _random = Random();
@@ -54,9 +53,9 @@ class DemoVPNDataGenerator {
       VPNConnection(
         id: 'demo-vpn-2',
         name: 'Remote Site',
-        type: 'ipsec',
+        type: 'wireguard',
         status: _stateManager.getVPNConnectionState('demo-vpn-2', true) ? 'up' : 'down',
-        description: 'Remote site IPsec tunnel',
+        description: 'Remote site WireGuard tunnel',
         remoteAddress: '198.51.100.25',
         localAddress: '192.168.1.1',
         virtualAddress: '10.9.0.2',
@@ -172,184 +171,6 @@ class DemoVPNDataGenerator {
     ];
   }
 
-  /// Generate demo IPsec connections
-  List<Map<String, dynamic>> generateIPsecConnections() {
-    return [
-      {
-        'uuid': 'ipsec-conn-1',
-        'enabled': '1',
-        'description': 'Site-to-Site VPN',
-        'local_addrs': '192.168.1.1',
-        'remote_addrs': '198.51.100.25',
-        'version': '2',
-        'mobike': '1',
-        'reauth_time': '0',
-        'rekey_time': '3600',
-        'dpd_delay': '30',
-        'dpd_maxfail': '5',
-      },
-      {
-        'uuid': 'ipsec-conn-2',
-        'enabled': '1',
-        'description': 'Branch Office',
-        'local_addrs': '192.168.1.1',
-        'remote_addrs': '203.0.113.50',
-        'version': '2',
-        'mobike': '1',
-        'reauth_time': '0',
-        'rekey_time': '3600',
-        'dpd_delay': '30',
-        'dpd_maxfail': '5',
-      },
-      {
-        'uuid': 'ipsec-conn-3',
-        'enabled': '0',
-        'description': 'Remote Workers',
-        'local_addrs': '192.168.1.1',
-        'remote_addrs': '%any',
-        'version': '2',
-        'mobike': '1',
-        'reauth_time': '0',
-        'rekey_time': '3600',
-        'dpd_delay': '30',
-        'dpd_maxfail': '5',
-      },
-    ];
-  }
-
-  /// Generate demo IPsec Phase 1 sessions
-  List<Map<String, dynamic>> generateIPsecSessionsPhase1() {
-    return [
-      {
-        'id': 'ipsec-sess-1',
-        'name': 'Site-to-Site VPN',
-        'version': 'IKEv2',
-        'local-host': '192.168.1.1',
-        'local-port': '500',
-        'local-id': '192.168.1.1',
-        'remote-host': '198.51.100.25',
-        'remote-port': '500',
-        'remote-id': '198.51.100.25',
-        'initiator': 'yes',
-        'initiator-spi': 'c6ce4fae754a6c6d',
-        'responder-spi': '8d6e9c5f4b3a2e1d',
-        'nat-remote': 'no',
-        'nat-local': 'no',
-        'encr-alg': 'AES_CBC',
-        'encr-keysize': '256',
-        'integ-alg': 'HMAC_SHA2_256_128',
-        'prf-alg': 'PRF_HMAC_SHA2_256',
-        'dh-group': 'MODP_2048',
-        'established': '3600',
-        'rekey-time': '3240',
-        'state': 'ESTABLISHED',
-      },
-      {
-        'id': 'ipsec-sess-2',
-        'name': 'Branch Office',
-        'version': 'IKEv2',
-        'local-host': '192.168.1.1',
-        'local-port': '500',
-        'local-id': '192.168.1.1',
-        'remote-host': '203.0.113.50',
-        'remote-port': '500',
-        'remote-id': '203.0.113.50',
-        'initiator': 'yes',
-        'initiator-spi': 'a1b2c3d4e5f6a7b8',
-        'responder-spi': '9c8d7e6f5a4b3c2d',
-        'nat-remote': 'no',
-        'nat-local': 'no',
-        'encr-alg': 'AES_CBC',
-        'encr-keysize': '256',
-        'integ-alg': 'HMAC_SHA2_256_128',
-        'prf-alg': 'PRF_HMAC_SHA2_256',
-        'dh-group': 'MODP_2048',
-        'established': '7200',
-        'rekey-time': '6480',
-        'state': 'ESTABLISHED',
-      },
-    ];
-  }
-
-  /// Generate demo IPsec Phase 2 sessions
-  List<Map<String, dynamic>> generateIPsecSessionsPhase2() {
-    return [
-      {
-        'id': 'ipsec-child-1',
-        'name': 'Site-to-Site VPN',
-        'uniqueid': '1',
-        'reqid': '1',
-        'state': 'INSTALLED',
-        'mode': 'TUNNEL',
-        'protocol': 'ESP',
-        'encr-alg': 'AES_CBC',
-        'encr-keysize': '256',
-        'integ-alg': 'HMAC_SHA2_256_128',
-        'prf-alg': 'PRF_HMAC_SHA2_256',
-        'dh-group': 'MODP_2048',
-        'local-ts': '192.168.1.0/24',
-        'remote-ts': '10.20.0.0/24',
-        'bytes-in': '${1024 * 1024 * 320}',
-        'bytes-out': '${1024 * 1024 * 180}',
-        'packets-in': '12500',
-        'packets-out': '8900',
-        'install-time': '3600',
-        'rekey-time': '3240',
-      },
-      {
-        'id': 'ipsec-child-2',
-        'name': 'Branch Office',
-        'uniqueid': '2',
-        'reqid': '2',
-        'state': 'INSTALLED',
-        'mode': 'TUNNEL',
-        'protocol': 'ESP',
-        'encr-alg': 'AES_CBC',
-        'encr-keysize': '256',
-        'integ-alg': 'HMAC_SHA2_256_128',
-        'prf-alg': 'PRF_HMAC_SHA2_256',
-        'dh-group': 'MODP_2048',
-        'local-ts': '192.168.1.0/24',
-        'remote-ts': '10.30.0.0/24',
-        'bytes-in': '${1024 * 1024 * 150}',
-        'bytes-out': '${1024 * 1024 * 95}',
-        'packets-in': '6800',
-        'packets-out': '4200',
-        'install-time': '7200',
-        'rekey-time': '6480',
-      },
-    ];
-  }
-
-  /// Generate demo IPsec leases
-  List<Map<String, dynamic>> generateIPsecLeases() {
-    return [
-      {
-        'id': 'lease-1',
-        'pool': 'road-warrior-pool',
-        'address': '10.9.0.10',
-        'identity': 'user1@example.com',
-        'status': 'online',
-        'expires': DateTime.now().add(const Duration(hours: 8)).toIso8601String(),
-      },
-      {
-        'id': 'lease-2',
-        'pool': 'road-warrior-pool',
-        'address': '10.9.0.11',
-        'identity': 'user2@example.com',
-        'status': 'online',
-        'expires': DateTime.now().add(const Duration(hours: 6)).toIso8601String(),
-      },
-      {
-        'id': 'lease-3',
-        'pool': 'road-warrior-pool',
-        'address': '10.9.0.12',
-        'identity': 'user3@example.com',
-        'status': 'offline',
-        'expires': DateTime.now().subtract(const Duration(hours: 2)).toIso8601String(),
-      },
-    ];
-  }
 }
 
 

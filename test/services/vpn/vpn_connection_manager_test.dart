@@ -121,8 +121,8 @@ void main() {
         ),
         VPNConnection(
           id: '3',
-          name: 'IPsec',
-          type: 'ipsec',
+          name: 'WireGuard',
+          type: 'wireguard',
           status: 'up',
         ),
       ];

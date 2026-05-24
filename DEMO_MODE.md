@@ -13,7 +13,7 @@ Demo mode has been successfully added to the OPNsense Manager app, allowing user
 - Created [`DemoDataService`](lib/services/demo_data_service.dart) that generates realistic mock data:
   - System information (CPU, memory, disk usage, uptime)
   - Firewall rules (4 sample rules with different actions)
-  - VPN connections (3 sample connections: OpenVPN, IPsec)
+  - VPN connections (3 sample connections: OpenVPN, WireGuard)
   - Services status (DNS, NTP, SSH, DHCP, OpenVPN)
   - Gateways status
   - Firewall logs (up to 100 entries)
@@ -88,7 +88,7 @@ demoApiService.setDemoMode(false); // Disable
 
 ### VPN Connections
 1. **Office VPN** (OpenVPN, connected, 150MB received)
-2. **Remote Site** (IPsec, connected, 320MB received)
+2. **Remote Site** (WireGuard, connected, 320MB received)
 3. **Mobile Users** (OpenVPN, disconnected)
 
 ### Services

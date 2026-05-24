@@ -25,7 +25,7 @@ part 'vpn_connection.g.dart';
 class VPNConnection {
   final String id;
   final String name;
-  final String type; // 'openvpn', 'ipsec', 'wireguard', 'tailscale'
+  final String type; // 'openvpn', 'wireguard', 'tailscale'
   final String status; // 'up', 'down', 'connecting', 'error'
   final String? description;
   final String? remoteAddress;
@@ -84,8 +84,6 @@ class VPNConnection {
     switch (type.toLowerCase()) {
       case 'openvpn':
         return 'OpenVPN';
-      case 'ipsec':
-        return 'IPsec';
       case 'wireguard':
         return 'WireGuard';
       case 'tailscale':
