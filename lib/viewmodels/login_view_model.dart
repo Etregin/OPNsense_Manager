@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 import '../models/opnsense_config.dart';
 import '../models/profile.dart';
@@ -99,13 +98,6 @@ class LoginViewModel extends BaseFormViewModel {
           testConfig,
         );
         final isWorking = testResult.isSuccess;
-        
-        if (!isWorking) {
-          debugPrint(
-            'testAllConnections failure for ${connection.displayName}: '
-            '${testResult.toLogMap()}',
-          );
-        }
         
         results.add({
           'endpoint': connection.displayName,
@@ -212,8 +204,6 @@ class LoginViewModel extends BaseFormViewModel {
         return false;
       }
 
-      debugPrint('testAndSaveConnection: Testing ${connections.length} connection(s)');
-
       // Create connection manager service
       final connectionManager = ConnectionManagerService();
 
@@ -240,8 +230,6 @@ class LoginViewModel extends BaseFormViewModel {
         final connection = sortedConnections[i];
         final currentAttempt = i + 1;
         
-        debugPrint('Testing connection $currentAttempt/$totalConnections: ${connection.displayName} (${connection.host}:${connection.port})');
-        
         // Show progress message: "Testing connection 1/4: Home Network (192.168.1.1:443)"
         setError('Testing connection $currentAttempt/$totalConnections: ${connection.displayName}');
         
@@ -257,36 +245,17 @@ class LoginViewModel extends BaseFormViewModel {
         );
         final isWorking = testResult.isSuccess;
         
-        debugPrint(
-          'Connection test result: ${isWorking ? "SUCCESS" : "FAILED"}'
-          '${isWorking ? "" : " - ${testResult.summary}"}',
-        );
-        
-        if (!isWorking) {
-          debugPrint(
-            'testAndSaveConnection failure for ${connection.displayName}: '
-            '${testResult.toLogMap()}',
-          );
-        }
-        
         if (isWorking) {
           bestConnection = connection.copyWith(
             isActive: true,
             lastSuccessfulConnection: DateTime.now(),
           );
-          debugPrint('Found working connection: ${bestConnection.displayName}');
           break;
         }
       }
 
       // Check if we found a working connection
       if (bestConnection == null) {
-        final lastFailure = connectionManager.getLastTestResult();
-        debugPrint('ERROR: No working connection found');
-        if (lastFailure != null) {
-          debugPrint('Last connection failure summary: ${lastFailure.summary}');
-          debugPrint('Last connection failure details: ${lastFailure.toLogMap()}');
-        }
         setError('Unable to connect to any configured endpoints. Please check your network settings and try again.');
         return false;
       }
@@ -314,13 +283,9 @@ class LoginViewModel extends BaseFormViewModel {
       _demoApiService.setDemoMode(false);
       _opnsenseApiService.init(config);
 
-      debugPrint('Performing final connection verification...');
-      
       // Perform final connection test
       setError('Verifying connection to ${bestConnection.displayName}...');
       final isConnected = await _demoApiService.testConnection();
-
-      debugPrint('Final verification result: ${isConnected ? "SUCCESS" : "FAILED"}');
 
       if (!isConnected) {
         setError('Connection verification failed for ${bestConnection.displayName}');
@@ -354,8 +319,6 @@ class LoginViewModel extends BaseFormViewModel {
 
       await _profileService.saveProfile(profile);
       await _profileService.setActiveProfile(profile.id);
-
-      debugPrint('Profile saved and set as active');
 
       // Clear error and show success message
       setError('Connected successfully via: ${bestConnection.displayName}');

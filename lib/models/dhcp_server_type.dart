@@ -62,9 +62,9 @@ enum DhcpServerType {
       case DhcpServerType.dnsmasq:
         return '/dnsmasq/leases/search';
       case DhcpServerType.isc:
-        return '/dhcpv4/leases/search';
+        return '/dhcpv4/leases/search_lease';
       case DhcpServerType.kea:
-        return '/kea/dhcpv4/leases/search';
+        return '/kea/leases4/search';
     }
   }
 

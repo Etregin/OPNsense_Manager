@@ -1,0 +1,577 @@
+/*
+ * OPNsense Manager - Flutter application for managing OPNsense firewalls
+ * Copyright (C) 2026 OPNsense Manager
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import 'package:dio/dio.dart';
+import '../base/base_opnsense_service.dart';
+import '../base/api_exception.dart';
+import '../../models/openvpn_instance.dart';
+import '../../models/openvpn_search_response.dart';
+import '../../models/openvpn_static_key.dart';
+
+/// Service for OpenVPN operations
+///
+/// This service handles all OpenVPN instance and static key management
+/// operations through the OPNsense API.
+class OpenvpnService extends BaseOPNsenseService {
+  // Instance Management Methods
+
+  /// Search/list OpenVPN instances with pagination support
+  ///
+  /// Endpoint: POST /api/openvpn/instances/search/
+  /// Payload: {"current": 1, "rowCount": 50, "sort": {}}
+  ///
+  /// Parameters:
+  /// - [current]: Current page number (default: 1)
+  /// - [rowCount]: Number of rows per page (default: 50)
+  /// - [sort]: Sort configuration (default: {})
+  ///
+  /// Returns: [OpenvpnSearchResponse] with paginated instance list
+  Future<OpenvpnSearchResponse> searchInstances({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    String? searchPhrase,
+    String? enabled,
+  }) async {
+    ensureInitialized();
+
+    try {
+      final data = {
+        'current': current,
+        'rowCount': rowCount,
+        'sort': sort ?? {},
+      };
+
+      // Add optional search/filter parameters if provided
+      if (searchPhrase != null && searchPhrase.isNotEmpty) {
+        data['searchPhrase'] = searchPhrase;
+      }
+      if (enabled != null && enabled.isNotEmpty) {
+        data['enabled'] = enabled;
+      }
+
+      final response = await dio.post(
+        '/openvpn/instances/search/',
+        data: data,
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = response.data as Map<String, dynamic>;
+        
+        return OpenvpnSearchResponse.fromJson(responseData);
+      } else {
+        throw ApiException('Failed to search OpenVPN instances', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Get OpenVPN instance details for add/edit
+  ///
+  /// Endpoint: GET /api/openvpn/instances/get/ (for new)
+  ///           GET /api/openvpn/instances/get/{vpnid} (for edit)
+  ///
+  /// Parameters:
+  /// - [vpnid]: Instance ID (null for new instance)
+  ///
+  /// Returns: [OpenvpnInstance] with form data structure
+  Future<OpenvpnInstance> getInstance(String? vpnid) async {
+    ensureInitialized();
+
+    try {
+      final endpoint = vpnid != null
+          ? '/openvpn/instances/get/$vpnid'
+          : '/openvpn/instances/get/';
+
+      final response = await dio.get(endpoint);
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        
+        if (data.containsKey('instance')) {
+          final instanceData = data['instance'] as Map<String, dynamic>;
+          return OpenvpnInstance.fromJson(instanceData);
+        }
+        throw ApiException('Instance data not found in response', response.statusCode);
+      } else {
+        throw ApiException('Failed to get OpenVPN instance', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Create a new OpenVPN instance
+  ///
+  /// Endpoint: POST /api/openvpn/instances/add/
+  /// Payload: {"instance": {...}}
+  ///
+  /// Parameters:
+  /// - [instance]: Instance configuration
+  ///
+  /// Returns: API response map (may contain validation errors)
+  Future<Map<String, dynamic>> addInstance(OpenvpnInstance instance) async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post(
+        '/openvpn/instances/add/',
+        data: {'instance': instance.toJson()},
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+
+        // Check for validation errors
+        if (data.containsKey('result') && data['result'] == 'failed') {
+          final validations = data['validations'] as Map<String, dynamic>?;
+          final message = data['message'];
+
+          if (validations != null && validations.isNotEmpty) {
+            final errors = validations.entries
+                .map((e) => '${e.key}: ${e.value}')
+                .join(', ');
+            throw ApiException('Validation failed: $errors', response.statusCode);
+          }
+
+          throw ApiException(
+            'Failed to add instance: ${message ?? 'Unknown error'}',
+            response.statusCode,
+          );
+        }
+
+        return data;
+      } else {
+        throw ApiException('Failed to add OpenVPN instance', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Update an existing OpenVPN instance
+  ///
+  /// Endpoint: POST /api/openvpn/instances/set/{vpnid}
+  /// Payload: {"instance": {...}}
+  ///
+  /// Parameters:
+  /// - [vpnid]: Instance ID
+  /// - [instance]: Updated instance configuration
+  ///
+  /// Returns: API response map (may contain validation errors)
+  Future<Map<String, dynamic>> updateInstance(
+    String vpnid,
+    OpenvpnInstance instance,
+  ) async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post(
+        '/openvpn/instances/set/$vpnid',
+        data: {'instance': instance.toJson()},
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+
+        // Check for validation errors
+        if (data.containsKey('result') && data['result'] == 'failed') {
+          final validations = data['validations'] as Map<String, dynamic>?;
+          final message = data['message'];
+
+          if (validations != null && validations.isNotEmpty) {
+            final errors = validations.entries
+                .map((e) => '${e.key}: ${e.value}')
+                .join(', ');
+            throw ApiException('Validation failed: $errors', response.statusCode);
+          }
+
+          throw ApiException(
+            'Failed to update instance: ${message ?? 'Unknown error'}',
+            response.statusCode,
+          );
+        }
+
+        return data;
+      } else {
+        throw ApiException('Failed to update OpenVPN instance', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Delete an OpenVPN instance
+  ///
+  /// Endpoint: POST /api/openvpn/instances/del/{vpnid}
+  ///
+  /// Parameters:
+  /// - [vpnid]: Instance ID to delete
+  ///
+  /// Returns: API response map
+  Future<Map<String, dynamic>> deleteInstance(String vpnid) async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post('/openvpn/instances/del/$vpnid');
+
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        throw ApiException('Failed to delete OpenVPN instance', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Toggle OpenVPN instance enabled/disabled state
+  ///
+  /// Endpoint: POST /api/openvpn/instances/toggle/{vpnid}
+  ///
+  /// Parameters:
+  /// - [vpnid]: Instance ID to toggle
+  ///
+  /// Returns: API response map
+  Future<Map<String, dynamic>> toggleInstance(String vpnid) async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post(
+        '/openvpn/instances/toggle/$vpnid',
+        data: {},
+      );
+
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        throw ApiException('Failed to toggle OpenVPN instance', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+
+  }
+
+  /// Reconfigure OpenVPN service (apply pending configuration changes)
+  /// Endpoint: POST /openvpn/service/reconfigure
+  Future<Map<String, dynamic>> reconfigureOpenvpn() async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post(
+        '/openvpn/service/reconfigure',
+        data: {},
+      );
+      
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        
+        // Check for explicit failure in response
+        if (data.containsKey('status') && data['status'] == 'failed') {
+          final message = data['message'] ?? 'Unknown error';
+          throw ApiException('Failed to reconfigure OpenVPN: $message', response.statusCode);
+        }
+        
+        return data;
+      } else {
+        throw ApiException('Failed to reconfigure OpenVPN', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Generate an auth token secret
+  ///
+  /// Endpoint: GET /api/openvpn/instances/gen_key/auth-token
+  ///
+  /// Returns: Generated key string
+  Future<String> generateAuthToken() async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.get('/openvpn/instances/gen_key/auth-token');
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+
+        // Handle different response formats
+        if (data is Map<String, dynamic>) {
+          if (data.containsKey('key')) {
+            return data['key'] as String;
+          }
+          if (data.containsKey('token')) {
+            return data['token'] as String;
+          }
+          throw ApiException('Key not found in response', response.statusCode);
+        }
+
+        if (data is String) {
+          return data;
+        }
+
+        throw ApiException('Invalid response format', response.statusCode);
+      } else {
+        throw ApiException('Failed to generate auth token', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  // Static Key Management Methods
+
+  /// Search/list static keys with pagination support
+  ///
+  /// Endpoint: POST /api/openvpn/instances/search_static_key/
+  /// Payload: {"current": 1, "rowCount": 50, "sort": {}}
+  ///
+  /// Parameters:
+  /// - [current]: Current page number (default: 1)
+  /// - [rowCount]: Number of rows per page (default: 50)
+  /// - [sort]: Sort configuration (default: {})
+  ///
+  /// Returns: [OpenvpnStaticKeySearchResponse] with paginated key list
+  Future<OpenvpnStaticKeySearchResponse> searchStaticKeys({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+  }) async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post(
+        '/openvpn/instances/search_static_key/',
+        data: {
+          'current': current,
+          'rowCount': rowCount,
+          'sort': sort ?? {},
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return OpenvpnStaticKeySearchResponse.fromJson(
+          response.data as Map<String, dynamic>,
+        );
+      } else {
+        throw ApiException('Failed to search static keys', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Get static key details for add/edit
+  ///
+  /// Endpoint: GET /api/openvpn/instances/get_static_key/ (for new)
+  ///           GET /api/openvpn/instances/get_static_key/{keyid} (for edit)
+  ///
+  /// Parameters:
+  /// - [keyid]: Key ID (null for new key)
+  ///
+  /// Returns: [OpenvpnStaticKey] with form data structure
+  Future<OpenvpnStaticKey> getStaticKey(String? keyid) async {
+    ensureInitialized();
+
+    try {
+      final endpoint = keyid != null
+          ? '/openvpn/instances/get_static_key/$keyid'
+          : '/openvpn/instances/get_static_key/';
+
+      final response = await dio.get(endpoint);
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        if (data.containsKey('statickey')) {
+          return OpenvpnStaticKey.fromJson(data['statickey'] as Map<String, dynamic>);
+        }
+        throw ApiException('Static key data not found in response', response.statusCode);
+      } else {
+        throw ApiException('Failed to get static key', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Generate a static key
+  ///
+  /// Endpoint: GET /api/openvpn/instances/gen_key/{mode}
+  ///
+  /// Parameters:
+  /// - [mode]: Key generation mode (tls-auth, tls-crypt, tls-crypt-v2-server)
+  ///
+  /// Returns: Generated key string
+  Future<String> generateStaticKey(String mode) async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.get('/openvpn/instances/gen_key/$mode');
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+
+        // Handle different response formats
+        if (data is Map<String, dynamic>) {
+          if (data.containsKey('key')) {
+            return data['key'] as String;
+          }
+          throw ApiException('Key not found in response', response.statusCode);
+        }
+
+        if (data is String) {
+          return data;
+        }
+
+        throw ApiException('Invalid response format', response.statusCode);
+      } else {
+        throw ApiException('Failed to generate static key', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Add a new static key
+  ///
+  /// Endpoint: POST /api/openvpn/instances/add_static_key/
+  /// Payload: {"statickey": {...}}
+  ///
+  /// Parameters:
+  /// - [key]: Static key configuration
+  ///
+  /// Returns: API response map (may contain validation errors)
+  Future<Map<String, dynamic>> addStaticKey(OpenvpnStaticKey key) async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post(
+        '/openvpn/instances/add_static_key/',
+        data: {'statickey': key.toJson()},
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+
+        // Check for validation errors
+        if (data.containsKey('result') && data['result'] == 'failed') {
+          final validations = data['validations'] as Map<String, dynamic>?;
+          final message = data['message'];
+
+          if (validations != null && validations.isNotEmpty) {
+            final errors = validations.entries
+                .map((e) => '${e.key}: ${e.value}')
+                .join(', ');
+            throw ApiException('Validation failed: $errors', response.statusCode);
+          }
+
+          throw ApiException(
+            'Failed to add static key: ${message ?? 'Unknown error'}',
+            response.statusCode,
+          );
+        }
+
+        return data;
+      } else {
+        throw ApiException('Failed to add static key', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Update an existing static key
+  ///
+  /// Endpoint: POST /api/openvpn/instances/set_static_key/{keyid}
+  /// Payload: {"statickey": {...}}
+  ///
+  /// Parameters:
+  /// - [keyid]: Key ID
+  /// - [key]: Updated key configuration
+  ///
+  /// Returns: API response map (may contain validation errors)
+  Future<Map<String, dynamic>> updateStaticKey(
+    String keyid,
+    OpenvpnStaticKey key,
+  ) async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post(
+        '/openvpn/instances/set_static_key/$keyid',
+        data: {'statickey': key.toJson()},
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+
+        // Check for validation errors
+        if (data.containsKey('result') && data['result'] == 'failed') {
+          final validations = data['validations'] as Map<String, dynamic>?;
+          final message = data['message'];
+
+          if (validations != null && validations.isNotEmpty) {
+            final errors = validations.entries
+                .map((e) => '${e.key}: ${e.value}')
+                .join(', ');
+            throw ApiException('Validation failed: $errors', response.statusCode);
+          }
+
+          throw ApiException(
+            'Failed to update static key: ${message ?? 'Unknown error'}',
+            response.statusCode,
+          );
+        }
+
+        return data;
+      } else {
+        throw ApiException('Failed to update static key', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Delete a static key
+  ///
+  /// Endpoint: POST /api/openvpn/instances/del_static_key/{keyid}
+  ///
+  /// Parameters:
+  /// - [keyid]: Key ID to delete
+  ///
+  /// Returns: API response map
+  Future<Map<String, dynamic>> deleteStaticKey(String keyid) async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post('/openvpn/instances/del_static_key/$keyid');
+
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        throw ApiException('Failed to delete static key', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+}
+
+

@@ -61,7 +61,6 @@ class WireGuardStatusViewModel extends ChangeNotifier {
       _errorMessage = null;
     } catch (e) {
       _errorMessage = 'Failed to load WireGuard status: ${e.toString()}';
-      debugPrint('WireGuardStatusViewModel: Error loading status - $e');
     } finally {
       _isLoading = false;
       notifyListeners();

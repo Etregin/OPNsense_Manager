@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/foundation.dart';
 import '../models/wireguard_client_builder.dart';
 import '../models/wireguard_key_pair.dart';
 import '../services/opnsense_api_service.dart';
@@ -151,8 +150,7 @@ class WireGuardPeerGeneratorViewModel extends BaseFormViewModel {
     try {
       await loadBuilderData();
     } catch (e) {
-      // Log but don't fail - the peer was saved successfully
-      debugPrint('Warning: Failed to reload builder data after save: $e');
+      // Ignore error - the peer was saved successfully
     }
     
     return true;

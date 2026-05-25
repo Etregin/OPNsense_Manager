@@ -101,10 +101,6 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
     
     final peerData = _viewModel.loadedPeerData;
     if (peerData != null) {
-      debugPrint('WireGuardPeerFormScreen: Loading peer data');
-      debugPrint('WireGuardPeerFormScreen: PSK from peerData: "${peerData.psk}"');
-      debugPrint('WireGuardPeerFormScreen: PSK length: ${peerData.psk.length}');
-      
       setState(() {
         // Update all controllers and state together to ensure proper rebuild
         _nameController.text = peerData.name;
@@ -118,8 +114,6 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
         _selectedServerUuids = peerData.getSelectedServerUuids();
         _enabled = peerData.enabled == '1';
       });
-      
-      debugPrint('WireGuardPeerFormScreen: PSK controller text after set: "${_pskController.text}"');
     }
   }
 

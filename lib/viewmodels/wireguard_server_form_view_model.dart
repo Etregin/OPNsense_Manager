@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/foundation.dart';
 import '../models/wireguard_server.dart';
 import '../models/wireguard_peer.dart';
 import '../models/wireguard_key_pair.dart';
@@ -74,8 +73,6 @@ class WireGuardServerFormViewModel extends BaseFormViewModel {
     } catch (e) {
       _loadingCarpOptions = false;
       // Don't set error for CARP options as it's optional
-      // Just log it and continue
-      debugPrint('Failed to load CARP VIP options: $e');
     }
   }
 
@@ -94,8 +91,6 @@ class WireGuardServerFormViewModel extends BaseFormViewModel {
       _isGeneratingKeys = false;
       final errorMsg = 'Failed to generate keys: $e';
       setError(errorMsg);
-      // Log the error for debugging
-      debugPrint('WireGuardServerFormViewModel.generateKeyPair error: $errorMsg');
       return null;
     }
   }

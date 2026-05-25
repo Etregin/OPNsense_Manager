@@ -23,6 +23,9 @@ import '../models/vpn_connection.dart';
 import '../models/network_host.dart';
 import '../models/tailscale_status.dart';
 import '../models/tailscale_settings.dart';
+import '../models/openvpn_instance_list_item.dart';
+import '../models/openvpn_instance.dart';
+import '../models/openvpn_static_key.dart';
 import 'demo/demo_state_manager.dart';
 import 'demo/demo_system_data_generator.dart';
 import 'demo/demo_firewall_data_generator.dart';
@@ -110,12 +113,26 @@ class DemoDataService {
       _vpnGenerator.generateWireGuardPeers();
 
   /// Generate demo WireGuard servers
-  List<Map<String, dynamic>> generateWireGuardServers() => 
+  List<Map<String, dynamic>> generateWireGuardServers() =>
       _vpnGenerator.generateWireGuardServers();
 
   /// Toggle VPN connection state
-  void toggleVPNConnectionState(String id) => 
+  void toggleVPNConnectionState(String id) =>
       _stateManager.toggleVPNConnectionState(id);
+
+  // ==================== OpenVPN Data ====================
+
+  /// Generate demo OpenVPN instances
+  List<OpenvpnInstanceListItem> generateOpenvpnInstances() =>
+      _vpnGenerator.generateOpenvpnInstances();
+
+  /// Generate demo OpenVPN static keys
+  List<OpenvpnStaticKey> generateOpenvpnStaticKeys() =>
+      _vpnGenerator.generateOpenvpnStaticKeys();
+
+  /// Generate demo OpenVPN instance form data
+  OpenvpnInstance generateOpenvpnInstanceFormData({String? vpnid, String role = 'server'}) =>
+      _vpnGenerator.generateOpenvpnInstanceFormData(vpnid: vpnid, role: role);
 
   // ==================== Network Data ====================
 

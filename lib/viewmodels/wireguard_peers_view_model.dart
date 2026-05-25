@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/foundation.dart';
 import '../models/wireguard_peer.dart';
 import '../services/opnsense_api_service.dart';
 import 'base/base_list_view_model.dart';
@@ -47,7 +46,6 @@ class WireGuardPeersViewModel extends BaseListViewModel<WireGuardPeer> {
       }
       return [];
     } catch (e) {
-      debugPrint('Error fetching peers: $e');
       rethrow;
     }
   }
@@ -74,7 +72,6 @@ class WireGuardPeersViewModel extends BaseListViewModel<WireGuardPeer> {
       await _apiService.toggleWireGuardPeer(uuid, enabled);
       await refresh();
     } catch (e) {
-      debugPrint('Error toggling peer: $e');
       rethrow;
     } finally {
       _togglingPeers.remove(uuid);
@@ -88,7 +85,6 @@ class WireGuardPeersViewModel extends BaseListViewModel<WireGuardPeer> {
       await _apiService.deleteWireGuardPeer(uuid);
       await refresh();
     } catch (e) {
-      debugPrint('Error deleting peer: $e');
       rethrow;
     }
   }

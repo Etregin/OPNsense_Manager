@@ -17,7 +17,6 @@
  */
 
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import '../../models/wol_host.dart';
 import '../base/base_opnsense_service.dart';
 import '../base/api_exception.dart';
@@ -57,30 +56,25 @@ class WolService extends BaseOPNsenseService {
       // If we get a 200 response, the plugin is available
       if (response.statusCode == 200) {
         _wolPluginAvailable = true;
-        debugPrint('[WOL] Plugin is available');
         return true;
       }
       
       // Any other status code means plugin is not available
       _wolPluginAvailable = false;
-      debugPrint('[WOL] Plugin not available: HTTP ${response.statusCode}');
       return false;
     } on DioException catch (e) {
       // 404 means the plugin is not installed
       if (e.response?.statusCode == 404) {
         _wolPluginAvailable = false;
-        debugPrint('[WOL] Plugin not installed (404)');
         return false;
       }
       
       // For other errors, assume plugin is not available
       _wolPluginAvailable = false;
-      debugPrint('[WOL] Plugin check failed: ${e.message}');
       return false;
     } catch (e) {
       // On any error, assume plugin is not available
       _wolPluginAvailable = false;
-      debugPrint('[WOL] Plugin check error: ${e.toString()}');
       return false;
     }
   }
@@ -290,7 +284,6 @@ class WolService extends BaseOPNsenseService {
       
       // The endpoint returns HTTP 200 with an empty response body on success
       if (response.statusCode == 200) {
-        debugPrint('[WOL] Host deleted successfully: $uuid');
         return; // Success - no need to parse response
       } else {
         throw ApiException(
@@ -368,7 +361,6 @@ class WolService extends BaseOPNsenseService {
         
         if (data is Map<String, dynamic>) {
           final wakeAllResponse = WolWakeAllResponse.fromJson(data);
-          debugPrint('[WOL] Wake All completed: ${wakeAllResponse.results.length} hosts');
           return wakeAllResponse.results;
         } else {
           throw ApiException('Invalid response format', response.statusCode);
@@ -403,7 +395,6 @@ class WolService extends BaseOPNsenseService {
         final data = response.data;
         
         if (data is Map<String, dynamic> && data.containsKey('host')) {
-          debugPrint('[WOL] Host copied successfully: $uuid');
           return data['host'] as Map<String, dynamic>;
         } else {
           throw ApiException('Invalid response format', response.statusCode);
@@ -423,15 +414,7 @@ class WolService extends BaseOPNsenseService {
   }
 
   void _logRequest(String method, String path, {Map<String, dynamic>? payload}) {
-    final baseUrl = dio.options.baseUrl;
-    final normalizedBaseUrl = baseUrl.endsWith('/')
-        ? baseUrl.substring(0, baseUrl.length - 1)
-        : baseUrl;
-    final fullUrl = '$normalizedBaseUrl$path';
-    debugPrint('[WOL] $method $fullUrl');
-    if (payload != null) {
-      debugPrint('[WOL] payload: $payload');
-    }
+    // Logging removed for production
   }
 }
 

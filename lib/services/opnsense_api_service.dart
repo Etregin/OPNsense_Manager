@@ -33,6 +33,9 @@ import '../models/wireguard_status.dart';
 import '../models/tailscale_status.dart';
 import '../models/tailscale_settings.dart';
 import '../models/wol_host.dart';
+import '../models/openvpn_instance.dart';
+import '../models/openvpn_search_response.dart';
+import '../models/openvpn_static_key.dart';
 import '../utils/constants.dart';
 
 // Import all specialized services
@@ -48,6 +51,7 @@ import 'network/vip_service.dart';
 import 'network/wol_service.dart';
 import 'services/service_control_service.dart';
 import 'tailscale/tailscale_service.dart';
+import 'vpn/openvpn_service.dart';
 
 // Re-export ApiException and helper classes for backward compatibility
 export 'base/api_exception.dart';
@@ -69,6 +73,7 @@ class OPNsenseApiService {
   final alias_service.FirewallAliasService _firewallAliasService = alias_service.FirewallAliasService();
   final VPNService _vpnService = VPNService();
   final WireGuardService _wireguardService = WireGuardService();
+  final OpenvpnService _openvpnService = OpenvpnService();
   final NetworkService _networkService = NetworkService();
   final DHCPService _dhcpService = DHCPService();
   final GatewayService _gatewayService = GatewayService();
@@ -115,6 +120,7 @@ class OPNsenseApiService {
     _firewallAliasService.init(_dio!, config);
     _vpnService.init(_dio!, config);
     _wireguardService.init(_dio!, config);
+    _openvpnService.init(_dio!, config);
     _networkService.init(_dio!, config);
     _dhcpService.init(_dio!, config);
     _gatewayService.init(_dio!, config);
@@ -171,6 +177,7 @@ class OPNsenseApiService {
     _firewallAliasService.clear();
     _vpnService.clear();
     _wireguardService.clear();
+    _openvpnService.clear();
     _networkService.clear();
     _dhcpService.clear();
     _gatewayService.clear();
@@ -415,6 +422,53 @@ class OPNsenseApiService {
   Future<List<dynamic>> getServices() => _serviceControlService.getServices();
   
   Future<bool> controlService(String serviceName, String action) => _serviceControlService.controlService(serviceName, action);
+
+  // ============================================================================
+  // OpenVPN Service Delegations
+  // ============================================================================
+
+  Future<OpenvpnSearchResponse> searchOpenvpnInstances({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    String? searchPhrase,
+    String? enabled,
+  }) => _openvpnService.searchInstances(
+        current: current,
+        rowCount: rowCount,
+        sort: sort,
+        searchPhrase: searchPhrase,
+        enabled: enabled,
+      );
+  
+  Future<OpenvpnInstance> getOpenvpnInstance(String? vpnid) => _openvpnService.getInstance(vpnid);
+  
+  Future<Map<String, dynamic>> addOpenvpnInstance(OpenvpnInstance instance) => _openvpnService.addInstance(instance);
+  
+  Future<Map<String, dynamic>> updateOpenvpnInstance(String vpnid, OpenvpnInstance instance) => _openvpnService.updateInstance(vpnid, instance);
+  
+  Future<Map<String, dynamic>> deleteOpenvpnInstance(String vpnid) => _openvpnService.deleteInstance(vpnid);
+  
+  
+  Future<Map<String, dynamic>> reconfigureOpenvpn() => _openvpnService.reconfigureOpenvpn();
+  Future<Map<String, dynamic>> toggleOpenvpnInstance(String vpnid) => _openvpnService.toggleInstance(vpnid);
+  
+  Future<String> generateOpenvpnAuthToken() => _openvpnService.generateAuthToken();
+  
+  Future<OpenvpnStaticKeySearchResponse> searchOpenvpnStaticKeys({
+    int current = 1,
+    int rowCount = 50,
+  }) => _openvpnService.searchStaticKeys(current: current, rowCount: rowCount);
+  
+  Future<OpenvpnStaticKey> getOpenvpnStaticKey(String? keyid) => _openvpnService.getStaticKey(keyid);
+  
+  Future<String> generateOpenvpnStaticKey(String mode) => _openvpnService.generateStaticKey(mode);
+  
+  Future<Map<String, dynamic>> addOpenvpnStaticKey(OpenvpnStaticKey key) => _openvpnService.addStaticKey(key);
+  
+  Future<Map<String, dynamic>> updateOpenvpnStaticKey(String keyid, OpenvpnStaticKey key) => _openvpnService.updateStaticKey(keyid, key);
+  
+  Future<Map<String, dynamic>> deleteOpenvpnStaticKey(String keyid) => _openvpnService.deleteStaticKey(keyid);
 
   // ============================================================================
   // Tailscale Service Delegations

@@ -24,6 +24,7 @@ import '../../screens/wireguard_peers_screen.dart';
 import '../../screens/wireguard_peer_generator_screen.dart';
 import '../../screens/wireguard_status_screen.dart';
 import '../../screens/wireguard_log_file_screen.dart';
+import '../../screens/openvpn_instances_screen.dart';
 import '../../screens/tailscale_authentication_screen.dart';
 import '../../screens/tailscale_settings_screen.dart';
 import '../../screens/tailscale_status_screen.dart';
@@ -225,6 +226,13 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         });
       },
       children: [
+        NavigationTile(
+          title: 'Instances',
+          currentRoute: widget.currentRoute,
+          targetRoute: 'openvpn_instances',
+          destination: const OpenvpnInstancesScreen(),
+          contentPadding: const EdgeInsets.only(left: 96, right: 16),
+        ),
         NavigationTile(
           title: 'Servers',
           currentRoute: widget.currentRoute,

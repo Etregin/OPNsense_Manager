@@ -93,15 +93,11 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
       final sortedConnections = connectionManager.sortConnectionsByPriority(profile.connections);
       final totalConnections = sortedConnections.length;
       
-      debugPrint('Testing $totalConnections connection(s) for profile: ${profile.name}');
-      
       ConnectionEndpoint? workingConnection;
       
       for (int i = 0; i < sortedConnections.length; i++) {
         final connection = sortedConnections[i];
         final currentAttempt = i + 1;
-        
-        debugPrint('Testing connection $currentAttempt/$totalConnections: ${connection.displayName} (${connection.host}:${connection.port})');
         
         // Update status with localized progress message
         if (mounted) {
@@ -130,35 +126,16 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
         final testResult = await connectionManager.testConnectionDetailed(connection, config);
         final isWorking = testResult.isSuccess;
         
-        debugPrint(
-          'Connection test result: ${isWorking ? "SUCCESS" : "FAILED"}'
-          '${isWorking ? "" : " - ${testResult.summary}"}',
-        );
-        
-        if (!isWorking) {
-          debugPrint(
-            'Connection failure details for ${connection.displayName}: '
-            '${testResult.toLogMap()}',
-          );
-        }
-        
         if (isWorking) {
           workingConnection = connection.copyWith(
             isActive: true,
             lastSuccessfulConnection: DateTime.now(),
           );
-          debugPrint('Found working connection: ${workingConnection.displayName}');
           break;
         }
       }
       
       if (workingConnection == null) {
-        final lastFailure = connectionManager.getLastTestResult();
-        debugPrint('ERROR: No working connection found');
-        if (lastFailure != null) {
-          debugPrint('Last connection failure summary: ${lastFailure.summary}');
-          debugPrint('Last connection failure details: ${lastFailure.toLogMap()}');
-        }
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
           throw Exception(l10n.unableToConnectToAnyEndpoint);
@@ -177,8 +154,6 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
       final updatedProfile = profile.copyWith(connections: updatedConnections);
       await profileService.saveProfile(updatedProfile);
       
-      debugPrint('Profile saved with active connection: ${workingConnection.displayName}');
-      
       // Initialize API service and navigate
       if (mounted) {
         final apiService = context.read<OPNsenseApiService>();
@@ -187,17 +162,13 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
       
       await profileService.setActiveProfile(updatedProfile.id);
       
-      debugPrint('Navigating to dashboard...');
-      
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const DashboardScreen()),
         );
       }
       
-    } catch (e, stackTrace) {
-      debugPrint('ERROR in _selectProfile: $e');
-      debugPrint('Stack trace: $stackTrace');
+    } catch (e) {
       if (mounted) {
         setState(() {
           _errorMessage = 'Connection failed: ${e.toString()}';

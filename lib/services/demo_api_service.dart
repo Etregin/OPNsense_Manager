@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/foundation.dart';
 import '../models/system_info.dart';
 import '../models/firewall_rule.dart';
 import '../models/firewall_alias.dart';
@@ -27,6 +26,9 @@ import '../models/wireguard_peer.dart';
 import '../models/tailscale_status.dart';
 import '../models/tailscale_settings.dart';
 import '../models/wol_host.dart';
+import '../models/openvpn_search_response.dart';
+import '../models/openvpn_instance.dart';
+import '../models/openvpn_static_key.dart';
 import 'demo_data_service.dart';
 import 'opnsense_api_service.dart';
 import 'demo/demo_api_decorator.dart';
@@ -545,20 +547,13 @@ class DemoApiService {
   /// Set Tailscale settings
   Future<Map<String, dynamic>> setTailscaleSettings(
       TailscaleSettings settings) async {
-    debugPrint(
-        '🌐 [DemoApiService] setTailscaleSettings called, isDemoMode: $_isDemoMode');
-
     return DemoApiDecorator.execute(
       isDemoMode: _isDemoMode,
       demoAction: () async {
         try {
-          debugPrint('🔄 [DemoApiService] Updating demo data...');
           _demoDataService.updateTailscaleSettingsData(settings);
-          debugPrint('✅ [DemoApiService] Returning success response');
           return {'result': 'saved'};
-        } catch (e, stackTrace) {
-          debugPrint('❌ [DemoApiService] Error in demo mode: $e');
-          debugPrint('❌ [DemoApiService] Stack trace: $stackTrace');
+        } catch (e) {
           return {
             'result': 'failed',
             'message': e.toString(),
@@ -631,6 +626,190 @@ class DemoApiService {
         demoAction: () async => {'status': 'ok'},
         realAction: () => _realApiService.reloadTailscaleSettings(),
         delayMs: 600,
+      );
+
+  // ==================== OpenVPN ====================
+
+  /// Search OpenVPN instances
+  Future<OpenvpnSearchResponse> searchOpenvpnInstances({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          final instances = _demoDataService.generateOpenvpnInstances();
+          return OpenvpnSearchResponse(
+            rows: instances,
+            rowCount: instances.length,
+            total: instances.length,
+            current: current,
+          );
+        },
+        realAction: () => _realApiService.searchOpenvpnInstances(
+          current: current,
+          rowCount: rowCount,
+          sort: sort,
+        ),
+        delayMs: 400,
+      );
+
+  /// Get OpenVPN instance details
+  Future<OpenvpnInstance> getOpenvpnInstance(String? vpnid) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          if (vpnid == null) {
+            // Return empty form data for new instance
+            return _demoDataService.generateOpenvpnInstanceFormData();
+          }
+          // Return existing instance data
+          final instances = _demoDataService.generateOpenvpnInstances();
+          final instance = instances.firstWhere(
+            (i) => i.vpnid == vpnid,
+            orElse: () => instances.first,
+          );
+          return _demoDataService.generateOpenvpnInstanceFormData(
+            vpnid: instance.vpnid,
+            role: instance.role,
+          );
+        },
+        realAction: () => _realApiService.getOpenvpnInstance(vpnid),
+        delayMs: 300,
+      );
+
+  /// Add OpenVPN instance
+  Future<Map<String, dynamic>> addOpenvpnInstance(OpenvpnInstance instance) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {
+          'result': 'saved',
+          'uuid': 'openvpn-demo-${DateTime.now().millisecondsSinceEpoch}',
+        },
+        realAction: () => _realApiService.addOpenvpnInstance(instance),
+        delayMs: 500,
+      );
+
+  /// Update OpenVPN instance
+  Future<Map<String, dynamic>> updateOpenvpnInstance(
+    String vpnid,
+    OpenvpnInstance instance,
+  ) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'result': 'saved'},
+        realAction: () => _realApiService.updateOpenvpnInstance(vpnid, instance),
+        delayMs: 500,
+      );
+
+  /// Delete OpenVPN instance
+  Future<Map<String, dynamic>> deleteOpenvpnInstance(String vpnid) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'result': 'deleted'},
+        realAction: () => _realApiService.deleteOpenvpnInstance(vpnid),
+        delayMs: 400,
+      );
+
+  /// Toggle OpenVPN instance
+  Future<Map<String, dynamic>> toggleOpenvpnInstance(String vpnid) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'result': 'success'},
+        realAction: () => _realApiService.toggleOpenvpnInstance(vpnid),
+        delayMs: 300,
+      );
+
+  /// Generate auth token
+  Future<String> generateOpenvpnAuthToken() => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async =>
+            'demo-auth-token-${DateTime.now().millisecondsSinceEpoch}',
+        realAction: () => _realApiService.generateOpenvpnAuthToken(),
+        delayMs: 200,
+      );
+
+  // ==================== OpenVPN Static Keys ====================
+
+  /// Search OpenVPN static keys
+  Future<OpenvpnStaticKeySearchResponse> searchOpenvpnStaticKeys({
+    int current = 1,
+    int rowCount = 50,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          final keys = _demoDataService.generateOpenvpnStaticKeys();
+          return OpenvpnStaticKeySearchResponse(
+            rows: keys,
+            rowCount: keys.length,
+            total: keys.length,
+            current: current,
+          );
+        },
+        realAction: () => _realApiService.searchOpenvpnStaticKeys(
+          current: current,
+          rowCount: rowCount,
+        ),
+        delayMs: 300,
+      );
+
+  /// Get OpenVPN static key details
+  Future<OpenvpnStaticKey> getOpenvpnStaticKey(String? keyid) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          if (keyid == null) {
+            // Return empty form data for new key
+            return const OpenvpnStaticKey(
+              description: '',
+              key: '',
+              mode: '0',
+            );
+          }
+          // Return existing key data
+          final keys = _demoDataService.generateOpenvpnStaticKeys();
+          return keys.firstWhere(
+            (k) => k.keyid == keyid,
+            orElse: () => keys.first,
+          );
+        },
+        realAction: () => _realApiService.getOpenvpnStaticKey(keyid),
+        delayMs: 200,
+      );
+
+  /// Add OpenVPN static key
+  Future<Map<String, dynamic>> addOpenvpnStaticKey(OpenvpnStaticKey key) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {
+          'result': 'saved',
+          'uuid': 'key-demo-${DateTime.now().millisecondsSinceEpoch}',
+        },
+        realAction: () => _realApiService.addOpenvpnStaticKey(key),
+        delayMs: 400,
+      );
+
+  /// Update OpenVPN static key
+  Future<Map<String, dynamic>> updateOpenvpnStaticKey(
+    String keyid,
+    OpenvpnStaticKey key,
+  ) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'result': 'saved'},
+        realAction: () => _realApiService.updateOpenvpnStaticKey(keyid, key),
+        delayMs: 400,
+      );
+
+  /// Delete OpenVPN static key
+  Future<Map<String, dynamic>> deleteOpenvpnStaticKey(String keyid) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'result': 'deleted'},
+        realAction: () => _realApiService.deleteOpenvpnStaticKey(keyid),
+        delayMs: 300,
       );
 
   /// Clear service state

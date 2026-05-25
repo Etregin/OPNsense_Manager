@@ -17,7 +17,6 @@
  */
 
 import 'dart:math';
-import 'package:flutter/foundation.dart';
 import '../../models/tailscale_status.dart';
 import '../../models/tailscale_settings.dart';
 import 'demo_state_manager.dart';
@@ -137,48 +136,36 @@ class DemoTailscaleDataGenerator {
 
   /// Update Tailscale settings data
   void updateTailscaleSettingsData(TailscaleSettings settings) {
-    debugPrint('🔄 [DemoTailscaleDataGenerator] Updating Tailscale settings...');
-    debugPrint('🔍 [DemoTailscaleDataGenerator] Settings: enabled=${settings.enabled}, acceptDNS=${settings.acceptDNS}');
-    
     try {
       if (settings.enabled != null) {
-        debugPrint('✓ [DemoTailscaleDataGenerator] Updating enabled: ${settings.enabled}');
         _stateManager.updateTailscaleServiceState(settings.enabled! ? 'start' : 'stop');
       }
       
       final updatedSettings = <String, dynamic>{};
       
       if (settings.acceptDNS != null) {
-        debugPrint('✓ [DemoTailscaleDataGenerator] Updating acceptDNS: ${settings.acceptDNS}');
         updatedSettings['dns_enabled'] = settings.acceptDNS!;
       }
       if (settings.acceptSubnetRoutes != null) {
-        debugPrint('✓ [DemoTailscaleDataGenerator] Updating acceptSubnetRoutes: ${settings.acceptSubnetRoutes}');
         updatedSettings['accept_routes'] = settings.acceptSubnetRoutes!;
       }
       if (settings.enableSSH != null) {
-        debugPrint('✓ [DemoTailscaleDataGenerator] Updating enableSSH: ${settings.enableSSH}');
         updatedSettings['ssh_enabled'] = settings.enableSSH!;
       }
       
       // Update exit node if provided
       if (settings.useExitNode != null) {
-        debugPrint('🔍 [DemoTailscaleDataGenerator] Processing useExitNode: ${settings.useExitNode}');
         try {
           final selectedNode = settings.selectedExitNode;
-          debugPrint('🔍 [DemoTailscaleDataGenerator] Selected node: $selectedNode');
           
           if (selectedNode != null && selectedNode.value != null && selectedNode.value != 'None') {
-            debugPrint('✓ [DemoTailscaleDataGenerator] Setting exit node: ${selectedNode.value}');
             updatedSettings['exit_node'] = selectedNode.value!;
             updatedSettings['use_exit_node'] = true;
           } else {
-            debugPrint('✓ [DemoTailscaleDataGenerator] Clearing exit node');
             updatedSettings['exit_node'] = '';
             updatedSettings['use_exit_node'] = false;
           }
         } catch (exitNodeError) {
-          debugPrint('❌ [DemoTailscaleDataGenerator] Error processing exit node: $exitNodeError');
           rethrow;
         }
       }
@@ -186,11 +173,7 @@ class DemoTailscaleDataGenerator {
       if (updatedSettings.isNotEmpty) {
         _stateManager.updateTailscaleSettings(updatedSettings);
       }
-      
-      debugPrint('✅ [DemoTailscaleDataGenerator] Settings updated successfully');
-    } catch (e, stackTrace) {
-      debugPrint('❌ [DemoTailscaleDataGenerator] Error updating settings: $e');
-      debugPrint('❌ [DemoTailscaleDataGenerator] Stack trace: $stackTrace');
+    } catch (e) {
       rethrow;
     }
   }

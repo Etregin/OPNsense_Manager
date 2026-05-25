@@ -20,7 +20,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
-import 'package:flutter/foundation.dart';
 import '../../models/connection_endpoint.dart';
 import '../../models/opnsense_config.dart';
 
@@ -176,13 +175,7 @@ class ConnectionManagerService {
 
       _lastTestResult = result;
 
-      if (isReachable) {
-        debugPrint(
-          'Connection test SUCCEEDED: ${endpoint.displayName} '
-          '(${endpoint.host}:${endpoint.port}) '
-          '[status=${statusCode ?? 'unknown'}]',
-        );
-      } else {
+      if (!isReachable) {
         _logConnectionFailure(result);
       }
 
@@ -404,50 +397,11 @@ class ConnectionManagerService {
     required String requestUrl,
     required Map<String, String> headers,
   }) {
-    final sanitizedHeaders = Map<String, String>.from(headers);
-    if (sanitizedHeaders.containsKey('Authorization')) {
-      sanitizedHeaders['Authorization'] = '***redacted***';
-    }
-
-    debugPrint(
-      'Connection test START: ${endpoint.displayName} '
-      '(${endpoint.host}:${endpoint.port})',
-    );
-    debugPrint('  URL: $requestUrl');
-    debugPrint('  Method: GET');
-    debugPrint('  Timeout: ${_connectionTimeout.inSeconds}s');
-    debugPrint('  HTTPS: ${config.useHttps}');
-    debugPrint('  Allow Self-Signed: ${config.allowSelfSignedCerts}');
-    debugPrint('  Headers: $sanitizedHeaders');
+    // Logging removed for production
   }
 
   void _logConnectionFailure(ConnectionTestResult result) {
-    debugPrint(
-      'Connection test FAILED: ${result.errorType}'
-      '${result.errorMessage != null ? ': ${result.errorMessage}' : ''}',
-    );
-    debugPrint('  Host: ${result.host}');
-    debugPrint('  Port: ${result.port}');
-    debugPrint('  HTTPS: ${result.useHttps}');
-    debugPrint('  Allow Self-Signed: ${result.allowSelfSignedCerts}');
-    debugPrint('  URL: ${result.requestUrl}');
-    debugPrint('  Method: ${result.method}');
-    debugPrint('  Timeout: ${result.timeout.inSeconds}s');
-    if (result.statusCode != null) {
-      debugPrint('  HTTP Status: ${result.statusCode}');
-    }
-    if (result.innerError != null) {
-      debugPrint('  Inner Error: ${result.innerError}');
-    }
-    if (result.responseBodyPreview != null) {
-      debugPrint('  Response Preview: ${result.responseBodyPreview}');
-    }
-    if (result.rawError != null) {
-      debugPrint('  Raw Error: ${result.rawError}');
-    }
-    if (result.stackTrace != null) {
-      debugPrint('  Stack Trace: ${result.stackTrace}');
-    }
+    // Logging removed for production
   }
 
   /// Attempt failover to a backup connection

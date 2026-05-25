@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/foundation.dart';
 import '../models/wireguard_peer.dart';
 import '../models/wireguard_peer_response.dart';
 import '../models/wireguard_server.dart';
@@ -69,15 +68,8 @@ class WireGuardPeerFormViewModel extends BaseFormViewModel {
 
     try {
       final peerData = await _apiService.getPeer(uuid);
-      debugPrint('WireGuardPeerFormViewModel: Raw peer data keys: ${peerData.keys.join(", ")}');
-      debugPrint('WireGuardPeerFormViewModel: PSK in response: "${peerData['psk']}"');
-      debugPrint('WireGuardPeerFormViewModel: PSK type: ${peerData['psk'].runtimeType}');
-      debugPrint('WireGuardPeerFormViewModel: PSK is null: ${peerData['psk'] == null}');
-      debugPrint('WireGuardPeerFormViewModel: PSK is empty: ${peerData['psk'] == ""}');
       
       _loadedPeerData = WireGuardPeerResponse.fromJson(peerData);
-      debugPrint('WireGuardPeerFormViewModel: Parsed PSK: "${_loadedPeerData?.psk}"');
-      debugPrint('WireGuardPeerFormViewModel: Parsed PSK length: ${_loadedPeerData?.psk.length}');
       
       _loadingPeer = false;
       notifyListeners();
@@ -102,7 +94,6 @@ class WireGuardPeerFormViewModel extends BaseFormViewModel {
       _isGeneratingPsk = false;
       final errorMsg = 'Failed to generate PSK: $e';
       setError(errorMsg);
-      debugPrint('WireGuardPeerFormViewModel.generatePsk error: $errorMsg');
       return null;
     }
   }

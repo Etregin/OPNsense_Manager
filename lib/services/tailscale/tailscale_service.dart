@@ -17,7 +17,6 @@
  */
 
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import '../base/base_opnsense_service.dart';
 import '../base/api_exception.dart';
 import '../../models/tailscale_settings.dart';
@@ -43,36 +42,30 @@ class TailscaleService extends BaseOPNsenseService {
     ensureInitialized();
     
     try {
-      debugPrint('[Tailscale] Checking plugin availability...');
       final response = await dio.get('/tailscale/service/status');
       
       // If we get a 200 response, the plugin is available
       if (response.statusCode == 200) {
         _tailscalePluginAvailable = true;
-        debugPrint('[Tailscale] Plugin is available');
         return true;
       }
       
       // Any other status code means plugin is not available
       _tailscalePluginAvailable = false;
-      debugPrint('[Tailscale] Plugin not available: HTTP ${response.statusCode}');
       return false;
     } on DioException catch (e) {
       // 404 means the plugin is not installed
       if (e.response?.statusCode == 404) {
         _tailscalePluginAvailable = false;
-        debugPrint('[Tailscale] Plugin not installed (404)');
         return false;
       }
       
       // For other errors, assume plugin is not available
       _tailscalePluginAvailable = false;
-      debugPrint('[Tailscale] Plugin check failed: ${e.message}');
       return false;
     } catch (e) {
       // On any error, assume plugin is not available
       _tailscalePluginAvailable = false;
-      debugPrint('[Tailscale] Plugin check error: ${e.toString()}');
       return false;
     }
   }

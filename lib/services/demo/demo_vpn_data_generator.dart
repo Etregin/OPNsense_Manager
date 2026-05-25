@@ -18,6 +18,9 @@
 
 import 'dart:math';
 import '../../models/vpn_connection.dart';
+import '../../models/openvpn_instance_list_item.dart';
+import '../../models/openvpn_instance.dart';
+import '../../models/openvpn_static_key.dart';
 import 'demo_state_manager.dart';
 
 /// Generator for VPN-related demo data
@@ -171,6 +174,228 @@ class DemoVPNDataGenerator {
     ];
   }
 
+  /// Generate demo OpenVPN instances for list view
+  List<OpenvpnInstanceListItem> generateOpenvpnInstances() {
+    return [
+      OpenvpnInstanceListItem(
+        vpnid: 'openvpn-1',
+        uuid: 'demo-uuid-openvpn-1',
+        enabled: true,
+        role: 'server',
+        description: 'Main Office VPN Server',
+        devType: 'tun',
+        protocol: 'udp',
+        port: '1194',
+        local: '192.168.1.1',
+        remote: null,
+        server: '10.8.0.0/24',
+      ),
+      OpenvpnInstanceListItem(
+        vpnid: 'openvpn-2',
+        uuid: 'demo-uuid-openvpn-2',
+        enabled: true,
+        role: 'client',
+        description: 'Remote Site Connection',
+        devType: 'tun',
+        protocol: 'tcp',
+        port: '443',
+        local: null,
+        remote: '203.0.113.10',
+        server: null,
+      ),
+      OpenvpnInstanceListItem(
+        vpnid: 'openvpn-3',
+        uuid: 'demo-uuid-openvpn-3',
+        enabled: false,
+        role: 'server',
+        description: 'Mobile Users VPN',
+        devType: 'tun',
+        protocol: 'udp',
+        port: '1195',
+        local: '192.168.1.1',
+        remote: null,
+        server: '10.9.0.0/24',
+      ),
+    ];
+  }
+
+  /// Generate demo OpenVPN static keys
+  List<OpenvpnStaticKey> generateOpenvpnStaticKeys() {
+    return [
+      OpenvpnStaticKey(
+        keyid: 'key-1',
+        description: 'Main TLS Auth Key',
+        key: '''-----BEGIN OpenVPN Static key V1-----
+6acef03f62675b4b1bdd0a0a6c78a5b3
+e69e4cc2f4a00e9c1b3e8c5d7f2a1b4c
+3d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a
+0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e
+-----END OpenVPN Static key V1-----''',
+        mode: '0',
+        createdAt: DateTime.now().subtract(const Duration(days: 30)),
+        modifiedAt: DateTime.now().subtract(const Duration(days: 5)),
+      ),
+      OpenvpnStaticKey(
+        keyid: 'key-2',
+        description: 'Backup TLS Key',
+        key: '''-----BEGIN OpenVPN Static key V1-----
+7bdef14g73786c5c2cee1b1b7d89b6c4
+f70f5dd3g5b11f0d2c4f9d6e8g3b2c5d
+4e6f7g8b9c0d1e2f3a4b5c6d7e8f9a0b
+1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f
+-----END OpenVPN Static key V1-----''',
+        mode: '1',
+        createdAt: DateTime.now().subtract(const Duration(days: 15)),
+        modifiedAt: DateTime.now().subtract(const Duration(days: 2)),
+      ),
+    ];
+  }
+
+  /// Generate demo OpenVPN instance form data for add/edit
+  OpenvpnInstance generateOpenvpnInstanceFormData({String? vpnid, String role = 'server'}) {
+    if (role == 'server') {
+      return OpenvpnInstance(
+        vpnid: vpnid,
+        enabled: true,
+        role: 'server',
+        description: vpnid != null ? 'Main Office VPN Server' : '',
+        devType: 'tun',
+        proto: 'udp',
+        port: '1194',
+        local: null,
+        portShare: null,
+        topology: 'subnet',
+        remote: null,
+        server: '10.8.0.0/24',
+        serverIpv6: null,
+        nopool: false,
+        bridgeGateway: null,
+        bridgePool: null,
+        route: [],
+        pushRoute: [],
+        pushExcludedRoutes: [],
+        cert: 'cert1',
+        crl: null,
+        ca: 'ca1',
+        certDepth: '1',
+        remoteCertTls: 'client',
+        verifyClientCert: 'require',
+        useOcsp: false,
+        tlsKey: null,
+        auth: 'SHA256',
+        dataCiphers: 'AES-256-GCM',
+        dataCiphersFallback: 'AES-256-CBC',
+        authmode: 'local',
+        localGroup: null,
+        usernameAsCommonName: false,
+        strictusercn: false,
+        username: null,
+        password: null,
+        maxclients: '100',
+        keepaliveInterval: '10',
+        keepaliveTimeout: '60',
+        renegSec: '3600',
+        authGenToken: false,
+        authGenTokenRenewal: null,
+        authGenTokenSecret: null,
+        provisionExclusive: false,
+        redirectGateway: false,
+        routeMetric: null,
+        registerDns: true,
+        dnsDomain: 'example.com',
+        dnsDomainSearch: [],
+        dnsServers: ['8.8.8.8', '8.8.4.4'],
+        ntpServers: [],
+        tunMtu: null,
+        fragment: null,
+        mssfix: null,
+        carpDependOn: null,
+        variousFlags: {
+          'duplicate_cn': false,
+          'client_to_client': false,
+          'comp_lzo': false,
+        },
+        variousPushFlags: {
+          'block_outside_dns': false,
+          'register_dns': true,
+        },
+        pushInactive: null,
+        compressMigrate: null,
+        ifconfigPoolPersist: false,
+        httpProxy: null,
+        verifyX509Name: null,
+        verb: '3',
+      );
+    } else {
+      // Client configuration
+      return OpenvpnInstance(
+        vpnid: vpnid,
+        enabled: true,
+        role: 'client',
+        description: vpnid != null ? 'Remote Site Connection' : '',
+        devType: 'tun',
+        proto: 'tcp',
+        port: '443',
+        local: null,
+        portShare: null,
+        topology: 'subnet',
+        remote: '203.0.113.10',
+        server: null,
+        serverIpv6: null,
+        nopool: false,
+        bridgeGateway: null,
+        bridgePool: null,
+        route: [],
+        pushRoute: [],
+        pushExcludedRoutes: [],
+        cert: 'cert1',
+        crl: null,
+        ca: 'ca1',
+        certDepth: '1',
+        remoteCertTls: 'server',
+        verifyClientCert: null,
+        useOcsp: false,
+        tlsKey: null,
+        auth: 'SHA256',
+        dataCiphers: 'AES-256-GCM',
+        dataCiphersFallback: 'AES-256-CBC',
+        authmode: null,
+        localGroup: null,
+        usernameAsCommonName: false,
+        strictusercn: false,
+        username: 'vpnuser',
+        password: null,
+        maxclients: null,
+        keepaliveInterval: '10',
+        keepaliveTimeout: '60',
+        renegSec: '3600',
+        authGenToken: false,
+        authGenTokenRenewal: null,
+        authGenTokenSecret: null,
+        provisionExclusive: false,
+        redirectGateway: true,
+        routeMetric: null,
+        registerDns: true,
+        dnsDomain: null,
+        dnsDomainSearch: [],
+        dnsServers: [],
+        ntpServers: [],
+        tunMtu: null,
+        fragment: null,
+        mssfix: null,
+        carpDependOn: null,
+        variousFlags: {
+          'comp_lzo': false,
+        },
+        variousPushFlags: {},
+        pushInactive: null,
+        compressMigrate: null,
+        ifconfigPoolPersist: false,
+        httpProxy: null,
+        verifyX509Name: null,
+        verb: '3',
+      );
+    }
+  }
+
 }
-
-
