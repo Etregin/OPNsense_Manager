@@ -382,6 +382,8 @@ class OPNsenseApiService {
   // WOL Service Delegations
   // ============================================================================
 
+  Future<bool> isWolPluginAvailable() => _wolService.isWolPluginAvailable();
+
   Future<List<WolHost>> getWolHosts() => _wolService.getHosts();
   
   Future<Map<String, WolInterfaceOption>> getWolInterfaceOptions() => _wolService.getInterfaceOptions();
@@ -417,6 +419,8 @@ class OPNsenseApiService {
   // ============================================================================
   // Tailscale Service Delegations
   // ============================================================================
+
+  Future<bool> isTailscalePluginAvailable() => _tailscaleService.isTailscalePluginAvailable();
 
   Future<bool> controlTailscaleService(String action) => _tailscaleService.controlTailscaleService(action);
   

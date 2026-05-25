@@ -17,12 +17,80 @@
  */
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import '../base/base_opnsense_service.dart';
 import '../base/api_exception.dart';
 import '../../models/tailscale_settings.dart';
 
 /// Service for Tailscale VPN operations
 class TailscaleService extends BaseOPNsenseService {
+  // Cache for plugin availability check
+  bool? _tailscalePluginAvailable;
+  
+  /// Check if the Tailscale plugin is installed and available
+  ///
+  /// This method checks if the os-tailscale plugin is installed by attempting
+  /// to call a lightweight Tailscale endpoint. The result is cached to avoid
+  /// repeated API calls.
+  ///
+  /// Returns `true` if the plugin is available, `false` otherwise.
+  Future<bool> isTailscalePluginAvailable() async {
+    // Return cached result if available
+    if (_tailscalePluginAvailable != null) {
+      return _tailscalePluginAvailable!;
+    }
+    
+    ensureInitialized();
+    
+    try {
+      debugPrint('[Tailscale] Checking plugin availability...');
+      final response = await dio.get('/tailscale/service/status');
+      
+      // If we get a 200 response, the plugin is available
+      if (response.statusCode == 200) {
+        _tailscalePluginAvailable = true;
+        debugPrint('[Tailscale] Plugin is available');
+        return true;
+      }
+      
+      // Any other status code means plugin is not available
+      _tailscalePluginAvailable = false;
+      debugPrint('[Tailscale] Plugin not available: HTTP ${response.statusCode}');
+      return false;
+    } on DioException catch (e) {
+      // 404 means the plugin is not installed
+      if (e.response?.statusCode == 404) {
+        _tailscalePluginAvailable = false;
+        debugPrint('[Tailscale] Plugin not installed (404)');
+        return false;
+      }
+      
+      // For other errors, assume plugin is not available
+      _tailscalePluginAvailable = false;
+      debugPrint('[Tailscale] Plugin check failed: ${e.message}');
+      return false;
+    } catch (e) {
+      // On any error, assume plugin is not available
+      _tailscalePluginAvailable = false;
+      debugPrint('[Tailscale] Plugin check error: ${e.toString()}');
+      return false;
+    }
+  }
+  
+  /// Clear the plugin availability cache
+  ///
+  /// This should be called when the service is cleared or when
+  /// you want to force a re-check of plugin availability.
+  void clearPluginCache() {
+    _tailscalePluginAvailable = null;
+  }
+  
+  @override
+  void clear() {
+    clearPluginCache();
+    super.clear();
+  }
+  
   /// Control Tailscale service (start, stop, restart)
   Future<bool> controlTailscaleService(String action) async {
     ensureInitialized();

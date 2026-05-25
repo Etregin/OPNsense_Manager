@@ -17,20 +17,60 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../../screens/live_network_monitor_screen.dart';
 import '../../screens/dhcp_leases_screen.dart';
 import '../../screens/wol_screen.dart';
+import '../../services/opnsense_api_service.dart';
 import 'navigation_tile.dart';
 
 /// Network navigation section for the app drawer
-class NetworkNavigationSection extends StatelessWidget {
+class NetworkNavigationSection extends StatefulWidget {
   final String currentRoute;
 
   const NetworkNavigationSection({
     super.key,
     required this.currentRoute,
   });
+
+  @override
+  State<NetworkNavigationSection> createState() => _NetworkNavigationSectionState();
+}
+
+class _NetworkNavigationSectionState extends State<NetworkNavigationSection> {
+  bool _wolPluginAvailable = false;
+  bool _loadingWolStatus = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkWolAvailability();
+  }
+
+  Future<void> _checkWolAvailability() async {
+    if (!mounted) return;
+
+    try {
+      final apiService = context.read<OPNsenseApiService>();
+      final isAvailable = await apiService.isWolPluginAvailable();
+      
+      if (mounted) {
+        setState(() {
+          _wolPluginAvailable = isAvailable;
+          _loadingWolStatus = false;
+        });
+      }
+    } catch (e) {
+      // On error, assume plugin is not available
+      if (mounted) {
+        setState(() {
+          _wolPluginAvailable = false;
+          _loadingWolStatus = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,24 +81,26 @@ class NetworkNavigationSection extends StatelessWidget {
         NavigationTile(
           icon: Icons.network_check,
           title: l10n.liveNetworkMonitor,
-          currentRoute: currentRoute,
+          currentRoute: widget.currentRoute,
           targetRoute: 'live_network_monitor',
           destination: const LiveNetworkMonitorScreen(),
         ),
         NavigationTile(
           icon: Icons.dns,
           title: l10n.dhcpLeases,
-          currentRoute: currentRoute,
+          currentRoute: widget.currentRoute,
           targetRoute: 'dhcp_leases',
           destination: const DhcpLeasesScreen(),
         ),
-        NavigationTile(
-          icon: Icons.power_settings_new,
-          title: 'Wake-on-LAN',
-          currentRoute: currentRoute,
-          targetRoute: 'wol',
-          destination: const WolScreen(),
-        ),
+        // Only show WOL tile if plugin is available and not loading
+        if (!_loadingWolStatus && _wolPluginAvailable)
+          NavigationTile(
+            icon: Icons.power_settings_new,
+            title: 'Wake-on-LAN',
+            currentRoute: widget.currentRoute,
+            targetRoute: 'wol',
+            destination: const WolScreen(),
+          ),
       ],
     );
   }

@@ -57,6 +57,8 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
   bool _tailscaleExpanded = false;
   VPNConnection? _tailscaleStatus;
   bool _loadingTailscale = false;
+  bool _tailscalePluginAvailable = false;
+  bool _loadingTailscaleAvailability = true;
 
   @override
   void initState() {
@@ -65,6 +67,9 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
     _wireguardExpanded = NavigationService.isRouteInSection(widget.currentRoute, 'wireguard_');
     _openvpnExpanded = NavigationService.isRouteInSection(widget.currentRoute, 'openvpn_');
     _tailscaleExpanded = NavigationService.isRouteInSection(widget.currentRoute, 'tailscale_');
+    
+    // Check Tailscale plugin availability
+    _checkTailscaleAvailability();
     
     // Load Tailscale status
     _loadTailscaleStatus();
@@ -82,6 +87,30 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         _openvpnExpanded = false;
         _tailscaleExpanded = false;
       });
+    }
+  }
+
+  Future<void> _checkTailscaleAvailability() async {
+    if (!mounted) return;
+
+    try {
+      final apiService = context.read<OPNsenseApiService>();
+      final isAvailable = await apiService.isTailscalePluginAvailable();
+      
+      if (mounted) {
+        setState(() {
+          _tailscalePluginAvailable = isAvailable;
+          _loadingTailscaleAvailability = false;
+        });
+      }
+    } catch (e) {
+      // On error, assume plugin is not available
+      if (mounted) {
+        setState(() {
+          _tailscalePluginAvailable = false;
+          _loadingTailscaleAvailability = false;
+        });
+      }
     }
   }
 
@@ -126,8 +155,9 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         // OpenVPN nested section
         _buildOpenVPNSection(),
         
-        // Tailscale nested section
-        _buildTailscaleSection(),
+        // Tailscale nested section - only show if plugin is available and not loading
+        if (!_loadingTailscaleAvailability && _tailscalePluginAvailable)
+          _buildTailscaleSection(),
       ],
     );
   }

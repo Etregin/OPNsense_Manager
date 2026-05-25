@@ -31,6 +31,73 @@ class WolService extends BaseOPNsenseService {
   static const String _deleteHostPath = '/wol/wol/del_host/';
   static const String _wakeHostPath = '/wol/wol/set';
   static const String _wakeAllPath = '/wol/wol/wakeall';
+  
+  // Cache for plugin availability check
+  bool? _wolPluginAvailable;
+  
+  /// Check if the WOL plugin is installed and available
+  ///
+  /// This method checks if the os-wol plugin is installed by attempting
+  /// to call a lightweight WOL endpoint. The result is cached to avoid
+  /// repeated API calls.
+  ///
+  /// Returns `true` if the plugin is available, `false` otherwise.
+  Future<bool> isWolPluginAvailable() async {
+    // Return cached result if available
+    if (_wolPluginAvailable != null) {
+      return _wolPluginAvailable!;
+    }
+    
+    ensureInitialized();
+    
+    try {
+      _logRequest('GET', _getHostTemplatePath);
+      final response = await dio.get(_getHostTemplatePath);
+      
+      // If we get a 200 response, the plugin is available
+      if (response.statusCode == 200) {
+        _wolPluginAvailable = true;
+        debugPrint('[WOL] Plugin is available');
+        return true;
+      }
+      
+      // Any other status code means plugin is not available
+      _wolPluginAvailable = false;
+      debugPrint('[WOL] Plugin not available: HTTP ${response.statusCode}');
+      return false;
+    } on DioException catch (e) {
+      // 404 means the plugin is not installed
+      if (e.response?.statusCode == 404) {
+        _wolPluginAvailable = false;
+        debugPrint('[WOL] Plugin not installed (404)');
+        return false;
+      }
+      
+      // For other errors, assume plugin is not available
+      _wolPluginAvailable = false;
+      debugPrint('[WOL] Plugin check failed: ${e.message}');
+      return false;
+    } catch (e) {
+      // On any error, assume plugin is not available
+      _wolPluginAvailable = false;
+      debugPrint('[WOL] Plugin check error: ${e.toString()}');
+      return false;
+    }
+  }
+  
+  /// Clear the plugin availability cache
+  ///
+  /// This should be called when the service is cleared or when
+  /// you want to force a re-check of plugin availability.
+  void clearPluginCache() {
+    _wolPluginAvailable = null;
+  }
+  
+  @override
+  void clear() {
+    clearPluginCache();
+    super.clear();
+  }
   /// Get all configured WOL hosts
   Future<List<WolHost>> getHosts() async {
     ensureInitialized();

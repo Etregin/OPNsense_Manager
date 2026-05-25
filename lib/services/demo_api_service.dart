@@ -299,6 +299,24 @@ class DemoApiService {
 
   // ==================== Wake-on-LAN ====================
 
+  /// Check if WOL plugin is available
+  /// In demo mode, always return true (WOL is always available)
+  Future<bool> isWolPluginAvailable() => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => true,
+        realAction: () => _realApiService.isWolPluginAvailable(),
+        delayMs: 200,
+      );
+
+  /// Check if Tailscale plugin is available
+  /// In demo mode, always return true (Tailscale is always available)
+  Future<bool> isTailscalePluginAvailable() => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => true,
+        realAction: () => _realApiService.isTailscalePluginAvailable(),
+        delayMs: 200,
+      );
+
   /// Get WOL hosts
   Future<List<WolHost>> getWolHosts() => DemoApiDecorator.execute(
         isDemoMode: _isDemoMode,
