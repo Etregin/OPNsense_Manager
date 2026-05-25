@@ -70,6 +70,21 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
     _loadTailscaleStatus();
   }
 
+  @override
+  void didUpdateWidget(VPNNavigationSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Only update expansion state if the parent VPN section expansion changed
+    // Don't reset sub-section expansion when navigating to other screens
+    if (oldWidget.isExpanded != widget.isExpanded && !widget.isExpanded) {
+      // If parent VPN section is collapsed, collapse all sub-sections
+      setState(() {
+        _wireguardExpanded = false;
+        _openvpnExpanded = false;
+        _tailscaleExpanded = false;
+      });
+    }
+  }
+
   Future<void> _loadTailscaleStatus() async {
     if (!mounted) return;
     

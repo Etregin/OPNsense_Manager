@@ -229,7 +229,7 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
           ],
         ),
         drawer: AppDrawer(
-          currentRoute: '/tailscale-settings',
+          currentRoute: 'tailscale_settings',
           systemInfo: _viewModel.systemInfo,
           onBeforeNavigate: () async {
             if (_viewModel.hasUnsavedChanges) {
