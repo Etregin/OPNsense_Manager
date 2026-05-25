@@ -26,6 +26,7 @@ import '../models/wireguard_server.dart';
 import '../models/wireguard_peer.dart';
 import '../models/tailscale_status.dart';
 import '../models/tailscale_settings.dart';
+import '../models/wol_host.dart';
 import 'demo_data_service.dart';
 import 'opnsense_api_service.dart';
 import 'demo/demo_api_decorator.dart';
@@ -294,6 +295,96 @@ class DemoApiService {
         demoAction: () async => _demoDataService.generateDhcpLeases(),
         realAction: () => _realApiService.getDhcpLeases(),
         delayMs: 400,
+      );
+
+  // ==================== Wake-on-LAN ====================
+
+  /// Get WOL hosts
+  Future<List<WolHost>> getWolHosts() => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => [],
+        realAction: () => _realApiService.getWolHosts(),
+        delayMs: 300,
+      );
+
+  /// Get WOL interface options
+  Future<Map<String, WolInterfaceOption>> getWolInterfaceOptions() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {
+          'lan': WolInterfaceOption(value: 'LAN', selected: 1),
+          'wan': WolInterfaceOption(value: 'WAN', selected: 0),
+        },
+        realAction: () => _realApiService.getWolInterfaceOptions(),
+        delayMs: 200,
+      );
+
+  /// Add WOL host
+  Future<String> addWolHost(String interface, String mac, String description) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => 'demo-uuid-${DateTime.now().millisecondsSinceEpoch}',
+        realAction: () => _realApiService.addWolHost(interface, mac, description),
+        delayMs: 500,
+      );
+
+  /// Update WOL host
+  Future<void> updateWolHost(
+          String uuid, String interface, String mac, String description) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () =>
+            _realApiService.updateWolHost(uuid, interface, mac, description),
+        delayMs: 500,
+      );
+
+  /// Delete WOL host
+  Future<void> deleteWolHost(String uuid) => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.deleteWolHost(uuid),
+        delayMs: 400,
+      );
+
+  /// Wake host
+  Future<void> wakeHost(String uuid) => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.wakeHost(uuid),
+        delayMs: 300,
+      );
+
+  /// Copy WOL host
+  Future<Map<String, dynamic>> copyWolHost(String uuid) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          // Return mock data matching the API response structure
+          return {
+            'interface': {
+              'lan': {'value': 'LAN', 'selected': 1},
+              'wan': {'value': 'WAN', 'selected': 0},
+              'opt1': {'value': 'OPT1', 'selected': 0},
+            },
+            'mac': 'AA:BB:CC:DD:EE:FF',
+            'descr': 'Copied Host',
+          };
+        },
+        realAction: () => _realApiService.copyWolHost(uuid),
+        delayMs: 300,
+      );
+
+  /// Wake all hosts
+  Future<List<WolWakeAllResult>> wakeAllHosts() => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => [
+          WolWakeAllResult(mac: 'd8:bb:c1:9b:bc:19', status: 'OK'),
+          WolWakeAllResult(mac: '00:11:22:33:44:55', status: 'OK'),
+          WolWakeAllResult(mac: 'AA:BB:CC:DD:EE:FF', status: 'OK'),
+        ],
+        realAction: () => _realApiService.wakeAllHosts(),
+        delayMs: 500,
       );
 
   /// Get firewall aliases

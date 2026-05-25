@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../screens/live_network_monitor_screen.dart';
 import '../../screens/dhcp_leases_screen.dart';
+import '../../screens/wol_screen.dart';
 import 'navigation_tile.dart';
 
 /// Network navigation section for the app drawer
@@ -50,6 +51,13 @@ class NetworkNavigationSection extends StatelessWidget {
           currentRoute: currentRoute,
           targetRoute: 'dhcp_leases',
           destination: const DhcpLeasesScreen(),
+        ),
+        NavigationTile(
+          icon: Icons.power_settings_new,
+          title: 'Wake-on-LAN',
+          currentRoute: currentRoute,
+          targetRoute: 'wol',
+          destination: const WolScreen(),
         ),
       ],
     );

@@ -32,6 +32,7 @@ import '../models/wireguard_client_builder.dart';
 import '../models/wireguard_status.dart';
 import '../models/tailscale_status.dart';
 import '../models/tailscale_settings.dart';
+import '../models/wol_host.dart';
 import '../utils/constants.dart';
 
 // Import all specialized services
@@ -44,6 +45,7 @@ import 'network/network_service.dart';
 import 'network/dhcp_service.dart';
 import 'network/gateway_service.dart';
 import 'network/vip_service.dart';
+import 'network/wol_service.dart';
 import 'services/service_control_service.dart';
 import 'tailscale/tailscale_service.dart';
 
@@ -71,6 +73,7 @@ class OPNsenseApiService {
   final DHCPService _dhcpService = DHCPService();
   final GatewayService _gatewayService = GatewayService();
   final VipService _vipService = VipService();
+  final WolService _wolService = WolService();
   final ServiceControlService _serviceControlService = ServiceControlService();
   final TailscaleService _tailscaleService = TailscaleService();
 
@@ -116,6 +119,7 @@ class OPNsenseApiService {
     _dhcpService.init(_dio!, config);
     _gatewayService.init(_dio!, config);
     _vipService.init(_dio!, config);
+    _wolService.init(_dio!, config);
     _serviceControlService.init(_dio!, config);
     _tailscaleService.init(_dio!, config);
   }
@@ -373,6 +377,28 @@ class OPNsenseApiService {
   // ============================================================================
 
   Future<List<Map<String, dynamic>>> getDhcpLeases() => _dhcpService.getDhcpLeases();
+
+  // ============================================================================
+  // WOL Service Delegations
+  // ============================================================================
+
+  Future<List<WolHost>> getWolHosts() => _wolService.getHosts();
+  
+  Future<Map<String, WolInterfaceOption>> getWolInterfaceOptions() => _wolService.getInterfaceOptions();
+  
+  Future<String> addWolHost(String interface, String mac, String description) =>
+      _wolService.addHost(interface, mac, description);
+  
+  Future<void> updateWolHost(String uuid, String interface, String mac, String description) =>
+      _wolService.updateHost(uuid, interface, mac, description);
+  
+  Future<void> deleteWolHost(String uuid) => _wolService.deleteHost(uuid);
+  
+  Future<void> wakeHost(String uuid) => _wolService.wakeHost(uuid);
+
+  Future<Map<String, dynamic>> copyWolHost(String uuid) => _wolService.copyHost(uuid);
+  
+  Future<List<WolWakeAllResult>> wakeAllHosts() => _wolService.wakeAllHosts();
 
   // ============================================================================
   // Gateway Service Delegations
