@@ -1,3 +1,5 @@
+import 'openvpn_dropdown_option.dart';
+
 /// Represents a complete OpenVPN instance configuration.
 ///
 /// This model supports both client and server roles and includes all
@@ -51,7 +53,7 @@ class OpenvpnInstance {
   final String? authmode;
   final String? localGroup;
   final bool usernameAsCommonName;
-  final bool strictusercn;
+  final String strictusercn;
 
   // Client credentials
   final String? username;
@@ -66,18 +68,18 @@ class OpenvpnInstance {
   final String? renegSec;
 
   // Token authentication
-  final bool authGenToken;
+  final String? authGenToken; // Changed from bool to String to store actual value
   final String? authGenTokenRenewal;
   final String? authGenTokenSecret;
   final bool provisionExclusive;
 
   // Client routing options
-  final bool redirectGateway;
+  final String redirectGateway; // Comma-separated list of redirect gateway options
   final String? routeMetric;
   final bool registerDns;
 
   // DNS and NTP
-  final String? dnsDomain;
+  final List<String> dnsDomain;
   final List<String> dnsDomainSearch;
   final List<String> dnsServers;
   final List<String> ntpServers;
@@ -101,6 +103,30 @@ class OpenvpnInstance {
   final String? httpProxy;
   final String? verifyX509Name;
   final String? verb;
+
+  // Dropdown options (populated from API response)
+  final Map<String, OpenvpnDropdownOption>? devTypeOptions;
+  final Map<String, OpenvpnDropdownOption>? protoOptions;
+  final Map<String, OpenvpnDropdownOption>? topologyOptions;
+  final Map<String, OpenvpnDropdownOption>? certOptions;
+  final Map<String, OpenvpnDropdownOption>? caOptions;
+  final Map<String, OpenvpnDropdownOption>? crlOptions;
+  final Map<String, OpenvpnDropdownOption>? tlsKeyOptions;
+  final Map<String, OpenvpnDropdownOption>? authOptions;
+  final Map<String, OpenvpnDropdownOption>? authmodeOptions;
+  final Map<String, OpenvpnDropdownOption>? localGroupOptions;
+  final Map<String, OpenvpnDropdownOption>? carpDependOnOptions;
+  final Map<String, OpenvpnDropdownOption>? compressMigrateOptions;
+  final Map<String, OpenvpnDropdownOption>? certDepthOptions;
+  final Map<String, OpenvpnDropdownOption>? strictusercnOptions;
+  final Map<String, OpenvpnDropdownOption>? dataCiphersOptions;
+  final Map<String, OpenvpnDropdownOption>? dataCiphersFallbackOptions;
+  final Map<String, OpenvpnDropdownOption>? variousFlagsOptions;
+  final Map<String, OpenvpnDropdownOption>? variousPushFlagsOptions;
+  final Map<String, OpenvpnDropdownOption>? redirectGatewayOptions;
+  final Map<String, OpenvpnDropdownOption>? remoteCertTlsOptions;
+  final Map<String, OpenvpnDropdownOption>? verifyClientCertOptions;
+  final Map<String, OpenvpnDropdownOption>? verbOptions;
 
   const OpenvpnInstance({
     this.vpnid,
@@ -150,7 +176,7 @@ class OpenvpnInstance {
     required this.redirectGateway,
     this.routeMetric,
     required this.registerDns,
-    this.dnsDomain,
+    required this.dnsDomain,
     required this.dnsDomainSearch,
     required this.dnsServers,
     required this.ntpServers,
@@ -166,10 +192,40 @@ class OpenvpnInstance {
     this.httpProxy,
     this.verifyX509Name,
     this.verb,
+    this.devTypeOptions,
+    this.protoOptions,
+    this.topologyOptions,
+    this.certOptions,
+    this.caOptions,
+    this.crlOptions,
+    this.tlsKeyOptions,
+    this.authOptions,
+    this.authmodeOptions,
+    this.localGroupOptions,
+    this.carpDependOnOptions,
+    this.compressMigrateOptions,
+    this.certDepthOptions,
+    this.strictusercnOptions,
+    this.dataCiphersOptions,
+    this.dataCiphersFallbackOptions,
+    this.variousFlagsOptions,
+    this.variousPushFlagsOptions,
+    this.redirectGatewayOptions,
+    this.remoteCertTlsOptions,
+    this.verifyClientCertOptions,
+    this.verbOptions,
   });
 
   /// Creates an instance from JSON
   factory OpenvpnInstance.fromJson(Map<String, dynamic> json) {
+    print('[OpenvpnInstance] DEBUG: Parsing JSON with keys: ${json.keys.toList()}');
+    
+    // Debug specific fields that might cause issues
+    print('[OpenvpnInstance] DEBUG: remote field type: ${json['remote']?.runtimeType}');
+    print('[OpenvpnInstance] DEBUG: remote field value: ${json['remote']}');
+    print('[OpenvpnInstance] DEBUG: route field type: ${json['route']?.runtimeType}');
+    print('[OpenvpnInstance] DEBUG: route field value: ${json['route']}');
+    
     return OpenvpnInstance(
       vpnid: json['vpnid'] as String?,
       enabled: json['enabled'] == '1' || json['enabled'] == 1 || json['enabled'] == true,
@@ -204,21 +260,21 @@ class OpenvpnInstance {
       authmode: _extractSelectedKey(json['authmode']),
       localGroup: _extractSelectedKey(json['local_group']),
       usernameAsCommonName: json['username_as_common_name'] == '1' || json['username_as_common_name'] == 1 || json['username_as_common_name'] == true,
-      strictusercn: _extractSelectedFromArray(json['strictusercn']) == '1',
+      strictusercn: _extractSelectedFromArray(json['strictusercn']) ?? '0',
       username: json['username'] as String?,
       password: json['password'] as String?,
       maxclients: json['maxclients'] as String?,
       keepaliveInterval: json['keepalive_interval'] as String?,
       keepaliveTimeout: json['keepalive_timeout'] as String?,
-      renegSec: json['reneg_sec'] as String?,
-      authGenToken: json['auth_gen_token'] == '1' || json['auth_gen_token'] == 1 || json['auth_gen_token'] == true,
-      authGenTokenRenewal: json['auth_gen_token_renewal'] as String?,
+      renegSec: json['reneg-sec'] as String?,
+      authGenToken: json['auth-gen-token']?.toString(),
+      authGenTokenRenewal: json['auth-gen-token-renewal'] as String?,
       authGenTokenSecret: json['auth_gen_token_secret'] as String?,
       provisionExclusive: json['provision_exclusive'] == '1' || json['provision_exclusive'] == 1 || json['provision_exclusive'] == true,
-      redirectGateway: (_extractSelectedKeys(json['redirect_gateway']) ?? '').isNotEmpty,
+      redirectGateway: _extractSelectedKeys(json['redirect_gateway']) ?? '',
       routeMetric: json['route_metric'] as String?,
       registerDns: json['register_dns'] == '1' || json['register_dns'] == 1 || json['register_dns'] == true,
-      dnsDomain: _extractSelectedKey(json['dns_domain']),
+      dnsDomain: _parseStringList(json['dns_domain']),
       dnsDomainSearch: _parseStringList(json['dns_domain_search']),
       dnsServers: _parseStringList(json['dns_servers']),
       ntpServers: _parseStringList(json['ntp_servers']),
@@ -234,13 +290,37 @@ class OpenvpnInstance {
       httpProxy: json['http_proxy'] as String?,
       verifyX509Name: json['verify_x509_name'] as String?,
       verb: _extractSelectedFromArray(json['verb']),
+      // Parse dropdown options from API response
+      devTypeOptions: _parseDropdownOptions(json['dev_type']),
+      protoOptions: _parseDropdownOptions(json['proto']),
+      topologyOptions: _parseDropdownOptions(json['topology']),
+      certOptions: _parseDropdownOptions(json['cert']),
+      caOptions: _parseDropdownOptions(json['ca']),
+      crlOptions: _parseDropdownOptions(json['crl']),
+      tlsKeyOptions: _parseDropdownOptions(json['tls_key']),
+      authOptions: _parseDropdownOptions(json['auth']),
+      authmodeOptions: _parseDropdownOptions(json['authmode']),
+      localGroupOptions: _parseDropdownOptions(json['local_group']),
+      carpDependOnOptions: _parseDropdownOptions(json['carp_depend_on']),
+      compressMigrateOptions: _parseDropdownOptions(json['compress_migrate']),
+      certDepthOptions: _parseDropdownOptions(json['cert_depth']),
+      strictusercnOptions: _parseDropdownOptionsFromArray(json['strictusercn']),
+      dataCiphersOptions: _parseDropdownOptions(json['data_ciphers']),
+      dataCiphersFallbackOptions: _parseDropdownOptions(json['data_ciphers_fallback']),
+      variousFlagsOptions: _parseDropdownOptions(json['various_flags']),
+      variousPushFlagsOptions: _parseDropdownOptions(json['various_push_flags']),
+      redirectGatewayOptions: _parseDropdownOptions(json['redirect_gateway']),
+      remoteCertTlsOptions: _parseDropdownOptions(json['remote_cert_tls']),
+      verifyClientCertOptions: _parseDropdownOptions(json['verify_client_cert']),
+      verbOptions: _parseDropdownOptionsFromArray(json['verb']),
     );
   }
 
   /// Converts to JSON
   Map<String, dynamic> toJson() {
     return {
-      if (vpnid != null) 'vpnid': vpnid,
+      // Fix 1: Always include vpnid (empty string for new instances)
+      'vpnid': vpnid ?? '',
       'enabled': enabled ? '1' : '0',
       'role': role,
       'description': description,
@@ -256,9 +336,10 @@ class OpenvpnInstance {
       'nopool': nopool ? '1' : '0',
       if (bridgeGateway != null) 'bridge_gateway': bridgeGateway,
       if (bridgePool != null) 'bridge_pool': bridgePool,
-      'route': route,
-      'push_route': pushRoute,
-      'push_excluded_routes': pushExcludedRoutes,
+      // Convert List fields to comma-separated strings for API
+      'route': route.isEmpty ? '' : route.join(','),
+      'push_route': pushRoute.isEmpty ? '' : pushRoute.join(','),
+      'push_excluded_routes': pushExcludedRoutes.isEmpty ? '' : pushExcludedRoutes.join(','),
       if (cert != null) 'cert': cert,
       if (crl != null) 'crl': crl,
       if (ca != null) 'ca': ca,
@@ -273,30 +354,34 @@ class OpenvpnInstance {
       if (authmode != null) 'authmode': authmode,
       if (localGroup != null) 'local_group': localGroup,
       'username_as_common_name': usernameAsCommonName ? '1' : '0',
-      'strictusercn': strictusercn ? '1' : '0',
+      'strictusercn': strictusercn,
       if (username != null) 'username': username,
       if (password != null) 'password': password,
       if (maxclients != null) 'maxclients': maxclients,
       if (keepaliveInterval != null) 'keepalive_interval': keepaliveInterval,
       if (keepaliveTimeout != null) 'keepalive_timeout': keepaliveTimeout,
-      if (renegSec != null) 'reneg_sec': renegSec,
-      'auth_gen_token': authGenToken ? '1' : '0',
-      if (authGenTokenRenewal != null) 'auth_gen_token_renewal': authGenTokenRenewal,
-      if (authGenTokenSecret != null) 'auth_gen_token_secret': authGenTokenSecret,
+      if (renegSec != null) 'reneg-sec': renegSec,
+      if (authGenToken != null) 'auth-gen-token': authGenToken,
+      if (authGenTokenRenewal != null) 'auth-gen-token-renewal': authGenTokenRenewal,
+      if (authGenTokenSecret != null) 'auth-gen-token-secret': authGenTokenSecret,
       'provision_exclusive': provisionExclusive ? '1' : '0',
-      'redirect_gateway': redirectGateway ? '1' : '0',
+      // Fix 4: redirect_gateway as comma-separated string
+      'redirect_gateway': redirectGateway,
       if (routeMetric != null) 'route_metric': routeMetric,
       'register_dns': registerDns ? '1' : '0',
-      if (dnsDomain != null) 'dns_domain': dnsDomain,
-      'dns_domain_search': dnsDomainSearch,
-      'dns_servers': dnsServers,
-      'ntp_servers': ntpServers,
+      'dns_domain': dnsDomain.isEmpty ? '' : dnsDomain.join(','),
+      // Convert List fields to comma-separated strings for API
+      'dns_domain_search': dnsDomainSearch.isEmpty ? '' : dnsDomainSearch.join(','),
+      'dns_servers': dnsServers.isEmpty ? '' : dnsServers.join(','),
+      'ntp_servers': ntpServers.isEmpty ? '' : ntpServers.join(','),
       if (tunMtu != null) 'tun_mtu': tunMtu,
       if (fragment != null) 'fragment': fragment,
       if (mssfix != null) 'mssfix': mssfix,
       if (carpDependOn != null) 'carp_depend_on': carpDependOn,
-      'various_flags': _boolMapToJson(variousFlags),
-      'various_push_flags': _boolMapToJson(variousPushFlags),
+      // Fix 2: Convert various_flags Map to comma-separated string
+      'various_flags': _boolMapToCommaSeparated(variousFlags),
+      // Fix 3: Convert various_push_flags Map to comma-separated string
+      'various_push_flags': _boolMapToCommaSeparated(variousPushFlags),
       if (pushInactive != null) 'push_inactive': pushInactive,
       if (compressMigrate != null) 'compress_migrate': compressMigrate,
       'ifconfig_pool_persist': ifconfigPoolPersist ? '1' : '0',
@@ -329,7 +414,32 @@ class OpenvpnInstance {
   static String? _extractSelectedKey(dynamic json) {
     if (json == null) return null;
     if (json is String) return json; // Already a string
-    if (json is! Map) return null;
+    
+    // Handle List type - might be returned from API
+    if (json is List) {
+      print('[OpenvpnInstance] DEBUG: _extractSelectedKey received List: $json');
+      if (json.isEmpty) return null;
+      // If it's a list of strings, join them
+      if (json.first is String) {
+        return json.join(',');
+      }
+      // If it's a list of maps, find selected items
+      final selected = json.where((item) {
+        if (item is Map) {
+          return item['selected'] == 1 || item['selected'] == '1' || item['selected'] == true;
+        }
+        return false;
+      }).toList();
+      if (selected.isNotEmpty && selected.first is Map) {
+        return (selected.first as Map)['value']?.toString();
+      }
+      return null;
+    }
+    
+    if (json is! Map) {
+      print('[OpenvpnInstance] DEBUG: _extractSelectedKey received unexpected type: ${json.runtimeType}');
+      return null;
+    }
 
     // Find the key with selected: 1 or selected: true
     for (var entry in json.entries) {
@@ -379,22 +489,89 @@ class OpenvpnInstance {
 
   static List<String> _parseStringList(dynamic json) {
     if (json == null) return [];
+    
+    print('[OpenvpnInstance] DEBUG: _parseStringList received type: ${json.runtimeType}, value: $json');
+    
     if (json is List) {
       return json.map((e) => e.toString()).toList();
     }
     if (json is String && json.isNotEmpty) {
       return [json];
     }
+    if (json is Map) {
+      // Handle case where API returns a Map with nested structure: {key: {value: "data", selected: 1}}
+      print('[OpenvpnInstance] DEBUG: _parseStringList received Map, extracting values');
+      List<String> result = [];
+      
+      json.forEach((key, val) {
+        print('[OpenvpnInstance] DEBUG: Processing entry - key: "$key", val: $val');
+        
+        // Check if the value is a nested Map with 'value' and 'selected' fields
+        if (val is Map && val.containsKey('value') && val.containsKey('selected')) {
+          // Only extract if selected == 1
+          if (val['selected'] == 1 || val['selected'] == '1' || val['selected'] == true) {
+            String extractedValue = val['value']?.toString() ?? '';
+            if (extractedValue.isNotEmpty) {
+              print('[OpenvpnInstance] DEBUG: Extracted value: "$extractedValue"');
+              result.add(extractedValue);
+            } else {
+              print('[OpenvpnInstance] DEBUG: Skipping empty value for key: "$key"');
+            }
+          } else {
+            print('[OpenvpnInstance] DEBUG: Skipping unselected entry for key: "$key"');
+          }
+        } else {
+          // Fallback: treat the value directly as a string (backward compatibility)
+          String directValue = val.toString();
+          if (directValue.isNotEmpty) {
+            print('[OpenvpnInstance] DEBUG: Using direct value: "$directValue"');
+            result.add(directValue);
+          }
+        }
+      });
+      
+      print('[OpenvpnInstance] DEBUG: Final extracted list: $result');
+      return result;
+    }
+    
+    print('[OpenvpnInstance] DEBUG: _parseStringList returning empty list for type: ${json.runtimeType}');
     return [];
   }
 
   static Map<String, bool> _parseBoolMap(dynamic json) {
     if (json == null) return {};
-    if (json is! Map) return {};
+    
+    print('[OpenvpnInstance] DEBUG: _parseBoolMap received type: ${json.runtimeType}');
+    
+    if (json is List) {
+      // Handle case where API returns a List instead of Map
+      print('[OpenvpnInstance] DEBUG: _parseBoolMap received List, converting to map');
+      final result = <String, bool>{};
+      for (int i = 0; i < json.length; i++) {
+        final item = json[i];
+        if (item is Map && item.containsKey('value')) {
+          result[item['value'].toString()] = item['selected'] == 1 || item['selected'] == '1' || item['selected'] == true;
+        }
+      }
+      return result;
+    }
+    
+    if (json is! Map) {
+      print('[OpenvpnInstance] DEBUG: _parseBoolMap unexpected type, returning empty map');
+      return {};
+    }
 
     final result = <String, bool>{};
     json.forEach((key, value) {
-      result[key as String] = value == '1' || value == 1 || value == true;
+      // Handle nested Map structure: {"key": {"value": "label", "selected": 1}}
+      if (value is Map && value.containsKey('selected')) {
+        final isSelected = value['selected'] == 1 || value['selected'] == '1' || value['selected'] == true;
+        result[key as String] = isSelected;
+        print('[OpenvpnInstance] DEBUG: _parseBoolMap - key: $key, selected: $isSelected');
+      } else {
+        // Fallback for simple boolean values
+        result[key as String] = value == '1' || value == 1 || value == true;
+      }
     });
     return result;
   }
@@ -405,6 +582,61 @@ class OpenvpnInstance {
       result[key] = value ? '1' : '0';
     });
     return result;
+  }
+
+  /// Converts a bool map to comma-separated string of keys where value is true
+  /// Returns empty string if no keys are selected
+  static String _boolMapToCommaSeparated(Map<String, bool> map) {
+    final selectedKeys = map.entries
+        .where((entry) => entry.value == true)
+        .map((entry) => entry.key)
+        .toList();
+    return selectedKeys.isEmpty ? '' : selectedKeys.join(',');
+  }
+
+  /// Parses dropdown options from API response
+  ///
+  /// API returns options in format: {"key": {"value": "Label", "selected": 1}}
+  static Map<String, OpenvpnDropdownOption>? _parseDropdownOptions(dynamic json) {
+    if (json == null) return null;
+    if (json is! Map) return null;
+
+    final options = <String, OpenvpnDropdownOption>{};
+    json.forEach((key, value) {
+      if (value is Map<String, dynamic>) {
+        try {
+          options[key as String] = OpenvpnDropdownOption.fromJson(value);
+        } catch (e) {
+          print('[OpenvpnInstance] DEBUG: Failed to parse dropdown option for key $key: $e');
+        }
+      }
+    });
+
+    print('[OpenvpnInstance] DEBUG: Parsed ${options.length} dropdown options');
+    return options.isEmpty ? null : options;
+  }
+
+  /// Parses dropdown options from array format
+  ///
+  /// API returns some options as arrays: [{"value": "Label", "selected": 1}, ...]
+  static Map<String, OpenvpnDropdownOption>? _parseDropdownOptionsFromArray(dynamic json) {
+    if (json == null) return null;
+    if (json is! List) return null;
+
+    final options = <String, OpenvpnDropdownOption>{};
+    for (int i = 0; i < json.length; i++) {
+      final item = json[i];
+      if (item is Map<String, dynamic>) {
+        try {
+          options[i.toString()] = OpenvpnDropdownOption.fromJson(item);
+        } catch (e) {
+          print('[OpenvpnInstance] DEBUG: Failed to parse array dropdown option at index $i: $e');
+        }
+      }
+    }
+
+    print('[OpenvpnInstance] DEBUG: Parsed ${options.length} array dropdown options');
+    return options.isEmpty ? null : options;
   }
 
   @override

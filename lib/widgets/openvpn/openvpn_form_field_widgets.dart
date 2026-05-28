@@ -25,12 +25,14 @@ class OpenvpnRoleSelector extends StatelessWidget {
   final String value;
   final ValueChanged<String> onChanged;
   final bool enabled;
+  final String? helperText;
 
   const OpenvpnRoleSelector({
     super.key,
     required this.value,
     required this.onChanged,
     this.enabled = true,
+    this.helperText,
   });
 
   @override
@@ -64,6 +66,15 @@ class OpenvpnRoleSelector extends StatelessWidget {
                 onChanged(newSelection.first);
               } : null,
             ),
+            if (helperText != null) ...[
+              const SizedBox(height: 8),
+              Text(
+                helperText!,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -226,6 +237,8 @@ class OpenvpnDropdownField extends StatelessWidget {
           child: Text(
             option.optgroup!,
             style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         ));
       } else {
@@ -233,14 +246,19 @@ class OpenvpnDropdownField extends StatelessWidget {
           value: entry.key,
           child: Padding(
             padding: EdgeInsets.only(left: option.optgroup != null ? 16.0 : 0),
-            child: Text(option.value),
+            child: Text(
+              option.value,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
           ),
         ));
       }
     }
 
     return DropdownButtonFormField<String>(
-      initialValue: value,
+      isExpanded: true,
+      value: value,
       decoration: InputDecoration(
         labelText: labelText,
         helperText: helperText,
@@ -505,3 +523,169 @@ class FormSectionContainer extends StatelessWidget {
 }
 
 
+
+/// CIDR field widget with IPv4/IPv6 validation
+class OpenvpnCidrField extends StatelessWidget {
+  final TextEditingController controller;
+  final String labelText;
+  final String? hintText;
+  final String? helperText;
+  final IconData? prefixIcon;
+  final bool enabled;
+  final CidrVersion version;
+
+  const OpenvpnCidrField({
+    super.key,
+    required this.controller,
+    required this.labelText,
+    this.hintText,
+    this.helperText,
+    this.prefixIcon,
+    this.enabled = true,
+    this.version = CidrVersion.auto,
+  });
+
+  /// Validate IPv4 address format
+  static bool _isValidIPv4(String ip) {
+    if (ip.isEmpty) return false;
+    
+    final parts = ip.split('.');
+    if (parts.length != 4) return false;
+    
+    for (final part in parts) {
+      final num = int.tryParse(part);
+      if (num == null || num < 0 || num > 255) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+
+  /// Validate IPv6 address format
+  static bool _isValidIPv6(String ip) {
+    if (ip.isEmpty) return false;
+    
+    // IPv6 regex pattern (simplified but covers most cases)
+    final ipv6Pattern = RegExp(
+      r'^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|'
+      r'([0-9a-fA-F]{1,4}:){1,7}:|'
+      r'([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|'
+      r'([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|'
+      r'([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|'
+      r'([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|'
+      r'([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|'
+      r'[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|'
+      r':((:[0-9a-fA-F]{1,4}){1,7}|:)|'
+      r'fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|'
+      r'::(ffff(:0{1,4}){0,1}:){0,1}'
+      r'((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3}'
+      r'(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|'
+      r'([0-9a-fA-F]{1,4}:){1,4}:'
+      r'((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3}'
+      r'(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$'
+    );
+    
+    return ipv6Pattern.hasMatch(ip);
+  }
+
+  /// Validate CIDR notation
+  String? _validateCidr(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'CIDR notation is required';
+    }
+
+    final parts = value.split('/');
+    if (parts.length != 2) {
+      return 'Invalid CIDR notation (use format: IP/prefix)';
+    }
+
+    final ip = parts[0].trim();
+    final prefixStr = parts[1].trim();
+    final prefix = int.tryParse(prefixStr);
+
+    if (prefix == null) {
+      return 'Invalid prefix length';
+    }
+
+    // Auto-detect IP version or validate based on specified version
+    bool isIPv4 = _isValidIPv4(ip);
+    bool isIPv6 = _isValidIPv6(ip);
+
+    switch (version) {
+      case CidrVersion.ipv4:
+        if (!isIPv4) {
+          return 'Invalid IPv4 address';
+        }
+        if (prefix < 0 || prefix > 32) {
+          return 'Invalid IPv4 prefix (must be 0-32)';
+        }
+        break;
+
+      case CidrVersion.ipv6:
+        if (!isIPv6) {
+          return 'Invalid IPv6 address';
+        }
+        if (prefix < 0 || prefix > 128) {
+          return 'Invalid IPv6 prefix (must be 0-128)';
+        }
+        break;
+
+      case CidrVersion.auto:
+        if (isIPv4) {
+          if (prefix < 0 || prefix > 32) {
+            return 'Invalid IPv4 prefix (must be 0-32)';
+          }
+        } else if (isIPv6) {
+          if (prefix < 0 || prefix > 128) {
+            return 'Invalid IPv6 prefix (must be 0-128)';
+          }
+        } else {
+          return 'Invalid IP address (must be IPv4 or IPv6)';
+        }
+        break;
+    }
+
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: labelText,
+        hintText: hintText ?? _getDefaultHint(),
+        helperText: helperText,
+        prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+      ),
+      validator: _validateCidr,
+      enabled: enabled,
+      keyboardType: TextInputType.text,
+      maxLines: 1,
+    );
+  }
+
+  String _getDefaultHint() {
+    switch (version) {
+      case CidrVersion.ipv4:
+        return '10.8.0.0/24';
+      case CidrVersion.ipv6:
+        return 'fd00::/64';
+      case CidrVersion.auto:
+        return '10.8.0.0/24 or fd00::/64';
+    }
+  }
+}
+
+/// CIDR version enum for specifying IP version
+enum CidrVersion {
+  /// IPv4 only (0-32 prefix)
+  ipv4,
+  
+  /// IPv6 only (0-128 prefix)
+  ipv6,
+  
+  /// Auto-detect from input
+  auto,
+}
