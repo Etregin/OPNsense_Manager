@@ -67,7 +67,6 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
   final _verifyX509NameController = TextEditingController();
   final _tunMtuController = TextEditingController();
   final _fragmentController = TextEditingController();
-  final _mssfixController = TextEditingController();
   final _pushInactiveController = TextEditingController();
   final _routeMetricController = TextEditingController();
   final _certDepthController = TextEditingController();
@@ -83,6 +82,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
   bool _nopool = false;
   bool _useOcsp = false;
   bool _usernameAsCommonName = false;
+  bool _mssFix = false;
   String _selectedStrictUserCn = '0';
   // Removed: bool _authGenToken = false; - now using _authGenTokenController
   bool _provisionExclusive = false;
@@ -183,7 +183,6 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
     _verifyX509NameController.dispose();
     _tunMtuController.dispose();
     _fragmentController.dispose();
-    _mssfixController.dispose();
     _pushInactiveController.dispose();
     _routeMetricController.dispose();
     _certDepthController.dispose();
@@ -313,15 +312,17 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
       print('[OpenvpnForm] DEBUG: Loaded ${_strictUserCnOptions.length} strict user CN options');
     }
     
-    if (instance.dataCiphersOptions != null) {
-      _dataCiphersOptions.clear();
-      _dataCiphersOptions.addAll(instance.dataCiphersOptions!);
+    if (instance.dataCiphersOptions != null && instance.dataCiphersOptions!.isNotEmpty) {
+      _dataCiphersOptions
+        ..clear()
+        ..addAll(instance.dataCiphersOptions!);
       print('[OpenvpnForm] DEBUG: Loaded ${_dataCiphersOptions.length} data ciphers options');
     }
-    
-    if (instance.dataCiphersFallbackOptions != null) {
-      _dataCiphersFallbackOptions.clear();
-      _dataCiphersFallbackOptions.addAll(instance.dataCiphersFallbackOptions!);
+
+    if (instance.dataCiphersFallbackOptions != null && instance.dataCiphersFallbackOptions!.isNotEmpty) {
+      _dataCiphersFallbackOptions
+        ..clear()
+        ..addAll(instance.dataCiphersFallbackOptions!);
       print('[OpenvpnForm] DEBUG: Loaded ${_dataCiphersFallbackOptions.length} data ciphers fallback options');
     }
     
@@ -426,18 +427,27 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
     if (instance.isClient) {
       print('[OpenvpnForm] DEBUG: Loading client instance data');
       print('[OpenvpnForm] DEBUG: remote field type: ${instance.remote?.runtimeType}');
-      print('[OpenvpnForm] DEBUG: remote field value: ${instance.remote}');
+      print('[OpenvpnForm] DEBUG: remote field value: "${instance.remote}"');
       
-      // Handle remote addresses - could be a string or already parsed
+      // Handle remote addresses - the model already extracts the selected value from dropdown
+      // The remote field is already a string (or null), not a comma-separated list
       if (instance.remote != null && instance.remote!.isNotEmpty) {
-        _remoteAddresses = instance.remote!.split(',').map((e) => e.trim()).toList();
+        // Split by newlines or commas to support multiple remote addresses
+        _remoteAddresses = instance.remote!
+            .split(RegExp(r'[\n,]'))
+            .map((e) => e.trim())
+            .where((e) => e.isNotEmpty)
+            .toList();
+        print('[OpenvpnForm] DEBUG: Parsed remote addresses: $_remoteAddresses');
       } else {
         _remoteAddresses = [];
+        print('[OpenvpnForm] DEBUG: No remote addresses found');
       }
       
       _usernameController.text = instance.username ?? '';
       _passwordController.text = instance.password ?? '';
       _httpProxyController.text = instance.httpProxy ?? '';
+      print('[OpenvpnForm] DEBUG: HTTP Proxy loaded: "${instance.httpProxy}"');
     } else {
       _serverController.text = instance.server ?? '';
       _serverIpv6Controller.text = instance.serverIpv6 ?? '';
@@ -466,9 +476,10 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
     _keepaliveIntervalController.text = instance.keepaliveInterval ?? '';
     _keepaliveTimeoutController.text = instance.keepaliveTimeout ?? '';
     _verifyX509NameController.text = instance.verifyX509Name ?? '';
+    print('[OpenvpnForm] DEBUG: Verify X.509 Name loaded: "${instance.verifyX509Name}"');
     _tunMtuController.text = instance.tunMtu ?? '';
     _fragmentController.text = instance.fragment ?? '';
-    _mssfixController.text = instance.mssfix ?? '';
+    _mssFix = instance.mssfix == '1';
     
     if (instance.isServer) {
       _authTokenRenewalController.text = instance.authGenTokenRenewal ?? '';
@@ -494,6 +505,10 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
     try {
       final apiService = context.read<OPNsenseApiService>();
       final instance = _buildInstanceFromForm();
+      
+      // Debug: Log the complete payload being sent to API
+      print('[OpenVPN] DEBUG: Complete payload being sent to API:');
+      print('[OpenVPN] DEBUG: ${instance.toJson()}');
       
       if (_isEditMode) {
         await apiService.updateOpenvpnInstance(widget.vpnid!, instance);
@@ -594,7 +609,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
       ntpServers: _ntpServers,
       tunMtu: _tunMtuController.text.trim().isEmpty ? null : _tunMtuController.text.trim(),
       fragment: _fragmentController.text.trim().isEmpty ? null : _fragmentController.text.trim(),
-      mssfix: _mssfixController.text.trim().isEmpty ? null : _mssfixController.text.trim(),
+      mssfix: _mssFix ? '1' : '0',
       carpDependOn: _selectedCarpDependOn,
       // Fix 2: Convert various_flags List to Map with string keys for proper serialization
       variousFlags: _selectedVariousFlags.fold<Map<String, bool>>(
@@ -757,93 +772,6 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
     );
   }
 
-  Widget _buildCheckboxGroup({
-    required String label,
-    required Map<String, OpenvpnDropdownOption> options,
-    required List<String> selectedValues,
-    required ValueChanged<List<String>> onChanged,
-    String? helperText,
-  }) {
-    if (options.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        if (helperText != null) ...[
-          const SizedBox(height: 4),
-          Text(
-            helperText,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-        const SizedBox(height: 8),
-        ...options.entries.map((entry) {
-          final key = entry.key;
-          final option = entry.value;
-          final checked = selectedValues.contains(key);
-          return CheckboxListTile(
-            dense: true,
-            contentPadding: EdgeInsets.zero,
-            title: Text(option.value),
-            value: checked,
-            onChanged: (value) {
-              final updated = List<String>.from(selectedValues);
-              if (value == true) {
-                if (!updated.contains(key)) {
-                  updated.add(key);
-                }
-              } else {
-                updated.remove(key);
-              }
-              onChanged(updated);
-            },
-          );
-        }),
-      ],
-    );
-  }
-
-  Widget _buildMultilineListField({
-    required String labelText,
-    required List<String> values,
-    required ValueChanged<List<String>> onChanged,
-    String? hintText,
-    String? helperText,
-    IconData? prefixIcon,
-  }) {
-    final controller = TextEditingController(text: values.join('\n'));
-
-    return TextFormField(
-      controller: controller,
-      minLines: 3,
-      maxLines: 6,
-      decoration: InputDecoration(
-        labelText: labelText,
-        hintText: hintText,
-        helperText: helperText,
-        prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
-        alignLabelWithHint: true,
-      ),
-      onChanged: (value) => onChanged(_parseMultilineInput(value)),
-    );
-  }
-
-  List<String> _parseMultilineInput(String value) {
-    return value
-        .split(RegExp(r'[\n,]+'))
-        .map((item) => item.trim())
-        .where((item) => item.isNotEmpty)
-        .toList();
-  }
-
   List<String> _splitCommaSeparated(String? value) {
     if (value == null || value.trim().isEmpty) {
       return [];
@@ -933,13 +861,14 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
           ),
         if (_role == 'client') ...[
           const SizedBox(height: 16),
-          _buildMultilineListField(
-            labelText: 'Remote',
-            values: _remoteAddresses,
-            hintText: 'vpn.example.com\nvpn2.example.com:1194',
+          OpenvpnArrayField(
+            title: 'Remote',
+            items: _remoteAddresses,
+            onAdd: () => setState(() => _remoteAddresses.add('')),
+            onRemove: (index) => setState(() => _remoteAddresses.removeAt(index)),
+            onUpdate: (index, value) => setState(() => _remoteAddresses[index] = value),
             helperText: 'Remote host name or IP address. One remote address per line.',
-            prefixIcon: Icons.cloud_outlined,
-            onChanged: (values) => setState(() => _remoteAddresses = values),
+            emptyMessage: 'No remote addresses configured',
           ),
         ],
         if (_role == 'server') ...[
@@ -961,17 +890,6 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
             helperText: 'This directive will set up an OpenVPN server which will allocate addresses to clients out of the given network/netmask. The server itself will take the next base address (+1) of the given network for use as the server-side endpoint of the local TUN/TAP interface',
             version: CidrVersion.ipv6,
           ),
-          if (_carpDependOnOptions.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            OpenvpnDropdownField(
-              labelText: 'Depend on (CARP)',
-              helperText: 'CARP VHID to depend on',
-              prefixIcon: Icons.link,
-              options: _carpDependOnOptions,
-              value: _selectedCarpDependOn,
-              onChanged: (value) => setState(() => _selectedCarpDependOn = value),
-            ),
-          ],
           const SizedBox(height: 16),
           OpenvpnToggleField(
             title: 'No Pool',
@@ -989,6 +907,17 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
               onChanged: (value) => setState(() => _selectedTopology = value),
               helperText: 'Configure virtual addressing topology when running in --dev tun mode. This directive has no meaning in --dev tap mode, which always uses a subnet topology.',
             ),
+        ],
+        if (_role == 'client') ...[
+          const SizedBox(height: 16),
+          OpenvpnDropdownField(
+            labelText: 'Depend on (CARP)',
+            helperText: 'CARP VHID to depend on',
+            prefixIcon: Icons.link,
+            options: _carpDependOnOptions,
+            value: _selectedCarpDependOn,
+            onChanged: (value) => setState(() => _selectedCarpDependOn = value),
+          ),
         ],
       ],
     );
@@ -1128,8 +1057,6 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
             labelText: 'Password',
           ),
           const SizedBox(height: 16),
-        ],
-        if (_role == 'client') ...[
           OpenvpnTextField(
             controller: _renegSecController,
             labelText: 'Renegotiate Time',
@@ -1159,31 +1086,6 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
             helperText: 'After successful user/password authentication, the OpenVPN server will with this option generate a temporary authentication token and push that to the client. On the following renegotiations, the OpenVPN client will pass this token instead of the users password. On the server side the server will do the token authentication internally and it will NOT do any additional authentications against configured external user/password authentication mechanisms. When set to 0, the token will never expire, any other value specifies the lifetime in seconds.',
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          ),
-          const SizedBox(height: 16),
-          OpenvpnTextField(
-            controller: _authTokenRenewalController,
-            labelText: 'Auth Token Renewal',
-            hintText: '0',
-            prefixIcon: Icons.refresh,
-            helperText: 'Renew the auth-token every n seconds. When set to 0, the token will not be renewed.',
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          ),
-          const SizedBox(height: 16),
-          OpenvpnTextField(
-            controller: _authTokenSecretController,
-            labelText: 'Auth Token Secret',
-            hintText: 'Leave empty to auto-generate',
-            prefixIcon: Icons.key,
-            helperText: 'Secret for auth-token generation. Leave empty to auto-generate.',
-          ),
-          const SizedBox(height: 16),
-          OpenvpnToggleField(
-            title: 'Require Client Provisioning',
-            subtitle: 'Require that connecting clients specify a --auth-user-pass, which allows for deferred authentication.',
-            value: _provisionExclusive,
-            onChanged: (value) => setState(() => _provisionExclusive = value),
           ),
         ],
       ],
@@ -1226,39 +1128,48 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
       icon: Icons.more_horiz,
       children: [
         if (_variousFlagsOptions.isNotEmpty) ...[
-          _buildCheckboxGroup(
-            label: 'Options',
+          OpenvpnMultiSelectField(
+            labelText: 'Options',
+            helperText: 'Various less frequently used yes/no options which can be set for this instance.',
+            prefixIcon: Icons.settings,
             options: _variousFlagsOptions,
             selectedValues: _selectedVariousFlags,
-            onChanged: (values) => setState(() => _selectedVariousFlags
-              ..clear()
-              ..addAll(values)),
-            helperText: 'Various less frequently used yes/no options which can be set for this instance.',
+            onChanged: (values) => setState(() {
+              _selectedVariousFlags
+                ..clear()
+                ..addAll(values);
+            }),
           ),
           const SizedBox(height: 16),
         ],
         if (_role == 'server') ...[
           if (_variousPushFlagsOptions.isNotEmpty) ...[
-            _buildCheckboxGroup(
-              label: 'Push Options',
+            OpenvpnMultiSelectField(
+              labelText: 'Push Options',
+              helperText: 'Various less frequently used yes/no options which can be pushed to the client for this instance.',
+              prefixIcon: Icons.push_pin,
               options: _variousPushFlagsOptions,
               selectedValues: _selectedVariousPushFlags,
-              onChanged: (values) => setState(() => _selectedVariousPushFlags
-                ..clear()
-                ..addAll(values)),
-              helperText: 'Various less frequently used yes/no options which can be pushed to the client for this instance.',
+              onChanged: (values) => setState(() {
+                _selectedVariousPushFlags
+                  ..clear()
+                  ..addAll(values);
+              }),
             ),
             const SizedBox(height: 16),
           ],
           if (_redirectGatewayOptions.isNotEmpty) ...[
-            _buildCheckboxGroup(
-              label: 'Redirect Gateway',
+            OpenvpnMultiSelectField(
+              labelText: 'Redirect Gateway',
+              helperText: 'Automatically execute routing commands to cause all outgoing IP traffic to be redirected over the VPN.',
+              prefixIcon: Icons.alt_route,
               options: _redirectGatewayOptions,
               selectedValues: _selectedRedirectGateway,
-              onChanged: (values) => setState(() => _selectedRedirectGateway
-                ..clear()
-                ..addAll(values)),
-              helperText: 'Automatically execute routing commands to cause all outgoing IP traffic to be redirected over the VPN.',
+              onChanged: (values) => setState(() {
+                _selectedRedirectGateway
+                  ..clear()
+                  ..addAll(values);
+              }),
             ),
             const SizedBox(height: 16),
           ],
@@ -1398,28 +1309,26 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
             onChanged: (value) => setState(() => _selectedAuth = value),
           ),
         const SizedBox(height: 16),
-        if (_dataCiphersOptions.isNotEmpty)
-          OpenvpnMultiSelectField(
-            labelText: 'Data Ciphers',
-            helperText: 'Select allowed data channel ciphers',
-            prefixIcon: Icons.lock,
-            options: _dataCiphersOptions,
-            selectedValues: _selectedDataCiphers,
-            onChanged: (values) => setState(() {
-              _selectedDataCiphers
-                ..clear()
-                ..addAll(values);
-            }),
-          ),
+        OpenvpnMultiSelectField(
+          labelText: 'Data Ciphers',
+          prefixIcon: Icons.lock,
+          options: _dataCiphersOptions,
+          selectedValues: _selectedDataCiphers,
+          onChanged: (values) => setState(() {
+            _selectedDataCiphers
+              ..clear()
+              ..addAll(values);
+          }),
+        ),
         const SizedBox(height: 16),
-        if (_dataCiphersFallbackOptions.isNotEmpty)
-          OpenvpnDropdownField(
-            labelText: 'Data Ciphers Fallback',
-            prefixIcon: Icons.security,
-            options: _dataCiphersFallbackOptions,
-            value: _selectedDataCiphersFallback,
-            onChanged: (value) => setState(() => _selectedDataCiphersFallback = value),
-          ),
+        OpenvpnDropdownField(
+          labelText: 'Data Ciphers Fallback',
+          helperText: 'Select fallback cipher for older clients',
+          prefixIcon: Icons.security,
+          options: _dataCiphersFallbackOptions,
+          value: _selectedDataCiphersFallback,
+          onChanged: (value) => setState(() => _selectedDataCiphersFallback = value),
+        ),
         const SizedBox(height: 16),
         if (_role == 'server') ...[
           OpenvpnToggleField(
@@ -1429,23 +1338,39 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
             onChanged: (value) => setState(() => _usernameAsCommonName = value),
           ),
           const SizedBox(height: 16),
-          if (_compressMigrateOptions.isNotEmpty)
-            OpenvpnDropdownField(
-              labelText: 'Compression Migrate',
-              prefixIcon: Icons.compress,
-              options: _compressMigrateOptions,
-              value: _selectedCompressMigrate,
-              onChanged: (value) => setState(() => _selectedCompressMigrate = value),
+          OpenvpnTextField(
+            controller: _authTokenRenewalController,
+            labelText: 'Auth Token Renewal',
+            hintText: '0',
+            prefixIcon: Icons.refresh,
+            helperText: 'Renew the auth-token every n seconds. When set to 0, the token will not be renewed.',
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          ),
+          const SizedBox(height: 16),
+          TextFormField(
+            controller: _authTokenSecretController,
+            decoration: InputDecoration(
+              labelText: 'Auth Token Secret',
+              hintText: 'Leave empty to auto-generate',
+              helperText: 'Secret for auth-token generation. Leave empty to auto-generate.',
+              prefixIcon: const Icon(Icons.key),
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.auto_fix_high),
+                tooltip: 'Generate key',
+                onPressed: _isLoading ? null : _generateAuthToken,
+              ),
             ),
+          ),
           const SizedBox(height: 16),
           OpenvpnToggleField(
-            title: 'Persist Address Pool',
-            subtitle: 'Persist client IP address assignments',
-            value: _ifconfigPoolPersist,
-            onChanged: (value) => setState(() => _ifconfigPoolPersist = value),
+            title: 'Require Client Provisioning',
+            subtitle: 'Require that connecting clients specify a --auth-user-pass, which allows for deferred authentication.',
+            value: _provisionExclusive,
+            onChanged: (value) => setState(() => _provisionExclusive = value),
           ),
+          const SizedBox(height: 16),
         ],
-        const SizedBox(height: 16),
         OpenvpnArrayField(
           title: 'Excluded Routes',
           items: _pushExcludedRoutes,
@@ -1496,15 +1421,36 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         ),
         const SizedBox(height: 16),
-        OpenvpnTextField(
-          controller: _mssfixController,
-          labelText: 'MSS Fix',
-          hintText: '1450',
-          prefixIcon: Icons.build,
-          keyboardType: TextInputType.number,
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        SwitchListTile(
+          title: const Text('MSS Fix'),
+          subtitle: const Text('Enable MSS fix for this connection'),
+          value: _mssFix,
+          onChanged: (value) {
+            setState(() {
+              _mssFix = value;
+            });
+          },
         ),
         const SizedBox(height: 16),
+        if (_role == 'server')
+          OpenvpnDropdownField(
+            labelText: 'Compression Migrate',
+            prefixIcon: Icons.compress,
+            options: _compressMigrateOptions,
+            value: _selectedCompressMigrate,
+            onChanged: (value) => setState(() => _selectedCompressMigrate = value),
+          ),
+        if (_role == 'server')
+          const SizedBox(height: 16),
+        if (_role == 'server')
+          OpenvpnToggleField(
+            title: 'Persist Address Pool',
+            subtitle: 'Persist client IP address assignments',
+            value: _ifconfigPoolPersist,
+            onChanged: (value) => setState(() => _ifconfigPoolPersist = value),
+          ),
+        if (_role == 'server')
+          const SizedBox(height: 16),
         OpenvpnTextField(
           controller: _verifyX509NameController,
           labelText: 'Verify X.509 Name',

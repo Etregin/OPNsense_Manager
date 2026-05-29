@@ -226,39 +226,51 @@ class OpenvpnDropdownField extends StatelessWidget {
     // Build dropdown items, handling optgroups
     final List<DropdownMenuItem<String>> items = [];
     
+    // Group options by optgroup
+    final Map<String?, List<MapEntry<String, OpenvpnDropdownOption>>> groupedOptions = {};
     for (var entry in options.entries) {
-      final option = entry.value;
-      
-      if (option.optgroup != null) {
-        // This is an optgroup header - add as disabled item
+      final optgroup = entry.value.optgroup;
+      if (!groupedOptions.containsKey(optgroup)) {
+        groupedOptions[optgroup] = [];
+      }
+      groupedOptions[optgroup]!.add(entry);
+    }
+    
+    // Add items with optgroup headers
+    groupedOptions.forEach((optgroup, entries) {
+      // Add optgroup header if present
+      if (optgroup != null) {
         items.add(DropdownMenuItem<String>(
           value: null,
           enabled: false,
           child: Text(
-            option.optgroup!,
+            optgroup,
             style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
           ),
         ));
-      } else {
+      }
+      
+      // Add options in this group
+      for (var entry in entries) {
         items.add(DropdownMenuItem<String>(
           value: entry.key,
           child: Padding(
-            padding: EdgeInsets.only(left: option.optgroup != null ? 16.0 : 0),
+            padding: EdgeInsets.only(left: optgroup != null ? 16.0 : 0),
             child: Text(
-              option.value,
+              entry.value.value,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),
           ),
         ));
       }
-    }
+    });
 
     return DropdownButtonFormField<String>(
       isExpanded: true,
-      value: value,
+      initialValue: value,
       decoration: InputDecoration(
         labelText: labelText,
         helperText: helperText,
@@ -294,49 +306,94 @@ class OpenvpnMultiSelectField extends StatelessWidget {
   Future<void> _showSelectionDialog(BuildContext context) async {
     final selected = List<String>.from(selectedValues);
 
-    await showDialog(
+    await showDialog<void>(
       context: context,
       builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text('Select $labelText'),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: ListView(
-              shrinkWrap: true,
-              children: options.entries.map((entry) {
-                final option = entry.value;
-                final isSelected = selected.contains(entry.key);
-
-                return CheckboxListTile(
+        builder: (context, setState) {
+          // Group options by optgroup
+          final Map<String?, List<MapEntry<String, OpenvpnDropdownOption>>> groupedOptions = {};
+          for (var entry in options.entries) {
+            final optgroup = entry.value.optgroup;
+            if (!groupedOptions.containsKey(optgroup)) {
+              groupedOptions[optgroup] = [];
+            }
+            groupedOptions[optgroup]!.add(entry);
+          }
+          
+          // Build list items with optgroup headers
+          final List<Widget> listItems = [];
+          groupedOptions.forEach((optgroup, entries) {
+            // Add optgroup header if present
+            if (optgroup != null) {
+              listItems.add(
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: Text(
+                    optgroup,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              );
+            }
+            
+            // Add options in this group
+            for (var entry in entries) {
+              final option = entry.value;
+              final isSelected = selected.contains(entry.key);
+              
+              listItems.add(
+                CheckboxListTile(
+                  controlAffinity: ListTileControlAffinity.leading,
+                  contentPadding: EdgeInsets.only(
+                    left: optgroup != null ? 32.0 : 16.0,
+                    right: 16.0,
+                  ),
                   title: Text(option.value),
                   value: isSelected,
-                  onChanged: (bool? value) {
+                  onChanged: enabled ? (bool? value) {
                     setState(() {
                       if (value == true) {
-                        selected.add(entry.key);
+                        if (!selected.contains(entry.key)) {
+                          selected.add(entry.key);
+                        }
                       } else {
                         selected.remove(entry.key);
                       }
                     });
-                  },
-                );
-              }).toList(),
+                  } : null,
+                ),
+              );
+            }
+          });
+          
+          return AlertDialog(
+            title: Text('Select $labelText'),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: ListView(
+                shrinkWrap: true,
+                children: listItems,
+              ),
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                onChanged(selected);
-                Navigator.of(context).pop();
-              },
-              child: const Text('Done'),
-            ),
-          ],
-        ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  onChanged(selected);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Done'),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -349,14 +406,23 @@ class OpenvpnMultiSelectField extends StatelessWidget {
         InkWell(
           onTap: enabled ? () => _showSelectionDialog(context) : null,
           child: InputDecorator(
+            isEmpty: selectedValues.isEmpty,
+            isFocused: false,
             decoration: InputDecoration(
               labelText: labelText,
               helperText: helperText,
+              hintText: selectedValues.isEmpty
+                  ? (options.isEmpty ? 'No options available' : null)
+                  : null,
               prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
-              suffixIcon: const Icon(Icons.arrow_drop_down),
+              suffixIcon: Icon(
+                Icons.arrow_drop_down,
+                color: enabled ? null : Theme.of(context).disabledColor,
+              ),
+              enabled: enabled,
             ),
             child: selectedValues.isEmpty
-                ? const Text('None selected', style: TextStyle(color: Colors.grey))
+                ? null
                 : Wrap(
                     spacing: 8,
                     runSpacing: 4,

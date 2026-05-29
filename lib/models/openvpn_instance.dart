@@ -237,7 +237,7 @@ class OpenvpnInstance {
       local: json['local'] as String?,
       portShare: json['port_share'] as String?,
       topology: _extractSelectedKey(json['topology']) ?? 'subnet',
-      remote: _extractSelectedKey(json['remote']),
+      remote: _extractSelectedKeys(json['remote']),
       server: json['server'] as String?,
       serverIpv6: json['server_ipv6'] as String?,
       nopool: json['nopool'] == '1' || json['nopool'] == 1 || json['nopool'] == true,
@@ -255,8 +255,8 @@ class OpenvpnInstance {
       useOcsp: json['use_ocsp'] == '1' || json['use_ocsp'] == 1 || json['use_ocsp'] == true,
       tlsKey: _extractSelectedKey(json['tls_key']),
       auth: _extractSelectedKey(json['auth']),
-      dataCiphers: _extractSelectedKeys(json['data_ciphers']),
-      dataCiphersFallback: _extractSelectedKeys(json['data_ciphers_fallback']),
+      dataCiphers: _extractSelectedKeys(json['data-ciphers']),
+      dataCiphersFallback: _extractSelectedKeys(json['data-ciphers-fallback']),
       authmode: _extractSelectedKey(json['authmode']),
       localGroup: _extractSelectedKey(json['local_group']),
       usernameAsCommonName: json['username_as_common_name'] == '1' || json['username_as_common_name'] == 1 || json['username_as_common_name'] == true,
@@ -287,8 +287,8 @@ class OpenvpnInstance {
       pushInactive: json['push_inactive'] as String?,
       compressMigrate: _extractSelectedKey(json['compress_migrate']),
       ifconfigPoolPersist: json['ifconfig_pool_persist'] == '1' || json['ifconfig_pool_persist'] == 1 || json['ifconfig_pool_persist'] == true,
-      httpProxy: json['http_proxy'] as String?,
-      verifyX509Name: json['verify_x509_name'] as String?,
+      httpProxy: json['http-proxy'] as String?,
+      verifyX509Name: json['verify-x509-name'] as String?,
       verb: _extractSelectedFromArray(json['verb']),
       // Parse dropdown options from API response
       devTypeOptions: _parseDropdownOptions(json['dev_type']),
@@ -305,8 +305,8 @@ class OpenvpnInstance {
       compressMigrateOptions: _parseDropdownOptions(json['compress_migrate']),
       certDepthOptions: _parseDropdownOptions(json['cert_depth']),
       strictusercnOptions: _parseDropdownOptionsFromArray(json['strictusercn']),
-      dataCiphersOptions: _parseDropdownOptions(json['data_ciphers']),
-      dataCiphersFallbackOptions: _parseDropdownOptions(json['data_ciphers_fallback']),
+      dataCiphersOptions: _parseDropdownOptions(json['data-ciphers'], fieldName: 'data-ciphers'),
+      dataCiphersFallbackOptions: _parseDropdownOptions(json['data-ciphers-fallback'], fieldName: 'data-ciphers-fallback'),
       variousFlagsOptions: _parseDropdownOptions(json['various_flags']),
       variousPushFlagsOptions: _parseDropdownOptions(json['various_push_flags']),
       redirectGatewayOptions: _parseDropdownOptions(json['redirect_gateway']),
@@ -349,8 +349,8 @@ class OpenvpnInstance {
       'use_ocsp': useOcsp ? '1' : '0',
       if (tlsKey != null) 'tls_key': tlsKey,
       if (auth != null) 'auth': auth,
-      if (dataCiphers != null) 'data_ciphers': dataCiphers,
-      if (dataCiphersFallback != null) 'data_ciphers_fallback': dataCiphersFallback,
+      if (dataCiphers != null) 'data-ciphers': dataCiphers,
+      if (dataCiphersFallback != null) 'data-ciphers-fallback': dataCiphersFallback,
       if (authmode != null) 'authmode': authmode,
       if (localGroup != null) 'local_group': localGroup,
       'username_as_common_name': usernameAsCommonName ? '1' : '0',
@@ -385,8 +385,8 @@ class OpenvpnInstance {
       if (pushInactive != null) 'push_inactive': pushInactive,
       if (compressMigrate != null) 'compress_migrate': compressMigrate,
       'ifconfig_pool_persist': ifconfigPoolPersist ? '1' : '0',
-      if (httpProxy != null) 'http_proxy': httpProxy,
-      if (verifyX509Name != null) 'verify_x509_name': verifyX509Name,
+      if (httpProxy != null) 'http-proxy': httpProxy,
+      if (verifyX509Name != null) 'verify-x509-name': verifyX509Name,
       if (verb != null) 'verb': verb,
     };
   }
@@ -597,7 +597,7 @@ class OpenvpnInstance {
   /// Parses dropdown options from API response
   ///
   /// API returns options in format: {"key": {"value": "Label", "selected": 1}}
-  static Map<String, OpenvpnDropdownOption>? _parseDropdownOptions(dynamic json) {
+  static Map<String, OpenvpnDropdownOption>? _parseDropdownOptions(dynamic json, {String? fieldName}) {
     if (json == null) return null;
     if (json is! Map) return null;
 
@@ -612,7 +612,8 @@ class OpenvpnInstance {
       }
     });
 
-    print('[OpenvpnInstance] DEBUG: Parsed ${options.length} dropdown options');
+    final logPrefix = fieldName != null ? '[$fieldName] ' : '';
+    print('[OpenvpnInstance] DEBUG: ${logPrefix}Parsed ${options.length} dropdown options');
     return options.isEmpty ? null : options;
   }
 
