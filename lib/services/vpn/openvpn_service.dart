@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'dart:convert';
 import 'package:dio/dio.dart';
 import '../base/base_opnsense_service.dart';
 import '../base/api_exception.dart';
@@ -100,17 +99,13 @@ class OpenvpnService extends BaseOPNsenseService {
           ? '/openvpn/instances/get/$vpnid'
           : '/openvpn/instances/get/';
 
-      print('[OpenVPN] DEBUG: Getting instance from endpoint: $endpoint');
       final response = await dio.get(endpoint);
 
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
-        print('[OpenVPN] DEBUG: Response data keys: ${data.keys.toList()}');
         
         if (data.containsKey('instance')) {
           final instanceData = data['instance'];
-          print('[OpenVPN] DEBUG: Instance data type: ${instanceData.runtimeType}');
-          print('[OpenVPN] DEBUG: Instance data keys: ${instanceData is Map ? (instanceData as Map).keys.toList() : 'N/A'}');
           
           // Ensure instanceData is a Map before casting
           if (instanceData is! Map<String, dynamic>) {
@@ -118,7 +113,6 @@ class OpenvpnService extends BaseOPNsenseService {
           }
           
           final instance = OpenvpnInstance.fromJson(instanceData);
-          print('[OpenVPN] DEBUG: Successfully parsed instance: ${instance.vpnid}');
           return instance;
         }
         throw ApiException('Instance data not found in response', response.statusCode);
@@ -144,15 +138,11 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final payload = {'instance': instance.toJson()};
-      print('[OpenVPN] DEBUG: Adding instance with payload: ${jsonEncode(payload)}');
       
       final response = await dio.post(
         '/openvpn/instances/add/',
         data: payload,
       );
-      
-      print('[OpenVPN] DEBUG: Add response status: ${response.statusCode}');
-      print('[OpenVPN] DEBUG: Add response body: ${response.data}');
 
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -202,15 +192,11 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final payload = {'instance': instance.toJson()};
-      print('[OpenVPN] DEBUG: Updating instance $vpnid with payload: ${jsonEncode(payload)}');
       
       final response = await dio.post(
         '/openvpn/instances/set/$vpnid',
         data: payload,
       );
-      
-      print('[OpenVPN] DEBUG: Update response status: ${response.statusCode}');
-      print('[OpenVPN] DEBUG: Update response body: ${response.data}');
 
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -254,26 +240,18 @@ class OpenvpnService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      print('[OpenVPN] DEBUG: Deleting instance with vpnid: $vpnid');
-      print('[OpenVPN] DEBUG: DELETE endpoint: /openvpn/instances/del/$vpnid');
-      
       final response = await dio.post(
         '/openvpn/instances/del/$vpnid',
         data: {}, // Empty payload as required by API
       );
 
-      print('[OpenVPN] DEBUG: Delete response status: ${response.statusCode}');
-      print('[OpenVPN] DEBUG: Delete response data: ${response.data}');
-
       if (response.statusCode == 200) {
         final result = response.data as Map<String, dynamic>;
-        print('[OpenVPN] DEBUG: Delete successful, result: $result');
         return result;
       } else {
         throw ApiException('Failed to delete OpenVPN instance', response.statusCode);
       }
     } on DioException catch (e) {
-      print('[OpenVPN] DEBUG: Delete failed with DioException: ${e.message}');
       throw handleDioError(e);
     }
   }

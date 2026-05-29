@@ -199,7 +199,6 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
     if (confirmed == true && mounted) {
       try {
         final apiService = context.read<OPNsenseApiService>();
-        print('[OpenVPN] DEBUG: Deleting instance with UUID: ${instance.uuid}');
         await apiService.deleteOpenvpnInstance(instance.uuid);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -285,7 +284,6 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
   }
 
   Future<void> _onEditInstance(OpenvpnInstanceListItem instance) async {
-    print('[OpenVPN] DEBUG: Editing instance with UUID: ${instance.uuid}');
     final result = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (context) => OpenvpnInstanceFormScreen(vpnid: instance.uuid),

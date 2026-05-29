@@ -218,14 +218,6 @@ class OpenvpnInstance {
 
   /// Creates an instance from JSON
   factory OpenvpnInstance.fromJson(Map<String, dynamic> json) {
-    print('[OpenvpnInstance] DEBUG: Parsing JSON with keys: ${json.keys.toList()}');
-    
-    // Debug specific fields that might cause issues
-    print('[OpenvpnInstance] DEBUG: remote field type: ${json['remote']?.runtimeType}');
-    print('[OpenvpnInstance] DEBUG: remote field value: ${json['remote']}');
-    print('[OpenvpnInstance] DEBUG: route field type: ${json['route']?.runtimeType}');
-    print('[OpenvpnInstance] DEBUG: route field value: ${json['route']}');
-    
     return OpenvpnInstance(
       vpnid: json['vpnid'] as String?,
       enabled: json['enabled'] == '1' || json['enabled'] == 1 || json['enabled'] == true,
@@ -235,7 +227,7 @@ class OpenvpnInstance {
       proto: _extractSelectedKey(json['proto']) ?? 'udp',
       port: json['port'] as String? ?? '1194',
       local: json['local'] as String?,
-      portShare: json['port_share'] as String?,
+      portShare: json['port-share'] as String?,
       topology: _extractSelectedKey(json['topology']) ?? 'subnet',
       remote: _extractSelectedKeys(json['remote']),
       server: json['server'] as String?,
@@ -269,7 +261,7 @@ class OpenvpnInstance {
       renegSec: json['reneg-sec'] as String?,
       authGenToken: json['auth-gen-token']?.toString(),
       authGenTokenRenewal: json['auth-gen-token-renewal'] as String?,
-      authGenTokenSecret: json['auth_gen_token_secret'] as String?,
+      authGenTokenSecret: json['auth-gen-token-secret'] as String?,
       provisionExclusive: json['provision_exclusive'] == '1' || json['provision_exclusive'] == 1 || json['provision_exclusive'] == true,
       redirectGateway: _extractSelectedKeys(json['redirect_gateway']) ?? '',
       routeMetric: json['route_metric'] as String?,
@@ -286,7 +278,7 @@ class OpenvpnInstance {
       variousPushFlags: _parseBoolMap(json['various_push_flags']),
       pushInactive: json['push_inactive'] as String?,
       compressMigrate: _extractSelectedKey(json['compress_migrate']),
-      ifconfigPoolPersist: json['ifconfig_pool_persist'] == '1' || json['ifconfig_pool_persist'] == 1 || json['ifconfig_pool_persist'] == true,
+      ifconfigPoolPersist: json['ifconfig-pool-persist'] == '1' || json['ifconfig-pool-persist'] == 1 || json['ifconfig-pool-persist'] == true,
       httpProxy: json['http-proxy'] as String?,
       verifyX509Name: json['verify-x509-name'] as String?,
       verb: _extractSelectedFromArray(json['verb']),
@@ -327,67 +319,75 @@ class OpenvpnInstance {
       'dev_type': devType,
       'proto': proto,
       'port': port,
-      if (local != null) 'local': local,
-      if (portShare != null) 'port_share': portShare,
+      if (local != null && local!.isNotEmpty) 'local': local,
+      if (portShare != null && portShare!.isNotEmpty) 'port-share': portShare,
       'topology': topology,
-      if (remote != null) 'remote': remote,
-      if (server != null) 'server': server,
-      if (serverIpv6 != null) 'server_ipv6': serverIpv6,
-      'nopool': nopool ? '1' : '0',
-      if (bridgeGateway != null) 'bridge_gateway': bridgeGateway,
-      if (bridgePool != null) 'bridge_pool': bridgePool,
-      // Convert List fields to comma-separated strings for API
-      'route': route.isEmpty ? '' : route.join(','),
-      'push_route': pushRoute.isEmpty ? '' : pushRoute.join(','),
-      'push_excluded_routes': pushExcludedRoutes.isEmpty ? '' : pushExcludedRoutes.join(','),
-      if (cert != null) 'cert': cert,
-      if (crl != null) 'crl': crl,
-      if (ca != null) 'ca': ca,
-      if (certDepth != null) 'cert_depth': certDepth,
-      if (remoteCertTls != null) 'remote_cert_tls': remoteCertTls,
-      if (verifyClientCert != null) 'verify_client_cert': verifyClientCert,
-      'use_ocsp': useOcsp ? '1' : '0',
-      if (tlsKey != null) 'tls_key': tlsKey,
-      if (auth != null) 'auth': auth,
-      if (dataCiphers != null) 'data-ciphers': dataCiphers,
-      if (dataCiphersFallback != null) 'data-ciphers-fallback': dataCiphersFallback,
-      if (authmode != null) 'authmode': authmode,
-      if (localGroup != null) 'local_group': localGroup,
+      if (remote != null && remote!.isNotEmpty) 'remote': remote,
+      if (server != null && server!.isNotEmpty) 'server': server,
+      if (serverIpv6 != null && serverIpv6!.isNotEmpty) 'server_ipv6': serverIpv6,
+      // Only send role-specific boolean fields
+      if (role == 'server') 'nopool': nopool ? '1' : '0',
+      if (bridgeGateway != null && bridgeGateway!.isNotEmpty) 'bridge_gateway': bridgeGateway,
+      if (bridgePool != null && bridgePool!.isNotEmpty) 'bridge_pool': bridgePool,
+      // Convert List fields to comma-separated strings for API, omit if empty
+      if (route.isNotEmpty) 'route': route.join(','),
+      if (pushRoute.isNotEmpty) 'push_route': pushRoute.join(','),
+      if (pushExcludedRoutes.isNotEmpty) 'push_excluded_routes': pushExcludedRoutes.join(','),
+      if (cert != null && cert!.isNotEmpty) 'cert': cert,
+      if (crl != null && crl!.isNotEmpty) 'crl': crl,
+      if (ca != null && ca!.isNotEmpty) 'ca': ca,
+      if (certDepth != null && certDepth!.isNotEmpty) 'cert_depth': certDepth,
+      if (remoteCertTls != null && remoteCertTls!.isNotEmpty) 'remote_cert_tls': remoteCertTls,
+      if (verifyClientCert != null && verifyClientCert!.isNotEmpty) 'verify_client_cert': verifyClientCert,
+      // Only send role-specific boolean fields
+      if (role == 'server') 'use_ocsp': useOcsp ? '1' : '0',
+      if (tlsKey != null && tlsKey!.isNotEmpty) 'tls_key': tlsKey,
+      if (auth != null && auth!.isNotEmpty) 'auth': auth,
+      if (dataCiphers != null && dataCiphers!.isNotEmpty) 'data-ciphers': dataCiphers,
+      if (dataCiphersFallback != null && dataCiphersFallback!.isNotEmpty) 'data-ciphers-fallback': dataCiphersFallback,
+      if (authmode != null && authmode!.isNotEmpty) 'authmode': authmode,
+      if (localGroup != null && localGroup!.isNotEmpty) 'local_group': localGroup,
       'username_as_common_name': usernameAsCommonName ? '1' : '0',
-      'strictusercn': strictusercn,
-      if (username != null) 'username': username,
-      if (password != null) 'password': password,
-      if (maxclients != null) 'maxclients': maxclients,
-      if (keepaliveInterval != null) 'keepalive_interval': keepaliveInterval,
-      if (keepaliveTimeout != null) 'keepalive_timeout': keepaliveTimeout,
-      if (renegSec != null) 'reneg-sec': renegSec,
-      if (authGenToken != null) 'auth-gen-token': authGenToken,
-      if (authGenTokenRenewal != null) 'auth-gen-token-renewal': authGenTokenRenewal,
-      if (authGenTokenSecret != null) 'auth-gen-token-secret': authGenTokenSecret,
-      'provision_exclusive': provisionExclusive ? '1' : '0',
-      // Fix 4: redirect_gateway as comma-separated string
-      'redirect_gateway': redirectGateway,
-      if (routeMetric != null) 'route_metric': routeMetric,
-      'register_dns': registerDns ? '1' : '0',
-      'dns_domain': dnsDomain.isEmpty ? '' : dnsDomain.join(','),
-      // Convert List fields to comma-separated strings for API
-      'dns_domain_search': dnsDomainSearch.isEmpty ? '' : dnsDomainSearch.join(','),
-      'dns_servers': dnsServers.isEmpty ? '' : dnsServers.join(','),
-      'ntp_servers': ntpServers.isEmpty ? '' : ntpServers.join(','),
-      if (tunMtu != null) 'tun_mtu': tunMtu,
-      if (fragment != null) 'fragment': fragment,
-      if (mssfix != null) 'mssfix': mssfix,
-      if (carpDependOn != null) 'carp_depend_on': carpDependOn,
-      // Fix 2: Convert various_flags Map to comma-separated string
-      'various_flags': _boolMapToCommaSeparated(variousFlags),
-      // Fix 3: Convert various_push_flags Map to comma-separated string
-      'various_push_flags': _boolMapToCommaSeparated(variousPushFlags),
-      if (pushInactive != null) 'push_inactive': pushInactive,
-      if (compressMigrate != null) 'compress_migrate': compressMigrate,
-      'ifconfig_pool_persist': ifconfigPoolPersist ? '1' : '0',
-      if (httpProxy != null) 'http-proxy': httpProxy,
-      if (verifyX509Name != null) 'verify-x509-name': verifyX509Name,
-      if (verb != null) 'verb': verb,
+      // Only send strictusercn for server role
+      if (role == 'server') 'strictusercn': strictusercn,
+      if (username != null && username!.isNotEmpty) 'username': username,
+      if (password != null && password!.isNotEmpty) 'password': password,
+      if (maxclients != null && maxclients!.isNotEmpty) 'maxclients': maxclients,
+      if (keepaliveInterval != null && keepaliveInterval!.isNotEmpty) 'keepalive_interval': keepaliveInterval,
+      if (keepaliveTimeout != null && keepaliveTimeout!.isNotEmpty) 'keepalive_timeout': keepaliveTimeout,
+      if (renegSec != null && renegSec!.isNotEmpty) 'reneg-sec': renegSec,
+      if (authGenToken != null && authGenToken!.isNotEmpty) 'auth-gen-token': authGenToken,
+      if (authGenTokenRenewal != null && authGenTokenRenewal!.isNotEmpty) 'auth-gen-token-renewal': authGenTokenRenewal,
+      if (authGenTokenSecret != null && authGenTokenSecret!.isNotEmpty) 'auth-gen-token-secret': authGenTokenSecret,
+      // Only send role-specific boolean fields
+      if (role == 'server') 'provision_exclusive': provisionExclusive ? '1' : '0',
+      // Fix 4: redirect_gateway as comma-separated string, only if not empty
+      if (redirectGateway.isNotEmpty) 'redirect_gateway': redirectGateway,
+      if (routeMetric != null && routeMetric!.isNotEmpty) 'route_metric': routeMetric,
+      // Only send role-specific boolean fields
+      if (role == 'server') 'register_dns': registerDns ? '1' : '0',
+      // Convert List fields to comma-separated strings for API, omit if empty
+      if (dnsDomain.isNotEmpty) 'dns_domain': dnsDomain.join(','),
+      if (dnsDomainSearch.isNotEmpty) 'dns_domain_search': dnsDomainSearch.join(','),
+      if (dnsServers.isNotEmpty) 'dns_servers': dnsServers.join(','),
+      if (ntpServers.isNotEmpty) 'ntp_servers': ntpServers.join(','),
+      if (tunMtu != null && tunMtu!.isNotEmpty) 'tun_mtu': tunMtu,
+      if (fragment != null && fragment!.isNotEmpty) 'fragment': fragment,
+      if (mssfix != null && mssfix!.isNotEmpty) 'mssfix': mssfix,
+      if (carpDependOn != null && carpDependOn!.isNotEmpty) 'carp_depend_on': carpDependOn,
+      // Fix 2: Convert various_flags Map to comma-separated string, omit if empty
+      if (_boolMapToCommaSeparated(variousFlags).isNotEmpty)
+        'various_flags': _boolMapToCommaSeparated(variousFlags),
+      // Fix 3: Convert various_push_flags Map to comma-separated string, omit if empty
+      if (_boolMapToCommaSeparated(variousPushFlags).isNotEmpty)
+        'various_push_flags': _boolMapToCommaSeparated(variousPushFlags),
+      if (pushInactive != null && pushInactive!.isNotEmpty) 'push_inactive': pushInactive,
+      if (compressMigrate != null && compressMigrate!.isNotEmpty) 'compress_migrate': compressMigrate,
+      // Only send role-specific boolean fields
+      if (role == 'server') 'ifconfig-pool-persist': ifconfigPoolPersist ? '1' : '0',
+      if (httpProxy != null && httpProxy!.isNotEmpty) 'http-proxy': httpProxy,
+      if (verifyX509Name != null && verifyX509Name!.isNotEmpty) 'verify-x509-name': verifyX509Name,
+      if (verb != null && verb!.isNotEmpty) 'verb': verb,
     };
   }
 
@@ -413,17 +413,12 @@ class OpenvpnInstance {
   /// Extracts the selected key from a dropdown map structure
   static String? _extractSelectedKey(dynamic json) {
     if (json == null) return null;
-    if (json is String) return json; // Already a string
-    
-    // Handle List type - might be returned from API
+    if (json is String) return json;
     if (json is List) {
-      print('[OpenvpnInstance] DEBUG: _extractSelectedKey received List: $json');
       if (json.isEmpty) return null;
-      // If it's a list of strings, join them
       if (json.first is String) {
         return json.join(',');
       }
-      // If it's a list of maps, find selected items
       final selected = json.where((item) {
         if (item is Map) {
           return item['selected'] == 1 || item['selected'] == '1' || item['selected'] == true;
@@ -435,9 +430,8 @@ class OpenvpnInstance {
       }
       return null;
     }
-    
+
     if (json is! Map) {
-      print('[OpenvpnInstance] DEBUG: _extractSelectedKey received unexpected type: ${json.runtimeType}');
       return null;
     }
 
@@ -473,7 +467,7 @@ class OpenvpnInstance {
   /// Extracts all selected keys from a multi-select dropdown map as comma-separated string
   static String? _extractSelectedKeys(dynamic json) {
     if (json == null) return null;
-    if (json is String) return json; // Already a string
+    if (json is String) return json;
     if (json is! Map) return null;
 
     final selectedKeys = <String>[];
@@ -489,9 +483,7 @@ class OpenvpnInstance {
 
   static List<String> _parseStringList(dynamic json) {
     if (json == null) return [];
-    
-    print('[OpenvpnInstance] DEBUG: _parseStringList received type: ${json.runtimeType}, value: $json');
-    
+
     if (json is List) {
       return json.map((e) => e.toString()).toList();
     }
@@ -499,87 +491,57 @@ class OpenvpnInstance {
       return [json];
     }
     if (json is Map) {
-      // Handle case where API returns a Map with nested structure: {key: {value: "data", selected: 1}}
-      print('[OpenvpnInstance] DEBUG: _parseStringList received Map, extracting values');
-      List<String> result = [];
-      
+      final result = <String>[];
+
       json.forEach((key, val) {
-        print('[OpenvpnInstance] DEBUG: Processing entry - key: "$key", val: $val');
-        
-        // Check if the value is a nested Map with 'value' and 'selected' fields
         if (val is Map && val.containsKey('value') && val.containsKey('selected')) {
-          // Only extract if selected == 1
           if (val['selected'] == 1 || val['selected'] == '1' || val['selected'] == true) {
-            String extractedValue = val['value']?.toString() ?? '';
+            final extractedValue = val['value']?.toString() ?? '';
             if (extractedValue.isNotEmpty) {
-              print('[OpenvpnInstance] DEBUG: Extracted value: "$extractedValue"');
               result.add(extractedValue);
-            } else {
-              print('[OpenvpnInstance] DEBUG: Skipping empty value for key: "$key"');
             }
-          } else {
-            print('[OpenvpnInstance] DEBUG: Skipping unselected entry for key: "$key"');
           }
         } else {
-          // Fallback: treat the value directly as a string (backward compatibility)
-          String directValue = val.toString();
+          final directValue = val.toString();
           if (directValue.isNotEmpty) {
-            print('[OpenvpnInstance] DEBUG: Using direct value: "$directValue"');
             result.add(directValue);
           }
         }
       });
-      
-      print('[OpenvpnInstance] DEBUG: Final extracted list: $result');
+
       return result;
     }
-    
-    print('[OpenvpnInstance] DEBUG: _parseStringList returning empty list for type: ${json.runtimeType}');
+
     return [];
   }
 
   static Map<String, bool> _parseBoolMap(dynamic json) {
     if (json == null) return {};
-    
-    print('[OpenvpnInstance] DEBUG: _parseBoolMap received type: ${json.runtimeType}');
-    
+
     if (json is List) {
-      // Handle case where API returns a List instead of Map
-      print('[OpenvpnInstance] DEBUG: _parseBoolMap received List, converting to map');
       final result = <String, bool>{};
       for (int i = 0; i < json.length; i++) {
         final item = json[i];
         if (item is Map && item.containsKey('value')) {
-          result[item['value'].toString()] = item['selected'] == 1 || item['selected'] == '1' || item['selected'] == true;
+          result[item['value'].toString()] =
+              item['selected'] == 1 || item['selected'] == '1' || item['selected'] == true;
         }
       }
       return result;
     }
-    
+
     if (json is! Map) {
-      print('[OpenvpnInstance] DEBUG: _parseBoolMap unexpected type, returning empty map');
       return {};
     }
 
     final result = <String, bool>{};
     json.forEach((key, value) {
-      // Handle nested Map structure: {"key": {"value": "label", "selected": 1}}
       if (value is Map && value.containsKey('selected')) {
         final isSelected = value['selected'] == 1 || value['selected'] == '1' || value['selected'] == true;
         result[key as String] = isSelected;
-        print('[OpenvpnInstance] DEBUG: _parseBoolMap - key: $key, selected: $isSelected');
       } else {
-        // Fallback for simple boolean values
         result[key as String] = value == '1' || value == 1 || value == true;
       }
-    });
-    return result;
-  }
-
-  static Map<String, dynamic> _boolMapToJson(Map<String, bool> map) {
-    final result = <String, dynamic>{};
-    map.forEach((key, value) {
-      result[key] = value ? '1' : '0';
     });
     return result;
   }
@@ -606,14 +568,10 @@ class OpenvpnInstance {
       if (value is Map<String, dynamic>) {
         try {
           options[key as String] = OpenvpnDropdownOption.fromJson(value);
-        } catch (e) {
-          print('[OpenvpnInstance] DEBUG: Failed to parse dropdown option for key $key: $e');
-        }
+        } catch (_) {}
       }
     });
 
-    final logPrefix = fieldName != null ? '[$fieldName] ' : '';
-    print('[OpenvpnInstance] DEBUG: ${logPrefix}Parsed ${options.length} dropdown options');
     return options.isEmpty ? null : options;
   }
 
@@ -630,13 +588,10 @@ class OpenvpnInstance {
       if (item is Map<String, dynamic>) {
         try {
           options[i.toString()] = OpenvpnDropdownOption.fromJson(item);
-        } catch (e) {
-          print('[OpenvpnInstance] DEBUG: Failed to parse array dropdown option at index $i: $e');
-        }
+        } catch (_) {}
       }
     }
 
-    print('[OpenvpnInstance] DEBUG: Parsed ${options.length} array dropdown options');
     return options.isEmpty ? null : options;
   }
 

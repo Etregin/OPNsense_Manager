@@ -97,6 +97,10 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
     'miscellaneous': true,
   };
 
+  // Track if all sections are expanded for collapse/expand all button
+  bool get _allExpanded =>
+      _sectionExpanded.values.every((expanded) => expanded);
+
   // Dropdown selections
   String? _selectedDevType;
   String? _selectedProto;
@@ -110,7 +114,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
   String? _selectedAuthmode;
   String? _selectedLocalGroup;
   String? _selectedCarpDependOn;
-  String? _selectedCompressMigrate;
+  bool _compressMigrate = false;
   String? _selectedTlsKey;
   String? _selectedCertDepth;
   String? _selectedVerb;
@@ -143,7 +147,6 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
   final Map<String, OpenvpnDropdownOption> _authmodeOptions = {};
   final Map<String, OpenvpnDropdownOption> _localGroupOptions = {};
   final Map<String, OpenvpnDropdownOption> _carpDependOnOptions = {};
-  final Map<String, OpenvpnDropdownOption> _compressMigrateOptions = {};
   final Map<String, OpenvpnDropdownOption> _tlsKeyOptions = {};
   final Map<String, OpenvpnDropdownOption> _certDepthOptions = {};
   final Map<String, OpenvpnDropdownOption> _strictUserCnOptions = {};
@@ -221,156 +224,122 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
   }
 
   void _loadInstanceData(OpenvpnInstance instance) {
-    print('[OpenvpnForm] DEBUG: Loading instance data');
-    
-    // Store the loaded instance's vpnid (the numeric ID from API response)
     _loadedVpnid = instance.vpnid;
-    print('[OpenvpnForm] DEBUG: Stored loaded vpnid: $_loadedVpnid');
-    
-    // Load dropdown options from instance
+
     if (instance.devTypeOptions != null) {
       _devTypeOptions.clear();
       _devTypeOptions.addAll(instance.devTypeOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_devTypeOptions.length} device type options');
     }
-    
+
     if (instance.protoOptions != null) {
       _protoOptions.clear();
       _protoOptions.addAll(instance.protoOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_protoOptions.length} protocol options');
     }
-    
+
     if (instance.topologyOptions != null) {
       _topologyOptions.clear();
       _topologyOptions.addAll(instance.topologyOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_topologyOptions.length} topology options');
     }
-    
+
     if (instance.certOptions != null) {
       _certOptions.clear();
       _certOptions.addAll(instance.certOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_certOptions.length} certificate options');
     }
-    
+
     if (instance.caOptions != null) {
       _caOptions.clear();
       _caOptions.addAll(instance.caOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_caOptions.length} CA options');
     }
-    
+
     if (instance.crlOptions != null) {
       _crlOptions.clear();
       _crlOptions.addAll(instance.crlOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_crlOptions.length} CRL options');
     }
-    
+
     if (instance.tlsKeyOptions != null) {
       _tlsKeyOptions.clear();
       _tlsKeyOptions.addAll(instance.tlsKeyOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_tlsKeyOptions.length} TLS key options');
     }
-    
+
     if (instance.authOptions != null) {
       _authOptions.clear();
       _authOptions.addAll(instance.authOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_authOptions.length} auth options');
     }
-    
+
     if (instance.authmodeOptions != null) {
       _authmodeOptions.clear();
       _authmodeOptions.addAll(instance.authmodeOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_authmodeOptions.length} authmode options');
     }
-    
+
     if (instance.localGroupOptions != null) {
       _localGroupOptions.clear();
       _localGroupOptions.addAll(instance.localGroupOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_localGroupOptions.length} local group options');
     }
-    
+
     if (instance.carpDependOnOptions != null) {
       _carpDependOnOptions.clear();
       _carpDependOnOptions.addAll(instance.carpDependOnOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_carpDependOnOptions.length} CARP depend on options');
     }
-    
-    if (instance.compressMigrateOptions != null) {
-      _compressMigrateOptions.clear();
-      _compressMigrateOptions.addAll(instance.compressMigrateOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_compressMigrateOptions.length} compress migrate options');
-    }
-    
+
     if (instance.certDepthOptions != null) {
       _certDepthOptions.clear();
       _certDepthOptions.addAll(instance.certDepthOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_certDepthOptions.length} cert depth options');
     }
-    
+
     if (instance.strictusercnOptions != null) {
       _strictUserCnOptions.clear();
       _strictUserCnOptions.addAll(instance.strictusercnOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_strictUserCnOptions.length} strict user CN options');
     }
-    
+
     if (instance.dataCiphersOptions != null && instance.dataCiphersOptions!.isNotEmpty) {
       _dataCiphersOptions
         ..clear()
         ..addAll(instance.dataCiphersOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_dataCiphersOptions.length} data ciphers options');
     }
 
     if (instance.dataCiphersFallbackOptions != null && instance.dataCiphersFallbackOptions!.isNotEmpty) {
       _dataCiphersFallbackOptions
         ..clear()
         ..addAll(instance.dataCiphersFallbackOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_dataCiphersFallbackOptions.length} data ciphers fallback options');
     }
-    
+
     if (instance.variousFlagsOptions != null) {
       _variousFlagsOptions.clear();
       _variousFlagsOptions.addAll(instance.variousFlagsOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_variousFlagsOptions.length} various flags options');
     }
-    
+
     if (instance.variousPushFlagsOptions != null) {
       _variousPushFlagsOptions.clear();
       _variousPushFlagsOptions.addAll(instance.variousPushFlagsOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_variousPushFlagsOptions.length} various push flags options');
     }
-    
+
     if (instance.redirectGatewayOptions != null) {
       _redirectGatewayOptions.clear();
       _redirectGatewayOptions.addAll(instance.redirectGatewayOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_redirectGatewayOptions.length} redirect gateway options');
     }
-    
+
     if (instance.remoteCertTlsOptions != null) {
       _remoteCertTlsOptions.clear();
       _remoteCertTlsOptions.addAll(instance.remoteCertTlsOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_remoteCertTlsOptions.length} remote cert TLS options');
     }
-    
+
     if (instance.verifyClientCertOptions != null) {
       _verifyClientCertOptions.clear();
       _verifyClientCertOptions.addAll(instance.verifyClientCertOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_verifyClientCertOptions.length} verify client cert options');
     }
-    
+
     if (instance.verbOptions != null) {
       _verbOptions.clear();
       _verbOptions.addAll(instance.verbOptions!);
-      print('[OpenvpnForm] DEBUG: Loaded ${_verbOptions.length} verb options');
     }
     
-    // Load basic fields
     _role = instance.role;
     _descriptionController.text = instance.description;
     _enabled = instance.enabled;
     _portController.text = instance.port;
     _localController.text = instance.local ?? '';
     _portShareController.text = instance.portShare ?? '';
-    
-    // Load selected dropdown values (now stored as strings)
+
     _selectedDevType = instance.devType;
     _selectedProto = instance.proto;
     _selectedTopology = instance.topology;
@@ -383,19 +352,17 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
     _selectedAuthmode = instance.authmode;
     _selectedLocalGroup = instance.localGroup;
     _selectedCarpDependOn = instance.carpDependOn;
-    _selectedCompressMigrate = instance.compressMigrate;
+    _compressMigrate = instance.compressMigrate == '1';
     _selectedTlsKey = instance.tlsKey;
     _selectedCertDepth = instance.certDepth;
     _selectedVerb = instance.verb;
 
-    // Load multi-select values (now stored as comma-separated strings)
     _selectedDataCiphers
       ..clear()
       ..addAll(_splitCommaSeparated(instance.dataCiphers));
 
     _selectedDataCiphersFallback = instance.dataCiphersFallback;
 
-    // Parse variousFlags from Map<String, bool> to List<String>
     _selectedVariousFlags
       ..clear()
       ..addAll(
@@ -404,7 +371,6 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
             .map((entry) => entry.key),
       );
 
-    // Parse variousPushFlags from Map<String, bool> to List<String>
     _selectedVariousPushFlags
       ..clear()
       ..addAll(
@@ -413,7 +379,6 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
             .map((entry) => entry.key),
       );
 
-    // Parse redirectGateway from comma-separated string to List<String>
     _selectedRedirectGateway
       ..clear()
       ..addAll(
@@ -423,36 +388,26 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
       );
 
     
-    // Load role-specific fields
     if (instance.isClient) {
-      print('[OpenvpnForm] DEBUG: Loading client instance data');
-      print('[OpenvpnForm] DEBUG: remote field type: ${instance.remote?.runtimeType}');
-      print('[OpenvpnForm] DEBUG: remote field value: "${instance.remote}"');
-      
-      // Handle remote addresses - the model already extracts the selected value from dropdown
-      // The remote field is already a string (or null), not a comma-separated list
       if (instance.remote != null && instance.remote!.isNotEmpty) {
-        // Split by newlines or commas to support multiple remote addresses
         _remoteAddresses = instance.remote!
             .split(RegExp(r'[\n,]'))
             .map((e) => e.trim())
             .where((e) => e.isNotEmpty)
             .toList();
-        print('[OpenvpnForm] DEBUG: Parsed remote addresses: $_remoteAddresses');
       } else {
         _remoteAddresses = [];
-        print('[OpenvpnForm] DEBUG: No remote addresses found');
       }
-      
+
       _usernameController.text = instance.username ?? '';
       _passwordController.text = instance.password ?? '';
       _httpProxyController.text = instance.httpProxy ?? '';
-      print('[OpenvpnForm] DEBUG: HTTP Proxy loaded: "${instance.httpProxy}"');
     } else {
       _serverController.text = instance.server ?? '';
       _serverIpv6Controller.text = instance.serverIpv6 ?? '';
       _nopool = instance.nopool;
       _useOcsp = instance.useOcsp;
+      _usernameAsCommonName = instance.usernameAsCommonName;
       _selectedStrictUserCn = instance.strictusercn;
       _authGenTokenController.text = instance.authGenToken ?? '';
       _provisionExclusive = instance.provisionExclusive;
@@ -465,22 +420,19 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
       _ntpServers = List.from(instance.ntpServers);
     }
     
-    // Common fields
     _renegSecController.text = instance.renegSec ?? '';
     _localNetworks = List.from(instance.route);
     _remoteNetworks = List.from(instance.pushRoute);
     _pushExcludedRoutes = List.from(instance.pushExcludedRoutes);
-    
-    // Advanced fields
+
     _maxclientsController.text = instance.maxclients ?? '';
     _keepaliveIntervalController.text = instance.keepaliveInterval ?? '';
     _keepaliveTimeoutController.text = instance.keepaliveTimeout ?? '';
     _verifyX509NameController.text = instance.verifyX509Name ?? '';
-    print('[OpenvpnForm] DEBUG: Verify X.509 Name loaded: "${instance.verifyX509Name}"');
     _tunMtuController.text = instance.tunMtu ?? '';
     _fragmentController.text = instance.fragment ?? '';
     _mssFix = instance.mssfix == '1';
-    
+
     if (instance.isServer) {
       _authTokenRenewalController.text = instance.authGenTokenRenewal ?? '';
       _authTokenSecretController.text = instance.authGenTokenSecret ?? '';
@@ -505,10 +457,6 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
     try {
       final apiService = context.read<OPNsenseApiService>();
       final instance = _buildInstanceFromForm();
-      
-      // Debug: Log the complete payload being sent to API
-      print('[OpenVPN] DEBUG: Complete payload being sent to API:');
-      print('[OpenVPN] DEBUG: ${instance.toJson()}');
       
       if (_isEditMode) {
         await apiService.updateOpenvpnInstance(widget.vpnid!, instance);
@@ -544,15 +492,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
   }
 
   OpenvpnInstance _buildInstanceFromForm() {
-    // Debug logging for payload conversion
-    print('[OpenVPN] DEBUG: various_flags: ${_selectedVariousFlags.isEmpty ? "" : _selectedVariousFlags.join(",")}');
-    print('[OpenVPN] DEBUG: various_push_flags: ${_selectedVariousPushFlags.isEmpty ? "" : _selectedVariousPushFlags.join(",")}');
-    print('[OpenVPN] DEBUG: redirect_gateway: ${_selectedRedirectGateway.isEmpty ? "" : _selectedRedirectGateway.join(",")}');
-    print('[OpenVPN] DEBUG: Using loaded vpnid: $_loadedVpnid (widget.vpnid was: ${widget.vpnid})');
-    
     return OpenvpnInstance(
-      // Use the loaded vpnid from the API response (numeric ID like "2"), not the widget.vpnid (UUID)
-      // For new instances, _loadedVpnid will be null and we send empty string
       vpnid: _loadedVpnid ?? '',
       enabled: _enabled,
       role: _role,
@@ -628,7 +568,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
         },
       ),
       pushInactive: _pushInactiveController.text.trim().isEmpty ? null : _pushInactiveController.text.trim(),
-      compressMigrate: _selectedCompressMigrate,
+      compressMigrate: _compressMigrate ? '1' : '0',
       ifconfigPoolPersist: _role == 'server' ? _ifconfigPoolPersist : false,
       httpProxy: _role == 'client' ? _httpProxyController.text.trim() : null,
       verifyX509Name: _verifyX509NameController.text.trim().isEmpty ? null : _verifyX509NameController.text.trim(),
@@ -676,6 +616,16 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
       appBar: AppBar(
         title: Text(_isEditMode ? 'Edit Instance' : 'Add Instance'),
         actions: [
+          IconButton(
+            icon: Icon(_allExpanded ? Icons.unfold_less : Icons.unfold_more),
+            onPressed: () {
+              setState(() {
+                final newState = !_allExpanded;
+                _sectionExpanded.updateAll((key, value) => newState);
+              });
+            },
+            tooltip: _allExpanded ? 'Collapse All' : 'Expand All',
+          ),
           IconButton(
             icon: const Icon(Icons.save),
             onPressed: _isSaving ? null : _saveInstance,
@@ -757,6 +707,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       child: ExpansionTile(
+        key: ValueKey('${keyName}_$isExpanded'),
         initiallyExpanded: isExpanded,
         onExpansionChanged: (value) {
           setState(() => _sectionExpanded[keyName] = value);
@@ -1242,11 +1193,38 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
           OpenvpnTextField(
             controller: _portShareController,
             labelText: 'Port Share',
-            hintText: '443',
-            helperText: 'Share OpenVPN port with another service (e.g., web server)',
+            hintText: '192.168.1.1:443',
+            helperText: 'Enter IP:port (e.g., 192.168.1.1:443)',
             prefixIcon: Icons.share,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            keyboardType: TextInputType.text,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return null; // Optional field
+              }
+              
+              // Check format: IP:port
+              final regex = RegExp(r'^(\d{1,3}\.){3}\d{1,3}:\d{1,5}$');
+              if (!regex.hasMatch(value.trim())) {
+                return 'Invalid format. Use IP:port (e.g., 192.168.1.1:443)';
+              }
+              
+              // Validate IP octets and port range
+              final parts = value.trim().split(':');
+              final ipParts = parts[0].split('.');
+              for (var octet in ipParts) {
+                final num = int.tryParse(octet);
+                if (num == null || num < 0 || num > 255) {
+                  return 'Invalid IP address';
+                }
+              }
+              
+              final port = int.tryParse(parts[1]);
+              if (port == null || port < 1 || port > 65535) {
+                return 'Port must be between 1 and 65535';
+              }
+              
+              return null;
+            },
           ),
           const SizedBox(height: 16),
         ],
@@ -1433,12 +1411,11 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
         ),
         const SizedBox(height: 16),
         if (_role == 'server')
-          OpenvpnDropdownField(
-            labelText: 'Compression Migrate',
-            prefixIcon: Icons.compress,
-            options: _compressMigrateOptions,
-            value: _selectedCompressMigrate,
-            onChanged: (value) => setState(() => _selectedCompressMigrate = value),
+          OpenvpnToggleField(
+            title: 'Compression Migrate',
+            subtitle: 'Enable compression migration for compatibility',
+            value: _compressMigrate,
+            onChanged: (value) => setState(() => _compressMigrate = value),
           ),
         if (_role == 'server')
           const SizedBox(height: 16),
