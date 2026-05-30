@@ -660,7 +660,7 @@ class OpenvpnCidrField extends StatelessWidget {
   /// Validate CIDR notation
   String? _validateCidr(String? value) {
     if (value == null || value.isEmpty) {
-      return 'CIDR notation is required';
+      return null;
     }
 
     final parts = value.split('/');
