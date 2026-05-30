@@ -16,11 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import '../base/base_opnsense_service.dart';
 import '../base/api_exception.dart';
 import '../../models/openvpn_instance.dart';
 import '../../models/openvpn_search_response.dart';
+import '../../models/openvpn_client_override.dart';
+import '../../models/openvpn_client_override_search_response.dart';
 import '../../models/openvpn_static_key.dart';
 
 /// Service for OpenVPN operations
@@ -587,6 +590,224 @@ class OpenvpnService extends BaseOPNsenseService {
       throw handleDioError(e);
     }
   }
+
+  // Client Specific Override Management Methods
+
+  /// Search/list OpenVPN client specific overrides with pagination support
+  ///
+  /// Endpoint: POST /api/openvpn/client_overwrites/search/
+  /// Payload: {"current": 1, "rowCount": 50, "sort": {}}
+  ///
+  /// Parameters:
+  /// - [current]: Current page number (default: 1)
+  /// - [rowCount]: Number of rows per page (default: 50)
+  /// - [sort]: Sort configuration (default: {})
+  /// - [searchPhrase]: Search phrase to filter results (optional)
+  ///
+  /// Returns: [OpenvpnSearchResponse] with paginated client override list
+  Future<OpenvpnClientOverrideSearchResponse> searchClientOverrides({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    String? searchPhrase,
+  }) async {
+    ensureInitialized();
+
+    try {
+      final data = {
+        'current': current,
+        'rowCount': rowCount,
+        'sort': sort ?? {},
+      };
+      
+      // Add searchPhrase only if provided
+      if (searchPhrase != null && searchPhrase.isNotEmpty) {
+        data['searchPhrase'] = searchPhrase;
+      }
+
+      final response = await dio.post(
+        '/openvpn/client_overwrites/search/',
+        data: data,
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = response.data as Map<String, dynamic>;
+        
+        return OpenvpnClientOverrideSearchResponse.fromJson(responseData);
+      } else {
+        throw ApiException('Failed to search client overrides', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Get client specific override details for add/edit
+  ///
+  /// Endpoint: GET /api/openvpn/client_overwrites/get/ (for new)
+  ///           GET /api/openvpn/client_overwrites/get/{uuid} (for edit)
+  ///
+  /// Parameters:
+  /// - [uuid]: Override UUID (null or empty string for new override)
+  ///
+  /// Returns: [OpenvpnClientOverride] with form data structure
+  Future<OpenvpnClientOverride> getClientOverride(String? uuid) async {
+    ensureInitialized();
+
+    try {
+      final endpoint = (uuid != null && uuid.isNotEmpty)
+          ? '/openvpn/client_overwrites/get/$uuid'
+          : '/openvpn/client_overwrites/get/';
+
+      final response = await dio.get(endpoint);
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        
+        if (data.containsKey('cso')) {
+          final csoData = data['cso'];
+          
+          // Ensure csoData is a Map before casting
+          if (csoData is! Map<String, dynamic>) {
+            throw ApiException('CSO data is not a Map<String, dynamic>, got: ${csoData.runtimeType}', response.statusCode);
+          }
+          
+          final override = OpenvpnClientOverride.fromJson(csoData);
+          return override;
+        }
+        throw ApiException('CSO data not found in response', response.statusCode);
+      } else {
+        throw ApiException('Failed to get client override', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Create or update a client specific override
+  ///
+  /// Endpoint: POST /api/openvpn/client_overwrites/add/ (for new)
+  ///           POST /api/openvpn/client_overwrites/set/{uuid} (for update)
+  /// Payload: {"cso": {...}}
+  ///
+  /// Parameters:
+  /// - [uuid]: Override UUID (null or empty string for new override)
+  /// - [override]: Client override configuration
+  ///
+  /// Returns: API response map (may contain validation errors)
+  Future<Map<String, dynamic>> setClientOverride(
+    String? uuid,
+    OpenvpnClientOverride override,
+  ) async {
+    ensureInitialized();
+
+    try {
+      final payload = {'cso': override.toJson()};
+      
+      // Convert to JSON string manually to preserve string types
+      // This prevents Dio from converting "1" and "0" strings to integers
+      final jsonString = jsonEncode(payload);
+
+      // Determine endpoint based on whether this is add or update
+      final String endpoint;
+      if (uuid == null || uuid.isEmpty) {
+        // New override - use add endpoint
+        endpoint = '/openvpn/client_overwrites/add/';
+      } else {
+        // Existing override - use set endpoint with UUID
+        endpoint = '/openvpn/client_overwrites/set/$uuid';
+      }
+      
+      final response = await dio.post(
+        endpoint,
+        data: jsonString,
+        options: Options(
+          contentType: Headers.jsonContentType,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+
+        // Check for validation errors
+        if (data.containsKey('result') && data['result'] == 'failed') {
+          final validations = data['validations'] as Map<String, dynamic>?;
+          final message = data['message'];
+
+          if (validations != null && validations.isNotEmpty) {
+            final errors = validations.entries
+                .map((e) => '${e.key}: ${e.value}')
+                .join(', ');
+            throw ApiException('Validation failed: $errors', response.statusCode);
+          }
+
+          throw ApiException(
+            'Failed to set client override: ${message ?? 'Unknown error'}',
+            response.statusCode,
+          );
+        }
+
+        return data;
+      } else {
+        throw ApiException('Failed to set client override', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Delete a client specific override
+  ///
+  /// Endpoint: POST /api/openvpn/client_overwrites/del/{uuid}
+  ///
+  /// Parameters:
+  /// - [uuid]: Override UUID to delete
+  ///
+  /// Returns: API response map
+  Future<Map<String, dynamic>> deleteClientOverride(String uuid) async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post(
+        '/openvpn/client_overwrites/del/$uuid',
+        data: {}, // Empty payload as required by API
+      );
+
+      if (response.statusCode == 200) {
+        final result = response.data as Map<String, dynamic>;
+        return result;
+      } else {
+        throw ApiException('Failed to delete client override', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Toggle client specific override enabled/disabled state
+  ///
+  /// Endpoint: POST /api/openvpn/client_overwrites/toggle/{uuid}
+  ///
+  /// Parameters:
+  /// - [uuid]: Override UUID to toggle
+  ///
+  /// Returns: API response map
+  Future<Map<String, dynamic>> toggleClientOverride(String uuid) async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post(
+        '/openvpn/client_overwrites/toggle/$uuid',
+        data: {},
+      );
+
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        throw ApiException('Failed to toggle client override', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
 }
-
-

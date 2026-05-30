@@ -36,6 +36,8 @@ import '../models/wol_host.dart';
 import '../models/openvpn_instance.dart';
 import '../models/openvpn_search_response.dart';
 import '../models/openvpn_static_key.dart';
+import '../models/openvpn_client_override.dart';
+import '../models/openvpn_client_override_search_response.dart';
 import '../utils/constants.dart';
 
 // Import all specialized services
@@ -469,6 +471,28 @@ class OPNsenseApiService {
   Future<Map<String, dynamic>> updateOpenvpnStaticKey(String keyid, OpenvpnStaticKey key) => _openvpnService.updateStaticKey(keyid, key);
   
   Future<Map<String, dynamic>> deleteOpenvpnStaticKey(String keyid) => _openvpnService.deleteStaticKey(keyid);
+
+  // Client Specific Override methods
+  Future<OpenvpnClientOverrideSearchResponse> searchClientOverrides({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    String? searchPhrase,
+  }) => _openvpnService.searchClientOverrides(
+        current: current,
+        rowCount: rowCount,
+        sort: sort,
+        searchPhrase: searchPhrase,
+      );
+
+  Future<OpenvpnClientOverride> getClientOverride(String? uuid) => _openvpnService.getClientOverride(uuid);
+
+  Future<Map<String, dynamic>> setClientOverride(String uuid, OpenvpnClientOverride override) =>
+      _openvpnService.setClientOverride(uuid, override);
+
+  Future<Map<String, dynamic>> deleteClientOverride(String uuid) => _openvpnService.deleteClientOverride(uuid);
+
+  Future<Map<String, dynamic>> toggleClientOverride(String uuid) => _openvpnService.toggleClientOverride(uuid);
 
   // ============================================================================
   // Tailscale Service Delegations

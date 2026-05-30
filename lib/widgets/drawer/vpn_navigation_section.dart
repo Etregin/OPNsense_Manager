@@ -251,8 +251,14 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
           title: 'Client Overrides',
           currentRoute: widget.currentRoute,
           targetRoute: 'openvpn_client_overrides',
+          onTap: () {
+            if (widget.currentRoute != 'openvpn_client_overrides') {
+              Navigator.of(context).pushReplacementNamed('/openvpn/client-overrides');
+            } else {
+              Navigator.pop(context);
+            }
+          },
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
-          onTap: () => NavigationService.showComingSoon(context, 'OpenVPN Client Overrides'),
         ),
       ],
     );
