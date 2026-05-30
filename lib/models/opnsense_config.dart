@@ -19,6 +19,7 @@
 
 import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
+import 'dhcp_server_type.dart';
 
 part 'opnsense_config.g.dart';
 
@@ -30,6 +31,11 @@ class OPNsenseConfig {
   final String apiKey;
   final String apiSecret;
   final bool useHttps;
+  final bool allowSelfSignedCerts;
+  
+  /// DHCP server type (dnsmasq, ISC, or KEA)
+  @JsonKey(defaultValue: DhcpServerType.dnsmasq)
+  final DhcpServerType dhcpServerType;
 
   OPNsenseConfig({
     required this.host,
@@ -37,6 +43,8 @@ class OPNsenseConfig {
     required this.apiKey,
     required this.apiSecret,
     this.useHttps = true,
+    this.allowSelfSignedCerts = false,
+    this.dhcpServerType = DhcpServerType.dnsmasq,
   });
 
   /// Get base URL for API requests
@@ -66,6 +74,8 @@ class OPNsenseConfig {
     String? apiKey,
     String? apiSecret,
     bool? useHttps,
+    bool? allowSelfSignedCerts,
+    DhcpServerType? dhcpServerType,
   }) {
     return OPNsenseConfig(
       host: host ?? this.host,
@@ -73,12 +83,15 @@ class OPNsenseConfig {
       apiKey: apiKey ?? this.apiKey,
       apiSecret: apiSecret ?? this.apiSecret,
       useHttps: useHttps ?? this.useHttps,
+      allowSelfSignedCerts:
+          allowSelfSignedCerts ?? this.allowSelfSignedCerts,
+      dhcpServerType: dhcpServerType ?? this.dhcpServerType,
     );
   }
 
   @override
   String toString() {
-    return 'OPNsenseConfig(host: $host, port: $port, useHttps: $useHttps)';
+    return 'OPNsenseConfig(host: $host, port: $port, useHttps: $useHttps, allowSelfSignedCerts: $allowSelfSignedCerts, dhcpServerType: ${dhcpServerType.toStringValue()})';
   }
 
   @override
@@ -90,7 +103,9 @@ class OPNsenseConfig {
         other.port == port &&
         other.apiKey == apiKey &&
         other.apiSecret == apiSecret &&
-        other.useHttps == useHttps;
+        other.useHttps == useHttps &&
+        other.allowSelfSignedCerts == allowSelfSignedCerts &&
+        other.dhcpServerType == dhcpServerType;
   }
 
   @override
@@ -99,7 +114,9 @@ class OPNsenseConfig {
         port.hashCode ^
         apiKey.hashCode ^
         apiSecret.hashCode ^
-        useHttps.hashCode;
+        useHttps.hashCode ^
+        allowSelfSignedCerts.hashCode ^
+        dhcpServerType.hashCode;
   }
 }
 

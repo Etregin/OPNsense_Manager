@@ -160,6 +160,21 @@ class Validators {
     return value.trim().isNotEmpty;
   }
   
+  /// Validate MAC address format
+  static bool isValidMacAddress(String mac) {
+    if (mac.isEmpty) return false;
+    
+    // MAC address patterns:
+    // - AA:BB:CC:DD:EE:FF
+    // - AA-BB-CC-DD-EE-FF
+    // - AABBCCDDEEFF
+    final macPattern = RegExp(
+      r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$|^([0-9A-Fa-f]{12})$'
+    );
+    
+    return macPattern.hasMatch(mac);
+  }
+  
   /// Validate quota limit (must be positive number)
   static bool isValidQuotaLimit(String value) {
     if (value.isEmpty) return false;
@@ -260,6 +275,24 @@ class Validators {
     final l10n = AppLocalizations.of(context)!;
     if (value == null || value.trim().isEmpty) {
       return l10n.fieldIsRequired(fieldName);
+    }
+    return null;
+  }
+  
+  /// Get error message for MAC address validation
+  static String? validateMacAddress(String? value, [BuildContext? context]) {
+    // If context is not provided, return a generic error (not recommended for production)
+    if (context == null) {
+      if (value == null || value.isEmpty) return 'MAC address is required';
+      if (!isValidMacAddress(value)) return 'Invalid MAC address format';
+      return null;
+    }
+    
+    if (value == null || value.isEmpty) {
+      return 'MAC address is required';
+    }
+    if (!isValidMacAddress(value)) {
+      return 'Invalid MAC address format (e.g., AA:BB:CC:DD:EE:FF)';
     }
     return null;
   }

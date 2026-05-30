@@ -19,7 +19,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/dhcp_lease.dart';
+import '../models/dhcp_server_type.dart';
 import '../services/demo_api_service.dart';
+import '../services/profile_service.dart';
 import '../widgets/app_drawer.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/constants.dart';
@@ -43,10 +45,12 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
   String _filterStatus = 'all'; // all, active, expired
   String _sortBy = 'hostname'; // hostname, ip, expiry
   bool _sortAscending = true;
+  DhcpServerType? _dhcpServerType;
 
   @override
   void initState() {
     super.initState();
+    _loadDhcpServerType();
     _loadLeases();
     _searchController.addListener(_onSearchChanged);
   }
@@ -118,6 +122,20 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
       }
       return _sortAscending ? comparison : -comparison;
     });
+  }
+
+  Future<void> _loadDhcpServerType() async {
+    try {
+      final profileService = ProfileService();
+      final activeProfile = await profileService.getActiveProfile();
+      if (activeProfile != null && mounted) {
+        setState(() {
+          _dhcpServerType = activeProfile.dhcpServerType;
+        });
+      }
+    } catch (e) {
+      // Silently fail, will use default
+    }
   }
 
   Future<void> _loadLeases() async {
@@ -213,7 +231,7 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
                       size: 20,
                     ),
                     const SizedBox(width: 8),
-                    const Text('Expiry Time'),
+                    Text(l10n.expiryTime),
                   ],
                 ),
               ),
@@ -285,23 +303,48 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
             ),
           ),
           
-          // Lease count
+          // DHCP Server Type and Lease count
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppConstants.standardPadding),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.dns,
-                  size: 16,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  l10n.leasesCount(_filteredLeases.length, _leases.length),
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontWeight: FontWeight.bold,
+                if (_dhcpServerType != null) ...[
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.settings_ethernet,
+                        size: 16,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
+                      const SizedBox(width: 8),
+                      Text(
+                        l10n.dhcpServerLabel(_dhcpServerType!.getDisplayName(context)),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontWeight: FontWeight.w500,
+                            ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                ],
+                Row(
+                  children: [
+                    Icon(
+                      Icons.dns,
+                      size: 16,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      l10n.leasesCount(_filteredLeases.length, _leases.length),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -574,6 +617,7 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
   }
 
   String _formatDateTime(DateTime dateTime) {
+    final l10n = AppLocalizations.of(context)!;
     final now = DateTime.now();
     final difference = dateTime.difference(now);
     
@@ -581,24 +625,24 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
       // Expired
       final absDiff = difference.abs();
       if (absDiff.inDays > 0) {
-        return '${absDiff.inDays}d ago';
+        return l10n.daysAgo(absDiff.inDays);
       } else if (absDiff.inHours > 0) {
-        return '${absDiff.inHours}h ago';
+        return l10n.hoursAgo(absDiff.inHours.toString());
       } else if (absDiff.inMinutes > 0) {
-        return '${absDiff.inMinutes}m ago';
+        return l10n.minutesAgo(absDiff.inMinutes.toString());
       } else {
-        return 'just now';
+        return l10n.justNow;
       }
     } else {
       // Active
       if (difference.inDays > 0) {
-        return 'in ${difference.inDays}d';
+        return l10n.inDays(difference.inDays.toString());
       } else if (difference.inHours > 0) {
-        return 'in ${difference.inHours}h';
+        return l10n.inHours(difference.inHours.toString());
       } else if (difference.inMinutes > 0) {
-        return 'in ${difference.inMinutes}m';
+        return l10n.inMinutes(difference.inMinutes.toString());
       } else {
-        return 'soon';
+        return l10n.soon;
       }
     }
   }
@@ -633,9 +677,9 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
               _buildDetailRow(l10n.ipAddress, lease.address),
               _buildDetailRow(l10n.macAddress, lease.macAddress),
               if (lease.manufacturer != null)
-                _buildDetailRow('Manufacturer', lease.manufacturer!),
+                _buildDetailRow(l10n.manufacturer, lease.manufacturer!),
               if (lease.interface != null)
-                _buildDetailRow('Interface', lease.interface!),
+                _buildDetailRow(l10n.interface, lease.interface!),
               const Divider(height: 24),
               _buildDetailRow(
                 l10n.status,
@@ -643,17 +687,17 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
               ),
               if (lease.startDateTime != null)
                 _buildDetailRow(
-                  'Start Time',
+                  l10n.startTime,
                   dateFormat.format(lease.startDateTime!),
                 ),
               if (lease.expiryDateTime != null)
                 _buildDetailRow(
-                  'Expiry Time',
+                  l10n.expiryTime,
                   dateFormat.format(lease.expiryDateTime!),
                 ),
               if (lease.endDateTime != null)
                 _buildDetailRow(
-                  'End Time',
+                  l10n.endTime,
                   dateFormat.format(lease.endDateTime!),
                 ),
             ],

@@ -21,11 +21,22 @@
 
 If you find this project useful, consider supporting its development:
 
-[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20me-ff5e5b?logo=kofi&logoColor=green)](https://ko-fi.com/Etregin)
+### 💰 Crypto Donations
+
+#### USDT / USDC (BEP20, BSC, ERC20, BASE, POL, ARBITRUM, AVAXC) : 
+
+```
+0xe0b9015117a4a69131481c2e9c1553dde839df18
+```
+![USDT QR Code](https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=0xe0b9015117a4a69131481c2e9c1553dde839df18)
+
+#### Also Binance Gift cards can work by sending it to the email etreginwow@gmail.com
+
 
 ## 📱 Get the App
 
-[![Google Play](https://img.shields.io/badge/Google_Play-Download-414141?logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.dt.opnsense_manager)
+[![Google Play](https://img.shields.io/badge/Google_Play-Download-00C853?logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.dt.opnsense_manager)
+[![App Store](https://img.shields.io/badge/App_Store-Download-0D96F6?logo=app-store&logoColor=white)](https://apps.apple.com/us/app/opnsense-manager/id6767634059)
 
 </div>
 
@@ -58,6 +69,7 @@ If you find this project useful, consider supporting its development:
         <li><a href="#additional-features">🔄 Additional Features</a></li>
       </ul>
     <li><a href="#security-considerations">🛡️ Security Considerations</a></li>
+    <li><a href="#architecture">🏗️ Architecture</a></li>
     <li><a href="#roadmap">🗺️ Roadmap</a></li>
     <li><a href="#contributing">🤝 Contributing</a></li>
     <li><a href="#troubleshooting">🐛 Troubleshooting</a></li>
@@ -76,10 +88,10 @@ OPNsense is a professional Flutter mobile application for managing OPNsense fire
 
 I could not find an mobile application that can do what I needed so I decided to create my own and share it with the community.
 
-![Flutter](https://img.shields.io/badge/Flutter-3.10.4-02569B?logo=flutter)
-![Dart](https://img.shields.io/badge/Dart-3.10.4-0175C2?logo=dart)
-![License](https://img.shields.io/badge/License-GPLv3-blue)
-![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-lightgrey)
+[![Flutter](https://img.shields.io/badge/Flutter-3.41.8-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-3.11.5-0175C2?logo=dart&logoColor=white)](https://dart.dev)
+[![License](https://img.shields.io/badge/License-GPLv3-blue)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-lightgrey?logo=flutter&logoColor=white)](https://flutter.dev/multi-platform)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -294,7 +306,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed build instructions.
 <a id="roadmap"></a>
 ## 🗺️ Roadmap
 - [ ] Get Firewall rules to work with ALL rules
-- [x] **VPN connection management** (OpenVPN, Tailscale) - *For additional VPN types (WireGuard, IPsec), please open a feature request*
+- [x] **VPN connection management** (OpenVPN, Tailscale, WireGuard)
 - [ ] Push notifications for system alerts
 - [ ] Backup/restore configuration functionality
 - [ ] Package management interface
@@ -313,6 +325,63 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed build instructions.
 - [x] **Export/import profiles** - Export and import connection profiles as JSON files
 
 See the [open issues](issues-url) for a full list of proposed features (and known issues).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+<a id="architecture"></a>
+## 🏗️ Architecture
+
+This project follows modern Flutter best practices with a clean, maintainable architecture:
+
+### MVVM Pattern
+- **Models**: Data classes with JSON serialization (`lib/models/`)
+- **Views**: UI components and screens (`lib/screens/`, `lib/widgets/`)
+- **ViewModels**: Business logic and state management (`lib/viewmodels/`)
+
+### Key Features
+- ✅ **Modular Design**: Reusable components and services
+- ✅ **Separation of Concerns**: Clear boundaries between UI and business logic
+- ✅ **Base Classes**: `BaseFormViewModel` and `BaseListViewModel` for consistency
+- ✅ **Service Layer**: Organized services following Single Responsibility Principle
+- ✅ **Widget Components**: 42+ reusable UI components
+- ✅ **Type Safety**: Full Dart null-safety support
+
+### Project Structure
+```
+lib/
+├── models/           # Data models with JSON serialization
+├── screens/          # Main screen widgets
+├── viewmodels/       # Business logic and state management
+│   └── base/        # Base ViewModel classes
+├── widgets/          # Reusable UI components
+│   ├── common/      # Shared widgets
+│   ├── login/       # Login-specific widgets
+│   ├── dashboard/   # Dashboard widgets
+│   ├── firewall/    # Firewall management widgets
+│   ├── settings/    # Settings widgets
+│   ├── tailscale/   # Tailscale widgets
+│   ├── vpn/         # VPN widgets
+│   └── wireguard/   # WireGuard widgets
+├── services/         # API and business services
+│   ├── base/        # Base service classes
+│   ├── demo/        # Demo mode services
+│   ├── firewall/    # Firewall services
+│   ├── network/     # Network services
+│   ├── profile/     # Profile management
+│   ├── settings/    # Settings services
+│   ├── system/      # System services
+│   └── vpn/         # VPN services
+└── utils/           # Utility functions and validators
+```
+
+### Code Quality
+- **Static Analysis**: 0 issues with `flutter analyze`
+- **Code Reduction**: ~2,827 lines reduced through refactoring
+- **Maintainability**: Average file size reduced from ~350 to ~250 lines
+- **Documentation**: Comprehensive inline documentation
+
+For detailed information about the architecture and refactoring process, see [REFACTORING_SUMMARY.md](REFACTORING_SUMMARY.md).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

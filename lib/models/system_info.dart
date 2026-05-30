@@ -31,6 +31,7 @@ class SystemInfo {
   final double cpuUsage; // percentage
   final int memoryUsed; // in bytes
   final int memoryTotal; // in bytes
+  final int memoryArc; // ARC (Adaptive Replacement Cache) in bytes
   final int diskUsed; // in bytes
   final int diskTotal; // in bytes
   
@@ -50,6 +51,7 @@ class SystemInfo {
     required this.cpuUsage,
     required this.memoryUsed,
     required this.memoryTotal,
+    this.memoryArc = 0,
     this.diskUsed = 0,
     this.diskTotal = 0,
     this.type = 'opnsense',
@@ -60,15 +62,25 @@ class SystemInfo {
     this.updatedOn,
   });
 
-  /// Get memory usage percentage
+  /// Get actual memory used (excluding ARC)
+  int get memoryActualUsed {
+    return memoryUsed - memoryArc;
+  }
+
+  /// Get memory usage percentage (excluding ARC from calculation)
   double get memoryUsagePercentage {
     if (memoryTotal == 0) return 0;
-    return (memoryUsed / memoryTotal) * 100;
+    return (memoryActualUsed / memoryTotal) * 100;
   }
 
   /// Get memory used in GB
   double get memoryUsedGB {
     return memoryUsed / (1024 * 1024 * 1024);
+  }
+
+  /// Get ARC memory in GB
+  double get memoryArcGB {
+    return memoryArc / (1024 * 1024 * 1024);
   }
 
   /// Get memory total in GB
@@ -108,6 +120,7 @@ class SystemInfo {
     double? cpuUsage,
     int? memoryUsed,
     int? memoryTotal,
+    int? memoryArc,
     int? diskUsed,
     int? diskTotal,
     String? type,
@@ -125,6 +138,7 @@ class SystemInfo {
       cpuUsage: cpuUsage ?? this.cpuUsage,
       memoryUsed: memoryUsed ?? this.memoryUsed,
       memoryTotal: memoryTotal ?? this.memoryTotal,
+      memoryArc: memoryArc ?? this.memoryArc,
       diskUsed: diskUsed ?? this.diskUsed,
       diskTotal: diskTotal ?? this.diskTotal,
       type: type ?? this.type,

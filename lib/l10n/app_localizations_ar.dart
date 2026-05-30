@@ -9,314 +9,536 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appName => 'مدير OPNsense';
+  String get about => 'حول';
 
   @override
-  String get dashboard => 'لوحة التحكم';
+  String get aboutDescription =>
+      'تطبيق Flutter احترافي لإدارة جدران حماية OPNsense.';
 
   @override
-  String get firewallRules => 'قواعد الجدار الناري';
+  String get aboutImportExport => 'حول الاستيراد والتصدير';
 
   @override
-  String get firewallLogs => 'سجلات الجدار الناري';
+  String get acceptDns => 'قبول DNS';
 
   @override
-  String get systemInfo => 'معلومات النظام';
+  String get acceptDnsDescription => 'استخدام خوادم DNS المقدمة من Tailscale';
 
   @override
-  String get vpnConnections => 'اتصالات VPN';
+  String get acceptRoutes => 'قبول المسارات';
 
   @override
-  String get settings => 'الإعدادات';
+  String get acceptSubnetRoutes => 'قبول مسارات الشبكة الفرعية';
 
   @override
-  String get hostname => 'اسم المضيف';
+  String get acceptSubnetRoutesDescription =>
+      'قبول المسارات المعلن عنها من العقد الأخرى';
 
   @override
-  String get versionLabel => 'الإصدار';
+  String get action => 'الإجراء';
 
   @override
-  String get platform => 'المنصة';
+  String actionService(String action) {
+    return '$action الخدمة';
+  }
 
   @override
-  String get uptime => 'وقت التشغيل';
+  String actioningService(String action, String name) {
+    return '$action $name...';
+  }
 
   @override
-  String get cpuUsage => 'استخدام المعالج';
+  String get activate => 'تفعيل';
 
   @override
-  String get memoryUsage => 'استخدام الذاكرة';
+  String activatedProfile(String name) {
+    return 'تم تفعيل الملف التعريفي: $name';
+  }
 
   @override
-  String get services => 'الخدمات';
+  String get activatingProfile => 'جاري تفعيل الملف التعريفي...';
 
   @override
-  String get gateways => 'البوابات';
+  String get activationFailed => 'فشل التفعيل';
 
   @override
-  String get running => 'قيد التشغيل';
+  String get active => 'نشط';
 
   @override
-  String get stopped => 'متوقف';
+  String get activeDevices => 'الأجهزة النشطة';
 
   @override
-  String get online => 'متصل';
+  String activeHosts(int count) {
+    return '$count مضيف نشط';
+  }
 
   @override
-  String get offline => 'غير متصل';
+  String get activeProfile => 'الملف الشخصي النشط';
 
   @override
-  String get start => 'تشغيل';
+  String get add => 'إضافة';
 
   @override
-  String get stop => 'إيقاف';
+  String get addButton => 'إضافة';
 
   @override
-  String get restart => 'إعادة تشغيل';
+  String get addClientOverride => 'إضافة تجاوز العميل';
 
   @override
-  String get enable => 'تفعيل';
+  String get addConnection => 'إضافة اتصال';
 
   @override
-  String get disable => 'تعطيل';
+  String get addConnectionEndpoint => 'الرجاء إضافة نقطة اتصال واحدة على الأقل';
 
   @override
-  String get delete => 'حذف';
+  String get addDnsServer => 'إضافة خادم DNS';
 
   @override
-  String get edit => 'تعديل';
+  String get addHost => 'إضافة مضيف';
 
   @override
-  String get save => 'حفظ';
+  String get addHostToGetStarted => 'أضف مضيفاً للبدء';
 
   @override
-  String get cancel => 'إلغاء';
+  String get addInstance => 'إضافة مثيل';
 
   @override
-  String get ok => 'موافق';
+  String get addOpenVpnInstance => 'إضافة مثيل OpenVPN';
 
   @override
-  String get yes => 'نعم';
+  String get addOverride => 'إضافة تجاوز';
 
   @override
-  String get no => 'لا';
+  String get addProfile => 'إضافة ملف تعريف';
 
   @override
-  String get close => 'إغلاق';
+  String get addProfileToManageInstances =>
+      'أضف ملفاً تعريفياً لإدارة مثيلات OPNsense';
 
   @override
-  String get refresh => 'تحديث';
+  String get addStaticKey => 'إضافة مفتاح ثابت';
 
   @override
-  String get apply => 'تطبيق';
+  String get addStaticKeyTooltip => 'إضافة مفتاح ثابت';
 
   @override
-  String get login => 'تسجيل الدخول';
+  String get addSubnet => 'إضافة شبكة فرعية';
 
   @override
-  String get logout => 'تسجيل الخروج';
+  String get addTunnelAddress => 'إضافة عنوان نفق';
 
   @override
-  String get host => 'المضيف';
+  String get additionalInformation => 'معلومات إضافية';
 
   @override
-  String get port => 'المنفذ';
+  String get address => 'العنوان';
 
   @override
-  String get apiKey => 'مفتاح API';
+  String get addressIsRequired => 'العنوان مطلوب';
 
   @override
-  String get apiSecret => 'سر API';
+  String get advertiseExitNode => 'الإعلان عن عقدة الخروج';
 
   @override
-  String get useHttps => 'استخدام HTTPS';
+  String get advertiseExitNodeDescription =>
+      'السماح للأجهزة الأخرى بالتوجيه عبر هذه العقدة';
+
+  @override
+  String get advertiseRoutes => 'الإعلان عن المسارات';
+
+  @override
+  String get alert => 'تنبيه';
+
+  @override
+  String get aliasDeletedSuccessfully => 'تم حذف الاسم المستعار بنجاح';
+
+  @override
+  String get aliasDisabledSuccessfully => 'تم تعطيل الاسم المستعار بنجاح';
+
+  @override
+  String get aliasEnabledSuccessfully => 'تم تفعيل الاسم المستعار بنجاح';
+
+  @override
+  String get aliases => 'الأسماء المستعارة';
+
+  @override
+  String get all => 'الكل';
+
+  @override
+  String get allConnectionsSuccessful => 'تم اختبار جميع الاتصالات بنجاح';
+
+  @override
+  String get allDetailsCopiedToClipboard => 'تم نسخ جميع التفاصيل إلى الحافظة';
+
+  @override
+  String get allRoles => 'جميع الأدوار';
+
+  @override
+  String get allSettingsSavedSuccessfully => 'تم حفظ جميع الإعدادات بنجاح';
+
+  @override
+  String get allStatus => 'جميع الحالات';
+
+  @override
+  String get allTypes => 'جميع الأنواع';
+
+  @override
+  String get allVPNs => 'جميع VPN';
 
   @override
   String get allowSelfSigned => 'السماح بالشهادة الموقعة ذاتياً';
 
   @override
-  String get testConnection => 'اختبار الاتصال';
+  String get allowSelfSignedCertificates => 'السماح بالشهادات الموقعة ذاتياً';
 
   @override
-  String get connectionSuccessful => 'نجح الاتصال';
+  String get allowSelfSignedCertificatesDescription =>
+      'قبول شهادات SSL الموقعة ذاتياً';
+
+  @override
+  String get allowedIps => 'عناوين IP المسموح بها';
+
+  @override
+  String get allowedIpsLabel => 'عناوين IP المسموح بها';
+
+  @override
+  String get any => 'أي';
+
+  @override
+  String get anyIpAddressCidrOrAlias => 'أي، عنوان IP، CIDR، أو اسم مستعار';
+
+  @override
+  String get anyPortNumberRangeOrAlias => 'أي، رقم منفذ، نطاق، أو اسم مستعار';
+
+  @override
+  String apiError(String message) {
+    return 'خطأ في API: $message';
+  }
+
+  @override
+  String get apiKey => 'مفتاح API';
+
+  @override
+  String get apiKeyIsRequired => 'مفتاح API مطلوب';
+
+  @override
+  String get apiKeyLabel => 'مفتاح API';
+
+  @override
+  String get apiSecret => 'سر API';
+
+  @override
+  String get apiSecretIsRequired => 'سر API مطلوب';
+
+  @override
+  String get apiSecretLabel => 'سر API';
+
+  @override
+  String get appName => 'مدير OPNsense';
+
+  @override
+  String get appearance => 'المظهر';
+
+  @override
+  String get applicationLegalese =>
+      '© 2026 OPNsense Manager\n\nمرخص بموجب رخصة جنو العمومية الإصدار 3.0\n\nهذا البرنامج مجاني: يمكنك إعادة توزيعه و/أو تعديله بموجب شروط رخصة جنو العمومية كما نشرتها مؤسسة البرمجيات الحرة، سواء الإصدار 3 من الرخصة، أو (حسب اختيارك) أي إصدار لاحق.';
+
+  @override
+  String get apply => 'تطبيق';
+
+  @override
+  String get architecture => 'البنية';
+
+  @override
+  String get atLeastOneTunnelAddressRequired =>
+      'مطلوب عنوان نفق واحد على الأقل';
+
+  @override
+  String get authSettingsSavedSuccessfully => 'تم حفظ إعدادات المصادقة بنجاح';
+
+  @override
+  String get authTlsAuthentication => 'Auth (مصادقة TLS)';
+
+  @override
+  String get authTokenGeneratedSuccessfully => 'تم إنشاء رمز المصادقة بنجاح';
+
+  @override
+  String get authenticate => 'مصادقة';
+
+  @override
+  String get authenticateToUnlock => 'المصادقة لفتح OPNsense Manager';
+
+  @override
+  String get authentication => 'المصادقة';
+
+  @override
+  String get authenticationFailed => 'فشلت المصادقة';
+
+  @override
+  String get authenticationRequired => 'المصادقة مطلوبة';
+
+  @override
+  String get authenticationSettings => 'إعدادات المصادقة';
+
+  @override
+  String get authorizedPeers => 'الأقران المصرح لهم';
+
+  @override
+  String get autoRefresh => 'التحديث التلقائي';
+
+  @override
+  String get backendState => 'حالة الخلفية';
+
+  @override
+  String get bandwidthLimit => 'حد النطاق الترددي';
+
+  @override
+  String get bandwidthLimitMbps => 'حد النطاق الترددي (ميجابت في الثانية)';
+
+  @override
+  String get base64EncodedPrivateKeyKeepSecret =>
+      'مفتاح خاص مشفر بـ Base64 (احتفظ به سرياً!)';
+
+  @override
+  String get base64EncodedPublicKey => 'مفتاح عام مشفر بـ Base64';
+
+  @override
+  String get biometricAuth => 'المصادقة البيومترية';
+
+  @override
+  String get biometricAuthFailed => 'فشلت المصادقة البيومترية أو تم إلغاؤها';
+
+  @override
+  String get biometricLockDisabled => 'تم تعطيل القفل البيومتري';
+
+  @override
+  String get biometricLockEnabled => 'تم تفعيل القفل البيومتري';
+
+  @override
+  String biometricLockTitle(String biometricType) {
+    return 'قفل $biometricType';
+  }
+
+  @override
+  String get biometricNotAvailable =>
+      'المصادقة البيومترية غير متوفرة على هذا الجهاز';
+
+  @override
+  String get block => 'حظر';
+
+  @override
+  String get blockHost => 'حظر المضيف';
+
+  @override
+  String blockHostConfirmation(String hostname, String ip) {
+    return 'هل أنت متأكد من حظر $hostname ($ip)؟\n\nسيؤدي هذا إلى إنشاء قاعدة جدار ناري لحظر جميع حركة المرور من هذا المضيف.';
+  }
+
+  @override
+  String get blockingHost => 'جاري حظر المضيف...';
+
+  @override
+  String get bytesReceived => 'البايتات المستلمة';
+
+  @override
+  String get bytesSent => 'البايتات المرسلة';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get cancelButton => 'إلغاء';
+
+  @override
+  String get cannotBeUndone => 'لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String get cannotDeleteLastConnection => 'لا يمكن حذف نقطة الاتصال الأخيرة';
+
+  @override
+  String get cannotDeleteLastConnectionTooltip =>
+      'لا يمكن حذف نقطة الاتصال الأخيرة';
+
+  @override
+  String get carpVhidToDepend => 'CARP VHID للاعتماد عليه';
+
+  @override
+  String get categories => 'الفئات';
+
+  @override
+  String get changePIN => 'تغيير PIN';
+
+  @override
+  String get changePinTitle => 'تغيير PIN';
+
+  @override
+  String get changesDiscarded => 'تم تجاهل التغييرات';
+
+  @override
+  String get checkIfWireguardIsConfiguredAndRunning =>
+      'تحقق من تكوين WireGuard وتشغيله';
+
+  @override
+  String get chooseExportLocation => 'اختر موقع التصدير';
+
+  @override
+  String get cidrNotationRequired => 'تدوين CIDR مطلوب';
+
+  @override
+  String get clearLogs => 'مسح السجلات';
+
+  @override
+  String get clearSelection => 'مسح التحديد';
+
+  @override
+  String get client => 'عميل';
+
+  @override
+  String get clientAddress => 'عنوان العميل';
+
+  @override
+  String get clientName => 'اسم العميل';
+
+  @override
+  String get clientOverrides => 'تجاوزات العميل';
+
+  @override
+  String get clientSettings => 'إعدادات العميل';
+
+  @override
+  String get clientSpecificOverrides => 'تجاوزات خاصة بالعميل';
+
+  @override
+  String get clientX509CommonNameHelper =>
+      'أدخل الاسم الشائع X.509 للعميل هنا.';
+
+  @override
+  String get close => 'إغلاق';
+
+  @override
+  String get commonName => 'الاسم الشائع';
+
+  @override
+  String get commonNameRequired => 'الاسم الشائع مطلوب';
+
+  @override
+  String commonNameWithValue(String value) {
+    return 'الاسم الشائع: $value';
+  }
+
+  @override
+  String get configurationAppliedSuccessfully => 'تم تطبيق التكوين بنجاح';
+
+  @override
+  String get configurationPreview => 'معاينة التكوين';
+
+  @override
+  String get configureAdvertisedSubnets => 'تكوين الشبكات الفرعية المعلن عنها';
+
+  @override
+  String get configured => 'تم التكوين';
+
+  @override
+  String get confirmDelete => 'تأكيد الحذف';
+
+  @override
+  String confirmDeleteInstance(String name) {
+    return 'هل أنت متأكد من حذف المثيل \"$name\"؟ لا يمكن التراجع عن هذا الإجراء.';
+  }
+
+  @override
+  String confirmDeleteOverride(String name) {
+    return 'هل أنت متأكد من حذف التجاوز لـ \"$name\"؟ لا يمكن التراجع عن هذا الإجراء.';
+  }
+
+  @override
+  String confirmDeleteStaticKey(String name) {
+    return 'هل أنت متأكد من حذف المفتاح الثابت \"$name\"؟ لا يمكن التراجع عن هذا الإجراء.';
+  }
+
+  @override
+  String get confirmNewPin => 'تأكيد رمز PIN الجديد';
+
+  @override
+  String get confirmPIN => 'تأكيد PIN';
+
+  @override
+  String get confirmPin => 'تأكيد رمز PIN';
+
+  @override
+  String confirmServiceAction(String action, String name) {
+    return '$action \"$name\"؟';
+  }
+
+  @override
+  String get connect => 'اتصال';
+
+  @override
+  String get connectToYourOPNsenseFirewall =>
+      'اتصل بجدار الحماية OPNsense الخاص بك';
+
+  @override
+  String get connectVPN => 'اتصال VPN';
+
+  @override
+  String get connected => 'متصل';
+
+  @override
+  String get connectedSince => 'متصل منذ';
+
+  @override
+  String connectedSuccessfullyVia(String endpoint) {
+    return 'تم الاتصال بنجاح عبر: $endpoint';
+  }
+
+  @override
+  String connectingVPN(String name) {
+    return 'جاري الاتصال بـ $name...';
+  }
+
+  @override
+  String get connectionBlocking => 'حظر الاتصال';
+
+  @override
+  String get connectionBlockingSubtitle =>
+      'حظر اتصال العميل هذا بناءً على اسمه الشائع. لا تستخدم هذا الخيار لتعطيل عميل بشكل دائم بسبب مفتاح أو كلمة مرور مخترقة. استخدم CRL (قائمة إلغاء الشهادات) بدلاً من ذلك.';
+
+  @override
+  String get connectionDetails => 'تفاصيل الاتصال';
+
+  @override
+  String get connectionEndpoints => 'نقاط الاتصال';
+
+  @override
+  String get connectionEndpointsHelp =>
+      'إدارة نقاط اتصال متعددة لهذا الملف الشخصي. سيحاول التطبيق كل نقطة نهاية بالترتيب حتى يتم إنشاء اتصال ناجح.';
 
   @override
   String get connectionFailed =>
       'فشل الاتصال. تحقق من سجلات وحدة التحكم للحصول على التفاصيل.\n\nالمشاكل الشائعة:\n• الجهاز ليس على نفس الشبكة مثل OPNsense\n• عنوان IP أو المنفذ خاطئ\n• جدار الحماية يحظر الاتصال\n• بيانات اعتماد API غير صالحة';
 
   @override
-  String get profiles => 'الملفات الشخصية';
+  String connectionFailedError(String error) {
+    return 'فشل الاتصال: $error';
+  }
 
   @override
-  String get addProfile => 'إضافة ملف تعريف';
+  String get connectionInformation => 'معلومات الاتصال';
 
   @override
-  String get editProfile => 'تعديل الملف الشخصي';
+  String get connectionStatus => 'حالة الاتصال';
 
   @override
-  String get deleteProfile => 'حذف الملف الشخصي';
+  String get connectionSuccessful => 'نجح الاتصال';
 
   @override
-  String get profileName => 'اسم الملف الشخصي';
+  String get connectionTestFailed => 'فشل اختبار الاتصال';
 
   @override
-  String get activeProfile => 'الملف الشخصي النشط';
+  String get connectionTestResults => 'نتائج اختبار الاتصال';
 
   @override
-  String get switchProfile => 'تبديل الملف الشخصي';
-
-  @override
-  String get exportProfiles => 'تصدير الملفات الشخصية';
-
-  @override
-  String get importProfiles => 'استيراد الملفات الشخصية';
-
-  @override
-  String get security => 'الأمان';
-
-  @override
-  String get pinLock => 'قفل PIN';
-
-  @override
-  String get changePIN => 'تغيير PIN';
-
-  @override
-  String get biometricAuth => 'المصادقة البيومترية';
-
-  @override
-  String get sessionTimeout => 'مهلة الجلسة';
-
-  @override
-  String get lockApp => 'قفل التطبيق';
-
-  @override
-  String get appearance => 'المظهر';
-
-  @override
-  String get theme => 'السمة';
-
-  @override
-  String get language => 'اللغة';
-
-  @override
-  String get lightMode => 'الوضع الفاتح';
-
-  @override
-  String get darkMode => 'الوضع الداكن';
-
-  @override
-  String get systemDefault => 'افتراضي النظام';
-
-  @override
-  String get general => 'عام';
-
-  @override
-  String get about => 'حول';
-
-  @override
-  String get licenses => 'التراخيص';
-
-  @override
-  String get firewallRuleDetails => 'تفاصيل قاعدة الجدار الناري';
-
-  @override
-  String get createRule => 'إنشاء قاعدة';
-
-  @override
-  String get editRule => 'تعديل القاعدة';
-
-  @override
-  String get deleteRule => 'حذف القاعدة';
-
-  @override
-  String get action => 'الإجراء';
-
-  @override
-  String get interface => 'الواجهة';
-
-  @override
-  String get protocol => 'البروتوكول';
-
-  @override
-  String get source => 'المصدر';
-
-  @override
-  String get destination => 'الوجهة';
-
-  @override
-  String get sourcePort => 'منفذ المصدر';
-
-  @override
-  String get destinationPort => 'منفذ الوجهة';
-
-  @override
-  String get description => 'الوصف';
-
-  @override
-  String get enabled => 'مفعّل';
-
-  @override
-  String get disabled => 'معطّل';
-
-  @override
-  String get pass => 'سماح';
-
-  @override
-  String get block => 'حظر';
-
-  @override
-  String get reject => 'رفض';
-
-  @override
-  String get logs => 'السجلات';
-
-  @override
-  String get filterByAction => 'تصفية حسب الإجراء';
-
-  @override
-  String get showAll => 'عرض الكل';
-
-  @override
-  String get autoRefresh => 'التحديث التلقائي';
-
-  @override
-  String get logLimit => 'حد السجلات';
-
-  @override
-  String get paused => 'متوقف مؤقتاً';
-
-  @override
-  String get live => 'مباشر';
-
-  @override
-  String get entries => 'إدخالات';
-
-  @override
-  String get selected => 'محدد';
-
-  @override
-  String get selectAll => 'تحديد الكل';
-
-  @override
-  String get copy => 'نسخ';
-
-  @override
-  String get historySize => 'حجم السجل';
-
-  @override
-  String get enableAutoScroll => 'تفعيل التمرير التلقائي';
-
-  @override
-  String get disableAutoScroll => 'تعطيل التمرير التلقائي';
-
-  @override
-  String get clearLogs => 'مسح السجلات';
-
-  @override
-  String get pause => 'إيقاف مؤقت';
-
-  @override
-  String get resume => 'استئناف';
+  String get content => 'المحتوى';
 
   @override
   String copiedLogEntries(int count) {
@@ -330,72 +552,161 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get pauseLiveViewToSelect => 'أوقف العرض المباشر لتحديد إدخالات السجل';
+  String get copiedToClipboard => 'تم النسخ إلى الحافظة';
 
   @override
-  String get errorLoadingLogs => 'خطأ في تحميل السجلات';
+  String get copy => 'نسخ';
 
   @override
-  String get noLogsAvailable => 'لا توجد سجلات متاحة';
+  String get copyAllDetails => 'نسخ جميع التفاصيل';
 
   @override
-  String get logsWillAppear => 'ستظهر السجلات هنا عند إنشائها';
+  String get copyHost => 'نسخ المضيف';
 
   @override
-  String get selectNumberOfEntries => 'حدد عدد إدخالات السجل المراد عرضها:';
+  String get copyKey => 'نسخ المفتاح';
 
   @override
-  String get reason => 'السبب';
+  String get copyKeyTooltip => 'نسخ المفتاح';
 
   @override
-  String get newRule => 'قاعدة جديدة';
+  String get copySelected => 'نسخ المحدد';
 
   @override
-  String get ruleDetails => 'تفاصيل القاعدة';
+  String get copyTooltip => 'نسخ';
 
   @override
-  String get type => 'النوع';
+  String get cpuUsage => 'استخدام المعالج';
 
   @override
-  String get sequence => 'التسلسل';
+  String get createAliasComingSoon => 'إنشاء اسم مستعار (قريباً)';
 
   @override
-  String get status => 'الحالة';
+  String get createFirstAutomationRule => 'أنشئ أول قاعدة أتمتة للبدء';
 
   @override
-  String get systemGeneratedRule =>
-      'هذه قاعدة تم إنشاؤها بواسطة النظام ولا يمكن تعديلها أو حذفها.';
+  String get createFirstProfile => 'أنشئ ملفك الشخصي الأول للبدء';
 
   @override
-  String get systemGeneratedRulesCannotBeModified =>
-      'لا يمكن تعديل القواعد التي تم إنشاؤها بواسطة النظام';
+  String get createNewProfile => 'إنشاء ملف شخصي جديد';
 
   @override
-  String get systemGeneratedRulesCannotBeDeleted =>
-      'لا يمكن حذف القواعد التي تم إنشاؤها بواسطة النظام';
+  String get createOverride => 'إنشاء تجاوز';
 
   @override
-  String get enableRule => 'تفعيل القاعدة';
+  String get createPeer => 'إنشاء نظير';
 
   @override
-  String get disableRule => 'تعطيل القاعدة';
+  String get createRule => 'إنشاء قاعدة';
 
   @override
-  String get enablingRule => 'جاري تفعيل القاعدة...';
+  String get createServer => 'إنشاء خادم';
 
   @override
-  String get disablingRule => 'جاري تعطيل القاعدة...';
+  String get createStaticKey => 'إنشاء مفتاح ثابت';
 
   @override
-  String get ruleEnabledSuccessfully => 'تم تفعيل القاعدة بنجاح';
+  String get createYourFirstProfile =>
+      'أنشئ ملفك الشخصي الأول في OPNsense للبدء';
 
   @override
-  String get ruleDisabledSuccessfully => 'تم تعطيل القاعدة بنجاح';
+  String get created => 'تم الإنشاء';
 
   @override
-  String errorTogglingRule(String error) {
-    return 'خطأ في تبديل القاعدة: $error';
+  String get critical => 'حرج';
+
+  @override
+  String get cryptTlsEncryption => 'Crypt (تشفير TLS)';
+
+  @override
+  String get cryptV2TlsEncryption => 'Crypt V2 (تشفير TLS)';
+
+  @override
+  String get currentPin => 'رمز PIN الحالي';
+
+  @override
+  String get currentPinIncorrect => 'رمز PIN الحالي غير صحيح';
+
+  @override
+  String get darkMode => 'الوضع الداكن';
+
+  @override
+  String get dashboard => 'لوحة التحكم';
+
+  @override
+  String get day => 'يوم';
+
+  @override
+  String get days => 'أيام';
+
+  @override
+  String daysAgo(int days) {
+    return 'منذ $days أيام';
   }
+
+  @override
+  String get debug => 'التصحيح';
+
+  @override
+  String get debugDescription => 'تفعيل تسجيل التصحيح';
+
+  @override
+  String get defineRoleOfInstance => 'حدد دور هذا المثيل';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String deleteAliasConfirmation(String aliasName) {
+    return 'هل أنت متأكد من رغبتك في حذف الاسم المستعار \"$aliasName\"؟';
+  }
+
+  @override
+  String get deleteConfirmation => 'هل أنت متأكد من رغبتك في حذف هذا العنصر؟';
+
+  @override
+  String get deleteConnection => 'حذف الاتصال';
+
+  @override
+  String deleteConnectionConfirmation(String connectionName) {
+    return 'هل أنت متأكد من رغبتك في حذف الاتصال \"$connectionName\"؟';
+  }
+
+  @override
+  String get deleteHost => 'حذف المضيف';
+
+  @override
+  String deleteHostConfirmation(String host) {
+    return 'هل أنت متأكد من رغبتك في حذف \"$host\"؟';
+  }
+
+  @override
+  String get deleteInstance => 'حذف المثيل';
+
+  @override
+  String get deleteOverride => 'حذف التجاوز';
+
+  @override
+  String get deletePeer => 'حذف النظير';
+
+  @override
+  String deletePeerConfirmation(String name) {
+    return 'هل أنت متأكد من حذف النظير \"$name\"؟';
+  }
+
+  @override
+  String get deleteProfile => 'حذف الملف الشخصي';
+
+  @override
+  String deleteProfileConfirmation(String name) {
+    return 'هل أنت متأكد من رغبتك في حذف \"$name\"؟';
+  }
+
+  @override
+  String get deleteProfileTitle => 'حذف الملف الشخصي';
+
+  @override
+  String get deleteRule => 'حذف القاعدة';
 
   @override
   String deleteRuleConfirmation(String description) {
@@ -403,99 +714,123 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get ruleDeleted => 'تم حذف القاعدة بنجاح';
-
-  @override
-  String errorDeletingRule(String error) {
-    return 'خطأ في حذف القاعدة: $error';
+  String deleteServerConfirmation(String name) {
+    return 'هل أنت متأكد من حذف الخادم \"$name\"؟ لا يمكن التراجع عن هذا الإجراء.';
   }
 
   @override
-  String get errorLoadingRules => 'خطأ في تحميل القواعد';
+  String get deleteStaticKey => 'حذف المفتاح الثابت';
 
   @override
-  String get noAutomationRulesFound => 'لم يتم العثور على قواعد أتمتة';
+  String get deleteSubnet => 'حذف الشبكة الفرعية';
 
   @override
-  String get createFirstAutomationRule => 'أنشئ أول قاعدة أتمتة للبدء';
-
-  @override
-  String get noInterfacesWithAutomationRules => 'لا توجد واجهات بقواعد أتمتة';
-
-  @override
-  String get selectInterface => 'حدد الواجهة';
-
-  @override
-  String get selectInterfaceToViewRules => 'حدد واجهة لعرض القواعد';
-
-  @override
-  String noRulesForInterface(String interface) {
-    return 'لا توجد قواعد لـ $interface';
+  String deleteSubnetConfirmation(String subnet) {
+    return 'هل أنت متأكد من حذف الشبكة الفرعية $subnet؟';
   }
 
   @override
-  String get unnamedRule => 'قاعدة بدون اسم';
+  String get demo => 'عرض توضيحي';
 
   @override
-  String get systemInformation => 'معلومات النظام';
+  String get dependOnCarp => 'يعتمد على (CARP)';
 
   @override
-  String get firmwareDetails => 'تفاصيل البرنامج الثابت';
+  String get description => 'الوصف';
 
   @override
-  String get systemType => 'نوع النظام';
+  String get descriptionHelperText => 'وصف موجز لهذا المثيل';
 
   @override
-  String get architecture => 'البنية';
+  String get descriptionHelperTextOverride =>
+      'يمكنك إدخال وصف هنا للرجوع إليه (لا يتم تحليله).';
 
   @override
-  String get gitCommit => 'التزام Git';
+  String get descriptionHint => 'مثال: كمبيوتر غرفة المعيشة';
 
   @override
-  String get packageMirror => 'مرآة الحزمة';
+  String get descriptionOptional => 'الوصف (اختياري)';
 
   @override
-  String get repository => 'المستودع';
+  String get descriptionRequired => 'الوصف مطلوب';
 
   @override
-  String get lastUpdate => 'آخر تحديث';
+  String get descriptiveNameForStaticKey => 'اسم وصفي لهذا المفتاح الثابت';
 
   @override
-  String get errorLoadingSystemInfo => 'خطأ في تحميل معلومات النظام';
+  String get destination => 'الوجهة';
 
   @override
-  String get errorLoadingVPNConnections => 'خطأ في تحميل اتصالات VPN';
+  String get destinationAddress => 'عنوان الوجهة';
 
   @override
-  String get noVPNConnectionsFound => 'لم يتم العثور على اتصالات VPN';
+  String get destinationIsRequired => 'الوجهة مطلوبة';
 
   @override
-  String noConnectionsFound(String type) {
-    return 'لم يتم العثور على اتصالات $type';
+  String get destinationPort => 'منفذ الوجهة';
+
+  @override
+  String get destinationPortOptional => 'منفذ الوجهة (اختياري)';
+
+  @override
+  String get deviceType => 'نوع الجهاز';
+
+  @override
+  String get dhcpLeases => 'عقود DHCP';
+
+  @override
+  String dhcpServerLabel(String serverName) {
+    return 'خادم $serverName';
   }
 
   @override
-  String get vpnConnectionsWillAppear => 'ستظهر اتصالات VPN هنا عند تكوينها';
+  String get dhcpServerType => 'نوع خادم DHCP';
 
   @override
-  String get totalVPNs => 'إجمالي VPN';
+  String get direction => 'الاتجاه';
 
   @override
-  String get filterByType => 'تصفية حسب النوع';
+  String get disable => 'تعطيل';
 
   @override
-  String get allVPNs => 'جميع VPN';
+  String get disableAutoScroll => 'تعطيل التمرير التلقائي';
 
   @override
-  String get connectVPN => 'اتصال VPN';
+  String get disableRoutes => 'تعطيل المسارات';
+
+  @override
+  String get disableRoutesDescription => 'منع تثبيت المسارات التلقائي';
+
+  @override
+  String get disableRule => 'تعطيل القاعدة';
+
+  @override
+  String get disableSnat => 'تعطيل SNAT';
+
+  @override
+  String get disableSnatDescription =>
+      'تعطيل ترجمة عنوان المصدر لمسارات الشبكة الفرعية';
+
+  @override
+  String get disabled => 'معطل';
+
+  @override
+  String get disabledStatus => 'معطل';
+
+  @override
+  String get disablingRule => 'جاري تعطيل القاعدة...';
+
+  @override
+  String get discard => 'تجاهل';
+
+  @override
+  String get disconnect => 'قطع الاتصال';
 
   @override
   String get disconnectVPN => 'قطع اتصال VPN';
 
   @override
-  String connectingVPN(String name) {
-    return 'جاري الاتصال بـ $name...';
-  }
+  String get disconnected => 'غير متصل';
 
   @override
   String disconnectingVPN(String name) {
@@ -503,138 +838,188 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String successfullyConnected(String name) {
-    return 'تم الاتصال بنجاح بـ $name';
-  }
+  String get diskUsage => 'استخدام القرص';
 
   @override
-  String successfullyDisconnected(String name) {
-    return 'تم قطع الاتصال بنجاح بـ $name';
-  }
+  String get dnsDomainList => 'قائمة نطاقات DNS';
 
   @override
-  String failedToConnect(String name) {
-    return 'فشل الاتصال بـ $name';
-  }
+  String get dnsDomainListHelperText => 'تعيين لواحق DNS الخاصة بالاتصال.';
 
   @override
-  String failedToDisconnect(String name) {
-    return 'فشل قطع الاتصال بـ $name';
-  }
+  String get dnsDomainSearchList => 'قائمة بحث نطاقات DNS';
 
   @override
-  String get restartVPNService => 'إعادة تشغيل خدمة VPN';
+  String get dnsDomainSearchListHelperText =>
+      'إضافة اسم إلى قائمة بحث النطاق. كرر هذا الخيار لإضافة المزيد من الإدخالات. يتم دعم ما يصل إلى 10 نطاقات.';
 
   @override
-  String restartServiceConfirmation(String type) {
-    return 'هل أنت متأكد من رغبتك في إعادة تشغيل خدمة $type؟\n\nسيؤدي هذا إلى قطع جميع الاتصالات النشطة مؤقتًا.';
-  }
+  String get dnsEnabled => 'DNS مفعل';
 
   @override
-  String restartingService(String type) {
-    return 'جاري إعادة تشغيل خدمة $type...';
-  }
+  String get dnsServerIp => 'عنوان IP لخادم DNS';
 
   @override
-  String successfullyRestartedService(String type) {
-    return 'تم إعادة تشغيل خدمة $type بنجاح';
-  }
+  String get dnsServerIsRequired => 'خادم DNS مطلوب';
 
   @override
-  String failedToRestartService(String type) {
-    return 'فشل إعادة تشغيل خدمة $type';
-  }
+  String get dnsServerOptional => 'خادم DNS (اختياري)';
+
+  @override
+  String get dnsServers => 'خوادم DNS';
+
+  @override
+  String get dnsServersHelperText =>
+      'تعيين عنوان خادم اسم النطاق الأساسي IPv4 أو IPv6. كرر هذا الخيار لتعيين عناوين خادم DNS الثانوية.';
+
+  @override
+  String get dnsServersOptional => 'خوادم DNS (اختياري)';
+
+  @override
+  String get dnsmasqDescription => 'خادم DNS و DHCP خفيف الوزن';
+
+  @override
+  String get dnsmasqServerName => 'Dnsmasq';
+
+  @override
+  String get done => 'تم';
+
+  @override
+  String get doneButton => 'تم';
+
+  @override
+  String get download => 'التنزيل';
+
+  @override
+  String get dynamicLease => 'ديناميكي';
+
+  @override
+  String get edit => 'تعديل';
+
+  @override
+  String get editClientOverride => 'تحرير تجاوز العميل';
+
+  @override
+  String get editConnection => 'تعديل الاتصال';
+
+  @override
+  String get editHost => 'تعديل المضيف';
+
+  @override
+  String get editProfile => 'تعديل الملف الشخصي';
+
+  @override
+  String get editRule => 'تعديل القاعدة';
+
+  @override
+  String get editStaticKey => 'تعديل المفتاح الثابت';
+
+  @override
+  String get editSubnet => 'تعديل الشبكة الفرعية';
+
+  @override
+  String get editWireguardPeer => 'تحرير نظير WireGuard';
+
+  @override
+  String get editWireguardServer => 'تحرير خادم WireGuard';
+
+  @override
+  String get emergency => 'طوارئ';
+
+  @override
+  String get enable => 'تفعيل';
+
+  @override
+  String get enableAutoScroll => 'تفعيل التمرير التلقائي';
+
+  @override
+  String get enableClientSpecificOverride => 'تفعيل هذا التجاوز الخاص بالعميل';
+
+  @override
+  String get enableDebugLogging => 'تمكين تسجيل التصحيح';
+
+  @override
+  String get enablePinLockFirst =>
+      'يرجى تفعيل قفل PIN أولاً قبل استخدام البيومترية';
+
+  @override
+  String get enablePinLockFirstBiometric =>
+      'قم بتفعيل قفل PIN أولاً لاستخدام البيومترية';
+
+  @override
+  String get enableRule => 'تفعيل القاعدة';
+
+  @override
+  String get enableSsh => 'تفعيل SSH';
+
+  @override
+  String get enableSshDescription => 'السماح بالوصول عبر SSH من خلال Tailscale';
+
+  @override
+  String get enableTailscale => 'تفعيل Tailscale';
+
+  @override
+  String get enableTailscaleDescription => 'تفعيل أو تعطيل خدمة Tailscale';
+
+  @override
+  String get enableWireguard => 'تمكين WireGuard';
+
+  @override
+  String get enabled => 'مفعّل';
+
+  @override
+  String get enabledLabel => 'مفعّل';
+
+  @override
+  String get enabledStatus => 'مفعّل';
+
+  @override
+  String get enablingRule => 'جاري تفعيل القاعدة...';
+
+  @override
+  String get endTime => 'وقت الانتهاء';
+
+  @override
+  String get endpoint => 'نقطة النهاية';
+
+  @override
+  String get endpointAddress => 'عنوان نقطة النهاية';
+
+  @override
+  String get endpointPort => 'منفذ نقطة النهاية';
+
+  @override
+  String get enterBandwidthLimit =>
+      'أدخل حد النطاق الترددي للاتصال بالميجابت في الثانية';
+
+  @override
+  String get enterClientCertificateCommonName =>
+      'أدخل الاسم الشائع لشهادة العميل';
+
+  @override
+  String get enterDescriptionForOverride => 'أدخل وصفًا لهذا التجاوز';
+
+  @override
+  String get enterOrGeneratePresharedKey =>
+      'أدخل أو أنشئ مفتاحًا مشتركًا مسبقًا';
+
+  @override
+  String get enterOrGeneratePrivateKey => 'أدخل أو أنشئ مفتاحًا خاصًا';
+
+  @override
+  String get enterOrGeneratePublicKey => 'أدخل أو أنشئ مفتاحًا عامًا';
+
+  @override
+  String get enterPIN => 'أدخل PIN';
+
+  @override
+  String get enterPin => 'أدخل رمز PIN';
+
+  @override
+  String get enterPinLabel => 'أدخل رمز PIN (4-6 أرقام)';
 
   @override
   String get enterRuleDescription => 'أدخل وصف القاعدة';
-
-  @override
-  String get loading => 'جاري التحميل...';
-
-  @override
-  String get any => 'أي';
-
-  @override
-  String get anyIpAddressCidrOrAlias => 'أي، عنوان IP، CIDR، أو اسم مستعار';
-
-  @override
-  String get examplesAnyIpCidr => 'أمثلة: any، 192.168.1.0/24، 10.0.0.1';
-
-  @override
-  String get sourceIsRequired => 'المصدر مطلوب';
-
-  @override
-  String get invalidSourceFormat => 'تنسيق المصدر غير صالح';
-
-  @override
-  String get sourcePortOptional => 'منفذ المصدر (اختياري)';
-
-  @override
-  String get anyPortNumberRangeOrAlias => 'أي، رقم منفذ، نطاق، أو اسم مستعار';
-
-  @override
-  String get examplesAnyPortRange => 'أمثلة: any، 80، 1024-65535';
-
-  @override
-  String get invalidPortFormat => 'تنسيق المنفذ غير صالح';
-
-  @override
-  String get destinationIsRequired => 'الوجهة مطلوبة';
-
-  @override
-  String get invalidDestinationFormat => 'تنسيق الوجهة غير صالح';
-
-  @override
-  String get destinationPortOptional => 'منفذ الوجهة (اختياري)';
-
-  @override
-  String get examplesAnyPortRangeHttp => 'أمثلة: any، 80، 80-443، http';
-
-  @override
-  String get ruleWillBeActiveWhenEnabled => 'ستكون القاعدة نشطة عند التفعيل';
-
-  @override
-  String get ruleGuidelines => 'إرشادات القاعدة';
-
-  @override
-  String get ruleGuidelinesText =>
-      '• استخدم \"any\" لمطابقة جميع العناوين أو المنافذ\n• تدوين CIDR: 192.168.1.0/24\n• نطاقات المنافذ: 80-443\n• تتم معالجة القواعد بالترتيب\n• يتم تطبيق التغييرات فوراً';
-
-  @override
-  String get updateRule => 'تحديث القاعدة';
-
-  @override
-  String get ruleUpdated => 'تم تحديث القاعدة بنجاح';
-
-  @override
-  String get ruleCreated => 'تم إنشاء القاعدة بنجاح';
-
-  @override
-  String errorSavingRule(String error) {
-    return 'خطأ في حفظ القاعدة: $error';
-  }
-
-  @override
-  String get connectToYourOPNsenseFirewall =>
-      'اتصل بجدار الحماية OPNsense الخاص بك';
-
-  @override
-  String get profileNameOptional => 'اسم الملف الشخصي (اختياري)';
-
-  @override
-  String get myOPNsenseRouter => 'جهاز التوجيه OPNsense الخاص بي';
-
-  @override
-  String get hostIpAddress => 'المضيف / عنوان IP';
-
-  @override
-  String get hostPlaceholder => '192.168.1.1 أو firewall.example.com';
-
-  @override
-  String get portPlaceholder => '443';
-
-  @override
-  String get recommendedForSecureConnections => 'موصى به للاتصالات الآمنة';
 
   @override
   String get enterYourApiKey => 'أدخل مفتاح API الخاص بك';
@@ -643,43 +1028,496 @@ class AppLocalizationsAr extends AppLocalizations {
   String get enterYourApiSecret => 'أدخل سر API الخاص بك';
 
   @override
-  String get connect => 'اتصال';
+  String get entries => 'إدخالات';
 
   @override
-  String apiError(String message) {
-    return 'خطأ في API: $message';
+  String entriesCount(int count) {
+    return '$count إدخالات';
   }
 
   @override
-  String get needHelpCheckDocumentation =>
-      'تحتاج مساعدة؟ راجع وثائق OPNsense لإنشاء مفتاح API.';
+  String get error => 'خطأ';
 
   @override
-  String get selectAProfileOrCreateNewOne =>
-      'حدد ملفاً شخصياً أو أنشئ ملفاً جديداً';
-
-  @override
-  String get createNewProfile => 'إنشاء ملف شخصي جديد';
-
-  @override
-  String get noProfilesYet => 'لا توجد ملفات شخصية بعد';
-
-  @override
-  String get createYourFirstProfile =>
-      'أنشئ ملفك الشخصي الأول في OPNsense للبدء';
-
-  @override
-  String lastUsed(String date) {
-    return 'آخر استخدام: $date';
+  String errorAddingSubnet(String error) {
+    return 'خطأ في إضافة الشبكة الفرعية: $error';
   }
 
   @override
-  String get justNow => 'الآن';
+  String errorDeletingRule(String error) {
+    return 'خطأ في حذف القاعدة: $error';
+  }
 
   @override
-  String minutesAgo(String minutes) {
-    return 'منذ $minutes دقيقة';
+  String errorDeletingSubnet(String error) {
+    return 'خطأ في حذف الشبكة الفرعية: $error';
   }
+
+  @override
+  String get errorLoadingData => 'خطأ في تحميل البيانات';
+
+  @override
+  String get errorLoadingInstance => 'خطأ في تحميل المثيل';
+
+  @override
+  String get errorLoadingLogs => 'خطأ في تحميل السجلات';
+
+  @override
+  String get errorLoadingOverride => 'خطأ في تحميل التجاوز';
+
+  @override
+  String get errorLoadingRoutes => 'خطأ في تحميل المسارات';
+
+  @override
+  String get errorLoadingRules => 'خطأ في تحميل القواعد';
+
+  @override
+  String get errorLoadingSessions => 'خطأ في تحميل الجلسات';
+
+  @override
+  String get errorLoadingSystemInfo => 'خطأ في تحميل معلومات النظام';
+
+  @override
+  String get errorLoadingVPNConnections => 'خطأ في تحميل اتصالات VPN';
+
+  @override
+  String errorPrefix(String message) {
+    return 'خطأ: $message';
+  }
+
+  @override
+  String errorRestartingService(String error) {
+    return 'خطأ في إعادة تشغيل الخدمة: $error';
+  }
+
+  @override
+  String errorSavingRule(String error) {
+    return 'خطأ في حفظ القاعدة: $error';
+  }
+
+  @override
+  String errorStartingService(String error) {
+    return 'خطأ في بدء الخدمة: $error';
+  }
+
+  @override
+  String errorStoppingService(String error) {
+    return 'خطأ في إيقاف الخدمة: $error';
+  }
+
+  @override
+  String errorTogglingRule(String error) {
+    return 'خطأ في تبديل القاعدة: $error';
+  }
+
+  @override
+  String errorUpdatingSubnet(String error) {
+    return 'خطأ في تحديث الشبكة الفرعية: $error';
+  }
+
+  @override
+  String get exampleCidr => 'مثال: 10.10.10.2/24 أو fd00::2/64';
+
+  @override
+  String get exampleTunnelAddress => 'مثال: 10.10.10.1/24 أو fd00::1/64';
+
+  @override
+  String get examplesAnyIpCidr => 'أمثلة: any، 192.168.1.0/24، 10.0.0.1';
+
+  @override
+  String get examplesAnyPortRange => 'أمثلة: any، 80، 1024-65535';
+
+  @override
+  String get examplesAnyPortRangeHttp => 'أمثلة: any، 80، 80-443، http';
+
+  @override
+  String get exitNode => 'عقدة الخروج';
+
+  @override
+  String get expired => 'منتهي';
+
+  @override
+  String get expires => 'ينتهي';
+
+  @override
+  String get expiryTime => 'وقت الانتهاء';
+
+  @override
+  String get export => 'تصدير';
+
+  @override
+  String get exportAllProfiles => 'تصدير جميع الملفات الشخصية';
+
+  @override
+  String get exportAllProfilesSubtitle =>
+      'تصدير جميع الملفات الشخصية إلى ملف JSON';
+
+  @override
+  String get exportCredentialsWarning =>
+      'سيؤدي التصدير مع بيانات الاعتماد إلى حفظ مفاتيح API والأسرار بنص عادي. قم بذلك فقط إذا كنت ستخزن الملف بشكل آمن.';
+
+  @override
+  String get exportFailed => 'فشل التصدير';
+
+  @override
+  String exportFailedError(String error) {
+    return 'فشل التصدير: $error';
+  }
+
+  @override
+  String get exportLogs => 'تصدير السجلات';
+
+  @override
+  String get exportProfiles => 'تصدير الملفات الشخصية';
+
+  @override
+  String get exportProfilesContent =>
+      'هل تريد تضمين بيانات اعتماد API في التصدير؟\n\nتحذير: سيؤدي تضمين بيانات الاعتماد إلى تخزين مفاتيح API والأسرار بنص عادي. قم بتضمين بيانات الاعتماد فقط إذا كنت ستخزن الملف بشكل آمن.';
+
+  @override
+  String get exportProfilesTitle => 'تصدير الملفات الشخصية';
+
+  @override
+  String get exportSuccess => 'نجح التصدير';
+
+  @override
+  String get exportThisProfile => 'تصدير هذا الملف الشخصي';
+
+  @override
+  String get failedDevices => 'الأجهزة الفاشلة';
+
+  @override
+  String failedToActionTailscaleService(String action) {
+    return 'فشل $action خدمة Tailscale';
+  }
+
+  @override
+  String get failedToApplyConfiguration => 'فشل تطبيق التكوين';
+
+  @override
+  String get failedToBlockHost => 'فشل حظر المضيف';
+
+  @override
+  String failedToConnect(String name) {
+    return 'فشل الاتصال بـ $name';
+  }
+
+  @override
+  String failedToCopyHost(String error) {
+    return 'فشل نسخ المضيف: $error';
+  }
+
+  @override
+  String failedToDeleteAlias(String error) {
+    return 'فشل حذف الاسم المستعار: $error';
+  }
+
+  @override
+  String failedToDeleteHost(String error) {
+    return 'فشل حذف المضيف: $error';
+  }
+
+  @override
+  String failedToDeleteInstance(String error) {
+    return 'فشل حذف المثيل: $error';
+  }
+
+  @override
+  String failedToDeleteOverride(String error) {
+    return 'فشل حذف التجاوز: $error';
+  }
+
+  @override
+  String failedToDeletePeer(String error) {
+    return 'فشل حذف النظير: $error';
+  }
+
+  @override
+  String get failedToDeleteProfile => 'فشل حذف الملف الشخصي';
+
+  @override
+  String failedToDeleteServer(String error) {
+    return 'فشل حذف الخادم: $error';
+  }
+
+  @override
+  String failedToDeleteStaticKey(String error) {
+    return 'فشل حذف المفتاح الثابت: $error';
+  }
+
+  @override
+  String failedToDisconnect(String name) {
+    return 'فشل قطع الاتصال بـ $name';
+  }
+
+  @override
+  String failedToExportLogs(String error) {
+    return 'فشل تصدير السجلات: $error';
+  }
+
+  @override
+  String failedToGenerateKey(String error) {
+    return 'فشل إنشاء المفتاح: $error';
+  }
+
+  @override
+  String failedToGenerateToken(String error) {
+    return 'فشل إنشاء الرمز: $error';
+  }
+
+  @override
+  String failedToLoadInterfaces(String error) {
+    return 'فشل تحميل الواجهات: $error';
+  }
+
+  @override
+  String get failedToLoadOpenvpnLogs => 'فشل تحميل سجلات OpenVPN';
+
+  @override
+  String failedToRestartService(String type) {
+    return 'فشل إعادة تشغيل الخدمة';
+  }
+
+  @override
+  String get failedToSaveAuthSettings => 'فشل حفظ إعدادات المصادقة';
+
+  @override
+  String failedToSaveHost(String error) {
+    return 'فشل حفظ المضيف: $error';
+  }
+
+  @override
+  String failedToSaveInstance(String error) {
+    return 'فشل حفظ المثيل: $error';
+  }
+
+  @override
+  String failedToSaveOverride(String error) {
+    return 'فشل حفظ التجاوز: $error';
+  }
+
+  @override
+  String get failedToSavePeer => 'فشل حفظ النظير';
+
+  @override
+  String get failedToSaveProfile => 'فشل حفظ الملف الشخصي';
+
+  @override
+  String get failedToSaveServer => 'فشل حفظ الخادم';
+
+  @override
+  String get failedToSaveSettings => 'فشل حفظ الإعدادات';
+
+  @override
+  String failedToSaveStaticKey(String error) {
+    return 'فشل حفظ المفتاح الثابت: $error';
+  }
+
+  @override
+  String get failedToStartService => 'فشل بدء الخدمة';
+
+  @override
+  String get failedToStopService => 'فشل إيقاف الخدمة';
+
+  @override
+  String failedToToggleAlias(String error) {
+    return 'فشل تبديل الاسم المستعار: $error';
+  }
+
+  @override
+  String failedToToggleInstance(String error) {
+    return 'فشل تبديل المثيل: $error';
+  }
+
+  @override
+  String failedToToggleOverride(String error) {
+    return 'فشل تبديل التجاوز: $error';
+  }
+
+  @override
+  String failedToTogglePeer(String error) {
+    return 'فشل تبديل النظير: $error';
+  }
+
+  @override
+  String failedToToggleServer(String error) {
+    return 'فشل تبديل الخادم: $error';
+  }
+
+  @override
+  String failedToWakeAllHosts(String error) {
+    return 'فشل تنبيه جميع المضيفين: $error';
+  }
+
+  @override
+  String failedToWakeHost(String error) {
+    return 'فشل تنبيه المضيف: $error';
+  }
+
+  @override
+  String featureComingSoon(String feature) {
+    return '$feature - قريباً';
+  }
+
+  @override
+  String get featuresList =>
+      '• مراقبة وإدارة النظام\n• تكوين قواعد الجدار الناري\n• التحكم في الخدمات\n• السجلات في الوقت الفعلي\n• دعم ملفات شخصية متعددة\n• مصادقة آمنة';
+
+  @override
+  String get featuresTitle => 'الميزات';
+
+  @override
+  String fieldIsRequired(String fieldName) {
+    return '$fieldName مطلوب';
+  }
+
+  @override
+  String get fieldRequired => 'هذا الحقل مطلوب';
+
+  @override
+  String get fifteenMin => '15 دقيقة';
+
+  @override
+  String get filterByAction => 'تصفية حسب الإجراء';
+
+  @override
+  String get filterByType => 'تصفية حسب النوع';
+
+  @override
+  String get filterLabel => 'تصفية: ';
+
+  @override
+  String get filters => 'المرشحات';
+
+  @override
+  String get filtersLabel => 'الفلاتر';
+
+  @override
+  String get firewall => 'جدار الحماية';
+
+  @override
+  String get firewallAliases => 'أسماء جدار الحماية المستعارة';
+
+  @override
+  String get firewallLogs => 'سجلات الجدار الناري';
+
+  @override
+  String get firewallRuleDetails => 'تفاصيل قاعدة الجدار الناري';
+
+  @override
+  String get firewallRules => 'قواعد الجدار الناري';
+
+  @override
+  String get firmwareDetails => 'تفاصيل البرنامج الثابت';
+
+  @override
+  String get fiveMin => '5 دقائق';
+
+  @override
+  String get fixFormErrors => 'الرجاء إصلاح الأخطاء في النموذج';
+
+  @override
+  String get forbidden => 'الوصول محظور';
+
+  @override
+  String get gateway => 'البوابة';
+
+  @override
+  String get gatewayOptional => 'البوابة (اختياري)';
+
+  @override
+  String get gateways => 'البوابات';
+
+  @override
+  String get general => 'عام';
+
+  @override
+  String get generalSettings => 'الإعدادات العامة';
+
+  @override
+  String get generateKey => 'إنشاء مفتاح';
+
+  @override
+  String get generateKeyPair => 'إنشاء زوج مفاتيح';
+
+  @override
+  String get generateNewKeyPair => 'إنشاء زوج مفاتيح جديد';
+
+  @override
+  String get generateOrPasteKeyHere => 'قم بإنشاء أو لصق المفتاح هنا';
+
+  @override
+  String get generatePresharedKey => 'إنشاء مفتاح مشترك مسبقًا';
+
+  @override
+  String get generated => 'تم الإنشاء';
+
+  @override
+  String get generating => 'جاري الإنشاء...';
+
+  @override
+  String get gitCommit => 'التزام Git';
+
+  @override
+  String get gnuLicenseText =>
+      'هذا البرنامج مجاني: يمكنك إعادة توزيعه و/أو تعديله بموجب شروط رخصة جنو العمومية كما نشرتها مؤسسة البرمجيات الحرة، سواء الإصدار 3 من الرخصة، أو (حسب اختيارك) أي إصدار لاحق.\n\nيتم توزيع هذا البرنامج على أمل أن يكون مفيداً، ولكن دون أي ضمان؛ حتى بدون الضمان الضمني للتسويق أو الملاءمة لغرض معين. راجع رخصة جنو العمومية لمزيد من التفاصيل.\n\nيجب أن تكون قد تلقيت نسخة من رخصة جنو العمومية مع هذا البرنامج. إذا لم يكن الأمر كذلك، راجع <https://www.gnu.org/licenses/>.\n\nلماذا GPLv3؟\n\n• يضمن بقاء البرنامج مجانياً ومفتوح المصدر\n• يجب أن تكون أي تعديلات أو مشتقات مفتوحة المصدر أيضاً\n• للمستخدمين حرية استخدام ودراسة ومشاركة وتعديل البرنامج\n• يستفيد المجتمع من التحسينات والمساهمات';
+
+  @override
+  String get gnuLicenseTitle => 'رخصة جنو العمومية الإصدار 3.0';
+
+  @override
+  String get healthStatus => 'حالة الصحة';
+
+  @override
+  String get hideControls => 'إخفاء عناصر التحكم';
+
+  @override
+  String get hideKey => 'إخفاء المفتاح';
+
+  @override
+  String get historySize => 'حجم السجل';
+
+  @override
+  String get host => 'المضيف';
+
+  @override
+  String get hostAddedSuccessfully => 'تمت إضافة المضيف بنجاح';
+
+  @override
+  String get hostBlocked => 'تم حظر المضيف بنجاح';
+
+  @override
+  String get hostDeletedSuccessfully => 'تم حذف المضيف بنجاح';
+
+  @override
+  String get hostHint => 'مثال: 192.168.1.1 أو firewall.example.com';
+
+  @override
+  String get hostIpAddress => 'المضيف / عنوان IP';
+
+  @override
+  String get hostIpAddressLabel => 'المضيف/عنوان IP';
+
+  @override
+  String get hostIsRequired => 'المضيف مطلوب';
+
+  @override
+  String get hostPlaceholder => '192.168.1.1 أو firewall.example.com';
+
+  @override
+  String get hostUpdatedSuccessfully => 'تم تحديث المضيف بنجاح';
+
+  @override
+  String get hostname => 'اسم المضيف';
+
+  @override
+  String get hour => 'ساعة';
+
+  @override
+  String get hourAbbrev => 'س';
+
+  @override
+  String get hours => 'ساعات';
 
   @override
   String hoursAgo(String hours) {
@@ -687,173 +1525,52 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String daysAgo(String days) {
-    return 'منذ $days يوم';
+  String get http => 'http';
+
+  @override
+  String get https => 'https';
+
+  @override
+  String get id => 'المعرف';
+
+  @override
+  String get import => 'استيراد';
+
+  @override
+  String get importAndExport => 'الاستيراد والتصدير';
+
+  @override
+  String get importExport => 'الاستيراد والتصدير';
+
+  @override
+  String get importExportDescription =>
+      'قم بتصدير ملفاتك الشخصية لنسخها احتياطياً أو نقلها إلى جهاز آخر. استيراد الملفات الشخصية من ملف تم تصديره مسبقاً.\n\nيتم حفظ الملفات الشخصية بتنسيق JSON ويمكن أن تتضمن نقاط الاتصال والإعدادات.';
+
+  @override
+  String importFailed(String error) {
+    return 'فشل الاستيراد: $error';
   }
 
   @override
-  String connectionFailedError(String error) {
-    return 'فشل الاتصال: $error';
+  String importFailedWithErrors(String errors) {
+    return 'فشل الاستيراد: $errors';
   }
 
   @override
-  String get enterPin => 'أدخل رمز PIN';
+  String get importProfiles => 'استيراد الملفات الشخصية';
 
   @override
-  String get unlockOPNsenseManager => 'فتح OPNsense Manager';
+  String get importProfilesDialog =>
+      'كيف يجب التعامل مع الملفات الشخصية الموجودة؟\n\n• الاحتفاظ بكليهما: الاستيراد بمعرفات جديدة\n• الكتابة فوق: استبدال الملفات الشخصية الموجودة';
 
   @override
-  String get pleaseEnterYourPin => 'الرجاء إدخال رمز PIN الخاص بك';
+  String get importProfilesSubtitle => 'استيراد الملفات الشخصية من ملف JSON';
 
   @override
-  String get incorrectPin => 'رمز PIN غير صحيح';
-
-  @override
-  String get unlock => 'فتح';
-
-  @override
-  String get useBiometric => 'استخدام البيومترية';
-
-  @override
-  String get authenticateToUnlock => 'المصادقة لفتح OPNsense Manager';
-
-  @override
-  String version(String version) {
-    return 'الإصدار $version';
-  }
-
-  @override
-  String get remoteAddress => 'العنوان البعيد';
-
-  @override
-  String get localAddress => 'العنوان المحلي';
-
-  @override
-  String get received => 'المستلم';
-
-  @override
-  String get sent => 'المرسل';
-
-  @override
-  String get vpnStatus => 'حالة VPN';
-
-  @override
-  String get connected => 'متصل';
-
-  @override
-  String get disconnected => 'غير متصل';
-
-  @override
-  String get disconnect => 'قطع الاتصال';
-
-  @override
-  String get vpnType => 'نوع VPN';
-
-  @override
-  String get clientAddress => 'عنوان العميل';
-
-  @override
-  String get virtualAddress => 'العنوان الافتراضي';
-
-  @override
-  String get bytesReceived => 'البايتات المستلمة';
-
-  @override
-  String get bytesSent => 'البايتات المرسلة';
-
-  @override
-  String get connectedSince => 'متصل منذ';
-
-  @override
-  String get rebootSystem => 'إعادة تشغيل النظام';
-
-  @override
-  String get rebootConfirmation =>
-      'هل أنت متأكد من رغبتك في إعادة تشغيل النظام؟';
-
-  @override
-  String get rebootSuccess => 'تم بدء إعادة تشغيل النظام';
-
-  @override
-  String get rebootFailed => 'فشل في إعادة تشغيل النظام';
-
-  @override
-  String get error => 'خطأ';
-
-  @override
-  String get success => 'نجاح';
-
-  @override
-  String get warning => 'تحذير';
-
-  @override
-  String get info => 'معلومات';
-
-  @override
-  String get noData => 'لا توجد بيانات متاحة';
-
-  @override
-  String get retry => 'إعادة المحاولة';
-
-  @override
-  String get confirmDelete => 'تأكيد الحذف';
-
-  @override
-  String get deleteConfirmation => 'هل أنت متأكد من رغبتك في حذف هذا العنصر؟';
-
-  @override
-  String get cannotBeUndone => 'لا يمكن التراجع عن هذا الإجراء.';
-
-  @override
-  String get enterPIN => 'أدخل PIN';
-
-  @override
-  String get confirmPIN => 'تأكيد PIN';
-
-  @override
-  String get pinMismatch => 'رموز PIN غير متطابقة';
-
-  @override
-  String get pinTooShort => 'يجب أن يكون PIN 4 أرقام على الأقل';
-
-  @override
-  String get invalidPIN => 'PIN غير صالح';
-
-  @override
-  String get minutes => 'دقائق';
-
-  @override
-  String get seconds => 'ثواني';
-
-  @override
-  String get hours => 'ساعات';
-
-  @override
-  String get days => 'أيام';
-
-  @override
-  String get required => 'مطلوب';
-
-  @override
-  String get optional => 'اختياري';
-
-  @override
-  String get invalidInput => 'إدخال غير صالح';
-
-  @override
-  String get fieldRequired => 'هذا الحقل مطلوب';
-
-  @override
-  String get exportSuccess => 'نجح التصدير';
-
-  @override
-  String get exportFailed => 'فشل التصدير';
+  String get importProfilesTitle => 'استيراد الملفات التعريفية';
 
   @override
   String get importSuccess => 'نجح الاستيراد';
-
-  @override
-  String get importFailed => 'فشل الاستيراد';
 
   @override
   String importedProfiles(int count) {
@@ -861,86 +1578,314 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get noProfilesFound => 'لم يتم العثور على ملفات شخصية';
+  String importedWithFailures(int failed, int success) {
+    String _temp0 = intl.Intl.pluralLogic(
+      success,
+      locale: localeName,
+      other: 'ملفات شخصية',
+      one: 'ملف شخصي',
+    );
+    return 'تم استيراد $success $_temp0، فشل $failed';
+  }
 
   @override
-  String get createFirstProfile => 'أنشئ ملفك الشخصي الأول للبدء';
+  String inDays(String days) {
+    return 'خلال $days يوم';
+  }
 
   @override
-  String get serviceStarted => 'تم تشغيل الخدمة بنجاح';
+  String inHours(String hours) {
+    return 'خلال $hours ساعة';
+  }
 
   @override
-  String get serviceStopped => 'تم إيقاف الخدمة بنجاح';
+  String inMinutes(String minutes) {
+    return 'خلال $minutes دقيقة';
+  }
 
   @override
-  String get serviceRestarted => 'تمت إعادة تشغيل الخدمة بنجاح';
+  String get inbound => 'وارد';
 
   @override
-  String get serviceActionFailed => 'فشل إجراء الخدمة';
+  String get includeCredentials => 'تضمين بيانات الاعتماد';
 
   @override
-  String get ruleActionFailed => 'فشل إجراء القاعدة';
+  String get incorrectPin => 'رمز PIN غير صحيح';
 
   @override
-  String get profileSaved => 'تم حفظ الملف الشخصي بنجاح';
+  String get info => 'معلومات';
 
   @override
-  String get profileDeleted => 'تم حذف الملف الشخصي بنجاح';
+  String get instance => 'المثيل';
 
   @override
-  String get profileActivated => 'تم تفعيل الملف الشخصي بنجاح';
+  String get instanceCreatedSuccessfully => 'تم إنشاء المثيل بنجاح';
 
   @override
-  String get authenticationRequired => 'المصادقة مطلوبة';
+  String get instanceDeletedSuccessfully => 'تم حذف المثيل بنجاح';
 
   @override
-  String get authenticationFailed => 'فشلت المصادقة';
+  String get instanceDetails => 'تفاصيل المثيل';
 
   @override
-  String get networkError => 'حدث خطأ في الشبكة';
+  String instanceToggledSuccessfully(String status) {
+    return 'تم $status المثيل بنجاح';
+  }
 
   @override
-  String get serverError => 'حدث خطأ في الخادم';
+  String get instanceUpdatedSuccessfully => 'تم تحديث المثيل بنجاح';
 
   @override
-  String get unauthorized => 'وصول غير مصرح به';
+  String get instanceWillBeActiveWhenEnabled =>
+      'سيكون المثيل نشطاً عند التفعيل';
 
   @override
-  String get forbidden => 'الوصول محظور';
+  String get instances => 'المثيلات';
 
   @override
-  String get notFound => 'المورد غير موجود';
+  String get interface => 'الواجهة';
 
   @override
-  String get timeout => 'انتهت مهلة الطلب';
+  String interfaceLabel(String interface) {
+    return '$interface';
+  }
 
   @override
-  String get none => 'لا شيء';
+  String get invalidApiKeyFormat => 'تنسيق مفتاح API غير صالح';
 
   @override
-  String get diskUsage => 'استخدام القرص';
+  String get invalidApiSecretFormat => 'تنسيق سر API غير صالح';
 
   @override
-  String get pinLockDisabled =>
-      'تم تعطيل قفل PIN. تم تعطيل القفل البيومتري أيضاً.';
+  String get invalidBase64Format => 'تنسيق Base64 غير صالح';
 
   @override
-  String get setPin => 'تعيين PIN';
+  String get invalidCidrFormat =>
+      'تدوين CIDR غير صالح (استخدم الصيغة: IP/prefix)';
 
   @override
-  String get pinLockTitle => 'قفل PIN';
+  String get invalidCidrNotation =>
+      'تدوين CIDR غير صالح (استخدم التنسيق: IP/prefix)';
 
   @override
-  String get requirePinToUnlock => 'يتطلب PIN لفتح التطبيق';
+  String get invalidDestinationFormat => 'تنسيق الوجهة غير صالح';
 
   @override
-  String get changePinTitle => 'تغيير PIN';
+  String invalidFileError(String error) {
+    return 'ملف غير صالح: $error';
+  }
 
   @override
-  String get updatePinCode => 'تحديث رمز PIN الخاص بك';
+  String invalidFileFormat(String error) {
+    return 'ملف غير صالح: $error';
+  }
 
   @override
-  String get lockTimeoutLabel => 'مهلة القفل';
+  String get invalidHostnameOrIp => 'اسم مضيف أو عنوان IP غير صالح';
+
+  @override
+  String get invalidInput => 'إدخال غير صالح';
+
+  @override
+  String get invalidIpAddress => 'عنوان IP غير صالح';
+
+  @override
+  String get invalidIpAddressFormat =>
+      'عنوان IP غير صالح (يجب أن يكون IPv4 أو IPv6)';
+
+  @override
+  String get invalidIpv4Address => 'عنوان IPv4 غير صالح';
+
+  @override
+  String get invalidIpv4CidrNotation => 'تدوين CIDR لـ IPv4 غير صالح';
+
+  @override
+  String get invalidIpv4Prefix => 'بادئة IPv4 غير صالحة (يجب أن تكون 0-32)';
+
+  @override
+  String get invalidIpv6Address => 'عنوان IPv6 غير صالح';
+
+  @override
+  String get invalidIpv6CidrNotation => 'تدوين CIDR لـ IPv6 غير صالح';
+
+  @override
+  String get invalidIpv6Prefix => 'بادئة IPv6 غير صالحة (يجب أن تكون 0-128)';
+
+  @override
+  String get invalidPIN => 'PIN غير صالح';
+
+  @override
+  String get invalidPortFormat => 'تنسيق المنفذ غير صالح';
+
+  @override
+  String get invalidPrefixLength => 'طول البادئة غير صالح';
+
+  @override
+  String get invalidSourceFormat => 'تنسيق المصدر غير صالح';
+
+  @override
+  String get ipAddress => 'عنوان IP';
+
+  @override
+  String get ipAddresses => 'عناوين IP';
+
+  @override
+  String get ipv4CidrHint => '10.8.0.0/24';
+
+  @override
+  String get ipv4OrIpv6CidrHint => '10.8.0.0/24 أو fd00::/64';
+
+  @override
+  String get ipv4TunnelNetwork => 'شبكة النفق IPv4';
+
+  @override
+  String get ipv4TunnelNetworkHint => '10.8.0.0/24';
+
+  @override
+  String get ipv6CidrHint => 'fd00::/64';
+
+  @override
+  String get ipv6TunnelNetwork => 'شبكة النفق IPv6';
+
+  @override
+  String get ipv6TunnelNetworkHint => 'fd00::/64';
+
+  @override
+  String get iscDhcpDescription => 'خادم DHCP من Internet Systems Consortium';
+
+  @override
+  String get iscDhcpServerName => 'ISC DHCP';
+
+  @override
+  String itemsCount(int count) {
+    return '$count عنصر';
+  }
+
+  @override
+  String get justNow => 'الآن';
+
+  @override
+  String get keaDhcpDescription => 'خادم DHCP حديث وعالي الأداء';
+
+  @override
+  String get keaDhcpServerName => 'Kea DHCP';
+
+  @override
+  String get keepAliveIntervalOptional => 'فترة الحفاظ على الاتصال (اختياري)';
+
+  @override
+  String get keepBoth => 'الاحتفاظ بكليهما';
+
+  @override
+  String get keepalive => 'الحفاظ على الاتصال';
+
+  @override
+  String get keepaliveOptional => 'الحفاظ على الاتصال (اختياري)';
+
+  @override
+  String get key => 'المفتاح';
+
+  @override
+  String get keyCopiedToClipboard => 'تم نسخ المفتاح إلى الحافظة';
+
+  @override
+  String get keyGeneratedSuccessfully => 'تم إنشاء المفتاح بنجاح';
+
+  @override
+  String keyLabel(String id) {
+    return 'المفتاح $id';
+  }
+
+  @override
+  String keyWithId(String id) {
+    return 'المفتاح $id';
+  }
+
+  @override
+  String get keysGeneratedSuccessfully => 'تم إنشاء المفاتيح بنجاح';
+
+  @override
+  String get keysRequired => 'المفاتيح الخاصة والعامة مطلوبة';
+
+  @override
+  String get label => 'التسمية';
+
+  @override
+  String get labelHint => 'مثال: شبكة المنزل، VPN المكتب';
+
+  @override
+  String get labelOptional => 'التسمية (اختياري)';
+
+  @override
+  String get language => 'اللغة';
+
+  @override
+  String get lastDay => 'اليوم الأخير';
+
+  @override
+  String get lastDayShort => 'يوم واحد';
+
+  @override
+  String get lastMonth => 'الشهر الماضي';
+
+  @override
+  String get lastMonthShort => 'شهر واحد';
+
+  @override
+  String get lastUpdate => 'آخر تحديث';
+
+  @override
+  String lastUsed(String date) {
+    return 'آخر استخدام: $date';
+  }
+
+  @override
+  String get lastWeek => 'الأسبوع الماضي';
+
+  @override
+  String get lastWeekShort => 'أسبوع واحد';
+
+  @override
+  String leasesCount(int filtered, int total) {
+    return '$filtered من $total عقد';
+  }
+
+  @override
+  String get leaveEmptyOrGenerate => 'اتركه فارغاً أو قم بإنشائه';
+
+  @override
+  String get licenses => 'التراخيص';
+
+  @override
+  String get lightMode => 'الوضع الفاتح';
+
+  @override
+  String get limit => 'الحد';
+
+  @override
+  String get live => 'مباشر';
+
+  @override
+  String get liveNetworkMonitor => 'مراقب الشبكة المباشر';
+
+  @override
+  String get loading => 'جاري التحميل...';
+
+  @override
+  String get loadingHostData => 'جاري تحميل بيانات المضيف...';
+
+  @override
+  String get loadingSettings => 'جاري تحميل الإعدادات...';
+
+  @override
+  String get localAddress => 'العنوان المحلي';
+
+  @override
+  String get localNetwork => 'الشبكة المحلية';
+
+  @override
+  String get localNetworkHelperText =>
+      'هذه هي الشبكات التي يمكن للعميل الوصول إليها، يتم دفعها عبر بنود route(-ipv6) في OpenVPN إلى العميل.';
 
   @override
   String lockAfterMinutes(int minutes) {
@@ -954,199 +1899,10 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get minute => 'دقيقة';
+  String get lockApp => 'قفل التطبيق';
 
   @override
-  String get add => 'إضافة';
-
-  @override
-  String get profileAdded => 'تمت إضافة الملف الشخصي';
-
-  @override
-  String get profileUpdated => 'تم تحديث الملف الشخصي';
-
-  @override
-  String get exportProfilesTitle => 'تصدير الملفات الشخصية';
-
-  @override
-  String get chooseExportLocation => 'اختر موقع التصدير';
-
-  @override
-  String profilesExportedSuccessfully(String path) {
-    return 'تم تصدير الملفات الشخصية بنجاح!\n$path';
-  }
-
-  @override
-  String exportFailedError(String error) {
-    return 'فشل التصدير: $error';
-  }
-
-  @override
-  String get importProfilesTitle => 'استيراد الملفات التعريفية';
-
-  @override
-  String invalidFileError(String error) {
-    return 'ملف غير صالح: $error';
-  }
-
-  @override
-  String get importProfilesDialog =>
-      'كيف يجب التعامل مع الملفات الشخصية الموجودة؟\n\n• الاحتفاظ بكليهما: الاستيراد بمعرفات جديدة\n• الكتابة فوق: استبدال الملفات الشخصية الموجودة';
-
-  @override
-  String get keepBoth => 'الاحتفاظ بكليهما';
-
-  @override
-  String get overwrite => 'الكتابة فوق';
-
-  @override
-  String successfullyImportedProfiles(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'ملفات شخصية',
-      one: 'ملف شخصي',
-    );
-    return 'تم استيراد $count $_temp0 بنجاح';
-  }
-
-  @override
-  String importFailedWithErrors(String errors) {
-    return 'فشل الاستيراد: $errors';
-  }
-
-  @override
-  String importedWithFailures(int success, int failed) {
-    String _temp0 = intl.Intl.pluralLogic(
-      success,
-      locale: localeName,
-      other: 'ملفات شخصية',
-      one: 'ملف شخصي',
-    );
-    return 'تم استيراد $success $_temp0، فشل $failed';
-  }
-
-  @override
-  String get deleteProfileTitle => 'حذف الملف الشخصي';
-
-  @override
-  String deleteProfileConfirmation(String name) {
-    return 'هل أنت متأكد من رغبتك في حذف \"$name\"؟';
-  }
-
-  @override
-  String get applicationLegalese =>
-      '© 2026 OPNsense Manager\n\nمرخص بموجب رخصة جنو العمومية الإصدار 3.0\n\nهذا البرنامج مجاني: يمكنك إعادة توزيعه و/أو تعديله بموجب شروط رخصة جنو العمومية كما نشرتها مؤسسة البرمجيات الحرة، سواء الإصدار 3 من الرخصة، أو (حسب اختيارك) أي إصدار لاحق.';
-
-  @override
-  String get aboutDescription =>
-      'تطبيق Flutter احترافي لإدارة جدران حماية OPNsense.';
-
-  @override
-  String get featuresTitle => 'الميزات';
-
-  @override
-  String get featuresList =>
-      '• مراقبة وإدارة النظام\n• تكوين قواعد الجدار الناري\n• التحكم في الخدمات\n• السجلات في الوقت الفعلي\n• دعم ملفات شخصية متعددة\n• مصادقة آمنة';
-
-  @override
-  String get viewFullLicense => 'عرض الرخصة الكاملة';
-
-  @override
-  String get gnuLicenseTitle => 'رخصة جنو العمومية الإصدار 3.0';
-
-  @override
-  String get gnuLicenseText =>
-      'هذا البرنامج مجاني: يمكنك إعادة توزيعه و/أو تعديله بموجب شروط رخصة جنو العمومية كما نشرتها مؤسسة البرمجيات الحرة، سواء الإصدار 3 من الرخصة، أو (حسب اختيارك) أي إصدار لاحق.\n\nيتم توزيع هذا البرنامج على أمل أن يكون مفيداً، ولكن دون أي ضمان؛ حتى بدون الضمان الضمني للتسويق أو الملاءمة لغرض معين. راجع رخصة جنو العمومية لمزيد من التفاصيل.\n\nيجب أن تكون قد تلقيت نسخة من رخصة جنو العمومية مع هذا البرنامج. إذا لم يكن الأمر كذلك، راجع <https://www.gnu.org/licenses/>.\n\nلماذا GPLv3؟\n\n• يضمن بقاء البرنامج مجانياً ومفتوح المصدر\n• يجب أن تكون أي تعديلات أو مشتقات مفتوحة المصدر أيضاً\n• للمستخدمين حرية استخدام ودراسة ومشاركة وتعديل البرنامج\n• يستفيد المجتمع من التحسينات والمساهمات';
-
-  @override
-  String get enterPinLabel => 'أدخل رمز PIN (4-6 أرقام)';
-
-  @override
-  String get confirmPin => 'تأكيد رمز PIN';
-
-  @override
-  String get pinLockEnabled => 'تم تفعيل قفل PIN';
-
-  @override
-  String get currentPin => 'رمز PIN الحالي';
-
-  @override
-  String get newPin => 'رمز PIN الجديد (4-6 أرقام)';
-
-  @override
-  String get confirmNewPin => 'تأكيد رمز PIN الجديد';
-
-  @override
-  String get currentPinIncorrect => 'رمز PIN الحالي غير صحيح';
-
-  @override
-  String get pinChangedSuccessfully => 'تم تغيير رمز PIN بنجاح';
-
-  @override
-  String get pleaseEnterCurrentPin => 'الرجاء إدخال رمز PIN الحالي';
-
-  @override
-  String get pleaseEnterNewPin => 'الرجاء إدخال رمز PIN جديد';
-
-  @override
-  String get pinMustContainOnlyNumbers => 'يجب أن يحتوي رمز PIN على أرقام فقط';
-
-  @override
-  String get newPinMustBeDifferent =>
-      'يجب أن يكون رمز PIN الجديد مختلفًا عن الحالي';
-
-  @override
-  String get enablePinLockFirst =>
-      'يرجى تفعيل قفل PIN أولاً قبل استخدام البيومترية';
-
-  @override
-  String get biometricNotAvailable =>
-      'المصادقة البيومترية غير متوفرة على هذا الجهاز';
-
-  @override
-  String get biometricLockEnabled => 'تم تفعيل القفل البيومتري';
-
-  @override
-  String get biometricAuthFailed => 'فشلت المصادقة البيومترية أو تم إلغاؤها';
-
-  @override
-  String get biometricLockDisabled => 'تم تعطيل القفل البيومتري';
-
-  @override
-  String biometricLockTitle(String biometricType) {
-    return 'قفل $biometricType';
-  }
-
-  @override
-  String useBiometricToUnlock(String biometricType) {
-    return 'استخدم $biometricType لفتح التطبيق';
-  }
-
-  @override
-  String get enablePinLockFirstBiometric =>
-      'قم بتفعيل قفل PIN أولاً لاستخدام البيومترية';
-
-  @override
-  String get oneMin => '1 دقيقة';
-
-  @override
-  String get twoMin => '2 دقيقة';
-
-  @override
-  String get fiveMin => '5 دقائق';
-
-  @override
-  String get tenMin => '10 دقائق';
-
-  @override
-  String get fifteenMin => '15 دقيقة';
-
-  @override
-  String get thirtyMin => '30 دقيقة';
-
-  @override
-  String get oneHour => '1 ساعة';
+  String get lockTimeoutLabel => 'مهلة القفل';
 
   @override
   String lockTimeoutSet(int value) {
@@ -1160,87 +1916,693 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get activate => 'تفعيل';
+  String get logDetails => 'تفاصيل السجل';
 
   @override
-  String get import => 'استيراد';
-
-  @override
-  String get export => 'تصدير';
-
-  @override
-  String get activatingProfile => 'جاري تفعيل الملف التعريفي...';
-
-  @override
-  String activatedProfile(String name) {
-    return 'تم تفعيل الملف التعريفي: $name';
+  String logEntriesCopied(int count, String entries) {
+    return 'تم نسخ $count $entries من السجل';
   }
 
   @override
-  String get connectionTestFailed => 'فشل اختبار الاتصال';
+  String get logEntryCopied => 'تم نسخ إدخال السجل';
 
   @override
-  String get profileNameLabel => 'اسم الملف التعريفي';
+  String get logEntryDetails => 'تفاصيل إدخال السجل';
 
   @override
-  String get hostIpAddressLabel => 'المضيف/عنوان IP';
+  String get logFile => 'ملف السجل';
 
   @override
-  String get portLabel => 'المنفذ';
+  String get logLimit => 'حد السجلات';
 
   @override
-  String get useHttpsLabel => 'استخدام HTTPS';
+  String get login => 'تسجيل الدخول';
 
   @override
-  String get apiKeyLabel => 'مفتاح API';
+  String get loginServer => 'خادم تسجيل الدخول';
 
   @override
-  String get apiSecretLabel => 'سر API';
+  String get loginServerHelperText => 'عنوان URL لخادم تسجيل الدخول Tailscale';
 
   @override
-  String get profileNameRequired => 'اسم الملف التعريفي مطلوب';
+  String get loginServerRequired => 'خادم تسجيل الدخول مطلوب';
 
   @override
-  String get exportProfilesContent =>
-      'هل تريد تضمين بيانات اعتماد API في التصدير؟\n\nتحذير: سيؤدي تضمين بيانات الاعتماد إلى تخزين مفاتيح API والأسرار بنص عادي. قم بتضمين بيانات الاعتماد فقط إذا كنت ستخزن الملف بشكل آمن.';
+  String get logout => 'تسجيل الخروج';
 
   @override
-  String get withoutCredentials => 'بدون بيانات الاعتماد';
+  String get logs => 'السجلات';
 
   @override
-  String get includeCredentials => 'تضمين بيانات الاعتماد';
+  String get logsExportedSuccessfully => 'تم تصدير السجلات بنجاح';
 
   @override
-  String get unableToAccessFilePath => 'غير قادر على الوصول إلى مسار الملف';
+  String get logsMatchingFiltersWillAppearHere =>
+      'ستظهر السجلات المطابقة للمرشحات هنا';
 
   @override
-  String invalidFileFormat(String error) {
-    return 'ملف غير صالح: $error';
+  String get logsWillAppear => 'ستظهر السجلات هنا عند إنشائها';
+
+  @override
+  String get macAddress => 'عنوان MAC';
+
+  @override
+  String get macAddressHint => 'مثال: 00:11:22:33:44:55';
+
+  @override
+  String get magicDns => 'Magic DNS';
+
+  @override
+  String get manageProfiles => 'إدارة الملفات الشخصية';
+
+  @override
+  String get manageSubnets => 'إدارة الشبكات الفرعية';
+
+  @override
+  String get manageWireguard => 'إدارة WireGuard';
+
+  @override
+  String get manufacturer => 'الشركة المصنعة';
+
+  @override
+  String get maximumTransmissionUnit => 'وحدة الإرسال القصوى (576-9000)';
+
+  @override
+  String get memoryUsage => 'استخدام الذاكرة';
+
+  @override
+  String get minute => 'دقيقة';
+
+  @override
+  String get minuteAbbrev => 'د';
+
+  @override
+  String get minutes => 'دقائق';
+
+  @override
+  String minutesAgo(String minutes) {
+    return 'منذ $minutes دقيقة';
   }
+
+  @override
+  String get mode => 'الوضع';
+
+  @override
+  String get modified => 'تم التعديل';
+
+  @override
+  String get monitorInterface => 'واجهة المراقبة';
+
+  @override
+  String get mssFix => 'إصلاح MSS';
+
+  @override
+  String get mssFixDescription => 'تفعيل إصلاح MSS لهذا الاتصال';
+
+  @override
+  String get mtuOptional => 'MTU (اختياري)';
+
+  @override
+  String get mustBeValidUrl =>
+      'يجب أن يكون عنوان URL صالحًا يبدأ بـ http:// أو https://';
+
+  @override
+  String get myOPNsenseRouter => 'جهاز التوجيه OPNsense الخاص بي';
+
+  @override
+  String get myOpenvpnInstance => 'مثيل OpenVPN الخاص بي';
+
+  @override
+  String get myStaticKey => 'مفتاحي الثابت';
+
+  @override
+  String get myWireguardPeer => 'نظير WireGuard الخاص بي';
+
+  @override
+  String get myWireguardServer => 'خادم WireGuard الخاص بي';
+
+  @override
+  String get name => 'الاسم';
+
+  @override
+  String get needHelpCheckDocumentation =>
+      'تحتاج مساعدة؟ راجع وثائق OPNsense لإنشاء مفتاح API.';
+
+  @override
+  String get networkConfiguration => 'تكوين الشبكة';
+
+  @override
+  String get networkError => 'حدث خطأ في الشبكة';
+
+  @override
+  String get networkInformation => 'معلومات الشبكة';
+
+  @override
+  String get networkTotals => 'إجماليات الشبكة';
+
+  @override
+  String get newPin => 'رمز PIN الجديد (4-6 أرقام)';
+
+  @override
+  String get newPinMustBeDifferent =>
+      'يجب أن يكون رمز PIN الجديد مختلفًا عن الحالي';
+
+  @override
+  String get newRule => 'قاعدة جديدة';
+
+  @override
+  String get newWireguardPeer => 'نظير WireGuard جديد';
+
+  @override
+  String get newWireguardServer => 'خادم WireGuard جديد';
+
+  @override
+  String get next => 'التالي';
+
+  @override
+  String get nextButton => 'التالي';
+
+  @override
+  String get no => 'لا';
+
+  @override
+  String get noAliasesConfigured => 'لم يتم تكوين أسماء مستعارة';
+
+  @override
+  String get noAliasesMatchFilters =>
+      'لا توجد أسماء مستعارة تطابق الفلاتر الحالية';
+
+  @override
+  String get noAutomationRulesFound => 'لم يتم العثور على قواعد أتمتة';
+
+  @override
+  String get noClientSpecificOverridesConfigured =>
+      'لم يتم تكوين تجاوزات خاصة بالعميل';
+
+  @override
+  String noConnectionsFound(String type) {
+    return 'لم يتم العثور على اتصالات $type';
+  }
+
+  @override
+  String get noData => 'لا توجد بيانات متاحة';
+
+  @override
+  String get noDataAvailable => 'لا توجد بيانات متاحة';
+
+  @override
+  String get noDescription => 'بدون وصف';
+
+  @override
+  String get noDnsDomainSearchEntriesConfigured =>
+      'لم يتم تكوين إدخالات بحث نطاق DNS';
+
+  @override
+  String get noDnsDomainsConfigured => 'لم يتم تكوين نطاقات DNS';
+
+  @override
+  String get noDnsServersConfigured => 'لم يتم تكوين خوادم DNS';
+
+  @override
+  String get noHostsFound => 'لم يتم العثور على مضيفين';
+
+  @override
+  String get noInstancesMatchFilters => 'لا توجد مثيلات تطابق الفلاتر';
+
+  @override
+  String get noInterfacesWithAutomationRules => 'لا توجد واجهات بقواعد أتمتة';
+
+  @override
+  String get noItemsConfigured => 'لم يتم تكوين عناصر';
+
+  @override
+  String get noLeasesFound => 'لم يتم العثور على عقود';
+
+  @override
+  String get noLimit => 'بلا حد';
+
+  @override
+  String get noLimitShort => 'الكل';
+
+  @override
+  String get noLocalNetworksConfigured => 'لم يتم تكوين شبكات محلية';
+
+  @override
+  String get noLogEntriesFound => 'لم يتم العثور على إدخالات سجل';
+
+  @override
+  String get noLogsAvailable => 'لا توجد سجلات متاحة';
+
+  @override
+  String get noLogsToExport => 'لا توجد سجلات للتصدير';
+
+  @override
+  String get noNtpServersConfigured => 'لم يتم تكوين خوادم NTP';
+
+  @override
+  String get noOpenvpnInstancesConfigured => 'لم يتم تكوين مثيلات OpenVPN';
+
+  @override
+  String get noOpenvpnRoutesConfigured => 'لم يتم تكوين مسارات OpenVPN';
+
+  @override
+  String get noOpenvpnSessionsConfigured => 'لا توجد جلسات OpenVPN مكونة';
+
+  @override
+  String get noOptionsAvailable => 'لا توجد خيارات متاحة';
+
+  @override
+  String get noOverridesMatchFilter => 'لا توجد تجاوزات تطابق المرشح';
+
+  @override
+  String get noPeersAvailable => 'لا يوجد نظراء متاحون';
+
+  @override
+  String get noPeersMatchSearch => 'لا توجد أنداد تطابق بحثك';
 
   @override
   String get noProfiles => 'لا توجد ملفات تعريفية';
 
   @override
-  String get addProfileToManageInstances =>
-      'أضف ملفاً تعريفياً لإدارة مثيلات OPNsense';
+  String get noProfilesFound => 'لم يتم العثور على ملفات شخصية';
 
   @override
-  String get unknown => 'غير معروف';
+  String get noProfilesYet => 'لا توجد ملفات شخصية بعد';
 
   @override
-  String get http => 'http';
+  String get noRemoteNetworksConfigured => 'لم يتم تكوين شبكات بعيدة';
 
   @override
-  String get https => 'https';
+  String get noRoutesConfigured => 'لم يتم تكوين مسارات';
 
   @override
-  String errorPrefix(String message) {
-    return 'خطأ: $message';
+  String noRulesForInterface(String interface) {
+    return 'لا توجد قواعد لـ $interface';
   }
 
   @override
-  String get switchProfileConfirmation => 'تبديل الملف التعريفي؟';
+  String get noServersAvailable => 'لا توجد خوادم متاحة';
+
+  @override
+  String get noServersMatchSearch => 'لا توجد خوادم تطابق بحثك';
+
+  @override
+  String get noServersSelected => 'لم يتم تحديد خوادم';
+
+  @override
+  String get noSessionsFound => 'لم يتم العثور على جلسات';
+
+  @override
+  String get noSettingsAvailable => 'لا توجد إعدادات متاحة';
+
+  @override
+  String get noStaticKeysConfigured => 'لم يتم تكوين مفاتيح ثابتة';
+
+  @override
+  String get noSubnetsConfigured => 'لا توجد شبكات فرعية مكونة';
+
+  @override
+  String get noTunnelAddressesConfigured => 'لم يتم تكوين عناوين النفق';
+
+  @override
+  String get noVPNConnectionsFound => 'لم يتم العثور على اتصالات VPN';
+
+  @override
+  String get noWinsServersConfigured => 'لم يتم تكوين خوادم WINS';
+
+  @override
+  String get noWireguardPeersConfigured => 'لم يتم تكوين أنداد WireGuard';
+
+  @override
+  String get noWireguardServersConfigured => 'لم يتم تكوين خوادم WireGuard';
+
+  @override
+  String get noWireguardStatusDataAvailable =>
+      'لا توجد بيانات حالة WireGuard متاحة';
+
+  @override
+  String get noWolHostsConfigured => 'لم يتم تكوين مضيفي التنبيه عبر الشبكة';
+
+  @override
+  String get none => 'لا شيء';
+
+  @override
+  String get notAvailable => 'غير متاح';
+
+  @override
+  String get notFound => 'المورد غير موجود';
+
+  @override
+  String get notice => 'إشعار';
+
+  @override
+  String get ntpServers => 'خوادم NTP';
+
+  @override
+  String get ntpServersHelperText =>
+      'تعيين عنوان خادم NTP الأساسي (بروتوكول وقت الشبكة). كرر هذا الخيار لتعيين عناوين خادم NTP الثانوية.';
+
+  @override
+  String get of1Gbps => 'من 1 جيجابت في الثانية';
+
+  @override
+  String get offline => 'غير متصل';
+
+  @override
+  String get ok => 'موافق';
+
+  @override
+  String get oneHour => '1 ساعة';
+
+  @override
+  String get oneMin => '1 دقيقة';
+
+  @override
+  String get online => 'متصل';
+
+  @override
+  String get openvpn => 'OpenVPN';
+
+  @override
+  String get openvpnConnectionStatus => 'حالة اتصال OpenVPN';
+
+  @override
+  String get openvpnInstances => 'مثيلات OpenVPN';
+
+  @override
+  String get openvpnLogFile => 'ملف سجل OpenVPN';
+
+  @override
+  String get optional => 'اختياري';
+
+  @override
+  String get optionalBase64EncodedPresharedKey =>
+      'مفتاح مشترك مسبقاً مشفر بـ Base64 (اختياري)';
+
+  @override
+  String get outbound => 'صادر';
+
+  @override
+  String get overrideCreatedSuccessfully => 'تم إنشاء التجاوز بنجاح';
+
+  @override
+  String get overrideDeletedSuccessfully => 'تم حذف التجاوز بنجاح';
+
+  @override
+  String get overrideDetails => 'تفاصيل التجاوز';
+
+  @override
+  String overrideToggledSuccessfully(String status) {
+    return 'تم $status التجاوز بنجاح';
+  }
+
+  @override
+  String get overrideUpdatedSuccessfully => 'تم تحديث التجاوز بنجاح';
+
+  @override
+  String get overwrite => 'الكتابة فوق';
+
+  @override
+  String get packageMirror => 'مرآة الحزمة';
+
+  @override
+  String get packetLength => 'طول الحزمة';
+
+  @override
+  String pageOfPages(String current, String total) {
+    return 'الصفحة $current من $total';
+  }
+
+  @override
+  String get pass => 'سماح';
+
+  @override
+  String get pause => 'إيقاف مؤقت';
+
+  @override
+  String get pauseLiveViewToSelect => 'أوقف العرض المباشر لتحديد إدخالات السجل';
+
+  @override
+  String get paused => 'متوقف مؤقتاً';
+
+  @override
+  String get peerActiveWhenEnabled => 'سيكون النظير نشطاً عند التفعيل';
+
+  @override
+  String get peerCreatedReadyForNext =>
+      'تم إنشاء النظير بنجاح. جاهز للنظير التالي.';
+
+  @override
+  String get peerCreatedSuccessfully => 'تم إنشاء النظير بنجاح';
+
+  @override
+  String get peerDeletedSuccessfully => 'تم حذف النظير بنجاح';
+
+  @override
+  String get peerDisabledSuccessfully => 'تم تعطيل النظير بنجاح';
+
+  @override
+  String get peerEnabledSuccessfully => 'تم تمكين النظير بنجاح';
+
+  @override
+  String get peerGenerator => 'منشئ النظير';
+
+  @override
+  String get peerUpdatedSuccessfully => 'تم تحديث النظير بنجاح';
+
+  @override
+  String get peerWillBeActiveWhenEnabled => 'سيكون النظير نشطًا عند التمكين';
+
+  @override
+  String get peers => 'النظراء';
+
+  @override
+  String peersConfigured(int count) {
+    return '$count نظير مكون';
+  }
+
+  @override
+  String get peersCount => 'عدد الأقران';
+
+  @override
+  String peersSelected(int count) {
+    return 'تم تحديد $count من الأقران';
+  }
+
+  @override
+  String get persistentKeepaliveSeconds =>
+      'الحفاظ على الاتصال المستمر بالثواني (موصى به: 25)';
+
+  @override
+  String get pinChangedSuccessfully => 'تم تغيير رمز PIN بنجاح';
+
+  @override
+  String get pinLock => 'قفل PIN';
+
+  @override
+  String get pinLockDisabled =>
+      'تم تعطيل قفل PIN. تم تعطيل القفل البيومتري أيضاً.';
+
+  @override
+  String get pinLockEnabled => 'تم تفعيل قفل PIN';
+
+  @override
+  String get pinLockTitle => 'قفل PIN';
+
+  @override
+  String get pinMismatch => 'رموز PIN غير متطابقة';
+
+  @override
+  String get pinMustContainOnlyNumbers => 'يجب أن يحتوي رمز PIN على أرقام فقط';
+
+  @override
+  String get pinTooShort => 'يجب أن يكون PIN 4 أرقام على الأقل';
+
+  @override
+  String get platform => 'المنصة';
+
+  @override
+  String get pleaseAddConnectionEndpoint =>
+      'يرجى إضافة نقطة اتصال واحدة على الأقل';
+
+  @override
+  String get pleaseEnterCurrentPin => 'الرجاء إدخال رمز PIN الحالي';
+
+  @override
+  String get pleaseEnterNewPin => 'الرجاء إدخال رمز PIN جديد';
+
+  @override
+  String get pleaseEnterSubnet => 'الرجاء إدخال شبكة فرعية';
+
+  @override
+  String get pleaseEnterYourPin => 'الرجاء إدخال رمز PIN الخاص بك';
+
+  @override
+  String get pleaseSelectAnInstance => 'يرجى تحديد مثيل';
+
+  @override
+  String get pleaseSelectInterface => 'يرجى تحديد واجهة';
+
+  @override
+  String get port => 'المنفذ';
+
+  @override
+  String get portHint => 'مثال: 443';
+
+  @override
+  String get portIsRequired => 'المنفذ مطلوب';
+
+  @override
+  String portLabel(String port) {
+    return 'المنفذ $port';
+  }
+
+  @override
+  String get portMustBeBetween => 'يجب أن يكون المنفذ بين 1 و 65535';
+
+  @override
+  String get portPlaceholder => '443';
+
+  @override
+  String get preAuthKey => 'مفتاح المصادقة المسبقة';
+
+  @override
+  String get preAuthKeyHelperText =>
+      'اختياري: مفتاح المصادقة المسبقة لتسجيل الجهاز التلقائي';
+
+  @override
+  String get presharedKeyGeneratedSuccessfully =>
+      'تم إنشاء المفتاح المشترك مسبقاً بنجاح';
+
+  @override
+  String get presharedKeyOptional => 'المفتاح المشترك مسبقًا (اختياري)';
+
+  @override
+  String get preventAutomaticRouteInstallation => 'منع التثبيت التلقائي للمسار';
+
+  @override
+  String get previous => 'السابق';
+
+  @override
+  String get previousButton => 'السابق';
+
+  @override
+  String get privateKey => 'المفتاح الخاص';
+
+  @override
+  String get profileActivated => 'تم تفعيل الملف الشخصي بنجاح';
+
+  @override
+  String get profileAdded => 'تمت إضافة الملف الشخصي';
+
+  @override
+  String get profileDeleted => 'تم حذف الملف الشخصي بنجاح';
+
+  @override
+  String get profileHasNoEndpoints => 'الملف الشخصي ليس لديه نقاط اتصال مكونة';
+
+  @override
+  String get profileName => 'اسم الملف الشخصي';
+
+  @override
+  String get profileNameLabel => 'اسم الملف التعريفي';
+
+  @override
+  String get profileNameOptional => 'اسم الملف الشخصي (اختياري)';
+
+  @override
+  String get profileNameRequired => 'اسم الملف التعريفي مطلوب';
+
+  @override
+  String get profileSaved => 'تم حفظ الملف الشخصي بنجاح';
+
+  @override
+  String get profileUpdated => 'تم تحديث الملف الشخصي';
+
+  @override
+  String get profiles => 'الملفات الشخصية';
+
+  @override
+  String profilesExportedSuccessfully(String path) {
+    return 'تم تصدير الملفات الشخصية بنجاح!\n$path';
+  }
+
+  @override
+  String get protocol => 'البروتوكول';
+
+  @override
+  String get protocolAh => 'AH';
+
+  @override
+  String get protocolEsp => 'ESP';
+
+  @override
+  String get protocolGre => 'GRE';
+
+  @override
+  String get protocolIcmp => 'ICMP';
+
+  @override
+  String get protocolIcmpv6 => 'ICMPv6';
+
+  @override
+  String get protocolIgmp => 'IGMP';
+
+  @override
+  String get protocolIpv6 => 'IPv6';
+
+  @override
+  String get protocolOspf => 'OSPF';
+
+  @override
+  String get protocolPim => 'PIM';
+
+  @override
+  String get protocolTcp => 'TCP';
+
+  @override
+  String get protocolTcpUdp => 'TCP/UDP';
+
+  @override
+  String get protocolUdp => 'UDP';
+
+  @override
+  String get publicKey => 'المفتاح العام';
+
+  @override
+  String get publicKeyColon => 'المفتاح العام:';
+
+  @override
+  String get publicKeyRequired => 'المفتاح العام مطلوب';
+
+  @override
+  String publicKeyShort(String key) {
+    return '$key...';
+  }
+
+  @override
+  String get pushReset => 'إعادة تعيين الدفع';
+
+  @override
+  String get pushResetSubtitle =>
+      'لا ترث قائمة الدفع العامة لمثيل عميل معين. ملاحظة: --push-reset شامل جداً: سيزيل تقريباً جميع الخيارات من قائمة الخيارات المراد دفعها. في كثير من الحالات، سيحتاج بعض هذه الخيارات إلى إعادة تكوين بعد ذلك - على وجه التحديد، --topology subnet و --route-gateway سيضيعان وهذا سيكسر تكوينات العميل في كثير من الحالات.';
+
+  @override
+  String get pushVirtualIpEndpoints =>
+      'دفع نقاط نهاية IP الافتراضية لنفق العميل، متجاوزًا التخصيص الديناميكي.';
+
+  @override
+  String get qrCode => 'رمز QR';
+
+  @override
+  String get reason => 'السبب';
+
+  @override
+  String get rebootConfirmation =>
+      'هل أنت متأكد من رغبتك في إعادة تشغيل النظام؟';
+
+  @override
+  String get rebootFailed => 'فشل في إعادة تشغيل النظام';
 
   @override
   String rebootFailedWithError(String message, String error) {
@@ -1248,134 +2610,467 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get zeroSeconds => '0 ثانية';
+  String get rebootSuccess => 'تم بدء إعادة تشغيل النظام';
 
   @override
-  String get day => 'يوم';
+  String get rebootSystem => 'إعادة تشغيل النظام';
 
   @override
-  String get hour => 'ساعة';
+  String get received => 'المستلم';
 
   @override
-  String get second => 'ثانية';
+  String get recommendedForSecureConnections => 'موصى به للاتصالات الآمنة';
 
   @override
-  String get hostIsRequired => 'المضيف مطلوب';
+  String get redirectGateway => 'إعادة توجيه البوابة';
 
   @override
-  String get invalidHostnameOrIp => 'اسم مضيف أو عنوان IP غير صالح';
+  String get redirectGatewayHelperText =>
+      'تنفيذ أوامر التوجيه تلقائياً لإعادة توجيه جميع حركة مرور IP الصادرة عبر VPN.';
 
   @override
-  String get portIsRequired => 'المنفذ مطلوب';
+  String get refresh => 'تحديث';
 
   @override
-  String get portMustBeBetween => 'يجب أن يكون المنفذ بين 1 و 65535';
+  String get refreshTooltip => 'تحديث';
 
   @override
-  String get apiKeyIsRequired => 'مفتاح API مطلوب';
+  String get registerDns => 'تسجيل DNS';
 
   @override
-  String get invalidApiKeyFormat => 'تنسيق مفتاح API غير صالح';
+  String get registerDnsSubtitle =>
+      'تشغيل ipconfig /flushdns و ipconfig /registerdns عند بدء الاتصال. من المعروف أن هذا يدفع Windows للتعرف على خوادم DNS المدفوعة.';
 
   @override
-  String get apiSecretIsRequired => 'سر API مطلوب';
+  String get reject => 'رفض';
 
   @override
-  String get invalidApiSecretFormat => 'تنسيق سر API غير صالح';
+  String get remoteAddress => 'العنوان البعيد';
 
   @override
-  String fieldIsRequired(String fieldName) {
-    return '$fieldName مطلوب';
+  String get remoteNetwork => 'الشبكة البعيدة';
+
+  @override
+  String get remoteNetworkHelperText =>
+      'الشبكات البعيدة للخادم، يتم تكوينها عبر بنود iroute(-ipv6) في OpenVPN وتُعلم الخادم بإرسال هذه الشبكات إلى هذا العميل المحدد.';
+
+  @override
+  String get repository => 'المستودع';
+
+  @override
+  String get requirePinToUnlock => 'يتطلب PIN لفتح التطبيق';
+
+  @override
+  String get required => 'مطلوب';
+
+  @override
+  String get restart => 'إعادة التشغيل';
+
+  @override
+  String get restartButton => 'إعادة التشغيل';
+
+  @override
+  String get restartService => 'إعادة تشغيل الخدمة';
+
+  @override
+  String restartServiceConfirmation(String type) {
+    return 'هل أنت متأكد من رغبتك في إعادة تشغيل خدمة $type؟\n\nسيؤدي هذا إلى قطع جميع الاتصالات النشطة مؤقتًا.';
   }
 
   @override
-  String actionService(String action) {
-    return '$action الخدمة';
+  String get restartVPNService => 'إعادة تشغيل خدمة VPN';
+
+  @override
+  String restartingService(String type) {
+    return 'جاري إعادة تشغيل خدمة $type...';
   }
 
   @override
-  String confirmServiceAction(String action, String name) {
-    return '$action \"$name\"؟';
-  }
+  String get resume => 'استئناف';
 
   @override
-  String actioningService(String action, String name) {
-    return '$action $name...';
-  }
+  String get retry => 'إعادة المحاولة';
 
   @override
-  String get notAvailable => 'غير متاح';
+  String get retryButton => 'إعادة المحاولة';
 
   @override
-  String get unitBytes => 'بايت';
+  String get role => 'الدور';
 
   @override
-  String get unitKilobytes => 'كيلوبايت';
+  String get routeGateway => 'بوابة المسار';
 
   @override
-  String get unitMegabytes => 'ميجابايت';
+  String get routeGatewayHelperText =>
+      'حدد بوابة افتراضية لاستخدامها للعميل المتصل. بدون تعيين واحد، يتم تقديم العنوان الأول في كتلة الشبكة. عند تقسيم شبكة النفق (الخادم)، قد لا يكون هذا متاحًا من العميل.';
 
   @override
-  String get unitGigabytes => 'جيجابايت';
+  String get routeGatewayHint => '10.8.0.1';
 
   @override
-  String get unitTerabytes => 'تيرابايت';
+  String get routes => 'المسارات';
 
   @override
-  String get unitPetabytes => 'بيتابايت';
+  String get routing => 'التوجيه';
 
   @override
-  String get unitPerSecond => '/ث';
+  String get rowsPerPage => 'صفوف لكل صفحة';
 
   @override
-  String get hourAbbrev => 'س';
+  String get rowsPerPageDropdown => 'الصفوف لكل صفحة';
 
   @override
-  String get minuteAbbrev => 'د';
+  String get rowsPerPageLabel => 'الصفوف لكل صفحة: ';
 
   @override
-  String get secondAbbrev => 'ث';
+  String get ruleActionFailed => 'فشل إجراء القاعدة';
 
   @override
-  String get liveNetworkMonitor => 'مراقب الشبكة المباشر';
+  String get ruleCreated => 'تم إنشاء القاعدة بنجاح';
+
+  @override
+  String get ruleDeleted => 'تم حذف القاعدة بنجاح';
+
+  @override
+  String get ruleDescription => 'وصف القاعدة';
+
+  @override
+  String get ruleDetails => 'تفاصيل القاعدة';
+
+  @override
+  String get ruleDisabledSuccessfully => 'تم تعطيل القاعدة بنجاح';
+
+  @override
+  String get ruleEnabledSuccessfully => 'تم تفعيل القاعدة بنجاح';
+
+  @override
+  String get ruleGuidelines => 'إرشادات القاعدة';
+
+  @override
+  String get ruleGuidelinesText =>
+      '• استخدم \"any\" لمطابقة جميع العناوين أو المنافذ\n• تدوين CIDR: 192.168.1.0/24\n• نطاقات المنافذ: 80-443\n• تتم معالجة القواعد بالترتيب\n• يتم تطبيق التغييرات فوراً';
+
+  @override
+  String get ruleId => 'معرف القاعدة';
+
+  @override
+  String get ruleInformation => 'معلومات القاعدة';
+
+  @override
+  String get ruleUpdated => 'تم تحديث القاعدة بنجاح';
+
+  @override
+  String get ruleWillBeActiveWhenEnabled => 'ستكون القاعدة نشطة عند التفعيل';
+
+  @override
+  String get running => 'قيد التشغيل';
+
+  @override
+  String get runningStatus => 'قيد التشغيل';
+
+  @override
+  String get save => 'حفظ';
+
+  @override
+  String get saveAndConnect => 'حفظ واتصال';
+
+  @override
+  String get saveSettings => 'حفظ الإعدادات';
+
+  @override
+  String get saveTooltip => 'حفظ';
+
+  @override
+  String get saveWithoutTesting => 'حفظ بدون اختبار';
+
+  @override
+  String get saving => 'جاري الحفظ...';
+
+  @override
+  String get savingOverride => 'حفظ التجاوز...';
+
+  @override
+  String get savingProfile => 'جاري حفظ الملف الشخصي...';
+
+  @override
+  String get searchAliases => 'البحث عن الأسماء المستعارة...';
+
+  @override
+  String get searchHostnameIpOrMac => 'البحث عن اسم المضيف أو IP أو MAC...';
 
   @override
   String get searchHostnameOrIp => 'البحث عن اسم المضيف أو عنوان IP...';
 
   @override
-  String activeHosts(int count) {
-    return '$count مضيف نشط';
+  String get searchInstances => 'البحث عن المثيلات...';
+
+  @override
+  String get searchOverrides => 'البحث عن التجاوزات...';
+
+  @override
+  String get searchPeers => 'البحث عن الأنداد...';
+
+  @override
+  String get searchServers => 'البحث عن الخوادم...';
+
+  @override
+  String get second => 'ثانية';
+
+  @override
+  String get secondAbbrev => 'ث';
+
+  @override
+  String get seconds => 'ثواني';
+
+  @override
+  String get security => 'الأمان';
+
+  @override
+  String get securityWarning => 'تحذير أمني';
+
+  @override
+  String get selectAProfileOrCreateNewOne =>
+      'حدد ملفاً شخصياً أو أنشئ ملفاً جديداً';
+
+  @override
+  String get selectAll => 'تحديد الكل';
+
+  @override
+  String get selectExitNode => 'تحديد عقدة الخروج';
+
+  @override
+  String get selectInterface => 'حدد الواجهة';
+
+  @override
+  String get selectInterfaceToViewRules => 'حدد واجهة لعرض القواعد';
+
+  @override
+  String get selectKeyModeForAuthOrEncryption =>
+      'حدد وضع المفتاح للمصادقة أو التشفير';
+
+  @override
+  String selectLabel(String label) {
+    return 'اختر $label';
   }
 
   @override
-  String get noHostsFound => 'لم يتم العثور على مضيفين';
+  String get selectMultipleInterfaces => 'حدد واجهة واحدة أو أكثر للمراقبة';
 
   @override
-  String get tryDifferentSearch => 'جرب مصطلح بحث مختلف';
+  String get selectNumberOfEntries => 'حدد عدد إدخالات السجل المراد عرضها:';
 
   @override
-  String get download => 'التنزيل';
+  String get selectPeers => 'تحديد النظراء';
 
   @override
-  String get upload => 'الرفع';
+  String get selectServerAndGenerateKeys =>
+      '# حدد خادمًا وأنشئ مفاتيح لمعاينة التكوين';
 
   @override
-  String get totalBandwidth => 'إجمالي النطاق الترددي';
+  String get selectServerForQrCode => 'تحديد الخادم لإنشاء رمز QR';
 
   @override
-  String get of1Gbps => 'من 1 جيجابت في الثانية';
+  String get selectServerInstance => 'الرجاء تحديد مثيل الخادم';
 
   @override
-  String get networkTotals => 'إجماليات الشبكة';
+  String get selectServerToGenerateQrCode => 'حدد الخادم لإنشاء رمز QR';
 
   @override
-  String get totalDownload => 'إجمالي التنزيل';
+  String get selectServers => 'تحديد الخوادم';
 
   @override
-  String get totalUpload => 'إجمالي الرفع';
+  String get selectServersHelperText =>
+      'حدد خوادم OpenVPN التي ينطبق عليها هذا التجاوز، اتركه فارغاً للكل';
 
   @override
-  String get activeDevices => 'الأجهزة النشطة';
+  String get selectServersTitle => 'تحديد الخوادم';
+
+  @override
+  String get selectVhid => 'اختر VHID';
+
+  @override
+  String get selected => 'محدد';
+
+  @override
+  String get selfSignedCertWarning =>
+      'تحذير: الشهادات الموقعة ذاتياً أقل أماناً. قم بتفعيل هذا فقط إذا كنت تثق بالخادم.';
+
+  @override
+  String get selfSignedCertificatesWarning =>
+      'قم بتفعيل هذا فقط إذا كنت تثق بالخادم';
+
+  @override
+  String get sent => 'المرسل';
+
+  @override
+  String get sequence => 'التسلسل';
+
+  @override
+  String get server => 'الخادم';
+
+  @override
+  String get serverActiveWhenEnabled => 'سيكون الخادم نشطاً عند التفعيل';
+
+  @override
+  String get serverAddress => 'عنوان الخادم';
+
+  @override
+  String get serverCreatedSuccessfully => 'تم إنشاء الخادم بنجاح';
+
+  @override
+  String get serverDeletedSuccessfully => 'تم حذف الخادم بنجاح';
+
+  @override
+  String get serverDisabledSuccessfully => 'تم تعطيل الخادم بنجاح';
+
+  @override
+  String get serverEnabledSuccessfully => 'تم تمكين الخادم بنجاح';
+
+  @override
+  String get serverError => 'حدث خطأ في الخادم';
+
+  @override
+  String get serverInfoNotLoaded => 'لم يتم تحميل معلومات الخادم';
+
+  @override
+  String get serverNetwork => 'شبكة الخادم';
+
+  @override
+  String get serverPort => 'منفذ الخادم';
+
+  @override
+  String get serverSelectionRequired => 'يجب تحديد خادم واحد على الأقل';
+
+  @override
+  String get serverUpdatedSuccessfully => 'تم تحديث الخادم بنجاح';
+
+  @override
+  String get serverWillBeActiveWhenEnabled => 'سيكون الخادم نشطًا عند التمكين';
+
+  @override
+  String get servers => 'الخوادم';
+
+  @override
+  String get serversLabel => 'الخوادم';
+
+  @override
+  String serversSelected(int count) {
+    return '$count خادم (خوادم) محددة';
+  }
+
+  @override
+  String get serviceActionFailed => 'فشل إجراء الخدمة';
+
+  @override
+  String get serviceControls => 'عناصر تحكم الخدمة';
+
+  @override
+  String get serviceRestarted => 'تمت إعادة تشغيل الخدمة بنجاح';
+
+  @override
+  String get serviceRestartedSuccessfully => 'تمت إعادة تشغيل الخدمة بنجاح';
+
+  @override
+  String get serviceRunning => 'الخدمة قيد التشغيل';
+
+  @override
+  String get serviceStarted => 'تم تشغيل الخدمة بنجاح';
+
+  @override
+  String get serviceStartedSuccessfully => 'تم بدء الخدمة بنجاح';
+
+  @override
+  String get serviceStatus => 'حالة الخدمة';
+
+  @override
+  String get serviceStopped => 'تم إيقاف الخدمة بنجاح';
+
+  @override
+  String get serviceStoppedSuccessfully => 'تم إيقاف الخدمة بنجاح';
+
+  @override
+  String get services => 'الخدمات';
+
+  @override
+  String get sessionTimeout => 'مهلة الجلسة';
+
+  @override
+  String get sessions => 'الجلسات';
+
+  @override
+  String get setAsActive => 'تعيين كنشط';
+
+  @override
+  String get setPin => 'تعيين PIN';
+
+  @override
+  String get settings => 'الإعدادات';
+
+  @override
+  String severitiesAndTimeFilter(int count, String timeFilter) {
+    return '$count شدة • $timeFilter';
+  }
+
+  @override
+  String get severity => 'الخطورة';
+
+  @override
+  String get severityAlert => 'تنبيه';
+
+  @override
+  String get severityCritical => 'حرج';
+
+  @override
+  String get severityDebug => 'تصحيح';
+
+  @override
+  String get severityEmergency => 'طوارئ';
+
+  @override
+  String get severityEmergencyShort => 'طوارئ';
+
+  @override
+  String get severityError => 'خطأ';
+
+  @override
+  String get severityInformational => 'معلوماتي';
+
+  @override
+  String get severityInformationalShort => 'معلومات';
+
+  @override
+  String get severityNotice => 'إشعار';
+
+  @override
+  String get severityWarning => 'تحذير';
+
+  @override
+  String get showAdvancedSettings => 'إظهار الإعدادات المتقدمة';
+
+  @override
+  String get showAll => 'عرض الكل';
+
+  @override
+  String get showKey => 'إظهار المفتاح';
+
+  @override
+  String showingEntriesCount(String start, String end) {
+    return 'عرض $start إلى $end';
+  }
+
+  @override
+  String showingInstancesCount(String count, String total) {
+    return 'عرض $count من $total';
+  }
+
+  @override
+  String get showingZeroEntries => 'عرض 0 إدخالات';
+
+  @override
+  String get someConnectionsFailed => 'فشلت بعض الاتصالات';
+
+  @override
+  String get soon => 'قريباً';
 
   @override
   String get sortBy => 'ترتيب حسب';
@@ -1393,73 +3088,687 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sortByManufacturer => 'الشركة المصنعة';
 
   @override
-  String get bandwidthLimit => 'حد النطاق الترددي';
+  String get source => 'المصدر';
 
   @override
-  String get bandwidthLimitMbps => 'حد النطاق الترددي (ميجابت في الثانية)';
+  String get sourceAddress => 'عنوان المصدر';
 
   @override
-  String get enterBandwidthLimit =>
-      'أدخل حد النطاق الترددي للاتصال بالميجابت في الثانية';
+  String get sourceIsRequired => 'المصدر مطلوب';
 
   @override
-  String get macAddress => 'عنوان MAC';
+  String get sourcePort => 'منفذ المصدر';
 
   @override
-  String get monitorInterface => 'واجهة المراقبة';
+  String get sourcePortOptional => 'منفذ المصدر (اختياري)';
 
   @override
-  String get selectMultipleInterfaces => 'حدد واجهة واحدة أو أكثر للمراقبة';
+  String get sshEnabled => 'SSH مفعل';
 
   @override
-  String get dhcpLeases => 'عقود DHCP';
+  String get start => 'بدء';
 
   @override
-  String get searchHostnameIpOrMac => 'البحث عن اسم المضيف أو IP أو MAC...';
+  String get startButton => 'تشغيل';
 
   @override
-  String leasesCount(int filtered, int total) {
-    return '$filtered من $total عقد';
-  }
+  String get startService => 'بدء الخدمة';
 
   @override
-  String get noLeasesFound => 'لم يتم العثور على عقود';
+  String get startTime => 'وقت البدء';
 
   @override
-  String get all => 'الكل';
+  String get startWireguardService => 'بدء خدمة WireGuard';
 
   @override
-  String get active => 'نشط';
+  String get staticKeyContentPemFormat => 'محتوى المفتاح الثابت بتنسيق PEM';
 
   @override
-  String get expired => 'منتهي';
+  String get staticKeyCreatedSuccessfully => 'تم إنشاء المفتاح الثابت بنجاح';
 
   @override
-  String get expires => 'ينتهي';
+  String get staticKeyDeletedSuccessfully => 'تم حذف المفتاح الثابت بنجاح';
 
   @override
-  String get ipAddress => 'عنوان IP';
+  String get staticKeyDetails => 'تفاصيل المفتاح الثابت';
+
+  @override
+  String get staticKeyInfoHelp =>
+      '• Auth: يضيف مصادقة HMAC لقناة التحكم\n• Crypt: يشفر ويصادق جميع حزم قناة التحكم\n• Crypt V2: تشفير محسّن بأمان أفضل\n\nيمكنك إنشاء مفتاح جديد أو لصق مفتاح موجود.';
+
+  @override
+  String get staticKeyInformation => 'معلومات المفتاح الثابت';
+
+  @override
+  String get staticKeyUpdatedSuccessfully => 'تم تحديث المفتاح الثابت بنجاح';
+
+  @override
+  String get staticKeys => 'المفاتيح الثابتة';
 
   @override
   String get staticLease => 'ثابت';
 
   @override
-  String get dynamicLease => 'ديناميكي';
+  String get status => 'الحالة';
 
   @override
-  String get blockHost => 'حظر المضيف';
+  String get stop => 'إيقاف';
 
   @override
-  String blockHostConfirmation(String hostname, String ip) {
-    return 'هل أنت متأكد من حظر $hostname ($ip)؟\n\nسيؤدي هذا إلى إنشاء قاعدة جدار ناري لحظر جميع حركة المرور من هذا المضيف.';
+  String get stopButton => 'إيقاف';
+
+  @override
+  String get stopService => 'إيقاف الخدمة';
+
+  @override
+  String get stopped => 'متوقف';
+
+  @override
+  String get stoppedStatus => 'متوقف';
+
+  @override
+  String get storeAndGenerateNext => 'حفظ وإنشاء التالي';
+
+  @override
+  String get subnetAddedSuccessfully => 'تمت إضافة الشبكة الفرعية بنجاح';
+
+  @override
+  String get subnetCidr => 'الشبكة الفرعية (CIDR)';
+
+  @override
+  String get subnetDeletedSuccessfully => 'تم حذف الشبكة الفرعية بنجاح';
+
+  @override
+  String get subnetUpdatedSuccessfully => 'تم تحديث الشبكة الفرعية بنجاح';
+
+  @override
+  String get success => 'نجاح';
+
+  @override
+  String successfullyConnected(String name) {
+    return 'تم الاتصال بنجاح بـ $name';
   }
 
   @override
-  String get blockingHost => 'جاري حظر المضيف...';
+  String successfullyDisconnected(String name) {
+    return 'تم قطع الاتصال بنجاح بـ $name';
+  }
 
   @override
-  String get hostBlocked => 'تم حظر المضيف بنجاح';
+  String successfullyImportedProfiles(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'ملفات شخصية',
+      one: 'ملف شخصي',
+    );
+    return 'تم استيراد $count $_temp0 بنجاح';
+  }
 
   @override
-  String get failedToBlockHost => 'فشل حظر المضيف';
+  String successfullyRestartedService(String type) {
+    return 'تم إعادة تشغيل خدمة $type بنجاح';
+  }
+
+  @override
+  String successfullyWokenDevices(
+    int successCount,
+    int totalCount,
+    String plural,
+  ) {
+    return 'تم تنبيه $successCount من $totalCount جهاز بنجاح';
+  }
+
+  @override
+  String get switchProfile => 'تبديل الملف الشخصي';
+
+  @override
+  String get switchProfileConfirmation =>
+      'هل أنت متأكد من رغبتك في تبديل الملفات الشخصية؟ سيتم إرجاعك إلى شاشة اختيار الملف الشخصي.';
+
+  @override
+  String get systemDefault => 'افتراضي النظام';
+
+  @override
+  String get systemGeneratedRule =>
+      'هذه قاعدة تم إنشاؤها بواسطة النظام ولا يمكن تعديلها أو حذفها.';
+
+  @override
+  String get systemGeneratedRulesCannotBeDeleted =>
+      'لا يمكن حذف القواعد التي تم إنشاؤها بواسطة النظام';
+
+  @override
+  String get systemGeneratedRulesCannotBeModified =>
+      'لا يمكن تعديل القواعد التي تم إنشاؤها بواسطة النظام';
+
+  @override
+  String get systemInfo => 'معلومات النظام';
+
+  @override
+  String get systemInformation => 'معلومات النظام';
+
+  @override
+  String get systemType => 'نوع النظام';
+
+  @override
+  String get tags => 'العلامات';
+
+  @override
+  String get tailscale => 'Tailscale';
+
+  @override
+  String get tailscaleAuthentication => 'مصادقة Tailscale';
+
+  @override
+  String tailscaleServiceAction(String action) {
+    return '$action خدمة Tailscale';
+  }
+
+  @override
+  String tailscaleServiceActionConfirmation(String action) {
+    return 'هل أنت متأكد أنك تريد $action خدمة Tailscale؟';
+  }
+
+  @override
+  String tailscaleServiceActionSuccess(String action) {
+    return 'تم $action خدمة Tailscale بنجاح';
+  }
+
+  @override
+  String tailscaleServiceActioning(String action) {
+    return 'جاري $action خدمة Tailscale...';
+  }
+
+  @override
+  String get tailscaleSettings => 'إعدادات Tailscale';
+
+  @override
+  String get tailscaleStatus => 'حالة Tailscale';
+
+  @override
+  String get tailscaleSubnets => 'شبكات Tailscale الفرعية';
+
+  @override
+  String get tailscaleVersion => 'الإصدار';
+
+  @override
+  String get tapPlusButtonToCreateFirstInstance =>
+      'اضغط على زر + لإنشاء أول مثيل';
+
+  @override
+  String get tapPlusButtonToCreateFirstOverride =>
+      'اضغط على زر + لإنشاء أول تجاوز';
+
+  @override
+  String get tapPlusButtonToCreateFirstStaticKey =>
+      'اضغط على زر + لإنشاء أول مفتاح ثابت';
+
+  @override
+  String get tcpFlags => 'علامات TCP';
+
+  @override
+  String get tenMin => '10 دقائق';
+
+  @override
+  String get testConnection => 'اختبار الاتصال';
+
+  @override
+  String get testConnections => 'اختبار الاتصالات';
+
+  @override
+  String get testProfile => 'اختبار الملف الشخصي';
+
+  @override
+  String get testingAllConnections => 'اختبار جميع نقاط الاتصال...';
+
+  @override
+  String testingConnection(String current, String total, String endpoint) {
+    return 'اختبار الاتصال $current من $total: $endpoint';
+  }
+
+  @override
+  String get theme => 'السمة';
+
+  @override
+  String get thirtyMin => '30 دقيقة';
+
+  @override
+  String get time => 'الوقت';
+
+  @override
+  String get timeRange => 'النطاق الزمني';
+
+  @override
+  String get timeRangeLabel => 'النطاق الزمني';
+
+  @override
+  String get timeout => 'انتهت مهلة الطلب';
+
+  @override
+  String get timestamp => 'الطابع الزمني';
+
+  @override
+  String get today => 'اليوم';
+
+  @override
+  String get totalBandwidth => 'إجمالي النطاق الترددي';
+
+  @override
+  String get totalDownload => 'إجمالي التنزيل';
+
+  @override
+  String get totalEntries => 'إجمالي الإدخالات';
+
+  @override
+  String get totalUpload => 'إجمالي الرفع';
+
+  @override
+  String get totalVPNs => 'إجمالي VPN';
+
+  @override
+  String get tryAdjustingFilters =>
+      'حاول ضبط مستوى الخطورة أو فلاتر التاريخ المحددة.';
+
+  @override
+  String get tryDemoMode => 'تجربة وضع العرض التوضيحي';
+
+  @override
+  String get tryDifferentSearch => 'جرب مصطلح بحث مختلف';
+
+  @override
+  String get tunnelAddress => 'عنوان النفق';
+
+  @override
+  String get tunnelAddressCidr => 'عنوان النفق (CIDR)';
+
+  @override
+  String get tunnelAddressRequired => 'مطلوب عنوان نفق واحد على الأقل';
+
+  @override
+  String get tunnelAddresses => 'عناوين النفق';
+
+  @override
+  String tunnelLabel(String network) {
+    return 'النفق: $network';
+  }
+
+  @override
+  String get tunnelNetwork => 'شبكة النفق';
+
+  @override
+  String get tunnelSettings => 'إعدادات النفق';
+
+  @override
+  String tunnelWithValue(String value) {
+    return 'النفق: $value';
+  }
+
+  @override
+  String get twoMin => '2 دقيقة';
+
+  @override
+  String get type => 'النوع';
+
+  @override
+  String typeWithValue(String value) {
+    return 'النوع: $value';
+  }
+
+  @override
+  String get udpPortDefault51820 => 'منفذ UDP (افتراضي: 51820)';
+
+  @override
+  String get unableToAccessFilePath => 'غير قادر على الوصول إلى مسار الملف';
+
+  @override
+  String get unableToConnectToAnyEndpoint =>
+      'تعذر الاتصال بأي من نقاط النهاية المكونة. يرجى التحقق من إعدادات الشبكة والمحاولة مرة أخرى.';
+
+  @override
+  String get unauthorized => 'وصول غير مصرح به';
+
+  @override
+  String get unitBytes => 'بايت';
+
+  @override
+  String get unitGigabytes => 'جيجابايت';
+
+  @override
+  String get unitKilobytes => 'كيلوبايت';
+
+  @override
+  String get unitMegabytes => 'ميجابايت';
+
+  @override
+  String get unitPerSecond => '/ث';
+
+  @override
+  String get unitPetabytes => 'بيتابايت';
+
+  @override
+  String get unitTerabytes => 'تيرابايت';
+
+  @override
+  String get unknown => 'غير معروف';
+
+  @override
+  String get unknownStatus => 'غير معروف';
+
+  @override
+  String get unlock => 'فتح';
+
+  @override
+  String get unlockOPNsenseManager => 'فتح OPNsense Manager';
+
+  @override
+  String get unnamedHost => 'مضيف بدون اسم';
+
+  @override
+  String get unnamedInstance => 'مثيل بدون اسم';
+
+  @override
+  String get unnamedRule => 'قاعدة بدون اسم';
+
+  @override
+  String get unsavedChanges => 'تغييرات غير محفوظة';
+
+  @override
+  String get unsavedChangesConfirmation =>
+      'لديك تغييرات غير محفوظة. هل تريد تجاهلها والمتابعة؟';
+
+  @override
+  String get update => 'تحديث';
+
+  @override
+  String get updateOverride => 'تحديث التجاوز';
+
+  @override
+  String get updatePeer => 'تحديث النظير';
+
+  @override
+  String get updatePinCode => 'تحديث رمز PIN الخاص بك';
+
+  @override
+  String get updateRule => 'تحديث القاعدة';
+
+  @override
+  String get updateServer => 'تحديث الخادم';
+
+  @override
+  String get updateStaticKey => 'تحديث المفتاح الثابت';
+
+  @override
+  String get upload => 'الرفع';
+
+  @override
+  String get uptime => 'وقت التشغيل';
+
+  @override
+  String get useBiometric => 'استخدام البيومترية';
+
+  @override
+  String useBiometricToUnlock(String biometricType) {
+    return 'استخدم $biometricType لفتح التطبيق';
+  }
+
+  @override
+  String get useExitNode => 'استخدام عقدة الخروج';
+
+  @override
+  String get useHttps => 'استخدام HTTPS';
+
+  @override
+  String get useHttpsDescription => 'استخدام اتصال HTTPS آمن';
+
+  @override
+  String get useHttpsLabel => 'استخدام HTTPS';
+
+  @override
+  String get useProtocolForCommunicating => 'استخدم هذا البروتوكول للاتصال';
+
+  @override
+  String get valid => 'صالح';
+
+  @override
+  String get validFrom => 'صالح من';
+
+  @override
+  String verifyingConnection(String endpoint) {
+    return 'التحقق من الاتصال بـ $endpoint...';
+  }
+
+  @override
+  String version(String version) {
+    return 'الإصدار $version';
+  }
+
+  @override
+  String get versionLabel => 'الإصدار';
+
+  @override
+  String get viewDetails => 'عرض التفاصيل';
+
+  @override
+  String get viewFullLicense => 'عرض الرخصة الكاملة';
+
+  @override
+  String get virtualAddress => 'العنوان الافتراضي';
+
+  @override
+  String get vpn => 'VPN';
+
+  @override
+  String get vpnConnections => 'اتصالات VPN';
+
+  @override
+  String get vpnConnectionsWillAppear => 'ستظهر اتصالات VPN هنا عند تكوينها';
+
+  @override
+  String get vpnStatus => 'حالة VPN';
+
+  @override
+  String get vpnType => 'نوع VPN';
+
+  @override
+  String get wakeAll => 'تنبيه الكل';
+
+  @override
+  String get wakeAllDevices => 'تنبيه جميع الأجهزة';
+
+  @override
+  String get wakeAllDevicesConfirmation =>
+      'هل أنت متأكد من رغبتك في إرسال حزم التنبيه إلى جميع الأجهزة المكونة؟';
+
+  @override
+  String get wakeAllResults => 'نتائج تنبيه الكل';
+
+  @override
+  String get wakeHost => 'تنبيه المضيف';
+
+  @override
+  String get wakeOnLan => 'التنبيه عبر الشبكة';
+
+  @override
+  String get wakingAllDevices => 'جاري تنبيه جميع الأجهزة...';
+
+  @override
+  String get warning => 'تحذير';
+
+  @override
+  String get winsServers => 'خوادم WINS';
+
+  @override
+  String get winsServersHelperText =>
+      'تعيين عنوان خادم WINS الأساسي (خادم اسم NetBIOS عبر TCP/IP). كرر هذا الخيار لتعيين عناوين خادم WINS الثانوية.';
+
+  @override
+  String get wireguard => 'WireGuard';
+
+  @override
+  String get wireguardLogs => 'سجلات WireGuard';
+
+  @override
+  String get wireguardLogsExport => 'تصدير سجلات WireGuard';
+
+  @override
+  String wireguardLogsExportedOn(String date) {
+    return 'تم تصدير سجلات WireGuard في $date';
+  }
+
+  @override
+  String get wireguardPeers => 'نظراء WireGuard';
+
+  @override
+  String get wireguardServers => 'خوادم WireGuard';
+
+  @override
+  String get wireguardServiceStarted => 'تم بدء خدمة WireGuard';
+
+  @override
+  String get wireguardServiceStopped => 'تم إيقاف خدمة WireGuard';
+
+  @override
+  String get wireguardStatus => 'حالة WireGuard';
+
+  @override
+  String get withoutCredentials => 'بدون بيانات الاعتماد';
+
+  @override
+  String wolPacketSentTo(String host) {
+    return 'تم إرسال حزمة WOL إلى $host';
+  }
+
+  @override
+  String get yes => 'نعم';
+
+  @override
+  String get yesterday => 'أمس';
+
+  @override
+  String get zeroSeconds => '0 ثانية';
+
+  @override
+  String get addToList => 'إضافة';
+
+  @override
+  String get allFilterOption => 'الكل';
+
+  @override
+  String get commonNameLabel => 'الاسم الشائع';
+
+  @override
+  String get connectionBlockingDescription =>
+      'حظر اتصال العميل هذا بناءً على اسمه الشائع. لا تستخدم هذا الخيار لتعطيل عميل بشكل دائم بسبب مفتاح أو كلمة مرور مخترقة. استخدم CRL (قائمة إلغاء الشهادات) بدلاً من ذلك.';
+
+  @override
+  String deviceLabel(String type) {
+    return 'الجهاز: $type';
+  }
+
+  @override
+  String get enableThisClientOverride => 'تمكين تجاوز العميل المحدد هذا';
+
+  @override
+  String get enterClientX509CommonName => 'أدخل الاسم الشائع X.509 للعميل هنا.';
+
+  @override
+  String get facility => 'المرفق';
+
+  @override
+  String gatewayLabel(String gateway) {
+    return 'البوابة: $gateway';
+  }
+
+  @override
+  String get invalidIpAddressMustBeIpv4OrIpv6 =>
+      'عنوان IP غير صالح (يجب أن يكون IPv4 أو IPv6)';
+
+  @override
+  String localLabel(String address) {
+    return 'محلي: $address';
+  }
+
+  @override
+  String get messageLabel => 'الرسالة:';
+
+  @override
+  String pageOfTotal(int current, int total) {
+    return 'الصفحة $current من $total';
+  }
+
+  @override
+  String get parser => 'المحلل';
+
+  @override
+  String pidLabel(String pid) {
+    return 'PID: $pid';
+  }
+
+  @override
+  String processLabel(String process) {
+    return 'العملية: $process';
+  }
+
+  @override
+  String get pushResetDescription =>
+      'لا ترث قائمة الدفع العامة لمثيل عميل معين. ملاحظة: --push-reset شامل جدًا: سيزيل جميع الخيارات تقريبًا من قائمة الخيارات المراد دفعها. في كثير من الحالات، سيحتاج بعض هذه الخيارات إلى إعادة تكوين بعد ذلك - على وجه التحديد، سيتم فقدان --topology subnet و --route-gateway وسيؤدي ذلك إلى كسر تكوينات العميل في كثير من الحالات.';
+
+  @override
+  String get record => 'السجل';
+
+  @override
+  String get redirectGatewayDescription =>
+      'تنفيذ أوامر التوجيه تلقائيًا للتسبب في إعادة توجيه جميع حركة مرور IP الصادرة عبر VPN.';
+
+  @override
+  String get registerDnsDescription =>
+      'تشغيل ipconfig /flushdns و ipconfig /registerdns عند بدء الاتصال. من المعروف أن هذا يدفع Windows إلى التعرف على خوادم DNS المدفوعة.';
+
+  @override
+  String remoteLabel(String info) {
+    return 'بعيد: $info';
+  }
+
+  @override
+  String selectedCount(int count) {
+    return '$count محدد';
+  }
+
+  @override
+  String serverLabel(String info) {
+    return 'الخادم: $info';
+  }
+
+  @override
+  String severityLabel(String severity) {
+    return 'الشدة: $severity';
+  }
+
+  @override
+  String showingEntries(int start, int end) {
+    return 'عرض $start إلى $end';
+  }
+
+  @override
+  String get statusLabel => 'الحالة';
+
+  @override
+  String timestampLabel(String timestamp) {
+    return 'الطابع الزمني: $timestamp';
+  }
+
+  @override
+  String typeLabel(String type) {
+    return 'النوع: $type';
+  }
+
+  @override
+  String get udp => 'UDP';
+
+  @override
+  String get unknownNetwork => 'شبكة غير معروفة';
+
+  @override
+  String get youMayEnterDescriptionForReference =>
+      'يمكنك إدخال وصف هنا للرجوع إليه (لا يتم تحليله).';
 }

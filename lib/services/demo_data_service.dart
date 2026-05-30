@@ -16,524 +16,191 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'dart:math';
 import '../models/system_info.dart';
 import '../models/firewall_rule.dart';
+import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
 import '../models/network_host.dart';
+import '../models/wireguard_status.dart';
+import '../models/tailscale_status.dart';
+import '../models/tailscale_settings.dart';
+import '../models/openvpn_instance_list_item.dart';
+import '../models/openvpn_instance.dart';
+import '../models/openvpn_static_key.dart';
+import 'demo/demo_state_manager.dart';
+import 'demo/demo_system_data_generator.dart';
+import 'demo/demo_firewall_data_generator.dart';
+import 'demo/demo_vpn_data_generator.dart';
+import 'demo/demo_network_data_generator.dart';
+import 'demo/demo_tailscale_data_generator.dart';
 
 /// Service for generating realistic demo data
+/// 
+/// This is a facade that delegates to specialized generators:
+/// - System data (info, services, gateways)
+/// - Firewall data (rules, aliases, logs)
+/// - VPN data (OpenVPN, WireGuard, Tailscale)
+/// - Network data (hosts, DHCP leases)
+/// - Tailscale data (status, settings, subnets)
 class DemoDataService {
   static final DemoDataService _instance = DemoDataService._internal();
   factory DemoDataService() => _instance;
-  DemoDataService._internal();
 
-  final Random _random = Random();
-  
-  // Simulated state for demo mode
-  final Map<String, bool> _firewallRuleStates = {};
-  final Map<String, bool> _vpnConnectionStates = {};
-  final Map<String, bool> _serviceStates = {};
+  // State manager and generators
+  final DemoStateManager _stateManager = DemoStateManager();
+  late final DemoSystemDataGenerator _systemGenerator;
+  late final DemoFirewallDataGenerator _firewallGenerator;
+  late final DemoVPNDataGenerator _vpnGenerator;
+  late final DemoNetworkDataGenerator _networkGenerator;
+  late final DemoTailscaleDataGenerator _tailscaleGenerator;
+
+  DemoDataService._internal() {
+    _systemGenerator = DemoSystemDataGenerator(_stateManager);
+    _firewallGenerator = DemoFirewallDataGenerator(_stateManager);
+    _vpnGenerator = DemoVPNDataGenerator(_stateManager);
+    _networkGenerator = DemoNetworkDataGenerator();
+    _tailscaleGenerator = DemoTailscaleDataGenerator(_stateManager);
+  }
+
+  // ==================== System Data ====================
 
   /// Generate demo system info
-  SystemInfo generateSystemInfo() {
-    final uptime = Duration(days: 15, hours: _random.nextInt(24), minutes: _random.nextInt(60));
-    final cpuUsage = 15 + _random.nextInt(30); // 15-45%
-    final memoryUsage = 40 + _random.nextInt(20); // 40-60%
-    final diskUsage = 25 + _random.nextInt(30); // 25-55%
-
-    return SystemInfo(
-      hostname: 'demo-opnsense',
-      version: '24.7.1',
-      platform: 'amd64',
-      uptime: uptime.inSeconds,
-      cpuUsage: cpuUsage.toDouble(),
-      memoryTotal: 8589934592, // 8GB
-      memoryUsed: (8589934592 * memoryUsage / 100).round(),
-      diskTotal: 107374182400, // 100GB
-      diskUsed: (107374182400 * diskUsage / 100).round(),
-      type: 'opnsense',
-      architecture: 'amd64',
-      commit: 'c2f076f30',
-      mirror: 'https://pkg.opnsense.org',
-      repositories: 'OPNsense (Priority: 11)',
-      updatedOn: DateTime.now().subtract(const Duration(days: 7)).toIso8601String(),
-    );
-  }
-
-  /// Generate demo firewall rules
-  List<FirewallRule> generateFirewallRules() {
-    final rules = <FirewallRule>[
-      FirewallRule(
-        uuid: 'demo-rule-1',
-        type: 'pass',
-        interfaceName: 'wan',
-        protocol: 'tcp',
-        source: 'any',
-        sourcePort: '',
-        destination: 'any',
-        destinationPort: '443',
-        description: 'Allow HTTPS from WAN',
-        enabled: _getFirewallRuleState('demo-rule-1', true) ? '1' : '0',
-        sequence: 1,
-      ),
-      FirewallRule(
-        uuid: 'demo-rule-2',
-        type: 'pass',
-        interfaceName: 'lan',
-        protocol: 'any',
-        source: '192.168.1.0/24',
-        sourcePort: '',
-        destination: 'any',
-        destinationPort: '',
-        description: 'Allow LAN to any',
-        enabled: _getFirewallRuleState('demo-rule-2', true) ? '1' : '0',
-        sequence: 2,
-      ),
-      FirewallRule(
-        uuid: 'demo-rule-3',
-        type: 'block',
-        interfaceName: 'wan',
-        protocol: 'tcp',
-        source: 'any',
-        sourcePort: '',
-        destination: 'any',
-        destinationPort: '22',
-        description: 'Block SSH from WAN',
-        enabled: _getFirewallRuleState('demo-rule-3', false) ? '1' : '0',
-        sequence: 3,
-      ),
-      FirewallRule(
-        uuid: 'demo-rule-4',
-        type: 'pass',
-        interfaceName: 'wan',
-        protocol: 'tcp',
-        source: 'any',
-        sourcePort: '',
-        destination: 'any',
-        destinationPort: '80',
-        description: 'Allow HTTP from WAN',
-        enabled: _getFirewallRuleState('demo-rule-4', true) ? '1' : '0',
-        sequence: 4,
-      ),
-    ];
-
-    return rules;
-  }
-
-  /// Generate demo VPN connections
-  List<VPNConnection> generateVPNConnections() {
-    return [
-      VPNConnection(
-        id: 'demo-vpn-1',
-        name: 'Office VPN',
-        type: 'openvpn',
-        status: _getVPNConnectionState('demo-vpn-1', true) ? 'up' : 'down',
-        description: 'Main office VPN connection',
-        remoteAddress: '203.0.113.10',
-        localAddress: '192.168.1.1',
-        virtualAddress: '10.8.0.2',
-        bytesReceived: 1024 * 1024 * 150 + _random.nextInt(1024 * 1024 * 50),
-        bytesSent: 1024 * 1024 * 80 + _random.nextInt(1024 * 1024 * 20),
-        connectedSince: DateTime.now().subtract(Duration(hours: 5, minutes: _random.nextInt(60))),
-        protocol: 'UDP',
-        port: 1194,
-        enabled: true,
-      ),
-      VPNConnection(
-        id: 'demo-vpn-2',
-        name: 'Remote Site',
-        type: 'ipsec',
-        status: _getVPNConnectionState('demo-vpn-2', true) ? 'up' : 'down',
-        description: 'Remote site IPsec tunnel',
-        remoteAddress: '198.51.100.25',
-        localAddress: '192.168.1.1',
-        virtualAddress: '10.9.0.2',
-        bytesReceived: 1024 * 1024 * 320 + _random.nextInt(1024 * 1024 * 80),
-        bytesSent: 1024 * 1024 * 180 + _random.nextInt(1024 * 1024 * 40),
-        connectedSince: DateTime.now().subtract(Duration(days: 2, hours: _random.nextInt(24))),
-        protocol: 'ESP',
-        port: 500,
-        enabled: true,
-      ),
-      VPNConnection(
-        id: 'demo-vpn-3',
-        name: 'Mobile Users',
-        type: 'openvpn',
-        status: _getVPNConnectionState('demo-vpn-3', false) ? 'up' : 'down',
-        description: 'Mobile user access',
-        remoteAddress: '192.0.2.50',
-        localAddress: '192.168.1.1',
-        virtualAddress: '10.8.0.10',
-        bytesReceived: 0,
-        bytesSent: 0,
-        connectedSince: null,
-        protocol: 'TCP',
-        port: 443,
-        enabled: false,
-      ),
-    ];
-  }
+  SystemInfo generateSystemInfo() => _systemGenerator.generateSystemInfo();
 
   /// Generate demo services
-  Map<String, dynamic> generateServices() {
-    return {
-      'services': [
-        {
-          'name': 'unbound',
-          'description': 'DNS Resolver',
-          'status': _getServiceState('unbound', true) ? 'running' : 'stopped',
-        },
-        {
-          'name': 'ntpd',
-          'description': 'NTP Service',
-          'status': _getServiceState('ntpd', true) ? 'running' : 'stopped',
-        },
-        {
-          'name': 'sshd',
-          'description': 'SSH Service',
-          'status': _getServiceState('sshd', true) ? 'running' : 'stopped',
-        },
-        {
-          'name': 'dhcpd',
-          'description': 'DHCP Service',
-          'status': _getServiceState('dhcpd', true) ? 'running' : 'stopped',
-        },
-        {
-          'name': 'openvpn',
-          'description': 'OpenVPN Service',
-          'status': _getServiceState('openvpn', true) ? 'running' : 'stopped',
-        },
-      ],
-    };
-  }
+  Map<String, dynamic> generateServices() => _systemGenerator.generateServices();
 
   /// Generate demo gateways
-  List<Map<String, dynamic>> generateGateways() {
-    return [
-      {
-        'name': 'WAN_DHCP',
-        'address': '203.0.113.1',
-        'status': 'online',
-        'delay': '${5 + _random.nextInt(10)}ms',
-        'stddev': '${1 + _random.nextInt(3)}ms',
-        'loss': '0%',
-      },
-      {
-        'name': 'WAN_BACKUP',
-        'address': '198.51.100.1',
-        'status': 'online',
-        'delay': '${8 + _random.nextInt(15)}ms',
-        'stddev': '${2 + _random.nextInt(4)}ms',
-        'loss': '0%',
-      },
-    ];
-  }
+  List<Map<String, dynamic>> generateGateways() => _systemGenerator.generateGateways();
+
+  // ==================== Firewall Data ====================
+
+  /// Generate demo firewall rules
+  List<FirewallRule> generateFirewallRules() => _firewallGenerator.generateFirewallRules();
+
+  /// Generate demo firewall aliases
+  List<FirewallAlias> generateFirewallAliases() => _firewallGenerator.generateFirewallAliases();
 
   /// Generate demo firewall logs
-  List<Map<String, dynamic>> generateFirewallLogs({int limit = 100}) {
-    final logs = <Map<String, dynamic>>[];
-    final actions = ['pass', 'block'];
-    final interfaces = ['wan', 'lan', 'opt1'];
-    final protocols = ['tcp', 'udp', 'icmp'];
-    final sources = ['192.168.1.100', '192.168.1.101', '203.0.113.50', '198.51.100.75', '10.0.0.25'];
-    final destinations = ['192.168.1.1', '8.8.8.8', '1.1.1.1', '192.168.1.50'];
-
-    for (int i = 0; i < limit; i++) {
-      final timestamp = DateTime.now().subtract(Duration(minutes: i * 2));
-      logs.add({
-        'timestamp': timestamp.toIso8601String(),
-        'action': actions[_random.nextInt(actions.length)],
-        'interface': interfaces[_random.nextInt(interfaces.length)],
-        'protocol': protocols[_random.nextInt(protocols.length)],
-        'source': sources[_random.nextInt(sources.length)],
-        'destination': destinations[_random.nextInt(destinations.length)],
-        'sourcePort': 1024 + _random.nextInt(64000),
-        'destinationPort': [80, 443, 22, 53, 123][_random.nextInt(5)],
-      });
-    }
-
-    return logs;
-  }
+  List<Map<String, dynamic>> generateFirewallLogs({int limit = 100}) => 
+      _firewallGenerator.generateFirewallLogs(limit: limit);
 
   /// Generate available interfaces for firewall rules
-  Map<String, dynamic> generateAvailableInterfaces() {
-    return {
-      'wan': {'value': 'wan', 'selected': 0, 'description': 'WAN'},
-      'lan': {'value': 'lan', 'selected': 0, 'description': 'LAN'},
-      'opt1': {'value': 'opt1', 'selected': 0, 'description': 'OPT1'},
-    };
-  }
+  Map<String, dynamic> generateAvailableInterfaces() => 
+      _firewallGenerator.generateAvailableInterfaces();
 
-  // State management helpers
-  bool _getFirewallRuleState(String uuid, bool defaultState) {
-    return _firewallRuleStates.putIfAbsent(uuid, () => defaultState);
-  }
+  /// Toggle firewall rule state
+  void toggleFirewallRuleState(String uuid) => 
+      _stateManager.toggleFirewallRuleState(uuid);
 
-  void toggleFirewallRuleState(String uuid) {
-    _firewallRuleStates[uuid] = !(_firewallRuleStates[uuid] ?? true);
-  }
+  /// Toggle firewall alias state
+  void toggleFirewallAliasState(String uuid) => 
+      _stateManager.toggleFirewallAliasState(uuid);
 
-  bool _getVPNConnectionState(String id, bool defaultState) {
-    return _vpnConnectionStates.putIfAbsent(id, () => defaultState);
-  }
+  /// Delete firewall alias
+  void deleteFirewallAlias(String uuid) => 
+      _stateManager.deleteFirewallAlias(uuid);
 
-  void toggleVPNConnectionState(String id) {
-    _vpnConnectionStates[id] = !(_vpnConnectionStates[id] ?? false);
-  }
+  /// Get next alias ID for creating new aliases
+  int getNextAliasId() => _stateManager.getNextAliasId();
 
-  bool _getServiceState(String name, bool defaultState) {
-    return _serviceStates.putIfAbsent(name, () => defaultState);
-  }
+  // ==================== VPN Data ====================
 
-  void toggleServiceState(String name) {
-    _serviceStates[name] = !(_serviceStates[name] ?? true);
-  }
+  /// Generate demo VPN connections
+  List<VPNConnection> generateVPNConnections() => _vpnGenerator.generateVPNConnections();
+
+  /// Generate demo WireGuard peers
+  List<Map<String, dynamic>> generateWireGuardPeers() =>
+      _vpnGenerator.generateWireGuardPeers();
+
+  /// Generate demo WireGuard servers
+  List<Map<String, dynamic>> generateWireGuardServers() =>
+      _vpnGenerator.generateWireGuardServers();
+
+  /// Generate demo WireGuard status response
+  WireGuardStatusResponse generateWireGuardStatusResponse() =>
+      _vpnGenerator.generateWireGuardStatusResponse();
+
+  /// Toggle VPN connection state
+  void toggleVPNConnectionState(String id) =>
+      _stateManager.toggleVPNConnectionState(id);
+
+  // ==================== OpenVPN Data ====================
+
+  /// Generate demo OpenVPN instances
+  List<OpenvpnInstanceListItem> generateOpenvpnInstances() =>
+      _vpnGenerator.generateOpenvpnInstances();
+
+  /// Generate demo OpenVPN static keys
+  List<OpenvpnStaticKey> generateOpenvpnStaticKeys() =>
+      _vpnGenerator.generateOpenvpnStaticKeys();
+
+  /// Generate demo OpenVPN instance form data
+  OpenvpnInstance generateOpenvpnInstanceFormData({String? vpnid, String role = 'server'}) =>
+      _vpnGenerator.generateOpenvpnInstanceFormData(vpnid: vpnid, role: role);
+
+  // ==================== Network Data ====================
+
   /// Generate demo network hosts with bandwidth usage
-  List<NetworkHost> generateNetworkHosts() {
-    final hosts = <NetworkHost>[
-      NetworkHost(
-        address: '192.168.1.10',
-        hostname: 'desktop-gaming',
-        manufacturer: 'Intel Corporate',
-        macAddress: '00:1A:2B:3C:4D:5E',
-        rateIn: 15000000 + _random.nextInt(5000000), // 15-20 Mbps download
-        rateOut: 2000000 + _random.nextInt(1000000),  // 2-3 Mbps upload
-        leaseExpiry: DateTime.now().add(Duration(hours: 12 + _random.nextInt(12))),
-      ),
-      NetworkHost(
-        address: '192.168.1.15',
-        hostname: 'iphone-john',
-        manufacturer: 'Apple, Inc.',
-        macAddress: '00:1B:63:84:45:E6',
-        rateIn: 8000000 + _random.nextInt(4000000),  // 8-12 Mbps download
-        rateOut: 1000000 + _random.nextInt(500000),  // 1-1.5 Mbps upload
-        leaseExpiry: DateTime.now().add(Duration(hours: 6 + _random.nextInt(6))),
-      ),
-      NetworkHost(
-        address: '192.168.1.20',
-        hostname: 'smart-tv-living',
-        manufacturer: 'Samsung Electronics',
-        macAddress: '00:1C:42:00:00:09',
-        rateIn: 25000000 + _random.nextInt(10000000), // 25-35 Mbps (4K streaming)
-        rateOut: 500000 + _random.nextInt(300000),    // 0.5-0.8 Mbps upload
-        leaseExpiry: DateTime.now().add(Duration(hours: 24)),
-      ),
-      NetworkHost(
-        address: '192.168.1.25',
-        hostname: 'laptop-work',
-        manufacturer: 'Dell Inc.',
-        macAddress: '00:1D:60:B3:01:84',
-        rateIn: 5000000 + _random.nextInt(3000000),  // 5-8 Mbps download
-        rateOut: 800000 + _random.nextInt(400000),   // 0.8-1.2 Mbps upload
-        leaseExpiry: DateTime.now().add(Duration(hours: 8 + _random.nextInt(8))),
-      ),
-      NetworkHost(
-        address: '192.168.1.30',
-        hostname: 'nas-server',
-        manufacturer: 'Synology Inc.',
-        macAddress: '00:11:32:2C:A7:85',
-        rateIn: 3000000 + _random.nextInt(2000000),  // 3-5 Mbps download
-        rateOut: 10000000 + _random.nextInt(5000000), // 10-15 Mbps upload (backup)
-        leaseExpiry: DateTime.now().add(Duration(days: 7)),
-      ),
-      NetworkHost(
-        address: '192.168.1.35',
-        hostname: 'tablet-kids',
-        manufacturer: 'Amazon Technologies',
-        macAddress: '00:FC:8B:33:44:55',
-        rateIn: 4000000 + _random.nextInt(2000000),  // 4-6 Mbps download
-        rateOut: 300000 + _random.nextInt(200000),   // 0.3-0.5 Mbps upload
-        leaseExpiry: DateTime.now().add(Duration(hours: 4 + _random.nextInt(4))),
-      ),
-      NetworkHost(
-        address: '192.168.1.40',
-        hostname: 'security-camera-1',
-        manufacturer: 'Hikvision',
-        macAddress: '00:12:17:A0:B1:C2',
-        rateIn: 100000 + _random.nextInt(50000),     // 0.1-0.15 Mbps download
-        rateOut: 2000000 + _random.nextInt(1000000), // 2-3 Mbps upload (video)
-        leaseExpiry: DateTime.now().add(Duration(days: 30)),
-      ),
-      NetworkHost(
-        address: '192.168.1.45',
-        hostname: 'iot-hub',
-        manufacturer: 'Raspberry Pi Foundation',
-        macAddress: 'B8:27:EB:12:34:56',
-        rateIn: 200000 + _random.nextInt(100000),    // 0.2-0.3 Mbps download
-        rateOut: 150000 + _random.nextInt(100000),   // 0.15-0.25 Mbps upload
-        leaseExpiry: DateTime.now().add(Duration(days: 90)),
-      ),
-      NetworkHost(
-        address: '192.168.1.50',
-        hostname: 'android-tablet',
-        manufacturer: 'Google, Inc.',
-        macAddress: '00:1A:11:FF:EE:DD',
-        rateIn: 6000000 + _random.nextInt(3000000),  // 6-9 Mbps download
-        rateOut: 700000 + _random.nextInt(300000),   // 0.7-1 Mbps upload
-        leaseExpiry: DateTime.now().add(Duration(hours: 10 + _random.nextInt(10))),
-      ),
-      NetworkHost(
-        address: '192.168.1.55',
-        hostname: '192.168.1.55', // Unknown device (no hostname)
-        manufacturer: null,
-        macAddress: null,
-        rateIn: 1000000 + _random.nextInt(500000),   // 1-1.5 Mbps download
-        rateOut: 500000 + _random.nextInt(300000),   // 0.5-0.8 Mbps upload
-        leaseExpiry: null,
-      ),
-    ];
-
-    // Sort by total bandwidth usage (highest first)
-    hosts.sort((a, b) => b.totalRate.compareTo(a.totalRate));
-    
-    return hosts;
-  }
+  List<NetworkHost> generateNetworkHosts() => _networkGenerator.generateNetworkHosts();
 
   /// Generate demo DHCP leases
-  List<Map<String, dynamic>> generateDhcpLeases() {
-    final now = DateTime.now();
-    
-    return [
-      {
-        'address': '192.168.1.10',
-        'hostname': 'desktop-gaming',
-        'hwaddr': '00:1A:2B:3C:4D:5E',
-        'mac_info': 'ASUS',
-        'starts': now.subtract(const Duration(hours: 48)).millisecondsSinceEpoch ~/ 1000,
-        'ends': now.add(const Duration(hours: 24)).millisecondsSinceEpoch ~/ 1000,
-        'expire': now.add(const Duration(hours: 24)).millisecondsSinceEpoch ~/ 1000,
-        'state': 'active',
-        'if': 'lan',
-        'type': 'static',
-      },
-      {
-        'address': '192.168.1.15',
-        'hostname': 'iphone-john',
-        'hwaddr': '00:1B:63:84:45:E6',
-        'mac_info': 'Apple, Inc.',
-        'starts': now.subtract(const Duration(hours: 12)).millisecondsSinceEpoch ~/ 1000,
-        'ends': now.add(const Duration(hours: 12)).millisecondsSinceEpoch ~/ 1000,
-        'expire': now.add(const Duration(hours: 12)).millisecondsSinceEpoch ~/ 1000,
-        'state': 'active',
-        'if': 'lan',
-        'type': 'dynamic',
-      },
-      {
-        'address': '192.168.1.20',
-        'hostname': 'smart-tv-living',
-        'hwaddr': '00:1C:42:00:00:09',
-        'mac_info': 'Samsung Electronics',
-        'starts': now.subtract(const Duration(days: 2)).millisecondsSinceEpoch ~/ 1000,
-        'ends': now.add(const Duration(hours: 24)).millisecondsSinceEpoch ~/ 1000,
-        'expire': now.add(const Duration(hours: 24)).millisecondsSinceEpoch ~/ 1000,
-        'state': 'active',
-        'if': 'lan',
-        'type': 'dynamic',
-      },
-      {
-        'address': '192.168.1.25',
-        'hostname': 'laptop-work',
-        'hwaddr': '00:1D:60:B3:01:84',
-        'mac_info': 'Dell Inc.',
-        'starts': now.subtract(const Duration(hours: 8)).millisecondsSinceEpoch ~/ 1000,
-        'ends': now.add(const Duration(hours: 16)).millisecondsSinceEpoch ~/ 1000,
-        'expire': now.add(const Duration(hours: 16)).millisecondsSinceEpoch ~/ 1000,
-        'state': 'active',
-        'if': 'lan',
-        'type': 'dynamic',
-      },
-      {
-        'address': '192.168.1.30',
-        'hostname': 'nas-server',
-        'hwaddr': '00:11:32:2C:A7:85',
-        'mac_info': 'Synology Inc.',
-        'starts': now.subtract(const Duration(days: 7)).millisecondsSinceEpoch ~/ 1000,
-        'ends': now.add(const Duration(days: 7)).millisecondsSinceEpoch ~/ 1000,
-        'expire': now.add(const Duration(days: 7)).millisecondsSinceEpoch ~/ 1000,
-        'state': 'active',
-        'if': 'lan',
-        'type': 'static',
-      },
-      {
-        'address': '192.168.1.35',
-        'hostname': 'tablet-kids',
-        'hwaddr': '00:FC:8B:33:44:55',
-        'mac_info': 'Amazon Technologies',
-        'starts': now.subtract(const Duration(hours: 6)).millisecondsSinceEpoch ~/ 1000,
-        'ends': now.add(const Duration(hours: 6)).millisecondsSinceEpoch ~/ 1000,
-        'expire': now.add(const Duration(hours: 6)).millisecondsSinceEpoch ~/ 1000,
-        'state': 'active',
-        'if': 'lan',
-        'type': 'dynamic',
-      },
-      {
-        'address': '192.168.1.40',
-        'hostname': 'security-camera-1',
-        'hwaddr': '00:12:17:A0:B1:C2',
-        'mac_info': 'Hikvision',
-        'starts': now.subtract(const Duration(days: 30)).millisecondsSinceEpoch ~/ 1000,
-        'ends': now.add(const Duration(days: 30)).millisecondsSinceEpoch ~/ 1000,
-        'expire': now.add(const Duration(days: 30)).millisecondsSinceEpoch ~/ 1000,
-        'state': 'active',
-        'if': 'lan',
-        'type': 'static',
-      },
-      {
-        'address': '192.168.1.45',
-        'hostname': 'iot-hub',
-        'hwaddr': 'B8:27:EB:12:34:56',
-        'mac_info': 'Raspberry Pi Foundation',
-        'starts': now.subtract(const Duration(days: 90)).millisecondsSinceEpoch ~/ 1000,
-        'ends': now.add(const Duration(days: 90)).millisecondsSinceEpoch ~/ 1000,
-        'expire': now.add(const Duration(days: 90)).millisecondsSinceEpoch ~/ 1000,
-        'state': 'active',
-        'if': 'lan',
-        'type': 'static',
-      },
-      {
-        'address': '192.168.1.50',
-        'hostname': 'android-tablet',
-        'hwaddr': '00:1A:11:FF:EE:DD',
-        'mac_info': 'Google, Inc.',
-        'starts': now.subtract(const Duration(hours: 18)).millisecondsSinceEpoch ~/ 1000,
-        'ends': now.add(const Duration(hours: 18)).millisecondsSinceEpoch ~/ 1000,
-        'expire': now.add(const Duration(hours: 18)).millisecondsSinceEpoch ~/ 1000,
-        'state': 'active',
-        'if': 'lan',
-        'type': 'dynamic',
-      },
-      {
-        'address': '192.168.1.100',
-        'hostname': 'old-laptop',
-        'hwaddr': 'AA:BB:CC:DD:EE:FF',
-        'mac_info': 'HP Inc.',
-        'starts': now.subtract(const Duration(days: 5)).millisecondsSinceEpoch ~/ 1000,
-        'ends': now.subtract(const Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000,
-        'expire': now.subtract(const Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000,
-        'state': 'expired',
-        'if': 'lan',
-        'type': 'dynamic',
-      },
-      {
-        'address': '192.168.1.101',
-        'hostname': 'guest-phone',
-        'hwaddr': '11:22:33:44:55:66',
-        'mac_info': 'Xiaomi Communications',
-        'starts': now.subtract(const Duration(days: 1)).millisecondsSinceEpoch ~/ 1000,
-        'ends': now.subtract(const Duration(minutes: 30)).millisecondsSinceEpoch ~/ 1000,
-        'expire': now.subtract(const Duration(minutes: 30)).millisecondsSinceEpoch ~/ 1000,
-        'state': 'expired',
-        'if': 'lan',
-      },
-    ];
-  }
+  List<Map<String, dynamic>> generateDhcpLeases() => _networkGenerator.generateDhcpLeases();
 
-  /// Reset all demo states
-  void reset() {
-    _firewallRuleStates.clear();
-    _vpnConnectionStates.clear();
-    _serviceStates.clear();
-  }
+  // ==================== Service State ====================
+
+  /// Toggle service state
+  void toggleServiceState(String name) => _stateManager.toggleServiceState(name);
+
+  // ==================== Tailscale Data ====================
+
+  /// Generate Tailscale status
+  TailscaleStatus generateTailscaleStatus() => 
+      _tailscaleGenerator.generateTailscaleStatus();
+
+  /// Generate Tailscale settings response
+  TailscaleSettingsResponse generateTailscaleSettings() => 
+      _tailscaleGenerator.generateTailscaleSettings();
+
+  /// Update Tailscale service state
+  void updateTailscaleServiceState(String action) => 
+      _stateManager.updateTailscaleServiceState(action);
+
+  /// Update Tailscale settings
+  void updateTailscaleSettings(Map<String, dynamic> settings) => 
+      _stateManager.updateTailscaleSettings(settings);
+
+  /// Logout from Tailscale
+  void logoutTailscale() => _stateManager.logoutTailscale();
+
+  /// Update Tailscale settings data
+  void updateTailscaleSettingsData(TailscaleSettings settings) => 
+      _tailscaleGenerator.updateTailscaleSettingsData(settings);
+
+  /// Generate subnet search response
+  TailscaleSubnetSearchResponse generateTailscaleSubnetSearch() => 
+      _tailscaleGenerator.generateTailscaleSubnetSearch();
+
+  /// Generate a specific subnet response
+  TailscaleSubnetResponse generateTailscaleSubnet(String uuid) => 
+      _tailscaleGenerator.generateTailscaleSubnet(uuid);
+
+  /// Add a new Tailscale subnet
+  String addTailscaleSubnet(TailscaleSubnet subnet) => 
+      _stateManager.addTailscaleSubnet(subnet);
+
+  /// Update an existing Tailscale subnet
+  void updateTailscaleSubnet(String uuid, TailscaleSubnet subnet) => 
+      _stateManager.updateTailscaleSubnet(uuid, subnet);
+
+  /// Delete a Tailscale subnet
+  void deleteTailscaleSubnet(String uuid) => 
+      _stateManager.deleteTailscaleSubnet(uuid);
+
+  // ==================== Reset ====================
+
+  /// Reset all demo data to defaults
+  void reset() => _stateManager.reset();
 }
+
 

@@ -16,15 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-import 'dart:convert';
-import 'dart:developer' as developer;
-import 'dart:io' show Platform;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../models/profile.dart';
+import '../models/connection_endpoint.dart';
+import 'profile/profile_storage_service.dart';
+import 'profile/profile_export_import_service.dart';
+import 'profile/profile_validation_service.dart';
+import 'profile/profile_migration_service.dart';
 
 /// Service for managing OPNsense connection profiles
+/// Acts as a facade for specialized profile services
 class ProfileService {
   static final ProfileService _instance = ProfileService._internal();
   factory ProfileService() => _instance;
@@ -33,15 +33,33 @@ class ProfileService {
   /// Export format version constant
   static const String exportVersion = '1.0';
 
-  final _secureStorage = const FlutterSecureStorage();
-  SharedPreferences? _prefs;
+  late final ProfileStorageService _storageService;
+  late final ProfileExportImportService _exportImportService;
+  late final ProfileValidationService _validationService;
+  late final ProfileMigrationService _migrationService;
 
-  static const String _keyProfiles = 'profiles';
-  static const String _keyActiveProfileId = 'active_profile_id';
+  bool _initialized = false;
 
-  /// Initialize shared preferences
+  /// Initialize all services
   Future<void> init() async {
-    _prefs ??= await SharedPreferences.getInstance();
+    if (_initialized) return;
+
+    _storageService = ProfileStorageService();
+    await _storageService.init();
+
+    _exportImportService = ProfileExportImportService(
+      storageService: _storageService,
+    );
+
+    _validationService = ProfileValidationService(
+      storageService: _storageService,
+    );
+
+    _migrationService = ProfileMigrationService(
+      storageService: _storageService,
+    );
+
+    _initialized = true;
   }
 
   // ==================== Profile Management ====================
@@ -49,68 +67,25 @@ class ProfileService {
   /// Get all profiles
   Future<List<Profile>> getAllProfiles() async {
     await init();
-    final profilesJson = _prefs!.getString(_keyProfiles);
-    if (profilesJson == null) return [];
-
-    try {
-      final List<dynamic> profilesList = jsonDecode(profilesJson);
-      return profilesList.map((json) => Profile.fromJson(json)).toList();
-    } catch (e) {
-      return [];
-    }
+    return await _storageService.getAllProfiles();
   }
 
   /// Save a profile
   Future<void> saveProfile(Profile profile) async {
     await init();
-    final profiles = await getAllProfiles();
-    
-    // Check if profile already exists
-    final existingIndex = profiles.indexWhere((p) => p.id == profile.id);
-    if (existingIndex >= 0) {
-      profiles[existingIndex] = profile;
-    } else {
-      profiles.add(profile);
-    }
-
-    // Save profiles list
-    final profilesJson = jsonEncode(profiles.map((p) => p.toJson()).toList());
-    await _prefs!.setString(_keyProfiles, profilesJson);
-
-    // Save sensitive data (API keys) securely
-    await _secureStorage.write(
-      key: 'profile_${profile.id}_api_key',
-      value: profile.apiKey,
-    );
-    await _secureStorage.write(
-      key: 'profile_${profile.id}_api_secret',
-      value: profile.apiSecret,
-    );
+    await _storageService.saveProfile(profile);
   }
 
   /// Get a profile by ID
   Future<Profile?> getProfile(String id) async {
-    final profiles = await getAllProfiles();
-    try {
-      return profiles.firstWhere((p) => p.id == id);
-    } catch (e) {
-      return null;
-    }
+    await init();
+    return await _storageService.getProfile(id);
   }
 
   /// Delete a profile
   Future<void> deleteProfile(String id) async {
     await init();
-    final profiles = await getAllProfiles();
-    profiles.removeWhere((p) => p.id == id);
-
-    // Save updated profiles list
-    final profilesJson = jsonEncode(profiles.map((p) => p.toJson()).toList());
-    await _prefs!.setString(_keyProfiles, profilesJson);
-
-    // Delete sensitive data
-    await _secureStorage.delete(key: 'profile_${id}_api_key');
-    await _secureStorage.delete(key: 'profile_${id}_api_secret');
+    await _storageService.deleteProfile(id);
 
     // If this was the active profile, clear it
     final activeId = await getActiveProfileId();
@@ -121,6 +96,7 @@ class ProfileService {
 
   /// Update profile's last used timestamp
   Future<void> updateLastUsed(String id) async {
+    await init();
     final profile = await getProfile(id);
     if (profile == null) return;
 
@@ -133,18 +109,19 @@ class ProfileService {
   /// Get active profile ID
   Future<String?> getActiveProfileId() async {
     await init();
-    return _prefs!.getString(_keyActiveProfileId);
+    return await _storageService.getActiveProfileId();
   }
 
   /// Set active profile
   Future<void> setActiveProfile(String id) async {
     await init();
-    await _prefs!.setString(_keyActiveProfileId, id);
+    await _storageService.setActiveProfileId(id);
     await updateLastUsed(id);
   }
 
   /// Get active profile
   Future<Profile?> getActiveProfile() async {
+    await init();
     final activeId = await getActiveProfileId();
     if (activeId == null) return null;
     return await getProfile(activeId);
@@ -153,18 +130,16 @@ class ProfileService {
   /// Clear active profile
   Future<void> clearActiveProfile() async {
     await init();
-    await _prefs!.remove(_keyActiveProfileId);
+    await _storageService.clearActiveProfile();
   }
 
   // ==================== Profile Validation ====================
 
   /// Check if a profile name already exists
   Future<bool> profileNameExists(String name, {String? excludeId}) async {
-    final profiles = await getAllProfiles();
-    return profiles.any((p) => 
-      p.name.toLowerCase() == name.toLowerCase() && 
-      (excludeId == null || p.id != excludeId)
-    );
+    await init();
+    return await _validationService.profileNameExists(name,
+        excludeId: excludeId);
   }
 
   /// Validate profile data
@@ -176,34 +151,23 @@ class ProfileService {
     required String apiSecret,
     String? excludeId,
   }) {
-    if (name.trim().isEmpty) {
-      return 'Profile name is required';
-    }
-    if (host.trim().isEmpty) {
-      return 'Host is required';
-    }
-    if (port.trim().isEmpty) {
-      return 'Port is required';
-    }
-    final portNum = int.tryParse(port);
-    if (portNum == null || portNum < 1 || portNum > 65535) {
-      return 'Port must be between 1 and 65535';
-    }
-    if (apiKey.trim().isEmpty) {
-      return 'API Key is required';
-    }
-    if (apiSecret.trim().isEmpty) {
-      return 'API Secret is required';
-    }
-    return null;
+    return _validationService.validateProfile(
+      name: name,
+      host: host,
+      port: port,
+      apiKey: apiKey,
+      apiSecret: apiSecret,
+      excludeId: excludeId,
+    );
   }
 
   // ==================== Demo Profile ====================
 
   /// Create a demo profile
   Future<Profile> createDemoProfile() async {
+    await init();
     const demoId = 'demo-profile';
-    
+
     // Check if demo profile already exists
     final existingDemo = await getProfile(demoId);
     if (existingDemo != null) {
@@ -213,8 +177,13 @@ class ProfileService {
     final demoProfile = Profile(
       id: demoId,
       name: 'Demo Mode',
-      host: 'demo.opnsense.local',
-      port: 443,
+      connections: const [
+        ConnectionEndpoint(
+          host: 'demo.opnsense.local',
+          port: 443,
+          isActive: true,
+        ),
+      ],
       apiKey: 'demo-key',
       apiSecret: 'demo-secret',
       useHttps: true,
@@ -237,44 +206,7 @@ class ProfileService {
   /// Migrate from old single-config storage to profile-based storage
   Future<void> migrateFromOldStorage() async {
     await init();
-    
-    // Check if migration is needed
-    final profiles = await getAllProfiles();
-    if (profiles.isNotEmpty) return; // Already migrated
-
-    // Try to load old configuration
-    final oldHost = await _secureStorage.read(key: 'host');
-    if (oldHost == null) return; // No old config to migrate
-
-    final oldPort = await _secureStorage.read(key: 'port');
-    final oldApiKey = await _secureStorage.read(key: 'api_key');
-    final oldApiSecret = await _secureStorage.read(key: 'api_secret');
-    final oldUseHttps = await _secureStorage.read(key: 'use_https');
-
-    if (oldApiKey != null && oldApiSecret != null) {
-      // Create a default profile from old config
-      final defaultProfile = Profile(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        name: 'Default',
-        host: oldHost,
-        port: int.tryParse(oldPort ?? '443') ?? 443,
-        apiKey: oldApiKey,
-        apiSecret: oldApiSecret,
-        useHttps: oldUseHttps == 'true',
-        createdAt: DateTime.now(),
-        lastUsed: DateTime.now(),
-      );
-
-      await saveProfile(defaultProfile);
-      await setActiveProfile(defaultProfile.id);
-
-      // Clean up old storage
-      await _secureStorage.delete(key: 'host');
-      await _secureStorage.delete(key: 'port');
-      await _secureStorage.delete(key: 'api_key');
-      await _secureStorage.delete(key: 'api_secret');
-      await _secureStorage.delete(key: 'use_https');
-    }
+    await _migrationService.migrateFromOldStorage();
   }
 
   // ==================== Utility Methods ====================
@@ -286,6 +218,7 @@ class ProfileService {
 
   /// Get profile count
   Future<int> getProfileCount() async {
+    await init();
     final profiles = await getAllProfiles();
     return profiles.length;
   }
@@ -293,267 +226,45 @@ class ProfileService {
   /// Clear all profiles (use with caution)
   Future<void> clearAllProfiles() async {
     await init();
-    final profiles = await getAllProfiles();
-    
-    // Delete all secure data
-    for (final profile in profiles) {
-      await _secureStorage.delete(key: 'profile_${profile.id}_api_key');
-      await _secureStorage.delete(key: 'profile_${profile.id}_api_secret');
-    }
-
-    // Clear profiles list and active profile
-    await _prefs!.remove(_keyProfiles);
-    await clearActiveProfile();
+    await _storageService.clearAllProfiles();
   }
 
   // ==================== Export/Import Methods ====================
 
   /// Export all profiles to JSON format
-  ///
-  /// [includeCredentials] - If true, API keys and secrets will be included in export.
-  /// WARNING: Exported files with credentials contain sensitive data in plain text.
-  /// Store such files securely and avoid sharing them.
-  /// Returns a JSON string containing all profiles
   Future<String> exportProfiles({bool includeCredentials = false}) async {
-    final profiles = await getAllProfiles();
-    
-    // Log credential export for audit purposes
-    if (includeCredentials) {
-      final now = DateTime.now();
-      final timezone = now.timeZoneName;
-      final timestamp = now.toIso8601String();
-      developer.log(
-        'SECURITY: Exporting ${profiles.length} profile(s) WITH credentials | '
-        'Timestamp: $timestamp ($timezone) | '
-        'Platform: ${Platform.operatingSystem}',
-        name: 'ProfileService',
-        level: 900, // WARNING level
-      );
-    }
-    
-    // Create export data structure
-    final exportData = {
-      'version': exportVersion,
-      'exportDate': DateTime.now().toIso8601String(),
-      'includesCredentials': includeCredentials,
-      'profiles': profiles.map((profile) => _sanitizeProfileForExport(profile, includeCredentials)).toList(),
-    };
-    
-    // Add prominent security warning when credentials are included
-    if (includeCredentials) {
-      exportData['SECURITY_WARNING'] = 'This file contains sensitive API credentials (apiKey and apiSecret) in plain text. '
-          'Store this file securely, do not share it, and delete it when no longer needed. '
-          'Anyone with access to this file can control your OPNsense firewall.';
-    }
-    
-    return jsonEncode(exportData);
+    await init();
+    return await _exportImportService.exportProfiles(
+      includeCredentials: includeCredentials,
+    );
   }
 
   /// Export a single profile to JSON format
-  ///
-  /// WARNING: By default, exported files contain sensitive API credentials in plain text.
-  /// Store exported files securely and avoid sharing them.
-  ///
-  /// [includeCredentials] - If false, API keys and secrets will be excluded from export
-  /// Returns a JSON string containing the profile
-  Future<String> exportProfile(String profileId, {bool includeCredentials = true}) async {
-    final profile = await getProfile(profileId);
-    if (profile == null) {
-      throw Exception('Profile not found');
-    }
-    
-    // Log credential export for audit purposes
-    if (includeCredentials) {
-      final now = DateTime.now();
-      final timezone = now.timeZoneName;
-      final timestamp = now.toIso8601String();
-      developer.log(
-        'SECURITY: Exporting profile "${profile.name}" (${profile.id}) WITH credentials | '
-        'Timestamp: $timestamp ($timezone) | '
-        'Platform: ${Platform.operatingSystem}',
-        name: 'ProfileService',
-        level: 900, // WARNING level
-      );
-    }
-    
-    // Create export data structure
-    final exportData = {
-      'version': exportVersion,
-      'exportDate': DateTime.now().toIso8601String(),
-      'includesCredentials': includeCredentials,
-      'profiles': [_sanitizeProfileForExport(profile, includeCredentials)],
-    };
-    
-    // Add prominent security warning when credentials are included
-    if (includeCredentials) {
-      exportData['SECURITY_WARNING'] = 'This file contains sensitive API credentials (apiKey and apiSecret) in plain text. '
-          'Store this file securely, do not share it, and delete it when no longer needed. '
-          'Anyone with access to this file can control your OPNsense firewall.';
-    }
-    
-    return jsonEncode(exportData);
-  }
-
-  /// Sanitize profile data for export based on credential inclusion preference
-  Map<String, dynamic> _sanitizeProfileForExport(Profile profile, bool includeCredentials) {
-    final profileJson = profile.toJson();
-    
-    if (!includeCredentials) {
-      // Remove sensitive credentials from export
-      profileJson['apiKey'] = '';
-      profileJson['apiSecret'] = '';
-    }
-    
-    return profileJson;
+  Future<String> exportProfile(String profileId,
+      {bool includeCredentials = false}) async {
+    await init();
+    return await _exportImportService.exportProfile(
+      profileId,
+      includeCredentials: includeCredentials,
+    );
   }
 
   /// Import profiles from JSON format
-  /// Returns a map with import results: {success: count, failed: count, errors: []}
-  Future<Map<String, dynamic>> importProfiles(String jsonString, {bool overwrite = false}) async {
-    int successCount = 0;
-    int failedCount = 0;
-    List<String> errors = [];
-    
-    // Validate import file before attempting to parse
-    final validationError = validateImportFile(jsonString);
-    if (validationError != null) {
-      return {
-        'success': 0,
-        'failed': 0,
-        'errors': [validationError],
-      };
-    }
-    
-    try {
-      final Map<String, dynamic> importData = jsonDecode(jsonString);
-      
-      // Validate import data structure
-      if (!importData.containsKey('version') || !importData.containsKey('profiles')) {
-        throw Exception('Invalid import file format');
-      }
-      
-      final List<dynamic> profilesList = importData['profiles'];
-      
-      // Check for empty profiles list
-      if (profilesList.isEmpty) {
-        return {
-          'success': 0,
-          'failed': 0,
-          'errors': ['No profiles found in import file'],
-        };
-      }
-      
-      // Validate credential completeness when credentials are included
-      if (importData['includesCredentials'] == true) {
-        for (var profileJson in profilesList) {
-          if ((profileJson['apiKey']?.isEmpty ?? true) ||
-              (profileJson['apiSecret']?.isEmpty ?? true)) {
-            errors.add('Profile ${profileJson['name']} has incomplete credentials');
-            failedCount++;
-            continue;
-          }
-        }
-      }
-      
-      final existingProfiles = await getAllProfiles();
-      
-      for (var profileJson in profilesList) {
-        try {
-          final profile = Profile.fromJson(profileJson);
-          
-          // Check if profile already exists
-          final existingProfile = existingProfiles.firstWhere(
-            (p) => p.id == profile.id,
-            orElse: () => Profile(
-              id: '',
-              name: '',
-              host: '',
-              port: 0,
-              apiKey: '',
-              apiSecret: '',
-              useHttps: true,
-              createdAt: DateTime.now(),
-            ),
-          );
-          
-          if (existingProfile.id.isNotEmpty && !overwrite) {
-            // Profile exists and overwrite is false, generate new ID
-            final newProfile = profile.copyWith(
-              id: generateProfileId(),
-              name: '${profile.name} (Imported)',
-              createdAt: DateTime.now(),
-            );
-            await saveProfile(newProfile);
-          } else {
-            // Save profile (either new or overwriting existing)
-            await saveProfile(profile);
-          }
-          
-          successCount++;
-        } catch (e) {
-          failedCount++;
-          errors.add('Failed to import profile: ${e.toString()}');
-        }
-      }
-      
-      return {
-        'success': successCount,
-        'failed': failedCount,
-        'errors': errors,
-      };
-    } catch (e) {
-      return {
-        'success': 0,
-        'failed': 0,
-        'errors': ['Failed to parse import file: ${e.toString()}'],
-      };
-    }
+  /// Returns a map with import results: success (int), failed (int), errors (List of String)
+  Future<Map<String, dynamic>> importProfiles(String jsonString,
+      {bool overwrite = false}) async {
+    await init();
+    return await _exportImportService.importProfiles(
+      jsonString,
+      overwrite: overwrite,
+    );
   }
 
   /// Validate import file format
   /// Returns null if valid, error message if invalid
   String? validateImportFile(String jsonString) {
-    try {
-      final Map<String, dynamic> importData = jsonDecode(jsonString);
-      
-      if (!importData.containsKey('version')) {
-        return 'Missing version field';
-      }
-      
-      if (!importData.containsKey('profiles')) {
-        return 'Missing profiles field';
-      }
-      
-      final List<dynamic> profilesList = importData['profiles'];
-      if (profilesList.isEmpty) {
-        return 'No profiles found in import file';
-      }
-      
-      // Track profile names to check for duplicates within the import file
-      final Set<String> profileNamesInFile = {};
-      
-      // Validate each profile has required fields
-      for (var profileJson in profilesList) {
-        if (!profileJson.containsKey('id') ||
-            !profileJson.containsKey('name') ||
-            !profileJson.containsKey('host') ||
-            !profileJson.containsKey('apiKey') ||
-            !profileJson.containsKey('apiSecret')) {
-          return 'Invalid profile data structure';
-        }
-        
-        // Check for duplicate names within the import file
-        final String profileName = profileJson['name'];
-        if (profileNamesInFile.contains(profileName)) {
-          return 'Duplicate profile name found in import file: "$profileName"';
-        }
-        profileNamesInFile.add(profileName);
-      }
-      
-      return null;
-    } catch (e) {
-      return 'Invalid JSON format: ${e.toString()}';
-    }
+    return _exportImportService.validateImportFile(jsonString);
   }
 }
+
 

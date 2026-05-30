@@ -16,22 +16,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
-import '../models/opnsense_config.dart';
 import '../models/profile.dart';
+import '../models/connection_endpoint.dart';
+import '../models/dhcp_server_type.dart';
 import '../services/profile_service.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
+import '../services/settings/profile_import_service.dart';
+import '../viewmodels/login_view_model.dart';
+import '../widgets/common/error_display.dart';
+import '../widgets/login/connection_endpoints_manager.dart';
+import '../widgets/login/credentials_fields_section.dart';
+import '../widgets/login/dhcp_server_selector.dart';
+import '../widgets/login/login_form_actions.dart';
 import '../utils/constants.dart';
-import '../utils/validators.dart';
 import '../l10n/app_localizations.dart';
+import 'dashboard_screen.dart';
 
 /// Login screen for OPNsense connection configuration
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final Profile? profile; // Optional profile for editing
+
+  const LoginScreen({super.key, this.profile});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -40,104 +48,354 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  final _hostController = TextEditingController();
-  final _portController = TextEditingController(text: '443');
   final _apiKeyController = TextEditingController();
   final _apiSecretController = TextEditingController();
-  
+
+  late LoginViewModel _viewModel;
+  late ProfileImportService _importService;
+
+  List<ConnectionEndpoint> _connections = [
+    const ConnectionEndpoint(host: '', port: 443, isActive: true),
+  ];
   bool _useHttps = true;
-  bool _isLoading = false;
+  bool _allowSelfSignedCerts = false;
   bool _obscureSecret = true;
-  String? _errorMessage;
+  DhcpServerType _dhcpServerType = DhcpServerType.dnsmasq;
+  String? _loadingButton; // Track which button is loading
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeServices();
+    _populateFormIfEditing();
+  }
+
+  void _initializeServices() {
+    final profileService = context.read<ProfileService>();
+    final demoApiService = context.read<DemoApiService>();
+    final opnsenseApiService = context.read<OPNsenseApiService>();
+
+    _viewModel = LoginViewModel(
+      profileService: profileService,
+      demoApiService: demoApiService,
+      opnsenseApiService: opnsenseApiService,
+      existingProfile: widget.profile,
+    );
+
+    _importService = ProfileImportService(profileService: profileService);
+
+    _viewModel.addListener(_onViewModelChanged);
+  }
+
+  void _populateFormIfEditing() {
+    if (widget.profile != null) {
+      _nameController.text = widget.profile!.name;
+      _connections = List.from(widget.profile!.connections);
+      _apiKeyController.text = widget.profile!.apiKey;
+      _apiSecretController.text = widget.profile!.apiSecret;
+      _useHttps = widget.profile!.useHttps;
+      _allowSelfSignedCerts = widget.profile!.allowSelfSignedCerts;
+      _dhcpServerType = widget.profile!.dhcpServerType;
+    }
+  }
+
+  void _onViewModelChanged() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   @override
   void dispose() {
+    _viewModel.removeListener(_onViewModelChanged);
+    _viewModel.dispose();
     _nameController.dispose();
-    _hostController.dispose();
-    _portController.dispose();
     _apiKeyController.dispose();
     _apiSecretController.dispose();
     super.dispose();
   }
 
-  Future<void> _testAndSaveConnection() async {
+  Future<void> _handleTestProfile() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
+    // Validate that we have at least one connection with a valid host
+    if (_connections.isEmpty || _connections.every((c) => c.host.trim().isEmpty)) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.addConnectionEndpoint),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
+    setState(() => _loadingButton = 'test');
+
+    final result = await _viewModel.testAllConnections(
+      connections: _connections,
+      apiKey: _apiKeyController.text.trim(),
+      apiSecret: _apiSecretController.text.trim(),
+      useHttps: _useHttps,
+      allowSelfSignedCerts: _allowSelfSignedCerts,
+    );
+
+    setState(() => _loadingButton = null);
+
+    if (!mounted) return;
+
+    // Show test results dialog
+    _showTestResultsDialog(result);
+  }
+
+  void _showTestResultsDialog(Map<String, dynamic> result) {
+    final l10n = AppLocalizations.of(context)!;
+    final results = result['results'] as List<Map<String, dynamic>>;
+    final successCount = result['successCount'] as int;
+    final totalCount = result['totalCount'] as int;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.connectionTestResults),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Summary
+              Text(
+                successCount == totalCount
+                    ? l10n.allConnectionsSuccessful
+                    : l10n.someConnectionsFailed,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: successCount == totalCount ? Colors.green : Colors.orange,
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Individual results
+              ...results.map((r) {
+                final success = r['success'] as bool;
+                final endpoint = r['endpoint'] as String;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    children: [
+                      Icon(
+                        success ? Icons.check_circle : Icons.error,
+                        color: success ? Colors.green : Colors.red,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          endpoint,
+                          style: TextStyle(
+                            color: success ? Colors.green : Colors.red,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.close),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _handleSaveProfile() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    // Validate that we have at least one connection with a valid host
+    if (_connections.isEmpty || _connections.every((c) => c.host.trim().isEmpty)) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.addConnectionEndpoint),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Get the active connection for the default name
+    final activeConnection = _connections.firstWhere(
+      (c) => c.isActive,
+      orElse: () => _connections.first,
+    );
+
+    setState(() => _loadingButton = 'save');
+
+    final success = await _viewModel.saveProfile(
+      name: _nameController.text.trim().isEmpty
+          ? '${activeConnection.host}:${activeConnection.port}'
+          : _nameController.text.trim(),
+      connections: _connections,
+      apiKey: _apiKeyController.text.trim(),
+      apiSecret: _apiSecretController.text.trim(),
+      useHttps: _useHttps,
+      allowSelfSignedCerts: _allowSelfSignedCerts,
+      dhcpServerType: _dhcpServerType,
+    );
+
+    setState(() => _loadingButton = null);
+
+    if (!mounted) return;
+
+    if (success) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.profileSaved),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.of(context).pop(true);
+    }
+  }
+
+  Future<void> _handleSaveAndConnect() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    // Validate that we have at least one connection with a valid host
+    if (_connections.isEmpty || _connections.every((c) => c.host.trim().isEmpty)) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.addConnectionEndpoint),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Get the active connection for the default name
+    final activeConnection = _connections.firstWhere(
+      (c) => c.isActive,
+      orElse: () => _connections.first,
+    );
+
+    setState(() => _loadingButton = 'connect');
+
+    final success = await _viewModel.testAndSaveConnection(
+      name: _nameController.text.trim().isEmpty
+          ? '${activeConnection.host}:${activeConnection.port}'
+          : _nameController.text.trim(),
+      connections: _connections,
+      apiKey: _apiKeyController.text.trim(),
+      apiSecret: _apiSecretController.text.trim(),
+      useHttps: _useHttps,
+      allowSelfSignedCerts: _allowSelfSignedCerts,
+      dhcpServerType: _dhcpServerType,
+    );
+
+    setState(() => _loadingButton = null);
+
+    if (!mounted) return;
+
+    if (success) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const DashboardScreen()),
+      );
+    }
+  }
+
+  Future<void> _handleImportProfiles() async {
     try {
-      final config = OPNsenseConfig(
-        host: _hostController.text.trim(),
-        port: int.parse(_portController.text.trim()),
-        apiKey: _apiKeyController.text.trim(),
-        apiSecret: _apiSecretController.text.trim(),
-        useHttps: _useHttps,
+      final l10n = AppLocalizations.of(context)!;
+
+      // Show import options dialog
+      final overwrite = await showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(l10n.importProfilesTitle),
+            content: Text(l10n.importProfilesDialog),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(null),
+                child: Text(l10n.cancel),
+              ),
+              OutlinedButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(l10n.keepBoth),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(l10n.overwrite),
+              ),
+            ],
+          );
+        },
       );
 
-      // Initialize API service
-      final demoApiService = context.read<DemoApiService>();
-      final realApiService = context.read<OPNsenseApiService>();
-      
-      // Disable demo mode and initialize real API service
-      demoApiService.setDemoMode(false);
-      realApiService.init(config);
+      if (overwrite == null) return;
 
-      // Test connection
-      final isConnected = await demoApiService.testConnection();
+      final result = await _importService.importProfiles(overwrite: overwrite);
 
       if (!mounted) return;
 
-      if (isConnected) {
-        
-        // Create and save profile
-        final profileService = context.read<ProfileService>();
-        final profile = Profile(
-          id: const Uuid().v4(),
-          name: _nameController.text.trim().isEmpty
-              ? '${config.host}:${config.port}'
-              : _nameController.text.trim(),
-          host: config.host,
-          port: config.port,
-          apiKey: config.apiKey,
-          apiSecret: config.apiSecret,
-          useHttps: config.useHttps,
-          createdAt: DateTime.now(),
-          lastUsed: DateTime.now(),
-        );
-        
-        await profileService.saveProfile(profile);
-        await profileService.setActiveProfile(profile.id);
+      final successCount = result['success'] as int;
+      final failedCount = result['failed'] as int;
+      final errors = result['errors'] as List<String>;
 
-        // Return success to profile selection screen
-        if (mounted) {
-          Navigator.of(context).pop(true);
-        }
+      String message;
+      Color backgroundColor;
+
+      if (failedCount == 0) {
+        message = l10n.successfullyImportedProfiles(successCount);
+        backgroundColor = Colors.green;
+      } else if (successCount == 0) {
+        message = l10n.importFailedWithErrors(errors.join(', '));
+        backgroundColor = Colors.red;
       } else {
-        if (!mounted) return;
-        final l10n = AppLocalizations.of(context)!;
-        setState(() {
-          _errorMessage = l10n.connectionFailed;
-          _isLoading = false;
-        });
+        message = l10n.importedWithFailures(successCount, failedCount);
+        backgroundColor = Colors.orange;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: backgroundColor,
+          duration: const Duration(seconds: 5),
+        ),
+      );
+
+      if (successCount > 0) {
+        Navigator.of(context).pop(true);
       }
     } catch (e) {
       if (!mounted) return;
       final l10n = AppLocalizations.of(context)!;
-      setState(() {
-        _errorMessage = l10n.apiError(e.toString());
-        _isLoading = false;
-      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.importFailed(e.toString())),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -156,27 +414,31 @@ class _LoginScreenState extends State<LoginScreen> {
                     color: Theme.of(context).primaryColor,
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Title
                   Text(
-                    AppConstants.appName,
+                    widget.profile != null
+                        ? l10n.editProfile
+                        : AppConstants.appName,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                   ),
                   const SizedBox(height: 8),
-                  
+
                   // Subtitle
                   Text(
-                    l10n.connectToYourOPNsenseFirewall,
+                    widget.profile != null
+                        ? 'Update your connection settings'
+                        : l10n.connectToYourOPNsenseFirewall,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: Theme.of(context).textTheme.bodySmall?.color,
                         ),
                   ),
                   const SizedBox(height: 48),
-                  
+
                   // Profile Name Field (Optional)
                   TextFormField(
                     controller: _nameController,
@@ -185,147 +447,85 @@ class _LoginScreenState extends State<LoginScreen> {
                       hintText: l10n.myOPNsenseRouter,
                       prefixIcon: const Icon(Icons.label),
                     ),
-                    enabled: !_isLoading,
+                    enabled: !_viewModel.isLoading,
                   ),
                   const SizedBox(height: 16),
-                  
-                  // Host Field
-                  TextFormField(
-                    controller: _hostController,
-                    decoration: InputDecoration(
-                      labelText: l10n.hostIpAddress,
-                      hintText: l10n.hostPlaceholder,
-                      prefixIcon: const Icon(Icons.dns),
-                    ),
-                    keyboardType: TextInputType.url,
-                    validator: Validators.validateHost,
-                    enabled: !_isLoading,
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  // Port Field
-                  TextFormField(
-                    controller: _portController,
-                    decoration: InputDecoration(
-                      labelText: l10n.port,
-                      hintText: l10n.portPlaceholder,
-                      prefixIcon: const Icon(Icons.settings_ethernet),
-                    ),
-                    keyboardType: TextInputType.number,
-                    validator: Validators.validatePort,
-                    enabled: !_isLoading,
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  // HTTPS Toggle
-                  SwitchListTile(
-                    title: Text(l10n.useHttps),
-                    subtitle: Text(l10n.recommendedForSecureConnections),
-                    value: _useHttps,
-                    onChanged: _isLoading ? null : (value) {
-                      setState(() {
-                        _useHttps = value;
-                      });
+
+                  // Connection Endpoints Manager
+                  ConnectionEndpointsManager(
+                    connections: _connections,
+                    onConnectionsChanged: (connections) {
+                      setState(() => _connections = connections);
                     },
+                    enabled: !_viewModel.isLoading,
                   ),
                   const SizedBox(height: 16),
-                  
-                  // API Key Field
-                  TextFormField(
-                    controller: _apiKeyController,
-                    decoration: InputDecoration(
-                      labelText: l10n.apiKey,
-                      hintText: l10n.enterYourApiKey,
-                      prefixIcon: const Icon(Icons.vpn_key),
-                    ),
-                    validator: Validators.validateApiKey,
-                    enabled: !_isLoading,
+
+                  // HTTPS and Self-Signed Certs Options
+                  SwitchListTile(
+                    title: const Text('Use HTTPS'),
+                    subtitle: const Text('Use secure HTTPS connection'),
+                    value: _useHttps,
+                    onChanged: _viewModel.isLoading
+                        ? null
+                        : (value) => setState(() => _useHttps = value),
+                  ),
+                  SwitchListTile(
+                    title: const Text('Allow Self-Signed Certificates'),
+                    subtitle: const Text('Accept self-signed SSL certificates'),
+                    value: _allowSelfSignedCerts,
+                    onChanged: _viewModel.isLoading
+                        ? null
+                        : (value) => setState(() => _allowSelfSignedCerts = value),
                   ),
                   const SizedBox(height: 16),
-                  
-                  // API Secret Field
-                  TextFormField(
-                    controller: _apiSecretController,
-                    decoration: InputDecoration(
-                      labelText: l10n.apiSecret,
-                      hintText: l10n.enterYourApiSecret,
-                      prefixIcon: const Icon(Icons.lock),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscureSecret ? Icons.visibility : Icons.visibility_off,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _obscureSecret = !_obscureSecret;
-                          });
-                        },
-                      ),
-                    ),
-                    obscureText: _obscureSecret,
-                    validator: Validators.validateApiSecret,
-                    enabled: !_isLoading,
+
+                  // DHCP Server Type
+                  DhcpServerSelector(
+                    selectedType: _dhcpServerType,
+                    isLoading: _viewModel.isLoading,
+                    onChanged: (value) => setState(() => _dhcpServerType = value),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Credentials Fields
+                  CredentialsFieldsSection(
+                    apiKeyController: _apiKeyController,
+                    apiSecretController: _apiSecretController,
+                    obscureSecret: _obscureSecret,
+                    isLoading: _viewModel.isLoading,
+                    onToggleSecretVisibility: () =>
+                        setState(() => _obscureSecret = !_obscureSecret),
                   ),
                   const SizedBox(height: 24),
-                  
-                  // Error Message
-                  if (_errorMessage != null)
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      margin: const EdgeInsets.only(bottom: 16),
-                      decoration: BoxDecoration(
-                        color: Colors.red[50],
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.red[300]!),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.error_outline, color: Colors.red[700]),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              _errorMessage!,
-                              style: TextStyle(color: Colors.red[700]),
-                            ),
-                          ),
-                        ],
-                      ),
+
+                  // Error Display
+                  if (_viewModel.errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: ErrorDisplay(message: _viewModel.errorMessage!),
                     ),
-                  
-                  // Connect Button
-                  ElevatedButton(
-                    onPressed: _isLoading ? null : _testAndSaveConnection,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      backgroundColor: Theme.of(context).primaryColor,
-                      foregroundColor: Colors.white,
-                    ),
-                    child: _isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          )
-                        : Text(
-                            l10n.connect,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                 ),
-                 const SizedBox(height: 24),
-                 
-                 // Help Text
-                 Text(
-                   l10n.needHelpCheckDocumentation,
-                   textAlign: TextAlign.center,
-                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                         color: Colors.grey[600],
-                       ),
-                 ),
+
+                  // Action Buttons
+                  LoginFormActions(
+                    isEditing: _viewModel.isEditing,
+                    isLoading: _viewModel.isLoading,
+                    loadingButton: _loadingButton,
+                    onTest: _handleTestProfile,
+                    onSave: _handleSaveProfile,
+                    onConnect: _handleSaveAndConnect,
+                    onImport: _viewModel.isEditing ? null : _handleImportProfiles,
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Help Text
+                  Text(
+                    l10n.needHelpCheckDocumentation,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.grey[600],
+                        ),
+                  ),
                 ],
               ),
             ),
@@ -335,4 +535,5 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
 

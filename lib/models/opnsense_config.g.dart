@@ -13,6 +13,13 @@ OPNsenseConfig _$OPNsenseConfigFromJson(Map<String, dynamic> json) =>
       apiKey: json['apiKey'] as String,
       apiSecret: json['apiSecret'] as String,
       useHttps: json['useHttps'] as bool? ?? true,
+      allowSelfSignedCerts: json['allowSelfSignedCerts'] as bool? ?? false,
+      dhcpServerType:
+          $enumDecodeNullable(
+            _$DhcpServerTypeEnumMap,
+            json['dhcpServerType'],
+          ) ??
+          DhcpServerType.dnsmasq,
     );
 
 Map<String, dynamic> _$OPNsenseConfigToJson(OPNsenseConfig instance) =>
@@ -22,4 +29,12 @@ Map<String, dynamic> _$OPNsenseConfigToJson(OPNsenseConfig instance) =>
       'apiKey': instance.apiKey,
       'apiSecret': instance.apiSecret,
       'useHttps': instance.useHttps,
+      'allowSelfSignedCerts': instance.allowSelfSignedCerts,
+      'dhcpServerType': _$DhcpServerTypeEnumMap[instance.dhcpServerType]!,
     };
+
+const _$DhcpServerTypeEnumMap = {
+  DhcpServerType.dnsmasq: 'dnsmasq',
+  DhcpServerType.isc: 'isc',
+  DhcpServerType.kea: 'kea',
+};

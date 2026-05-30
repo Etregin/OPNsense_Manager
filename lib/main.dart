@@ -21,6 +21,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'screens/splash_screen.dart';
+import 'screens/openvpn_client_overrides_list_screen.dart';
+import 'screens/openvpn_client_override_form_screen.dart';
+import 'screens/openvpn_connection_status_screen.dart';
+import 'screens/openvpn_log_file_screen.dart';
 import 'services/storage_service.dart';
 import 'services/opnsense_api_service.dart';
 import 'services/demo_api_service.dart';
@@ -186,6 +190,15 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
         debugShowCheckedModeBanner: false,
         themeMode: _themeMode,
         locale: _locale,
+        routes: {
+          '/openvpn/client-overrides': (context) => const OpenvpnClientOverridesListScreen(),
+          '/openvpn/client-overrides/form': (context) {
+            final uuid = ModalRoute.of(context)?.settings.arguments as String?;
+            return OpenvpnClientOverrideFormScreen(uuid: uuid);
+          },
+          '/openvpn/connection-status': (context) => const OpenvpnConnectionStatusScreen(),
+          '/openvpn/log-file': (context) => const OpenvpnLogFileScreen(),
+        },
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,

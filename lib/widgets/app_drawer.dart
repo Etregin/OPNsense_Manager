@@ -19,211 +19,149 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/system_info.dart';
+import '../screens/dashboard_screen.dart';
+import '../screens/system_info_screen.dart';
+import '../screens/settings_screen.dart';
+import '../screens/profile_selection_screen.dart';
+import '../l10n/app_localizations.dart';
+import '../services/navigation/navigation_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../services/profile_service.dart';
 import '../services/auth_service.dart';
 import '../utils/constants.dart';
-import '../screens/profile_selection_screen.dart';
-import '../screens/system_info_screen.dart';
-import '../screens/firewall_rules_screen.dart';
-import '../screens/firewall_logs_screen.dart';
-import '../screens/vpn_connections_screen.dart';
-import '../screens/live_network_monitor_screen.dart';
-import '../screens/dhcp_leases_screen.dart';
-import '../screens/dashboard_screen.dart';
-import '../screens/settings_screen.dart';
-import '../screens/pin_lock_screen.dart';
-import '../l10n/app_localizations.dart';
+import 'drawer/drawer_header_widget.dart';
+import 'drawer/navigation_tile.dart';
+import 'drawer/firewall_navigation_section.dart';
+import 'drawer/network_navigation_section.dart';
+import 'drawer/vpn_navigation_section.dart';
+import 'common/confirmation_dialog.dart';
 
 /// Reusable app drawer for navigation
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends StatefulWidget {
   final String currentRoute;
   final SystemInfo? systemInfo;
+  final Future<bool> Function()? onBeforeNavigate;
 
   const AppDrawer({
     super.key,
     required this.currentRoute,
     this.systemInfo,
+    this.onBeforeNavigate,
   });
+
+  @override
+  State<AppDrawer> createState() => _AppDrawerState();
+}
+
+class _AppDrawerState extends State<AppDrawer> {
+  bool _firewallExpanded = false;
+  bool _vpnExpanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Auto-expand sections based on current route
+    _firewallExpanded = NavigationService.isRouteInSection(widget.currentRoute, 'firewall_');
+    _vpnExpanded = NavigationService.isRouteInSection(widget.currentRoute, 'vpn_') ||
+                   NavigationService.isRouteInSection(widget.currentRoute, 'wireguard_') ||
+                   NavigationService.isRouteInSection(widget.currentRoute, 'openvpn_') ||
+                   NavigationService.isRouteInSection(widget.currentRoute, 'tailscale_');
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                const Icon(
-                  Icons.router,
-                  size: 48,
-                  color: Colors.white,
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  AppConstants.appName,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                if (systemInfo != null)
-                  Text(
-                    systemInfo!.hostname,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 14,
-                    ),
-                  ),
-              ],
-            ),
+          // Drawer header with app branding
+          DrawerHeaderWidget(systemInfo: widget.systemInfo),
+          
+          // 1. Dashboard navigation
+          NavigationTile(
+            icon: Icons.dashboard,
+            title: l10n.dashboard,
+            currentRoute: widget.currentRoute,
+            targetRoute: 'dashboard',
+            destination: const DashboardScreen(),
           ),
-          ListTile(
-            leading: const Icon(Icons.dashboard),
-            title: Text(l10n.dashboard),
-            selected: currentRoute == 'dashboard',
-            onTap: () {
-              if (currentRoute != 'dashboard') {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const DashboardScreen(),
-                  ),
-                );
-              } else {
-                Navigator.pop(context);
-              }
-            },
+          
+          // 2. System Information (individual tile)
+          NavigationTile(
+            icon: Icons.info_outline,
+            title: l10n.systemInformation,
+            currentRoute: widget.currentRoute,
+            targetRoute: 'system_info',
+            destination: const SystemInfoScreen(),
+            onBeforeNavigate: widget.onBeforeNavigate,
           ),
+          
           const Divider(),
-          ListTile(
-            leading: const Icon(Icons.info_outline),
-            title: Text(l10n.systemInformation),
-            selected: currentRoute == 'system_info',
-            onTap: () {
-              if (currentRoute != 'system_info') {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const SystemInfoScreen(),
-                  ),
-                );
-              } else {
-                Navigator.pop(context);
-              }
+          
+          // 3. Network navigation section
+          NetworkNavigationSection(
+            currentRoute: widget.currentRoute,
+          ),
+          
+          // 4. Firewall navigation section
+          FirewallNavigationSection(
+            currentRoute: widget.currentRoute,
+            isExpanded: _firewallExpanded,
+            onExpansionChanged: (expanded) {
+              setState(() {
+                _firewallExpanded = expanded;
+              });
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.security),
-            title: Text(l10n.firewallRules),
-            selected: currentRoute == 'firewall_rules',
-            onTap: () {
-              if (currentRoute != 'firewall_rules') {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const FirewallRulesScreen(),
-                  ),
-                );
-              } else {
-                Navigator.pop(context);
-              }
+          
+          // 4. VPN navigation section
+          VPNNavigationSection(
+            currentRoute: widget.currentRoute,
+            isExpanded: _vpnExpanded,
+            onExpansionChanged: (expanded) {
+              setState(() {
+                _vpnExpanded = expanded;
+              });
             },
+            onBeforeNavigate: widget.onBeforeNavigate,
           ),
-          ListTile(
-            leading: const Icon(Icons.article),
-            title: Text(l10n.firewallLogs),
-            selected: currentRoute == 'firewall_logs',
-            onTap: () {
-              if (currentRoute != 'firewall_logs') {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const FirewallLogsScreen(),
-                  ),
-                );
-              } else {
-                Navigator.pop(context);
-              }
-            },
+          
+          // 5. Settings (individual tile)
+          NavigationTile(
+            icon: Icons.settings,
+            title: l10n.settings,
+            currentRoute: widget.currentRoute,
+            targetRoute: 'settings',
+            destination: const SettingsScreen(),
           ),
-          ListTile(
-            leading: const Icon(Icons.network_check),
-            title: Text(l10n.liveNetworkMonitor),
-            selected: currentRoute == 'live_network_monitor',
-            onTap: () {
-              if (currentRoute != 'live_network_monitor') {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const LiveNetworkMonitorScreen(),
-                  ),
-                );
-              } else {
-                Navigator.pop(context);
-              }
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.dns),
-            title: Text(l10n.dhcpLeases),
-            selected: currentRoute == 'dhcp_leases',
-            onTap: () {
-              if (currentRoute != 'dhcp_leases') {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const DhcpLeasesScreen(),
-                  ),
-                );
-              } else {
-                Navigator.pop(context);
-              }
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.vpn_lock),
-            title: Text(l10n.vpnConnections),
-            selected: currentRoute == 'vpn_connections',
-            onTap: () {
-              if (currentRoute != 'vpn_connections') {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const VPNConnectionsScreen(),
-                  ),
-                );
-              } else {
-                Navigator.pop(context);
-              }
-            },
-          ),
+          
           const Divider(),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: Text(l10n.settings),
-            selected: currentRoute == 'settings',
-            onTap: () {
-              if (currentRoute != 'settings') {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const SettingsScreen(),
-                  ),
-                );
-              } else {
-                Navigator.pop(context);
-              }
-            },
+
+          // 6. Switch Profile
+          NavigationTile(
+            icon: Icons.swap_horiz,
+            title: l10n.switchProfile,
+            currentRoute: widget.currentRoute,
+            targetRoute: 'switch_profile',
+            onTap: () => _handleSwitchProfile(context),
           ),
+          
+          // 7. Reboot System (individual tile)
           ListTile(
             leading: const Icon(Icons.restart_alt, color: Colors.red),
-            title: Text(l10n.rebootSystem, style: const TextStyle(color: Colors.red)),
+            title: Text(
+              l10n.rebootSystem,
+              style: const TextStyle(color: Colors.red),
+            ),
             onTap: () {
               Navigator.pop(context);
               _rebootFirewall(context);
             },
           ),
+          
+          // 8. About (individual tile)
           ListTile(
             leading: const Icon(Icons.help_outline),
             title: Text(l10n.about),
@@ -232,34 +170,67 @@ class AppDrawer extends StatelessWidget {
               _showAboutDialog(context);
             },
           ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.swap_horiz),
-            title: Text(l10n.switchProfile),
-            onTap: () {
-              Navigator.pop(context);
-              _changeProfile(context);
-            },
-          ),
-          FutureBuilder<bool>(
-            future: context.read<AuthService>().isPinEnabled(),
-            builder: (context, snapshot) {
-              if (snapshot.data == true) {
-                return ListTile(
-                  leading: const Icon(Icons.lock),
-                  title: Text(l10n.lockApp),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _lockApp(context);
-                  },
-                );
-              }
-              return const SizedBox.shrink();
-            },
-          ),
         ],
       ),
     );
+  }
+
+  Future<void> _handleSwitchProfile(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    
+    // CRITICAL FIX: Capture the navigator BEFORE closing drawer or showing dialog
+    // The context becomes unmounted after dialogs, so we need to get the navigator early
+    final navigator = Navigator.of(context, rootNavigator: true);
+    
+    // Close the drawer first
+    Navigator.pop(context);
+    
+    // Wait a bit for drawer to close
+    await Future.delayed(const Duration(milliseconds: 150));
+    
+    if (!context.mounted) {
+      return;
+    }
+    
+    // Show confirmation dialog
+    final confirmed = await ConfirmationDialog.show(
+      context: context,
+      title: l10n.switchProfile,
+      message: l10n.switchProfileConfirmation,
+      confirmText: l10n.switchProfile,
+      cancelText: l10n.cancel,
+      isDestructive: false,
+    );
+
+    if (confirmed == true) {
+      try {
+        // Clear the active profile
+        await ProfileService().clearActiveProfile();
+        
+        // Clear auth session
+        await AuthService().clearSession();
+        
+        // Navigate to profile selection screen and clear the navigation stack
+        // Use the navigator we captured earlier (before context became unmounted)
+        await navigator.pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const ProfileSelectionScreen(),
+          ),
+          (route) => false, // Remove all previous routes
+        );
+      } catch (e) {
+        // Try to show error message if context is still valid
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to switch profile: ${e.toString()}'),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 5),
+            ),
+          );
+        }
+      }
+    }
   }
 
   Future<void> _rebootFirewall(BuildContext context) async {
@@ -395,93 +366,6 @@ class AppDrawer extends StatelessWidget {
       ],
     );
   }
-
-  Future<void> _changeProfile(BuildContext context) async {
-    final l10n = AppLocalizations.of(context)!;
-    // Get services BEFORE showing dialog (while context is still active)
-    final profileService = context.read<ProfileService>();
-    final apiService = context.read<OPNsenseApiService>();
-    final navigator = Navigator.of(context);
-    
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.switchProfile),
-        content: Text(l10n.switchProfileConfirmation),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(l10n.ok),
-          ),
-        ],
-      ),
-    );
-    
-    if (confirmed == true) {
-      // Clear active profile (but don't clear auth session)
-      await profileService.clearActiveProfile();
-
-      // Clear API service
-      apiService.clear();
-
-      // Navigate to profile selection
-      navigator.pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (context) => const ProfileSelectionScreen(),
-        ),
-        (route) => false,
-      );
-    }
-  }
-
-  Future<void> _lockApp(BuildContext context) async {
-    final authService = context.read<AuthService>();
-    final profileService = context.read<ProfileService>();
-    final apiService = context.read<OPNsenseApiService>();
-    final navigator = Navigator.of(context);
-    
-    // Mark session as expired to trigger PIN lock
-    await authService.clearSession();
-    
-    // Navigate to PIN lock screen
-    navigator.pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) => PinLockScreen(
-          onAuthenticated: (ctx) async {
-            // After successful authentication, check if we still have an active profile
-            final activeProfile = await profileService.getActiveProfile();
-            
-            if (context.mounted) {
-              if (activeProfile != null) {
-                // Re-initialize API service
-                apiService.init(activeProfile.toOPNsenseConfig());
-                
-                // Navigate back to dashboard
-                Navigator.of(ctx).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) => const DashboardScreen(),
-                  ),
-                  (route) => false,
-                );
-              } else {
-                // No active profile, go to profile selection
-                Navigator.of(ctx).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) => const ProfileSelectionScreen(),
-                  ),
-                  (route) => false,
-                );
-              }
-            }
-          },
-        ),
-      ),
-      (route) => false,
-    );
-  }
 }
+
 

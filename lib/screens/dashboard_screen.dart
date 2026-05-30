@@ -22,10 +22,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
+import '../services/opnsense_api_service.dart';
+import '../services/profile_service.dart';
+import '../services/dashboard/dashboard_data_loader.dart';
 import '../utils/constants.dart';
-import '../utils/formatters.dart';
-import '../widgets/stat_card.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/dashboard/resource_usage_section.dart';
+import '../widgets/dashboard/services_section.dart';
+import '../widgets/dashboard/gateways_section.dart';
 import '../l10n/app_localizations.dart';
 
 /// Main dashboard screen showing system overview
@@ -41,16 +45,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Map<String, dynamic> _servicesData = {};
   List<Map<String, dynamic>> _gateways = [];
   bool _isLoading = true;
-  bool _servicesExpanded = false;
-  bool _gatewaysExpanded = false;
   String? _errorMessage;
   Timer? _refreshTimer;
+  DashboardDataLoader? _dataLoader;
 
   @override
   void initState() {
     super.initState();
-    _loadDashboardData();
+    _initializeAndLoad();
     _startAutoRefresh();
+  }
+
+  Future<void> _initializeAndLoad() async {
+    // Ensure API service is initialized with active profile
+    final profileService = context.read<ProfileService>();
+    final apiService = context.read<OPNsenseApiService>();
+    
+    final activeProfile = await profileService.getActiveProfile();
+    if (activeProfile != null && !activeProfile.isDemo) {
+      // Re-initialize API service to ensure it's ready
+      apiService.init(activeProfile.toOPNsenseConfig());
+    }
+    
+    await _loadDashboardData();
   }
 
   @override
@@ -79,18 +96,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
     try {
       final demoApiService = context.read<DemoApiService>();
       
-      // Load all data in parallel for faster loading
-      final results = await Future.wait([
-        demoApiService.getSystemInfo(),
-        _loadServices(),
-        _loadGateways(),
-      ]);
+      // Initialize data loader if not already done
+      _dataLoader ??= DashboardDataLoader(demoApiService);
+      
+      // Load all data in parallel using the data loader
+      final dashboardData = await _dataLoader!.loadAllData();
 
       if (mounted) {
         setState(() {
-          _systemInfo = results[0] as SystemInfo;
-          _servicesData = results[1] as Map<String, dynamic>;
-          _gateways = results[2] as List<Map<String, dynamic>>;
+          _systemInfo = dashboardData.systemInfo;
+          _servicesData = dashboardData.servicesData;
+          _gateways = dashboardData.gateways;
           _isLoading = false;
         });
       }
@@ -101,26 +117,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           _isLoading = false;
         });
       }
-    }
-  }
-
-  Future<Map<String, dynamic>> _loadServices() async {
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      final services = await demoApiService.getServices();
-      return {'services': services};
-    } catch (e) {
-      return {'services': []};
-    }
-  }
-
-  Future<List<Map<String, dynamic>>> _loadGateways() async {
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      final gateways = await demoApiService.getGateways();
-      return gateways.cast<Map<String, dynamic>>();
-    } catch (e) {
-      return [];
     }
   }
 
@@ -276,272 +272,66 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
 
     if (_errorMessage != null && _systemInfo == null) {
-      final l10n = AppLocalizations.of(context)!;
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.red[300],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.error,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Text(
-                _errorMessage!,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey[600]),
-              ),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: _loadDashboardData,
-              icon: const Icon(Icons.refresh),
-              label: Text(l10n.retry),
-            ),
-          ],
-        ),
-      );
+      return _buildErrorState();
     }
 
-    final l10n = AppLocalizations.of(context)!;
     return ListView(
       padding: const EdgeInsets.all(AppConstants.standardPadding),
       children: [
         // Resource Usage Section
-        Text(
-          '${l10n.cpuUsage} / ${l10n.memoryUsage}',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(height: 12),
-        
-        _buildResourceCards(),
+        if (_systemInfo != null)
+          ResourceUsageSection(systemInfo: _systemInfo!),
         const SizedBox(height: 24),
         
         // Services Section
-        Text(
-          l10n.services,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+        ServicesSection(
+          servicesData: _servicesData,
+          onServiceControl: _controlService,
         ),
-        const SizedBox(height: 12),
-        
-        _buildServicesWidget(),
         const SizedBox(height: 24),
         
         // Gateways Section
-        Text(
-          l10n.gateways,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(height: 12),
-        
-        _buildGatewaysWidget(),
+        GatewaysSection(gateways: _gateways),
         const SizedBox(height: 24),
       ],
     );
   }
 
-  Widget _buildResourceCards() {
-    if (_systemInfo == null) return const SizedBox.shrink();
+  Widget _buildErrorState() {
     final l10n = AppLocalizations.of(context)!;
-
-    return Column(
-      children: [
-        // CPU Usage
-        ProgressStatCard(
-          title: l10n.cpuUsage,
-          value: Formatters.formatPercentage(_systemInfo!.cpuUsage),
-          progress: _systemInfo!.cpuUsage / 100,
-          icon: Icons.speed,
-        ),
-        const SizedBox(height: 12),
-        
-        // Memory Usage
-        ProgressStatCard(
-          title: l10n.memoryUsage,
-          value: '${Formatters.formatMemoryGB(_systemInfo!.memoryUsed, context)} / '
-              '${Formatters.formatMemoryGB(_systemInfo!.memoryTotal, context)}',
-          progress: _systemInfo!.memoryUsagePercentage / 100,
-          icon: Icons.memory,
-          subtitle: Formatters.formatPercentage(
-            _systemInfo!.memoryUsagePercentage,
-          ),
-        ),
-        const SizedBox(height: 12),
-        
-        // Disk Usage
-        if (_systemInfo!.diskTotal > 0)
-          ProgressStatCard(
-            title: l10n.diskUsage,
-            value: '${Formatters.formatMemoryGB(_systemInfo!.diskUsed, context)} / '
-                '${Formatters.formatMemoryGB(_systemInfo!.diskTotal, context)}',
-            progress: _systemInfo!.diskUsagePercentage / 100,
-            icon: Icons.storage,
-            subtitle: Formatters.formatPercentage(
-              _systemInfo!.diskUsagePercentage,
-            ),
-          ),
-      ],
-    );
-  }
-
-
-
-  Widget _buildServicesWidget() {
-    final l10n = AppLocalizations.of(context)!;
-    final services = _servicesData['services'] as List<dynamic>? ?? [];
-    
-    return Card(
+    return Center(
       child: Column(
-        children: [
-          ListTile(
-            leading: const Icon(Icons.apps),
-            title: Text(l10n.services),
-            subtitle: Text('${services.length} ${l10n.services}'),
-            trailing: Icon(
-              _servicesExpanded ? Icons.expand_less : Icons.expand_more,
-            ),
-            onTap: () {
-              setState(() {
-                _servicesExpanded = !_servicesExpanded;
-              });
-            },
-          ),
-          if (_servicesExpanded) ...[
-            const Divider(height: 1),
-            ...services.map((service) => _buildServiceTile(service)),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildServiceTile(Map<String, dynamic> service) {
-    final l10n = AppLocalizations.of(context)!;
-    // Handle different possible field names from OPNsense API
-    final name = (service['name'] ?? service['description'] ?? service['id'] ?? l10n.unknown).toString();
-    final serviceId = (service['id'] ?? service['name'] ?? name).toString();
-    final status = (service['status'] ?? service['running'] ?? 'unknown').toString();
-    final isRunning = status.toLowerCase() == 'running' ||
-                      status == '1' ||
-                      service['running'] == '1' ||
-                      service['running'] == true;
-
-    return ListTile(
-      dense: true,
-      leading: Icon(
-        isRunning ? Icons.check_circle : Icons.cancel,
-        color: isRunning ? Colors.green : Colors.red,
-        size: 20,
-      ),
-      title: Text(name),
-      subtitle: Text(isRunning ? l10n.running : l10n.stopped),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: Icon(
-              isRunning ? Icons.stop : Icons.play_arrow,
-              size: 20,
-            ),
-            onPressed: () => _controlService(serviceId, isRunning ? 'stop' : 'start', name),
-            tooltip: isRunning ? l10n.stop : l10n.start,
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh, size: 20),
-            onPressed: () => _controlService(serviceId, 'restart', name),
-            tooltip: l10n.restart,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildGatewaysWidget() {
-    final l10n = AppLocalizations.of(context)!;
-    return Card(
-      child: Column(
-        children: [
-          ListTile(
-            leading: const Icon(Icons.router),
-            title: Text(l10n.gateways),
-            subtitle: Text('${_gateways.length} ${l10n.gateways}'),
-            trailing: Icon(
-              _gatewaysExpanded ? Icons.expand_less : Icons.expand_more,
-            ),
-            onTap: () {
-              setState(() {
-                _gatewaysExpanded = !_gatewaysExpanded;
-              });
-            },
-          ),
-          if (_gatewaysExpanded) ...[
-            const Divider(height: 1),
-            ..._gateways.map((gateway) => _buildGatewayTile(gateway)),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildGatewayTile(Map<String, dynamic> gateway) {
-    final l10n = AppLocalizations.of(context)!;
-    // Handle different possible field names from OPNsense API
-    final name = (gateway['name'] ?? gateway['gateway'] ?? gateway['interface'] ?? l10n.unknown).toString();
-    final address = (gateway['address'] ?? gateway['gateway_ip'] ?? gateway['ip'] ?? l10n.notAvailable).toString();
-    final status = (gateway['status'] ?? gateway['status_translated'] ?? l10n.unknown).toString().toLowerCase();
-    final delay = (gateway['delay'] ?? gateway['rtt'] ?? gateway['latency'] ?? l10n.notAvailable).toString();
-    final loss = (gateway['loss'] ?? gateway['loss_percentage'] ?? gateway['packet_loss'] ?? l10n.notAvailable).toString();
-    
-    // Check various status indicators
-    final isOnline = status.contains('online') ||
-                     status.contains('up') ||
-                     status == 'none' ||
-                     gateway['status_translated']?.toString().toLowerCase().contains('online') == true;
-
-    return ListTile(
-      dense: true,
-      leading: Icon(
-        isOnline ? Icons.check_circle : Icons.error,
-        color: isOnline ? Colors.green : Colors.red,
-        size: 20,
-      ),
-      title: Text(name),
-      subtitle: Text(address),
-      trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          Icon(
+            Icons.error_outline,
+            size: 64,
+            color: Colors.red[300],
+          ),
+          const SizedBox(height: 16),
           Text(
-            delay.toString(),
-            style: TextStyle(
-              fontSize: 12,
-              color: isOnline ? Colors.green : Colors.red,
+            l10n.error,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Text(
+              _errorMessage!,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey[600]),
             ),
           ),
-          Text(
-            loss.toString(),
-            style: TextStyle(
-              fontSize: 12,
-              color: isOnline ? Colors.green : Colors.red,
-            ),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: _loadDashboardData,
+            icon: const Icon(Icons.refresh),
+            label: Text(l10n.retry),
           ),
         ],
       ),
     );
   }
 }
+
 

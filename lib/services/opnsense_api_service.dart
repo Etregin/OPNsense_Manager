@@ -16,58 +16,86 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import '../models/opnsense_config.dart';
 import '../models/system_info.dart';
 import '../models/firewall_rule.dart';
+import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
 import '../models/network_host.dart';
+import '../models/wireguard_server.dart';
+import '../models/wireguard_peer.dart';
+import '../models/wireguard_key_pair.dart';
+import '../models/wireguard_client_builder.dart';
+import '../models/wireguard_status.dart';
+import '../models/tailscale_status.dart';
+import '../models/tailscale_settings.dart';
+import '../models/wol_host.dart';
+import '../models/openvpn_instance.dart';
+import '../models/openvpn_search_response.dart';
+import '../models/openvpn_static_key.dart';
+import '../models/openvpn_client_override.dart';
+import '../models/openvpn_client_override_search_response.dart';
+import '../models/openvpn_session_search_response.dart';
+import '../models/openvpn_route_search_response.dart';
+import '../models/openvpn_log_search_response.dart';
 import '../utils/constants.dart';
 
-/// Service for interacting with OPNsense API
+// Import all specialized services
+import 'system/system_service.dart';
+import 'firewall/firewall_service.dart';
+import 'firewall/firewall_alias_service.dart' as alias_service;
+import 'vpn/vpn_service.dart';
+import 'vpn/wireguard_service.dart';
+import 'network/network_service.dart';
+import 'network/dhcp_service.dart';
+import 'network/gateway_service.dart';
+import 'network/vip_service.dart';
+import 'network/wol_service.dart';
+import 'services/service_control_service.dart';
+import 'tailscale/tailscale_service.dart';
+import 'vpn/openvpn_service.dart';
+
+// Re-export ApiException and helper classes for backward compatibility
+export 'base/api_exception.dart';
+export '../models/firewall_alias.dart' show AliasCategory, AliasCountry, AliasTableEntry;
+export 'network/vip_service.dart' show CarpVipOption;
+
+/// Facade service for interacting with OPNsense API
+/// 
+/// This service maintains backward compatibility with the original monolithic
+/// service while delegating to specialized services internally.
 class OPNsenseApiService {
   static final OPNsenseApiService _instance = OPNsenseApiService._internal();
   factory OPNsenseApiService() => _instance;
   OPNsenseApiService._internal();
 
+  // Service instances
+  final SystemService _systemService = SystemService();
+  final FirewallService _firewallService = FirewallService();
+  final alias_service.FirewallAliasService _firewallAliasService = alias_service.FirewallAliasService();
+  final VPNService _vpnService = VPNService();
+  final WireGuardService _wireguardService = WireGuardService();
+  final OpenvpnService _openvpnService = OpenvpnService();
+  final NetworkService _networkService = NetworkService();
+  final DHCPService _dhcpService = DHCPService();
+  final GatewayService _gatewayService = GatewayService();
+  final VipService _vipService = VipService();
+  final WolService _wolService = WolService();
+  final ServiceControlService _serviceControlService = ServiceControlService();
+  final TailscaleService _tailscaleService = TailscaleService();
+
   Dio? _dio;
   OPNsenseConfig? _config;
-  
 
-  /// Parse storage string like "8.0G" or "40G" to bytes
-  int _parseStorageString(String value) {
-    // Remove any whitespace
-    value = value.trim();
-    
-    // Extract number and unit
-    final match = RegExp(r'([\d.]+)([KMGT]?)').firstMatch(value);
-    if (match == null) return 0;
-    
-    final number = double.tryParse(match.group(1) ?? '0') ?? 0;
-    final unit = match.group(2) ?? '';
-    
-    // Convert to bytes
-    switch (unit.toUpperCase()) {
-      case 'T':
-        return (number * 1024 * 1024 * 1024 * 1024).toInt();
-      case 'G':
-        return (number * 1024 * 1024 * 1024).toInt();
-      case 'M':
-        return (number * 1024 * 1024).toInt();
-      case 'K':
-        return (number * 1024).toInt();
-      default:
-        return number.toInt(); // Assume bytes if no unit
-    }
-  }
+  /// Check if service is initialized
+  bool get isInitialized => _dio != null && _config != null;
 
   /// Initialize the API service with configuration
   void init(OPNsenseConfig config) {
     _config = config;
-    
     
     _dio = Dio(
       BaseOptions(
@@ -76,23 +104,36 @@ class OPNsenseApiService {
         receiveTimeout: AppConstants.apiTimeout,
         headers: {
           'Authorization': config.authHeader,
-          // Don't set Content-Type globally - let Dio handle it per request
         },
         validateStatus: (status) => status! < 500,
       ),
     );
 
-    // Allow self-signed certificates (for development/testing)
-    (_dio!.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
-      final client = HttpClient();
-      client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-      return client;
-    };
-  }
+    if (config.allowSelfSignedCerts) {
+      (_dio!.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
+        final client = HttpClient();
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) =>
+                host == config.host && port == config.port;
+        return client;
+      };
+    }
 
-  /// Check if service is initialized
-  bool get isInitialized => _dio != null && _config != null;
+    // Initialize all specialized services
+    _systemService.init(_dio!, config);
+    _firewallService.init(_dio!, config);
+    _firewallAliasService.init(_dio!, config);
+    _vpnService.init(_dio!, config);
+    _wireguardService.init(_dio!, config);
+    _openvpnService.init(_dio!, config);
+    _networkService.init(_dio!, config);
+    _dhcpService.init(_dio!, config);
+    _gatewayService.init(_dio!, config);
+    _vipService.init(_dio!, config);
+    _wolService.init(_dio!, config);
+    _serviceControlService.init(_dio!, config);
+    _tailscaleService.init(_dio!, config);
+  }
 
   /// Test connection to OPNsense
   Future<bool> testConnection() async {
@@ -101,7 +142,6 @@ class OPNsenseApiService {
     }
 
     try {
-      
       final response = await _dio!.get(
         '/core/system/status',
         options: Options(
@@ -110,11 +150,7 @@ class OPNsenseApiService {
         ),
       );
       
-      // Accept various status codes that indicate server is reachable:
-      // 200 = Success
-      // 400 = Bad Request (server reachable, might need different endpoint/auth)
-      // 401 = Unauthorized (server reachable, needs credentials)
-      // 403 = Forbidden (server reachable, insufficient permissions)
+      // Accept various status codes that indicate server is reachable
       if (response.statusCode == 200 ||
           response.statusCode == 400 ||
           response.statusCode == 401 ||
@@ -124,1359 +160,415 @@ class OPNsenseApiService {
       
       return false;
     } on DioException catch (e) {
-      
       if (e.response != null) {
-        
         // If we get a response (even 400/401), the server is reachable
-        // 400 = Bad Request (server reachable, endpoint might need auth)
-        // 401 = Unauthorized (server reachable, needs valid credentials)
-        // 403 = Forbidden (server reachable, insufficient permissions)
         if (e.response!.statusCode == 400 ||
             e.response!.statusCode == 401 ||
             e.response!.statusCode == 403) {
           return true;
         }
       }
-      
-      // Network errors (timeout, connection refused, etc.)
       return false;
-    } catch (_) {
-      // Silently handle error
+    } catch (e) {
       return false;
     }
   }
 
-  // ==================== System Information ====================
-
-  /// Get system status
-  Future<Map<String, dynamic>> getSystemStatus() async {
-    _ensureInitialized();
-
-    try {
-      final response = await _dio!.get('/core/system/status');
-      
-      if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
-      } else {
-        throw ApiException('Failed to get system status', response.statusCode);
-      }
-    } on DioException catch (e) {
-      if (e.response != null) {
-      }
-      throw _handleDioError(e);
-    }
-  }
-
-  /// Get system information (hostname, version, etc.)
-  Future<Map<String, dynamic>> getSystemInformation() async {
-    _ensureInitialized();
-
-    try {
-      final response = await _dio!.get('/core/firmware/info');
-      
-      if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
-      }
-    } catch (_) {
-      // Silently handle error
-    }
-
-    // Try alternative endpoints
-    try {
-      final response = await _dio!.get('/core/firmware/status');
-      
-      if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
-      }
-    } catch (_) {
-      // Silently handle error
-    }
-
-    try {
-      final response = await _dio!.get('/core/system/info');
-      
-      if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
-      }
-    } catch (_) {
-      // Silently handle error
-    }
-
-    return {};
-  }
-
-  /// Get system activity (CPU, uptime)
-  Future<Map<String, dynamic>> getSystemActivity() async {
-    _ensureInitialized();
-
-    try {
-      final response = await _dio!.get('/diagnostics/activity/getActivity');
-      
-      if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
-      }
-    } catch (_) {
-      // Silently handle error
-    }
-
-    return {};
-  }
-
-  /// Get filesystem information
-  Future<Map<String, dynamic>> getFilesystemInfo() async {
-    _ensureInitialized();
-
-    // Try multiple endpoints for disk information
-    try {
-      final response = await _dio!.get('/diagnostics/system/systemDisk');
-      
-      if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
-      }
-    } catch (_) {
-      // Silently handle error
-    }
-
-    // Try alternative endpoint
-    try {
-      final response = await _dio!.get('/core/system/systemDisk');
-      
-      if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
-      }
-    } catch (_) {
-      // Silently handle error
-    }
-
-    return {};
-  }
-
-  /// Get system resources (CPU, memory, uptime)
-  Future<Map<String, dynamic>> getSystemResources() async {
-    _ensureInitialized();
-
-    try {
-      final response = await _dio!.get('/diagnostics/system/systemResources');
-      
-      if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
-      } else {
-        throw ApiException('Failed to get system resources', response.statusCode);
-      }
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    }
-  }
-
-  /// Get complete system information
-  Future<SystemInfo> getSystemInfo() async {
-    try {
-      final resourcesData = await getSystemResources();
-      final systemInfoData = await getSystemInformation();
-      final activityData = await getSystemActivity();
-      final diskData = await getFilesystemInfo();
-
-      // Extract firmware/system details from /api/core/firmware/info
-      String type = 'opnsense';
-      String version = 'Unknown';
-      String architecture = 'amd64';
-      String commit = '';
-      String mirror = '';
-      String repositories = '';
-      String? updatedOn;
-      
-      // Extract from product map (from /core/firmware/status)
-      if (systemInfoData.containsKey('product')) {
-        final product = systemInfoData['product'] as Map<String, dynamic>?;
-        if (product != null) {
-          // Version from CORE_VERSION or product_version
-          version = product['CORE_VERSION'] as String? ??
-                   product['product_version'] as String? ??
-                   'Unknown';
-          
-          // Type from CORE_PRODUCT or CORE_NAME
-          type = product['CORE_PRODUCT'] as String? ??
-                 product['CORE_NAME'] as String? ??
-                 'opnsense';
-          
-          // Architecture from CORE_ARCH or product_arch
-          architecture = product['CORE_ARCH'] as String? ??
-                        product['product_arch'] as String? ??
-                        'amd64';
-          
-          // Commit from CORE_HASH or product_hash
-          commit = product['CORE_HASH'] as String? ??
-                  product['product_hash'] as String? ??
-                  '';
-          
-          // Mirror from product_mirror (from /core/firmware/info)
-          mirror = product['product_mirror'] as String? ??
-                  product['CORE_PACKAGESITE'] as String? ?? '';
-          
-          // Repository from product_repos (from /core/firmware/info)
-          repositories = product['product_repos'] as String? ?? '';
-          if (repositories.isEmpty) {
-            final repo = product['CORE_REPOSITORY'] as String? ?? '';
-            if (repo.isNotEmpty) {
-              repositories = 'OPNsense ($repo)';
-            }
-          }
-          
-          // Updated on from product_time (from /core/firmware/info)
-          updatedOn = product['product_time'] as String?;
-        }
-      }
-      
-      // Fallback checks for updated time
-      if (updatedOn == null || updatedOn.isEmpty) {
-        if (systemInfoData.containsKey('product_time')) {
-          updatedOn = systemInfoData['product_time'] as String?;
-        } else if (systemInfoData.containsKey('status_msg')) {
-          updatedOn = systemInfoData['status_msg'] as String?;
-        } else if (systemInfoData.containsKey('last_check')) {
-          updatedOn = systemInfoData['last_check'] as String?;
-        }
-      }
-      
-      // Fallback checks for mirror
-      if (mirror.isEmpty && systemInfoData.containsKey('product_mirror')) {
-        mirror = systemInfoData['product_mirror'] as String? ?? '';
-      }
-      
-      // Fallback checks for repositories
-      if (repositories.isEmpty && systemInfoData.containsKey('product_repos')) {
-        repositories = systemInfoData['product_repos'] as String? ?? '';
-      }
-      
-      String hostname = 'OPNsense Router';
-      String platform = 'FreeBSD';
-      
-      // Try to get hostname from system info
-      if (systemInfoData.containsKey('hostname')) {
-        hostname = systemInfoData['hostname'] as String? ?? hostname;
-      }
-      
-      // Try to get platform details
-      if (systemInfoData.containsKey('os')) {
-        final os = systemInfoData['os'] as Map<String, dynamic>?;
-        if (os != null) {
-          platform = '${os['name'] ?? 'FreeBSD'} ${os['version'] ?? ''}';
-        }
-      } else if (systemInfoData.containsKey('os_version')) {
-        platform = 'FreeBSD ${systemInfoData['os_version']}';
-      }
-      
-      
-      // Parse uptime and CPU from activity headers
-      // Headers format: "last pid: 31779;  load averages:  0.86,  1.02,  0.89  up 0+07:16:41    19:59:35"
-      // and "CPU:  2.7% user,  0.0% nice,  1.5% system,  0.7% interrupt, 95.0% idle"
-      int uptime = 0;
-      double cpuUsage = 0.0;
-      
-      if (activityData.containsKey('headers')) {
-        final headers = activityData['headers'] as List?;
-        if (headers != null && headers.isNotEmpty) {
-          
-          // Parse uptime from first header line
-          final firstHeader = headers[0] as String;
-          
-          // Parse uptime: "up 0+07:16:41" means 0 days, 7 hours, 16 minutes, 41 seconds
-          final uptimeMatch = RegExp(r'up (\d+)\+(\d+):(\d+):(\d+)').firstMatch(firstHeader);
-          if (uptimeMatch != null) {
-            final days = int.parse(uptimeMatch.group(1)!);
-            final hours = int.parse(uptimeMatch.group(2)!);
-            final minutes = int.parse(uptimeMatch.group(3)!);
-            final seconds = int.parse(uptimeMatch.group(4)!);
-            uptime = (days * 86400) + (hours * 3600) + (minutes * 60) + seconds;
-          }
-          
-          // Parse CPU - check all header lines for CPU info
-          for (int i = 0; i < headers.length; i++) {
-            final headerLine = headers[i] as String;
-            
-            // "CPU:  2.0% user,  0.0% nice,  1.4% system,  0.5% interrupt, 96.0% idle"
-            if (headerLine.contains('CPU:')) {
-              final idleMatch = RegExp(r'(\d+\.?\d*)% idle').firstMatch(headerLine);
-              if (idleMatch != null) {
-                final idle = double.parse(idleMatch.group(1)!);
-                cpuUsage = 100.0 - idle;
-                break;
-              }
-            }
-          }
-          
-          if (cpuUsage == 0.0) {
-          }
-        }
-      }
-      
-      // Parse memory from nested structure - handle both int and string types
-      final memoryData = resourcesData['memory'] as Map<String, dynamic>?;
-      
-      // Memory values might be int or string, parse safely
-      int memoryUsed = 0;
-      int memoryTotal = 0;
-      
-      if (memoryData != null) {
-        final usedValue = memoryData['used'];
-        final totalValue = memoryData['total'];
-        
-        if (usedValue is int) {
-          memoryUsed = usedValue;
-        } else if (usedValue is String) {
-          memoryUsed = int.tryParse(usedValue) ?? 0;
-        }
-        
-        if (totalValue is int) {
-          memoryTotal = totalValue;
-        } else if (totalValue is String) {
-          memoryTotal = int.tryParse(totalValue) ?? 0;
-        }
-      }
-
-      // Parse disk usage from disk data
-      // Data format: {device: /dev/gpt/rootfs, blocks: 40G, used: 8.0G, ...}
-      int diskUsed = 0;
-      int diskTotal = 0;
-      
-      if (diskData.isNotEmpty) {
-        if (diskData.containsKey('devices')) {
-          final devices = diskData['devices'] as List?;
-          if (devices != null && devices.isNotEmpty) {
-            // Find root filesystem (usually mounted on /)
-            for (var device in devices) {
-              if (device is Map<String, dynamic>) {
-                final mountpoint = device['mountpoint'] as String?;
-                if (mountpoint == '/') {
-                  final usedStr = device['used'] as String?;
-                  final totalStr = device['blocks'] as String?;
-                  
-                  
-                  // Parse strings like "8.0G" or "40G" to bytes
-                  if (usedStr != null) {
-                    diskUsed = _parseStorageString(usedStr);
-                  }
-                  if (totalStr != null) {
-                    diskTotal = _parseStorageString(totalStr);
-                  }
-                  
-                  break;
-                }
-              }
-            }
-          }
-        }
-      }
-      
-
-      return SystemInfo(
-        hostname: hostname,
-        version: version,
-        platform: platform,
-        uptime: uptime,
-        cpuUsage: cpuUsage,
-        memoryUsed: memoryUsed,
-        diskUsed: diskUsed,
-        diskTotal: diskTotal,
-        memoryTotal: memoryTotal,
-        type: type,
-        architecture: architecture,
-        commit: commit,
-        mirror: mirror,
-        repositories: repositories,
-        updatedOn: updatedOn,
-      );
-    } catch (_) {
-      // Silently handle error
-      rethrow;
-    }
-  }
-
-  // ==================== Firewall Rules ====================
-
-  /// Get all firewall rules (only from /firewall/filter/get endpoint for automation rules)
-  Future<List<FirewallRule>> getFirewallRules() async {
-    _ensureInitialized();
-
-    try {
-      final List<FirewallRule> allRules = [];
-      
-      // Fetch automation rules using /firewall/filter/get endpoint only
-      final automationResponse = await _dio!.get('/firewall/filter/get');
-      
-      if (automationResponse.statusCode == 200) {
-        final data = automationResponse.data as Map<String, dynamic>;
-        
-        // The /get endpoint returns: filter.rules.rule
-        if (data.containsKey('filter')) {
-          final filterData = data['filter'] as Map<String, dynamic>?;
-          if (filterData != null && filterData.containsKey('rules')) {
-            final rulesContainer = filterData['rules'] as Map<String, dynamic>?;
-            if (rulesContainer != null && rulesContainer.containsKey('rule')) {
-              final rules = rulesContainer['rule'];
-              
-              if (rules is List) {
-                for (var rule in rules) {
-                  if (rule is Map<String, dynamic>) {
-                    try {
-                      allRules.add(_parseFirewallRule(rule));
-                    } catch (_) {
-                      // Silently handle error
-                    }
-                  }
-                }
-              } else if (rules is Map) {
-                // Rules are a map with UUIDs as keys
-                for (var entry in rules.entries) {
-                  if (entry.value is Map<String, dynamic>) {
-                    try {
-                      final ruleData = Map<String, dynamic>.from(entry.value as Map);
-                      ruleData['uuid'] = entry.key; // Add UUID from key
-                      allRules.add(_parseFirewallRule(ruleData));
-                    } catch (_) {
-                      // Silently handle error
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      
-      return allRules;
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    }
-  }
-
-  /// Get available interfaces from OPNsense
-  Future<Map<String, String>> getAvailableInterfaces() async {
-    _ensureInitialized();
-
-    try {
-      final response = await _dio!.get('/firewall/filter/get');
-      
-      if (response.statusCode == 200) {
-        final data = response.data as Map<String, dynamic>;
-        
-        // Navigate to filter.rules.rule to get a sample rule with interface data
-        if (data.containsKey('filter')) {
-          final filterData = data['filter'] as Map<String, dynamic>?;
-          if (filterData != null && filterData.containsKey('rules')) {
-            final rulesContainer = filterData['rules'] as Map<String, dynamic>?;
-            if (rulesContainer != null && rulesContainer.containsKey('rule')) {
-              final rules = rulesContainer['rule'];
-              
-              // Get interface options from the first rule's interface field
-              if (rules is Map && rules.isNotEmpty) {
-                final firstRule = rules.values.first;
-                if (firstRule is Map<String, dynamic> && firstRule.containsKey('interface')) {
-                  final interfaceField = firstRule['interface'];
-                  if (interfaceField is Map<String, dynamic>) {
-                    // Extract all interface options
-                    final Map<String, String> interfaces = {};
-                    for (var entry in interfaceField.entries) {
-                      final value = entry.value;
-                      if (value is Map<String, dynamic> && value.containsKey('value')) {
-                        // key is the internal name (e.g., 'lan'), value['value'] is display name (e.g., 'LAN')
-                        interfaces[entry.key] = value['value'].toString();
-                      }
-                    }
-                    return interfaces;
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      
-      // Fallback to default interfaces if API doesn't provide them
-      return {
-        'lan': 'LAN',
-        'wan': 'WAN',
-        'opt1': 'OPT1',
-        'opt2': 'OPT2',
-      };
-    } on DioException {
-      // Return default interfaces on error
-      return {
-        'lan': 'LAN',
-        'wan': 'WAN',
-        'opt1': 'OPT1',
-        'opt2': 'OPT2',
-      };
-    }
-  }
-
-  /// Create a new firewall rule
-  Future<String> createFirewallRule(FirewallRuleRequest request) async {
-    _ensureInitialized();
-
-    try {
-      final requestJson = request.toJson();
-      
-      final payload = {'rule': requestJson};
-      
-      // According to OPNsense API docs, we need to wrap the rule in a 'rule' object
-      final response = await _dio!.post(
-        '/firewall/filter/addRule',
-        data: payload,
-      );
-      
-      
-      if (response.statusCode == 200) {
-        final data = response.data as Map<String, dynamic>;
-        
-        // Check if the operation succeeded
-        final result = data['result'] as String?;
-        if (result == 'failed') {
-          final validations = data['validations'] as Map<String, dynamic>?;
-          final errorMessage = validations?.values.join(', ') ?? 'Unknown validation error';
-          throw ApiException('Failed to create rule: $errorMessage', 400);
-        }
-        
-        final uuid = data['uuid'] as String?;
-        if (uuid == null || uuid.isEmpty) {
-          throw ApiException('No UUID returned from addRule', 500);
-        }
-        
-        
-        // Verify the rule was created by fetching it
-        final createdRule = await getFirewallRule(uuid);
-        if (createdRule != null) {
-        } else {
-        }
-        
-        // Apply changes - this is required to make the rule active
-        await applyFirewallChanges();
-        
-        return uuid;
-      } else {
-        throw ApiException('Failed to create firewall rule', response.statusCode);
-      }
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    }
-  }
-
-  /// Extract selected value from OPNsense dropdown structure
-  String _extractSelectedValue(dynamic field, {bool returnDisplayValue = false}) {
-    if (field is String) {
-      return field;
-    }
-    if (field is List) {
-      // If it's a list, return the first element as string
-      return field.isNotEmpty ? field.first.toString() : '';
-    }
-    if (field is Map<String, dynamic>) {
-      // Find the selected option
-      for (var entry in field.entries) {
-        final value = entry.value;
-        if (value is Map<String, dynamic> && value['selected'] == 1) {
-          // Return the display value if requested and available, otherwise return the key
-          if (returnDisplayValue && value.containsKey('value')) {
-            return value['value'].toString();
-          }
-          return entry.key;
-        }
-      }
-    }
-    return '';
-  }
-
-  /// Parse a firewall rule from API response
-  FirewallRule _parseFirewallRule(Map<String, dynamic> ruleData) {
-    // Different endpoints return different structures:
-    // - searchRule: simple strings (action, interface, protocol, source_net, destination_net, description)
-    // - filter/get: nested dropdown objects with 'selected' flags
-    
-    // Get action/type - could be string or nested object
-    String type;
-    if (ruleData['action'] is String) {
-      type = ruleData['action'] as String;
-    } else {
-      type = _extractSelectedValue(ruleData['action']);
-    }
-    if (type.isEmpty) type = 'pass';
-    
-    // Get interface - could be string or nested object
-    // Use returnDisplayValue=true to get the friendly name (e.g., "LAN" instead of "lan")
-    String interfaceName;
-    if (ruleData['interface'] is String) {
-      interfaceName = ruleData['interface'] as String;
-    } else {
-      interfaceName = _extractSelectedValue(ruleData['interface'], returnDisplayValue: true);
-    }
-    
-    // Get protocol - could be string or nested object
-    String protocol;
-    if (ruleData['protocol'] is String) {
-      protocol = ruleData['protocol'] as String;
-    } else {
-      protocol = _extractSelectedValue(ruleData['protocol']);
-    }
-    if (protocol.isEmpty) protocol = 'any';
-    
-    // Get source - always a string field
-    String source = ruleData['source_net']?.toString() ?? 'any';
-    if (source.isEmpty) source = 'any';
-    
-    // Get destination - always a string field
-    String destination = ruleData['destination_net']?.toString() ?? 'any';
-    if (destination.isEmpty) destination = 'any';
-    
-    // Get description - could be 'description' or 'descr'
-    String description = ruleData['description']?.toString() ??
-                        ruleData['descr']?.toString() ?? '';
-    
-    // Get source port - always a string field
-    String sourcePort = ruleData['source_port']?.toString() ?? '';
-    if (sourcePort.isEmpty) sourcePort = 'any';
-    
-    // Get destination port - always a string field
-    String destPort = ruleData['destination_port']?.toString() ?? '';
-    if (destPort.isEmpty) destPort = 'any';
-    
-    // Get origin field to identify system-generated rules
-    // System-generated rules typically have origin field set (e.g., 'filter', 'nat', etc.)
-    String origin = ruleData['origin']?.toString() ?? '';
-    
-    return FirewallRule(
-      uuid: ruleData['uuid']?.toString() ?? '',
-      type: type,
-      interfaceName: interfaceName,
-      protocol: protocol,
-      source: source,
-      destination: destination,
-      sourcePort: sourcePort,
-      destinationPort: destPort,
-      description: description,
-      enabled: ruleData['enabled']?.toString() ?? '1',
-      sequence: int.tryParse(ruleData['sequence']?.toString() ?? '0') ?? 0,
-      origin: origin,
-    );
-  }
-
-  /// Get a specific firewall rule by UUID
-  Future<FirewallRule?> getFirewallRule(String uuid) async {
-    _ensureInitialized();
-
-    try {
-      final response = await _dio!.get('/firewall/filter/getRule/$uuid');
-      
-      
-      if (response.statusCode == 200) {
-        final data = response.data;
-        
-        // Handle both Map and other response types
-        Map<String, dynamic>? ruleData;
-        if (data is Map<String, dynamic>) {
-          final ruleField = data['rule'];
-          if (ruleField is Map<String, dynamic>) {
-            ruleData = ruleField;
-          }
-        }
-        
-        if (ruleData != null) {
-          // OPNsense returns complex nested structures for dropdowns
-          // Extract the selected values
-          final type = _extractSelectedValue(ruleData['action']);
-          final interfaceName = _extractSelectedValue(ruleData['interface']);
-          final protocol = _extractSelectedValue(ruleData['protocol']);
-          
-          // Try both 'source_net' and 'source' field names
-          final source = ruleData['source_net']?.toString() ??
-                        ruleData['source']?.toString() ??
-                        'any';
-          final destination = ruleData['destination_net']?.toString() ??
-                             ruleData['destination']?.toString() ??
-                             'any';
-          final description = ruleData['descr']?.toString() ?? '';
-          
-          final sourcePort = ruleData['source_port']?.toString() ?? 'any';
-          final destPort = ruleData['destination_port']?.toString() ?? 'any';
-          
-          
-          return FirewallRule(
-            uuid: uuid,
-            type: type.isNotEmpty ? type : 'pass',
-            interfaceName: interfaceName,
-            protocol: protocol.isNotEmpty ? protocol : 'any',
-            source: source,
-            destination: destination,
-            sourcePort: sourcePort,
-            destinationPort: destPort,
-            description: description,
-            enabled: ruleData['enabled']?.toString() ?? '1',
-            sequence: int.tryParse(ruleData['sequence']?.toString() ?? '0') ?? 0,
-          );
-        }
-      }
-      return null;
-    } on DioException {
-      return null;
-    }
-  }
-
-  /// Update an existing firewall rule
-  Future<void> updateFirewallRule(String uuid, FirewallRuleRequest request) async {
-    _ensureInitialized();
-
-    try {
-      final response = await _dio!.post(
-        '/firewall/filter/setRule/$uuid',
-        data: {'rule': request.toJson()},
-      );
-      
-      if (response.statusCode == 200) {
-        // Apply changes
-        await applyFirewallChanges();
-      } else {
-        throw ApiException('Failed to update firewall rule', response.statusCode);
-      }
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    }
-  }
-
-  /// Toggle firewall rule (enable/disable)
-  Future<void> toggleFirewallRule(String uuid) async {
-    _ensureInitialized();
-
-    try {
-      // Use the toggle endpoint
-      final response = await _dio!.post('/firewall/filter/toggleRule/$uuid');
-      
-      if (response.statusCode == 200) {
-        // Apply changes to make the toggle take effect
-        await applyFirewallChanges();
-      } else {
-        throw ApiException('Failed to toggle firewall rule', response.statusCode);
-      }
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    }
-  }
-
-  /// Delete a firewall rule
-  Future<void> deleteFirewallRule(String uuid) async {
-    _ensureInitialized();
-
-    try {
-      final response = await _dio!.post('/firewall/filter/delRule/$uuid');
-      
-      if (response.statusCode == 200) {
-        // Apply changes
-        await applyFirewallChanges();
-      } else {
-        throw ApiException('Failed to delete firewall rule', response.statusCode);
-      }
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    }
-  }
-
-  /// Apply firewall changes
-  Future<void> applyFirewallChanges() async {
-    _ensureInitialized();
-
-    try {
-      await _dio!.post('/firewall/filter/apply');
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    }
-  }
-
-  // ==================== System Control ====================
-
-  /// Reboot the OPNsense system
-  Future<void> rebootSystem() async {
-    _ensureInitialized();
-
-    try {
-      
-      final response = await _dio!.post('/core/system/reboot');
-      
-      if (response.statusCode == 200) {
-      } else {
-        throw ApiException('Failed to reboot system', response.statusCode);
-      }
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    }
-  }
-
-  // ==================== Firewall Logs ====================
-
-  /// Get firewall logs (live view)
-  Future<List<dynamic>> getFirewallLogs({int limit = 100}) async {
-    _ensureInitialized();
-
-    try {
-      
-      // Use the same endpoint as the web UI live view
-      // Endpoint: /api/diagnostics/firewall/log
-      final response = await _dio!.get(
-        '/diagnostics/firewall/log',
-        queryParameters: {
-          'limit': limit, // Number of entries to fetch
-        },
-      );
-      
-      
-      if (response.statusCode == 200) {
-        final data = response.data;
-        
-        // The response should be a map with 'rows' containing the log entries
-        if (data is Map<String, dynamic>) {
-          
-          if (data.containsKey('rows')) {
-            final rows = data['rows'] as List<dynamic>?;
-            return rows ?? [];
-          } else if (data.containsKey('data')) {
-            final dataList = data['data'] as List<dynamic>?;
-            return dataList ?? [];
-          }
-        } else if (data is List) {
-          return data;
-        }
-        
-        return [];
-      } else {
-        throw ApiException('Failed to get firewall logs', response.statusCode);
-      }
-    } on DioException catch (e) {
-      if (e.response != null) {
-      }
-      throw _handleDioError(e);
-    }
-  }
-  /// Get system services status
-  /// Endpoint: /api/core/service/search
-  Future<List<dynamic>> getServices() async {
-    if (!isInitialized) {
-      throw ApiException('API service not initialized', null);
-    }
-
-    try {
-      
-      final response = await _dio!.get('/core/service/search');
-      
-      
-      if (response.statusCode == 200) {
-        final data = response.data;
-        
-        if (data is Map<String, dynamic> && data.containsKey('rows')) {
-          final services = data['rows'] as List<dynamic>?;
-          return services ?? [];
-        } else if (data is List) {
-          return data;
-        }
-        
-        return [];
-      } else {
-        throw ApiException('Failed to get services', response.statusCode);
-      }
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    }
-  }
-
-  /// Get gateway status
-  /// Endpoint: /api/routes/gateway/status
-  Future<List<dynamic>> getGateways() async {
-    if (!isInitialized) {
-      throw ApiException('API service not initialized', null);
-    }
-
-    try {
-      
-      final response = await _dio!.get('/routes/gateway/status');
-      
-      
-      if (response.statusCode == 200) {
-        final data = response.data;
-        
-        if (data is Map<String, dynamic> && data.containsKey('items')) {
-          final gateways = data['items'] as List<dynamic>?;
-          return gateways ?? [];
-        } else if (data is Map<String, dynamic> && data.containsKey('rows')) {
-          final gateways = data['rows'] as List<dynamic>?;
-          return gateways ?? [];
-        } else if (data is List) {
-          return data;
-        }
-        
-        return [];
-      } else {
-        throw ApiException('Failed to get gateways', response.statusCode);
-      }
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    }
-  }
-  /// Control a service (start, stop, restart)
-  /// Endpoint: /api/core/service/{action}/{serviceName}
-  /// Actions: start, stop, restart
-  Future<bool> controlService(String serviceName, String action) async {
-    if (!isInitialized) {
-      throw ApiException('API service not initialized', null);
-    }
-
-    try {
-      
-      final response = await _dio!.post('/core/service/$action/$serviceName');
-      
-      
-      if (response.statusCode == 200) {
-        final data = response.data;
-        
-        // Check if response indicates success
-        if (data is Map<String, dynamic>) {
-          final result = data['result'] ?? data['status'] ?? 'ok';
-          return result.toString().toLowerCase() == 'ok' || 
-                 result.toString().toLowerCase() == 'success';
-        }
-        return true;
-      } else {
-        throw ApiException('Failed to $action service', response.statusCode);
-      }
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    }
-  }
-
-
-
-  // ==================== Helper Methods ====================
-
-  /// Ensure service is initialized
-  void _ensureInitialized() {
-    if (!isInitialized) {
-      throw ApiException('API service not initialized', null);
-    }
-  }
-
-  /// Handle Dio errors
-  ApiException _handleDioError(DioException e) {
-    switch (e.type) {
-      case DioExceptionType.connectionTimeout:
-      case DioExceptionType.sendTimeout:
-      case DioExceptionType.receiveTimeout:
-        return ApiException('Connection timeout', null);
-      case DioExceptionType.badResponse:
-        final statusCode = e.response?.statusCode;
-        if (statusCode == 401) {
-          return ApiException('Invalid credentials', statusCode);
-        } else if (statusCode == 403) {
-          return ApiException('Insufficient permissions', statusCode);
-        } else if (statusCode == 404) {
-          return ApiException('Resource not found', statusCode);
-        } else {
-          return ApiException('Server error', statusCode);
-        }
-      case DioExceptionType.cancel:
-        return ApiException('Request cancelled', null);
-      case DioExceptionType.unknown:
-        if (e.error is SocketException) {
-          return ApiException('Network error: Unable to connect', null);
-        }
-        return ApiException('Unknown error: ${e.message}', null);
-      default:
-        return ApiException('Request failed: ${e.message}', null);
-    }
-  }
-
-  /// Get all VPN connections (OpenVPN and Tailscale)
-  Future<List<VPNConnection>> getVPNConnections() async {
-    _ensureInitialized();
-
-    try {
-      final connections = <VPNConnection>[];
-      final errors = <String, String>{};
-
-      // Get VPN services from the service list (using correct endpoint without /api prefix)
-      try {
-        final servicesResponse = await _dio!.get('/core/service/search');
-        
-        if (servicesResponse.statusCode == 200 && servicesResponse.data != null) {
-          final data = servicesResponse.data as Map<String, dynamic>;
-          final rows = data['rows'] as List<dynamic>? ?? [];
-          
-          for (final row in rows) {
-            final rowData = row as Map<String, dynamic>;
-            final serviceName = rowData['name']?.toString().toLowerCase() ?? '';
-            final serviceId = rowData['id']?.toString() ?? '';
-            final isRunning = rowData['running']?.toString() == '1' || rowData['running'] == true;
-            
-            // Check if this is Tailscale VPN service
-            if (serviceName == 'tailscale') {
-              connections.add(VPNConnection(
-                id: serviceId,
-                name: 'Tailscale',
-                type: serviceName,
-                status: isRunning ? 'up' : 'down',
-                description: rowData['description']?.toString() ?? 'Tailscale VPN Service',
-                enabled: isRunning,
-              ));
-            }
-          }
-        }
-      } catch (e) {
-        errors['Services'] = e.toString();
-      }
-
-      // Get OpenVPN sessions (active connections)
-      try {
-        final openVpnConnections = await _getOpenVPNSessions();
-        connections.addAll(openVpnConnections);
-      } catch (e) {
-        errors['OpenVPN'] = e.toString();
-      }
-
-      return connections;
-    } catch (e) {
-      throw ApiException('Failed to get VPN connections: ${e.toString()}', null);
-    }
-  }
-
-  /// Get OpenVPN instances and sessions
-  Future<List<VPNConnection>> _getOpenVPNSessions() async {
-    try {
-      final connections = <VPNConnection>[];
-      
-      // Get OpenVPN instances (servers and clients)
-      try {
-        final response = await _dio!.get('/openvpn/service/searchSessions');
-        
-        if (response.statusCode == 200 && response.data != null) {
-          final data = response.data as Map<String, dynamic>;
-          final rows = data['rows'] as List<dynamic>? ?? [];
-          
-          for (final row in rows) {
-            final rowData = row as Map<String, dynamic>;
-            final instanceType = rowData['type']?.toString() ?? '';
-            final status = rowData['status']?.toString() ?? '';
-            
-            // This endpoint returns both server instances and client sessions
-            if (instanceType == 'server' || instanceType == 'client') {
-              // This is an OpenVPN server or client instance
-              connections.add(VPNConnection(
-                id: rowData['id']?.toString() ?? '',
-                name: rowData['description']?.toString() ?? 'OpenVPN ${instanceType[0].toUpperCase()}${instanceType.substring(1)}',
-                type: 'openvpn',
-                status: status == 'ok' ? 'up' : 'down',
-                description: rowData['description']?.toString(),
-                enabled: status == 'ok',
-              ));
-            } else {
-              // This is a connected client session
-              connections.add(VPNConnection(
-                id: rowData['id']?.toString() ?? '',
-                name: rowData['common_name']?.toString() ?? 'OpenVPN Client',
-                type: 'openvpn',
-                status: 'up',
-                description: rowData['common_name']?.toString(),
-                remoteAddress: rowData['real_address']?.toString(),
-                virtualAddress: rowData['virtual_address']?.toString(),
-                bytesReceived: int.tryParse(rowData['bytes_received']?.toString() ?? '0'),
-                bytesSent: int.tryParse(rowData['bytes_sent']?.toString() ?? '0'),
-                connectedSince: rowData['connected_since'] != null
-                    ? DateTime.tryParse(rowData['connected_since'].toString())
-                    : null,
-                enabled: true,
-              ));
-            }
-          }
-        }
-      } catch (e) {
-        // Silent fail
-      }
-      
-      return connections;
-    } catch (e) {
-      return [];
-    }
-  }
-
-
-  /// Toggle VPN connection (connect/disconnect)
-  Future<bool> toggleVPNConnection(String id, String type, bool currentStatus) async {
-    _ensureInitialized();
-
-    try {
-      String action = currentStatus ? 'stop' : 'start';
-
-      // Use the core service control endpoint for all services
-      final response = await _dio!.post('/core/service/$action/$id');
-      
-      if (response.statusCode == 200) {
-        final data = response.data as Map<String, dynamic>?;
-        return data?['result'] == 'ok' || data?['status'] == 'ok';
-      }
-      
-      return false;
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    } catch (e) {
-      throw ApiException('Failed to toggle VPN connection: ${e.toString()}', null);
-    }
-  }
-
-  /// Restart VPN service
-  Future<bool> restartVPNService(String type) async {
-    _ensureInitialized();
-
-    try {
-      String endpoint;
-
-      switch (type.toLowerCase()) {
-        case 'openvpn':
-          endpoint = '/api/openvpn/service/restart';
-          break;
-        case 'tailscale':
-          endpoint = '/api/tailscale/service/restart';
-          break;
-        default:
-          throw ApiException('Unknown VPN type: $type', null);
-      }
-
-      final response = await _dio!.post(endpoint);
-      
-      if (response.statusCode == 200) {
-        final data = response.data as Map<String, dynamic>?;
-        return data?['result'] == 'ok' || data?['status'] == 'ok';
-      }
-      
-      return false;
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    } catch (e) {
-      throw ApiException('Failed to restart VPN service: ${e.toString()}', null);
-    }
-  }
-
-  /// Get VPN connection details
-  Future<VPNConnection?> getVPNConnectionDetails(String id, String type) async {
-    _ensureInitialized();
-
-    try {
-      final connections = await getVPNConnections();
-      return connections.firstWhere(
-        (conn) => conn.id == id && conn.type.toLowerCase() == type.toLowerCase(),
-        orElse: () => throw ApiException('VPN connection not found', 404),
-      );
-    } catch (e) {
-      throw ApiException('Failed to get VPN connection details: ${e.toString()}', null);
-    }
-  }
-  /// Get DHCP leases from dnsmasq
-  /// Returns a list of active DHCP leases with hostname, IP, and MAC info
-  /// Note: This requires the dnsmasq plugin to be installed and enabled
-  Future<List<Map<String, dynamic>>> getDhcpLeases() async {
-    _ensureInitialized();
-    
-    try {
-      final response = await _dio!.get('/dnsmasq/leases/search');
-      
-      if (response.statusCode == 200) {
-        final data = response.data;
-        
-        // Handle different response formats
-        if (data is Map<String, dynamic>) {
-          // Check for rows array (common OPNsense format)
-          if (data.containsKey('rows') && data['rows'] is List) {
-            return List<Map<String, dynamic>>.from(data['rows']);
-          }
-          // Check for leases array
-          if (data.containsKey('leases') && data['leases'] is List) {
-            return List<Map<String, dynamic>>.from(data['leases']);
-          }
-          // If data itself is the lease info
-          if (data.containsKey('address') || data.containsKey('hostname')) {
-            return [data];
-          }
-        }
-        
-        // If response is directly a list
-        if (data is List) {
-          return List<Map<String, dynamic>>.from(data);
-        }
-        
-        return [];
-      } else {
-        throw ApiException(
-          'Failed to get DHCP leases: HTTP ${response.statusCode}',
-          response.statusCode,
-        );
-      }
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    } catch (e) {
-      throw ApiException('Failed to get DHCP leases: ${e.toString()}', null);
-    }
-  }
-
-  /// Get real-time traffic statistics for a specific interface
-  /// Returns a list of hosts with their current bandwidth usage
-  /// Note: This requires the diagnostics plugin to be installed and enabled
-  Future<List<Map<String, dynamic>>> getTrafficTop(String interface) async {
-    _ensureInitialized();
-    
-    try {
-      final response = await _dio!.get('/diagnostics/traffic/top/$interface');
-      
-      if (response.statusCode == 200) {
-        final data = response.data;
-        
-        // Handle OPNsense traffic API response format
-        // Response structure: {"lan": {"records": [...], "status": "ok"}}
-        if (data is Map<String, dynamic>) {
-          // Check for interface-specific data (e.g., data['lan'])
-          if (data.containsKey(interface)) {
-            final interfaceData = data[interface];
-            if (interfaceData is Map<String, dynamic>) {
-              // Check for records array inside interface data
-              if (interfaceData.containsKey('records') && interfaceData['records'] is List) {
-                return List<Map<String, dynamic>>.from(interfaceData['records']);
-              }
-            }
-          }
-          
-          // Fallback: Check for direct records array
-          if (data.containsKey('records') && data['records'] is List) {
-            return List<Map<String, dynamic>>.from(data['records']);
-          }
-          
-          // Check for rows array
-          if (data.containsKey('rows') && data['rows'] is List) {
-            return List<Map<String, dynamic>>.from(data['rows']);
-          }
-        }
-        
-        // If response is directly a list
-        if (data is List) {
-          return List<Map<String, dynamic>>.from(data);
-        }
-        
-        return [];
-      } else {
-        throw ApiException(
-          'Failed to get traffic data: HTTP ${response.statusCode}',
-          response.statusCode,
-        );
-      }
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    } catch (e) {
-      throw ApiException('Failed to get traffic data: ${e.toString()}', null);
-    }
-  }
-
-  /// Get network hosts by merging DHCP leases and traffic data
-  /// Returns a list of NetworkHost objects with identity and bandwidth info
-  /// Shows ALL leased hosts, even those with zero traffic
-  Future<List<NetworkHost>> getNetworkHosts({String interface = 'lan'}) async {
-    _ensureInitialized();
-    
-    try {
-      // Fetch both datasets in parallel for better performance
-      final results = await Future.wait([
-        getDhcpLeases(),
-        getTrafficTop(interface),
-      ]);
-      
-      final leases = results[0];
-      final trafficData = results[1];
-      
-      // Create a map of IP addresses to traffic data for quick lookup
-      final trafficMap = <String, Map<String, dynamic>>{};
-      for (final traffic in trafficData) {
-        final address = traffic['address'] as String?;
-        if (address != null && address.isNotEmpty) {
-          trafficMap[address] = traffic;
-        }
-      }
-      
-      // Start with all leased hosts
-      final hosts = <NetworkHost>[];
-      final processedAddresses = <String>{};
-      
-      // Add all hosts from leases (with or without traffic)
-      for (final lease in leases) {
-        final address = lease['address'] as String?;
-        if (address == null || address.isEmpty) continue;
-        
-        processedAddresses.add(address);
-        
-        // Check if we have traffic data for this IP
-        final traffic = trafficMap[address];
-        
-        if (traffic != null) {
-          // Merge lease and traffic data
-          hosts.add(NetworkHost.fromLeaseAndTraffic(
-            lease: lease,
-            traffic: traffic,
-          ));
-        } else {
-          // Only lease data available (no current traffic)
-          hosts.add(NetworkHost.fromLeaseAndTraffic(
-            lease: lease,
-            traffic: {
-              'address': address,
-              'rate_bits_in': 0,
-              'rate_bits_out': 0,
-            },
-          ));
-        }
-      }
-      
-      // Add any hosts from traffic that don't have lease data
-      for (final traffic in trafficData) {
-        final address = traffic['address'] as String?;
-        if (address == null || address.isEmpty) continue;
-        
-        if (!processedAddresses.contains(address)) {
-          hosts.add(NetworkHost.fromTrafficOnly(traffic));
-        }
-      }
-      
-      // Sort by total bandwidth usage (highest first), then by hostname
-      hosts.sort((a, b) {
-        final rateCompare = b.totalRate.compareTo(a.totalRate);
-        if (rateCompare != 0) return rateCompare;
-        return a.hostname.compareTo(b.hostname);
-      });
-      
-      return hosts;
-    } catch (e) {
-      throw ApiException('Failed to get network hosts: ${e.toString()}', null);
-    }
-  }
-
-
-  /// Clear configuration and reset service
+  /// Clear service state
   void clear() {
+    // Clear all specialized services
+    _systemService.clear();
+    _firewallService.clear();
+    _firewallAliasService.clear();
+    _vpnService.clear();
+    _wireguardService.clear();
+    _openvpnService.clear();
+    _networkService.clear();
+    _dhcpService.clear();
+    _gatewayService.clear();
+    _vipService.clear();
+    _serviceControlService.clear();
+    _tailscaleService.clear();
+    
+    // Clear main service state
     _dio = null;
     _config = null;
   }
+
+  // ============================================================================
+  // System Service Delegations
+  // ============================================================================
+
+  Future<Map<String, dynamic>> getSystemStatus() => _systemService.getSystemStatus();
+  
+  Future<Map<String, dynamic>> getSystemInformation() => _systemService.getSystemInformation();
+  
+  Future<Map<String, dynamic>> getSystemActivity() => _systemService.getSystemActivity();
+  
+  Future<Map<String, dynamic>> getFilesystemInfo() => _systemService.getFilesystemInfo();
+  
+  Future<Map<String, dynamic>> getSystemResources() => _systemService.getSystemResources();
+  
+  Future<SystemInfo> getSystemInfo() => _systemService.getSystemInfo();
+  
+  Future<void> rebootSystem() => _systemService.rebootSystem();
+
+  // ============================================================================
+  // Firewall Service Delegations
+  // ============================================================================
+
+  Future<List<FirewallRule>> getFirewallRules() => _firewallService.getFirewallRules();
+  
+  Future<Map<String, String>> getAvailableInterfaces() => _firewallService.getAvailableInterfaces();
+  
+  Future<String> createFirewallRule(FirewallRuleRequest request) => _firewallService.createFirewallRule(request);
+  
+  Future<FirewallRule?> getFirewallRule(String uuid) => _firewallService.getFirewallRule(uuid);
+  
+  Future<void> updateFirewallRule(String uuid, FirewallRuleRequest request) => _firewallService.updateFirewallRule(uuid, request);
+  
+  Future<void> toggleFirewallRule(String uuid) => _firewallService.toggleFirewallRule(uuid);
+  
+  Future<void> deleteFirewallRule(String uuid) => _firewallService.deleteFirewallRule(uuid);
+  
+  Future<void> applyFirewallChanges() => _firewallService.applyFirewallChanges();
+  
+  Future<List<dynamic>> getFirewallLogs({int limit = 100}) => _firewallService.getFirewallLogs(limit: limit);
+
+  // ============================================================================
+  // Firewall Alias Service Delegations
+  // ============================================================================
+
+  Future<List<FirewallAlias>> getFirewallAliases() => _firewallAliasService.getFirewallAliases();
+  
+  Future<FirewallAlias> getFirewallAlias(String uuid) => _firewallAliasService.getFirewallAlias(uuid);
+  
+  Future<String?> getAliasUuidByName(String name) => _firewallAliasService.getAliasUuidByName(name);
+  
+  Future<Map<String, dynamic>> createFirewallAlias(FirewallAliasRequest request) => _firewallAliasService.createFirewallAlias(request);
+  
+  Future<Map<String, dynamic>> updateFirewallAlias(String uuid, FirewallAliasRequest request) => _firewallAliasService.updateFirewallAlias(uuid, request);
+  
+  Future<void> toggleFirewallAlias(String uuid) => _firewallAliasService.toggleFirewallAlias(uuid);
+  
+  Future<void> deleteFirewallAlias(String uuid) => _firewallAliasService.deleteFirewallAlias(uuid);
+  
+  Future<void> applyFirewallAliasChanges() => _firewallAliasService.applyFirewallAliasChanges();
+  
+  Future<Map<String, dynamic>> getGeoIP() => _firewallAliasService.getGeoIP();
+  
+  Future<Map<String, dynamic>> getAliasTableSize() => _firewallAliasService.getAliasTableSize();
+  
+  Future<List<AliasCategory>> listAliasCategories() => _firewallAliasService.listAliasCategories();
+  
+  Future<List<AliasCountry>> listAliasCountries() => _firewallAliasService.listAliasCountries();
+  
+  Future<Map<String, dynamic>> listNetworkAliases() => _firewallAliasService.listNetworkAliases();
+  
+  Future<Map<String, dynamic>> listUserGroups() => _firewallAliasService.listUserGroups();
+  
+  Future<Map<String, dynamic>> getAliasesUtil() => _firewallAliasService.getAliasesUtil();
+  
+  Future<List<AliasTableEntry>> listAliasTable(String aliasName) => _firewallAliasService.listAliasTable(aliasName);
+  
+  Future<Map<String, dynamic>> addToAliasTable(String aliasName, String address) => _firewallAliasService.addToAliasTable(aliasName, address);
+  
+  Future<Map<String, dynamic>> deleteFromAliasTable(String aliasName, String address) => _firewallAliasService.deleteFromAliasTable(aliasName, address);
+  
+  Future<Map<String, dynamic>> flushAliasTable(String aliasName) => _firewallAliasService.flushAliasTable(aliasName);
+  
+  Future<Map<String, dynamic>> findAliasReferences(String aliasName) => _firewallAliasService.findAliasReferences(aliasName);
+  
+  Future<Map<String, dynamic>> updateBogons() => _firewallAliasService.updateBogons();
+
+  // ============================================================================
+  // VPN Service Delegations
+  // ============================================================================
+
+  Future<List<VPNConnection>> getVPNConnections() => _vpnService.getVPNConnections();
+  
+  Future<VPNConnection?> getTailscaleStatus() => _vpnService.getTailscaleStatus();
+  
+  Future<TailscaleStatus> getTailscaleDetails() => _vpnService.getTailscaleDetails();
+  
+  Future<bool> toggleVPNConnection(String id, String type, bool currentStatus) => _vpnService.toggleVPNConnection(id, type, currentStatus);
+  
+  Future<bool> restartVPNService(String type) => _vpnService.restartVPNService(type);
+  
+  Future<VPNConnection?> getVPNConnectionDetails(String id, String type) => _vpnService.getVPNConnectionDetails(id, type);
+
+  // ============================================================================
+  // WireGuard Service Delegations
+  // ============================================================================
+
+  Future<List<WireGuardServer>> getWireGuardServers() => _wireguardService.getWireGuardServers();
+  
+  Future<WireGuardServer> getWireGuardServer(String uuid) => _wireguardService.getWireGuardServer(uuid);
+  
+  Future<String> createWireGuardServer(WireGuardServerRequest request) => _wireguardService.createWireGuardServer(request);
+  
+  Future<void> updateWireGuardServer(String uuid, WireGuardServerRequest request) => _wireguardService.updateWireGuardServer(uuid, request);
+  
+  Future<void> deleteWireGuardServer(String uuid) => _wireguardService.deleteWireGuardServer(uuid);
+  
+  Future<void> toggleWireGuardServer(String uuid, bool enabled) => _wireguardService.toggleWireGuardServer(uuid, enabled);
+  
+  Future<Map<String, dynamic>> searchWireGuardPeers({int current = 1, int rowCount = 50, Map<String, dynamic>? sort}) =>
+      _wireguardService.searchClients(current: current, rowCount: rowCount, sort: sort);
+  
+  Future<List<WireGuardPeer>> getWireGuardPeers() => _wireguardService.getWireGuardPeers();
+  
+  Future<Map<String, dynamic>> getPeer(String uuid) => _wireguardService.getPeer(uuid);
+  
+  Future<WireGuardPeer> getWireGuardPeer(String uuid) => _wireguardService.getWireGuardPeer(uuid);
+  
+  Future<String> createWireGuardPeer(WireGuardPeerRequest request) => _wireguardService.createWireGuardPeer(request);
+  
+  Future<void> updateWireGuardPeer(String uuid, WireGuardPeerRequest request) => _wireguardService.updateWireGuardPeer(uuid, request);
+  
+  Future<void> deleteWireGuardPeer(String uuid) => _wireguardService.deleteWireGuardPeer(uuid);
+  
+  Future<void> toggleWireGuardPeer(String uuid, bool enabled) => _wireguardService.toggleWireGuardPeer(uuid, enabled);
+  
+  Future<WireGuardKeyPair> generateWireGuardKeyPair() => _wireguardService.generateWireGuardKeyPair();
+  
+  Future<String> generateWireGuardPSK() => _wireguardService.generateWireGuardPSK();
+  
+  Future<void> applyWireGuardConfiguration() => _wireguardService.reconfigureWireGuard();
+  
+  Future<Map<String, dynamic>> getWireGuardStatus() => _wireguardService.getWireGuardStatus();
+  
+  Future<WireGuardStatusResponse> getWireGuardStatusResponse() => _wireguardService.getStatus();
+  
+  Future<void> restartWireGuardService() => _wireguardService.restartWireGuardService();
+  
+  Future<void> startWireGuardInstance(String uuid) => _wireguardService.startWireGuardInstance(uuid);
+  
+  Future<void> stopWireGuardInstance(String uuid) => _wireguardService.stopWireGuardInstance(uuid);
+  
+  Future<WireGuardClientBuilder> getClientBuilder() => _wireguardService.getClientBuilder();
+  
+  Future<WireGuardServerInfo> getServerInfo(String uuid) => _wireguardService.getServerInfo(uuid);
+  
+  Future<void> addClientBuilder(WireGuardClientBuilderRequest request) => _wireguardService.addClientBuilder(request);
+  
+  Future<Map<String, dynamic>> reconfigureWireGuard() => _wireguardService.reconfigureWireGuard();
+  
+  Future<Map<String, dynamic>> startWireGuardService() => _wireguardService.startWireGuardService();
+  
+  Future<Map<String, dynamic>> stopWireGuardService() => _wireguardService.stopWireGuardService();
+  
+  Future<void> restartWireGuardInstance(String uuid) => _wireguardService.restartWireGuardInstance(uuid);
+
+  Future<Map<String, dynamic>> getWireGuardLogs({
+    int rowCount = 50,
+    List<String>? severity,
+    double? validFrom,
+  }) => _wireguardService.getWireGuardLogs(
+    rowCount: rowCount,
+    severity: severity,
+    validFrom: validFrom,
+  );
+
+  Future<OpenvpnLogSearchResponse> searchOpenvpnLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) => _openvpnService.searchLogs(
+    current: current,
+    rowCount: rowCount,
+    sort: sort,
+    severity: severity,
+    validFrom: validFrom,
+  );
+
+  // ============================================================================
+  // Network Service Delegations
+  // ============================================================================
+
+  Future<List<Map<String, dynamic>>> getTrafficTop(String interface) => _networkService.getTrafficTop(interface);
+  
+  Future<List<NetworkHost>> getNetworkHosts({String interface = 'lan'}) => _networkService.getNetworkHosts(interface: interface);
+
+  // ============================================================================
+  // VIP Service Delegations
+  // ============================================================================
+
+  Future<List<CarpVipOption>> getCarpVipOptions() => _vipService.getCarpVipOptions();
+
+  // ============================================================================
+  // DHCP Service Delegations
+  // ============================================================================
+
+  Future<List<Map<String, dynamic>>> getDhcpLeases() => _dhcpService.getDhcpLeases();
+
+  // ============================================================================
+  // WOL Service Delegations
+  // ============================================================================
+
+  Future<bool> isWolPluginAvailable() => _wolService.isWolPluginAvailable();
+
+  Future<List<WolHost>> getWolHosts() => _wolService.getHosts();
+  
+  Future<Map<String, WolInterfaceOption>> getWolInterfaceOptions() => _wolService.getInterfaceOptions();
+  
+  Future<String> addWolHost(String interface, String mac, String description) =>
+      _wolService.addHost(interface, mac, description);
+  
+  Future<void> updateWolHost(String uuid, String interface, String mac, String description) =>
+      _wolService.updateHost(uuid, interface, mac, description);
+  
+  Future<void> deleteWolHost(String uuid) => _wolService.deleteHost(uuid);
+  
+  Future<void> wakeHost(String uuid) => _wolService.wakeHost(uuid);
+
+  Future<Map<String, dynamic>> copyWolHost(String uuid) => _wolService.copyHost(uuid);
+  
+  Future<List<WolWakeAllResult>> wakeAllHosts() => _wolService.wakeAllHosts();
+
+  // ============================================================================
+  // Gateway Service Delegations
+  // ============================================================================
+
+  Future<List<dynamic>> getGateways() => _gatewayService.getGateways();
+
+  // ============================================================================
+  // Service Control Service Delegations
+  // ============================================================================
+
+  Future<List<dynamic>> getServices() => _serviceControlService.getServices();
+  
+  Future<bool> controlService(String serviceName, String action) => _serviceControlService.controlService(serviceName, action);
+
+  // ============================================================================
+  // OpenVPN Service Delegations
+  // ============================================================================
+
+  Future<OpenvpnSearchResponse> searchOpenvpnInstances({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    String? searchPhrase,
+    String? enabled,
+  }) => _openvpnService.searchInstances(
+        current: current,
+        rowCount: rowCount,
+        sort: sort,
+        searchPhrase: searchPhrase,
+        enabled: enabled,
+      );
+  
+  Future<OpenvpnInstance> getOpenvpnInstance(String? vpnid) => _openvpnService.getInstance(vpnid);
+  
+  Future<Map<String, dynamic>> addOpenvpnInstance(OpenvpnInstance instance) => _openvpnService.addInstance(instance);
+  
+  Future<Map<String, dynamic>> updateOpenvpnInstance(String vpnid, OpenvpnInstance instance) => _openvpnService.updateInstance(vpnid, instance);
+  
+  Future<Map<String, dynamic>> deleteOpenvpnInstance(String vpnid) => _openvpnService.deleteInstance(vpnid);
+  
+  
+  Future<Map<String, dynamic>> reconfigureOpenvpn() => _openvpnService.reconfigureOpenvpn();
+  Future<Map<String, dynamic>> toggleOpenvpnInstance(String vpnid) => _openvpnService.toggleInstance(vpnid);
+  
+  Future<String> generateOpenvpnAuthToken() => _openvpnService.generateAuthToken();
+  
+  Future<OpenvpnStaticKeySearchResponse> searchOpenvpnStaticKeys({
+    int current = 1,
+    int rowCount = 50,
+  }) => _openvpnService.searchStaticKeys(current: current, rowCount: rowCount);
+  
+  Future<OpenvpnStaticKey> getOpenvpnStaticKey(String? keyid) => _openvpnService.getStaticKey(keyid);
+  
+  Future<String> generateOpenvpnStaticKey(String mode) => _openvpnService.generateStaticKey(mode);
+  
+  Future<Map<String, dynamic>> addOpenvpnStaticKey(OpenvpnStaticKey key) => _openvpnService.addStaticKey(key);
+  
+  Future<Map<String, dynamic>> updateOpenvpnStaticKey(String keyid, OpenvpnStaticKey key) => _openvpnService.updateStaticKey(keyid, key);
+  
+  Future<Map<String, dynamic>> deleteOpenvpnStaticKey(String keyid) => _openvpnService.deleteStaticKey(keyid);
+
+  // Client Specific Override methods
+  Future<OpenvpnClientOverrideSearchResponse> searchClientOverrides({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    String? searchPhrase,
+  }) => _openvpnService.searchClientOverrides(
+        current: current,
+        rowCount: rowCount,
+        sort: sort,
+        searchPhrase: searchPhrase,
+      );
+
+  Future<OpenvpnClientOverride> getClientOverride(String? uuid) => _openvpnService.getClientOverride(uuid);
+
+  Future<Map<String, dynamic>> setClientOverride(String uuid, OpenvpnClientOverride override) =>
+      _openvpnService.setClientOverride(uuid, override);
+
+  Future<Map<String, dynamic>> deleteClientOverride(String uuid) => _openvpnService.deleteClientOverride(uuid);
+
+  Future<Map<String, dynamic>> toggleClientOverride(String uuid) => _openvpnService.toggleClientOverride(uuid);
+
+  // Connection Status methods
+  Future<OpenvpnSessionSearchResponse> searchSessions({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+  }) => _openvpnService.searchSessions(
+        current: current,
+        rowCount: rowCount,
+        sort: sort,
+      );
+
+  Future<Map<String, dynamic>> startService(String id) => _openvpnService.startService(id);
+
+  Future<Map<String, dynamic>> stopService(String id) => _openvpnService.stopService(id);
+
+  Future<Map<String, dynamic>> restartService(String id) => _openvpnService.restartService(id);
+
+  Future<OpenvpnRouteSearchResponse> searchRoutes({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+  }) => _openvpnService.searchRoutes(
+        current: current,
+        rowCount: rowCount,
+        sort: sort,
+      );
+
+  // ============================================================================
+  // Tailscale Service Delegations
+  // ============================================================================
+
+  Future<bool> isTailscalePluginAvailable() => _tailscaleService.isTailscalePluginAvailable();
+
+  Future<bool> controlTailscaleService(String action) => _tailscaleService.controlTailscaleService(action);
+  
+  Future<bool> updateTailscaleSettings(Map<String, dynamic> settings) => _tailscaleService.updateTailscaleSettings(settings);
+  
+  Future<Map<String, String?>> getTailscaleAuthentication() => _tailscaleService.getTailscaleAuthentication();
+  
+  Future<bool> setTailscaleAuthentication(String loginServer, String preAuthKey) => _tailscaleService.setTailscaleAuthentication(loginServer, preAuthKey);
+  
+  Future<bool> logoutTailscale() => _tailscaleService.logoutTailscale();
+  
+  Future<TailscaleSettingsResponse> getTailscaleSettings() => _tailscaleService.getTailscaleSettings();
+  
+  Future<Map<String, dynamic>> setTailscaleSettings(TailscaleSettings settings) => _tailscaleService.setTailscaleSettings(settings);
+  
+  Future<TailscaleSubnetSearchResponse> searchTailscaleSubnets() => _tailscaleService.searchTailscaleSubnets();
+  
+  Future<TailscaleSubnetResponse> getTailscaleSubnet(String uuid) => _tailscaleService.getTailscaleSubnet(uuid);
+  
+  Future<Map<String, dynamic>> addTailscaleSubnet(TailscaleSubnet subnet) => _tailscaleService.addTailscaleSubnet(subnet);
+  
+  Future<Map<String, dynamic>> setTailscaleSubnet(String uuid, TailscaleSubnet subnet) => _tailscaleService.setTailscaleSubnet(uuid, subnet);
+  
+  Future<Map<String, dynamic>> deleteTailscaleSubnet(String uuid) => _tailscaleService.deleteTailscaleSubnet(uuid);
+  
+  Future<Map<String, dynamic>> reloadTailscaleSettings() => _tailscaleService.reloadTailscaleSettings();
 }
 
-/// Custom exception for API errors
-class ApiException implements Exception {
-  final String message;
-  final int? statusCode;
-
-  ApiException(this.message, this.statusCode);
-
-  @override
-  String toString() {
-    if (statusCode != null) {
-      return 'ApiException: $message (Status: $statusCode)';
-    }
-    return 'ApiException: $message';
-  }
-}
 

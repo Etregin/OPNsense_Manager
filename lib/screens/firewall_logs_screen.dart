@@ -25,6 +25,7 @@ import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
 import '../utils/constants.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/firewall/log_detail_sheet.dart';
 import '../l10n/app_localizations.dart';
 
 /// Firewall logs screen with live log streaming
@@ -433,7 +434,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
             '${_logs.length} ${l10n.entries}',
             style: TextStyle(
               fontSize: 12,
-              color: Colors.grey[600],
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ],
@@ -470,7 +471,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
               child: Text(
                 _errorMessage!,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey[600]),
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
             ),
             const SizedBox(height: 24),
@@ -498,13 +499,13 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
             const SizedBox(height: 16),
             Text(
               l10n.noLogsAvailable,
-              style: TextStyle(color: Colors.grey[600]),
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: 8),
             Text(
               l10n.logsWillAppear,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+              style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
             ),
           ],
         ),
@@ -531,7 +532,9 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
       margin: const EdgeInsets.only(bottom: 8),
       color: isSelected ? Theme.of(context).primaryColor.withValues(alpha: 0.1) : null,
       child: InkWell(
-        onTap: _isSelectionMode ? () => _toggleSelection(index) : null,
+        onTap: _isSelectionMode
+            ? () => _toggleSelection(index)
+            : () => _showLogDetails(log),
         onLongPress: () {
           if (!_isPaused) {
             final l10n = AppLocalizations.of(context)!;
@@ -590,12 +593,33 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 4),
+              // Show rule description if available
+              if (log.ruleDescription.isNotEmpty) ...[
+                Row(
+                  children: [
+                    Icon(Icons.rule, size: 12, color: Theme.of(context).colorScheme.primary),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        log.ruleDescription,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 2),
+              ],
               Builder(
                 builder: (context) {
                   final l10n = AppLocalizations.of(context)!;
                   return Text(
                     '${l10n.protocol}: ${log.protocol} | ${l10n.interface}: ${log.interface}',
-                    style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                    style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant),
                   );
                 }
               ),
@@ -605,18 +629,41 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
                     final l10n = AppLocalizations.of(context)!;
                     return Text(
                       '${l10n.reason}: ${log.reason}',
-                      style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                      style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant),
                     );
                   }
                 ),
             ],
           ),
-          trailing: Text(
-            log.timestamp,
-            style: TextStyle(fontSize: 10, color: Colors.grey[500]),
+          trailing: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                log.timestamp,
+                style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
+              ),
+              if (!_isSelectionMode) ...[
+                const SizedBox(height: 4),
+                Icon(
+                  Icons.info_outline,
+                  size: 16,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                ),
+              ],
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  void _showLogDetails(FirewallLogEntry log) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => LogDetailSheet(log: log),
     );
   }
 }
@@ -633,6 +680,11 @@ class FirewallLogEntry {
   final String destPort;
   final String reason;
   final String label;
+  final String ruleId;
+  final String ruleDescription;
+  final String direction;
+  final String length;
+  final String tcpFlags;
 
   FirewallLogEntry({
     required this.timestamp,
@@ -645,6 +697,11 @@ class FirewallLogEntry {
     required this.destPort,
     this.reason = '',
     this.label = '',
+    this.ruleId = '',
+    this.ruleDescription = '',
+    this.direction = '',
+    this.length = '',
+    this.tcpFlags = '',
   });
 
   factory FirewallLogEntry.fromJson(Map<String, dynamic> json) {
@@ -655,17 +712,22 @@ class FirewallLogEntry {
       interface: json['interface'] ?? json['if'] ?? json['iface'] ?? '',
       protocol: json['proto'] ?? json['protocol'] ?? json['protoname'] ?? '',
       sourceIp: json['src'] ?? json['source_ip'] ?? json['srcip'] ?? '',
-      sourcePort: json['srcport'] ?? json['source_port'] ?? json['sport'] ?? '',
+      sourcePort: (json['srcport'] ?? json['source_port'] ?? json['sport'] ?? '').toString(),
       destIp: json['dst'] ?? json['dest_ip'] ?? json['dstip'] ?? json['destination'] ?? '',
-      destPort: json['dstport'] ?? json['dest_port'] ?? json['dport'] ?? '',
+      destPort: (json['dstport'] ?? json['dest_port'] ?? json['dport'] ?? '').toString(),
       reason: json['reason'] ?? json['label'] ?? '',
       label: json['label'] ?? json['rule_label'] ?? '',
+      ruleId: json['rule_id'] ?? json['rid'] ?? '',
+      ruleDescription: json['rule_description'] ?? json['rule_desc'] ?? json['label'] ?? '',
+      direction: json['direction'] ?? json['dir'] ?? '',
+      length: (json['length'] ?? json['len'] ?? '').toString(),
+      tcpFlags: json['tcpflags'] ?? json['flags'] ?? '',
     );
   }
 
   @override
   String toString() {
-    return 'FirewallLogEntry(time: $timestamp, action: $action, $sourceIp:$sourcePort -> $destIp:$destPort, proto: $protocol, if: $interface)';
+    return 'FirewallLogEntry(time: $timestamp, action: $action, $sourceIp:$sourcePort -> $destIp:$destPort, proto: $protocol, if: $interface, rule: $ruleDescription)';
   }
 }
 
