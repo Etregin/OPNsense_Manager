@@ -40,6 +40,7 @@ import '../models/openvpn_client_override.dart';
 import '../models/openvpn_client_override_search_response.dart';
 import '../models/openvpn_session_search_response.dart';
 import '../models/openvpn_route_search_response.dart';
+import '../models/openvpn_log_search_response.dart';
 import '../utils/constants.dart';
 
 // Import all specialized services
@@ -365,6 +366,20 @@ class OPNsenseApiService {
     double? validFrom,
   }) => _wireguardService.getWireGuardLogs(
     rowCount: rowCount,
+    severity: severity,
+    validFrom: validFrom,
+  );
+
+  Future<OpenvpnLogSearchResponse> searchOpenvpnLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) => _openvpnService.searchLogs(
+    current: current,
+    rowCount: rowCount,
+    sort: sort,
     severity: severity,
     validFrom: validFrom,
   );

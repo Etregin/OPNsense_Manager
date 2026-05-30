@@ -25,6 +25,7 @@ import '../../screens/wireguard_peer_generator_screen.dart';
 import '../../screens/wireguard_status_screen.dart';
 import '../../screens/wireguard_log_file_screen.dart';
 import '../../screens/openvpn_instances_screen.dart';
+import '../../screens/openvpn_log_file_screen.dart';
 import '../../screens/tailscale_authentication_screen.dart';
 import '../../screens/tailscale_settings_screen.dart';
 import '../../screens/tailscale_status_screen.dart';
@@ -262,9 +263,9 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         NavigationTile(
           title: 'Log File',
           currentRoute: widget.currentRoute,
-          targetRoute: 'openvpn_log_file',
+          targetRoute: 'openvpn_logs',
+          destination: const OpenvpnLogFileScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
-          onTap: () => NavigationService.showComingSoon(context, 'OpenVPN Log File'),
         ),
       ],
     );

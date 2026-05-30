@@ -27,6 +27,7 @@ import '../../models/openvpn_client_override_search_response.dart';
 import '../../models/openvpn_static_key.dart';
 import '../../models/openvpn_session_search_response.dart';
 import '../../models/openvpn_route_search_response.dart';
+import '../../models/openvpn_log_search_response.dart';
 
 /// Service for OpenVPN operations
 ///
@@ -350,6 +351,50 @@ class OpenvpnService extends BaseOPNsenseService {
         throw ApiException('Invalid response format', response.statusCode);
       } else {
         throw ApiException('Failed to generate auth token', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Search OpenVPN core logs with pagination and filters.
+  ///
+  /// Endpoint: POST /api/diagnostics/log/core/openvpn
+  Future<OpenvpnLogSearchResponse> searchLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) async {
+    ensureInitialized();
+
+    try {
+      final data = <String, dynamic>{
+        'current': current,
+        'rowCount': rowCount,
+        'sort': sort ?? <String, dynamic>{},
+      };
+
+      if (severity != null && severity.isNotEmpty) {
+        data['severity'] = severity;
+      }
+
+      if (validFrom != null) {
+        data['validFrom'] = validFrom;
+      }
+
+      final response = await dio.post(
+        '/diagnostics/log/core/openvpn',
+        data: data,
+      );
+
+      if (response.statusCode == 200) {
+        return OpenvpnLogSearchResponse.fromJson(
+          response.data as Map<String, dynamic>,
+        );
+      } else {
+        throw ApiException('Failed to search OpenVPN logs', response.statusCode);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
