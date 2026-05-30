@@ -161,13 +161,17 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
             children: [
               Icon(Icons.computer, color: theme.colorScheme.primary),
               const SizedBox(width: 8),
-              Text(
-                l10n.connectionEndpoints,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
+              Expanded(
+                child: Text(
+                  l10n.connectionEndpoints,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                 ),
               ),
-              const Spacer(),
+              const SizedBox(width: 8),
               IconButton.filledTonal(
                 onPressed: widget.enabled ? () => _showConnectionDialog() : null,
                 icon: const Icon(Icons.add),
@@ -190,96 +194,93 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Leading icon with fixed size
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundColor: connection.isActive
-                          ? theme.colorScheme.primaryContainer
-                          : theme.colorScheme.surfaceContainerHighest,
-                      child: Icon(
-                        connection.isActive ? Icons.check_circle : Icons.computer,
-                        color: connection.isActive
-                            ? theme.colorScheme.primary
-                            : theme.colorScheme.onSurfaceVariant,
-                        size: 20,
+                child: IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // Leading icon with fixed size
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundColor: connection.isActive
+                            ? theme.colorScheme.primaryContainer
+                            : theme.colorScheme.surfaceContainerHighest,
+                        child: Icon(
+                          connection.isActive ? Icons.check_circle : Icons.computer,
+                          color: connection.isActive
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.onSurfaceVariant,
+                          size: 20,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    
-                    // Connection info with flexible width
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Title with ellipsis
-                          Text(
-                            connection.label ?? '${connection.host}:${connection.port}',
-                            style: TextStyle(
-                              fontWeight: connection.isActive ? FontWeight.bold : FontWeight.normal,
-                              fontSize: 14,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                          // Subtitle with ellipsis (only if label exists)
-                          if (connection.label != null) ...[
-                            const SizedBox(height: 2),
+                      const SizedBox(width: 12),
+                      
+                      // Connection info with flexible width
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Title with ellipsis
                             Text(
-                              '${connection.host}:${connection.port}',
+                              connection.label ?? '${connection.host}:${connection.port}',
                               style: TextStyle(
-                                fontSize: 12,
-                                color: theme.colorScheme.onSurfaceVariant,
+                                fontWeight: connection.isActive ? FontWeight.bold : FontWeight.normal,
+                                fontSize: 14,
                               ),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                             ),
+                            // Subtitle with ellipsis (only if label exists)
+                            if (connection.label != null) ...[
+                              const SizedBox(height: 2),
+                              Text(
+                                '${connection.host}:${connection.port}',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
-                    ),
-                    
-                    // Action buttons with fixed width container
-                    SizedBox(
-                      width: 144, // Fixed width for 3 buttons (48px each)
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          // Set as active button (or spacer to maintain consistent width)
-                          SizedBox(
-                            width: 48,
-                            child: !connection.isActive
-                                ? IconButton(
-                                    icon: const Icon(Icons.radio_button_unchecked, size: 20),
-                                    tooltip: l10n.setAsActive,
-                                    onPressed: widget.enabled ? () => _setActiveConnection(index) : null,
-                                    padding: EdgeInsets.zero,
-                                    constraints: const BoxConstraints(),
-                                  )
-                                : const SizedBox.shrink(),
-                          ),
-                          
-                          // Edit button
-                          SizedBox(
-                            width: 48,
-                            child: IconButton(
+                      
+                      const SizedBox(width: 8),
+                      
+                      // Action buttons with constrained width
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 144),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            // Set as active button (or spacer to maintain consistent width)
+                            if (!connection.isActive)
+                              IconButton(
+                                icon: const Icon(Icons.radio_button_unchecked, size: 20),
+                                tooltip: l10n.setAsActive,
+                                onPressed: widget.enabled ? () => _setActiveConnection(index) : null,
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+                              )
+                            else
+                              const SizedBox(width: 40),
+                            
+                            // Edit button
+                            IconButton(
                               icon: const Icon(Icons.edit, size: 20),
                               tooltip: l10n.edit,
                               onPressed: widget.enabled
                                   ? () => _showConnectionDialog(connection: connection, index: index)
                                   : null,
                               padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
+                              constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
                             ),
-                          ),
-                          
-                          // Delete button
-                          SizedBox(
-                            width: 48,
-                            child: IconButton(
+                            
+                            // Delete button
+                            IconButton(
                               icon: const Icon(Icons.delete, size: 20),
                               tooltip: isOnlyConnection ? l10n.cannotDeleteLastConnectionTooltip : l10n.delete,
                               onPressed: widget.enabled && !isOnlyConnection
@@ -287,13 +288,13 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
                                   : null,
                               color: isOnlyConnection ? theme.disabledColor : Colors.red,
                               padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
+                              constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );

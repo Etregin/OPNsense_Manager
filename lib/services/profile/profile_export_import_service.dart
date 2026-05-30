@@ -210,10 +210,17 @@ class ProfileExportImportService {
       for (var profileJson in profilesList) {
         if (!profileJson.containsKey('id') ||
             !profileJson.containsKey('name') ||
-            !profileJson.containsKey('host') ||
             !profileJson.containsKey('apiKey') ||
             !profileJson.containsKey('apiSecret')) {
           return 'Invalid profile data structure';
+        }
+        
+        // Check for either old format (host/port) or new format (connections)
+        final hasOldFormat = profileJson.containsKey('host') && profileJson.containsKey('port');
+        final hasNewFormat = profileJson.containsKey('connections');
+        
+        if (!hasOldFormat && !hasNewFormat) {
+          return 'Invalid profile data structure: missing connection information';
         }
 
         final String profileName = profileJson['name'];
