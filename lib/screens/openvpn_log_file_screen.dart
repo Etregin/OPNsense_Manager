@@ -508,54 +508,92 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
       builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Log Entry Details',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () async {
-                        await Clipboard.setData(
-                          ClipboardData(text: details),
-                        );
-
-                        if (context.mounted) {
-                          final l10n = AppLocalizations.of(context)!;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(l10n.logEntryCopied),
+        return DraggableScrollableSheet(
+          initialChildSize: 0.6,
+          minChildSize: 0.3,
+          maxChildSize: 0.9,
+          expand: false,
+          builder: (context, scrollController) {
+            return SafeArea(
+              child: Column(
+                children: [
+                  // Header with drag handle and close button
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(20, 8, 8, 8),
+                    child: Row(
+                      children: [
+                        // Drag handle indicator
+                        Expanded(
+                          child: Center(
+                            child: Container(
+                              width: 40,
+                              height: 4,
+                              margin: const EdgeInsets.only(bottom: 8),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.4),
+                                borderRadius: BorderRadius.circular(2),
+                              ),
                             ),
-                          );
-                        }
-                      },
-                      icon: const Icon(Icons.copy),
-                      tooltip: 'Copy',
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Flexible(
-                  child: SingleChildScrollView(
-                    child: SelectableText(
-                      details,
-                      style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: const Icon(Icons.close),
+                          tooltip: 'Close',
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
+                  // Title and copy button
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Log Entry Details',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () async {
+                            await Clipboard.setData(
+                              ClipboardData(text: details),
+                            );
+
+                            if (context.mounted) {
+                              final l10n = AppLocalizations.of(context)!;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(l10n.logEntryCopied),
+                                ),
+                              );
+                            }
+                          },
+                          icon: const Icon(Icons.copy),
+                          tooltip: 'Copy',
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Scrollable content
+                  Expanded(
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                      child: SelectableText(
+                        details,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
         );
       },
     );

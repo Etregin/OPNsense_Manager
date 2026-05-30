@@ -17,20 +17,47 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 import '../services/demo_api_service.dart';
-import '../services/vpn/wireguard_service.dart';
 import '../widgets/app_drawer.dart';
-import '../widgets/wireguard/wireguard_log_card.dart';
-import '../widgets/wireguard/wireguard_log_detail_sheet.dart';
-import '../utils/constants.dart';
+import '../utils/formatters.dart';
 import 'package:opnsense_manager/l10n/app_localizations.dart';
 
-/// Screen for viewing WireGuard log files with filtering and manual refresh
+/// Model class for WireGuard log entries
+class WireGuardLogEntry {
+  final String timestamp;
+  final String severity;
+  final String processName;
+  final int processPid;
+  final String line;
+  final String? facility;
+  final String? host;
+
+  WireGuardLogEntry({
+    required this.timestamp,
+    required this.severity,
+    required this.processName,
+    required this.processPid,
+    required this.line,
+    this.facility,
+    this.host,
+  });
+
+  factory WireGuardLogEntry.fromJson(Map<String, dynamic> json) {
+    return WireGuardLogEntry(
+      timestamp: json['timestamp'] ?? json['__timestamp__'] ?? '',
+      severity: json['severity'] ?? json['priority'] ?? 'Debug',
+      processName: json['process_name'] ?? json['processname'] ?? '',
+      processPid: int.tryParse(json['process_pid']?.toString() ?? json['pid']?.toString() ?? '0') ?? 0,
+      line: json['line'] ?? json['message'] ?? '',
+      facility: json['facility']?.toString(),
+      host: json['host'] ?? json['hostname'],
+    );
+  }
+}
+
+/// Screen for viewing WireGuard log entries with severity filters.
 class WireGuardLogFileScreen extends StatefulWidget {
   const WireGuardLogFileScreen({super.key});
 
@@ -39,77 +66,75 @@ class WireGuardLogFileScreen extends StatefulWidget {
 }
 
 class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
-  final List<WireGuardLogEntry> _logs = [];
+  List<String> _severityOptions = <String>[];
+
+  static const List<int> _rowCountOptions = <int>[50, 100, 200];
+
+  final Set<String> _selectedSeverities = <String>{};
+  final Set<int> _selectedLogIndexes = <int>{};
+
+  late DemoApiService _apiService;
+
+  List<WireGuardLogEntry> _logs = <WireGuardLogEntry>[];
+  bool _isInitialized = false;
   bool _isLoading = true;
+  bool _isRefreshing = false;
   String? _errorMessage;
-  
-  // Filter state
-  String _selectedSeverity = 'Debug';
-  String _selectedTimeFilter = 'No Limit';
-  int _selectedLimit = 100;
-  
-  // Severity options - keys for localization
-  final List<String> _severityOptions = [
-    'Emergency',
-    'Alert',
-    'Critical',
-    'Error',
-    'Warning',
-    'Notice',
-    'Informational',
-    'Debug',
-  ];
-  
-  // Time filter options - keys for localization
-  final List<String> _timeFilterOptions = [
-    'Last Day',
-    'Last Week',
-    'Last Month',
-    'No Limit',
-  ];
-  
-  // Limit options
-  final List<int> _limitOptions = [50, 100, 200, 500, 1000, 2000];
+  int _currentPage = 1;
+  int _rowCount = 50;
+  String _selectedTimeFilter = 'Last Day';
 
   @override
-  void initState() {
-    super.initState();
-    _loadLogs();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_isInitialized) {
+      final l10n = AppLocalizations.of(context)!;
+      _severityOptions = <String>[
+        l10n.emergency,
+        l10n.alert,
+        l10n.critical,
+        l10n.error,
+        l10n.warning,
+        l10n.notice,
+        l10n.info,
+        l10n.debug,
+      ];
+      _selectedSeverities.addAll([
+        l10n.emergency,
+        l10n.alert,
+        l10n.critical,
+        l10n.error,
+        l10n.warning,
+      ]);
+      _apiService = context.read<DemoApiService>();
+      _isInitialized = true;
+      _loadLogs();
+    }
   }
 
-  Future<void> _loadLogs() async {
+  Future<void> _loadLogs({bool isRefresh = false}) async {
+    if (!mounted) {
+      return;
+    }
+
+    final validFrom = _getValidFromForTimeFilter();
+
     setState(() {
-      _isLoading = true;
+      if (isRefresh) {
+        _isRefreshing = true;
+      } else {
+        _isLoading = true;
+      }
+      _errorMessage = null;
     });
 
     try {
-      // Get the initialized API service from Provider
-      final apiService = context.read<DemoApiService>();
-      final severityLevels = WireGuardService.getSeverityLevels(_selectedSeverity);
+      // Get severity levels for API call
+      final severityLevels = _getSeverityLevelsForApi();
 
-      // Calculate validFrom timestamp based on time filter
-      double? validFrom;
-      if (_selectedTimeFilter != 'No Limit') {
-        int secondsAgo;
-        switch (_selectedTimeFilter) {
-          case 'Last Day':
-            secondsAgo = WireGuardService.lastDaySeconds;
-            break;
-          case 'Last Week':
-            secondsAgo = WireGuardService.lastWeekSeconds;
-            break;
-          case 'Last Month':
-            secondsAgo = WireGuardService.lastMonthSeconds;
-            break;
-          default:
-            secondsAgo = 0;
-        }
-        validFrom = WireGuardService.getTimestampFromNow(secondsAgo);
-      }
-
-      // Fetch logs with filters using the initialized service
-      final logsData = await apiService.getWireGuardLogs(
-        rowCount: _selectedLimit,
+      final logsData = await _apiService.getWireGuardLogs(
+        rowCount: _rowCount,
         severity: severityLevels,
         validFrom: validFrom,
       );
@@ -121,10 +146,10 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
             .toList();
 
         setState(() {
-          _logs.clear();
-          _logs.addAll(parsedLogs);
+          _logs = parsedLogs;
+          _selectedLogIndexes.clear();
           _isLoading = false;
-          _errorMessage = null;
+          _isRefreshing = false;
         });
       }
     } catch (e) {
@@ -132,351 +157,496 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
         setState(() {
           _errorMessage = e.toString();
           _isLoading = false;
+          _isRefreshing = false;
         });
       }
     }
   }
 
-  /// Export logs to a text file and share it
-  Future<void> _exportLogs() async {
+  List<String> _getSeverityLevelsForApi() {
     final l10n = AppLocalizations.of(context)!;
+    final List<String> apiSeverities = [];
     
-    if (_logs.isEmpty) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.noLogsToExport),
-            duration: const Duration(seconds: 2),
-          ),
-        );
+    for (final severity in _selectedSeverities) {
+      if (severity == l10n.emergency) {
+        apiSeverities.add('Emergency');
+      } else if (severity == l10n.alert) {
+        apiSeverities.add('Alert');
+      } else if (severity == l10n.critical) {
+        apiSeverities.add('Critical');
+      } else if (severity == l10n.error) {
+        apiSeverities.add('Error');
+      } else if (severity == l10n.warning) {
+        apiSeverities.add('Warning');
+      } else if (severity == l10n.notice) {
+        apiSeverities.add('Notice');
+      } else if (severity == l10n.info) {
+        apiSeverities.add('Informational');
+      } else if (severity == l10n.debug) {
+        apiSeverities.add('Debug');
       }
+    }
+    
+    return apiSeverities;
+  }
+
+  Future<void> _onRefresh() async {
+    await _loadLogs(isRefresh: true);
+  }
+
+  double? _getValidFromForTimeFilter() {
+    final nowSeconds =
+        DateTime.now().millisecondsSinceEpoch.toDouble() / 1000;
+
+    switch (_selectedTimeFilter) {
+      case 'Last Day':
+        return nowSeconds - const Duration(days: 1).inSeconds;
+      case 'Last Week':
+        return nowSeconds - const Duration(days: 7).inSeconds;
+      case 'Last Month':
+        return nowSeconds - const Duration(days: 31).inSeconds;
+      case 'No Limit':
+      default:
+        return null;
+    }
+  }
+
+  Future<void> _changeTimeFilter(String? value) async {
+    if (value == null || value == _selectedTimeFilter) {
       return;
     }
 
+    setState(() {
+      _selectedTimeFilter = value;
+      _currentPage = 1;
+    });
+
+    await _loadLogs();
+  }
+
+  Future<void> _toggleSeverity(String severity, bool selected) async {
+    setState(() {
+      if (selected) {
+        _selectedSeverities.add(severity);
+      } else if (_selectedSeverities.length > 1) {
+        _selectedSeverities.remove(severity);
+      }
+      _currentPage = 1;
+    });
+
+    await _loadLogs();
+  }
+
+  Future<void> _changeRowCount(int? value) async {
+    if (value == null || value == _rowCount) {
+      return;
+    }
+
+    setState(() {
+      _rowCount = value;
+      _currentPage = 1;
+    });
+
+    await _loadLogs();
+  }
+
+  Future<void> _changePage(int nextPage) async {
+    if (nextPage < 1 || nextPage == _currentPage) {
+      return;
+    }
+
+    setState(() {
+      _currentPage = nextPage;
+    });
+
+    await _loadLogs();
+  }
+
+  Color _severityColor(BuildContext context, String severity) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    switch (severity) {
+      case 'Emergency':
+      case 'Alert':
+      case 'Critical':
+      case 'Error':
+        return colorScheme.error;
+      case 'Warning':
+        return Colors.orange;
+      case 'Notice':
+        return Colors.amber;
+      case 'Info':
+      case 'Informational':
+        return colorScheme.primary;
+      case 'Debug':
+      default:
+        return colorScheme.outline;
+    }
+  }
+
+  String _formatTimestamp(String timestamp) {
     try {
-      // Format the current timestamp
-      final now = DateTime.now();
-      final dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
-      final fileNameFormatter = DateFormat('yyyy-MM-dd_HHmmss');
-      
-      // Build the export content
-      final buffer = StringBuffer();
-      buffer.writeln(l10n.wireguardLogsExport);
-      buffer.writeln('${l10n.generated}: ${dateFormatter.format(now)}');
-      buffer.writeln('${l10n.totalEntries}: ${_logs.length}');
-      buffer.writeln('${l10n.filters}: ${l10n.severity}=$_selectedSeverity, ${l10n.time}=$_selectedTimeFilter, ${l10n.limit}=$_selectedLimit');
-      buffer.writeln('=' * 60);
-      buffer.writeln();
-
-      // Add each log entry
-      for (final log in _logs) {
-        // Parse and format the timestamp
-        final timestamp = DateTime.fromMillisecondsSinceEpoch(
-          (double.parse(log.timestamp) * 1000).toInt(),
-        );
-        final formattedTimestamp = dateFormatter.format(timestamp);
-        
-        buffer.writeln('[$formattedTimestamp] [${log.severity}] ${log.processName} (${log.processPid})');
-        buffer.writeln(log.line);
-        buffer.writeln();
-      }
-
-      // Get temporary directory
-      final directory = await getTemporaryDirectory();
-      final fileName = 'wireguard_logs_${fileNameFormatter.format(now)}.txt';
-      final filePath = '${directory.path}/$fileName';
-      
-      // Write to file
-      final file = File(filePath);
-      await file.writeAsString(buffer.toString());
-
-      // Share the file
-      final result = await SharePlus.instance.share(
-        ShareParams(
-          files: [XFile(filePath)],
-          subject: l10n.wireguardLogsExport,
-          text: l10n.wireguardLogsExportedOn(dateFormatter.format(now)),
-        ),
-      );
-
-      if (mounted && result.status == ShareResultStatus.success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.logsExportedSuccessfully),
-            duration: const Duration(seconds: 2),
-          ),
-        );
-      }
+      final parsed = DateTime.parse(timestamp);
+      return Formatters.formatDateTime(parsed.toLocal());
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.failedToExportLogs(e.toString())),
-            duration: const Duration(seconds: 3),
-            backgroundColor: Colors.red,
-          ),
+      // Try parsing as Unix timestamp
+      try {
+        final unixTimestamp = double.parse(timestamp);
+        final dateTime = DateTime.fromMillisecondsSinceEpoch(
+          (unixTimestamp * 1000).toInt(),
         );
+        return Formatters.formatDateTime(dateTime.toLocal());
+      } catch (_) {
+        return timestamp;
       }
     }
   }
 
-  void _showLogDetails(WireGuardLogEntry log) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => WireGuardLogDetailSheet(log: log),
-    );
+  String _timeFilterLabel() => _selectedTimeFilter;
+
+  int get _displayStart {
+    if (_logs.isEmpty) {
+      return 0;
+    }
+
+    return ((_currentPage - 1) * _rowCount) + 1;
+  }
+
+  int get _displayEnd {
+    if (_logs.isEmpty) {
+      return 0;
+    }
+
+    return _displayStart + _logs.length - 1;
+  }
+
+  int get _totalPages {
+    if (_rowCount <= 0) {
+      return 1;
+    }
+
+    final hasFullPage = _logs.length == _rowCount;
+    if (!hasFullPage && _currentPage == 1) {
+      return 1;
+    }
+
+    return _currentPage + (hasFullPage ? 1 : 0);
+  }
+
+  bool get _isSelectionMode => _selectedLogIndexes.isNotEmpty;
+
+  String _buildLogDetails(WireGuardLogEntry log) {
+    final details = StringBuffer()
+      ..writeln('Timestamp: ${_formatTimestamp(log.timestamp)}')
+      ..writeln('Severity: ${log.severity}')
+      ..writeln('Process: ${log.processName}[${log.processPid}]');
+
+    if (log.facility != null && log.facility!.isNotEmpty) {
+      details.writeln('Facility: ${log.facility}');
+    }
+
+    if (log.host != null && log.host!.isNotEmpty) {
+      details.writeln('Host: ${log.host}');
+    }
+
+    details
+      ..writeln()
+      ..writeln('Message:')
+      ..writeln(log.line);
+
+    return details.toString();
+  }
+
+  Future<void> _copySelectedLogs() async {
+    final selectedLogs = _selectedLogIndexes.toList()..sort();
+    final content = selectedLogs
+        .map((index) => _buildLogDetails(_logs[index]))
+        .join('\n${'-' * 40}\n');
+
+    await Clipboard.setData(ClipboardData(text: content));
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${selectedLogs.length} log entr${selectedLogs.length == 1 ? 'y' : 'ies'} copied'),
+        ),
+      );
+
+      setState(() {
+        _selectedLogIndexes.clear();
+      });
+    }
+  }
+
+  void _toggleLogSelection(int index) {
+    setState(() {
+      if (_selectedLogIndexes.contains(index)) {
+        _selectedLogIndexes.remove(index);
+      } else {
+        _selectedLogIndexes.add(index);
+      }
+    });
+  }
+
+  void _clearSelection() {
+    setState(() {
+      _selectedLogIndexes.clear();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.wireguardLogs),
+        title: Text(
+          _isSelectionMode
+              ? '${_selectedLogIndexes.length} selected'
+              : 'WireGuard Log File',
+        ),
+        leading: _isSelectionMode
+            ? IconButton(
+                onPressed: _clearSelection,
+                icon: const Icon(Icons.close),
+                tooltip: 'Clear selection',
+              )
+            : null,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.download),
-            onPressed: _isLoading || _logs.isEmpty ? null : _exportLogs,
-            tooltip: l10n.exportLogs,
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _isLoading ? null : _loadLogs,
-            tooltip: l10n.refresh,
-          ),
+          if (_isSelectionMode)
+            IconButton(
+              onPressed: _copySelectedLogs,
+              icon: const Icon(Icons.copy),
+              tooltip: 'Copy selected',
+            )
+          else
+            IconButton(
+              onPressed: _isLoading ? null : _onRefresh,
+              icon: const Icon(Icons.refresh),
+              tooltip: 'Refresh',
+            ),
         ],
       ),
       drawer: const AppDrawer(currentRoute: 'wireguard_logs'),
       body: Column(
         children: [
-          _buildFilterRow(),
-          _buildStatusBar(),
-          Expanded(child: _buildBody()),
+          _buildFilters(),
+          _buildSummaryBar(context),
+          Expanded(child: _buildBody(context)),
         ],
       ),
     );
   }
 
-  Widget _buildFilterRow() {
-    final l10n = AppLocalizations.of(context)!;
-    
+  Widget _buildFilters() {
+    return Card(
+      margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      child: ExpansionTile(
+        initiallyExpanded: true,
+        leading: const Icon(Icons.filter_list),
+        title: const Text('Filters'),
+        subtitle: Text(
+          '${_selectedSeverities.length} severities • ${_timeFilterLabel()}',
+        ),
+        childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _severityOptions.map((severity) {
+                final isSelected = _selectedSeverities.contains(severity);
+
+                return FilterChip(
+                  selected: isSelected,
+                  label: Text(severity),
+                  avatar: CircleAvatar(
+                    radius: 6,
+                    backgroundColor: _severityColor(context, severity),
+                  ),
+                  onSelected: (selected) => _toggleSeverity(severity, selected),
+                );
+              }).toList(),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              const Text('Time range'),
+              const SizedBox(width: 12),
+              DropdownButton<String>(
+                value: _selectedTimeFilter,
+                items: const [
+                  DropdownMenuItem<String>(
+                    value: 'Last Day',
+                    child: Text('Last Day'),
+                  ),
+                  DropdownMenuItem<String>(
+                    value: 'Last Week',
+                    child: Text('Last Week'),
+                  ),
+                  DropdownMenuItem<String>(
+                    value: 'Last Month',
+                    child: Text('Last Month'),
+                  ),
+                  DropdownMenuItem<String>(
+                    value: 'No Limit',
+                    child: Text('No Limit'),
+                  ),
+                ],
+                onChanged: _isLoading ? null : _changeTimeFilter,
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              const Text('Rows per page'),
+              const SizedBox(width: 12),
+              DropdownButton<int>(
+                value: _rowCount,
+                items: _rowCountOptions
+                    .map(
+                      (value) => DropdownMenuItem<int>(
+                        value: value,
+                        child: Text('$value'),
+                      ),
+                    )
+                    .toList(),
+                onChanged: _isLoading ? null : _changeRowCount,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSummaryBar(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
-      padding: const EdgeInsets.all(16),
-      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      color: theme.colorScheme.surfaceContainerHighest,
       child: Row(
         children: [
-          // Severity Filter
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.severity,
-                  style: Theme.of(context).textTheme.labelSmall,
-                ),
-                const SizedBox(height: 4),
-                DropdownButtonFormField<String>(
-                  initialValue: _selectedSeverity,
-                  isDense: true,
-                  isExpanded: true,
-                  decoration: const InputDecoration(
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                    border: OutlineInputBorder(),
-                  ),
-                  items: _severityOptions.map((severity) {
-                    final displayText = switch (severity) {
-                      'Emergency' => l10n.severityEmergency,
-                      'Alert' => l10n.severityAlert,
-                      'Critical' => l10n.severityCritical,
-                      'Error' => l10n.severityError,
-                      'Warning' => l10n.severityWarning,
-                      'Notice' => l10n.severityNotice,
-                      'Informational' => l10n.severityInformational,
-                      'Debug' => l10n.severityDebug,
-                      _ => severity,
-                    };
-                    // Use compact version for display
-                    final compactText = switch (severity) {
-                      'Emergency' => l10n.severityEmergencyShort,
-                      'Informational' => l10n.severityInformationalShort,
-                      _ => displayText,
-                    };
-                    return DropdownMenuItem(
-                      value: severity,
-                      child: Text(
-                        compactText,
-                        style: const TextStyle(fontSize: 13),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        _selectedSeverity = value;
-                      });
-                      _loadLogs();
-                    }
-                  },
-                ),
-              ],
+            child: Text(
+              _logs.isEmpty
+                  ? 'Showing 0 entries'
+                  : 'Showing $_displayStart to $_displayEnd',
+              style: theme.textTheme.bodyMedium,
             ),
           ),
-          const SizedBox(width: 8),
-          // Time Filter
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.validFrom,
-                  style: Theme.of(context).textTheme.labelSmall,
-                ),
-                const SizedBox(height: 4),
-                DropdownButtonFormField<String>(
-                  initialValue: _selectedTimeFilter,
-                  isDense: true,
-                  isExpanded: true,
-                  decoration: const InputDecoration(
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                    border: OutlineInputBorder(),
-                  ),
-                  items: _timeFilterOptions.map((timeFilter) {
-                    final displayText = switch (timeFilter) {
-                      'Last Day' => l10n.lastDay,
-                      'Last Week' => l10n.lastWeek,
-                      'Last Month' => l10n.lastMonth,
-                      'No Limit' => l10n.noLimit,
-                      _ => timeFilter,
-                    };
-                    // Use compact version for display
-                    final compactText = switch (timeFilter) {
-                      'Last Day' => l10n.lastDayShort,
-                      'Last Week' => l10n.lastWeekShort,
-                      'Last Month' => l10n.lastMonthShort,
-                      'No Limit' => l10n.noLimitShort,
-                      _ => displayText,
-                    };
-                    return DropdownMenuItem(
-                      value: timeFilter,
-                      child: Text(
-                        compactText,
-                        style: const TextStyle(fontSize: 13),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        _selectedTimeFilter = value;
-                      });
-                      _loadLogs();
-                    }
-                  },
-                ),
-              ],
+          if (_isRefreshing)
+            const SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(strokeWidth: 2),
             ),
-          ),
-          const SizedBox(width: 8),
-          // Limit Filter
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.limit,
-                  style: Theme.of(context).textTheme.labelSmall,
-                ),
-                const SizedBox(height: 4),
-                DropdownButtonFormField<int>(
-                  initialValue: _selectedLimit,
-                  isDense: true,
-                  isExpanded: true,
-                  decoration: const InputDecoration(
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                    border: OutlineInputBorder(),
-                  ),
-                  items: _limitOptions.map((limit) {
-                    return DropdownMenuItem(
-                      value: limit,
-                      child: Text(
-                        '$limit',
-                        style: const TextStyle(fontSize: 13),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        _selectedLimit = value;
-                      });
-                      _loadLogs();
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
   }
 
-  Widget _buildStatusBar() {
-    final l10n = AppLocalizations.of(context)!;
-    
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      color: Theme.of(context).colorScheme.surfaceContainerHighest,
-      child: Row(
-        children: [
-          Text(
-            '${l10n.severity}: $_selectedSeverity',
-            style: TextStyle(
-              fontSize: 12,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            '• $_selectedTimeFilter',
-            style: TextStyle(
-              fontSize: 12,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            '• ${l10n.limit}: $_selectedLimit',
-            style: TextStyle(
-              fontSize: 12,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-          const Spacer(),
-          Text(
-            l10n.entriesCount(_logs.length),
-            style: TextStyle(
-              fontSize: 12,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
+  Future<void> _showLogDetails(WireGuardLogEntry log) async {
+    final details = _buildLogDetails(log);
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
+      builder: (context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.6,
+          minChildSize: 0.3,
+          maxChildSize: 0.9,
+          expand: false,
+          builder: (context, scrollController) {
+            return SafeArea(
+              child: Column(
+                children: [
+                  // Header with drag handle and close button
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(20, 8, 8, 8),
+                    child: Row(
+                      children: [
+                        // Drag handle indicator
+                        Expanded(
+                          child: Center(
+                            child: Container(
+                              width: 40,
+                              height: 4,
+                              margin: const EdgeInsets.only(bottom: 8),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.4),
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: const Icon(Icons.close),
+                          tooltip: 'Close',
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Title and copy button
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Log Entry Details',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () async {
+                            await Clipboard.setData(
+                              ClipboardData(text: details),
+                            );
+
+                            if (context.mounted) {
+                              final l10n = AppLocalizations.of(context)!;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(l10n.logEntryCopied),
+                                ),
+                              );
+                            }
+                          },
+                          icon: const Icon(Icons.copy),
+                          tooltip: 'Copy',
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Scrollable content
+                  Expanded(
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                      child: SelectableText(
+                        details,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
-  Widget _buildBody() {
-    final l10n = AppLocalizations.of(context)!;
-    
+  Widget _buildBody(BuildContext context) {
     if (_isLoading && _logs.isEmpty) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -485,37 +655,32 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
 
     if (_errorMessage != null && _logs.isEmpty) {
       return Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
                 Icons.error_outline,
                 size: 64,
-                color: Colors.red[300],
+                color: Theme.of(context).colorScheme.error,
               ),
               const SizedBox(height: 16),
               Text(
-                l10n.errorLoadingLogs,
+                'Failed to load WireGuard logs',
                 style: Theme.of(context).textTheme.titleLarge,
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Text(
-                  _errorMessage!,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                ),
+              Text(
+                _errorMessage!,
+                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: _loadLogs,
                 icon: const Icon(Icons.refresh),
-                label: Text(l10n.retry),
+                label: const Text('Retry'),
               ),
             ],
           ),
@@ -524,51 +689,180 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
     }
 
     if (_logs.isEmpty) {
-      return Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.article_outlined,
-                size: 64,
-                color: Colors.grey[400],
-              ),
-              const SizedBox(height: 16),
-              Text(
-                l10n.noLogsAvailable,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+      return RefreshIndicator(
+        onRefresh: _onRefresh,
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.5,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.article_outlined,
+                      size: 64,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'No log entries found',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Try adjusting the selected severity or date filters.',
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                l10n.logsMatchingFiltersWillAppearHere,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(AppConstants.standardPadding),
-      itemCount: _logs.length,
-      itemBuilder: (context, index) {
-        final log = _logs[index];
-        return WireGuardLogCard(
-          log: log,
-          onTap: () => _showLogDetails(log),
-        );
-      },
+    return RefreshIndicator(
+      onRefresh: _onRefresh,
+      child: ListView.builder(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+        itemCount: _logs.length + 1,
+        itemBuilder: (context, index) {
+          if (index == _logs.length) {
+            return _buildPaginationControls();
+          }
+
+          final log = _logs[index];
+          final severityColor = _severityColor(context, log.severity);
+          final isSelected = _selectedLogIndexes.contains(index);
+
+          return Card(
+            margin: const EdgeInsets.only(bottom: 12),
+            color: isSelected
+                ? Theme.of(context).colorScheme.primaryContainer
+                : null,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: _isSelectionMode
+                  ? () => _toggleLogSelection(index)
+                  : () => _showLogDetails(log),
+              onLongPress: () => _toggleLogSelection(index),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (_isSelectionMode) ...[
+                      Padding(
+                        padding: const EdgeInsets.only(right: 12, top: 2),
+                        child: Icon(
+                          isSelected
+                              ? Icons.check_circle
+                              : Icons.radio_button_unchecked,
+                          color: isSelected
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.outline,
+                        ),
+                      ),
+                    ],
+                    Container(
+                      width: 12,
+                      height: 12,
+                      margin: const EdgeInsets.only(top: 6),
+                      decoration: BoxDecoration(
+                        color: severityColor,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  '${log.processName}[${log.processPid}]',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Flexible(
+                                child: Text(
+                                  _formatTimestamp(log.timestamp),
+                                  textAlign: TextAlign.end,
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: [
+                              Chip(
+                                label: Text(log.severity),
+                                visualDensity: VisualDensity.compact,
+                                side: BorderSide(color: severityColor),
+                                labelStyle: TextStyle(color: severityColor),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            log.line,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildPaginationControls() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: OutlinedButton.icon(
+              onPressed: _isLoading || _currentPage <= 1
+                  ? null
+                  : () => _changePage(_currentPage - 1),
+              icon: const Icon(Icons.chevron_left),
+              label: const Text('Previous'),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Text('Page $_currentPage of $_totalPages'),
+          ),
+          Expanded(
+            child: OutlinedButton.icon(
+              onPressed: _isLoading || _currentPage >= _totalPages
+                  ? null
+                  : () => _changePage(_currentPage + 1),
+              icon: const Icon(Icons.chevron_right),
+              label: const Text('Next'),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
-
 
