@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../l10n/app_localizations.dart';
 import '../../viewmodels/tailscale_settings_form_state.dart';
 
 /// Widget for general Tailscale settings
@@ -33,20 +34,22 @@ class GeneralSettingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'General Settings',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Text(
+              l10n.generalSettings,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             SwitchListTile(
-              title: const Text('Enable Tailscale'),
-              subtitle: const Text('Enable or disable the Tailscale service'),
+              title: Text(l10n.enableTailscale),
+              subtitle: Text(l10n.enableTailscaleDescription),
               value: formState.enabled,
               onChanged: (value) {
                 formState.enabled = value;

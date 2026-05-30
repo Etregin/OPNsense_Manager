@@ -116,7 +116,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result.errorMessage ?? 'Activation failed'),
+              content: Text(result.errorMessage ?? AppLocalizations.of(context)!.activationFailed),
               backgroundColor: Colors.red,
             ),
           );
@@ -200,9 +200,9 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                   ),
                   const SizedBox(height: 16),
                   SwitchListTile(
-                    title: const Text('Allow self-signed certificates'),
-                    subtitle: const Text(
-                      'WARNING: Disables TLS certificate validation for this profile. Only enable this if you trust the server and intentionally use a self-signed certificate.',
+                    title: Text(l10n.allowSelfSignedCertificates),
+                    subtitle: Text(
+                      l10n.selfSignedCertificatesWarning,
                     ),
                     value: allowSelfSignedCerts,
                     onChanged: useHttps
@@ -216,14 +216,14 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                   const SizedBox(height: 16),
                   ListTile(
                     leading: const Icon(Icons.dns),
-                    title: const Text('DHCP Server Type'),
-                    subtitle: Text(dhcpServerType.displayName),
+                    title: Text(l10n.dhcpServerType),
+                    subtitle: Text(dhcpServerType.getDisplayName(context)),
                     trailing: DropdownButton<DhcpServerType>(
                       value: dhcpServerType,
                       items: DhcpServerType.values.map((type) {
                         return DropdownMenuItem(
                           value: type,
-                          child: Text(type.displayName),
+                          child: Text(type.getDisplayName(context)),
                         );
                       }).toList(),
                       onChanged: (value) {
@@ -239,7 +239,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
-                      dhcpServerType.description,
+                      dhcpServerType.getDescription(context),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: Colors.grey[600],
                             fontStyle: FontStyle.italic,
@@ -293,8 +293,8 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                   // Validate connections
                   if (connections.isEmpty || connections.every((c) => c.host.trim().isEmpty)) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please add at least one connection endpoint'),
+                      SnackBar(
+                        content: Text(l10n.pleaseAddConnectionEndpoint),
                         backgroundColor: Colors.red,
                       ),
                     );
@@ -358,7 +358,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(result.errorMessage ?? 'Failed to save profile'),
+            content: Text(result.errorMessage ?? AppLocalizations.of(context)!.failedToSaveProfile),
             backgroundColor: Colors.red,
           ),
         );
@@ -411,7 +411,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 8),
             action: SnackBarAction(
-              label: 'OK',
+              label: l10n.ok,
               textColor: Colors.white,
               onPressed: () {},
             ),
@@ -420,7 +420,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(result.errorMessage ?? 'Export failed'),
+            content: Text(result.errorMessage ?? l10n.exportFailed),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 5),
           ),
@@ -470,7 +470,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('Failed to delete profile'),
+              content: Text(l10n.failedToDeleteProfile),
               backgroundColor: Colors.red,
             ),
           );

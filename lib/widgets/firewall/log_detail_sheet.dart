@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../screens/firewall_logs_screen.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Bottom sheet widget that displays detailed information about a firewall log entry
 class LogDetailSheet extends StatelessWidget {
@@ -31,6 +32,7 @@ class LogDetailSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final actionColor = _getActionColor(log.action);
 
@@ -73,7 +75,7 @@ class LogDetailSheet extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Log Details',
+                            l10n.logDetails,
                             style: theme.textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
@@ -113,21 +115,21 @@ class LogDetailSheet extends StatelessWidget {
                   children: [
                     // Rule Information Section
                     if (log.ruleDescription.isNotEmpty) ...[
-                      _buildSectionHeader(context, 'Rule Information', Icons.rule),
+                      _buildSectionHeader(context, l10n.ruleInformation, Icons.rule),
                       _buildDetailCard(
                         context,
                         children: [
                           if (log.ruleDescription.isNotEmpty)
                             _buildDetailRow(
                               context,
-                              'Rule Description',
+                              l10n.ruleDescription,
                               log.ruleDescription,
                               icon: Icons.description,
                             ),
                           if (log.ruleId.isNotEmpty)
                             _buildDetailRow(
                               context,
-                              'Rule ID',
+                              l10n.ruleId,
                               log.ruleId,
                               icon: Icons.tag,
                             ),
@@ -137,35 +139,35 @@ class LogDetailSheet extends StatelessWidget {
                     ],
                     
                     // Connection Information Section
-                    _buildSectionHeader(context, 'Connection Information', Icons.swap_horiz),
+                    _buildSectionHeader(context, l10n.connectionInformation, Icons.swap_horiz),
                     _buildDetailCard(
                       context,
                       children: [
                         _buildDetailRow(
                           context,
-                          'Source Address',
+                          l10n.sourceAddress,
                           '${log.sourceIp}:${log.sourcePort}',
                           icon: Icons.upload,
                           copyable: true,
                         ),
                         _buildDetailRow(
                           context,
-                          'Destination Address',
+                          l10n.destinationAddress,
                           '${log.destIp}:${log.destPort}',
                           icon: Icons.download,
                           copyable: true,
                         ),
                         _buildDetailRow(
                           context,
-                          'Protocol',
+                          l10n.protocol,
                           log.protocol.toUpperCase(),
                           icon: Icons.settings_ethernet,
                         ),
                         if (log.direction.isNotEmpty)
                           _buildDetailRow(
                             context,
-                            'Direction',
-                            log.direction == 'in' ? 'Inbound' : 'Outbound',
+                            l10n.direction,
+                            log.direction == 'in' ? l10n.inbound : l10n.outbound,
                             icon: log.direction == 'in' ? Icons.arrow_downward : Icons.arrow_upward,
                           ),
                       ],
@@ -173,7 +175,7 @@ class LogDetailSheet extends StatelessWidget {
                     const SizedBox(height: 16),
                     
                     // Network Information Section
-                    _buildSectionHeader(context, 'Network Information', Icons.network_check),
+                    _buildSectionHeader(context, l10n.networkInformation, Icons.network_check),
                     _buildDetailCard(
                       context,
                       children: [
@@ -185,7 +187,7 @@ class LogDetailSheet extends StatelessWidget {
                         ),
                         _buildDetailRow(
                           context,
-                          'Action',
+                          l10n.action,
                           log.action.toUpperCase(),
                           icon: _getActionIcon(log.action),
                           valueColor: actionColor,
@@ -193,14 +195,14 @@ class LogDetailSheet extends StatelessWidget {
                         if (log.length.isNotEmpty)
                           _buildDetailRow(
                             context,
-                            'Packet Length',
+                            l10n.packetLength,
                             '${log.length} bytes',
                             icon: Icons.data_usage,
                           ),
                         if (log.tcpFlags.isNotEmpty)
                           _buildDetailRow(
                             context,
-                            'TCP Flags',
+                            l10n.tcpFlags,
                             log.tcpFlags,
                             icon: Icons.flag,
                           ),
@@ -209,13 +211,13 @@ class LogDetailSheet extends StatelessWidget {
                     const SizedBox(height: 16),
                     
                     // Additional Information Section
-                    _buildSectionHeader(context, 'Additional Information', Icons.info_outline),
+                    _buildSectionHeader(context, l10n.additionalInformation, Icons.info_outline),
                     _buildDetailCard(
                       context,
                       children: [
                         _buildDetailRow(
                           context,
-                          'Timestamp',
+                          l10n.timestamp,
                           _formatTimestamp(log.timestamp),
                           icon: Icons.access_time,
                           copyable: true,
@@ -230,7 +232,7 @@ class LogDetailSheet extends StatelessWidget {
                         if (log.label.isNotEmpty && log.label != log.ruleDescription)
                           _buildDetailRow(
                             context,
-                            'Label',
+                            l10n.label,
                             log.label,
                             icon: Icons.label,
                           ),
@@ -242,7 +244,7 @@ class LogDetailSheet extends StatelessWidget {
                     ElevatedButton.icon(
                       onPressed: () => _copyAllDetails(context),
                       icon: const Icon(Icons.copy_all),
-                      label: const Text('Copy All Details'),
+                      label: Text(l10n.copyAllDetails),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
@@ -354,63 +356,65 @@ class LogDetailSheet extends StatelessWidget {
   }
 
   void _copyToClipboard(BuildContext context, String text) {
+    final l10n = AppLocalizations.of(context)!;
     Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Copied to clipboard'),
-        duration: Duration(seconds: 1),
+      SnackBar(
+        content: Text(l10n.copiedToClipboard),
+        duration: const Duration(seconds: 1),
       ),
     );
   }
 
   void _copyAllDetails(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final details = StringBuffer();
     
-    details.writeln('=== Log Details ===\n');
+    details.writeln('=== ${l10n.logDetails} ===\n');
     
     if (log.ruleDescription.isNotEmpty) {
-      details.writeln('Rule Information:');
-      details.writeln('  Rule Description: ${log.ruleDescription}');
+      details.writeln('${l10n.ruleInformation}:');
+      details.writeln('  ${l10n.ruleDescription}: ${log.ruleDescription}');
       if (log.ruleId.isNotEmpty) {
-        details.writeln('  Rule ID: ${log.ruleId}');
+        details.writeln('  ${l10n.ruleId}: ${log.ruleId}');
       }
       details.writeln();
     }
     
-    details.writeln('Connection Information:');
-    details.writeln('  Source Address: ${log.sourceIp}:${log.sourcePort}');
-    details.writeln('  Destination Address: ${log.destIp}:${log.destPort}');
-    details.writeln('  Protocol: ${log.protocol.toUpperCase()}');
+    details.writeln('${l10n.connectionInformation}:');
+    details.writeln('  ${l10n.sourceAddress}: ${log.sourceIp}:${log.sourcePort}');
+    details.writeln('  ${l10n.destinationAddress}: ${log.destIp}:${log.destPort}');
+    details.writeln('  ${l10n.protocol}: ${log.protocol.toUpperCase()}');
     if (log.direction.isNotEmpty) {
-      details.writeln('  Direction: ${log.direction == 'in' ? 'Inbound' : 'Outbound'}');
+      details.writeln('  ${l10n.direction}: ${log.direction == 'in' ? l10n.inbound : l10n.outbound}');
     }
     details.writeln();
     
-    details.writeln('Network Information:');
+    details.writeln('${l10n.networkInformation}:');
     details.writeln('  Interface: ${log.interface.toUpperCase()}');
-    details.writeln('  Action: ${log.action.toUpperCase()}');
+    details.writeln('  ${l10n.action}: ${log.action.toUpperCase()}');
     if (log.length.isNotEmpty) {
-      details.writeln('  Packet Length: ${log.length} bytes');
+      details.writeln('  ${l10n.packetLength}: ${log.length} bytes');
     }
     if (log.tcpFlags.isNotEmpty) {
-      details.writeln('  TCP Flags: ${log.tcpFlags}');
+      details.writeln('  ${l10n.tcpFlags}: ${log.tcpFlags}');
     }
     details.writeln();
     
-    details.writeln('Additional Information:');
-    details.writeln('  Timestamp: ${_formatTimestamp(log.timestamp)}');
+    details.writeln('${l10n.additionalInformation}:');
+    details.writeln('  ${l10n.timestamp}: ${_formatTimestamp(log.timestamp)}');
     if (log.reason.isNotEmpty) {
       details.writeln('  Reason: ${log.reason}');
     }
     if (log.label.isNotEmpty && log.label != log.ruleDescription) {
-      details.writeln('  Label: ${log.label}');
+      details.writeln('  ${l10n.label}: ${log.label}');
     }
     
     Clipboard.setData(ClipboardData(text: details.toString()));
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('All details copied to clipboard'),
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: Text(l10n.allDetailsCopiedToClipboard),
+        duration: const Duration(seconds: 2),
       ),
     );
   }

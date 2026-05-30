@@ -17,9 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import '../models/openvpn_route.dart';
 import '../services/opnsense_api_service.dart';
-import '../l10n/app_localizations.dart';
 
 /// Tab widget for displaying OpenVPN routes
 class OpenvpnRoutesTab extends StatefulWidget {
@@ -100,7 +100,7 @@ class _OpenvpnRoutesTabState extends State<OpenvpnRoutesTab> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Error loading routes',
+              l10n.errorLoadingRoutes,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
@@ -132,12 +132,12 @@ class _OpenvpnRoutesTabState extends State<OpenvpnRoutesTab> {
             ),
             const SizedBox(height: 16),
             Text(
-              'No routes configured',
+              l10n.noRoutesConfigured,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Text(
-              'There are no OpenVPN routes configured',
+              l10n.noOpenvpnRoutesConfigured,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
@@ -216,4 +216,4 @@ class _OpenvpnRoutesTabState extends State<OpenvpnRoutesTab> {
   }
 }
 
-// Made with Bob
+

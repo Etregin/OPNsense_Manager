@@ -22,6 +22,7 @@ import '../services/opnsense_api_service.dart';
 import '../viewmodels/wireguard_status_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/wireguard/status_card.dart';
+import 'package:opnsense_manager/l10n/app_localizations.dart';
 
 /// Screen for displaying WireGuard service status
 class WireGuardStatusScreen extends StatefulWidget {
@@ -51,11 +52,13 @@ class _WireGuardStatusScreenState extends State<WireGuardStatusScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     // Return loading indicator if view model is not yet initialized
     if (_viewModel == null) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('WireGuard Status'),
+          title: Text(l10n.wireguardStatus),
         ),
         drawer: const AppDrawer(currentRoute: 'wireguard_status'),
         body: const Center(child: CircularProgressIndicator()),
@@ -72,13 +75,13 @@ class _WireGuardStatusScreenState extends State<WireGuardStatusScreen> {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('WireGuard Status'),
+            title: Text(l10n.wireguardStatus),
             actions: [
               // Refresh button
               IconButton(
                 icon: const Icon(Icons.refresh),
                 onPressed: isLoading ? null : _viewModel!.refresh,
-                tooltip: 'Refresh',
+                tooltip: l10n.refresh,
               ),
             ],
           ),
@@ -97,7 +100,7 @@ class _WireGuardStatusScreenState extends State<WireGuardStatusScreen> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'Error',
+                            l10n.error,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           const SizedBox(height: 8),
@@ -112,7 +115,7 @@ class _WireGuardStatusScreenState extends State<WireGuardStatusScreen> {
                           ElevatedButton.icon(
                             onPressed: _viewModel!.refresh,
                             icon: const Icon(Icons.refresh),
-                            label: const Text('Retry'),
+                            label: Text(l10n.retry),
                           ),
                         ],
                       ),
@@ -129,13 +132,13 @@ class _WireGuardStatusScreenState extends State<WireGuardStatusScreen> {
                               ),
                               const SizedBox(height: 16),
                               Text(
-                                'No WireGuard status data available',
+                                l10n.noWireguardStatusDataAvailable,
                                 style: Theme.of(context).textTheme.titleMedium,
                               ),
                               const SizedBox(height: 8),
-                              const Text(
-                                'Check if WireGuard is configured and running',
-                                style: TextStyle(color: Colors.grey),
+                              Text(
+                                l10n.checkIfWireguardIsConfiguredAndRunning,
+                                style: const TextStyle(color: Colors.grey),
                               ),
                             ],
                           ),

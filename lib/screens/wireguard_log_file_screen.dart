@@ -28,6 +28,7 @@ import '../widgets/app_drawer.dart';
 import '../widgets/wireguard/wireguard_log_card.dart';
 import '../widgets/wireguard/wireguard_log_detail_sheet.dart';
 import '../utils/constants.dart';
+import 'package:opnsense_manager/l10n/app_localizations.dart';
 
 /// Screen for viewing WireGuard log files with filtering and manual refresh
 class WireGuardLogFileScreen extends StatefulWidget {
@@ -47,7 +48,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
   String _selectedTimeFilter = 'No Limit';
   int _selectedLimit = 100;
   
-  // Severity options
+  // Severity options - keys for localization
   final List<String> _severityOptions = [
     'Emergency',
     'Alert',
@@ -59,7 +60,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
     'Debug',
   ];
   
-  // Time filter options
+  // Time filter options - keys for localization
   final List<String> _timeFilterOptions = [
     'Last Day',
     'Last Week',
@@ -138,12 +139,14 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
 
   /// Export logs to a text file and share it
   Future<void> _exportLogs() async {
+    final l10n = AppLocalizations.of(context)!;
+    
     if (_logs.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('No logs to export'),
-            duration: Duration(seconds: 2),
+          SnackBar(
+            content: Text(l10n.noLogsToExport),
+            duration: const Duration(seconds: 2),
           ),
         );
       }
@@ -158,10 +161,10 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
       
       // Build the export content
       final buffer = StringBuffer();
-      buffer.writeln('WireGuard Logs Export');
-      buffer.writeln('Generated: ${dateFormatter.format(now)}');
-      buffer.writeln('Total Entries: ${_logs.length}');
-      buffer.writeln('Filters: Severity=$_selectedSeverity, Time=$_selectedTimeFilter, Limit=$_selectedLimit');
+      buffer.writeln(l10n.wireguardLogsExport);
+      buffer.writeln('${l10n.generated}: ${dateFormatter.format(now)}');
+      buffer.writeln('${l10n.totalEntries}: ${_logs.length}');
+      buffer.writeln('${l10n.filters}: ${l10n.severity}=$_selectedSeverity, ${l10n.time}=$_selectedTimeFilter, ${l10n.limit}=$_selectedLimit');
       buffer.writeln('=' * 60);
       buffer.writeln();
 
@@ -191,16 +194,16 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
       final result = await SharePlus.instance.share(
         ShareParams(
           files: [XFile(filePath)],
-          subject: 'WireGuard Logs Export',
-          text: 'WireGuard logs exported on ${dateFormatter.format(now)}',
+          subject: l10n.wireguardLogsExport,
+          text: l10n.wireguardLogsExportedOn(dateFormatter.format(now)),
         ),
       );
 
       if (mounted && result.status == ShareResultStatus.success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Logs exported successfully'),
-            duration: Duration(seconds: 2),
+          SnackBar(
+            content: Text(l10n.logsExportedSuccessfully),
+            duration: const Duration(seconds: 2),
           ),
         );
       }
@@ -208,7 +211,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to export logs: ${e.toString()}'),
+            content: Text(l10n.failedToExportLogs(e.toString())),
             duration: const Duration(seconds: 3),
             backgroundColor: Colors.red,
           ),
@@ -228,19 +231,21 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('WireGuard Logs'),
+        title: Text(l10n.wireguardLogs),
         actions: [
           IconButton(
             icon: const Icon(Icons.download),
             onPressed: _isLoading || _logs.isEmpty ? null : _exportLogs,
-            tooltip: 'Export Logs',
+            tooltip: l10n.exportLogs,
           ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _isLoading ? null : _loadLogs,
-            tooltip: 'Refresh',
+            tooltip: l10n.refresh,
           ),
         ],
       ),
@@ -256,6 +261,8 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
   }
 
   Widget _buildFilterRow() {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Container(
       padding: const EdgeInsets.all(16),
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
@@ -267,7 +274,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Severity',
+                  l10n.severity,
                   style: Theme.of(context).textTheme.labelSmall,
                 ),
                 const SizedBox(height: 4),
@@ -281,17 +288,27 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
                     border: OutlineInputBorder(),
                   ),
                   items: _severityOptions.map((severity) {
-                    final compactSeverity = switch (severity) {
-                      'Emergency' => 'Emerg',
-                      'Critical' => 'Crit',
-                      'Warning' => 'Warn',
-                      'Informational' => 'Info',
+                    final displayText = switch (severity) {
+                      'Emergency' => l10n.severityEmergency,
+                      'Alert' => l10n.severityAlert,
+                      'Critical' => l10n.severityCritical,
+                      'Error' => l10n.severityError,
+                      'Warning' => l10n.severityWarning,
+                      'Notice' => l10n.severityNotice,
+                      'Informational' => l10n.severityInformational,
+                      'Debug' => l10n.severityDebug,
                       _ => severity,
+                    };
+                    // Use compact version for display
+                    final compactText = switch (severity) {
+                      'Emergency' => l10n.severityEmergencyShort,
+                      'Informational' => l10n.severityInformationalShort,
+                      _ => displayText,
                     };
                     return DropdownMenuItem(
                       value: severity,
                       child: Text(
-                        compactSeverity,
+                        compactText,
                         style: const TextStyle(fontSize: 13),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -316,7 +333,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Valid From',
+                  l10n.validFrom,
                   style: Theme.of(context).textTheme.labelSmall,
                 ),
                 const SizedBox(height: 4),
@@ -330,17 +347,25 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
                     border: OutlineInputBorder(),
                   ),
                   items: _timeFilterOptions.map((timeFilter) {
-                    final compactTimeFilter = switch (timeFilter) {
-                      'Last Day' => '1 Day',
-                      'Last Week' => '1 Week',
-                      'Last Month' => '1 Month',
-                      'No Limit' => 'All',
+                    final displayText = switch (timeFilter) {
+                      'Last Day' => l10n.lastDay,
+                      'Last Week' => l10n.lastWeek,
+                      'Last Month' => l10n.lastMonth,
+                      'No Limit' => l10n.noLimit,
                       _ => timeFilter,
+                    };
+                    // Use compact version for display
+                    final compactText = switch (timeFilter) {
+                      'Last Day' => l10n.lastDayShort,
+                      'Last Week' => l10n.lastWeekShort,
+                      'Last Month' => l10n.lastMonthShort,
+                      'No Limit' => l10n.noLimitShort,
+                      _ => displayText,
                     };
                     return DropdownMenuItem(
                       value: timeFilter,
                       child: Text(
-                        compactTimeFilter,
+                        compactText,
                         style: const TextStyle(fontSize: 13),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -365,7 +390,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Limit',
+                  l10n.limit,
                   style: Theme.of(context).textTheme.labelSmall,
                 ),
                 const SizedBox(height: 4),
@@ -406,13 +431,15 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
   }
 
   Widget _buildStatusBar() {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: Row(
         children: [
           Text(
-            'Severity: $_selectedSeverity',
+            '${l10n.severity}: $_selectedSeverity',
             style: TextStyle(
               fontSize: 12,
               color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -428,7 +455,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
           ),
           const SizedBox(width: 8),
           Text(
-            '• Limit: $_selectedLimit',
+            '• ${l10n.limit}: $_selectedLimit',
             style: TextStyle(
               fontSize: 12,
               color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -436,7 +463,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
           ),
           const Spacer(),
           Text(
-            '${_logs.length} entries',
+            l10n.entriesCount(_logs.length),
             style: TextStyle(
               fontSize: 12,
               color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -448,6 +475,8 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
   }
 
   Widget _buildBody() {
+    final l10n = AppLocalizations.of(context)!;
+    
     if (_isLoading && _logs.isEmpty) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -468,7 +497,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                'Error Loading Logs',
+                l10n.errorLoadingLogs,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 8),
@@ -486,7 +515,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
               ElevatedButton.icon(
                 onPressed: _loadLogs,
                 icon: const Icon(Icons.refresh),
-                label: const Text('Retry'),
+                label: Text(l10n.retry),
               ),
             ],
           ),
@@ -508,14 +537,14 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                'No Logs Available',
+                l10n.noLogsAvailable,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
-                'Logs matching your filters will appear here',
+                l10n.logsMatchingFiltersWillAppearHere,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 12,

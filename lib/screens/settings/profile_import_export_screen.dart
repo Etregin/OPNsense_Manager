@@ -82,7 +82,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 8),
             action: SnackBarAction(
-              label: 'OK',
+              label: l10n.ok,
               textColor: Colors.white,
               onPressed: () {},
             ),
@@ -91,7 +91,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(result.errorMessage ?? 'Export failed'),
+            content: Text(result.errorMessage ?? l10n.exportFailed),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 5),
           ),
@@ -159,9 +159,12 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
           ),
         );
       } else {
+        final errorMessage = result.errors.isNotEmpty
+            ? l10n.importFailed(result.errors.first)
+            : l10n.importFailed('Unknown error');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(result.errors.isNotEmpty ? result.errors.first : 'Import failed'),
+            content: Text(errorMessage),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 5),
           ),
@@ -178,7 +181,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
       padding: const EdgeInsets.all(AppConstants.standardPadding),
       children: [
         SettingsSection(
-          title: 'Import & Export',
+          title: l10n.importAndExport,
           icon: Icons.import_export,
           children: [
             ListTile(
@@ -187,7 +190,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
                 color: Theme.of(context).primaryColor,
               ),
               title: Text(l10n.import),
-              subtitle: const Text('Import profiles from a JSON file'),
+              subtitle: Text(l10n.importProfilesSubtitle),
               trailing: const Icon(Icons.chevron_right),
               onTap: _importProfiles,
             ),
@@ -197,8 +200,8 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
                 Icons.download,
                 color: Theme.of(context).primaryColor,
               ),
-              title: const Text('Export All Profiles'),
-              subtitle: const Text('Export all profiles to a JSON file'),
+              title: Text(l10n.exportAllProfiles),
+              subtitle: Text(l10n.exportAllProfilesSubtitle),
               trailing: const Icon(Icons.chevron_right),
               onTap: _exportProfiles,
             ),
@@ -216,7 +219,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
                     Icon(Icons.info_outline, color: Colors.blue[700]),
                     const SizedBox(width: 8),
                     Text(
-                      'About Import/Export',
+                      l10n.aboutImportExport,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
@@ -225,10 +228,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  '• Export profiles to backup your configuration\n'
-                  '• Choose to include or exclude API credentials\n'
-                  '• Import profiles from backup files\n'
-                  '• Keep both or overwrite existing profiles during import',
+                  l10n.importExportDescription,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],
@@ -248,7 +248,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
                     Icon(Icons.warning_amber, color: Colors.orange[700]),
                     const SizedBox(width: 8),
                     Text(
-                      'Security Warning',
+                      l10n.securityWarning,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: Colors.orange[900],
@@ -258,9 +258,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Exported files with credentials contain sensitive API keys in plain text. '
-                  'Store these files securely and avoid sharing them. '
-                  'Anyone with access to these files can control your OPNsense firewall.',
+                  l10n.exportCredentialsWarning,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.orange[900],
                       ),

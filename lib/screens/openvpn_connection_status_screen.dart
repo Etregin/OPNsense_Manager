@@ -17,11 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/system_info.dart';
 import '../services/opnsense_api_service.dart';
 import '../widgets/app_drawer.dart';
-import '../l10n/app_localizations.dart';
 import 'openvpn_sessions_tab.dart';
 import 'openvpn_routes_tab.dart';
 
@@ -104,17 +104,17 @@ class _OpenvpnConnectionStatusScreenState extends State<OpenvpnConnectionStatusS
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('OpenVPN Connection Status'),
+        title: Text(l10n.openvpnConnectionStatus),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
+          tabs: [
             Tab(
-              text: 'Sessions',
-              icon: Icon(Icons.connect_without_contact),
+              text: l10n.sessions,
+              icon: const Icon(Icons.connect_without_contact),
             ),
             Tab(
-              text: 'Routes',
-              icon: Icon(Icons.route),
+              text: l10n.routes,
+              icon: const Icon(Icons.route),
             ),
           ],
         ),
@@ -147,4 +147,4 @@ class _OpenvpnConnectionStatusScreenState extends State<OpenvpnConnectionStatusS
   }
 }
 
-// Made with Bob
+

@@ -65,4 +65,3 @@ class OpenvpnLogSearchResponse {
   }
 }
 
-// Made with Bob

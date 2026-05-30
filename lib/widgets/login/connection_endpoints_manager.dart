@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/connection_endpoint.dart';
 import '../../utils/common_validators.dart';
 
@@ -85,11 +86,13 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
 
   /// Show delete confirmation dialog
   Future<void> _showDeleteConfirmation(int index) async {
+    final l10n = AppLocalizations.of(context)!;
+    
     if (widget.connections.length <= 1) {
       // Show error - cannot delete last connection
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Cannot delete the last connection endpoint'),
+        SnackBar(
+          content: Text(l10n.cannotDeleteLastConnection),
           backgroundColor: Colors.red,
         ),
       );
@@ -100,21 +103,21 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Connection'),
+        title: Text(l10n.deleteConnection),
         content: Text(
-          'Are you sure you want to delete the connection to "${connection.displayName}"?',
+          l10n.deleteConnectionConfirmation(connection.displayName),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: FilledButton.styleFrom(
               backgroundColor: Colors.red,
             ),
-            child: const Text('Delete'),
+            child: Text(l10n.delete),
           ),
         ],
       ),
@@ -146,6 +149,7 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -158,7 +162,7 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
               Icon(Icons.computer, color: theme.colorScheme.primary),
               const SizedBox(width: 8),
               Text(
-                'Connection Endpoints',
+                l10n.connectionEndpoints,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -167,7 +171,7 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
               IconButton.filledTonal(
                 onPressed: widget.enabled ? () => _showConnectionDialog() : null,
                 icon: const Icon(Icons.add),
-                tooltip: 'Add Connection',
+                tooltip: l10n.addConnection,
               ),
             ],
           ),
@@ -250,7 +254,7 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
                             child: !connection.isActive
                                 ? IconButton(
                                     icon: const Icon(Icons.radio_button_unchecked, size: 20),
-                                    tooltip: 'Set as Active',
+                                    tooltip: l10n.setAsActive,
                                     onPressed: widget.enabled ? () => _setActiveConnection(index) : null,
                                     padding: EdgeInsets.zero,
                                     constraints: const BoxConstraints(),
@@ -263,7 +267,7 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
                             width: 48,
                             child: IconButton(
                               icon: const Icon(Icons.edit, size: 20),
-                              tooltip: 'Edit',
+                              tooltip: l10n.edit,
                               onPressed: widget.enabled
                                   ? () => _showConnectionDialog(connection: connection, index: index)
                                   : null,
@@ -277,7 +281,7 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
                             width: 48,
                             child: IconButton(
                               icon: const Icon(Icons.delete, size: 20),
-                              tooltip: isOnlyConnection ? 'Cannot delete last connection' : 'Delete',
+                              tooltip: isOnlyConnection ? l10n.cannotDeleteLastConnectionTooltip : l10n.delete,
                               onPressed: widget.enabled && !isOnlyConnection
                                   ? () => _showDeleteConfirmation(index)
                                   : null,
@@ -300,8 +304,7 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
         Padding(
           padding: const EdgeInsets.all(16),
           child: Text(
-            'Manage multiple connection endpoints for failover and redundancy. '
-            'The active endpoint will be used for connections.',
+            l10n.connectionEndpointsHelp,
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
@@ -354,9 +357,10 @@ class _ConnectionDialogState extends State<_ConnectionDialog> {
   @override
   Widget build(BuildContext context) {
     final isEditing = widget.endpoint != null;
+    final l10n = AppLocalizations.of(context)!;
     
     return AlertDialog(
-      title: Text(isEditing ? 'Edit Connection' : 'Add Connection'),
+      title: Text(isEditing ? l10n.editConnection : l10n.addConnection),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -366,10 +370,10 @@ class _ConnectionDialogState extends State<_ConnectionDialog> {
               // Host field
               TextFormField(
                 controller: _hostController,
-                decoration: const InputDecoration(
-                  labelText: 'Host',
-                  hintText: '192.168.1.1 or firewall.example.com',
-                  prefixIcon: Icon(Icons.dns),
+                decoration: InputDecoration(
+                  labelText: l10n.host,
+                  hintText: l10n.hostHint,
+                  prefixIcon: const Icon(Icons.dns),
                 ),
                 keyboardType: TextInputType.url,
                 validator: (value) => CommonValidators.combine([
@@ -382,10 +386,10 @@ class _ConnectionDialogState extends State<_ConnectionDialog> {
               // Port field
               TextFormField(
                 controller: _portController,
-                decoration: const InputDecoration(
-                  labelText: 'Port',
-                  hintText: '443',
-                  prefixIcon: Icon(Icons.settings_ethernet),
+                decoration: InputDecoration(
+                  labelText: l10n.port,
+                  hintText: l10n.portHint,
+                  prefixIcon: const Icon(Icons.settings_ethernet),
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -400,10 +404,10 @@ class _ConnectionDialogState extends State<_ConnectionDialog> {
               // Label field (optional)
               TextFormField(
                 controller: _labelController,
-                decoration: const InputDecoration(
-                  labelText: 'Label (Optional)',
-                  hintText: 'Primary, Backup, Office, etc.',
-                  prefixIcon: Icon(Icons.label),
+                decoration: InputDecoration(
+                  labelText: l10n.labelOptional,
+                  hintText: l10n.labelHint,
+                  prefixIcon: const Icon(Icons.label),
                 ),
                 validator: (value) {
                   if (value != null && value.isNotEmpty) {
@@ -420,7 +424,7 @@ class _ConnectionDialogState extends State<_ConnectionDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         FilledButton(
           onPressed: () {
@@ -434,7 +438,7 @@ class _ConnectionDialogState extends State<_ConnectionDialog> {
               });
             }
           },
-          child: Text(isEditing ? 'Save' : 'Add'),
+          child: Text(isEditing ? l10n.save : l10n.add),
         ),
       ],
     );

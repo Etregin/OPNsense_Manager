@@ -140,6 +140,8 @@ class _ProfilesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return DefaultTabController(
       length: 2,
       child: Column(
@@ -147,9 +149,9 @@ class _ProfilesTab extends StatelessWidget {
           TabBar(
             labelColor: Theme.of(context).primaryColor,
             unselectedLabelColor: Colors.grey,
-            tabs: const [
-              Tab(text: 'Manage Profiles'),
-              Tab(text: 'Import/Export'),
+            tabs: [
+              Tab(text: l10n.manageProfiles),
+              Tab(text: l10n.importExport),
             ],
           ),
           Expanded(

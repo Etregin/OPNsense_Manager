@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../viewmodels/tailscale_settings_form_state.dart';
 
 /// Widget for Tailscale DNS settings
@@ -32,6 +33,8 @@ class DnsSettingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -44,8 +47,8 @@ class DnsSettingsCard extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             SwitchListTile(
-              title: const Text('Accept DNS'),
-              subtitle: const Text('Use DNS servers provided by Tailscale'),
+              title: Text(l10n.acceptDns),
+              subtitle: Text(l10n.acceptDnsDescription),
               value: formState.acceptDNS,
               onChanged: (value) {
                 formState.acceptDNS = value;

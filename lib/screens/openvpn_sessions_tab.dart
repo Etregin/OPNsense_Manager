@@ -17,9 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import '../models/openvpn_session.dart';
 import '../services/opnsense_api_service.dart';
-import '../l10n/app_localizations.dart';
 
 /// Tab widget for displaying OpenVPN sessions
 class OpenvpnSessionsTab extends StatefulWidget {
@@ -89,22 +89,25 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
       
       if (result['result'] == 'ok') {
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Service started successfully'),
+            SnackBar(
+              content: Text(l10n.serviceStartedSuccessfully),
               backgroundColor: Colors.green,
             ),
           );
           await _loadSessions();
         }
       } else {
-        throw Exception('Failed to start service');
+        if (!mounted) return;
+        throw Exception(AppLocalizations.of(context)!.failedToStartService);
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error starting service: ${e.toString()}'),
+            content: Text(l10n.errorStartingService(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -128,22 +131,25 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
       
       if (result['result'] == 'ok') {
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Service stopped successfully'),
+            SnackBar(
+              content: Text(l10n.serviceStoppedSuccessfully),
               backgroundColor: Colors.green,
             ),
           );
           await _loadSessions();
         }
       } else {
-        throw Exception('Failed to stop service');
+        if (!mounted) return;
+        throw Exception(AppLocalizations.of(context)!.failedToStopService);
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error stopping service: ${e.toString()}'),
+            content: Text(l10n.errorStoppingService(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -167,9 +173,10 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
       
       if (result['result'] == 'ok') {
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Service restarted successfully'),
+            SnackBar(
+              content: Text(l10n.serviceRestartedSuccessfully),
               backgroundColor: Colors.green,
             ),
           );
@@ -180,9 +187,10 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error restarting service: ${e.toString()}'),
+            content: Text(l10n.errorRestartingService(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -418,4 +426,4 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
   }
 }
 
-// Made with Bob
+

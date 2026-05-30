@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/openvpn_dropdown_option.dart';
 
 /// Role selector widget for OpenVPN instances
@@ -37,28 +38,29 @@ class OpenvpnRoleSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Role',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            Text(
+              l10n.role,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
             SegmentedButton<String>(
-              segments: const [
+              segments: [
                 ButtonSegment<String>(
                   value: 'server',
-                  label: Text('Server'),
-                  icon: Icon(Icons.dns),
+                  label: Text(l10n.server),
+                  icon: const Icon(Icons.dns),
                 ),
                 ButtonSegment<String>(
                   value: 'client',
-                  label: Text('Client'),
-                  icon: Icon(Icons.vpn_lock),
+                  label: Text(l10n.client),
+                  icon: const Icon(Icons.vpn_lock),
                 ),
               ],
               selected: {value},

@@ -112,7 +112,7 @@ class ProfileCard extends StatelessWidget {
                 children: [
                   const Icon(Icons.download, size: 20),
                   const SizedBox(width: 12),
-                  const Text('Export This Profile'),
+                  Text(l10n.exportThisProfile),
                 ],
               ),
             ),

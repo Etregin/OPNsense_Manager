@@ -43,7 +43,7 @@ class FirewallNavigationSection extends StatelessWidget {
 
     return ExpansionNavigationTile(
       icon: Icons.security,
-      title: const Text('Firewall'),
+      title: Text(l10n.firewall),
       initiallyExpanded: isExpanded,
       onExpansionChanged: onExpansionChanged,
       children: [
@@ -55,7 +55,7 @@ class FirewallNavigationSection extends StatelessWidget {
           contentPadding: const EdgeInsets.only(left: 72, right: 16),
         ),
         NavigationTile(
-          title: 'Aliases',
+          title: l10n.aliases,
           currentRoute: currentRoute,
           targetRoute: 'firewall_aliases',
           destination: const FirewallAliasesScreen(),

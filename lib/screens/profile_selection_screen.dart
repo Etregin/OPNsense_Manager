@@ -83,7 +83,8 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
 
       // Validate that profile has connections
       if (profile.connections.isEmpty) {
-        throw Exception('Profile has no connection endpoints configured');
+        final l10n = AppLocalizations.of(context)!;
+        throw Exception(l10n.profileHasNoEndpoints);
       }
 
       // Test each connection endpoint with proper progress messages
@@ -136,11 +137,9 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
       }
       
       if (workingConnection == null) {
-        if (mounted) {
-          final l10n = AppLocalizations.of(context)!;
-          throw Exception(l10n.unableToConnectToAnyEndpoint);
-        }
-        throw Exception('Unable to connect to any configured endpoints');
+        if (!mounted) return;
+        final l10n = AppLocalizations.of(context)!;
+        throw Exception(l10n.unableToConnectToAnyEndpoint);
       }
       
       // Update profile with working connection
@@ -170,8 +169,9 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
       
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         setState(() {
-          _errorMessage = 'Connection failed: ${e.toString()}';
+          _errorMessage = l10n.connectionFailedError(e.toString());
           _isLoading = false;
           _connectionStatus = null;
         });
@@ -378,7 +378,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                       child: OutlinedButton.icon(
                         onPressed: _isLoading ? null : _tryDemo,
                         icon: const Icon(Icons.play_circle_outline),
-                        label: const Text('Try Demo Mode'),
+                        label: Text(l10n.tryDemoMode),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: isDark
                               ? Theme.of(context).primaryColor
@@ -504,7 +504,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
-                      'DEMO',
+                      l10n.demo,
                       style: TextStyle(
                         color: Colors.orange.shade900,
                         fontSize: 10,
@@ -586,7 +586,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
     } else if (difference.inDays < 1) {
       return l10n.hoursAgo(difference.inHours.toString());
     } else {
-      return l10n.daysAgo(difference.inDays.toString());
+      return l10n.daysAgo(difference.inDays);
     }
   }
 }

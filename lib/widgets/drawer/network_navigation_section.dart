@@ -96,7 +96,7 @@ class _NetworkNavigationSectionState extends State<NetworkNavigationSection> {
         if (!_loadingWolStatus && _wolPluginAvailable)
           NavigationTile(
             icon: Icons.power_settings_new,
-            title: 'Wake-on-LAN',
+            title: l10n.wakeOnLan,
             currentRoute: widget.currentRoute,
             targetRoute: 'wol',
             destination: const WolScreen(),

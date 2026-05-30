@@ -122,9 +122,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // Validate that we have at least one connection with a valid host
     if (_connections.isEmpty || _connections.every((c) => c.host.trim().isEmpty)) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please add at least one connection endpoint'),
+        SnackBar(
+          content: Text(l10n.addConnectionEndpoint),
           backgroundColor: Colors.red,
         ),
       );
@@ -221,9 +222,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // Validate that we have at least one connection with a valid host
     if (_connections.isEmpty || _connections.every((c) => c.host.trim().isEmpty)) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please add at least one connection endpoint'),
+        SnackBar(
+          content: Text(l10n.addConnectionEndpoint),
           backgroundColor: Colors.red,
         ),
       );
@@ -273,9 +275,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // Validate that we have at least one connection with a valid host
     if (_connections.isEmpty || _connections.every((c) => c.host.trim().isEmpty)) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please add at least one connection endpoint'),
+        SnackBar(
+          content: Text(l10n.addConnectionEndpoint),
           backgroundColor: Colors.red,
         ),
       );
@@ -379,9 +382,10 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (e) {
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Import failed: ${e.toString()}'),
+          content: Text(l10n.importFailed(e.toString())),
           backgroundColor: Colors.red,
         ),
       );

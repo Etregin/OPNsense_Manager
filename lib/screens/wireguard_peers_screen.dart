@@ -83,9 +83,12 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
     try {
       await _viewModel.togglePeer(peer.uuid, !peer.isEnabled);
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Peer ${peer.isEnabled ? "disabled" : "enabled"} successfully'),
+            content: Text(peer.isEnabled
+                ? l10n.peerDisabledSuccessfully
+                : l10n.peerEnabledSuccessfully),
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 2),
           ),
@@ -93,9 +96,10 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to toggle peer: ${e.toString()}'),
+            content: Text(l10n.failedToTogglePeer(e.toString())),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 3),
           ),
@@ -110,10 +114,8 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Peer'),
-        content: Text(
-          'Are you sure you want to delete peer "${peer.name}"? This action cannot be undone.',
-        ),
+        title: Text(l10n.deletePeer),
+        content: Text(l10n.deletePeerConfirmation(peer.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -134,18 +136,20 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
       try {
         await _viewModel.deletePeer(peer.uuid);
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Peer deleted successfully'),
+            SnackBar(
+              content: Text(l10n.peerDeletedSuccessfully),
               backgroundColor: Colors.green,
             ),
           );
         }
       } catch (e) {
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to delete peer: ${e.toString()}'),
+              content: Text(l10n.failedToDeletePeer(e.toString())),
               backgroundColor: Colors.red,
             ),
           );
@@ -166,25 +170,25 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildDetailRow('Enabled', peer.isEnabled ? 'Yes' : 'No'),
+              _buildDetailRow(l10n.enabled, peer.isEnabled ? l10n.yes : l10n.no),
               if (peer.serverName != null && peer.serverName!.isNotEmpty)
-                _buildDetailRow('Server', peer.serverName!),
+                _buildDetailRow(l10n.server, peer.serverName!),
               if (peer.tunneladdress != null && peer.tunneladdress!.isNotEmpty)
-                _buildDetailRow('Tunnel Address', peer.tunneladdress!),
+                _buildDetailRow(l10n.tunnelAddress, peer.tunneladdress!),
               if (peer.serveraddress != null && peer.serveraddress!.isNotEmpty)
-                _buildDetailRow('Server Address', peer.serveraddress!),
+                _buildDetailRow(l10n.serverAddress, peer.serveraddress!),
               if (peer.serverport != null && peer.serverport!.isNotEmpty)
-                _buildDetailRow('Server Port', peer.serverport!),
+                _buildDetailRow(l10n.serverPort, peer.serverport!),
               if (peer.endpoint != null && peer.endpoint!.isNotEmpty)
-                _buildDetailRow('Endpoint', peer.endpoint!),
+                _buildDetailRow(l10n.endpoint, peer.endpoint!),
               if (peer.keepaliveInterval != null)
-                _buildDetailRow('Keepalive', '${peer.keepaliveInterval}s'),
+                _buildDetailRow(l10n.keepalive, '${peer.keepaliveInterval}s'),
               if (peer.hasPresharedKey)
-                _buildDetailRow('Pre-shared Key', 'Configured'),
+                _buildDetailRow(l10n.presharedKeyOptional, l10n.configured),
               const Divider(),
-              const Text(
-                'Public Key:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              Text(
+                l10n.publicKeyColon,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               if (peer.pubkey != null)
@@ -257,7 +261,7 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('WireGuard Peers'),
+            title: Text(l10n.wireguardPeers),
             actions: [
               IconButton(
                 icon: const Icon(Icons.refresh),
@@ -277,7 +281,7 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
                 padding: const EdgeInsets.all(16.0),
                 child: TextField(
                   decoration: InputDecoration(
-                    hintText: 'Search peers...',
+                    hintText: l10n.searchPeers,
                     prefixIcon: const Icon(Icons.search),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -333,8 +337,8 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
                                     const SizedBox(height: 16),
                                     Text(
                                       _viewModel.searchQuery.isNotEmpty
-                                          ? 'No peers match your search'
-                                          : 'No WireGuard peers configured',
+                                          ? l10n.noPeersMatchSearch
+                                          : l10n.noWireguardPeersConfigured,
                                       style: Theme.of(context)
                                           .textTheme
                                           .titleMedium,

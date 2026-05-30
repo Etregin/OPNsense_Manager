@@ -27,6 +27,7 @@ import '../widgets/wireguard/list_manager_card.dart';
 import '../widgets/wireguard/peer_selector_dialog.dart';
 import '../utils/common_validators.dart';
 import '../utils/wireguard_validators.dart';
+import 'package:opnsense_manager/l10n/app_localizations.dart';
 
 /// Refactored form screen for creating/editing WireGuard servers
 class WireGuardServerFormScreen extends StatefulWidget {
@@ -128,10 +129,10 @@ class _WireGuardServerFormScreenState
         _privateKeyController.text = keyPair.privateKey;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Keys generated successfully'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.keysGeneratedSuccessfully),
           backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
         ),
       );
     } else if (_viewModel.errorMessage != null) {
@@ -146,12 +147,14 @@ class _WireGuardServerFormScreenState
   }
 
   Future<void> _saveServer() async {
+    final l10n = AppLocalizations.of(context)!;
+    
     if (!_formKey.currentState!.validate()) return;
 
     if (_tunnelAddresses.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('At least one tunnel address is required'),
+        SnackBar(
+          content: Text(l10n.atLeastOneTunnelAddressRequired),
           backgroundColor: Colors.red,
         ),
       );
@@ -182,8 +185,8 @@ class _WireGuardServerFormScreenState
           SnackBar(
             content: Text(
               _viewModel.isEditing
-                  ? 'Server updated successfully'
-                  : 'Server created successfully',
+                  ? l10n.serverUpdatedSuccessfully
+                  : l10n.serverCreatedSuccessfully,
             ),
             backgroundColor: Colors.green,
           ),
@@ -193,7 +196,7 @@ class _WireGuardServerFormScreenState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              _viewModel.errorMessage ?? 'Failed to save server',
+              _viewModel.errorMessage ?? l10n.failedToSaveServer,
             ),
             backgroundColor: Colors.red,
           ),
@@ -203,16 +206,18 @@ class _WireGuardServerFormScreenState
   }
 
   Future<void> _addTunnelAddress() async {
+    final l10n = AppLocalizations.of(context)!;
+    
     final address = await AddItemDialog.show(
       context: context,
-      title: 'Add Tunnel Address',
-      labelText: 'Tunnel Address (CIDR)',
+      title: l10n.addTunnelAddress,
+      labelText: l10n.tunnelAddressCidr,
       hintText: '10.10.10.1/24',
-      helperText: 'Example: 10.10.10.1/24 or fd00::1/64',
+      helperText: l10n.exampleTunnelAddress,
       validator: (value) {
-        if (value.isEmpty) return 'Address is required';
+        if (value.isEmpty) return l10n.addressIsRequired;
         if (!WireGuardValidators.isValidCIDR(value)) {
-          return 'Invalid CIDR notation';
+          return l10n.invalidCidrNotation;
         }
         return null;
       },
@@ -224,16 +229,18 @@ class _WireGuardServerFormScreenState
   }
 
   Future<void> _addDnsServer() async {
+    final l10n = AppLocalizations.of(context)!;
+    
     final dns = await AddItemDialog.show(
       context: context,
-      title: 'Add DNS Server',
-      labelText: 'DNS Server IP',
+      title: l10n.addDnsServer,
+      labelText: l10n.dnsServerIp,
       hintText: '8.8.8.8',
       validator: (value) {
-        if (value.isEmpty) return 'DNS server is required';
+        if (value.isEmpty) return l10n.dnsServerIsRequired;
         if (!WireGuardValidators.isValidIPv4(value) &&
             !WireGuardValidators.isValidIPv6(value)) {
-          return 'Invalid IP address';
+          return l10n.invalidIpAddress;
         }
         return null;
       },
@@ -258,10 +265,12 @@ class _WireGuardServerFormScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _viewModel.isEditing ? 'Edit WireGuard Server' : 'New WireGuard Server',
+          _viewModel.isEditing ? l10n.editWireguardServer : l10n.newWireguardServer,
         ),
       ),
       body: LoadingOverlay(
@@ -274,12 +283,12 @@ class _WireGuardServerFormScreenState
               // Name
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                  hintText: 'My WireGuard Server',
-                  prefixIcon: Icon(Icons.label),
+                decoration: InputDecoration(
+                  labelText: l10n.name,
+                  hintText: l10n.myWireguardServer,
+                  prefixIcon: const Icon(Icons.label),
                 ),
-                validator: (value) => CommonValidators.required(value, fieldName: 'Name'),
+                validator: (value) => CommonValidators.required(value, fieldName: l10n.name),
                 enabled: !_viewModel.isLoading,
               ),
               const SizedBox(height: 16),
@@ -287,11 +296,11 @@ class _WireGuardServerFormScreenState
               // Port
               TextFormField(
                 controller: _portController,
-                decoration: const InputDecoration(
-                  labelText: 'Port',
+                decoration: InputDecoration(
+                  labelText: l10n.port,
                   hintText: '51820',
-                  prefixIcon: Icon(Icons.settings_ethernet),
-                  helperText: 'UDP port (default: 51820)',
+                  prefixIcon: const Icon(Icons.settings_ethernet),
+                  helperText: l10n.udpPortDefault51820,
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -312,23 +321,23 @@ class _WireGuardServerFormScreenState
 
               // Tunnel Addresses
               ListManagerCard(
-                title: 'Tunnel Addresses',
+                title: l10n.tunnelAddresses,
                 items: _tunnelAddresses,
                 onAdd: _addTunnelAddress,
                 onRemove: (address) => setState(() => _tunnelAddresses.remove(address)),
                 isLoading: _viewModel.isLoading,
-                emptyMessage: 'No tunnel addresses configured',
+                emptyMessage: l10n.noTunnelAddressesConfigured,
               ),
               const SizedBox(height: 24),
 
               // MTU
               TextFormField(
                 controller: _mtuController,
-                decoration: const InputDecoration(
-                  labelText: 'MTU (Optional)',
+                decoration: InputDecoration(
+                  labelText: l10n.mtuOptional,
                   hintText: '1420',
-                  prefixIcon: Icon(Icons.settings),
-                  helperText: 'Maximum Transmission Unit (576-9000)',
+                  prefixIcon: const Icon(Icons.settings),
+                  helperText: l10n.maximumTransmissionUnit,
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -339,22 +348,22 @@ class _WireGuardServerFormScreenState
 
               // DNS Servers
               ListManagerCard(
-                title: 'DNS Servers (Optional)',
+                title: l10n.dnsServersOptional,
                 items: _dnsServers,
                 onAdd: _addDnsServer,
                 onRemove: (dns) => setState(() => _dnsServers.remove(dns)),
                 isLoading: _viewModel.isLoading,
-                emptyMessage: 'No DNS servers configured',
+                emptyMessage: l10n.noDnsServersConfigured,
               ),
               const SizedBox(height: 16),
 
               // Gateway
               TextFormField(
                 controller: _gatewayController,
-                decoration: const InputDecoration(
-                  labelText: 'Gateway (Optional)',
+                decoration: InputDecoration(
+                  labelText: l10n.gatewayOptional,
                   hintText: '10.10.10.1',
-                  prefixIcon: Icon(Icons.router),
+                  prefixIcon: const Icon(Icons.router),
                 ),
                 enabled: !_viewModel.isLoading,
               ),
@@ -363,16 +372,16 @@ class _WireGuardServerFormScreenState
               // CARP Depend On
               DropdownButtonFormField<String>(
                 initialValue: _carpDependOn.isEmpty ? '' : _carpDependOn,
-                decoration: const InputDecoration(
-                  labelText: 'Depend on (CARP)',
-                  hintText: 'Select VHID',
-                  prefixIcon: Icon(Icons.link),
-                  helperText: 'CARP VHID to depend on',
+                decoration: InputDecoration(
+                  labelText: l10n.dependOnCarp,
+                  hintText: l10n.selectVhid,
+                  prefixIcon: const Icon(Icons.link),
+                  helperText: l10n.carpVhidToDepend,
                 ),
                 items: [
-                  const DropdownMenuItem<String>(
+                  DropdownMenuItem<String>(
                     value: '',
-                    child: Text('None'),
+                    child: Text(l10n.none),
                   ),
                   ..._viewModel.carpVipOptions.map((option) => DropdownMenuItem<String>(
                         value: option.vhid,
@@ -386,14 +395,14 @@ class _WireGuardServerFormScreenState
               const SizedBox(height: 16),
 
               // Peers
-              const Text(
-                'Authorized Peers',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              Text(
+                l10n.authorizedPeers,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               Card(
                 child: ListTile(
-                  title: Text('${_selectedPeerUuids.length} peer(s) selected'),
+                  title: Text(l10n.peersSelected(_selectedPeerUuids.length)),
                   trailing: const Icon(Icons.arrow_forward_ios),
                   onTap: _viewModel.isLoading || _viewModel.loadingPeers
                       ? null
@@ -404,24 +413,24 @@ class _WireGuardServerFormScreenState
 
               // Switches
               SwitchListTile(
-                title: const Text('Disable Routes'),
-                subtitle: const Text('Prevent automatic route installation'),
+                title: Text(l10n.disableRoutes),
+                subtitle: Text(l10n.preventAutomaticRouteInstallation),
                 value: _disableRoutes,
                 onChanged: _viewModel.isLoading
                     ? null
                     : (value) => setState(() => _disableRoutes = value),
               ),
               SwitchListTile(
-                title: const Text('Debug'),
-                subtitle: const Text('Enable debug logging'),
+                title: Text(l10n.debug),
+                subtitle: Text(l10n.enableDebugLogging),
                 value: _debug,
                 onChanged: _viewModel.isLoading
                     ? null
                     : (value) => setState(() => _debug = value),
               ),
               SwitchListTile(
-                title: const Text('Enabled'),
-                subtitle: const Text('Server will be active when enabled'),
+                title: Text(l10n.enabled),
+                subtitle: Text(l10n.serverWillBeActiveWhenEnabled),
                 value: _enabled,
                 onChanged: _viewModel.isLoading
                     ? null
@@ -436,7 +445,7 @@ class _WireGuardServerFormScreenState
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: Text(
-                  _viewModel.isEditing ? 'Update Server' : 'Create Server',
+                  _viewModel.isEditing ? l10n.updateServer : l10n.createServer,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../l10n/app_localizations.dart';
 import '../models/tailscale_settings.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
@@ -70,9 +71,10 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
         if (response['result'] == 'saved') {
           await _loadSubnets();
           if (mounted) {
+            final l10n = AppLocalizations.of(context)!;
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Subnet added successfully'),
+              SnackBar(
+                content: Text(l10n.subnetAddedSuccessfully),
                 backgroundColor: Colors.green,
               ),
             );
@@ -82,9 +84,10 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
         }
       } catch (e) {
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Error adding subnet: $e'),
+              content: Text(l10n.errorAddingSubnet(e.toString())),
               backgroundColor: Colors.red,
             ),
           );
@@ -114,9 +117,10 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
         if (response['result'] == 'saved') {
           await _loadSubnets();
           if (mounted) {
+            final l10n = AppLocalizations.of(context)!;
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Subnet updated successfully'),
+              SnackBar(
+                content: Text(l10n.subnetUpdatedSuccessfully),
                 backgroundColor: Colors.green,
               ),
             );
@@ -126,9 +130,10 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
         }
       } catch (e) {
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Error updating subnet: $e'),
+              content: Text(l10n.errorUpdatingSubnet(e.toString())),
               backgroundColor: Colors.red,
             ),
           );
@@ -145,21 +150,24 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
 
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Subnet'),
-        content: Text('Are you sure you want to delete subnet $subnet?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
+      builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
+        return AlertDialog(
+          title: Text(l10n.deleteSubnet),
+          content: Text(l10n.deleteSubnetConfirmation(subnet)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(l10n.cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: Text(l10n.delete),
+            ),
+          ],
+        );
+      },
     );
 
     if (confirmed == true) {
@@ -172,9 +180,10 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
         if (response['result'] == 'saved' || response['result'] == 'deleted') {
           await _loadSubnets();
           if (mounted) {
+            final l10n = AppLocalizations.of(context)!;
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Subnet deleted successfully'),
+              SnackBar(
+                content: Text(l10n.subnetDeletedSuccessfully),
                 backgroundColor: Colors.green,
               ),
             );
@@ -184,9 +193,10 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
         }
       } catch (e) {
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Error deleting subnet: $e'),
+              content: Text(l10n.errorDeletingSubnet(e.toString())),
               backgroundColor: Colors.red,
             ),
           );
@@ -197,9 +207,10 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tailscale Subnets'),
+        title: Text(l10n.tailscaleSubnets),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -208,11 +219,11 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Error: $_error'),
+                      Text('${l10n.error}: $_error'),
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: _loadSubnets,
-                        child: const Text('Retry'),
+                        child: Text(l10n.retry),
                       ),
                     ],
                   ),
@@ -222,12 +233,12 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text('No subnets configured'),
+                          Text(l10n.noSubnetsConfigured),
                           const SizedBox(height: 16),
                           ElevatedButton.icon(
                             onPressed: _addSubnet,
                             icon: const Icon(Icons.add),
-                            label: const Text('Add Subnet'),
+                            label: Text(l10n.addSubnet),
                           ),
                         ],
                       ),
@@ -310,8 +321,9 @@ class _SubnetDialogState extends State<_SubnetDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return AlertDialog(
-      title: Text(widget.subnet == null ? 'Add Subnet' : 'Edit Subnet'),
+      title: Text(widget.subnet == null ? l10n.addSubnet : l10n.editSubnet),
       content: Form(
         key: _formKey,
         child: Column(
@@ -319,20 +331,20 @@ class _SubnetDialogState extends State<_SubnetDialog> {
           children: [
             TextFormField(
               controller: _subnetController,
-              decoration: const InputDecoration(
-                labelText: 'Subnet (CIDR)',
+              decoration: InputDecoration(
+                labelText: l10n.subnetCidr,
                 hintText: '192.168.1.0/24',
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a subnet';
+                  return l10n.pleaseEnterSubnet;
                 }
                 // Basic CIDR validation
                 final cidrRegex = RegExp(
                   r'^(\d{1,3}\.){3}\d{1,3}/\d{1,2}$',
                 );
                 if (!cidrRegex.hasMatch(value)) {
-                  return 'Invalid CIDR format';
+                  return l10n.invalidCidrFormat;
                 }
                 return null;
               },
@@ -340,8 +352,8 @@ class _SubnetDialogState extends State<_SubnetDialog> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description (optional)',
+              decoration: InputDecoration(
+                labelText: l10n.descriptionOptional,
               ),
             ),
           ],
@@ -350,7 +362,7 @@ class _SubnetDialogState extends State<_SubnetDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         ElevatedButton(
           onPressed: () {
@@ -367,7 +379,7 @@ class _SubnetDialogState extends State<_SubnetDialog> {
               );
             }
           },
-          child: Text(widget.subnet == null ? 'Add' : 'Save'),
+          child: Text(widget.subnet == null ? l10n.add : l10n.save),
         ),
       ],
     );

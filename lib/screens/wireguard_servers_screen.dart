@@ -122,9 +122,12 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
       await apiService.toggleWireGuardServer(server.uuid, !server.isEnabled);
 
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Server ${server.isEnabled ? "disabled" : "enabled"} successfully'),
+            content: Text(server.isEnabled
+                ? l10n.serverDisabledSuccessfully
+                : l10n.serverEnabledSuccessfully),
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 2),
           ),
@@ -133,9 +136,10 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to toggle server: ${e.toString()}'),
+            content: Text(l10n.failedToToggleServer(e.toString())),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 3),
           ),
@@ -156,10 +160,8 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(l10n.deleteRule),
-        content: Text(
-          'Are you sure you want to delete server "${server.name}"? This action cannot be undone.',
-        ),
+        title: Text(l10n.delete),
+        content: Text(l10n.deleteServerConfirmation(server.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -182,9 +184,10 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
         await apiService.deleteWireGuardServer(server.uuid);
 
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Server deleted successfully'),
+            SnackBar(
+              content: Text(l10n.serverDeletedSuccessfully),
               backgroundColor: Colors.green,
             ),
           );
@@ -192,9 +195,10 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
         }
       } catch (e) {
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to delete server: ${e.toString()}'),
+              content: Text(l10n.failedToDeleteServer(e.toString())),
               backgroundColor: Colors.red,
             ),
           );
@@ -215,20 +219,20 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildDetailRow('Port', server.port.toString()),
-              _buildDetailRow('Enabled', server.isEnabled ? 'Yes' : 'No'),
-              _buildDetailRow('Public Key', '${server.pubkey.substring(0, 20)}...'),
+              _buildDetailRow(l10n.port, server.port.toString()),
+              _buildDetailRow(l10n.enabled, server.isEnabled ? l10n.yes : l10n.no),
+              _buildDetailRow(l10n.publicKey, l10n.publicKeyShort(server.pubkey.substring(0, 20))),
               if (server.mtuValue != null)
                 _buildDetailRow('MTU', server.mtuValue.toString()),
               if (server.dnsList.isNotEmpty)
-                _buildDetailRow('DNS Servers', server.dnsList.join(', ')),
+                _buildDetailRow(l10n.dnsServers, server.dnsList.join(', ')),
               if (server.gateway.isNotEmpty)
-                _buildDetailRow('Gateway', server.gateway),
-              _buildDetailRow('Disable Routes', server.hasRoutesDisabled ? 'Yes' : 'No'),
+                _buildDetailRow(l10n.gateway, server.gateway),
+              _buildDetailRow(l10n.disableRoutes, server.hasRoutesDisabled ? l10n.yes : l10n.no),
               const Divider(),
-              const Text(
-                'Tunnel Addresses:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              Text(
+                '${l10n.tunnelAddresses}:',
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               ...server.tunnelAddressList.map((addr) => Padding(
@@ -237,12 +241,12 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
               )),
               if (server.peers.isNotEmpty) ...[
                 const Divider(),
-                const Text(
-                  'Peers:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Text(
+                  '${l10n.peers}:',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
-                Text('${server.peerUuidList.length} peer(s) configured'),
+                Text(l10n.peersConfigured(server.peerUuidList.length)),
               ],
             ],
           ),
@@ -293,7 +297,7 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('WireGuard Servers'),
+        title: Text(l10n.wireguardServers),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -313,7 +317,7 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
             padding: const EdgeInsets.all(16.0),
             child: TextField(
               decoration: InputDecoration(
-                hintText: 'Search servers...',
+                hintText: l10n.searchServers,
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -362,8 +366,8 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
                                 const SizedBox(height: 16),
                                 Text(
                                   _searchQuery.isNotEmpty
-                                      ? 'No servers match your search'
-                                      : 'No WireGuard servers configured',
+                                      ? l10n.noServersMatchSearch
+                                      : l10n.noWireguardServersConfigured,
                                   style: Theme.of(context).textTheme.titleMedium,
                                 ),
                               ],
@@ -397,10 +401,10 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
                                     subtitle: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text('Port: ${server.port}'),
-                                        Text('Tunnel: ${server.tunnelAddressList.join(", ")}'),
+                                        Text(l10n.portLabel(server.port)),
+                                        Text(l10n.tunnelLabel(server.tunnelAddressList.join(", "))),
                                         Text(
-                                          '${server.peerUuidList.length} peer(s)',
+                                          l10n.peersConfigured(server.peerUuidList.length),
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: Colors.grey[600],
@@ -439,33 +443,33 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
                                             }
                                           },
                                           itemBuilder: (context) => [
-                                            const PopupMenuItem(
+                                            PopupMenuItem(
                                               value: 'view',
                                               child: Row(
                                                 children: [
-                                                  Icon(Icons.visibility),
-                                                  SizedBox(width: 8),
-                                                  Text('View Details'),
+                                                  const Icon(Icons.visibility),
+                                                  const SizedBox(width: 8),
+                                                  Text(l10n.viewDetails),
                                                 ],
                                               ),
                                             ),
-                                            const PopupMenuItem(
+                                            PopupMenuItem(
                                               value: 'edit',
                                               child: Row(
                                                 children: [
-                                                  Icon(Icons.edit),
-                                                  SizedBox(width: 8),
-                                                  Text('Edit'),
+                                                  const Icon(Icons.edit),
+                                                  const SizedBox(width: 8),
+                                                  Text(l10n.edit),
                                                 ],
                                               ),
                                             ),
-                                            const PopupMenuItem(
+                                            PopupMenuItem(
                                               value: 'delete',
                                               child: Row(
                                                 children: [
-                                                  Icon(Icons.delete, color: Colors.red),
-                                                  SizedBox(width: 8),
-                                                  Text('Delete', style: TextStyle(color: Colors.red)),
+                                                  const Icon(Icons.delete, color: Colors.red),
+                                                  const SizedBox(width: 8),
+                                                  Text(l10n.delete, style: const TextStyle(color: Colors.red)),
                                                 ],
                                               ),
                                             ),

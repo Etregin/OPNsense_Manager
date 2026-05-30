@@ -88,8 +88,8 @@ class ConnectionFieldsSection extends StatelessWidget {
         // Self-Signed Certificate Toggle
         SwitchListTile(
           title: Text(l10n.allowSelfSigned),
-          subtitle: const Text(
-            'WARNING: Disables TLS certificate validation for this profile. Only enable this if you trust the server and intentionally use a self-signed certificate.',
+          subtitle: Text(
+            l10n.selfSignedCertWarning,
           ),
           value: allowSelfSignedCerts,
           onChanged: !useHttps || isLoading ? null : onSelfSignedChanged,

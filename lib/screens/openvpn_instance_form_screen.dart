@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_instance.dart';
 import '../models/openvpn_dropdown_option.dart';
@@ -442,10 +443,12 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
   }
 
   Future<void> _saveInstance() async {
+    final l10n = AppLocalizations.of(context)!;
+    
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fix the errors in the form'),
+        SnackBar(
+          content: Text(l10n.fixFormErrors),
           backgroundColor: Colors.red,
         ),
       );
@@ -469,8 +472,8 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
           SnackBar(
             content: Text(
               _isEditMode
-                  ? 'Instance updated successfully'
-                  : 'Instance created successfully',
+                  ? l10n.instanceUpdatedSuccessfully
+                  : l10n.instanceCreatedSuccessfully,
             ),
             backgroundColor: Colors.green,
           ),
@@ -482,7 +485,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
         setState(() => _isSaving = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to save instance: ${e.toString()}'),
+            content: Text(l10n.failedToSaveInstance(e.toString())),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 4),
           ),
@@ -578,6 +581,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
 
 
   Future<void> _generateAuthToken() async {
+    final l10n = AppLocalizations.of(context)!;
     setState(() => _isLoading = true);
     
     try {
@@ -592,8 +596,8 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
       });
       
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Auth token generated successfully'),
+        SnackBar(
+          content: Text(l10n.authTokenGeneratedSuccessfully),
           backgroundColor: Colors.green,
         ),
       );
@@ -603,7 +607,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
       setState(() => _isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to generate token: ${e.toString()}'),
+          content: Text(l10n.failedToGenerateToken(e.toString())),
           backgroundColor: Colors.red,
         ),
       );
@@ -612,9 +616,10 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEditMode ? 'Edit Instance' : 'Add Instance'),
+        title: Text(_isEditMode ? l10n.edit : l10n.addInstance),
         actions: [
           IconButton(
             icon: Icon(_allExpanded ? Icons.unfold_less : Icons.unfold_more),
@@ -736,9 +741,10 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
   }
 
   Widget _buildGeneralSettings() {
+    final l10n = AppLocalizations.of(context)!;
     return _buildCollapsibleSection(
       keyName: 'general',
-      title: 'General Settings',
+      title: l10n.generalSettings,
       icon: Icons.settings,
       children: [
         OpenvpnRoleSelector(
@@ -746,37 +752,37 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
           onChanged: (value) {
             setState(() => _role = value);
           },
-          helperText: 'Define the role of this instance.',
+          helperText: l10n.defineRoleOfInstance,
         ),
         const SizedBox(height: 16),
         OpenvpnTextField(
           controller: _descriptionController,
-          labelText: 'Description',
-          hintText: 'My OpenVPN Instance',
+          labelText: l10n.description,
+          hintText: l10n.myOpenvpnInstance,
           prefixIcon: Icons.description,
-          helperText: 'You may enter a description here for your reference (not parsed).',
-          validator: (value) => CommonValidators.required(value, fieldName: 'Description'),
+          helperText: l10n.descriptionHelperText,
+          validator: (value) => CommonValidators.required(value, fieldName: l10n.description),
         ),
         const SizedBox(height: 16),
         OpenvpnToggleField(
-          title: 'Enabled',
-          subtitle: 'Instance will be active when enabled',
+          title: l10n.enabled,
+          subtitle: l10n.instanceWillBeActiveWhenEnabled,
           value: _enabled,
           onChanged: (value) => setState(() => _enabled = value),
         ),
         const SizedBox(height: 16),
         OpenvpnDropdownField(
-          labelText: 'Protocol',
+          labelText: l10n.protocol,
           prefixIcon: Icons.network_check,
           options: _protoOptions,
           value: _selectedProto,
           onChanged: (value) => setState(() => _selectedProto = value),
-          helperText: 'Use protocol for communicating with remote host.',
+          helperText: l10n.useProtocolForCommunicating,
         ),
         const SizedBox(height: 16),
         OpenvpnTextField(
           controller: _portController,
-          labelText: 'Port',
+          labelText: l10n.port,
           hintText: '1194',
           prefixIcon: Icons.settings_ethernet,
           helperText: 'Port number to use. Defaults to 1194 when in server role or when client mode specifies a bind address, or nobind when client does not have a specific bind address.',

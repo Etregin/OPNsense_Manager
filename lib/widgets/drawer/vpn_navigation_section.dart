@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../../models/vpn_connection.dart';
 import '../../screens/wireguard_servers_screen.dart';
@@ -145,9 +146,10 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return ExpansionNavigationTile(
       icon: Icons.vpn_lock,
-      title: const Text('VPN'),
+      title: Text(l10n.vpn),
       initiallyExpanded: widget.isExpanded,
       onExpansionChanged: widget.onExpansionChanged,
       children: [
@@ -165,9 +167,10 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
   }
 
   Widget _buildWireGuardSection() {
+    final l10n = AppLocalizations.of(context)!;
     return ExpansionNavigationTile(
       icon: Icons.vpn_key,
-      title: const Text('WireGuard'),
+      title: Text(l10n.wireguard),
       initiallyExpanded: _wireguardExpanded,
       tilePadding: const EdgeInsets.only(left: 56, right: 16),
       onExpansionChanged: (expanded) {
@@ -177,35 +180,35 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
       },
       children: [
         NavigationTile(
-          title: 'Servers',
+          title: l10n.servers,
           currentRoute: widget.currentRoute,
           targetRoute: 'wireguard_servers',
           destination: const WireGuardServersScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
-          title: 'Peers',
+          title: l10n.peers,
           currentRoute: widget.currentRoute,
           targetRoute: 'wireguard_peers',
           destination: const WireGuardPeersScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
-          title: 'Peer Generator',
+          title: l10n.peerGenerator,
           currentRoute: widget.currentRoute,
           targetRoute: 'wireguard_peer_generator',
           destination: const WireGuardPeerGeneratorScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
-          title: 'Status',
+          title: l10n.status,
           currentRoute: widget.currentRoute,
           targetRoute: 'wireguard_status',
           destination: const WireGuardStatusScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
-          title: 'Logs',
+          title: l10n.logs,
           currentRoute: widget.currentRoute,
           targetRoute: 'wireguard_logs',
           destination: const WireGuardLogFileScreen(),
@@ -216,9 +219,10 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
   }
 
   Widget _buildOpenVPNSection() {
+    final l10n = AppLocalizations.of(context)!;
     return ExpansionNavigationTile(
       icon: Icons.vpn_lock_outlined,
-      title: const Text('OpenVPN'),
+      title: Text(l10n.openvpn),
       initiallyExpanded: _openvpnExpanded,
       tilePadding: const EdgeInsets.only(left: 56, right: 16),
       onExpansionChanged: (expanded) {
@@ -228,14 +232,14 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
       },
       children: [
         NavigationTile(
-          title: 'Instances',
+          title: l10n.instances,
           currentRoute: widget.currentRoute,
           targetRoute: 'openvpn_instances',
           destination: const OpenvpnInstancesScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
-          title: 'Client Overrides',
+          title: l10n.clientOverrides,
           currentRoute: widget.currentRoute,
           targetRoute: 'openvpn_client_overrides',
           onTap: () {
@@ -248,7 +252,7 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
-          title: 'Connection Status',
+          title: l10n.connectionStatus,
           currentRoute: widget.currentRoute,
           targetRoute: 'openvpn_connection_status',
           onTap: () {
@@ -261,7 +265,7 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
-          title: 'Log File',
+          title: l10n.logFile,
           currentRoute: widget.currentRoute,
           targetRoute: 'openvpn_logs',
           destination: const OpenvpnLogFileScreen(),
@@ -272,13 +276,14 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
   }
 
   Widget _buildTailscaleSection() {
+    final l10n = AppLocalizations.of(context)!;
     return ExpansionNavigationTile(
       icon: Icons.cloud,
       title: Row(
         children: [
-          const Expanded(
+          Expanded(
             child: Text(
-              'Tailscale',
+              l10n.tailscale,
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -295,7 +300,7 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
       },
       children: [
         NavigationTile(
-          title: 'Authentication',
+          title: l10n.authentication,
           currentRoute: widget.currentRoute,
           targetRoute: 'tailscale_authentication',
           destination: const TailscaleAuthenticationScreen(),
@@ -303,14 +308,14 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
           onBeforeNavigate: widget.onBeforeNavigate,
         ),
         NavigationTile(
-          title: 'Settings',
+          title: l10n.settings,
           currentRoute: widget.currentRoute,
           targetRoute: 'tailscale_settings',
           destination: const TailscaleSettingsScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
-          title: 'Status',
+          title: l10n.status,
           currentRoute: widget.currentRoute,
           targetRoute: 'tailscale_status',
           destination: const TailscaleStatusScreen(),
@@ -321,6 +326,7 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
   }
 
   Widget _buildTailscaleStatusBadge() {
+    final l10n = AppLocalizations.of(context)!;
     if (_loadingTailscale) {
       return const SizedBox(
         width: 12,
@@ -345,7 +351,7 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
           ),
         ),
         child: Text(
-          _tailscaleStatus!.isConnected ? 'Connected' : 'Disconnected',
+          _tailscaleStatus!.isConnected ? l10n.connected : l10n.disconnected,
           style: TextStyle(
             fontSize: 10,
             fontWeight: FontWeight.bold,
@@ -368,7 +374,7 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         ),
       ),
       child: Text(
-        'Unknown',
+        l10n.unknown,
         style: TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.bold,

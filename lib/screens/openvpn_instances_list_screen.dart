@@ -142,9 +142,10 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
       await apiService.reconfigureOpenvpn();
 
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Instance ${instance.enabled ? "disabled" : "enabled"} successfully'),
+            content: Text(l10n.instanceToggledSuccessfully(instance.enabled ? l10n.disabled : l10n.enabled)),
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 2),
           ),
@@ -153,9 +154,10 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to toggle instance: ${e.toString()}'),
+            content: Text(l10n.failedToToggleInstance(e.toString())),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 3),
           ),
@@ -176,9 +178,9 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Instance'),
+        title: Text(l10n.deleteInstance),
         content: Text(
-          'Are you sure you want to delete instance "${instance.description.isNotEmpty ? instance.description : instance.vpnid}"? This action cannot be undone.',
+          l10n.confirmDeleteInstance(instance.description.isNotEmpty ? instance.description : instance.vpnid),
         ),
         actions: [
           TextButton(
@@ -202,8 +204,8 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
         await apiService.deleteOpenvpnInstance(instance.uuid);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Instance deleted successfully'),
+            SnackBar(
+              content: Text(l10n.instanceDeletedSuccessfully),
               backgroundColor: Colors.green,
             ),
           );
@@ -213,7 +215,7 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to delete instance: ${e.toString()}'),
+              content: Text(l10n.failedToDeleteInstance(e.toString())),
               backgroundColor: Colors.red,
             ),
           );
@@ -228,27 +230,27 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(instance.description.isNotEmpty ? instance.description : 'Instance Details'),
+        title: Text(instance.description.isNotEmpty ? instance.description : l10n.instanceDetails),
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildDetailRow('ID', instance.vpnid),
-              _buildDetailRow('Role', instance.role),
-              _buildDetailRow('Status', instance.statusText),
+              _buildDetailRow(l10n.id, instance.vpnid),
+              _buildDetailRow(l10n.role, instance.role),
+              _buildDetailRow(l10n.status, instance.statusText),
               if (instance.protocol != null)
-                _buildDetailRow('Protocol', instance.protocol!.toUpperCase()),
+                _buildDetailRow(l10n.protocol, instance.protocol!.toUpperCase()),
               if (instance.port != null)
-                _buildDetailRow('Port', instance.port!),
+                _buildDetailRow(l10n.port, instance.port!),
               if (instance.devType != null)
-                _buildDetailRow('Device Type', instance.devType!),
+                _buildDetailRow(l10n.deviceType, instance.devType!),
               if (instance.local != null && instance.local!.isNotEmpty)
-                _buildDetailRow('Local Address', instance.local!),
+                _buildDetailRow(l10n.localAddress, instance.local!),
               if (instance.remote != null && instance.remote!.isNotEmpty)
-                _buildDetailRow('Remote Address', instance.remote!),
+                _buildDetailRow(l10n.remoteAddress, instance.remote!),
               if (instance.server != null && instance.server!.isNotEmpty)
-                _buildDetailRow('Server Network', instance.server!),
+                _buildDetailRow(l10n.serverNetwork, instance.server!),
             ],
           ),
         ),
@@ -311,7 +313,7 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
               // Search bar
               TextField(
                 decoration: InputDecoration(
-                  hintText: 'Search instances...',
+                  hintText: l10n.searchInstances,
                   prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -342,15 +344,15 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
                   Expanded(
                     child: DropdownButtonFormField<String>(
                       initialValue: _roleFilter,
-                      decoration: const InputDecoration(
-                        labelText: 'Role',
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: InputDecoration(
+                        labelText: l10n.role,
+                        border: const OutlineInputBorder(),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       ),
-                      items: const [
-                        DropdownMenuItem(value: 'all', child: Text('All Roles')),
-                        DropdownMenuItem(value: 'server', child: Text('Server')),
-                        DropdownMenuItem(value: 'client', child: Text('Client')),
+                      items: [
+                        DropdownMenuItem(value: 'all', child: Text(l10n.allRoles)),
+                        DropdownMenuItem(value: 'server', child: Text(l10n.server)),
+                        DropdownMenuItem(value: 'client', child: Text(l10n.client)),
                       ],
                       onChanged: (value) {
                         if (value != null) {
@@ -367,15 +369,15 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
                   Expanded(
                     child: DropdownButtonFormField<String>(
                       initialValue: _statusFilter,
-                      decoration: const InputDecoration(
-                        labelText: 'Status',
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: InputDecoration(
+                        labelText: l10n.status,
+                        border: const OutlineInputBorder(),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       ),
-                      items: const [
-                        DropdownMenuItem(value: 'all', child: Text('All Status')),
-                        DropdownMenuItem(value: 'enabled', child: Text('Enabled')),
-                        DropdownMenuItem(value: 'disabled', child: Text('Disabled')),
+                      items: [
+                        DropdownMenuItem(value: 'all', child: Text(l10n.allStatus)),
+                        DropdownMenuItem(value: 'enabled', child: Text(l10n.enabled)),
+                        DropdownMenuItem(value: 'disabled', child: Text(l10n.disabled)),
                       ],
                       onChanged: (value) {
                         if (value != null) {
@@ -394,17 +396,17 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
               // Row count selector
               Row(
                 children: [
-                  const Text('Rows per page:'),
+                  Text(l10n.rowsPerPage),
                   const SizedBox(width: 12),
                   DropdownButton<int>(
                     value: _rowCount,
-                    items: const [
-                      DropdownMenuItem(value: 50, child: Text('50')),
-                      DropdownMenuItem(value: 100, child: Text('100')),
-                      DropdownMenuItem(value: 200, child: Text('200')),
-                      DropdownMenuItem(value: 500, child: Text('500')),
-                      DropdownMenuItem(value: 1000, child: Text('1000')),
-                      DropdownMenuItem(value: -1, child: Text('All')),
+                    items: [
+                      const DropdownMenuItem(value: 50, child: Text('50')),
+                      const DropdownMenuItem(value: 100, child: Text('100')),
+                      const DropdownMenuItem(value: 200, child: Text('200')),
+                      const DropdownMenuItem(value: 500, child: Text('500')),
+                      const DropdownMenuItem(value: 1000, child: Text('1000')),
+                      DropdownMenuItem(value: -1, child: Text(l10n.all)),
                     ],
                     onChanged: (value) {
                       if (value != null) {
@@ -417,7 +419,7 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
                     },
                   ),
                   const Spacer(),
-                  Text('Showing ${_instances.length} of $_totalCount'),
+                  Text(l10n.showingInstancesCount(_instances.length.toString(), _totalCount.toString())),
                 ],
               ),
             ],
@@ -466,16 +468,16 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
                               const SizedBox(height: 16),
                               Text(
                                 _searchQuery.isNotEmpty || _roleFilter != 'all' || _statusFilter != 'all'
-                                    ? 'No instances match your filters'
-                                    : 'No OpenVPN instances configured',
+                                    ? l10n.noInstancesMatchFilters
+                                    : l10n.noOpenvpnInstancesConfigured,
                                 style: Theme.of(context).textTheme.titleMedium,
                               ),
                               if (_searchQuery.isEmpty && _roleFilter == 'all' && _statusFilter == 'all')
                                 const SizedBox(height: 8),
                               if (_searchQuery.isEmpty && _roleFilter == 'all' && _statusFilter == 'all')
-                                const Text(
-                                  'Tap the + button to create your first instance',
-                                  style: TextStyle(color: Colors.grey),
+                                Text(
+                                  l10n.tapPlusButtonToCreateFirstInstance,
+                                  style: const TextStyle(color: Colors.grey),
                                 ),
                             ],
                           ),

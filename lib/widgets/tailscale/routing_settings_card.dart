@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/tailscale_settings.dart';
 import '../../viewmodels/tailscale_settings_form_state.dart';
 
@@ -39,20 +40,22 @@ class RoutingSettingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Routing',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Text(
+              l10n.routing,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             SwitchListTile(
-              title: const Text('Advertise Exit Node'),
-              subtitle: const Text('Allow other devices to route through this node'),
+              title: Text(l10n.advertiseExitNode),
+              subtitle: Text(l10n.advertiseExitNodeDescription),
               value: formState.advertiseExitNode,
               onChanged: (value) {
                 formState.advertiseExitNode = value;
@@ -61,14 +64,14 @@ class RoutingSettingsCard extends StatelessWidget {
             ),
             const Divider(),
             const SizedBox(height: 16),
-            Text('Use Exit Node', style: Theme.of(context).textTheme.titleSmall),
+            Text(l10n.useExitNode, style: Theme.of(context).textTheme.titleSmall),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
               initialValue: formState.selectedExitNode,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                hintText: 'Select exit node',
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                hintText: l10n.selectExitNode,
               ),
               items: [
                 const DropdownMenuItem<String>(
@@ -93,8 +96,8 @@ class RoutingSettingsCard extends StatelessWidget {
             const SizedBox(height: 16),
             const Divider(),
             SwitchListTile(
-              title: const Text('Accept Subnet Routes'),
-              subtitle: const Text('Accept routes advertised by other nodes'),
+              title: Text(l10n.acceptSubnetRoutes),
+              subtitle: Text(l10n.acceptSubnetRoutesDescription),
               value: formState.acceptSubnetRoutes,
               onChanged: (value) {
                 formState.acceptSubnetRoutes = value;
@@ -105,17 +108,17 @@ class RoutingSettingsCard extends StatelessWidget {
             const SizedBox(height: 8),
             ListTile(
               leading: const Icon(Icons.lan),
-              title: const Text('Manage Subnets'),
-              subtitle: const Text('Configure advertised subnets'),
+              title: Text(l10n.manageSubnets),
+              subtitle: Text(l10n.configureAdvertisedSubnets),
               trailing: const Icon(Icons.chevron_right),
               onTap: () async {
                 if (hasUnsavedChanges) {
                   final shouldNavigate = await showDialog<bool>(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text('Unsaved Changes'),
-                      content: const Text(
-                        'You have unsaved changes. Do you want to discard them and continue?',
+                      title: Text(l10n.unsavedChanges),
+                      content: Text(
+                        l10n.unsavedChangesConfirmation,
                       ),
                       actions: [
                         TextButton(

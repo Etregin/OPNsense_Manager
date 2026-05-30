@@ -136,9 +136,10 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
       await demoApiService.toggleFirewallAlias(alias.uuid);
 
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Alias ${alias.isEnabled ? "disabled" : "enabled"} successfully'),
+            content: Text(alias.isEnabled ? l10n.aliasDisabledSuccessfully : l10n.aliasEnabledSuccessfully),
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 2),
           ),
@@ -147,9 +148,10 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to toggle alias: ${e.toString()}'),
+            content: Text(l10n.failedToToggleAlias(e.toString())),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 3),
           ),
@@ -172,7 +174,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
       builder: (context) => AlertDialog(
         title: Text(l10n.deleteRule),
         content: Text(
-          'Are you sure you want to delete alias "${alias.name}"? This action cannot be undone.',
+          l10n.deleteAliasConfirmation(alias.name),
         ),
         actions: [
           TextButton(
@@ -198,7 +200,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('Alias deleted successfully'),
+              content: Text(l10n.aliasDeletedSuccessfully),
               backgroundColor: Colors.green,
             ),
           );
@@ -208,7 +210,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to delete alias: ${e.toString()}'),
+              content: Text(l10n.failedToDeleteAlias(e.toString())),
               backgroundColor: Colors.red,
             ),
           );
@@ -229,16 +231,16 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildDetailRow('Type', alias.typeDisplayName),
-              _buildDetailRow('Description', alias.description.isEmpty ? 'N/A' : alias.description),
-              _buildDetailRow('Enabled', alias.isEnabled ? 'Yes' : 'No'),
+              _buildDetailRow(l10n.type, alias.typeDisplayName),
+              _buildDetailRow(l10n.description, alias.description.isEmpty ? 'N/A' : alias.description),
+              _buildDetailRow(l10n.enabled, alias.isEnabled ? 'Yes' : 'No'),
               if (alias.proto.isNotEmpty)
-                _buildDetailRow('Protocol', alias.proto.toUpperCase()),
+                _buildDetailRow(l10n.protocol, alias.proto.toUpperCase()),
               if (alias.categories.isNotEmpty)
-                _buildDetailRow('Categories', alias.categories),
+                _buildDetailRow(l10n.categories, alias.categories),
               const Divider(),
-              const Text(
-                'Content:',
+              Text(
+                l10n.content,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
@@ -287,7 +289,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Firewall Aliases'),
+        title: Text(l10n.firewallAliases),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -310,7 +312,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                 Expanded(
                   child: TextField(
                     decoration: InputDecoration(
-                      hintText: 'Search aliases...',
+                      hintText: l10n.searchAliases,
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -327,16 +329,16 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                 const SizedBox(width: 8),
                 PopupMenuButton<String>(
                   icon: const Icon(Icons.filter_list),
-                  tooltip: 'Filter by type',
+                  tooltip: l10n.filterByType,
                   onSelected: (value) {
                     setState(() {
                       _filterType = value == 'all' ? null : value;
                     });
                   },
                   itemBuilder: (context) => [
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 'all',
-                      child: Text('All Types'),
+                      child: Text(l10n.allTypes),
                     ),
                     const PopupMenuDivider(),
                     ..._availableTypes.map((type) => PopupMenuItem(
@@ -388,8 +390,8 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                                 const SizedBox(height: 16),
                                 Text(
                                   _searchQuery.isNotEmpty || _filterType != null
-                                      ? 'No aliases match your filters'
-                                      : 'No aliases configured',
+                                      ? l10n.noAliasesMatchFilters
+                                      : l10n.noAliasesConfigured,
                                   style: Theme.of(context).textTheme.titleMedium,
                                 ),
                               ],
@@ -432,7 +434,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         Text(
-                                          '${alias.contentList.length} item(s)',
+                                          l10n.itemsCount(alias.contentList.length),
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: Colors.grey[600],
@@ -470,23 +472,23 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                                             }
                                           },
                                           itemBuilder: (context) => [
-                                            const PopupMenuItem(
+                                            PopupMenuItem(
                                               value: 'view',
                                               child: Row(
                                                 children: [
-                                                  Icon(Icons.visibility),
-                                                  SizedBox(width: 8),
-                                                  Text('View Details'),
+                                                  const Icon(Icons.visibility),
+                                                  const SizedBox(width: 8),
+                                                  Text(l10n.viewDetails),
                                                 ],
                                               ),
                                             ),
-                                            const PopupMenuItem(
+                                            PopupMenuItem(
                                               value: 'delete',
                                               child: Row(
                                                 children: [
-                                                  Icon(Icons.delete, color: Colors.red),
-                                                  SizedBox(width: 8),
-                                                  Text('Delete', style: TextStyle(color: Colors.red)),
+                                                  const Icon(Icons.delete, color: Colors.red),
+                                                  const SizedBox(width: 8),
+                                                  Text(l10n.delete, style: const TextStyle(color: Colors.red)),
                                                 ],
                                               ),
                                             ),
@@ -506,8 +508,8 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Create alias feature coming soon'),
+            SnackBar(
+              content: Text(l10n.createAliasComingSoon),
               duration: Duration(seconds: 2),
             ),
           );

@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../l10n/app_localizations.dart';
 import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
 import '../widgets/app_drawer.dart';
@@ -116,10 +117,11 @@ class _TailscaleAuthenticationScreenState
           _isSaving = false;
         });
 
+        final l10n = AppLocalizations.of(context)!;
         if (success) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Authentication settings saved successfully'),
+            SnackBar(
+              content: Text(l10n.authSettingsSavedSuccessfully),
               backgroundColor: Colors.green,
             ),
           );
@@ -127,8 +129,8 @@ class _TailscaleAuthenticationScreenState
           _loadData();
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Failed to save authentication settings'),
+            SnackBar(
+              content: Text(l10n.failedToSaveAuthSettings),
               backgroundColor: Colors.red,
             ),
           );
@@ -153,7 +155,7 @@ class _TailscaleAuthenticationScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tailscale Authentication'),
+        title: Text(AppLocalizations.of(context)!.tailscaleAuthentication),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -178,6 +180,7 @@ class _TailscaleAuthenticationScreenState
     }
 
     if (_errorMessage != null) {
+      final l10n = AppLocalizations.of(context)!;
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -185,7 +188,7 @@ class _TailscaleAuthenticationScreenState
             const Icon(Icons.error_outline, size: 64, color: Colors.red),
             const SizedBox(height: 16),
             Text(
-              'Error loading data',
+              l10n.errorLoadingData,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
@@ -194,7 +197,7 @@ class _TailscaleAuthenticationScreenState
             ElevatedButton.icon(
               onPressed: _loadData,
               icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
+              label: Text(l10n.retry),
             ),
           ],
         ),
@@ -223,7 +226,7 @@ class _TailscaleAuthenticationScreenState
                   const Icon(Icons.vpn_key, size: 24),
                   const SizedBox(width: 8),
                   Text(
-                    'Authentication Settings',
+                    AppLocalizations.of(context)!.authenticationSettings,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ],
@@ -231,18 +234,19 @@ class _TailscaleAuthenticationScreenState
               const Divider(height: 24),
               TextFormField(
                 controller: _loginServerController,
-                decoration: const InputDecoration(
-                  labelText: 'Login Server',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.loginServer,
                   hintText: 'https://login.tailscale.com',
-                  border: OutlineInputBorder(),
-                  helperText: 'The Tailscale login server URL',
+                  border: const OutlineInputBorder(),
+                  helperText: AppLocalizations.of(context)!.loginServerHelperText,
                 ),
                 validator: (value) {
+                  final l10n = AppLocalizations.of(context)!;
                   if (value == null || value.trim().isEmpty) {
-                    return 'Login server is required';
+                    return l10n.loginServerRequired;
                   }
                   if (!value.startsWith('http://') && !value.startsWith('https://')) {
-                    return 'Must be a valid URL starting with http:// or https://';
+                    return l10n.mustBeValidUrl;
                   }
                   return null;
                 },
@@ -252,10 +256,10 @@ class _TailscaleAuthenticationScreenState
                 controller: _preAuthKeyController,
                 obscureText: _obscurePreAuthKey,
                 decoration: InputDecoration(
-                  labelText: 'Pre-Auth Key',
+                  labelText: AppLocalizations.of(context)!.preAuthKey,
                   hintText: 'tskey-auth-...',
                   border: const OutlineInputBorder(),
-                  helperText: 'Optional: Pre-authentication key for automatic device registration',
+                  helperText: AppLocalizations.of(context)!.preAuthKeyHelperText,
                   suffixIcon: IconButton(
                     icon: Icon(
                       _obscurePreAuthKey ? Icons.visibility : Icons.visibility_off,
@@ -281,7 +285,7 @@ class _TailscaleAuthenticationScreenState
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const Icon(Icons.save),
-                  label: Text(_isSaving ? 'Saving...' : 'Save Settings'),
+                  label: Text(_isSaving ? AppLocalizations.of(context)!.saving : AppLocalizations.of(context)!.saveSettings),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.all(16),
                   ),

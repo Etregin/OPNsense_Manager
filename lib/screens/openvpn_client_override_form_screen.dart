@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../l10n/app_localizations.dart';
 import '../models/openvpn_client_override.dart';
 import '../models/openvpn_dropdown_option.dart';
 import '../services/opnsense_api_service.dart';
@@ -201,10 +202,12 @@ class _OpenvpnClientOverrideFormScreenState
   }
 
   Future<void> _saveOverride() async {
+    final l10n = AppLocalizations.of(context)!;
+    
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fix the errors in the form'),
+        SnackBar(
+          content: Text(l10n.fixFormErrors),
           backgroundColor: Colors.red,
         ),
       );
@@ -224,8 +227,8 @@ class _OpenvpnClientOverrideFormScreenState
           SnackBar(
             content: Text(
               _isEditMode
-                  ? 'Override updated successfully'
-                  : 'Override created successfully',
+                  ? l10n.overrideUpdatedSuccessfully
+                  : l10n.overrideCreatedSuccessfully,
             ),
             backgroundColor: Colors.green,
           ),
@@ -237,7 +240,7 @@ class _OpenvpnClientOverrideFormScreenState
         setState(() => _isSaving = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to save override: ${e.toString()}'),
+            content: Text(l10n.failedToSaveOverride(e.toString())),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 4),
           ),
@@ -334,20 +337,22 @@ class _OpenvpnClientOverrideFormScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEditMode ? 'Edit Client Override' : 'Add Client Override'),
+        title: Text(_isEditMode ? l10n.editClientOverride : l10n.addClientOverride),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
             onPressed: _isSaving ? null : _saveOverride,
-            tooltip: 'Save',
+            tooltip: l10n.save,
           ),
         ],
       ),
       body: LoadingOverlay(
         isLoading: _isSaving,
-        message: 'Saving override...',
+        message: l10n.savingOverride,
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())
             : _errorMessage != null
@@ -358,13 +363,13 @@ class _OpenvpnClientOverrideFormScreenState
                         const Icon(Icons.error_outline,
                             size: 48, color: Colors.red),
                         const SizedBox(height: 16),
-                        const Text('Error loading override'),
+                        Text(l10n.errorLoadingOverride),
                         const SizedBox(height: 8),
                         Text(_errorMessage!),
                         const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: _loadOverride,
-                          child: const Text('Retry'),
+                          child: Text(l10n.retry),
                         ),
                       ],
                     ),
@@ -385,8 +390,8 @@ class _OpenvpnClientOverrideFormScreenState
                           ),
                           child: Text(
                             _isEditMode
-                                ? 'Update Override'
-                                : 'Create Override',
+                                ? l10n.updateOverride
+                                : l10n.createOverride,
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -402,19 +407,20 @@ class _OpenvpnClientOverrideFormScreenState
   }
 
   Widget _buildGeneralSettings() {
+    final l10n = AppLocalizations.of(context)!;
     return FormSectionContainer(
-      title: 'General Settings',
+      title: l10n.generalSettings,
       children: [
         OpenvpnToggleField(
-          title: 'Enabled',
-          subtitle: 'Enable this client specific override',
+          title: l10n.enabled,
+          subtitle: l10n.enableThisClientOverride,
           value: _enabled,
           onChanged: (value) => setState(() => _enabled = value),
         ),
         const SizedBox(height: 16),
         OpenvpnMultiSelectField(
-          labelText: 'Servers',
-          helperText: 'Select the OpenVPN servers where this override applies to, leave empty for all',
+          labelText: l10n.servers,
+          helperText: l10n.selectServersHelperText,
           prefixIcon: Icons.dns,
           options: _serversOptions,
           selectedValues: _selectedServers,
@@ -423,21 +429,21 @@ class _OpenvpnClientOverrideFormScreenState
         const SizedBox(height: 16),
         OpenvpnTextField(
           controller: _descriptionController,
-          labelText: 'Description',
-          hintText: 'Enter a description for this override',
-          helperText: 'You may enter a description here for your reference (not parsed).',
+          labelText: l10n.description,
+          hintText: l10n.enterDescriptionForOverride,
+          helperText: l10n.descriptionHelperTextOverride,
           prefixIcon: Icons.description,
         ),
         const SizedBox(height: 16),
         OpenvpnTextField(
           controller: _commonNameController,
-          labelText: 'Common name',
-          hintText: 'Enter client certificate common name',
-          helperText: 'Enter the client\'s X.509 common name here.',
+          labelText: l10n.commonName,
+          hintText: l10n.enterClientCertificateCommonName,
+          helperText: l10n.clientX509CommonNameHelper,
           prefixIcon: Icons.person,
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return 'Common name is required';
+              return l10n.commonNameRequired;
             }
             return null;
           },
@@ -671,4 +677,4 @@ class _OpenvpnClientOverrideFormScreenState
   }
 }
 
-// Made with Bob
+

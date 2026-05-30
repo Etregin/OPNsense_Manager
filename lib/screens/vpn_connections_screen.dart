@@ -116,17 +116,17 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
                   value: 'all',
                   child: Text(l10n.allVPNs),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'openvpn',
-                  child: Text('OpenVPN'),
+                  child: Text(l10n.openvpn),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'wireguard',
-                  child: Text('WireGuard'),
+                  child: Text(l10n.wireguard),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'tailscale',
-                  child: Text('Tailscale'),
+                  child: Text(l10n.tailscale),
                 ),
               ],
             ),

@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_static_key.dart';
 import '../services/opnsense_api_service.dart';
@@ -154,11 +155,12 @@ class _OpenvpnStaticKeyFormScreenState
           _keyController.text = key;
           _isGenerating = false;
         });
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Key generated successfully'),
+          SnackBar(
+            content: Text(l10n.keyGeneratedSuccessfully),
             backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
           ),
         );
       }
@@ -168,9 +170,10 @@ class _OpenvpnStaticKeyFormScreenState
           _errorMessage = e.toString();
           _isGenerating = false;
         });
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to generate key: ${e.toString()}'),
+            content: Text(l10n.failedToGenerateKey(e.toString())),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 4),
           ),
@@ -180,6 +183,7 @@ class _OpenvpnStaticKeyFormScreenState
   }
 
   Future<void> _saveStaticKey() async {
+    final l10n = AppLocalizations.of(context)!;
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -210,8 +214,8 @@ class _OpenvpnStaticKeyFormScreenState
           SnackBar(
             content: Text(
               _isEditMode
-                  ? 'Static key updated successfully'
-                  : 'Static key created successfully',
+                  ? l10n.staticKeyUpdatedSuccessfully
+                  : l10n.staticKeyCreatedSuccessfully,
             ),
             backgroundColor: Colors.green,
           ),
@@ -226,7 +230,7 @@ class _OpenvpnStaticKeyFormScreenState
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to save static key: ${e.toString()}'),
+            content: Text(l10n.failedToSaveStaticKey(e.toString())),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 4),
           ),
@@ -237,6 +241,8 @@ class _OpenvpnStaticKeyFormScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -297,18 +303,18 @@ class _OpenvpnStaticKeyFormScreenState
                   prefixIcon: Icon(Icons.security),
                   helperText: 'Select the key mode for authentication or encryption',
                 ),
-                items: const [
+                items: [
                   DropdownMenuItem(
                     value: 'auth',
-                    child: Text('Auth (TLS Authentication)'),
+                    child: Text(l10n.authTlsAuthentication),
                   ),
                   DropdownMenuItem(
                     value: 'crypt',
-                    child: Text('Crypt (TLS Encryption)'),
+                    child: Text(l10n.cryptTlsEncryption),
                   ),
                   DropdownMenuItem(
                     value: 'crypt-v2',
-                    child: Text('Crypt V2 (TLS Encryption V2)'),
+                    child: Text(l10n.cryptV2TlsEncryption),
                   ),
                 ],
                 onChanged: _isSaving
@@ -353,10 +359,10 @@ class _OpenvpnStaticKeyFormScreenState
                 obscureText: !_keyVisible,
                 maxLines: _keyVisible ? 10 : 1,
                 decoration: InputDecoration(
-                  labelText: 'Key',
-                  hintText: 'Generate or paste your key here',
+                  labelText: AppLocalizations.of(context)!.key,
+                  hintText: AppLocalizations.of(context)!.generateOrPasteKeyHere,
                   prefixIcon: const Icon(Icons.vpn_key),
-                  helperText: 'The static key content (PEM format)',
+                  helperText: AppLocalizations.of(context)!.staticKeyContentPemFormat,
                   suffixIcon: IconButton(
                     icon: Icon(
                       _keyVisible ? Icons.visibility_off : Icons.visibility,
@@ -432,7 +438,7 @@ class _OpenvpnStaticKeyFormScreenState
                         ),
                       )
                     : Text(
-                        _isEditMode ? 'Update Static Key' : 'Create Static Key',
+                        _isEditMode ? l10n.updateStaticKey : l10n.createStaticKey,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

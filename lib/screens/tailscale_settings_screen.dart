@@ -19,6 +19,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../l10n/app_localizations.dart';
 import '../viewmodels/tailscale_settings_view_model.dart';
 import '../viewmodels/tailscale_settings_form_state.dart';
 import '../widgets/app_drawer.dart';
@@ -111,12 +112,13 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
 
     final success = await _viewModel.saveChanges();
     if (mounted) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
             success
-                ? 'All settings saved successfully'
-                : _viewModel.errorMessage ?? 'Failed to save settings',
+                ? l10n.allSettingsSavedSuccessfully
+                : _viewModel.errorMessage ?? l10n.failedToSaveSettings,
           ),
           backgroundColor: success ? Colors.green : Colors.red,
           duration: Duration(seconds: success ? 2 : 5),
@@ -131,25 +133,27 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
       _formState.initializeFromSettings(_viewModel.settings!);
     }
     setState(() {});
+    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Changes discarded'),
-        duration: Duration(seconds: 1),
+      SnackBar(
+        content: Text(l10n.changesDiscarded),
+        duration: const Duration(seconds: 1),
       ),
     );
   }
 
   Future<void> _controlService(String action) async {
+    final l10n = AppLocalizations.of(context)!;
     final actionTitle = action == 'start'
-        ? 'Start'
+        ? l10n.start
         : action == 'stop'
-            ? 'Stop'
-            : 'Restart';
+            ? l10n.stop
+            : l10n.restart;
 
     final confirmed = await ConfirmationDialog.show(
       context: context,
-      title: '$actionTitle Tailscale Service',
-      message: 'Are you sure you want to $action the Tailscale service?',
+      title: l10n.tailscaleServiceAction(actionTitle),
+      message: l10n.tailscaleServiceActionConfirmation(action),
       confirmText: actionTitle,
       isDestructive: action == 'stop',
     );
@@ -158,7 +162,7 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${actionTitle}ing Tailscale service...'),
+        content: Text(l10n.tailscaleServiceActioning(actionTitle)),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -170,8 +174,8 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
         SnackBar(
           content: Text(
             success
-                ? 'Tailscale service ${action}ed successfully'
-                : _viewModel.errorMessage ?? 'Failed to $action Tailscale service',
+                ? l10n.tailscaleServiceActionSuccess(actionTitle)
+                : _viewModel.errorMessage ?? l10n.failedToActionTailscaleService(action),
           ),
           backgroundColor: success ? Colors.green : Colors.red,
         ),
@@ -194,11 +198,12 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
   Future<bool> _handleBackNavigation() async {
     if (!_viewModel.hasUnsavedChanges) return true;
 
+    final l10n = AppLocalizations.of(context)!;
     final shouldPop = await ConfirmationDialog.show(
       context: context,
-      title: 'Unsaved Changes',
-      message: 'You have unsaved changes. Do you want to discard them?',
-      confirmText: 'Discard',
+      title: l10n.unsavedChanges,
+      message: l10n.unsavedChangesConfirmation,
+      confirmText: l10n.discard,
       isDestructive: true,
     );
 
@@ -218,13 +223,13 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Tailscale Settings'),
+          title: Text(AppLocalizations.of(context)!.tailscaleSettings),
           actions: [
             if (_viewModel.settings != null)
               IconButton(
                 icon: Icon(_showServiceControls ? Icons.close : Icons.settings),
                 onPressed: () => setState(() => _showServiceControls = !_showServiceControls),
-                tooltip: _showServiceControls ? 'Hide Controls' : 'Service Controls',
+                tooltip: _showServiceControls ? AppLocalizations.of(context)!.hideControls : AppLocalizations.of(context)!.serviceControls,
               ),
           ],
         ),
@@ -240,7 +245,7 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
         ),
         body: LoadingOverlay(
           isLoading: _viewModel.isLoading,
-          message: 'Loading settings...',
+          message: AppLocalizations.of(context)!.loadingSettings,
           child: _buildBody(),
         ),
         floatingActionButton: _viewModel.hasUnsavedChanges
@@ -252,14 +257,14 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
                     backgroundColor: Colors.grey,
                     heroTag: 'discard',
                     icon: const Icon(Icons.close),
-                    label: const Text('Discard'),
+                    label: Text(AppLocalizations.of(context)!.discard),
                   ),
                   const SizedBox(width: 16),
                   FloatingActionButton.extended(
                     onPressed: _viewModel.isLoading ? null : _applyAllChanges,
                     heroTag: 'apply',
                     icon: const Icon(Icons.check),
-                    label: const Text('Apply'),
+                    label: Text(AppLocalizations.of(context)!.apply),
                   ),
                 ],
               )
@@ -277,7 +282,7 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
     }
 
     if (_viewModel.settings == null) {
-      return const Center(child: Text('No settings available'));
+      return Center(child: Text(AppLocalizations.of(context)!.noSettingsAvailable));
     }
 
     return Form(

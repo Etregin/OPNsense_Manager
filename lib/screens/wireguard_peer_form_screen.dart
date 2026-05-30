@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/wireguard_peer.dart';
 import '../viewmodels/wireguard_peer_form_view_model.dart';
@@ -126,11 +127,12 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
       setState(() {
         _pskController.text = psk;
       });
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Pre-shared key generated successfully'),
+        SnackBar(
+          content: Text(l10n.presharedKeyGeneratedSuccessfully),
           backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
         ),
       );
     } else if (_viewModel.errorMessage != null) {
@@ -147,10 +149,12 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
   Future<void> _savePeer() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final l10n = AppLocalizations.of(context)!;
+
     if (_tunnelAddresses.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('At least one tunnel address is required'),
+        SnackBar(
+          content: Text(l10n.tunnelAddressRequired),
           backgroundColor: Colors.red,
         ),
       );
@@ -159,8 +163,8 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
 
     if (_selectedServerUuids.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('At least one server must be selected'),
+        SnackBar(
+          content: Text(l10n.serverSelectionRequired),
           backgroundColor: Colors.red,
         ),
       );
@@ -196,8 +200,8 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
           SnackBar(
             content: Text(
               _viewModel.isEditing
-                  ? 'Peer updated successfully'
-                  : 'Peer created successfully',
+                  ? l10n.peerUpdatedSuccessfully
+                  : l10n.peerCreatedSuccessfully,
             ),
             backgroundColor: Colors.green,
           ),
@@ -207,7 +211,7 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              _viewModel.errorMessage ?? 'Failed to save peer',
+              _viewModel.errorMessage ?? l10n.failedToSavePeer,
             ),
             backgroundColor: Colors.red,
           ),
@@ -217,16 +221,17 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
   }
 
   Future<void> _addTunnelAddress() async {
+    final l10n = AppLocalizations.of(context)!;
     final address = await AddItemDialog.show(
       context: context,
-      title: 'Add Tunnel Address',
-      labelText: 'Tunnel Address (CIDR)',
+      title: l10n.addTunnelAddress,
+      labelText: l10n.tunnelAddressCidr,
       hintText: '10.10.10.2/24',
-      helperText: 'Example: 10.10.10.2/24 or fd00::2/64',
+      helperText: l10n.exampleCidr,
       validator: (value) {
-        if (value.isEmpty) return 'Address is required';
+        if (value.isEmpty) return l10n.addressIsRequired;
         if (!WireGuardValidators.isValidCIDR(value)) {
-          return 'Invalid CIDR notation';
+          return l10n.invalidCidrNotation;
         }
         return null;
       },
@@ -253,10 +258,11 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _viewModel.isEditing ? 'Edit WireGuard Peer' : 'New WireGuard Peer',
+          _viewModel.isEditing ? l10n.editWireguardPeer : l10n.newWireguardPeer,
         ),
       ),
       body: LoadingOverlay(
@@ -269,12 +275,12 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
               // Name
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                  hintText: 'My WireGuard Peer',
-                  prefixIcon: Icon(Icons.label),
+                decoration: InputDecoration(
+                  labelText: l10n.name,
+                  hintText: l10n.myWireguardPeer,
+                  prefixIcon: const Icon(Icons.label),
                 ),
-                validator: (value) => CommonValidators.required(value, fieldName: 'Name'),
+                validator: (value) => CommonValidators.required(value, fieldName: l10n.name),
                 enabled: !_viewModel.isLoading,
               ),
               const SizedBox(height: 16),
@@ -285,9 +291,9 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
                 obscureText: !_publicKeyVisible,
                 maxLines: 1,
                 decoration: InputDecoration(
-                  labelText: 'Public Key',
+                  labelText: l10n.publicKey,
                   prefixIcon: const Icon(Icons.vpn_key),
-                  helperText: 'Base64 encoded public key',
+                  helperText: l10n.base64EncodedPublicKey,
                   suffixIcon: IconButton(
                     icon: Icon(
                       _publicKeyVisible ? Icons.visibility_off : Icons.visibility,
@@ -297,18 +303,18 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
                         _publicKeyVisible = !_publicKeyVisible;
                       });
                     },
-                    tooltip: _publicKeyVisible ? 'Hide key' : 'Show key',
+                    tooltip: _publicKeyVisible ? l10n.hideKey : l10n.showKey,
                   ),
                 ),
                 validator: (value) {
                   final trimmed = value?.trim() ?? '';
                   if (trimmed.isEmpty) {
-                    return 'Public key is required';
+                    return l10n.publicKeyRequired;
                   }
                   // Base64 pattern: allows A-Z, a-z, 0-9, +, /, and up to 2 = for padding
                   final base64Pattern = RegExp(r'^[A-Za-z0-9+/]*={0,2}$');
                   if (!base64Pattern.hasMatch(trimmed)) {
-                    return 'Invalid Base64 format';
+                    return l10n.invalidBase64Format;
                   }
                   return null;
                 },
@@ -322,10 +328,10 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
                 obscureText: !_pskVisible,
                 maxLines: 1,
                 decoration: InputDecoration(
-                  labelText: 'Pre-shared Key (Optional)',
-                  hintText: 'Leave empty or generate',
+                  labelText: l10n.presharedKeyOptional,
+                  hintText: l10n.leaveEmptyOrGenerate,
                   prefixIcon: const Icon(Icons.vpn_key),
-                  helperText: 'Optional base64 encoded pre-shared key',
+                  helperText: l10n.optionalBase64EncodedPresharedKey,
                   suffixIcon: IconButton(
                     icon: Icon(
                       _pskVisible ? Icons.visibility_off : Icons.visibility,
@@ -335,7 +341,7 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
                         _pskVisible = !_pskVisible;
                       });
                     },
-                    tooltip: _pskVisible ? 'Hide key' : 'Show key',
+                    tooltip: _pskVisible ? l10n.hideKey : l10n.showKey,
                   ),
                 ),
                 validator: (value) {
@@ -346,7 +352,7 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
                   // Base64 pattern: allows A-Z, a-z, 0-9, +, /, and up to 2 = for padding
                   final base64Pattern = RegExp(r'^[A-Za-z0-9+/]*={0,2}$');
                   if (!base64Pattern.hasMatch(trimmed)) {
-                    return 'Invalid Base64 format';
+                    return l10n.invalidBase64Format;
                   }
                   return null;
                 },
@@ -369,7 +375,7 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
                         )
                       : const Icon(Icons.refresh),
                   label: Text(
-                    _viewModel.isGeneratingPsk ? 'Generating...' : 'Generate Pre-shared Key',
+                    _viewModel.isGeneratingPsk ? l10n.generating : l10n.generatePresharedKey,
                   ),
                 ),
               ),
@@ -377,24 +383,24 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
 
               // Allowed IPs
               ListManagerCard(
-                title: 'Allowed IPs',
+                title: l10n.allowedIps,
                 items: _tunnelAddresses,
                 onAdd: _addTunnelAddress,
                 onRemove: (address) => setState(() => _tunnelAddresses.remove(address)),
                 isLoading: _viewModel.isLoading,
-                emptyMessage: 'No tunnel addresses configured',
+                emptyMessage: l10n.noTunnelAddressesConfigured,
               ),
               const SizedBox(height: 24),
 
               // Endpoint Address
               TextFormField(
                 controller: _serverAddressController,
-                decoration: const InputDecoration(
-                  labelText: 'Endpoint Address',
+                decoration: InputDecoration(
+                  labelText: l10n.endpointAddress,
                   hintText: '192.168.1.1 or vpn.example.com',
-                  prefixIcon: Icon(Icons.dns),
+                  prefixIcon: const Icon(Icons.dns),
                 ),
-                validator: (value) => CommonValidators.required(value, fieldName: 'Endpoint Address'),
+                validator: (value) => CommonValidators.required(value, fieldName: l10n.endpointAddress),
                 enabled: !_viewModel.isLoading,
               ),
               const SizedBox(height: 16),
@@ -402,10 +408,10 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
               // Endpoint Port
               TextFormField(
                 controller: _serverPortController,
-                decoration: const InputDecoration(
-                  labelText: 'Endpoint Port',
+                decoration: InputDecoration(
+                  labelText: l10n.endpointPort,
                   hintText: '51820',
-                  prefixIcon: Icon(Icons.settings_ethernet),
+                  prefixIcon: const Icon(Icons.settings_ethernet),
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -417,11 +423,11 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
               // Keepalive
               TextFormField(
                 controller: _keepaliveController,
-                decoration: const InputDecoration(
-                  labelText: 'Keepalive (Optional)',
+                decoration: InputDecoration(
+                  labelText: l10n.keepaliveOptional,
                   hintText: '25',
-                  prefixIcon: Icon(Icons.timer),
-                  helperText: 'Persistent keepalive in seconds (recommended: 25)',
+                  prefixIcon: const Icon(Icons.timer),
+                  helperText: l10n.persistentKeepaliveSeconds,
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -431,16 +437,16 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
               const SizedBox(height: 16),
 
               // Servers Selection
-              const Text(
-                'Instances',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              Text(
+                l10n.instances,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               Card(
                 child: ListTile(
-                  title: Text('${_selectedServerUuids.length} server(s) selected'),
+                  title: Text(l10n.serversSelected(_selectedServerUuids.length)),
                   subtitle: _selectedServerUuids.isEmpty
-                      ? const Text('No servers selected')
+                      ? Text(l10n.noServersSelected)
                       : null,
                   trailing: const Icon(Icons.arrow_forward_ios),
                   onTap: _viewModel.isLoading || _viewModel.loadingServers
@@ -452,8 +458,8 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
 
               // Enabled Switch
               SwitchListTile(
-                title: const Text('Enabled'),
-                subtitle: const Text('Peer will be active when enabled'),
+                title: Text(l10n.enabled),
+                subtitle: Text(l10n.peerWillBeActiveWhenEnabled),
                 value: _enabled,
                 onChanged: _viewModel.isLoading
                     ? null
@@ -468,7 +474,7 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: Text(
-                  _viewModel.isEditing ? 'Update Peer' : 'Create Peer',
+                  _viewModel.isEditing ? l10n.updatePeer : l10n.createPeer,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -508,12 +514,13 @@ class _ServerSelectorDialogState extends State<_ServerSelectorDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return AlertDialog(
-      title: const Text('Select Servers'),
+      title: Text(l10n.selectServersTitle),
       content: SizedBox(
         width: double.maxFinite,
         child: widget.availableServers.isEmpty
-            ? const Center(child: Text('No servers available'))
+            ? Center(child: Text(l10n.noServersAvailable))
             : ListView.builder(
                 shrinkWrap: true,
                 itemCount: widget.availableServers.length,
@@ -523,7 +530,7 @@ class _ServerSelectorDialogState extends State<_ServerSelectorDialog> {
                   
                   return CheckboxListTile(
                     title: Text(server.name),
-                    subtitle: Text('${server.tunneladdress} (Port: ${server.port})'),
+                    subtitle: Text('${server.tunneladdress} (${l10n.port}: ${server.port})'),
                     value: isSelected,
                     onChanged: (value) {
                       setState(() {
@@ -541,11 +548,11 @@ class _ServerSelectorDialogState extends State<_ServerSelectorDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         ElevatedButton(
           onPressed: () => Navigator.of(context).pop(_selected),
-          child: const Text('Done'),
+          child: Text(l10n.done),
         ),
       ],
     );

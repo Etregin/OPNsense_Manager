@@ -1,531 +1,5317 @@
 {
   "@@locale": "ar",
-  "appName": "مدير OPNsense",
-  
-  "dashboard": "لوحة التحكم",
-  "firewallRules": "قواعد الجدار الناري",
-  "firewallLogs": "سجلات الجدار الناري",
-  "systemInfo": "معلومات النظام",
-  "vpnConnections": "اتصالات VPN",
-  "settings": "الإعدادات",
-  
-  "hostname": "اسم المضيف",
-  "versionLabel": "الإصدار",
-  "platform": "المنصة",
-  "uptime": "وقت التشغيل",
-  "cpuUsage": "استخدام المعالج",
-  "memoryUsage": "استخدام الذاكرة",
-  
-  "services": "الخدمات",
-  "gateways": "البوابات",
-  "running": "قيد التشغيل",
-  "stopped": "متوقف",
-  "online": "متصل",
-  "offline": "غير متصل",
-  
-  "start": "تشغيل",
-  "stop": "إيقاف",
-  "restart": "إعادة تشغيل",
-  "enable": "تفعيل",
-  "disable": "تعطيل",
-  "delete": "حذف",
-  "edit": "تعديل",
-  "save": "حفظ",
-  "cancel": "إلغاء",
-  "ok": "موافق",
-  "yes": "نعم",
-  "no": "لا",
-  "close": "إغلاق",
-  "refresh": "تحديث",
-  "apply": "تطبيق",
-  
-  "login": "تسجيل الدخول",
-  "logout": "تسجيل الخروج",
-  "host": "المضيف",
-  "port": "المنفذ",
-  "apiKey": "مفتاح API",
-  "apiSecret": "سر API",
-  "useHttps": "استخدام HTTPS",
-  "allowSelfSigned": "السماح بالشهادة الموقعة ذاتياً",
-  "testConnection": "اختبار الاتصال",
-  "connectionSuccessful": "نجح الاتصال",
-  "connectionFailed": "فشل الاتصال",
-  "testingConnection": "اختبار الاتصال {current} من {total}: {endpoint}",
-  "connectedSuccessfullyVia": "تم الاتصال بنجاح عبر: {endpoint}",
-  "verifyingConnection": "التحقق من الاتصال بـ {endpoint}...",
-  "unableToConnectToAnyEndpoint": "تعذر الاتصال بأي من نقاط النهاية المكونة. يرجى التحقق من إعدادات الشبكة والمحاولة مرة أخرى.",
-  
-  "testProfile": "اختبار الملف الشخصي",
-  "testConnections": "اختبار الاتصالات",
-  "testingAllConnections": "اختبار جميع نقاط الاتصال...",
-  "connectionTestResults": "نتائج اختبار الاتصال",
-  "allConnectionsSuccessful": "تم اختبار جميع الاتصالات بنجاح",
-  "someConnectionsFailed": "فشلت بعض الاتصالات",
-  "saveWithoutTesting": "حفظ بدون اختبار",
-  "saveAndConnect": "حفظ واتصال",
-  "profileSaved": "تم حفظ الملف الشخصي بنجاح",
-  "savingProfile": "جاري حفظ الملف الشخصي...",
-  
-  "profiles": "الملفات الشخصية",
-  "addProfile": "إضافة ملف شخصي",
-  "editProfile": "تعديل الملف الشخصي",
-  "deleteProfile": "حذف الملف الشخصي",
-  "profileName": "اسم الملف الشخصي",
-  "activeProfile": "الملف الشخصي النشط",
-  "switchProfile": "تبديل الملف الشخصي",
-  "exportProfiles": "تصدير الملفات الشخصية",
-  "importProfiles": "استيراد الملفات الشخصية",
-  
-  "security": "الأمان",
-  "pinLock": "قفل PIN",
-  "changePIN": "تغيير PIN",
-  "biometricAuth": "المصادقة البيومترية",
-  "sessionTimeout": "مهلة الجلسة",
-  "lockApp": "قفل التطبيق",
-  
-  "appearance": "المظهر",
-  "theme": "السمة",
-  "language": "اللغة",
-  "lightMode": "الوضع الفاتح",
-  "darkMode": "الوضع الداكن",
-  "systemDefault": "افتراضي النظام",
-  
-  "general": "عام",
   "about": "حول",
-  "licenses": "التراخيص",
-  
-  "firewallRuleDetails": "تفاصيل قاعدة الجدار الناري",
-  "createRule": "إنشاء قاعدة",
-  "editRule": "تعديل القاعدة",
-  "deleteRule": "حذف القاعدة",
-  "action": "الإجراء",
-  "interface": "الواجهة",
-  "protocol": "البروتوكول",
-  "source": "المصدر",
-  "destination": "الوجهة",
-  "sourcePort": "منفذ المصدر",
-  "destinationPort": "منفذ الوجهة",
-  "description": "الوصف",
-  "enabled": "مفعّل",
-  "disabled": "معطّل",
-  
-  "pass": "سماح",
-  "block": "حظر",
-  "reject": "رفض",
-  
-  "logs": "السجلات",
-  "filterByAction": "تصفية حسب الإجراء",
-  "showAll": "عرض الكل",
-  "autoRefresh": "التحديث التلقائي",
-  "logLimit": "حد السجلات",
-  
-  "paused": "متوقف مؤقتاً",
-  "live": "مباشر",
-  "entries": "إدخالات",
-  "selected": "محدد",
-  "selectAll": "تحديد الكل",
-  "copy": "نسخ",
-  "historySize": "حجم السجل",
-  "enableAutoScroll": "تفعيل التمرير التلقائي",
-  "disableAutoScroll": "تعطيل التمرير التلقائي",
-  "clearLogs": "مسح السجلات",
-  "pause": "إيقاف مؤقت",
-  "resume": "استئناف",
-  "copiedLogEntries": "تم نسخ {count} {count, plural, =1{إدخال} other{إدخالات}}",
-  "pauseLiveViewToSelect": "أوقف العرض المباشر لتحديد إدخالات السجل",
-  "errorLoadingLogs": "خطأ في تحميل السجلات",
-  "noLogsAvailable": "لا توجد سجلات متاحة",
-  "logsWillAppear": "ستظهر السجلات هنا عند إنشائها",
-  "selectNumberOfEntries": "حدد عدد إدخالات السجل المراد عرضها:",
-  "reason": "السبب",
-  
-  "newRule": "قاعدة جديدة",
-  "ruleDetails": "تفاصيل القاعدة",
-  "type": "النوع",
-  "sequence": "التسلسل",
-  "status": "الحالة",
-  "systemGeneratedRule": "هذه قاعدة تم إنشاؤها بواسطة النظام ولا يمكن تعديلها أو حذفها.",
-  "systemGeneratedRulesCannotBeModified": "لا يمكن تعديل القواعد التي تم إنشاؤها بواسطة النظام",
-  "systemGeneratedRulesCannotBeDeleted": "لا يمكن حذف القواعد التي تم إنشاؤها بواسطة النظام",
-  "enableRule": "تفعيل القاعدة",
-  "disableRule": "تعطيل القاعدة",
-  "enablingRule": "جاري تفعيل القاعدة...",
-  "disablingRule": "جاري تعطيل القاعدة...",
-  "ruleEnabledSuccessfully": "تم تفعيل القاعدة بنجاح",
-  "ruleDisabledSuccessfully": "تم تعطيل القاعدة بنجاح",
-  "errorTogglingRule": "خطأ في تبديل القاعدة: {error}",
-  "deleteRuleConfirmation": "هل أنت متأكد من رغبتك في حذف القاعدة \"{description}\"؟",
-  "ruleDeleted": "تم حذف القاعدة",
-  "errorDeletingRule": "خطأ في حذف القاعدة: {error}",
-  "errorLoadingRules": "خطأ في تحميل القواعد",
-  "noAutomationRulesFound": "لم يتم العثور على قواعد أتمتة",
-  "createFirstAutomationRule": "أنشئ أول قاعدة أتمتة للبدء",
-  "noInterfacesWithAutomationRules": "لا توجد واجهات بقواعد أتمتة",
-  "selectInterface": "حدد الواجهة",
-  "selectInterfaceToViewRules": "حدد واجهة لعرض القواعد",
-  "noRulesForInterface": "لا توجد قواعد لـ {interface}",
-  "unnamedRule": "قاعدة بدون اسم",
-  
-  "systemInformation": "معلومات النظام",
-  "errorLoadingSystemInfo": "خطأ في تحميل معلومات النظام",
-  
-  "errorLoadingVPNConnections": "خطأ في تحميل اتصالات VPN",
-  "noVPNConnectionsFound": "لم يتم العثور على اتصالات VPN",
-  "noConnectionsFound": "لم يتم العثور على اتصالات {type}",
-  "vpnConnectionsWillAppear": "ستظهر اتصالات VPN هنا عند تكوينها",
-  "totalVPNs": "إجمالي VPN",
-  "filterByType": "تصفية حسب النوع",
-  "allVPNs": "جميع VPN",
-  "connectVPN": "اتصال VPN",
-  "disconnectVPN": "قطع اتصال VPN",
-  "connectingVPN": "جاري الاتصال بـ {name}...",
-  "disconnectingVPN": "جاري قطع الاتصال بـ {name}...",
-  "successfullyConnected": "تم الاتصال بنجاح بـ {name}",
-  "successfullyDisconnected": "تم قطع الاتصال بنجاح بـ {name}",
-  "failedToConnect": "فشل الاتصال بـ {name}",
-  "failedToDisconnect": "فشل قطع الاتصال بـ {name}",
-  "restartVPNService": "إعادة تشغيل خدمة VPN",
-  "restartServiceConfirmation": "هل أنت متأكد من رغبتك في إعادة تشغيل خدمة {type}؟\n\nسيؤدي هذا إلى قطع جميع الاتصالات النشطة مؤقتًا.",
-  "restartingService": "جاري إعادة تشغيل خدمة {type}...",
-  "successfullyRestartedService": "تم إعادة تشغيل خدمة {type} بنجاح",
-  "failedToRestartService": "فشل إعادة تشغيل خدمة {type}",
-  "remoteAddress": "العنوان البعيد",
-  "localAddress": "العنوان المحلي",
-  "received": "المستلم",
-  "sent": "المرسل",
-  "port": "المنفذ",
-  
-  "systemInformation": "معلومات النظام",
-  "firmwareDetails": "تفاصيل البرنامج الثابت",
-  "systemType": "نوع النظام",
-  "architecture": "البنية",
-  "gitCommit": "التزام Git",
-  "packageMirror": "مرآة الحزمة",
-  "repository": "المستودع",
-  "lastUpdate": "آخر تحديث",
-  
-  "vpnStatus": "حالة VPN",
-  "connected": "متصل",
-  "disconnected": "غير متصل",
-  "connect": "اتصال",
-  "disconnect": "قطع الاتصال",
-  "vpnType": "نوع VPN",
-  "clientAddress": "عنوان العميل",
-  "virtualAddress": "العنوان الافتراضي",
-  "bytesReceived": "البايتات المستلمة",
-  "bytesSent": "البايتات المرسلة",
-  "connectedSince": "متصل منذ",
-  
-  "rebootSystem": "إعادة تشغيل النظام",
-  "rebootConfirmation": "هل أنت متأكد من رغبتك في إعادة تشغيل النظام؟",
-  "rebootSuccess": "تم بدء إعادة تشغيل النظام",
-  "rebootFailed": "فشل في إعادة تشغيل النظام",
-  
-  "error": "خطأ",
-  "success": "نجاح",
-  "warning": "تحذير",
-  "info": "معلومات",
-  "loading": "جاري التحميل...",
-  "noData": "لا توجد بيانات متاحة",
-  "retry": "إعادة المحاولة",
-  
-  "confirmDelete": "تأكيد الحذف",
-  "deleteConfirmation": "هل أنت متأكد من رغبتك في حذف هذا العنصر؟",
-  "cannotBeUndone": "لا يمكن التراجع عن هذا الإجراء.",
-  
-  "enterPIN": "أدخل PIN",
-  "confirmPIN": "تأكيد PIN",
-  "pinMismatch": "رموز PIN غير متطابقة",
-  "pinTooShort": "يجب أن يكون PIN 4 أرقام على الأقل",
-  "invalidPIN": "PIN غير صالح",
-  
-  "minutes": "دقائق",
-  "seconds": "ثواني",
-  "hours": "ساعات",
-  "days": "أيام",
-  
-  "required": "مطلوب",
-  "optional": "اختياري",
-  "invalidInput": "إدخال غير صالح",
-  "fieldRequired": "هذا الحقل مطلوب",
-  
-  "exportSuccess": "نجح التصدير",
-  "exportFailed": "فشل التصدير",
-  "importSuccess": "نجح الاستيراد",
-  "importFailed": "فشل الاستيراد",
-  "importedProfiles": "تم استيراد {count} ملف شخصي",
-  
-  "noProfilesFound": "لم يتم العثور على ملفات شخصية",
-  "createFirstProfile": "أنشئ ملفك الشخصي الأول للبدء",
-  
-  "serviceStarted": "تم تشغيل الخدمة بنجاح",
-  "serviceStopped": "تم إيقاف الخدمة بنجاح",
-  "serviceRestarted": "تمت إعادة تشغيل الخدمة بنجاح",
-  "serviceActionFailed": "فشل إجراء الخدمة",
-  
-  "ruleCreated": "تم إنشاء القاعدة بنجاح",
-  "ruleUpdated": "تم تحديث القاعدة بنجاح",
-  "ruleDeleted": "تم حذف القاعدة بنجاح",
-  "ruleActionFailed": "فشل إجراء القاعدة",
-  
-  "profileSaved": "تم حفظ الملف الشخصي بنجاح",
-  "profileDeleted": "تم حذف الملف الشخصي بنجاح",
-  "profileActivated": "تم تفعيل الملف الشخصي بنجاح",
-  
-  "authenticationRequired": "المصادقة مطلوبة",
-  "authenticateToUnlock": "قم بالمصادقة لفتح التطبيق",
-  "authenticationFailed": "فشلت المصادقة",
-  
-  "networkError": "حدث خطأ في الشبكة",
-  "serverError": "حدث خطأ في الخادم",
-  "unauthorized": "وصول غير مصرح به",
-  "forbidden": "الوصول محظور",
-  "notFound": "المورد غير موجود",
-  "timeout": "انتهت مهلة الطلب",
-  
-  "any": "أي",
-  "none": "لا شيء",
-  
-  "editRule": "تعديل القاعدة",
-  "newRule": "قاعدة جديدة",
-  "description": "الوصف",
-  "enterRuleDescription": "أدخل وصف القاعدة",
-  "action": "الإجراء",
-  "pass": "سماح",
-  "block": "حظر",
-  "reject": "رفض",
-  "interface": "الواجهة",
-  "loading": "جاري التحميل...",
-  "protocol": "البروتوكول",
-  "source": "المصدر",
-  "anyIpAddressCidrOrAlias": "أي، عنوان IP، CIDR، أو اسم مستعار",
-  "examplesAnyIpCidr": "أمثلة: any، 192.168.1.0/24، 10.0.0.1",
-  "sourceIsRequired": "المصدر مطلوب",
-  "invalidSourceFormat": "تنسيق المصدر غير صالح",
-  "sourcePortOptional": "منفذ المصدر (اختياري)",
-  "anyPortNumberRangeOrAlias": "أي، رقم منفذ، نطاق، أو اسم مستعار",
-  "examplesAnyPortRange": "أمثلة: any، 80، 1024-65535",
-  "invalidPortFormat": "تنسيق المنفذ غير صالح",
-  "destination": "الوجهة",
-  "destinationIsRequired": "الوجهة مطلوبة",
-  "invalidDestinationFormat": "تنسيق الوجهة غير صالح",
-  "destinationPortOptional": "منفذ الوجهة (اختياري)",
-  "examplesAnyPortRangeHttp": "أمثلة: any، 80، 80-443، http",
-  "enabled": "مفعّل",
-  "ruleWillBeActiveWhenEnabled": "ستكون القاعدة نشطة عند التفعيل",
-  "ruleGuidelines": "إرشادات القاعدة",
-  "ruleGuidelinesText": "• استخدم \"any\" لمطابقة جميع العناوين أو المنافذ\n• تدوين CIDR: 192.168.1.0/24\n• نطاقات المنافذ: 80-443\n• تتم معالجة القواعد بالترتيب\n• يتم تطبيق التغييرات فوراً",
-  "updateRule": "تحديث القاعدة",
-  "createRule": "إنشاء قاعدة",
-  "errorSavingRule": "خطأ في حفظ القاعدة: {error}",
-  
-  "connectToYourOPNsenseFirewall": "اتصل بجدار الحماية OPNsense الخاص بك",
-  "profileNameOptional": "اسم الملف الشخصي (اختياري)",
-  "myOPNsenseRouter": "جهاز التوجيه OPNsense الخاص بي",
-  "hostIpAddress": "المضيف / عنوان IP",
-  "hostPlaceholder": "192.168.1.1 أو firewall.example.com",
-  "portPlaceholder": "443",
-  "useHttps": "استخدام HTTPS",
-  "recommendedForSecureConnections": "موصى به للاتصالات الآمنة",
-  "enterYourApiKey": "أدخل مفتاح API الخاص بك",
-  "enterYourApiSecret": "أدخل سر API الخاص بك",
-  "connect": "اتصال",
-  "connectionFailed": "فشل الاتصال. تحقق من سجلات وحدة التحكم للحصول على التفاصيل.\n\nالمشاكل الشائعة:\n• الجهاز ليس على نفس الشبكة مثل OPNsense\n• عنوان IP أو المنفذ خاطئ\n• جدار الحماية يحظر الاتصال\n• بيانات اعتماد API غير صالحة",
-  "apiError": "خطأ في API: {message}",
-  "needHelpCheckDocumentation": "تحتاج مساعدة؟ راجع وثائق OPNsense لإنشاء مفتاح API.",
-  
-  "selectAProfileOrCreateNewOne": "حدد ملفاً شخصياً أو أنشئ ملفاً جديداً",
-  "createNewProfile": "إنشاء ملف شخصي جديد",
-  "noProfilesYet": "لا توجد ملفات شخصية بعد",
-  "createYourFirstProfile": "أنشئ ملفك الشخصي الأول في OPNsense للبدء",
-  "lastUsed": "آخر استخدام: {date}",
-  "justNow": "الآن",
-  "minutesAgo": "منذ {minutes} دقيقة",
-  "hoursAgo": "منذ {hours} ساعة",
-  "daysAgo": "منذ {days} يوم",
-  "connectionFailedError": "فشل الاتصال: {error}",
-  "none": "لا شيء",
-  
-  "enterPin": "أدخل رمز PIN",
-  "unlockOPNsenseManager": "فتح OPNsense Manager",
-  "pleaseEnterYourPin": "الرجاء إدخال رمز PIN الخاص بك",
-  "incorrectPin": "رمز PIN غير صحيح",
-  "unlock": "فتح",
-  "useBiometric": "استخدام البيومترية",
-  "authenticateToUnlock": "المصادقة لفتح OPNsense Manager",
-  "version": "الإصدار {version}",
-  
-  "diskUsage": "استخدام القرص",
-  "pinLockDisabled": "تم تعطيل قفل PIN. تم تعطيل القفل البيومتري أيضاً.",
-  "setPin": "تعيين PIN",
-  "pinLockTitle": "قفل PIN",
-  "requirePinToUnlock": "يتطلب PIN لفتح التطبيق",
-  "changePinTitle": "تغيير PIN",
-  "updatePinCode": "تحديث رمز PIN الخاص بك",
-  "lockTimeoutLabel": "مهلة القفل",
-  "lockAfterMinutes": "القفل بعد {minutes} {minutes, plural, =1{دقيقة} other{دقائق}} من عدم النشاط",
-  "minute": "دقيقة",
-  "add": "إضافة",
-  "profileAdded": "تمت إضافة الملف الشخصي",
-  "profileUpdated": "تم تحديث الملف الشخصي",
-  "exportProfilesTitle": "تصدير الملفات الشخصية",
-  "chooseExportLocation": "اختر موقع التصدير",
-  "profilesExportedSuccessfully": "تم تصدير الملفات الشخصية بنجاح!\n{path}",
-  "exportFailedError": "فشل التصدير: {error}",
-  "importProfilesTitle": "استيراد الملفات الشخصية",
-  "invalidFileError": "ملف غير صالح: {error}",
-  "importProfilesDialog": "كيف يجب التعامل مع الملفات الشخصية الموجودة؟\n\n• الاحتفاظ بكليهما: الاستيراد بمعرفات جديدة\n• الكتابة فوق: استبدال الملفات الشخصية الموجودة",
-  "keepBoth": "الاحتفاظ بكليهما",
-  "overwrite": "الكتابة فوق",
-  "successfullyImportedProfiles": "تم استيراد {count} {count, plural, =1{ملف شخصي} other{ملفات شخصية}} بنجاح",
-  "importFailedWithErrors": "فشل الاستيراد: {errors}",
-  "importedWithFailures": "تم استيراد {success} {success, plural, =1{ملف شخصي} other{ملفات شخصية}}، فشل {failed}",
-  "deleteProfileTitle": "حذف الملف الشخصي",
-  "deleteProfileConfirmation": "هل أنت متأكد من رغبتك في حذف \"{name}\"؟",
-  "applicationLegalese": "© 2026 OPNsense Manager\n\nمرخص بموجب رخصة جنو العمومية الإصدار 3.0\n\nهذا البرنامج مجاني: يمكنك إعادة توزيعه و/أو تعديله بموجب شروط رخصة جنو العمومية كما نشرتها مؤسسة البرمجيات الحرة، سواء الإصدار 3 من الرخصة، أو (حسب اختيارك) أي إصدار لاحق.",
+  "@about": {
+    "description": "Translation for about"
+  },
   "aboutDescription": "تطبيق Flutter احترافي لإدارة جدران حماية OPNsense.",
-  "featuresTitle": "الميزات",
-  "featuresList": "• مراقبة وإدارة النظام\n• تكوين قواعد الجدار الناري\n• التحكم في الخدمات\n• السجلات في الوقت الفعلي\n• دعم ملفات شخصية متعددة\n• مصادقة آمنة",
-  "viewFullLicense": "عرض الرخصة الكاملة",
-  "gnuLicenseTitle": "رخصة جنو العمومية الإصدار 3.0",
-  "gnuLicenseText": "هذا البرنامج مجاني: يمكنك إعادة توزيعه و/أو تعديله بموجب شروط رخصة جنو العمومية كما نشرتها مؤسسة البرمجيات الحرة، سواء الإصدار 3 من الرخصة، أو (حسب اختيارك) أي إصدار لاحق.\n\nيتم توزيع هذا البرنامج على أمل أن يكون مفيداً، ولكن دون أي ضمان؛ حتى بدون الضمان الضمني للتسويق أو الملاءمة لغرض معين. راجع رخصة جنو العمومية لمزيد من التفاصيل.\n\nيجب أن تكون قد تلقيت نسخة من رخصة جنو العمومية مع هذا البرنامج. إذا لم يكن الأمر كذلك، راجع <https://www.gnu.org/licenses/>.\n\nلماذا GPLv3؟\n\n• يضمن بقاء البرنامج مجانياً ومفتوح المصدر\n• يجب أن تكون أي تعديلات أو مشتقات مفتوحة المصدر أيضاً\n• للمستخدمين حرية استخدام ودراسة ومشاركة وتعديل البرنامج\n• يستفيد المجتمع من التحسينات والمساهمات",
-  
-  "enterPinLabel": "أدخل رمز PIN (4-6 أرقام)",
-  "confirmPin": "تأكيد رمز PIN",
-  "pinLockEnabled": "تم تفعيل قفل PIN",
-  "currentPin": "رمز PIN الحالي",
-  "newPin": "رمز PIN الجديد (4-6 أرقام)",
-  "confirmNewPin": "تأكيد رمز PIN الجديد",
-  "currentPinIncorrect": "رمز PIN الحالي غير صحيح",
-  "pinChangedSuccessfully": "تم تغيير رمز PIN بنجاح",
-  "pleaseEnterCurrentPin": "الرجاء إدخال رمز PIN الحالي",
-  "pleaseEnterNewPin": "الرجاء إدخال رمز PIN جديد",
-  "pinMustContainOnlyNumbers": "يجب أن يحتوي رمز PIN على أرقام فقط",
-  "newPinMustBeDifferent": "يجب أن يكون رمز PIN الجديد مختلفًا عن الحالي",
-  "enablePinLockFirst": "يرجى تفعيل قفل PIN أولاً قبل استخدام البيومترية",
-  "biometricNotAvailable": "المصادقة البيومترية غير متوفرة على هذا الجهاز",
-  "biometricLockEnabled": "تم تفعيل القفل البيومتري",
-  "biometricAuthFailed": "فشلت المصادقة البيومترية أو تم إلغاؤها",
-  "biometricLockDisabled": "تم تعطيل القفل البيومتري",
-  "biometricLockTitle": "قفل {biometricType}",
-  "useBiometricToUnlock": "استخدم {biometricType} لفتح التطبيق",
-  "enablePinLockFirstBiometric": "قم بتفعيل قفل PIN أولاً لاستخدام البيومترية",
-  "oneMin": "1 دقيقة",
-  "twoMin": "2 دقيقة",
-  "fiveMin": "5 دقائق",
-  "tenMin": "10 دقائق",
-  "fifteenMin": "15 دقيقة",
-  "thirtyMin": "30 دقيقة",
-  "oneHour": "1 ساعة",
-  "lockTimeoutSet": "تم تعيين مهلة القفل إلى {value} {value, plural, =1{دقيقة} other{دقائق}}",
-  "activate": "تفعيل",
-  "import": "استيراد",
-  "export": "تصدير",
-  "addProfile": "إضافة ملف تعريف",
-  "activatingProfile": "جاري تفعيل الملف التعريفي...",
-  "activatedProfile": "تم تفعيل الملف التعريفي: {name}",
-  "connectionTestFailed": "فشل اختبار الاتصال",
-  "profileNameLabel": "اسم الملف التعريفي",
-  "hostIpAddressLabel": "المضيف/عنوان IP",
-  "portLabel": "المنفذ",
-  "useHttpsLabel": "استخدام HTTPS",
-  "apiKeyLabel": "مفتاح API",
-  "apiSecretLabel": "سر API",
-  "profileNameRequired": "اسم الملف التعريفي مطلوب",
-  "exportProfilesContent": "هل تريد تضمين بيانات اعتماد API في التصدير؟\n\nتحذير: سيؤدي تضمين بيانات الاعتماد إلى تخزين مفاتيح API والأسرار بنص عادي. قم بتضمين بيانات الاعتماد فقط إذا كنت ستخزن الملف بشكل آمن.",
-  "withoutCredentials": "بدون بيانات الاعتماد",
-  "includeCredentials": "تضمين بيانات الاعتماد",
-  "unableToAccessFilePath": "غير قادر على الوصول إلى مسار الملف",
-  "invalidFileFormat": "ملف غير صالح: {error}",
-  "importProfilesTitle": "استيراد الملفات التعريفية",
-  "noProfiles": "لا توجد ملفات تعريفية",
-  "addProfileToManageInstances": "أضف ملفاً تعريفياً لإدارة مثيلات OPNsense",
-  
-  "unknown": "غير معروف",
-  "http": "http",
-  "https": "https",
-  "errorPrefix": "خطأ: {message}",
-  "switchProfileConfirmation": "هل أنت متأكد من رغبتك في تبديل الملفات الشخصية؟ سيتم إرجاعك إلى شاشة اختيار الملف الشخصي.",
-  "rebootFailedWithError": "{message}: {error}",
-  
-  "zeroSeconds": "0 ثانية",
-  "day": "يوم",
-  "days": "أيام",
-  "hour": "ساعة",
-  "hours": "ساعات",
-  "minute": "دقيقة",
-  "minutes": "دقائق",
-  "second": "ثانية",
-  "seconds": "ثواني",
-  
-  "hostIsRequired": "المضيف مطلوب",
-  "invalidHostnameOrIp": "اسم مضيف أو عنوان IP غير صالح",
-  "portIsRequired": "المنفذ مطلوب",
-  "portMustBeBetween": "يجب أن يكون المنفذ بين 1 و 65535",
-  "apiKeyIsRequired": "مفتاح API مطلوب",
-  "invalidApiKeyFormat": "تنسيق مفتاح API غير صالح",
-  "apiSecretIsRequired": "سر API مطلوب",
-  "invalidApiSecretFormat": "تنسيق سر API غير صالح",
-  "fieldIsRequired": "{fieldName} مطلوب",
-  
+  "@aboutDescription": {
+    "description": "Translation for aboutDescription"
+  },
+  "aboutImportExport": "حول الاستيراد والتصدير",
+  "@aboutImportExport": {
+    "description": "Translation for aboutImportExport"
+  },
+  "acceptDns": "قبول DNS",
+  "@acceptDns": {
+    "description": "Translation for acceptDns"
+  },
+  "acceptDnsDescription": "استخدام خوادم DNS المقدمة من Tailscale",
+  "@acceptDnsDescription": {
+    "description": "Translation for acceptDnsDescription"
+  },
+  "acceptRoutes": "قبول المسارات",
+  "@acceptRoutes": {
+    "description": "Translation for acceptRoutes"
+  },
+  "acceptSubnetRoutes": "قبول مسارات الشبكة الفرعية",
+  "@acceptSubnetRoutes": {
+    "description": "Translation for acceptSubnetRoutes"
+  },
+  "acceptSubnetRoutesDescription": "قبول المسارات المعلن عنها من العقد الأخرى",
+  "@acceptSubnetRoutesDescription": {
+    "description": "Translation for acceptSubnetRoutesDescription"
+  },
+  "action": "الإجراء",
+  "@action": {
+    "description": "Translation for action"
+  },
   "actionService": "{action} الخدمة",
-  "confirmServiceAction": "{action} \"{name}\"؟",
+  "@actionService": {
+    "description": "Translation for actionService",
+    "placeholders": {
+      "action": {
+        "type": "String",
+        "example": "start"
+      }
+    }
+  },
   "actioningService": "{action} {name}...",
-  
-  "notAvailable": "غير متاح",
-  
-  "unitBytes": "بايت",
-  "unitKilobytes": "كيلوبايت",
-  "unitMegabytes": "ميجابايت",
-  "unitGigabytes": "جيجابايت",
-  "unitTerabytes": "تيرابايت",
-  "unitPetabytes": "بيتابايت",
-  "unitPerSecond": "/ث",
-  
-  "hourAbbrev": "س",
-  "minuteAbbrev": "د",
-  "secondAbbrev": "ث",
-  "liveNetworkMonitor": "مراقب الشبكة المباشر",
-  "searchHostnameOrIp": "البحث عن اسم المضيف أو عنوان IP...",
-  "activeHosts": "{count} مضيف نشط",
-  "noHostsFound": "لم يتم العثور على مضيفين",
-  "tryDifferentSearch": "جرب مصطلح بحث مختلف",
-  "download": "التنزيل",
-  "upload": "الرفع",
-  "totalBandwidth": "إجمالي النطاق الترددي",
-  "of1Gbps": "من 1 جيجابت في الثانية",
-  "networkTotals": "إجماليات الشبكة",
-  "totalDownload": "إجمالي التنزيل",
-  "totalUpload": "إجمالي الرفع",
-  "activeDevices": "الأجهزة النشطة",
-  "sortBy": "ترتيب حسب",
-  "sortByBandwidth": "النطاق الترددي",
-  "sortByHostname": "اسم المضيف",
-  "sortByIP": "عنوان IP",
-  "sortByManufacturer": "الشركة المصنعة",
-  "bandwidthLimit": "حد النطاق الترددي",
-  "bandwidthLimitMbps": "حد النطاق الترددي (ميجابت في الثانية)",
-  "enterBandwidthLimit": "أدخل حد النطاق الترددي للاتصال بالميجابت في الثانية",
-  "macAddress": "عنوان MAC",
-  "monitorInterface": "واجهة المراقبة",
-  "selectMultipleInterfaces": "حدد واجهة واحدة أو أكثر للمراقبة",
-  
-  
-  "dhcpLeases": "عقود DHCP",
-  "searchHostnameIpOrMac": "البحث عن اسم المضيف أو IP أو MAC...",
-  "leasesCount": "{filtered} من {total} عقد",
-  "noLeasesFound": "لم يتم العثور على عقود",
-  "all": "الكل",
+  "@actioningService": {
+    "description": "Translation for actioningService",
+    "placeholders": {
+      "action": {
+        "type": "String",
+        "example": "start"
+      },
+      "name": {
+        "type": "String",
+        "example": "Example Name"
+      }
+    }
+  },
+  "activate": "تفعيل",
+  "@activate": {
+    "description": "Translation for activate"
+  },
+  "activatedProfile": "تم تفعيل الملف التعريفي: {name}",
+  "@activatedProfile": {
+    "description": "Translation for activatedProfile",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Example Name"
+      }
+    }
+  },
+  "activatingProfile": "جاري تفعيل الملف التعريفي...",
+  "@activatingProfile": {
+    "description": "Translation for activatingProfile"
+  },
+  "activationFailed": "فشل التفعيل",
+  "@activationFailed": {
+    "description": "Translation for activationFailed"
+  },
   "active": "نشط",
-  "expired": "منتهي",
-  "expires": "ينتهي",
-  "ipAddress": "عنوان IP",
-  "staticLease": "ثابت",
-  "dynamicLease": "ديناميكي",
-  
+  "@active": {
+    "description": "Translation for active"
+  },
+  "activeDevices": "الأجهزة النشطة",
+  "@activeDevices": {
+    "description": "Translation for activeDevices"
+  },
+  "activeHosts": "{count} مضيف نشط",
+  "@activeHosts": {
+    "description": "Translation for activeHosts",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "activeProfile": "الملف الشخصي النشط",
+  "@activeProfile": {
+    "description": "Translation for activeProfile"
+  },
+  "add": "إضافة",
+  "@add": {
+    "description": "Translation for add"
+  },
+  "addButton": "إضافة",
+  "@addButton": {
+    "description": "Translation for addButton"
+  },
+  "addClientOverride": "إضافة تجاوز العميل",
+  "@addClientOverride": {
+    "description": "Translation for addClientOverride"
+  },
+  "addConnection": "إضافة اتصال",
+  "@addConnection": {
+    "description": "Translation for addConnection"
+  },
+  "addConnectionEndpoint": "الرجاء إضافة نقطة اتصال واحدة على الأقل",
+  "@addConnectionEndpoint": {
+    "description": "Translation for addConnectionEndpoint"
+  },
+  "addDnsServer": "إضافة خادم DNS",
+  "@addDnsServer": {
+    "description": "Translation for addDnsServer"
+  },
+  "addHost": "إضافة مضيف",
+  "@addHost": {
+    "description": "Translation for addHost"
+  },
+  "addHostToGetStarted": "أضف مضيفاً للبدء",
+  "@addHostToGetStarted": {
+    "description": "Translation for addHostToGetStarted"
+  },
+  "addInstance": "إضافة مثيل",
+  "@addInstance": {
+    "description": "Translation for addInstance"
+  },
+  "addOpenVpnInstance": "إضافة مثيل OpenVPN",
+  "@addOpenVpnInstance": {
+    "description": "Translation for addOpenVpnInstance"
+  },
+  "addOverride": "إضافة تجاوز",
+  "@addOverride": {
+    "description": "Translation for addOverride"
+  },
+  "addProfile": "إضافة ملف تعريف",
+  "@addProfile": {
+    "description": "Translation for addProfile"
+  },
+  "addProfileToManageInstances": "أضف ملفاً تعريفياً لإدارة مثيلات OPNsense",
+  "@addProfileToManageInstances": {
+    "description": "Translation for addProfileToManageInstances"
+  },
+  "addStaticKey": "إضافة مفتاح ثابت",
+  "@addStaticKey": {
+    "description": "Translation for addStaticKey"
+  },
+  "addStaticKeyTooltip": "إضافة مفتاح ثابت",
+  "@addStaticKeyTooltip": {
+    "description": "Translation for addStaticKeyTooltip"
+  },
+  "addSubnet": "إضافة شبكة فرعية",
+  "@addSubnet": {
+    "description": "Translation for addSubnet"
+  },
+  "addTunnelAddress": "إضافة عنوان نفق",
+  "@addTunnelAddress": {
+    "description": "Translation for addTunnelAddress"
+  },
+  "additionalInformation": "معلومات إضافية",
+  "@additionalInformation": {
+    "description": "Translation for additionalInformation"
+  },
+  "address": "العنوان",
+  "@address": {
+    "description": "Translation for address"
+  },
+  "addressIsRequired": "العنوان مطلوب",
+  "@addressIsRequired": {
+    "description": "Translation for addressIsRequired"
+  },
+  "advertiseExitNode": "الإعلان عن عقدة الخروج",
+  "@advertiseExitNode": {
+    "description": "Translation for advertiseExitNode"
+  },
+  "advertiseExitNodeDescription": "السماح للأجهزة الأخرى بالتوجيه عبر هذه العقدة",
+  "@advertiseExitNodeDescription": {
+    "description": "Translation for advertiseExitNodeDescription"
+  },
+  "advertiseRoutes": "الإعلان عن المسارات",
+  "@advertiseRoutes": {
+    "description": "Translation for advertiseRoutes"
+  },
+  "alert": "تنبيه",
+  "@alert": {
+    "description": "Translation for alert"
+  },
+  "aliasDeletedSuccessfully": "تم حذف الاسم المستعار بنجاح",
+  "@aliasDeletedSuccessfully": {
+    "description": "Translation for aliasDeletedSuccessfully"
+  },
+  "aliasDisabledSuccessfully": "تم تعطيل الاسم المستعار بنجاح",
+  "@aliasDisabledSuccessfully": {
+    "description": "Translation for aliasDisabledSuccessfully"
+  },
+  "aliasEnabledSuccessfully": "تم تفعيل الاسم المستعار بنجاح",
+  "@aliasEnabledSuccessfully": {
+    "description": "Translation for aliasEnabledSuccessfully"
+  },
+  "aliases": "الأسماء المستعارة",
+  "@aliases": {
+    "description": "Translation for aliases"
+  },
+  "all": "الكل",
+  "@all": {
+    "description": "Translation for all"
+  },
+  "allConnectionsSuccessful": "تم اختبار جميع الاتصالات بنجاح",
+  "@allConnectionsSuccessful": {
+    "description": "Translation for allConnectionsSuccessful"
+  },
+  "allDetailsCopiedToClipboard": "تم نسخ جميع التفاصيل إلى الحافظة",
+  "@allDetailsCopiedToClipboard": {
+    "description": "Translation for allDetailsCopiedToClipboard"
+  },
+  "allRoles": "جميع الأدوار",
+  "@allRoles": {
+    "description": "Translation for allRoles"
+  },
+  "allSettingsSavedSuccessfully": "تم حفظ جميع الإعدادات بنجاح",
+  "@allSettingsSavedSuccessfully": {
+    "description": "Translation for allSettingsSavedSuccessfully"
+  },
+  "allStatus": "جميع الحالات",
+  "@allStatus": {
+    "description": "Translation for allStatus"
+  },
+  "allTypes": "جميع الأنواع",
+  "@allTypes": {
+    "description": "Translation for allTypes"
+  },
+  "allVPNs": "جميع VPN",
+  "@allVPNs": {
+    "description": "Translation for allVPNs"
+  },
+  "allowSelfSigned": "السماح بالشهادة الموقعة ذاتياً",
+  "@allowSelfSigned": {
+    "description": "Translation for allowSelfSigned"
+  },
+  "allowSelfSignedCertificates": "السماح بالشهادات الموقعة ذاتياً",
+  "@allowSelfSignedCertificates": {
+    "description": "Translation for allowSelfSignedCertificates"
+  },
+  "allowSelfSignedCertificatesDescription": "قبول شهادات SSL الموقعة ذاتياً",
+  "@allowSelfSignedCertificatesDescription": {
+    "description": "Translation for allowSelfSignedCertificatesDescription"
+  },
+  "allowedIps": "عناوين IP المسموح بها",
+  "@allowedIps": {
+    "description": "Translation for allowedIps"
+  },
+  "allowedIpsLabel": "عناوين IP المسموح بها",
+  "@allowedIpsLabel": {
+    "description": "Translation for allowedIpsLabel"
+  },
+  "any": "أي",
+  "@any": {
+    "description": "Translation for any"
+  },
+  "anyIpAddressCidrOrAlias": "أي، عنوان IP، CIDR، أو اسم مستعار",
+  "@anyIpAddressCidrOrAlias": {
+    "description": "Translation for anyIpAddressCidrOrAlias"
+  },
+  "anyPortNumberRangeOrAlias": "أي، رقم منفذ، نطاق، أو اسم مستعار",
+  "@anyPortNumberRangeOrAlias": {
+    "description": "Translation for anyPortNumberRangeOrAlias"
+  },
+  "apiError": "خطأ في API: {message}",
+  "@apiError": {
+    "description": "Translation for apiError",
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "apiKey": "مفتاح API",
+  "@apiKey": {
+    "description": "Translation for apiKey"
+  },
+  "apiKeyIsRequired": "مفتاح API مطلوب",
+  "@apiKeyIsRequired": {
+    "description": "Translation for apiKeyIsRequired"
+  },
+  "apiKeyLabel": "مفتاح API",
+  "@apiKeyLabel": {
+    "description": "Translation for apiKeyLabel"
+  },
+  "apiSecret": "سر API",
+  "@apiSecret": {
+    "description": "Translation for apiSecret"
+  },
+  "apiSecretIsRequired": "سر API مطلوب",
+  "@apiSecretIsRequired": {
+    "description": "Translation for apiSecretIsRequired"
+  },
+  "apiSecretLabel": "سر API",
+  "@apiSecretLabel": {
+    "description": "Translation for apiSecretLabel"
+  },
+  "appName": "مدير OPNsense",
+  "@appName": {
+    "description": "Translation for appName"
+  },
+  "appearance": "المظهر",
+  "@appearance": {
+    "description": "Translation for appearance"
+  },
+  "applicationLegalese": "© 2026 OPNsense Manager\n\nمرخص بموجب رخصة جنو العمومية الإصدار 3.0\n\nهذا البرنامج مجاني: يمكنك إعادة توزيعه و/أو تعديله بموجب شروط رخصة جنو العمومية كما نشرتها مؤسسة البرمجيات الحرة، سواء الإصدار 3 من الرخصة، أو (حسب اختيارك) أي إصدار لاحق.",
+  "@applicationLegalese": {
+    "description": "Translation for applicationLegalese"
+  },
+  "apply": "تطبيق",
+  "@apply": {
+    "description": "Translation for apply"
+  },
+  "architecture": "البنية",
+  "@architecture": {
+    "description": "Translation for architecture"
+  },
+  "atLeastOneTunnelAddressRequired": "مطلوب عنوان نفق واحد على الأقل",
+  "@atLeastOneTunnelAddressRequired": {
+    "description": "Translation for atLeastOneTunnelAddressRequired"
+  },
+  "authSettingsSavedSuccessfully": "تم حفظ إعدادات المصادقة بنجاح",
+  "@authSettingsSavedSuccessfully": {
+    "description": "Translation for authSettingsSavedSuccessfully"
+  },
+  "authTlsAuthentication": "Auth (مصادقة TLS)",
+  "@authTlsAuthentication": {
+    "description": "Translation for authTlsAuthentication"
+  },
+  "authTokenGeneratedSuccessfully": "تم إنشاء رمز المصادقة بنجاح",
+  "@authTokenGeneratedSuccessfully": {
+    "description": "Translation for authTokenGeneratedSuccessfully"
+  },
+  "authenticate": "مصادقة",
+  "@authenticate": {
+    "description": "Translation for authenticate"
+  },
+  "authenticateToUnlock": "المصادقة لفتح OPNsense Manager",
+  "@authenticateToUnlock": {
+    "description": "Translation for authenticateToUnlock"
+  },
+  "authentication": "المصادقة",
+  "@authentication": {
+    "description": "Translation for authentication"
+  },
+  "authenticationFailed": "فشلت المصادقة",
+  "@authenticationFailed": {
+    "description": "Translation for authenticationFailed"
+  },
+  "authenticationRequired": "المصادقة مطلوبة",
+  "@authenticationRequired": {
+    "description": "Translation for authenticationRequired"
+  },
+  "authenticationSettings": "إعدادات المصادقة",
+  "@authenticationSettings": {
+    "description": "Translation for authenticationSettings"
+  },
+  "authorizedPeers": "الأقران المصرح لهم",
+  "@authorizedPeers": {
+    "description": "Translation for authorizedPeers"
+  },
+  "autoRefresh": "التحديث التلقائي",
+  "@autoRefresh": {
+    "description": "Translation for autoRefresh"
+  },
+  "backendState": "حالة الخلفية",
+  "@backendState": {
+    "description": "Translation for backendState"
+  },
+  "bandwidthLimit": "حد النطاق الترددي",
+  "@bandwidthLimit": {
+    "description": "Translation for bandwidthLimit"
+  },
+  "bandwidthLimitMbps": "حد النطاق الترددي (ميجابت في الثانية)",
+  "@bandwidthLimitMbps": {
+    "description": "Translation for bandwidthLimitMbps"
+  },
+  "base64EncodedPrivateKeyKeepSecret": "مفتاح خاص مشفر بـ Base64 (احتفظ به سرياً!)",
+  "@base64EncodedPrivateKeyKeepSecret": {
+    "description": "Translation for base64EncodedPrivateKeyKeepSecret"
+  },
+  "base64EncodedPublicKey": "مفتاح عام مشفر بـ Base64",
+  "@base64EncodedPublicKey": {
+    "description": "Translation for base64EncodedPublicKey"
+  },
+  "biometricAuth": "المصادقة البيومترية",
+  "@biometricAuth": {
+    "description": "Translation for biometricAuth"
+  },
+  "biometricAuthFailed": "فشلت المصادقة البيومترية أو تم إلغاؤها",
+  "@biometricAuthFailed": {
+    "description": "Translation for biometricAuthFailed"
+  },
+  "biometricLockDisabled": "تم تعطيل القفل البيومتري",
+  "@biometricLockDisabled": {
+    "description": "Translation for biometricLockDisabled"
+  },
+  "biometricLockEnabled": "تم تفعيل القفل البيومتري",
+  "@biometricLockEnabled": {
+    "description": "Translation for biometricLockEnabled"
+  },
+  "biometricLockTitle": "قفل {biometricType}",
+  "@biometricLockTitle": {
+    "description": "Translation for biometricLockTitle",
+    "placeholders": {
+      "biometricType": {
+        "type": "String",
+        "example": "OpenVPN"
+      }
+    }
+  },
+  "biometricNotAvailable": "المصادقة البيومترية غير متوفرة على هذا الجهاز",
+  "@biometricNotAvailable": {
+    "description": "Translation for biometricNotAvailable"
+  },
+  "block": "حظر",
+  "@block": {
+    "description": "Translation for block"
+  },
   "blockHost": "حظر المضيف",
+  "@blockHost": {
+    "description": "Translation for blockHost"
+  },
   "blockHostConfirmation": "هل أنت متأكد من حظر {hostname} ({ip})؟\n\nسيؤدي هذا إلى إنشاء قاعدة جدار ناري لحظر جميع حركة المرور من هذا المضيف.",
+  "@blockHostConfirmation": {
+    "description": "Translation for blockHostConfirmation",
+    "placeholders": {
+      "hostname": {
+        "type": "String",
+        "example": "Example Name"
+      },
+      "ip": {
+        "type": "String",
+        "example": "192.168.1.1"
+      }
+    }
+  },
   "blockingHost": "جاري حظر المضيف...",
+  "@blockingHost": {
+    "description": "Translation for blockingHost"
+  },
+  "bytesReceived": "البايتات المستلمة",
+  "@bytesReceived": {
+    "description": "Translation for bytesReceived"
+  },
+  "bytesSent": "البايتات المرسلة",
+  "@bytesSent": {
+    "description": "Translation for bytesSent"
+  },
+  "cancel": "إلغاء",
+  "@cancel": {
+    "description": "Translation for cancel"
+  },
+  "cancelButton": "إلغاء",
+  "@cancelButton": {
+    "description": "Translation for cancelButton"
+  },
+  "cannotBeUndone": "لا يمكن التراجع عن هذا الإجراء.",
+  "@cannotBeUndone": {
+    "description": "Translation for cannotBeUndone"
+  },
+  "cannotDeleteLastConnection": "لا يمكن حذف نقطة الاتصال الأخيرة",
+  "@cannotDeleteLastConnection": {
+    "description": "Translation for cannotDeleteLastConnection"
+  },
+  "cannotDeleteLastConnectionTooltip": "لا يمكن حذف نقطة الاتصال الأخيرة",
+  "@cannotDeleteLastConnectionTooltip": {
+    "description": "Translation for cannotDeleteLastConnectionTooltip"
+  },
+  "carpVhidToDepend": "CARP VHID للاعتماد عليه",
+  "@carpVhidToDepend": {
+    "description": "Translation for carpVhidToDepend"
+  },
+  "categories": "الفئات",
+  "@categories": {
+    "description": "Translation for categories"
+  },
+  "changePIN": "تغيير PIN",
+  "@changePIN": {
+    "description": "Translation for changePIN"
+  },
+  "changePinTitle": "تغيير PIN",
+  "@changePinTitle": {
+    "description": "Translation for changePinTitle"
+  },
+  "changesDiscarded": "تم تجاهل التغييرات",
+  "@changesDiscarded": {
+    "description": "Translation for changesDiscarded"
+  },
+  "checkIfWireguardIsConfiguredAndRunning": "تحقق من تكوين WireGuard وتشغيله",
+  "@checkIfWireguardIsConfiguredAndRunning": {
+    "description": "Translation for checkIfWireguardIsConfiguredAndRunning"
+  },
+  "chooseExportLocation": "اختر موقع التصدير",
+  "@chooseExportLocation": {
+    "description": "Translation for chooseExportLocation"
+  },
+  "cidrNotationRequired": "تدوين CIDR مطلوب",
+  "@cidrNotationRequired": {
+    "description": "Translation for cidrNotationRequired"
+  },
+  "clearLogs": "مسح السجلات",
+  "@clearLogs": {
+    "description": "Translation for clearLogs"
+  },
+  "clearSelection": "مسح التحديد",
+  "@clearSelection": {
+    "description": "Translation for clearSelection"
+  },
+  "client": "عميل",
+  "@client": {
+    "description": "Translation for client"
+  },
+  "clientAddress": "عنوان العميل",
+  "@clientAddress": {
+    "description": "Translation for clientAddress"
+  },
+  "clientName": "اسم العميل",
+  "@clientName": {
+    "description": "Translation for clientName"
+  },
+  "clientOverrides": "تجاوزات العميل",
+  "@clientOverrides": {
+    "description": "Translation for clientOverrides"
+  },
+  "clientSettings": "إعدادات العميل",
+  "@clientSettings": {
+    "description": "Translation for clientSettings"
+  },
+  "clientSpecificOverrides": "تجاوزات خاصة بالعميل",
+  "@clientSpecificOverrides": {
+    "description": "Translation for clientSpecificOverrides"
+  },
+  "clientX509CommonNameHelper": "أدخل الاسم الشائع X.509 للعميل هنا.",
+  "@clientX509CommonNameHelper": {
+    "description": "Translation for clientX509CommonNameHelper"
+  },
+  "close": "إغلاق",
+  "@close": {
+    "description": "Translation for close"
+  },
+  "commonName": "الاسم الشائع",
+  "@commonName": {
+    "description": "Translation for commonName"
+  },
+  "commonNameRequired": "الاسم الشائع مطلوب",
+  "@commonNameRequired": {
+    "description": "Translation for commonNameRequired"
+  },
+  "commonNameWithValue": "الاسم الشائع: {value}",
+  "@commonNameWithValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "configurationAppliedSuccessfully": "تم تطبيق التكوين بنجاح",
+  "@configurationAppliedSuccessfully": {
+    "description": "Translation for configurationAppliedSuccessfully"
+  },
+  "configurationPreview": "معاينة التكوين",
+  "@configurationPreview": {
+    "description": "Translation for configurationPreview"
+  },
+  "configureAdvertisedSubnets": "تكوين الشبكات الفرعية المعلن عنها",
+  "@configureAdvertisedSubnets": {
+    "description": "Translation for configureAdvertisedSubnets"
+  },
+  "configured": "تم التكوين",
+  "@configured": {
+    "description": "Translation for configured"
+  },
+  "confirmDelete": "تأكيد الحذف",
+  "@confirmDelete": {
+    "description": "Translation for confirmDelete"
+  },
+  "confirmDeleteInstance": "هل أنت متأكد من حذف المثيل \"{name}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+  "@confirmDeleteInstance": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "confirmDeleteOverride": "هل أنت متأكد من حذف التجاوز لـ \"{name}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+  "@confirmDeleteOverride": {
+    "description": "Translation for confirmDeleteOverride",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "confirmDeleteStaticKey": "هل أنت متأكد من حذف المفتاح الثابت \"{name}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+  "@confirmDeleteStaticKey": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "confirmNewPin": "تأكيد رمز PIN الجديد",
+  "@confirmNewPin": {
+    "description": "Translation for confirmNewPin"
+  },
+  "confirmPIN": "تأكيد PIN",
+  "@confirmPIN": {
+    "description": "Translation for confirmPIN"
+  },
+  "confirmPin": "تأكيد رمز PIN",
+  "@confirmPin": {
+    "description": "Translation for confirmPin"
+  },
+  "confirmServiceAction": "{action} \"{name}\"؟",
+  "@confirmServiceAction": {
+    "description": "Translation for confirmServiceAction",
+    "placeholders": {
+      "action": {
+        "type": "String",
+        "example": "start"
+      },
+      "name": {
+        "type": "String",
+        "example": "Example Name"
+      }
+    }
+  },
+  "connect": "اتصال",
+  "@connect": {
+    "description": "Translation for connect"
+  },
+  "connectToYourOPNsenseFirewall": "اتصل بجدار الحماية OPNsense الخاص بك",
+  "@connectToYourOPNsenseFirewall": {
+    "description": "Translation for connectToYourOPNsenseFirewall"
+  },
+  "connectVPN": "اتصال VPN",
+  "@connectVPN": {
+    "description": "Translation for connectVPN"
+  },
+  "connected": "متصل",
+  "@connected": {
+    "description": "Translation for connected"
+  },
+  "connectedSince": "متصل منذ",
+  "@connectedSince": {
+    "description": "Translation for connectedSince"
+  },
+  "connectedSuccessfullyVia": "تم الاتصال بنجاح عبر: {endpoint}",
+  "@connectedSuccessfullyVia": {
+    "description": "Translation for connectedSuccessfullyVia",
+    "placeholders": {
+      "endpoint": {
+        "type": "String",
+        "example": "1"
+      }
+    }
+  },
+  "connectingVPN": "جاري الاتصال بـ {name}...",
+  "@connectingVPN": {
+    "description": "Translation for connectingVPN",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Example Name"
+      }
+    }
+  },
+  "connectionBlocking": "حظر الاتصال",
+  "@connectionBlocking": {
+    "description": "Translation for connectionBlocking"
+  },
+  "connectionBlockingSubtitle": "حظر اتصال العميل هذا بناءً على اسمه الشائع. لا تستخدم هذا الخيار لتعطيل عميل بشكل دائم بسبب مفتاح أو كلمة مرور مخترقة. استخدم CRL (قائمة إلغاء الشهادات) بدلاً من ذلك.",
+  "@connectionBlockingSubtitle": {
+    "description": "Translation for connectionBlockingSubtitle"
+  },
+  "connectionDetails": "تفاصيل الاتصال",
+  "@connectionDetails": {
+    "description": "Translation for connectionDetails"
+  },
+  "connectionEndpoints": "نقاط الاتصال",
+  "@connectionEndpoints": {
+    "description": "Translation for connectionEndpoints"
+  },
+  "connectionEndpointsHelp": "إدارة نقاط اتصال متعددة لهذا الملف الشخصي. سيحاول التطبيق كل نقطة نهاية بالترتيب حتى يتم إنشاء اتصال ناجح.",
+  "@connectionEndpointsHelp": {
+    "description": "Translation for connectionEndpointsHelp"
+  },
+  "connectionFailed": "فشل الاتصال. تحقق من سجلات وحدة التحكم للحصول على التفاصيل.\n\nالمشاكل الشائعة:\n• الجهاز ليس على نفس الشبكة مثل OPNsense\n• عنوان IP أو المنفذ خاطئ\n• جدار الحماية يحظر الاتصال\n• بيانات اعتماد API غير صالحة",
+  "@connectionFailed": {
+    "description": "Translation for connectionFailed"
+  },
+  "connectionFailedError": "فشل الاتصال: {error}",
+  "@connectionFailedError": {
+    "description": "Translation for connectionFailedError",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "connectionInformation": "معلومات الاتصال",
+  "@connectionInformation": {
+    "description": "Translation for connectionInformation"
+  },
+  "connectionStatus": "حالة الاتصال",
+  "@connectionStatus": {
+    "description": "Translation for connectionStatus"
+  },
+  "connectionSuccessful": "نجح الاتصال",
+  "@connectionSuccessful": {
+    "description": "Translation for connectionSuccessful"
+  },
+  "connectionTestFailed": "فشل اختبار الاتصال",
+  "@connectionTestFailed": {
+    "description": "Translation for connectionTestFailed"
+  },
+  "connectionTestResults": "نتائج اختبار الاتصال",
+  "@connectionTestResults": {
+    "description": "Translation for connectionTestResults"
+  },
+  "content": "المحتوى",
+  "@content": {
+    "description": "Translation for content"
+  },
+  "copiedLogEntries": "تم نسخ {count} {count, plural, =1{إدخال} other{إدخالات}}",
+  "@copiedLogEntries": {
+    "description": "Translation for copiedLogEntries",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "copiedToClipboard": "تم النسخ إلى الحافظة",
+  "@copiedToClipboard": {
+    "description": "Translation for copiedToClipboard"
+  },
+  "copy": "نسخ",
+  "@copy": {
+    "description": "Translation for copy"
+  },
+  "copyAllDetails": "نسخ جميع التفاصيل",
+  "@copyAllDetails": {
+    "description": "Translation for copyAllDetails"
+  },
+  "copyHost": "نسخ المضيف",
+  "@copyHost": {
+    "description": "Translation for copyHost"
+  },
+  "copyKey": "نسخ المفتاح",
+  "@copyKey": {
+    "description": "Translation for copyKey"
+  },
+  "copyKeyTooltip": "نسخ المفتاح",
+  "@copyKeyTooltip": {
+    "description": "Translation for copyKeyTooltip"
+  },
+  "copySelected": "نسخ المحدد",
+  "@copySelected": {
+    "description": "Translation for copySelected"
+  },
+  "copyTooltip": "نسخ",
+  "@copyTooltip": {
+    "description": "Translation for copyTooltip"
+  },
+  "cpuUsage": "استخدام المعالج",
+  "@cpuUsage": {
+    "description": "Translation for cpuUsage"
+  },
+  "createAliasComingSoon": "إنشاء اسم مستعار (قريباً)",
+  "@createAliasComingSoon": {
+    "description": "Translation for createAliasComingSoon"
+  },
+  "createFirstAutomationRule": "أنشئ أول قاعدة أتمتة للبدء",
+  "@createFirstAutomationRule": {
+    "description": "Translation for createFirstAutomationRule"
+  },
+  "createFirstProfile": "أنشئ ملفك الشخصي الأول للبدء",
+  "@createFirstProfile": {
+    "description": "Translation for createFirstProfile"
+  },
+  "createNewProfile": "إنشاء ملف شخصي جديد",
+  "@createNewProfile": {
+    "description": "Translation for createNewProfile"
+  },
+  "createOverride": "إنشاء تجاوز",
+  "@createOverride": {
+    "description": "Translation for createOverride"
+  },
+  "createPeer": "إنشاء نظير",
+  "@createPeer": {
+    "description": "Translation for createPeer"
+  },
+  "createRule": "إنشاء قاعدة",
+  "@createRule": {
+    "description": "Translation for createRule"
+  },
+  "createServer": "إنشاء خادم",
+  "@createServer": {
+    "description": "Translation for createServer"
+  },
+  "createStaticKey": "إنشاء مفتاح ثابت",
+  "@createStaticKey": {
+    "description": "Translation for createStaticKey"
+  },
+  "createYourFirstProfile": "أنشئ ملفك الشخصي الأول في OPNsense للبدء",
+  "@createYourFirstProfile": {
+    "description": "Translation for createYourFirstProfile"
+  },
+  "created": "تم الإنشاء",
+  "@created": {
+    "description": "Translation for created"
+  },
+  "critical": "حرج",
+  "@critical": {
+    "description": "Translation for critical"
+  },
+  "cryptTlsEncryption": "Crypt (تشفير TLS)",
+  "@cryptTlsEncryption": {
+    "description": "Translation for cryptTlsEncryption"
+  },
+  "cryptV2TlsEncryption": "Crypt V2 (تشفير TLS)",
+  "@cryptV2TlsEncryption": {
+    "description": "Translation for cryptV2TlsEncryption"
+  },
+  "currentPin": "رمز PIN الحالي",
+  "@currentPin": {
+    "description": "Translation for currentPin"
+  },
+  "currentPinIncorrect": "رمز PIN الحالي غير صحيح",
+  "@currentPinIncorrect": {
+    "description": "Translation for currentPinIncorrect"
+  },
+  "darkMode": "الوضع الداكن",
+  "@darkMode": {
+    "description": "Translation for darkMode"
+  },
+  "dashboard": "لوحة التحكم",
+  "@dashboard": {
+    "description": "Translation for dashboard"
+  },
+  "day": "يوم",
+  "@day": {
+    "description": "Translation for day"
+  },
+  "days": "أيام",
+  "@days": {
+    "description": "Translation for days"
+  },
+  "daysAgo": "منذ {days} أيام",
+  "@daysAgo": {
+    "description": "Translation for daysAgo",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "debug": "التصحيح",
+  "@debug": {
+    "description": "Translation for debug"
+  },
+  "debugDescription": "تفعيل تسجيل التصحيح",
+  "@debugDescription": {
+    "description": "Translation for debugDescription"
+  },
+  "defineRoleOfInstance": "حدد دور هذا المثيل",
+  "@defineRoleOfInstance": {
+    "description": "Translation for defineRoleOfInstance"
+  },
+  "delete": "حذف",
+  "@delete": {
+    "description": "Translation for delete"
+  },
+  "deleteAliasConfirmation": "هل أنت متأكد من رغبتك في حذف الاسم المستعار \"{aliasName}\"؟",
+  "@deleteAliasConfirmation": {
+    "description": "Translation for deleteAliasConfirmation",
+    "placeholders": {
+      "aliasName": {
+        "type": "String",
+        "example": "Example Name"
+      }
+    }
+  },
+  "deleteConfirmation": "هل أنت متأكد من رغبتك في حذف هذا العنصر؟",
+  "@deleteConfirmation": {
+    "description": "Translation for deleteConfirmation"
+  },
+  "deleteConnection": "حذف الاتصال",
+  "@deleteConnection": {
+    "description": "Translation for deleteConnection"
+  },
+  "deleteConnectionConfirmation": "هل أنت متأكد من رغبتك في حذف الاتصال \"{connectionName}\"؟",
+  "@deleteConnectionConfirmation": {
+    "description": "Translation for deleteConnectionConfirmation",
+    "placeholders": {
+      "connectionName": {
+        "type": "String",
+        "example": "Example Name"
+      }
+    }
+  },
+  "deleteHost": "حذف المضيف",
+  "@deleteHost": {
+    "description": "Translation for deleteHost"
+  },
+  "deleteHostConfirmation": "هل أنت متأكد من رغبتك في حذف \"{host}\"؟",
+  "@deleteHostConfirmation": {
+    "description": "Translation for deleteHostConfirmation",
+    "placeholders": {
+      "host": {
+        "type": "String",
+        "example": "example.com"
+      }
+    }
+  },
+  "deleteInstance": "حذف المثيل",
+  "@deleteInstance": {
+    "description": "Translation for deleteInstance"
+  },
+  "deleteOverride": "حذف التجاوز",
+  "@deleteOverride": {
+    "description": "Translation for deleteOverride"
+  },
+  "deletePeer": "حذف النظير",
+  "@deletePeer": {
+    "description": "Translation for deletePeer"
+  },
+  "deletePeerConfirmation": "هل أنت متأكد من حذف النظير \"{name}\"؟",
+  "@deletePeerConfirmation": {
+    "description": "Translation for deletePeerConfirmation",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Example Name"
+      }
+    }
+  },
+  "deleteProfile": "حذف الملف الشخصي",
+  "@deleteProfile": {
+    "description": "Translation for deleteProfile"
+  },
+  "deleteProfileConfirmation": "هل أنت متأكد من رغبتك في حذف \"{name}\"؟",
+  "@deleteProfileConfirmation": {
+    "description": "Translation for deleteProfileConfirmation",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Example Name"
+      }
+    }
+  },
+  "deleteProfileTitle": "حذف الملف الشخصي",
+  "@deleteProfileTitle": {
+    "description": "Translation for deleteProfileTitle"
+  },
+  "deleteRule": "حذف القاعدة",
+  "@deleteRule": {
+    "description": "Translation for deleteRule"
+  },
+  "deleteRuleConfirmation": "هل أنت متأكد من رغبتك في حذف القاعدة \"{description}\"؟",
+  "@deleteRuleConfirmation": {
+    "description": "Translation for deleteRuleConfirmation",
+    "placeholders": {
+      "description": {
+        "type": "String",
+        "example": "192.168.1.1"
+      }
+    }
+  },
+  "deleteServerConfirmation": "هل أنت متأكد من حذف الخادم \"{name}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+  "@deleteServerConfirmation": {
+    "description": "Translation for deleteServerConfirmation",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Example Name"
+      }
+    }
+  },
+  "deleteStaticKey": "حذف المفتاح الثابت",
+  "@deleteStaticKey": {
+    "description": "Translation for deleteStaticKey"
+  },
+  "deleteSubnet": "حذف الشبكة الفرعية",
+  "@deleteSubnet": {
+    "description": "Translation for deleteSubnet"
+  },
+  "deleteSubnetConfirmation": "هل أنت متأكد من حذف الشبكة الفرعية {subnet}؟",
+  "@deleteSubnetConfirmation": {
+    "description": "Translation for deleteSubnetConfirmation",
+    "placeholders": {
+      "subnet": {
+        "type": "String",
+        "example": "192.168.1.0/24"
+      }
+    }
+  },
+  "demo": "عرض توضيحي",
+  "@demo": {
+    "description": "Translation for demo"
+  },
+  "dependOnCarp": "يعتمد على (CARP)",
+  "@dependOnCarp": {
+    "description": "Translation for dependOnCarp"
+  },
+  "description": "الوصف",
+  "@description": {
+    "description": "Translation for description"
+  },
+  "descriptionHelperText": "وصف موجز لهذا المثيل",
+  "@descriptionHelperText": {
+    "description": "Translation for descriptionHelperText"
+  },
+  "descriptionHelperTextOverride": "يمكنك إدخال وصف هنا للرجوع إليه (لا يتم تحليله).",
+  "@descriptionHelperTextOverride": {
+    "description": "Translation for descriptionHelperTextOverride"
+  },
+  "descriptionHint": "مثال: كمبيوتر غرفة المعيشة",
+  "@descriptionHint": {
+    "description": "Translation for descriptionHint"
+  },
+  "descriptionOptional": "الوصف (اختياري)",
+  "@descriptionOptional": {
+    "description": "Translation for descriptionOptional"
+  },
+  "descriptionRequired": "الوصف مطلوب",
+  "@descriptionRequired": {
+    "description": "Translation for descriptionRequired"
+  },
+  "descriptiveNameForStaticKey": "اسم وصفي لهذا المفتاح الثابت",
+  "@descriptiveNameForStaticKey": {
+    "description": "Translation for descriptiveNameForStaticKey"
+  },
+  "destination": "الوجهة",
+  "@destination": {
+    "description": "Translation for destination"
+  },
+  "destinationAddress": "عنوان الوجهة",
+  "@destinationAddress": {
+    "description": "Translation for destinationAddress"
+  },
+  "destinationIsRequired": "الوجهة مطلوبة",
+  "@destinationIsRequired": {
+    "description": "Translation for destinationIsRequired"
+  },
+  "destinationPort": "منفذ الوجهة",
+  "@destinationPort": {
+    "description": "Translation for destinationPort"
+  },
+  "destinationPortOptional": "منفذ الوجهة (اختياري)",
+  "@destinationPortOptional": {
+    "description": "Translation for destinationPortOptional"
+  },
+  "deviceType": "نوع الجهاز",
+  "@deviceType": {
+    "description": "Translation for deviceType"
+  },
+  "dhcpLeases": "عقود DHCP",
+  "@dhcpLeases": {
+    "description": "Translation for dhcpLeases"
+  },
+  "dhcpServerLabel": "خادم {serverName}",
+  "@dhcpServerLabel": {
+    "description": "Translation for dhcpServerLabel",
+    "placeholders": {
+      "serverName": {
+        "type": "String",
+        "example": "Example Name"
+      }
+    }
+  },
+  "dhcpServerType": "نوع خادم DHCP",
+  "@dhcpServerType": {
+    "description": "Translation for dhcpServerType"
+  },
+  "direction": "الاتجاه",
+  "@direction": {
+    "description": "Translation for direction"
+  },
+  "disable": "تعطيل",
+  "@disable": {
+    "description": "Translation for disable"
+  },
+  "disableAutoScroll": "تعطيل التمرير التلقائي",
+  "@disableAutoScroll": {
+    "description": "Translation for disableAutoScroll"
+  },
+  "disableRoutes": "تعطيل المسارات",
+  "@disableRoutes": {
+    "description": "Translation for disableRoutes"
+  },
+  "disableRoutesDescription": "منع تثبيت المسارات التلقائي",
+  "@disableRoutesDescription": {
+    "description": "Translation for disableRoutesDescription"
+  },
+  "disableRule": "تعطيل القاعدة",
+  "@disableRule": {
+    "description": "Translation for disableRule"
+  },
+  "disableSnat": "تعطيل SNAT",
+  "@disableSnat": {
+    "description": "Translation for disableSnat"
+  },
+  "disableSnatDescription": "تعطيل ترجمة عنوان المصدر لمسارات الشبكة الفرعية",
+  "@disableSnatDescription": {
+    "description": "Translation for disableSnatDescription"
+  },
+  "disabled": "معطل",
+  "@disabled": {
+    "description": "Translation for disabled"
+  },
+  "disabledStatus": "معطل",
+  "@disabledStatus": {
+    "description": "Translation for disabledStatus"
+  },
+  "disablingRule": "جاري تعطيل القاعدة...",
+  "@disablingRule": {
+    "description": "Translation for disablingRule"
+  },
+  "discard": "تجاهل",
+  "@discard": {
+    "description": "Translation for discard"
+  },
+  "disconnect": "قطع الاتصال",
+  "@disconnect": {
+    "description": "Translation for disconnect"
+  },
+  "disconnectVPN": "قطع اتصال VPN",
+  "@disconnectVPN": {
+    "description": "Translation for disconnectVPN"
+  },
+  "disconnected": "غير متصل",
+  "@disconnected": {
+    "description": "Translation for disconnected"
+  },
+  "disconnectingVPN": "جاري قطع الاتصال بـ {name}...",
+  "@disconnectingVPN": {
+    "description": "Translation for disconnectingVPN",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Example Name"
+      }
+    }
+  },
+  "diskUsage": "استخدام القرص",
+  "@diskUsage": {
+    "description": "Translation for diskUsage"
+  },
+  "dnsDomainList": "قائمة نطاقات DNS",
+  "@dnsDomainList": {
+    "description": "Translation for dnsDomainList"
+  },
+  "dnsDomainListHelperText": "تعيين لواحق DNS الخاصة بالاتصال.",
+  "@dnsDomainListHelperText": {
+    "description": "Translation for dnsDomainListHelperText"
+  },
+  "dnsDomainSearchList": "قائمة بحث نطاقات DNS",
+  "@dnsDomainSearchList": {
+    "description": "Translation for dnsDomainSearchList"
+  },
+  "dnsDomainSearchListHelperText": "إضافة اسم إلى قائمة بحث النطاق. كرر هذا الخيار لإضافة المزيد من الإدخالات. يتم دعم ما يصل إلى 10 نطاقات.",
+  "@dnsDomainSearchListHelperText": {
+    "description": "Translation for dnsDomainSearchListHelperText"
+  },
+  "dnsEnabled": "DNS مفعل",
+  "@dnsEnabled": {
+    "description": "Translation for dnsEnabled"
+  },
+  "dnsServerIp": "عنوان IP لخادم DNS",
+  "@dnsServerIp": {
+    "description": "Translation for dnsServerIp"
+  },
+  "dnsServerIsRequired": "خادم DNS مطلوب",
+  "@dnsServerIsRequired": {
+    "description": "Translation for dnsServerIsRequired"
+  },
+  "dnsServerOptional": "خادم DNS (اختياري)",
+  "@dnsServerOptional": {
+    "description": "Translation for dnsServerOptional"
+  },
+  "dnsServers": "خوادم DNS",
+  "@dnsServers": {
+    "description": "Translation for dnsServers"
+  },
+  "dnsServersHelperText": "تعيين عنوان خادم اسم النطاق الأساسي IPv4 أو IPv6. كرر هذا الخيار لتعيين عناوين خادم DNS الثانوية.",
+  "@dnsServersHelperText": {
+    "description": "Translation for dnsServersHelperText"
+  },
+  "dnsServersOptional": "خوادم DNS (اختياري)",
+  "@dnsServersOptional": {
+    "description": "Translation for dnsServersOptional"
+  },
+  "dnsmasqDescription": "خادم DNS و DHCP خفيف الوزن",
+  "@dnsmasqDescription": {
+    "description": "Translation for dnsmasqDescription"
+  },
+  "dnsmasqServerName": "Dnsmasq",
+  "@dnsmasqServerName": {
+    "description": "Translation for dnsmasqServerName"
+  },
+  "done": "تم",
+  "@done": {
+    "description": "Translation for done"
+  },
+  "doneButton": "تم",
+  "@doneButton": {
+    "description": "Translation for doneButton"
+  },
+  "download": "التنزيل",
+  "@download": {
+    "description": "Translation for download"
+  },
+  "dynamicLease": "ديناميكي",
+  "@dynamicLease": {
+    "description": "Translation for dynamicLease"
+  },
+  "edit": "تعديل",
+  "@edit": {
+    "description": "Translation for edit"
+  },
+  "editClientOverride": "تحرير تجاوز العميل",
+  "@editClientOverride": {
+    "description": "Translation for editClientOverride"
+  },
+  "editConnection": "تعديل الاتصال",
+  "@editConnection": {
+    "description": "Translation for editConnection"
+  },
+  "editHost": "تعديل المضيف",
+  "@editHost": {
+    "description": "Translation for editHost"
+  },
+  "editProfile": "تعديل الملف الشخصي",
+  "@editProfile": {
+    "description": "Translation for editProfile"
+  },
+  "editRule": "تعديل القاعدة",
+  "@editRule": {
+    "description": "Translation for editRule"
+  },
+  "editStaticKey": "تعديل المفتاح الثابت",
+  "@editStaticKey": {
+    "description": "Translation for editStaticKey"
+  },
+  "editSubnet": "تعديل الشبكة الفرعية",
+  "@editSubnet": {
+    "description": "Translation for editSubnet"
+  },
+  "editWireguardPeer": "تحرير نظير WireGuard",
+  "@editWireguardPeer": {
+    "description": "Translation for editWireguardPeer"
+  },
+  "editWireguardServer": "تحرير خادم WireGuard",
+  "@editWireguardServer": {
+    "description": "Translation for editWireguardServer"
+  },
+  "emergency": "طوارئ",
+  "@emergency": {
+    "description": "Translation for emergency"
+  },
+  "enable": "تفعيل",
+  "@enable": {
+    "description": "Translation for enable"
+  },
+  "enableAutoScroll": "تفعيل التمرير التلقائي",
+  "@enableAutoScroll": {
+    "description": "Translation for enableAutoScroll"
+  },
+  "enableClientSpecificOverride": "تفعيل هذا التجاوز الخاص بالعميل",
+  "@enableClientSpecificOverride": {
+    "description": "Translation for enableClientSpecificOverride"
+  },
+  "enableDebugLogging": "تمكين تسجيل التصحيح",
+  "@enableDebugLogging": {
+    "description": "Translation for enableDebugLogging"
+  },
+  "enablePinLockFirst": "يرجى تفعيل قفل PIN أولاً قبل استخدام البيومترية",
+  "@enablePinLockFirst": {
+    "description": "Translation for enablePinLockFirst"
+  },
+  "enablePinLockFirstBiometric": "قم بتفعيل قفل PIN أولاً لاستخدام البيومترية",
+  "@enablePinLockFirstBiometric": {
+    "description": "Translation for enablePinLockFirstBiometric"
+  },
+  "enableRule": "تفعيل القاعدة",
+  "@enableRule": {
+    "description": "Translation for enableRule"
+  },
+  "enableSsh": "تفعيل SSH",
+  "@enableSsh": {
+    "description": "Translation for enableSsh"
+  },
+  "enableSshDescription": "السماح بالوصول عبر SSH من خلال Tailscale",
+  "@enableSshDescription": {
+    "description": "Translation for enableSshDescription"
+  },
+  "enableTailscale": "تفعيل Tailscale",
+  "@enableTailscale": {
+    "description": "Translation for enableTailscale"
+  },
+  "enableTailscaleDescription": "تفعيل أو تعطيل خدمة Tailscale",
+  "@enableTailscaleDescription": {
+    "description": "Translation for enableTailscaleDescription"
+  },
+  "enableWireguard": "تمكين WireGuard",
+  "@enableWireguard": {
+    "description": "Translation for enableWireguard"
+  },
+  "enabled": "مفعّل",
+  "@enabled": {
+    "description": "Translation for enabled"
+  },
+  "enabledLabel": "مفعّل",
+  "@enabledLabel": {
+    "description": "Translation for enabledLabel"
+  },
+  "enabledStatus": "مفعّل",
+  "@enabledStatus": {
+    "description": "Translation for enabledStatus"
+  },
+  "enablingRule": "جاري تفعيل القاعدة...",
+  "@enablingRule": {
+    "description": "Translation for enablingRule"
+  },
+  "endTime": "وقت الانتهاء",
+  "@endTime": {
+    "description": "Translation for endTime"
+  },
+  "endpoint": "نقطة النهاية",
+  "@endpoint": {
+    "description": "Translation for endpoint"
+  },
+  "endpointAddress": "عنوان نقطة النهاية",
+  "@endpointAddress": {
+    "description": "Translation for endpointAddress"
+  },
+  "endpointPort": "منفذ نقطة النهاية",
+  "@endpointPort": {
+    "description": "Translation for endpointPort"
+  },
+  "enterBandwidthLimit": "أدخل حد النطاق الترددي للاتصال بالميجابت في الثانية",
+  "@enterBandwidthLimit": {
+    "description": "Translation for enterBandwidthLimit"
+  },
+  "enterClientCertificateCommonName": "أدخل الاسم الشائع لشهادة العميل",
+  "@enterClientCertificateCommonName": {
+    "description": "Translation for enterClientCertificateCommonName"
+  },
+  "enterDescriptionForOverride": "أدخل وصفًا لهذا التجاوز",
+  "@enterDescriptionForOverride": {
+    "description": "Translation for enterDescriptionForOverride"
+  },
+  "enterOrGeneratePresharedKey": "أدخل أو أنشئ مفتاحًا مشتركًا مسبقًا",
+  "@enterOrGeneratePresharedKey": {
+    "description": "Translation for enterOrGeneratePresharedKey"
+  },
+  "enterOrGeneratePrivateKey": "أدخل أو أنشئ مفتاحًا خاصًا",
+  "@enterOrGeneratePrivateKey": {
+    "description": "Translation for enterOrGeneratePrivateKey"
+  },
+  "enterOrGeneratePublicKey": "أدخل أو أنشئ مفتاحًا عامًا",
+  "@enterOrGeneratePublicKey": {
+    "description": "Translation for enterOrGeneratePublicKey"
+  },
+  "enterPIN": "أدخل PIN",
+  "@enterPIN": {
+    "description": "Translation for enterPIN"
+  },
+  "enterPin": "أدخل رمز PIN",
+  "@enterPin": {
+    "description": "Translation for enterPin"
+  },
+  "enterPinLabel": "أدخل رمز PIN (4-6 أرقام)",
+  "@enterPinLabel": {
+    "description": "Translation for enterPinLabel"
+  },
+  "enterRuleDescription": "أدخل وصف القاعدة",
+  "@enterRuleDescription": {
+    "description": "Translation for enterRuleDescription"
+  },
+  "enterYourApiKey": "أدخل مفتاح API الخاص بك",
+  "@enterYourApiKey": {
+    "description": "Translation for enterYourApiKey"
+  },
+  "enterYourApiSecret": "أدخل سر API الخاص بك",
+  "@enterYourApiSecret": {
+    "description": "Translation for enterYourApiSecret"
+  },
+  "entries": "إدخالات",
+  "@entries": {
+    "description": "Translation for entries"
+  },
+  "entriesCount": "{count} إدخالات",
+  "@entriesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "error": "خطأ",
+  "@error": {
+    "description": "Translation for error"
+  },
+  "errorAddingSubnet": "خطأ في إضافة الشبكة الفرعية: {error}",
+  "@errorAddingSubnet": {
+    "description": "Translation for errorAddingSubnet",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "errorDeletingRule": "خطأ في حذف القاعدة: {error}",
+  "@errorDeletingRule": {
+    "description": "Translation for errorDeletingRule",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "errorDeletingSubnet": "خطأ في حذف الشبكة الفرعية: {error}",
+  "@errorDeletingSubnet": {
+    "description": "Translation for errorDeletingSubnet",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "errorLoadingData": "خطأ في تحميل البيانات",
+  "@errorLoadingData": {
+    "description": "Translation for errorLoadingData"
+  },
+  "errorLoadingInstance": "خطأ في تحميل المثيل",
+  "@errorLoadingInstance": {
+    "description": "Translation for errorLoadingInstance"
+  },
+  "errorLoadingLogs": "خطأ في تحميل السجلات",
+  "@errorLoadingLogs": {
+    "description": "Translation for errorLoadingLogs"
+  },
+  "errorLoadingOverride": "خطأ في تحميل التجاوز",
+  "@errorLoadingOverride": {
+    "description": "Translation for errorLoadingOverride"
+  },
+  "errorLoadingRoutes": "خطأ في تحميل المسارات",
+  "@errorLoadingRoutes": {
+    "description": "Translation for errorLoadingRoutes"
+  },
+  "errorLoadingRules": "خطأ في تحميل القواعد",
+  "@errorLoadingRules": {
+    "description": "Translation for errorLoadingRules"
+  },
+  "errorLoadingSessions": "خطأ في تحميل الجلسات",
+  "@errorLoadingSessions": {
+    "description": "Translation for errorLoadingSessions"
+  },
+  "errorLoadingSystemInfo": "خطأ في تحميل معلومات النظام",
+  "@errorLoadingSystemInfo": {
+    "description": "Translation for errorLoadingSystemInfo"
+  },
+  "errorLoadingVPNConnections": "خطأ في تحميل اتصالات VPN",
+  "@errorLoadingVPNConnections": {
+    "description": "Translation for errorLoadingVPNConnections"
+  },
+  "errorPrefix": "خطأ: {message}",
+  "@errorPrefix": {
+    "description": "Translation for errorPrefix",
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "errorRestartingService": "خطأ في إعادة تشغيل الخدمة: {error}",
+  "@errorRestartingService": {
+    "description": "Translation for errorRestartingService",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "errorSavingRule": "خطأ في حفظ القاعدة: {error}",
+  "@errorSavingRule": {
+    "description": "Translation for errorSavingRule",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "errorStartingService": "خطأ في بدء الخدمة: {error}",
+  "@errorStartingService": {
+    "description": "Translation for errorStartingService",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "errorStoppingService": "خطأ في إيقاف الخدمة: {error}",
+  "@errorStoppingService": {
+    "description": "Translation for errorStoppingService",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "errorTogglingRule": "خطأ في تبديل القاعدة: {error}",
+  "@errorTogglingRule": {
+    "description": "Translation for errorTogglingRule",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "errorUpdatingSubnet": "خطأ في تحديث الشبكة الفرعية: {error}",
+  "@errorUpdatingSubnet": {
+    "description": "Translation for errorUpdatingSubnet",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "exampleCidr": "مثال: 10.10.10.2/24 أو fd00::2/64",
+  "@exampleCidr": {
+    "description": "Translation for exampleCidr"
+  },
+  "exampleTunnelAddress": "مثال: 10.10.10.1/24 أو fd00::1/64",
+  "@exampleTunnelAddress": {
+    "description": "Translation for exampleTunnelAddress"
+  },
+  "examplesAnyIpCidr": "أمثلة: any، 192.168.1.0/24، 10.0.0.1",
+  "@examplesAnyIpCidr": {
+    "description": "Translation for examplesAnyIpCidr"
+  },
+  "examplesAnyPortRange": "أمثلة: any، 80، 1024-65535",
+  "@examplesAnyPortRange": {
+    "description": "Translation for examplesAnyPortRange"
+  },
+  "examplesAnyPortRangeHttp": "أمثلة: any، 80، 80-443، http",
+  "@examplesAnyPortRangeHttp": {
+    "description": "Translation for examplesAnyPortRangeHttp"
+  },
+  "exitNode": "عقدة الخروج",
+  "@exitNode": {
+    "description": "Translation for exitNode"
+  },
+  "expired": "منتهي",
+  "@expired": {
+    "description": "Translation for expired"
+  },
+  "expires": "ينتهي",
+  "@expires": {
+    "description": "Translation for expires"
+  },
+  "expiryTime": "وقت الانتهاء",
+  "@expiryTime": {
+    "description": "Translation for expiryTime"
+  },
+  "export": "تصدير",
+  "@export": {
+    "description": "Translation for export"
+  },
+  "exportAllProfiles": "تصدير جميع الملفات الشخصية",
+  "@exportAllProfiles": {
+    "description": "Translation for exportAllProfiles"
+  },
+  "exportAllProfilesSubtitle": "تصدير جميع الملفات الشخصية إلى ملف JSON",
+  "@exportAllProfilesSubtitle": {
+    "description": "Translation for exportAllProfilesSubtitle"
+  },
+  "exportCredentialsWarning": "سيؤدي التصدير مع بيانات الاعتماد إلى حفظ مفاتيح API والأسرار بنص عادي. قم بذلك فقط إذا كنت ستخزن الملف بشكل آمن.",
+  "@exportCredentialsWarning": {
+    "description": "Translation for exportCredentialsWarning"
+  },
+  "exportFailed": "فشل التصدير",
+  "@exportFailed": {
+    "description": "Translation for exportFailed"
+  },
+  "exportFailedError": "فشل التصدير: {error}",
+  "@exportFailedError": {
+    "description": "Translation for exportFailedError",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "exportLogs": "تصدير السجلات",
+  "@exportLogs": {
+    "description": "Translation for exportLogs"
+  },
+  "exportProfiles": "تصدير الملفات الشخصية",
+  "@exportProfiles": {
+    "description": "Translation for exportProfiles"
+  },
+  "exportProfilesContent": "هل تريد تضمين بيانات اعتماد API في التصدير؟\n\nتحذير: سيؤدي تضمين بيانات الاعتماد إلى تخزين مفاتيح API والأسرار بنص عادي. قم بتضمين بيانات الاعتماد فقط إذا كنت ستخزن الملف بشكل آمن.",
+  "@exportProfilesContent": {
+    "description": "Translation for exportProfilesContent"
+  },
+  "exportProfilesTitle": "تصدير الملفات الشخصية",
+  "@exportProfilesTitle": {
+    "description": "Translation for exportProfilesTitle"
+  },
+  "exportSuccess": "نجح التصدير",
+  "@exportSuccess": {
+    "description": "Translation for exportSuccess"
+  },
+  "exportThisProfile": "تصدير هذا الملف الشخصي",
+  "@exportThisProfile": {
+    "description": "Translation for exportThisProfile"
+  },
+  "failedDevices": "الأجهزة الفاشلة",
+  "@failedDevices": {
+    "description": "Translation for failedDevices"
+  },
+  "failedToActionTailscaleService": "فشل {action} خدمة Tailscale",
+  "@failedToActionTailscaleService": {
+    "description": "Translation for failedToActionTailscaleService",
+    "placeholders": {
+      "action": {
+        "type": "String",
+        "example": "start"
+      }
+    }
+  },
+  "failedToApplyConfiguration": "فشل تطبيق التكوين",
+  "@failedToApplyConfiguration": {
+    "description": "Translation for failedToApplyConfiguration"
+  },
+  "failedToBlockHost": "فشل حظر المضيف",
+  "@failedToBlockHost": {
+    "description": "Translation for failedToBlockHost"
+  },
+  "failedToConnect": "فشل الاتصال بـ {name}",
+  "@failedToConnect": {
+    "description": "Translation for failedToConnect",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Example Name"
+      }
+    }
+  },
+  "failedToCopyHost": "فشل نسخ المضيف: {error}",
+  "@failedToCopyHost": {
+    "description": "Translation for failedToCopyHost",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToDeleteAlias": "فشل حذف الاسم المستعار: {error}",
+  "@failedToDeleteAlias": {
+    "description": "Translation for failedToDeleteAlias",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToDeleteHost": "فشل حذف المضيف: {error}",
+  "@failedToDeleteHost": {
+    "description": "Translation for failedToDeleteHost",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToDeleteInstance": "فشل حذف المثيل: {error}",
+  "@failedToDeleteInstance": {
+    "description": "Translation for failedToDeleteInstance",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToDeleteOverride": "فشل حذف التجاوز: {error}",
+  "@failedToDeleteOverride": {
+    "description": "Translation for failedToDeleteOverride",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToDeletePeer": "فشل حذف النظير: {error}",
+  "@failedToDeletePeer": {
+    "description": "Translation for failedToDeletePeer",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToDeleteProfile": "فشل حذف الملف الشخصي",
+  "@failedToDeleteProfile": {
+    "description": "Translation for failedToDeleteProfile"
+  },
+  "failedToDeleteServer": "فشل حذف الخادم: {error}",
+  "@failedToDeleteServer": {
+    "description": "Translation for failedToDeleteServer",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToDeleteStaticKey": "فشل حذف المفتاح الثابت: {error}",
+  "@failedToDeleteStaticKey": {
+    "description": "Translation for failedToDeleteStaticKey",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToDisconnect": "فشل قطع الاتصال بـ {name}",
+  "@failedToDisconnect": {
+    "description": "Translation for failedToDisconnect",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Example Name"
+      }
+    }
+  },
+  "failedToExportLogs": "فشل تصدير السجلات: {error}",
+  "@failedToExportLogs": {
+    "description": "Translation for failedToExportLogs",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToGenerateKey": "فشل إنشاء المفتاح: {error}",
+  "@failedToGenerateKey": {
+    "description": "Translation for failedToGenerateKey",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToGenerateToken": "فشل إنشاء الرمز: {error}",
+  "@failedToGenerateToken": {
+    "description": "Translation for failedToGenerateToken",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToLoadInterfaces": "فشل تحميل الواجهات: {error}",
+  "@failedToLoadInterfaces": {
+    "description": "Translation for failedToLoadInterfaces",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToLoadOpenvpnLogs": "فشل تحميل سجلات OpenVPN",
+  "@failedToLoadOpenvpnLogs": {
+    "description": "Translation for failedToLoadOpenvpnLogs"
+  },
+  "failedToRestartService": "فشل إعادة تشغيل الخدمة",
+  "@failedToRestartService": {
+    "description": "Translation for failedToRestartService"
+  },
+  "failedToSaveAuthSettings": "فشل حفظ إعدادات المصادقة",
+  "@failedToSaveAuthSettings": {
+    "description": "Translation for failedToSaveAuthSettings"
+  },
+  "failedToSaveHost": "فشل حفظ المضيف: {error}",
+  "@failedToSaveHost": {
+    "description": "Translation for failedToSaveHost",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToSaveInstance": "فشل حفظ المثيل: {error}",
+  "@failedToSaveInstance": {
+    "description": "Translation for failedToSaveInstance",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToSaveOverride": "فشل حفظ التجاوز: {error}",
+  "@failedToSaveOverride": {
+    "description": "Translation for failedToSaveOverride",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToSavePeer": "فشل حفظ النظير",
+  "@failedToSavePeer": {
+    "description": "Translation for failedToSavePeer"
+  },
+  "failedToSaveProfile": "فشل حفظ الملف الشخصي",
+  "@failedToSaveProfile": {
+    "description": "Translation for failedToSaveProfile"
+  },
+  "failedToSaveServer": "فشل حفظ الخادم",
+  "@failedToSaveServer": {
+    "description": "Translation for failedToSaveServer"
+  },
+  "failedToSaveSettings": "فشل حفظ الإعدادات",
+  "@failedToSaveSettings": {
+    "description": "Translation for failedToSaveSettings"
+  },
+  "failedToSaveStaticKey": "فشل حفظ المفتاح الثابت: {error}",
+  "@failedToSaveStaticKey": {
+    "description": "Translation for failedToSaveStaticKey",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToStartService": "فشل بدء الخدمة",
+  "@failedToStartService": {
+    "description": "Translation for failedToStartService"
+  },
+  "failedToStopService": "فشل إيقاف الخدمة",
+  "@failedToStopService": {
+    "description": "Translation for failedToStopService"
+  },
+  "failedToToggleAlias": "فشل تبديل الاسم المستعار: {error}",
+  "@failedToToggleAlias": {
+    "description": "Translation for failedToToggleAlias",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToToggleInstance": "فشل تبديل المثيل: {error}",
+  "@failedToToggleInstance": {
+    "description": "Translation for failedToToggleInstance",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToToggleOverride": "فشل تبديل التجاوز: {error}",
+  "@failedToToggleOverride": {
+    "description": "Translation for failedToToggleOverride",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToTogglePeer": "فشل تبديل النظير: {error}",
+  "@failedToTogglePeer": {
+    "description": "Translation for failedToTogglePeer",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToToggleServer": "فشل تبديل الخادم: {error}",
+  "@failedToToggleServer": {
+    "description": "Translation for failedToToggleServer",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToWakeAllHosts": "فشل تنبيه جميع المضيفين: {error}",
+  "@failedToWakeAllHosts": {
+    "description": "Translation for failedToWakeAllHosts",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "failedToWakeHost": "فشل تنبيه المضيف: {error}",
+  "@failedToWakeHost": {
+    "description": "Translation for failedToWakeHost",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "featureComingSoon": "{feature} - قريباً",
+  "@featureComingSoon": {
+    "description": "Translation for featureComingSoon",
+    "placeholders": {
+      "feature": {
+        "type": "String",
+        "example": "Feature"
+      }
+    }
+  },
+  "featuresList": "• مراقبة وإدارة النظام\n• تكوين قواعد الجدار الناري\n• التحكم في الخدمات\n• السجلات في الوقت الفعلي\n• دعم ملفات شخصية متعددة\n• مصادقة آمنة",
+  "@featuresList": {
+    "description": "Translation for featuresList"
+  },
+  "featuresTitle": "الميزات",
+  "@featuresTitle": {
+    "description": "Translation for featuresTitle"
+  },
+  "fieldIsRequired": "{fieldName} مطلوب",
+  "@fieldIsRequired": {
+    "description": "Translation for fieldIsRequired",
+    "placeholders": {
+      "fieldName": {
+        "type": "String",
+        "example": "Example Name"
+      }
+    }
+  },
+  "fieldRequired": "هذا الحقل مطلوب",
+  "@fieldRequired": {
+    "description": "Translation for fieldRequired"
+  },
+  "fifteenMin": "15 دقيقة",
+  "@fifteenMin": {
+    "description": "Translation for fifteenMin"
+  },
+  "filterByAction": "تصفية حسب الإجراء",
+  "@filterByAction": {
+    "description": "Translation for filterByAction"
+  },
+  "filterByType": "تصفية حسب النوع",
+  "@filterByType": {
+    "description": "Translation for filterByType"
+  },
+  "filterLabel": "تصفية: ",
+  "@filterLabel": {
+    "description": "Translation for filterLabel"
+  },
+  "filters": "المرشحات",
+  "@filters": {
+    "description": "Translation for filters"
+  },
+  "filtersLabel": "الفلاتر",
+  "@filtersLabel": {
+    "description": "Translation for filtersLabel"
+  },
+  "firewall": "جدار الحماية",
+  "@firewall": {
+    "description": "Translation for firewall"
+  },
+  "firewallAliases": "أسماء جدار الحماية المستعارة",
+  "@firewallAliases": {
+    "description": "Translation for firewallAliases"
+  },
+  "firewallLogs": "سجلات الجدار الناري",
+  "@firewallLogs": {
+    "description": "Translation for firewallLogs"
+  },
+  "firewallRuleDetails": "تفاصيل قاعدة الجدار الناري",
+  "@firewallRuleDetails": {
+    "description": "Translation for firewallRuleDetails"
+  },
+  "firewallRules": "قواعد الجدار الناري",
+  "@firewallRules": {
+    "description": "Translation for firewallRules"
+  },
+  "firmwareDetails": "تفاصيل البرنامج الثابت",
+  "@firmwareDetails": {
+    "description": "Translation for firmwareDetails"
+  },
+  "fiveMin": "5 دقائق",
+  "@fiveMin": {
+    "description": "Translation for fiveMin"
+  },
+  "fixFormErrors": "الرجاء إصلاح الأخطاء في النموذج",
+  "@fixFormErrors": {
+    "description": "Translation for fixFormErrors"
+  },
+  "forbidden": "الوصول محظور",
+  "@forbidden": {
+    "description": "Translation for forbidden"
+  },
+  "gateway": "البوابة",
+  "@gateway": {
+    "description": "Translation for gateway"
+  },
+  "gatewayOptional": "البوابة (اختياري)",
+  "@gatewayOptional": {
+    "description": "Translation for gatewayOptional"
+  },
+  "gateways": "البوابات",
+  "@gateways": {
+    "description": "Translation for gateways"
+  },
+  "general": "عام",
+  "@general": {
+    "description": "Translation for general"
+  },
+  "generalSettings": "الإعدادات العامة",
+  "@generalSettings": {
+    "description": "Translation for generalSettings"
+  },
+  "generateKey": "إنشاء مفتاح",
+  "@generateKey": {
+    "description": "Translation for generateKey"
+  },
+  "generateKeyPair": "إنشاء زوج مفاتيح",
+  "@generateKeyPair": {
+    "description": "Translation for generateKeyPair"
+  },
+  "generateNewKeyPair": "إنشاء زوج مفاتيح جديد",
+  "@generateNewKeyPair": {
+    "description": "Translation for generateNewKeyPair"
+  },
+  "generateOrPasteKeyHere": "قم بإنشاء أو لصق المفتاح هنا",
+  "@generateOrPasteKeyHere": {
+    "description": "Translation for generateOrPasteKeyHere"
+  },
+  "generatePresharedKey": "إنشاء مفتاح مشترك مسبقًا",
+  "@generatePresharedKey": {
+    "description": "Translation for generatePresharedKey"
+  },
+  "generated": "تم الإنشاء",
+  "@generated": {
+    "description": "Translation for generated"
+  },
+  "generating": "جاري الإنشاء...",
+  "@generating": {
+    "description": "Translation for generating"
+  },
+  "gitCommit": "التزام Git",
+  "@gitCommit": {
+    "description": "Translation for gitCommit"
+  },
+  "gnuLicenseText": "هذا البرنامج مجاني: يمكنك إعادة توزيعه و/أو تعديله بموجب شروط رخصة جنو العمومية كما نشرتها مؤسسة البرمجيات الحرة، سواء الإصدار 3 من الرخصة، أو (حسب اختيارك) أي إصدار لاحق.\n\nيتم توزيع هذا البرنامج على أمل أن يكون مفيداً، ولكن دون أي ضمان؛ حتى بدون الضمان الضمني للتسويق أو الملاءمة لغرض معين. راجع رخصة جنو العمومية لمزيد من التفاصيل.\n\nيجب أن تكون قد تلقيت نسخة من رخصة جنو العمومية مع هذا البرنامج. إذا لم يكن الأمر كذلك، راجع <https://www.gnu.org/licenses/>.\n\nلماذا GPLv3؟\n\n• يضمن بقاء البرنامج مجانياً ومفتوح المصدر\n• يجب أن تكون أي تعديلات أو مشتقات مفتوحة المصدر أيضاً\n• للمستخدمين حرية استخدام ودراسة ومشاركة وتعديل البرنامج\n• يستفيد المجتمع من التحسينات والمساهمات",
+  "@gnuLicenseText": {
+    "description": "Translation for gnuLicenseText"
+  },
+  "gnuLicenseTitle": "رخصة جنو العمومية الإصدار 3.0",
+  "@gnuLicenseTitle": {
+    "description": "Translation for gnuLicenseTitle"
+  },
+  "healthStatus": "حالة الصحة",
+  "@healthStatus": {
+    "description": "Translation for healthStatus"
+  },
+  "hideControls": "إخفاء عناصر التحكم",
+  "@hideControls": {
+    "description": "Translation for hideControls"
+  },
+  "hideKey": "إخفاء المفتاح",
+  "@hideKey": {
+    "description": "Translation for hideKey"
+  },
+  "historySize": "حجم السجل",
+  "@historySize": {
+    "description": "Translation for historySize"
+  },
+  "host": "المضيف",
+  "@host": {
+    "description": "Translation for host"
+  },
+  "hostAddedSuccessfully": "تمت إضافة المضيف بنجاح",
+  "@hostAddedSuccessfully": {
+    "description": "Translation for hostAddedSuccessfully"
+  },
   "hostBlocked": "تم حظر المضيف بنجاح",
-  "failedToBlockHost": "فشل حظر المضيف"
+  "@hostBlocked": {
+    "description": "Translation for hostBlocked"
+  },
+  "hostDeletedSuccessfully": "تم حذف المضيف بنجاح",
+  "@hostDeletedSuccessfully": {
+    "description": "Translation for hostDeletedSuccessfully"
+  },
+  "hostHint": "مثال: 192.168.1.1 أو firewall.example.com",
+  "@hostHint": {
+    "description": "Translation for hostHint"
+  },
+  "hostIpAddress": "المضيف / عنوان IP",
+  "@hostIpAddress": {
+    "description": "Translation for hostIpAddress"
+  },
+  "hostIpAddressLabel": "المضيف/عنوان IP",
+  "@hostIpAddressLabel": {
+    "description": "Translation for hostIpAddressLabel"
+  },
+  "hostIsRequired": "المضيف مطلوب",
+  "@hostIsRequired": {
+    "description": "Translation for hostIsRequired"
+  },
+  "hostPlaceholder": "192.168.1.1 أو firewall.example.com",
+  "@hostPlaceholder": {
+    "description": "Translation for hostPlaceholder"
+  },
+  "hostUpdatedSuccessfully": "تم تحديث المضيف بنجاح",
+  "@hostUpdatedSuccessfully": {
+    "description": "Translation for hostUpdatedSuccessfully"
+  },
+  "hostname": "اسم المضيف",
+  "@hostname": {
+    "description": "Translation for hostname"
+  },
+  "hour": "ساعة",
+  "@hour": {
+    "description": "Translation for hour"
+  },
+  "hourAbbrev": "س",
+  "@hourAbbrev": {
+    "description": "Translation for hourAbbrev"
+  },
+  "hours": "ساعات",
+  "@hours": {
+    "description": "Translation for hours"
+  },
+  "hoursAgo": "منذ {hours} ساعة",
+  "@hoursAgo": {
+    "description": "Translation for hoursAgo",
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "2"
+      }
+    }
+  },
+  "http": "http",
+  "@http": {
+    "description": "Translation for http"
+  },
+  "https": "https",
+  "@https": {
+    "description": "Translation for https"
+  },
+  "id": "المعرف",
+  "@id": {
+    "description": "Translation for id"
+  },
+  "import": "استيراد",
+  "@import": {
+    "description": "Translation for import"
+  },
+  "importAndExport": "الاستيراد والتصدير",
+  "@importAndExport": {
+    "description": "Translation for importAndExport"
+  },
+  "importExport": "الاستيراد والتصدير",
+  "@importExport": {
+    "description": "Translation for importExport"
+  },
+  "importExportDescription": "قم بتصدير ملفاتك الشخصية لنسخها احتياطياً أو نقلها إلى جهاز آخر. استيراد الملفات الشخصية من ملف تم تصديره مسبقاً.\n\nيتم حفظ الملفات الشخصية بتنسيق JSON ويمكن أن تتضمن نقاط الاتصال والإعدادات.",
+  "@importExportDescription": {
+    "description": "Translation for importExportDescription"
+  },
+  "importFailed": "فشل الاستيراد: {error}",
+  "@importFailed": {
+    "description": "Translation for importFailed",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "importFailedWithErrors": "فشل الاستيراد: {errors}",
+  "@importFailedWithErrors": {
+    "description": "Translation for importFailedWithErrors",
+    "placeholders": {
+      "errors": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "importProfiles": "استيراد الملفات الشخصية",
+  "@importProfiles": {
+    "description": "Translation for importProfiles"
+  },
+  "importProfilesDialog": "كيف يجب التعامل مع الملفات الشخصية الموجودة؟\n\n• الاحتفاظ بكليهما: الاستيراد بمعرفات جديدة\n• الكتابة فوق: استبدال الملفات الشخصية الموجودة",
+  "@importProfilesDialog": {
+    "description": "Translation for importProfilesDialog"
+  },
+  "importProfilesSubtitle": "استيراد الملفات الشخصية من ملف JSON",
+  "@importProfilesSubtitle": {
+    "description": "Translation for importProfilesSubtitle"
+  },
+  "importProfilesTitle": "استيراد الملفات التعريفية",
+  "@importProfilesTitle": {
+    "description": "Translation for importProfilesTitle"
+  },
+  "importSuccess": "نجح الاستيراد",
+  "@importSuccess": {
+    "description": "Translation for importSuccess"
+  },
+  "importedProfiles": "تم استيراد {count} ملف شخصي",
+  "@importedProfiles": {
+    "description": "Translation for importedProfiles",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "importedWithFailures": "تم استيراد {success} {success, plural, =1{ملف شخصي} other{ملفات شخصية}}، فشل {failed}",
+  "@importedWithFailures": {
+    "description": "Translation for importedWithFailures",
+    "placeholders": {
+      "failed": {
+        "type": "int",
+        "example": "1"
+      },
+      "success": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "inDays": "خلال {days} يوم",
+  "@inDays": {
+    "description": "Translation for inDays",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "7"
+      }
+    }
+  },
+  "inHours": "خلال {hours} ساعة",
+  "@inHours": {
+    "description": "Translation for inHours",
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "2"
+      }
+    }
+  },
+  "inMinutes": "خلال {minutes} دقيقة",
+  "@inMinutes": {
+    "description": "Translation for inMinutes",
+    "placeholders": {
+      "minutes": {
+        "type": "String",
+        "example": "30"
+      }
+    }
+  },
+  "inbound": "وارد",
+  "@inbound": {
+    "description": "Translation for inbound"
+  },
+  "includeCredentials": "تضمين بيانات الاعتماد",
+  "@includeCredentials": {
+    "description": "Translation for includeCredentials"
+  },
+  "incorrectPin": "رمز PIN غير صحيح",
+  "@incorrectPin": {
+    "description": "Translation for incorrectPin"
+  },
+  "info": "معلومات",
+  "@info": {
+    "description": "Translation for info"
+  },
+  "instance": "المثيل",
+  "@instance": {
+    "description": "Translation for instance"
+  },
+  "instanceCreatedSuccessfully": "تم إنشاء المثيل بنجاح",
+  "@instanceCreatedSuccessfully": {
+    "description": "Translation for instanceCreatedSuccessfully"
+  },
+  "instanceDeletedSuccessfully": "تم حذف المثيل بنجاح",
+  "@instanceDeletedSuccessfully": {
+    "description": "Translation for instanceDeletedSuccessfully"
+  },
+  "instanceDetails": "تفاصيل المثيل",
+  "@instanceDetails": {
+    "description": "Translation for instanceDetails"
+  },
+  "instanceToggledSuccessfully": "تم {status} المثيل بنجاح",
+  "@instanceToggledSuccessfully": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "instanceUpdatedSuccessfully": "تم تحديث المثيل بنجاح",
+  "@instanceUpdatedSuccessfully": {
+    "description": "Translation for instanceUpdatedSuccessfully"
+  },
+  "instanceWillBeActiveWhenEnabled": "سيكون المثيل نشطاً عند التفعيل",
+  "@instanceWillBeActiveWhenEnabled": {
+    "description": "Translation for instanceWillBeActiveWhenEnabled"
+  },
+  "instances": "المثيلات",
+  "@instances": {
+    "description": "Translation for instances"
+  },
+  "interface": "الواجهة",
+  "@interface": {
+    "description": "Translation for interface"
+  },
+  "interfaceLabel": "{interface}",
+  "@interfaceLabel": {
+    "description": "Translation for interfaceLabel",
+    "placeholders": {
+      "interface": {
+        "type": "String",
+        "example": "eth0"
+      }
+    }
+  },
+  "invalidApiKeyFormat": "تنسيق مفتاح API غير صالح",
+  "@invalidApiKeyFormat": {
+    "description": "Translation for invalidApiKeyFormat"
+  },
+  "invalidApiSecretFormat": "تنسيق سر API غير صالح",
+  "@invalidApiSecretFormat": {
+    "description": "Translation for invalidApiSecretFormat"
+  },
+  "invalidBase64Format": "تنسيق Base64 غير صالح",
+  "@invalidBase64Format": {
+    "description": "Translation for invalidBase64Format"
+  },
+  "invalidCidrFormat": "تدوين CIDR غير صالح (استخدم الصيغة: IP/prefix)",
+  "@invalidCidrFormat": {
+    "description": "Translation for invalidCidrFormat"
+  },
+  "invalidCidrNotation": "تدوين CIDR غير صالح (استخدم التنسيق: IP/prefix)",
+  "@invalidCidrNotation": {
+    "description": "Translation for invalidCidrNotation"
+  },
+  "invalidDestinationFormat": "تنسيق الوجهة غير صالح",
+  "@invalidDestinationFormat": {
+    "description": "Translation for invalidDestinationFormat"
+  },
+  "invalidFileError": "ملف غير صالح: {error}",
+  "@invalidFileError": {
+    "description": "Translation for invalidFileError",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "invalidFileFormat": "ملف غير صالح: {error}",
+  "@invalidFileFormat": {
+    "description": "Translation for invalidFileFormat",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "invalidHostnameOrIp": "اسم مضيف أو عنوان IP غير صالح",
+  "@invalidHostnameOrIp": {
+    "description": "Translation for invalidHostnameOrIp"
+  },
+  "invalidInput": "إدخال غير صالح",
+  "@invalidInput": {
+    "description": "Translation for invalidInput"
+  },
+  "invalidIpAddress": "عنوان IP غير صالح",
+  "@invalidIpAddress": {
+    "description": "Translation for invalidIpAddress"
+  },
+  "invalidIpAddressFormat": "عنوان IP غير صالح (يجب أن يكون IPv4 أو IPv6)",
+  "@invalidIpAddressFormat": {
+    "description": "Translation for invalidIpAddressFormat"
+  },
+  "invalidIpv4Address": "عنوان IPv4 غير صالح",
+  "@invalidIpv4Address": {
+    "description": "Translation for invalidIpv4Address"
+  },
+  "invalidIpv4CidrNotation": "تدوين CIDR لـ IPv4 غير صالح",
+  "@invalidIpv4CidrNotation": {
+    "description": "Translation for invalidIpv4CidrNotation"
+  },
+  "invalidIpv4Prefix": "بادئة IPv4 غير صالحة (يجب أن تكون 0-32)",
+  "@invalidIpv4Prefix": {
+    "description": "Translation for invalidIpv4Prefix"
+  },
+  "invalidIpv6Address": "عنوان IPv6 غير صالح",
+  "@invalidIpv6Address": {
+    "description": "Translation for invalidIpv6Address"
+  },
+  "invalidIpv6CidrNotation": "تدوين CIDR لـ IPv6 غير صالح",
+  "@invalidIpv6CidrNotation": {
+    "description": "Translation for invalidIpv6CidrNotation"
+  },
+  "invalidIpv6Prefix": "بادئة IPv6 غير صالحة (يجب أن تكون 0-128)",
+  "@invalidIpv6Prefix": {
+    "description": "Translation for invalidIpv6Prefix"
+  },
+  "invalidPIN": "PIN غير صالح",
+  "@invalidPIN": {
+    "description": "Translation for invalidPIN"
+  },
+  "invalidPortFormat": "تنسيق المنفذ غير صالح",
+  "@invalidPortFormat": {
+    "description": "Translation for invalidPortFormat"
+  },
+  "invalidPrefixLength": "طول البادئة غير صالح",
+  "@invalidPrefixLength": {
+    "description": "Translation for invalidPrefixLength"
+  },
+  "invalidSourceFormat": "تنسيق المصدر غير صالح",
+  "@invalidSourceFormat": {
+    "description": "Translation for invalidSourceFormat"
+  },
+  "ipAddress": "عنوان IP",
+  "@ipAddress": {
+    "description": "Translation for ipAddress"
+  },
+  "ipAddresses": "عناوين IP",
+  "@ipAddresses": {
+    "description": "Translation for ipAddresses"
+  },
+  "ipv4CidrHint": "10.8.0.0/24",
+  "@ipv4CidrHint": {
+    "description": "Translation for ipv4CidrHint"
+  },
+  "ipv4OrIpv6CidrHint": "10.8.0.0/24 أو fd00::/64",
+  "@ipv4OrIpv6CidrHint": {
+    "description": "Translation for ipv4OrIpv6CidrHint"
+  },
+  "ipv4TunnelNetwork": "شبكة النفق IPv4",
+  "@ipv4TunnelNetwork": {
+    "description": "Translation for ipv4TunnelNetwork"
+  },
+  "ipv4TunnelNetworkHint": "10.8.0.0/24",
+  "@ipv4TunnelNetworkHint": {
+    "description": "Translation for ipv4TunnelNetworkHint"
+  },
+  "ipv6CidrHint": "fd00::/64",
+  "@ipv6CidrHint": {
+    "description": "Translation for ipv6CidrHint"
+  },
+  "ipv6TunnelNetwork": "شبكة النفق IPv6",
+  "@ipv6TunnelNetwork": {
+    "description": "Translation for ipv6TunnelNetwork"
+  },
+  "ipv6TunnelNetworkHint": "fd00::/64",
+  "@ipv6TunnelNetworkHint": {
+    "description": "Translation for ipv6TunnelNetworkHint"
+  },
+  "iscDhcpDescription": "خادم DHCP من Internet Systems Consortium",
+  "@iscDhcpDescription": {
+    "description": "Translation for iscDhcpDescription"
+  },
+  "iscDhcpServerName": "ISC DHCP",
+  "@iscDhcpServerName": {
+    "description": "Translation for iscDhcpServerName"
+  },
+  "itemsCount": "{count} عنصر",
+  "@itemsCount": {
+    "description": "Translation for itemsCount",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "justNow": "الآن",
+  "@justNow": {
+    "description": "Translation for justNow"
+  },
+  "keaDhcpDescription": "خادم DHCP حديث وعالي الأداء",
+  "@keaDhcpDescription": {
+    "description": "Translation for keaDhcpDescription"
+  },
+  "keaDhcpServerName": "Kea DHCP",
+  "@keaDhcpServerName": {
+    "description": "Translation for keaDhcpServerName"
+  },
+  "keepAliveIntervalOptional": "فترة الحفاظ على الاتصال (اختياري)",
+  "@keepAliveIntervalOptional": {
+    "description": "Translation for keepAliveIntervalOptional"
+  },
+  "keepBoth": "الاحتفاظ بكليهما",
+  "@keepBoth": {
+    "description": "Translation for keepBoth"
+  },
+  "keepalive": "الحفاظ على الاتصال",
+  "@keepalive": {
+    "description": "Translation for keepalive"
+  },
+  "keepaliveOptional": "الحفاظ على الاتصال (اختياري)",
+  "@keepaliveOptional": {
+    "description": "Translation for keepaliveOptional"
+  },
+  "key": "المفتاح",
+  "@key": {
+    "description": "Translation for key"
+  },
+  "keyCopiedToClipboard": "تم نسخ المفتاح إلى الحافظة",
+  "@keyCopiedToClipboard": {
+    "description": "Translation for keyCopiedToClipboard"
+  },
+  "keyGeneratedSuccessfully": "تم إنشاء المفتاح بنجاح",
+  "@keyGeneratedSuccessfully": {
+    "description": "Translation for keyGeneratedSuccessfully"
+  },
+  "keyLabel": "المفتاح {id}",
+  "@keyLabel": {
+    "description": "Translation for keyLabel",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "keyWithId": "المفتاح {id}",
+  "@keyWithId": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "keysGeneratedSuccessfully": "تم إنشاء المفاتيح بنجاح",
+  "@keysGeneratedSuccessfully": {
+    "description": "Translation for keysGeneratedSuccessfully"
+  },
+  "keysRequired": "المفاتيح الخاصة والعامة مطلوبة",
+  "@keysRequired": {
+    "description": "Translation for keysRequired"
+  },
+  "label": "التسمية",
+  "@label": {
+    "description": "Translation for label"
+  },
+  "labelHint": "مثال: شبكة المنزل، VPN المكتب",
+  "@labelHint": {
+    "description": "Translation for labelHint"
+  },
+  "labelOptional": "التسمية (اختياري)",
+  "@labelOptional": {
+    "description": "Translation for labelOptional"
+  },
+  "language": "اللغة",
+  "@language": {
+    "description": "Translation for language"
+  },
+  "lastDay": "اليوم الأخير",
+  "@lastDay": {
+    "description": "Translation for lastDay"
+  },
+  "lastDayShort": "يوم واحد",
+  "@lastDayShort": {
+    "description": "Translation for lastDayShort"
+  },
+  "lastMonth": "الشهر الماضي",
+  "@lastMonth": {
+    "description": "Translation for lastMonth"
+  },
+  "lastMonthShort": "شهر واحد",
+  "@lastMonthShort": {
+    "description": "Translation for lastMonthShort"
+  },
+  "lastUpdate": "آخر تحديث",
+  "@lastUpdate": {
+    "description": "Translation for lastUpdate"
+  },
+  "lastUsed": "آخر استخدام: {date}",
+  "@lastUsed": {
+    "description": "Translation for lastUsed",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "2024-01-01"
+      }
+    }
+  },
+  "lastWeek": "الأسبوع الماضي",
+  "@lastWeek": {
+    "description": "Translation for lastWeek"
+  },
+  "lastWeekShort": "أسبوع واحد",
+  "@lastWeekShort": {
+    "description": "Translation for lastWeekShort"
+  },
+  "leasesCount": "{filtered} من {total} عقد",
+  "@leasesCount": {
+    "description": "Translation for leasesCount",
+    "placeholders": {
+      "filtered": {
+        "type": "int",
+        "example": "1"
+      },
+      "total": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "leaveEmptyOrGenerate": "اتركه فارغاً أو قم بإنشائه",
+  "@leaveEmptyOrGenerate": {
+    "description": "Translation for leaveEmptyOrGenerate"
+  },
+  "licenses": "التراخيص",
+  "@licenses": {
+    "description": "Translation for licenses"
+  },
+  "lightMode": "الوضع الفاتح",
+  "@lightMode": {
+    "description": "Translation for lightMode"
+  },
+  "limit": "الحد",
+  "@limit": {
+    "description": "Translation for limit"
+  },
+  "live": "مباشر",
+  "@live": {
+    "description": "Translation for live"
+  },
+  "liveNetworkMonitor": "مراقب الشبكة المباشر",
+  "@liveNetworkMonitor": {
+    "description": "Translation for liveNetworkMonitor"
+  },
+  "loading": "جاري التحميل...",
+  "@loading": {
+    "description": "Translation for loading"
+  },
+  "loadingHostData": "جاري تحميل بيانات المضيف...",
+  "@loadingHostData": {
+    "description": "Translation for loadingHostData"
+  },
+  "loadingSettings": "جاري تحميل الإعدادات...",
+  "@loadingSettings": {
+    "description": "Translation for loadingSettings"
+  },
+  "localAddress": "العنوان المحلي",
+  "@localAddress": {
+    "description": "Translation for localAddress"
+  },
+  "localNetwork": "الشبكة المحلية",
+  "@localNetwork": {
+    "description": "Translation for localNetwork"
+  },
+  "localNetworkHelperText": "هذه هي الشبكات التي يمكن للعميل الوصول إليها، يتم دفعها عبر بنود route(-ipv6) في OpenVPN إلى العميل.",
+  "@localNetworkHelperText": {
+    "description": "Translation for localNetworkHelperText"
+  },
+  "lockAfterMinutes": "القفل بعد {minutes} {minutes, plural, =1{دقيقة} other{دقائق}} من عدم النشاط",
+  "@lockAfterMinutes": {
+    "description": "Translation for lockAfterMinutes",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+  "lockApp": "قفل التطبيق",
+  "@lockApp": {
+    "description": "Translation for lockApp"
+  },
+  "lockTimeoutLabel": "مهلة القفل",
+  "@lockTimeoutLabel": {
+    "description": "Translation for lockTimeoutLabel"
+  },
+  "lockTimeoutSet": "تم تعيين مهلة القفل إلى {value} {value, plural, =1{دقيقة} other{دقائق}}",
+  "@lockTimeoutSet": {
+    "description": "Translation for lockTimeoutSet",
+    "placeholders": {
+      "value": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "logDetails": "تفاصيل السجل",
+  "@logDetails": {
+    "description": "Translation for logDetails"
+  },
+  "logEntriesCopied": "تم نسخ {count} {entries} من السجل",
+  "@logEntriesCopied": {
+    "description": "Translation for logEntriesCopied",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "entries": {
+        "type": "String"
+      }
+    }
+  },
+  "logEntryCopied": "تم نسخ إدخال السجل",
+  "@logEntryCopied": {
+    "description": "Translation for logEntryCopied"
+  },
+  "logEntryDetails": "تفاصيل إدخال السجل",
+  "@logEntryDetails": {
+    "description": "Translation for logEntryDetails"
+  },
+  "logFile": "ملف السجل",
+  "@logFile": {
+    "description": "Translation for logFile"
+  },
+  "logLimit": "حد السجلات",
+  "@logLimit": {
+    "description": "Translation for logLimit"
+  },
+  "login": "تسجيل الدخول",
+  "@login": {
+    "description": "Translation for login"
+  },
+  "loginServer": "خادم تسجيل الدخول",
+  "@loginServer": {
+    "description": "Translation for loginServer"
+  },
+  "loginServerHelperText": "عنوان URL لخادم تسجيل الدخول Tailscale",
+  "@loginServerHelperText": {
+    "description": "Translation for loginServerHelperText"
+  },
+  "loginServerRequired": "خادم تسجيل الدخول مطلوب",
+  "@loginServerRequired": {
+    "description": "Translation for loginServerRequired"
+  },
+  "logout": "تسجيل الخروج",
+  "@logout": {
+    "description": "Translation for logout"
+  },
+  "logs": "السجلات",
+  "@logs": {
+    "description": "Translation for logs"
+  },
+  "logsExportedSuccessfully": "تم تصدير السجلات بنجاح",
+  "@logsExportedSuccessfully": {
+    "description": "Translation for logsExportedSuccessfully"
+  },
+  "logsMatchingFiltersWillAppearHere": "ستظهر السجلات المطابقة للمرشحات هنا",
+  "@logsMatchingFiltersWillAppearHere": {
+    "description": "Translation for logsMatchingFiltersWillAppearHere"
+  },
+  "logsWillAppear": "ستظهر السجلات هنا عند إنشائها",
+  "@logsWillAppear": {
+    "description": "Translation for logsWillAppear"
+  },
+  "macAddress": "عنوان MAC",
+  "@macAddress": {
+    "description": "Translation for macAddress"
+  },
+  "macAddressHint": "مثال: 00:11:22:33:44:55",
+  "@macAddressHint": {
+    "description": "Translation for macAddressHint"
+  },
+  "magicDns": "Magic DNS",
+  "@magicDns": {
+    "description": "Translation for magicDns"
+  },
+  "manageProfiles": "إدارة الملفات الشخصية",
+  "@manageProfiles": {
+    "description": "Translation for manageProfiles"
+  },
+  "manageSubnets": "إدارة الشبكات الفرعية",
+  "@manageSubnets": {
+    "description": "Translation for manageSubnets"
+  },
+  "manageWireguard": "إدارة WireGuard",
+  "@manageWireguard": {
+    "description": "Translation for manageWireguard"
+  },
+  "manufacturer": "الشركة المصنعة",
+  "@manufacturer": {
+    "description": "Translation for manufacturer"
+  },
+  "maximumTransmissionUnit": "وحدة الإرسال القصوى (576-9000)",
+  "@maximumTransmissionUnit": {
+    "description": "Translation for maximumTransmissionUnit"
+  },
+  "memoryUsage": "استخدام الذاكرة",
+  "@memoryUsage": {
+    "description": "Translation for memoryUsage"
+  },
+  "minute": "دقيقة",
+  "@minute": {
+    "description": "Translation for minute"
+  },
+  "minuteAbbrev": "د",
+  "@minuteAbbrev": {
+    "description": "Translation for minuteAbbrev"
+  },
+  "minutes": "دقائق",
+  "@minutes": {
+    "description": "Translation for minutes"
+  },
+  "minutesAgo": "منذ {minutes} دقيقة",
+  "@minutesAgo": {
+    "description": "Translation for minutesAgo",
+    "placeholders": {
+      "minutes": {
+        "type": "String",
+        "example": "30"
+      }
+    }
+  },
+  "mode": "الوضع",
+  "@mode": {
+    "description": "Translation for mode"
+  },
+  "modified": "تم التعديل",
+  "@modified": {
+    "description": "Translation for modified"
+  },
+  "monitorInterface": "واجهة المراقبة",
+  "@monitorInterface": {
+    "description": "Translation for monitorInterface"
+  },
+  "mssFix": "إصلاح MSS",
+  "@mssFix": {
+    "description": "Translation for mssFix"
+  },
+  "mssFixDescription": "تفعيل إصلاح MSS لهذا الاتصال",
+  "@mssFixDescription": {
+    "description": "Translation for mssFixDescription"
+  },
+  "mtuOptional": "MTU (اختياري)",
+  "@mtuOptional": {
+    "description": "Translation for mtuOptional"
+  },
+  "mustBeValidUrl": "يجب أن يكون عنوان URL صالحًا يبدأ بـ http:// أو https://",
+  "@mustBeValidUrl": {
+    "description": "Translation for mustBeValidUrl"
+  },
+  "myOPNsenseRouter": "جهاز التوجيه OPNsense الخاص بي",
+  "@myOPNsenseRouter": {
+    "description": "Translation for myOPNsenseRouter"
+  },
+  "myOpenvpnInstance": "مثيل OpenVPN الخاص بي",
+  "@myOpenvpnInstance": {
+    "description": "Translation for myOpenvpnInstance"
+  },
+  "myStaticKey": "مفتاحي الثابت",
+  "@myStaticKey": {
+    "description": "Translation for myStaticKey"
+  },
+  "myWireguardPeer": "نظير WireGuard الخاص بي",
+  "@myWireguardPeer": {
+    "description": "Translation for myWireguardPeer"
+  },
+  "myWireguardServer": "خادم WireGuard الخاص بي",
+  "@myWireguardServer": {
+    "description": "Translation for myWireguardServer"
+  },
+  "name": "الاسم",
+  "@name": {
+    "description": "Translation for name"
+  },
+  "needHelpCheckDocumentation": "تحتاج مساعدة؟ راجع وثائق OPNsense لإنشاء مفتاح API.",
+  "@needHelpCheckDocumentation": {
+    "description": "Translation for needHelpCheckDocumentation"
+  },
+  "networkConfiguration": "تكوين الشبكة",
+  "@networkConfiguration": {
+    "description": "Translation for networkConfiguration"
+  },
+  "networkError": "حدث خطأ في الشبكة",
+  "@networkError": {
+    "description": "Translation for networkError"
+  },
+  "networkInformation": "معلومات الشبكة",
+  "@networkInformation": {
+    "description": "Translation for networkInformation"
+  },
+  "networkTotals": "إجماليات الشبكة",
+  "@networkTotals": {
+    "description": "Translation for networkTotals"
+  },
+  "newPin": "رمز PIN الجديد (4-6 أرقام)",
+  "@newPin": {
+    "description": "Translation for newPin"
+  },
+  "newPinMustBeDifferent": "يجب أن يكون رمز PIN الجديد مختلفًا عن الحالي",
+  "@newPinMustBeDifferent": {
+    "description": "Translation for newPinMustBeDifferent"
+  },
+  "newRule": "قاعدة جديدة",
+  "@newRule": {
+    "description": "Translation for newRule"
+  },
+  "newWireguardPeer": "نظير WireGuard جديد",
+  "@newWireguardPeer": {
+    "description": "Translation for newWireguardPeer"
+  },
+  "newWireguardServer": "خادم WireGuard جديد",
+  "@newWireguardServer": {
+    "description": "Translation for newWireguardServer"
+  },
+  "next": "التالي",
+  "@next": {
+    "description": "Translation for next"
+  },
+  "nextButton": "التالي",
+  "@nextButton": {
+    "description": "Translation for nextButton"
+  },
+  "no": "لا",
+  "@no": {
+    "description": "Translation for no"
+  },
+  "noAliasesConfigured": "لم يتم تكوين أسماء مستعارة",
+  "@noAliasesConfigured": {
+    "description": "Translation for noAliasesConfigured"
+  },
+  "noAliasesMatchFilters": "لا توجد أسماء مستعارة تطابق الفلاتر الحالية",
+  "@noAliasesMatchFilters": {
+    "description": "Translation for noAliasesMatchFilters"
+  },
+  "noAutomationRulesFound": "لم يتم العثور على قواعد أتمتة",
+  "@noAutomationRulesFound": {
+    "description": "Translation for noAutomationRulesFound"
+  },
+  "noClientSpecificOverridesConfigured": "لم يتم تكوين تجاوزات خاصة بالعميل",
+  "@noClientSpecificOverridesConfigured": {
+    "description": "Translation for noClientSpecificOverridesConfigured"
+  },
+  "noConnectionsFound": "لم يتم العثور على اتصالات {type}",
+  "@noConnectionsFound": {
+    "description": "Translation for noConnectionsFound",
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "OpenVPN"
+      }
+    }
+  },
+  "noData": "لا توجد بيانات متاحة",
+  "@noData": {
+    "description": "Translation for noData"
+  },
+  "noDataAvailable": "لا توجد بيانات متاحة",
+  "@noDataAvailable": {
+    "description": "Translation for noDataAvailable"
+  },
+  "noDescription": "بدون وصف",
+  "@noDescription": {
+    "description": "Translation for noDescription"
+  },
+  "noDnsDomainSearchEntriesConfigured": "لم يتم تكوين إدخالات بحث نطاق DNS",
+  "@noDnsDomainSearchEntriesConfigured": {
+    "description": "Translation for noDnsDomainSearchEntriesConfigured"
+  },
+  "noDnsDomainsConfigured": "لم يتم تكوين نطاقات DNS",
+  "@noDnsDomainsConfigured": {
+    "description": "Translation for noDnsDomainsConfigured"
+  },
+  "noDnsServersConfigured": "لم يتم تكوين خوادم DNS",
+  "@noDnsServersConfigured": {
+    "description": "Translation for noDnsServersConfigured"
+  },
+  "noHostsFound": "لم يتم العثور على مضيفين",
+  "@noHostsFound": {
+    "description": "Translation for noHostsFound"
+  },
+  "noInstancesMatchFilters": "لا توجد مثيلات تطابق الفلاتر",
+  "@noInstancesMatchFilters": {
+    "description": "Translation for noInstancesMatchFilters"
+  },
+  "noInterfacesWithAutomationRules": "لا توجد واجهات بقواعد أتمتة",
+  "@noInterfacesWithAutomationRules": {
+    "description": "Translation for noInterfacesWithAutomationRules"
+  },
+  "noItemsConfigured": "لم يتم تكوين عناصر",
+  "@noItemsConfigured": {
+    "description": "Translation for noItemsConfigured"
+  },
+  "noLeasesFound": "لم يتم العثور على عقود",
+  "@noLeasesFound": {
+    "description": "Translation for noLeasesFound"
+  },
+  "noLimit": "بلا حد",
+  "@noLimit": {
+    "description": "Translation for noLimit"
+  },
+  "noLimitShort": "الكل",
+  "@noLimitShort": {
+    "description": "Translation for noLimitShort"
+  },
+  "noLocalNetworksConfigured": "لم يتم تكوين شبكات محلية",
+  "@noLocalNetworksConfigured": {
+    "description": "Translation for noLocalNetworksConfigured"
+  },
+  "noLogEntriesFound": "لم يتم العثور على إدخالات سجل",
+  "@noLogEntriesFound": {
+    "description": "Translation for noLogEntriesFound"
+  },
+  "noLogsAvailable": "لا توجد سجلات متاحة",
+  "@noLogsAvailable": {
+    "description": "Translation for noLogsAvailable"
+  },
+  "noLogsToExport": "لا توجد سجلات للتصدير",
+  "@noLogsToExport": {
+    "description": "Translation for noLogsToExport"
+  },
+  "noNtpServersConfigured": "لم يتم تكوين خوادم NTP",
+  "@noNtpServersConfigured": {
+    "description": "Translation for noNtpServersConfigured"
+  },
+  "noOpenvpnInstancesConfigured": "لم يتم تكوين مثيلات OpenVPN",
+  "@noOpenvpnInstancesConfigured": {
+    "description": "Translation for noOpenvpnInstancesConfigured"
+  },
+  "noOpenvpnRoutesConfigured": "لم يتم تكوين مسارات OpenVPN",
+  "@noOpenvpnRoutesConfigured": {
+    "description": "Translation for noOpenvpnRoutesConfigured"
+  },
+  "noOpenvpnSessionsConfigured": "لا توجد جلسات OpenVPN مكونة",
+  "@noOpenvpnSessionsConfigured": {
+    "description": "Translation for noOpenvpnSessionsConfigured"
+  },
+  "noOptionsAvailable": "لا توجد خيارات متاحة",
+  "@noOptionsAvailable": {
+    "description": "Translation for noOptionsAvailable"
+  },
+  "noOverridesMatchFilter": "لا توجد تجاوزات تطابق المرشح",
+  "@noOverridesMatchFilter": {
+    "description": "Translation for noOverridesMatchFilter"
+  },
+  "noPeersAvailable": "لا يوجد نظراء متاحون",
+  "@noPeersAvailable": {
+    "description": "Translation for noPeersAvailable"
+  },
+  "noPeersMatchSearch": "لا توجد أنداد تطابق بحثك",
+  "@noPeersMatchSearch": {
+    "description": "Translation for noPeersMatchSearch"
+  },
+  "noProfiles": "لا توجد ملفات تعريفية",
+  "@noProfiles": {
+    "description": "Translation for noProfiles"
+  },
+  "noProfilesFound": "لم يتم العثور على ملفات شخصية",
+  "@noProfilesFound": {
+    "description": "Translation for noProfilesFound"
+  },
+  "noProfilesYet": "لا توجد ملفات شخصية بعد",
+  "@noProfilesYet": {
+    "description": "Translation for noProfilesYet"
+  },
+  "noRemoteNetworksConfigured": "لم يتم تكوين شبكات بعيدة",
+  "@noRemoteNetworksConfigured": {
+    "description": "Translation for noRemoteNetworksConfigured"
+  },
+  "noRoutesConfigured": "لم يتم تكوين مسارات",
+  "@noRoutesConfigured": {
+    "description": "Translation for noRoutesConfigured"
+  },
+  "noRulesForInterface": "لا توجد قواعد لـ {interface}",
+  "@noRulesForInterface": {
+    "description": "Translation for noRulesForInterface",
+    "placeholders": {
+      "interface": {
+        "type": "String",
+        "example": "eth0"
+      }
+    }
+  },
+  "noServersAvailable": "لا توجد خوادم متاحة",
+  "@noServersAvailable": {
+    "description": "Translation for noServersAvailable"
+  },
+  "noServersMatchSearch": "لا توجد خوادم تطابق بحثك",
+  "@noServersMatchSearch": {
+    "description": "Translation for noServersMatchSearch"
+  },
+  "noServersSelected": "لم يتم تحديد خوادم",
+  "@noServersSelected": {
+    "description": "Translation for noServersSelected"
+  },
+  "noSessionsFound": "لم يتم العثور على جلسات",
+  "@noSessionsFound": {
+    "description": "Translation for noSessionsFound"
+  },
+  "noSettingsAvailable": "لا توجد إعدادات متاحة",
+  "@noSettingsAvailable": {
+    "description": "Translation for noSettingsAvailable"
+  },
+  "noStaticKeysConfigured": "لم يتم تكوين مفاتيح ثابتة",
+  "@noStaticKeysConfigured": {
+    "description": "Translation for noStaticKeysConfigured"
+  },
+  "noSubnetsConfigured": "لا توجد شبكات فرعية مكونة",
+  "@noSubnetsConfigured": {
+    "description": "Translation for noSubnetsConfigured"
+  },
+  "noTunnelAddressesConfigured": "لم يتم تكوين عناوين النفق",
+  "@noTunnelAddressesConfigured": {
+    "description": "Translation for noTunnelAddressesConfigured"
+  },
+  "noVPNConnectionsFound": "لم يتم العثور على اتصالات VPN",
+  "@noVPNConnectionsFound": {
+    "description": "Translation for noVPNConnectionsFound"
+  },
+  "noWinsServersConfigured": "لم يتم تكوين خوادم WINS",
+  "@noWinsServersConfigured": {
+    "description": "Translation for noWinsServersConfigured"
+  },
+  "noWireguardPeersConfigured": "لم يتم تكوين أنداد WireGuard",
+  "@noWireguardPeersConfigured": {
+    "description": "Translation for noWireguardPeersConfigured"
+  },
+  "noWireguardServersConfigured": "لم يتم تكوين خوادم WireGuard",
+  "@noWireguardServersConfigured": {
+    "description": "Translation for noWireguardServersConfigured"
+  },
+  "noWireguardStatusDataAvailable": "لا توجد بيانات حالة WireGuard متاحة",
+  "@noWireguardStatusDataAvailable": {
+    "description": "Translation for noWireguardStatusDataAvailable"
+  },
+  "noWolHostsConfigured": "لم يتم تكوين مضيفي التنبيه عبر الشبكة",
+  "@noWolHostsConfigured": {
+    "description": "Translation for noWolHostsConfigured"
+  },
+  "none": "لا شيء",
+  "@none": {
+    "description": "Translation for none"
+  },
+  "notAvailable": "غير متاح",
+  "@notAvailable": {
+    "description": "Translation for notAvailable"
+  },
+  "notFound": "المورد غير موجود",
+  "@notFound": {
+    "description": "Translation for notFound"
+  },
+  "notice": "إشعار",
+  "@notice": {
+    "description": "Translation for notice"
+  },
+  "ntpServers": "خوادم NTP",
+  "@ntpServers": {
+    "description": "Translation for ntpServers"
+  },
+  "ntpServersHelperText": "تعيين عنوان خادم NTP الأساسي (بروتوكول وقت الشبكة). كرر هذا الخيار لتعيين عناوين خادم NTP الثانوية.",
+  "@ntpServersHelperText": {
+    "description": "Translation for ntpServersHelperText"
+  },
+  "of1Gbps": "من 1 جيجابت في الثانية",
+  "@of1Gbps": {
+    "description": "Translation for of1Gbps"
+  },
+  "offline": "غير متصل",
+  "@offline": {
+    "description": "Translation for offline"
+  },
+  "ok": "موافق",
+  "@ok": {
+    "description": "Translation for ok"
+  },
+  "oneHour": "1 ساعة",
+  "@oneHour": {
+    "description": "Translation for oneHour"
+  },
+  "oneMin": "1 دقيقة",
+  "@oneMin": {
+    "description": "Translation for oneMin"
+  },
+  "online": "متصل",
+  "@online": {
+    "description": "Translation for online"
+  },
+  "openvpn": "OpenVPN",
+  "@openvpn": {
+    "description": "Translation for openvpn"
+  },
+  "openvpnConnectionStatus": "حالة اتصال OpenVPN",
+  "@openvpnConnectionStatus": {
+    "description": "Translation for openvpnConnectionStatus"
+  },
+  "openvpnInstances": "مثيلات OpenVPN",
+  "@openvpnInstances": {
+    "description": "Translation for openvpnInstances"
+  },
+  "openvpnLogFile": "ملف سجل OpenVPN",
+  "@openvpnLogFile": {
+    "description": "Translation for openvpnLogFile"
+  },
+  "optional": "اختياري",
+  "@optional": {
+    "description": "Translation for optional"
+  },
+  "optionalBase64EncodedPresharedKey": "مفتاح مشترك مسبقاً مشفر بـ Base64 (اختياري)",
+  "@optionalBase64EncodedPresharedKey": {
+    "description": "Translation for optionalBase64EncodedPresharedKey"
+  },
+  "outbound": "صادر",
+  "@outbound": {
+    "description": "Translation for outbound"
+  },
+  "overrideCreatedSuccessfully": "تم إنشاء التجاوز بنجاح",
+  "@overrideCreatedSuccessfully": {
+    "description": "Translation for overrideCreatedSuccessfully"
+  },
+  "overrideDeletedSuccessfully": "تم حذف التجاوز بنجاح",
+  "@overrideDeletedSuccessfully": {
+    "description": "Translation for overrideDeletedSuccessfully"
+  },
+  "overrideDetails": "تفاصيل التجاوز",
+  "@overrideDetails": {
+    "description": "Translation for overrideDetails"
+  },
+  "overrideToggledSuccessfully": "تم {status} التجاوز بنجاح",
+  "@overrideToggledSuccessfully": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "overrideUpdatedSuccessfully": "تم تحديث التجاوز بنجاح",
+  "@overrideUpdatedSuccessfully": {
+    "description": "Translation for overrideUpdatedSuccessfully"
+  },
+  "overwrite": "الكتابة فوق",
+  "@overwrite": {
+    "description": "Translation for overwrite"
+  },
+  "packageMirror": "مرآة الحزمة",
+  "@packageMirror": {
+    "description": "Translation for packageMirror"
+  },
+  "packetLength": "طول الحزمة",
+  "@packetLength": {
+    "description": "Translation for packetLength"
+  },
+  "pageOfPages": "الصفحة {current} من {total}",
+  "@pageOfPages": {
+    "placeholders": {
+      "current": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "pass": "سماح",
+  "@pass": {
+    "description": "Translation for pass"
+  },
+  "pause": "إيقاف مؤقت",
+  "@pause": {
+    "description": "Translation for pause"
+  },
+  "pauseLiveViewToSelect": "أوقف العرض المباشر لتحديد إدخالات السجل",
+  "@pauseLiveViewToSelect": {
+    "description": "Translation for pauseLiveViewToSelect"
+  },
+  "paused": "متوقف مؤقتاً",
+  "@paused": {
+    "description": "Translation for paused"
+  },
+  "peerActiveWhenEnabled": "سيكون النظير نشطاً عند التفعيل",
+  "@peerActiveWhenEnabled": {
+    "description": "Translation for peerActiveWhenEnabled"
+  },
+  "peerCreatedReadyForNext": "تم إنشاء النظير بنجاح. جاهز للنظير التالي.",
+  "@peerCreatedReadyForNext": {
+    "description": "Translation for peerCreatedReadyForNext"
+  },
+  "peerCreatedSuccessfully": "تم إنشاء النظير بنجاح",
+  "@peerCreatedSuccessfully": {
+    "description": "Translation for peerCreatedSuccessfully"
+  },
+  "peerDeletedSuccessfully": "تم حذف النظير بنجاح",
+  "@peerDeletedSuccessfully": {
+    "description": "Translation for peerDeletedSuccessfully"
+  },
+  "peerDisabledSuccessfully": "تم تعطيل النظير بنجاح",
+  "@peerDisabledSuccessfully": {
+    "description": "Translation for peerDisabledSuccessfully"
+  },
+  "peerEnabledSuccessfully": "تم تمكين النظير بنجاح",
+  "@peerEnabledSuccessfully": {
+    "description": "Translation for peerEnabledSuccessfully"
+  },
+  "peerGenerator": "منشئ النظير",
+  "@peerGenerator": {
+    "description": "Translation for peerGenerator"
+  },
+  "peerUpdatedSuccessfully": "تم تحديث النظير بنجاح",
+  "@peerUpdatedSuccessfully": {
+    "description": "Translation for peerUpdatedSuccessfully"
+  },
+  "peerWillBeActiveWhenEnabled": "سيكون النظير نشطًا عند التمكين",
+  "@peerWillBeActiveWhenEnabled": {
+    "description": "Translation for peerWillBeActiveWhenEnabled"
+  },
+  "peers": "النظراء",
+  "@peers": {
+    "description": "Translation for peers"
+  },
+  "peersConfigured": "{count} نظير مكون",
+  "@peersConfigured": {
+    "description": "Translation for peersConfigured",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "peersCount": "عدد الأقران",
+  "@peersCount": {
+    "description": "Translation for peersCount"
+  },
+  "peersSelected": "تم تحديد {count} من الأقران",
+  "@peersSelected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "persistentKeepaliveSeconds": "الحفاظ على الاتصال المستمر بالثواني (موصى به: 25)",
+  "@persistentKeepaliveSeconds": {
+    "description": "Translation for persistentKeepaliveSeconds"
+  },
+  "pinChangedSuccessfully": "تم تغيير رمز PIN بنجاح",
+  "@pinChangedSuccessfully": {
+    "description": "Translation for pinChangedSuccessfully"
+  },
+  "pinLock": "قفل PIN",
+  "@pinLock": {
+    "description": "Translation for pinLock"
+  },
+  "pinLockDisabled": "تم تعطيل قفل PIN. تم تعطيل القفل البيومتري أيضاً.",
+  "@pinLockDisabled": {
+    "description": "Translation for pinLockDisabled"
+  },
+  "pinLockEnabled": "تم تفعيل قفل PIN",
+  "@pinLockEnabled": {
+    "description": "Translation for pinLockEnabled"
+  },
+  "pinLockTitle": "قفل PIN",
+  "@pinLockTitle": {
+    "description": "Translation for pinLockTitle"
+  },
+  "pinMismatch": "رموز PIN غير متطابقة",
+  "@pinMismatch": {
+    "description": "Translation for pinMismatch"
+  },
+  "pinMustContainOnlyNumbers": "يجب أن يحتوي رمز PIN على أرقام فقط",
+  "@pinMustContainOnlyNumbers": {
+    "description": "Translation for pinMustContainOnlyNumbers"
+  },
+  "pinTooShort": "يجب أن يكون PIN 4 أرقام على الأقل",
+  "@pinTooShort": {
+    "description": "Translation for pinTooShort"
+  },
+  "platform": "المنصة",
+  "@platform": {
+    "description": "Translation for platform"
+  },
+  "pleaseAddConnectionEndpoint": "يرجى إضافة نقطة اتصال واحدة على الأقل",
+  "@pleaseAddConnectionEndpoint": {
+    "description": "Translation for pleaseAddConnectionEndpoint"
+  },
+  "pleaseEnterCurrentPin": "الرجاء إدخال رمز PIN الحالي",
+  "@pleaseEnterCurrentPin": {
+    "description": "Translation for pleaseEnterCurrentPin"
+  },
+  "pleaseEnterNewPin": "الرجاء إدخال رمز PIN جديد",
+  "@pleaseEnterNewPin": {
+    "description": "Translation for pleaseEnterNewPin"
+  },
+  "pleaseEnterSubnet": "الرجاء إدخال شبكة فرعية",
+  "@pleaseEnterSubnet": {
+    "description": "Translation for pleaseEnterSubnet"
+  },
+  "pleaseEnterYourPin": "الرجاء إدخال رمز PIN الخاص بك",
+  "@pleaseEnterYourPin": {
+    "description": "Translation for pleaseEnterYourPin"
+  },
+  "pleaseSelectAnInstance": "يرجى تحديد مثيل",
+  "@pleaseSelectAnInstance": {
+    "description": "Translation for pleaseSelectAnInstance"
+  },
+  "pleaseSelectInterface": "يرجى تحديد واجهة",
+  "@pleaseSelectInterface": {
+    "description": "Translation for pleaseSelectInterface"
+  },
+  "port": "المنفذ",
+  "@port": {
+    "description": "Translation for port"
+  },
+  "portHint": "مثال: 443",
+  "@portHint": {
+    "description": "Translation for portHint"
+  },
+  "portIsRequired": "المنفذ مطلوب",
+  "@portIsRequired": {
+    "description": "Translation for portIsRequired"
+  },
+  "portLabel": "المنفذ {port}",
+  "@portLabel": {
+    "description": "Translation for portLabel",
+    "placeholders": {
+      "port": {
+        "type": "String"
+      }
+    }
+  },
+  "portMustBeBetween": "يجب أن يكون المنفذ بين 1 و 65535",
+  "@portMustBeBetween": {
+    "description": "Translation for portMustBeBetween"
+  },
+  "portPlaceholder": "443",
+  "@portPlaceholder": {
+    "description": "Translation for portPlaceholder"
+  },
+  "preAuthKey": "مفتاح المصادقة المسبقة",
+  "@preAuthKey": {
+    "description": "Translation for preAuthKey"
+  },
+  "preAuthKeyHelperText": "اختياري: مفتاح المصادقة المسبقة لتسجيل الجهاز التلقائي",
+  "@preAuthKeyHelperText": {
+    "description": "Translation for preAuthKeyHelperText"
+  },
+  "presharedKeyGeneratedSuccessfully": "تم إنشاء المفتاح المشترك مسبقاً بنجاح",
+  "@presharedKeyGeneratedSuccessfully": {
+    "description": "Translation for presharedKeyGeneratedSuccessfully"
+  },
+  "presharedKeyOptional": "المفتاح المشترك مسبقًا (اختياري)",
+  "@presharedKeyOptional": {
+    "description": "Translation for presharedKeyOptional"
+  },
+  "preventAutomaticRouteInstallation": "منع التثبيت التلقائي للمسار",
+  "@preventAutomaticRouteInstallation": {
+    "description": "Translation for preventAutomaticRouteInstallation"
+  },
+  "previous": "السابق",
+  "@previous": {
+    "description": "Translation for previous"
+  },
+  "previousButton": "السابق",
+  "@previousButton": {
+    "description": "Translation for previousButton"
+  },
+  "privateKey": "المفتاح الخاص",
+  "@privateKey": {
+    "description": "Translation for privateKey"
+  },
+  "profileActivated": "تم تفعيل الملف الشخصي بنجاح",
+  "@profileActivated": {
+    "description": "Translation for profileActivated"
+  },
+  "profileAdded": "تمت إضافة الملف الشخصي",
+  "@profileAdded": {
+    "description": "Translation for profileAdded"
+  },
+  "profileDeleted": "تم حذف الملف الشخصي بنجاح",
+  "@profileDeleted": {
+    "description": "Translation for profileDeleted"
+  },
+  "profileHasNoEndpoints": "الملف الشخصي ليس لديه نقاط اتصال مكونة",
+  "@profileHasNoEndpoints": {
+    "description": "Translation for profileHasNoEndpoints"
+  },
+  "profileName": "اسم الملف الشخصي",
+  "@profileName": {
+    "description": "Translation for profileName"
+  },
+  "profileNameLabel": "اسم الملف التعريفي",
+  "@profileNameLabel": {
+    "description": "Translation for profileNameLabel"
+  },
+  "profileNameOptional": "اسم الملف الشخصي (اختياري)",
+  "@profileNameOptional": {
+    "description": "Translation for profileNameOptional"
+  },
+  "profileNameRequired": "اسم الملف التعريفي مطلوب",
+  "@profileNameRequired": {
+    "description": "Translation for profileNameRequired"
+  },
+  "profileSaved": "تم حفظ الملف الشخصي بنجاح",
+  "@profileSaved": {
+    "description": "Translation for profileSaved"
+  },
+  "profileUpdated": "تم تحديث الملف الشخصي",
+  "@profileUpdated": {
+    "description": "Translation for profileUpdated"
+  },
+  "profiles": "الملفات الشخصية",
+  "@profiles": {
+    "description": "Translation for profiles"
+  },
+  "profilesExportedSuccessfully": "تم تصدير الملفات الشخصية بنجاح!\n{path}",
+  "@profilesExportedSuccessfully": {
+    "description": "Translation for profilesExportedSuccessfully",
+    "placeholders": {
+      "path": {
+        "type": "String",
+        "example": "/path/to/file"
+      }
+    }
+  },
+  "protocol": "البروتوكول",
+  "@protocol": {
+    "description": "Translation for protocol"
+  },
+  "protocolAh": "AH",
+  "@protocolAh": {
+    "description": "Translation for protocolAh"
+  },
+  "protocolEsp": "ESP",
+  "@protocolEsp": {
+    "description": "Translation for protocolEsp"
+  },
+  "protocolGre": "GRE",
+  "@protocolGre": {
+    "description": "Translation for protocolGre"
+  },
+  "protocolIcmp": "ICMP",
+  "@protocolIcmp": {
+    "description": "Translation for protocolIcmp"
+  },
+  "protocolIcmpv6": "ICMPv6",
+  "@protocolIcmpv6": {
+    "description": "Translation for protocolIcmpv6"
+  },
+  "protocolIgmp": "IGMP",
+  "@protocolIgmp": {
+    "description": "Translation for protocolIgmp"
+  },
+  "protocolIpv6": "IPv6",
+  "@protocolIpv6": {
+    "description": "Translation for protocolIpv6"
+  },
+  "protocolOspf": "OSPF",
+  "@protocolOspf": {
+    "description": "Translation for protocolOspf"
+  },
+  "protocolPim": "PIM",
+  "@protocolPim": {
+    "description": "Translation for protocolPim"
+  },
+  "protocolTcp": "TCP",
+  "@protocolTcp": {
+    "description": "Translation for protocolTcp"
+  },
+  "protocolTcpUdp": "TCP/UDP",
+  "@protocolTcpUdp": {
+    "description": "Translation for protocolTcpUdp"
+  },
+  "protocolUdp": "UDP",
+  "@protocolUdp": {
+    "description": "Translation for protocolUdp"
+  },
+  "publicKey": "المفتاح العام",
+  "@publicKey": {
+    "description": "Translation for publicKey"
+  },
+  "publicKeyColon": "المفتاح العام:",
+  "@publicKeyColon": {
+    "description": "Translation for publicKeyColon"
+  },
+  "publicKeyRequired": "المفتاح العام مطلوب",
+  "@publicKeyRequired": {
+    "description": "Translation for publicKeyRequired"
+  },
+  "publicKeyShort": "{key}...",
+  "@publicKeyShort": {
+    "description": "Translation for publicKeyShort",
+    "placeholders": {
+      "key": {
+        "type": "String",
+        "example": "abc123"
+      }
+    }
+  },
+  "pushReset": "إعادة تعيين الدفع",
+  "@pushReset": {
+    "description": "Translation for pushReset"
+  },
+  "pushResetSubtitle": "لا ترث قائمة الدفع العامة لمثيل عميل معين. ملاحظة: --push-reset شامل جداً: سيزيل تقريباً جميع الخيارات من قائمة الخيارات المراد دفعها. في كثير من الحالات، سيحتاج بعض هذه الخيارات إلى إعادة تكوين بعد ذلك - على وجه التحديد، --topology subnet و --route-gateway سيضيعان وهذا سيكسر تكوينات العميل في كثير من الحالات.",
+  "@pushResetSubtitle": {
+    "description": "Translation for pushResetSubtitle"
+  },
+  "pushVirtualIpEndpoints": "دفع نقاط نهاية IP الافتراضية لنفق العميل، متجاوزًا التخصيص الديناميكي.",
+  "@pushVirtualIpEndpoints": {
+    "description": "Translation for pushVirtualIpEndpoints"
+  },
+  "qrCode": "رمز QR",
+  "@qrCode": {
+    "description": "Translation for qrCode"
+  },
+  "reason": "السبب",
+  "@reason": {
+    "description": "Translation for reason"
+  },
+  "rebootConfirmation": "هل أنت متأكد من رغبتك في إعادة تشغيل النظام؟",
+  "@rebootConfirmation": {
+    "description": "Translation for rebootConfirmation"
+  },
+  "rebootFailed": "فشل في إعادة تشغيل النظام",
+  "@rebootFailed": {
+    "description": "Translation for rebootFailed"
+  },
+  "rebootFailedWithError": "{message}: {error}",
+  "@rebootFailedWithError": {
+    "description": "Translation for rebootFailedWithError",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Error message"
+      },
+      "message": {
+        "type": "String",
+        "example": "Error message"
+      }
+    }
+  },
+  "rebootSuccess": "تم بدء إعادة تشغيل النظام",
+  "@rebootSuccess": {
+    "description": "Translation for rebootSuccess"
+  },
+  "rebootSystem": "إعادة تشغيل النظام",
+  "@rebootSystem": {
+    "description": "Translation for rebootSystem"
+  },
+  "received": "المستلم",
+  "@received": {
+    "description": "Translation for received"
+  },
+  "recommendedForSecureConnections": "موصى به للاتصالات الآمنة",
+  "@recommendedForSecureConnections": {
+    "description": "Translation for recommendedForSecureConnections"
+  },
+  "redirectGateway": "إعادة توجيه البوابة",
+  "@redirectGateway": {
+    "description": "Translation for redirectGateway"
+  },
+  "redirectGatewayHelperText": "تنفيذ أوامر التوجيه تلقائياً لإعادة توجيه جميع حركة مرور IP الصادرة عبر VPN.",
+  "@redirectGatewayHelperText": {
+    "description": "Translation for redirectGatewayHelperText"
+  },
+  "refresh": "تحديث",
+  "@refresh": {
+    "description": "Translation for refresh"
+  },
+  "refreshTooltip": "تحديث",
+  "@refreshTooltip": {
+    "description": "Translation for refreshTooltip"
+  },
+  "registerDns": "تسجيل DNS",
+  "@registerDns": {
+    "description": "Translation for registerDNS"
+  },
+  "registerDnsSubtitle": "تشغيل ipconfig /flushdns و ipconfig /registerdns عند بدء الاتصال. من المعروف أن هذا يدفع Windows للتعرف على خوادم DNS المدفوعة.",
+  "@registerDnsSubtitle": {
+    "description": "Translation for registerDnsSubtitle"
+  },
+  "reject": "رفض",
+  "@reject": {
+    "description": "Translation for reject"
+  },
+  "remoteAddress": "العنوان البعيد",
+  "@remoteAddress": {
+    "description": "Translation for remoteAddress"
+  },
+  "remoteNetwork": "الشبكة البعيدة",
+  "@remoteNetwork": {
+    "description": "Translation for remoteNetwork"
+  },
+  "remoteNetworkHelperText": "الشبكات البعيدة للخادم، يتم تكوينها عبر بنود iroute(-ipv6) في OpenVPN وتُعلم الخادم بإرسال هذه الشبكات إلى هذا العميل المحدد.",
+  "@remoteNetworkHelperText": {
+    "description": "Translation for remoteNetworkHelperText"
+  },
+  "repository": "المستودع",
+  "@repository": {
+    "description": "Translation for repository"
+  },
+  "requirePinToUnlock": "يتطلب PIN لفتح التطبيق",
+  "@requirePinToUnlock": {
+    "description": "Translation for requirePinToUnlock"
+  },
+  "required": "مطلوب",
+  "@required": {
+    "description": "Translation for required"
+  },
+  "restart": "إعادة التشغيل",
+  "@restart": {
+    "description": "Translation for restart"
+  },
+  "restartButton": "إعادة التشغيل",
+  "@restartButton": {
+    "description": "Translation for restartButton"
+  },
+  "restartService": "إعادة تشغيل الخدمة",
+  "@restartService": {
+    "description": "Translation for restartService"
+  },
+  "restartServiceConfirmation": "هل أنت متأكد من رغبتك في إعادة تشغيل خدمة {type}؟\n\nسيؤدي هذا إلى قطع جميع الاتصالات النشطة مؤقتًا.",
+  "@restartServiceConfirmation": {
+    "description": "Translation for restartServiceConfirmation",
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "OpenVPN"
+      }
+    }
+  },
+  "restartVPNService": "إعادة تشغيل خدمة VPN",
+  "@restartVPNService": {
+    "description": "Translation for restartVPNService"
+  },
+  "restartingService": "جاري إعادة تشغيل خدمة {type}...",
+  "@restartingService": {
+    "description": "Translation for restartingService",
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "OpenVPN"
+      }
+    }
+  },
+  "resume": "استئناف",
+  "@resume": {
+    "description": "Translation for resume"
+  },
+  "retry": "إعادة المحاولة",
+  "@retry": {
+    "description": "Translation for retry"
+  },
+  "retryButton": "إعادة المحاولة",
+  "@retryButton": {
+    "description": "Translation for retryButton"
+  },
+  "role": "الدور",
+  "@role": {
+    "description": "Translation for role"
+  },
+  "routeGateway": "بوابة المسار",
+  "@routeGateway": {
+    "description": "Translation for routeGateway"
+  },
+  "routeGatewayHelperText": "حدد بوابة افتراضية لاستخدامها للعميل المتصل. بدون تعيين واحد، يتم تقديم العنوان الأول في كتلة الشبكة. عند تقسيم شبكة النفق (الخادم)، قد لا يكون هذا متاحًا من العميل.",
+  "@routeGatewayHelperText": {
+    "description": "Translation for routeGatewayHelperText"
+  },
+  "routeGatewayHint": "10.8.0.1",
+  "@routeGatewayHint": {
+    "description": "Translation for routeGatewayHint"
+  },
+  "routes": "المسارات",
+  "@routes": {
+    "description": "Translation for routes"
+  },
+  "routing": "التوجيه",
+  "@routing": {
+    "description": "Translation for routing"
+  },
+  "rowsPerPage": "صفوف لكل صفحة",
+  "@rowsPerPage": {
+    "description": "Translation for rowsPerPage"
+  },
+  "rowsPerPageDropdown": "الصفوف لكل صفحة",
+  "@rowsPerPageDropdown": {
+    "description": "Translation for rowsPerPageDropdown"
+  },
+  "rowsPerPageLabel": "الصفوف لكل صفحة: ",
+  "@rowsPerPageLabel": {
+    "description": "Translation for rowsPerPageLabel"
+  },
+  "ruleActionFailed": "فشل إجراء القاعدة",
+  "@ruleActionFailed": {
+    "description": "Translation for ruleActionFailed"
+  },
+  "ruleCreated": "تم إنشاء القاعدة بنجاح",
+  "@ruleCreated": {
+    "description": "Translation for ruleCreated"
+  },
+  "ruleDeleted": "تم حذف القاعدة بنجاح",
+  "@ruleDeleted": {
+    "description": "Translation for ruleDeleted"
+  },
+  "ruleDescription": "وصف القاعدة",
+  "@ruleDescription": {
+    "description": "Translation for ruleDescription"
+  },
+  "ruleDetails": "تفاصيل القاعدة",
+  "@ruleDetails": {
+    "description": "Translation for ruleDetails"
+  },
+  "ruleDisabledSuccessfully": "تم تعطيل القاعدة بنجاح",
+  "@ruleDisabledSuccessfully": {
+    "description": "Translation for ruleDisabledSuccessfully"
+  },
+  "ruleEnabledSuccessfully": "تم تفعيل القاعدة بنجاح",
+  "@ruleEnabledSuccessfully": {
+    "description": "Translation for ruleEnabledSuccessfully"
+  },
+  "ruleGuidelines": "إرشادات القاعدة",
+  "@ruleGuidelines": {
+    "description": "Translation for ruleGuidelines"
+  },
+  "ruleGuidelinesText": "• استخدم \"any\" لمطابقة جميع العناوين أو المنافذ\n• تدوين CIDR: 192.168.1.0/24\n• نطاقات المنافذ: 80-443\n• تتم معالجة القواعد بالترتيب\n• يتم تطبيق التغييرات فوراً",
+  "@ruleGuidelinesText": {
+    "description": "Translation for ruleGuidelinesText"
+  },
+  "ruleId": "معرف القاعدة",
+  "@ruleId": {
+    "description": "Translation for ruleId"
+  },
+  "ruleInformation": "معلومات القاعدة",
+  "@ruleInformation": {
+    "description": "Translation for ruleInformation"
+  },
+  "ruleUpdated": "تم تحديث القاعدة بنجاح",
+  "@ruleUpdated": {
+    "description": "Translation for ruleUpdated"
+  },
+  "ruleWillBeActiveWhenEnabled": "ستكون القاعدة نشطة عند التفعيل",
+  "@ruleWillBeActiveWhenEnabled": {
+    "description": "Translation for ruleWillBeActiveWhenEnabled"
+  },
+  "running": "قيد التشغيل",
+  "@running": {
+    "description": "Translation for running"
+  },
+  "runningStatus": "قيد التشغيل",
+  "@runningStatus": {
+    "description": "Translation for runningStatus"
+  },
+  "save": "حفظ",
+  "@save": {
+    "description": "Translation for save"
+  },
+  "saveAndConnect": "حفظ واتصال",
+  "@saveAndConnect": {
+    "description": "Translation for saveAndConnect"
+  },
+  "saveSettings": "حفظ الإعدادات",
+  "@saveSettings": {
+    "description": "Translation for saveSettings"
+  },
+  "saveTooltip": "حفظ",
+  "@saveTooltip": {
+    "description": "Translation for saveTooltip"
+  },
+  "saveWithoutTesting": "حفظ بدون اختبار",
+  "@saveWithoutTesting": {
+    "description": "Translation for saveWithoutTesting"
+  },
+  "saving": "جاري الحفظ...",
+  "@saving": {
+    "description": "Translation for saving"
+  },
+  "savingOverride": "حفظ التجاوز...",
+  "@savingOverride": {
+    "description": "Translation for savingOverride"
+  },
+  "savingProfile": "جاري حفظ الملف الشخصي...",
+  "@savingProfile": {
+    "description": "Translation for savingProfile"
+  },
+  "searchAliases": "البحث عن الأسماء المستعارة...",
+  "@searchAliases": {
+    "description": "Translation for searchAliases"
+  },
+  "searchHostnameIpOrMac": "البحث عن اسم المضيف أو IP أو MAC...",
+  "@searchHostnameIpOrMac": {
+    "description": "Translation for searchHostnameIpOrMac"
+  },
+  "searchHostnameOrIp": "البحث عن اسم المضيف أو عنوان IP...",
+  "@searchHostnameOrIp": {
+    "description": "Translation for searchHostnameOrIp"
+  },
+  "searchInstances": "البحث عن المثيلات...",
+  "@searchInstances": {
+    "description": "Translation for searchInstances"
+  },
+  "searchOverrides": "البحث عن التجاوزات...",
+  "@searchOverrides": {
+    "description": "Translation for searchOverrides"
+  },
+  "searchPeers": "البحث عن الأنداد...",
+  "@searchPeers": {
+    "description": "Translation for searchPeers"
+  },
+  "searchServers": "البحث عن الخوادم...",
+  "@searchServers": {
+    "description": "Translation for searchServers"
+  },
+  "second": "ثانية",
+  "@second": {
+    "description": "Translation for second"
+  },
+  "secondAbbrev": "ث",
+  "@secondAbbrev": {
+    "description": "Translation for secondAbbrev"
+  },
+  "seconds": "ثواني",
+  "@seconds": {
+    "description": "Translation for seconds"
+  },
+  "security": "الأمان",
+  "@security": {
+    "description": "Translation for security"
+  },
+  "securityWarning": "تحذير أمني",
+  "@securityWarning": {
+    "description": "Translation for securityWarning"
+  },
+  "selectAProfileOrCreateNewOne": "حدد ملفاً شخصياً أو أنشئ ملفاً جديداً",
+  "@selectAProfileOrCreateNewOne": {
+    "description": "Translation for selectAProfileOrCreateNewOne"
+  },
+  "selectAll": "تحديد الكل",
+  "@selectAll": {
+    "description": "Translation for selectAll"
+  },
+  "selectExitNode": "تحديد عقدة الخروج",
+  "@selectExitNode": {
+    "description": "Translation for selectExitNode"
+  },
+  "selectInterface": "حدد الواجهة",
+  "@selectInterface": {
+    "description": "Translation for selectInterface"
+  },
+  "selectInterfaceToViewRules": "حدد واجهة لعرض القواعد",
+  "@selectInterfaceToViewRules": {
+    "description": "Translation for selectInterfaceToViewRules"
+  },
+  "selectKeyModeForAuthOrEncryption": "حدد وضع المفتاح للمصادقة أو التشفير",
+  "@selectKeyModeForAuthOrEncryption": {
+    "description": "Translation for selectKeyModeForAuthOrEncryption"
+  },
+  "selectLabel": "اختر {label}",
+  "@selectLabel": {
+    "description": "Translation for selectLabel",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "selectMultipleInterfaces": "حدد واجهة واحدة أو أكثر للمراقبة",
+  "@selectMultipleInterfaces": {
+    "description": "Translation for selectMultipleInterfaces"
+  },
+  "selectNumberOfEntries": "حدد عدد إدخالات السجل المراد عرضها:",
+  "@selectNumberOfEntries": {
+    "description": "Translation for selectNumberOfEntries"
+  },
+  "selectPeers": "تحديد النظراء",
+  "@selectPeers": {
+    "description": "Translation for selectPeers"
+  },
+  "selectServerAndGenerateKeys": "# حدد خادمًا وأنشئ مفاتيح لمعاينة التكوين",
+  "@selectServerAndGenerateKeys": {
+    "description": "Translation for selectServerAndGenerateKeys"
+  },
+  "selectServerForQrCode": "تحديد الخادم لإنشاء رمز QR",
+  "@selectServerForQrCode": {
+    "description": "Translation for selectServerForQrCode"
+  },
+  "selectServerInstance": "الرجاء تحديد مثيل الخادم",
+  "@selectServerInstance": {
+    "description": "Translation for selectServerInstance"
+  },
+  "selectServerToGenerateQrCode": "حدد الخادم لإنشاء رمز QR",
+  "@selectServerToGenerateQrCode": {
+    "description": "Translation for selectServerToGenerateQrCode"
+  },
+  "selectServers": "تحديد الخوادم",
+  "@selectServers": {
+    "description": "Translation for selectServers"
+  },
+  "selectServersHelperText": "حدد خوادم OpenVPN التي ينطبق عليها هذا التجاوز، اتركه فارغاً للكل",
+  "@selectServersHelperText": {
+    "description": "Translation for selectServersHelperText"
+  },
+  "selectServersTitle": "تحديد الخوادم",
+  "@selectServersTitle": {
+    "description": "Translation for selectServersTitle"
+  },
+  "selectVhid": "اختر VHID",
+  "@selectVhid": {
+    "description": "Translation for selectVhid"
+  },
+  "selected": "محدد",
+  "@selected": {
+    "description": "Translation for selected"
+  },
+  "selfSignedCertWarning": "تحذير: الشهادات الموقعة ذاتياً أقل أماناً. قم بتفعيل هذا فقط إذا كنت تثق بالخادم.",
+  "@selfSignedCertWarning": {
+    "description": "Translation for selfSignedCertWarning"
+  },
+  "selfSignedCertificatesWarning": "قم بتفعيل هذا فقط إذا كنت تثق بالخادم",
+  "@selfSignedCertificatesWarning": {
+    "description": "Translation for selfSignedCertificatesWarning"
+  },
+  "sent": "المرسل",
+  "@sent": {
+    "description": "Translation for sent"
+  },
+  "sequence": "التسلسل",
+  "@sequence": {
+    "description": "Translation for sequence"
+  },
+  "server": "الخادم",
+  "@server": {
+    "description": "Translation for server"
+  },
+  "serverActiveWhenEnabled": "سيكون الخادم نشطاً عند التفعيل",
+  "@serverActiveWhenEnabled": {
+    "description": "Translation for serverActiveWhenEnabled"
+  },
+  "serverAddress": "عنوان الخادم",
+  "@serverAddress": {
+    "description": "Translation for serverAddress"
+  },
+  "serverCreatedSuccessfully": "تم إنشاء الخادم بنجاح",
+  "@serverCreatedSuccessfully": {
+    "description": "Translation for serverCreatedSuccessfully"
+  },
+  "serverDeletedSuccessfully": "تم حذف الخادم بنجاح",
+  "@serverDeletedSuccessfully": {
+    "description": "Translation for serverDeletedSuccessfully"
+  },
+  "serverDisabledSuccessfully": "تم تعطيل الخادم بنجاح",
+  "@serverDisabledSuccessfully": {
+    "description": "Translation for serverDisabledSuccessfully"
+  },
+  "serverEnabledSuccessfully": "تم تمكين الخادم بنجاح",
+  "@serverEnabledSuccessfully": {
+    "description": "Translation for serverEnabledSuccessfully"
+  },
+  "serverError": "حدث خطأ في الخادم",
+  "@serverError": {
+    "description": "Translation for serverError"
+  },
+  "serverInfoNotLoaded": "لم يتم تحميل معلومات الخادم",
+  "@serverInfoNotLoaded": {
+    "description": "Translation for serverInfoNotLoaded"
+  },
+  "serverNetwork": "شبكة الخادم",
+  "@serverNetwork": {
+    "description": "Translation for serverNetwork"
+  },
+  "serverPort": "منفذ الخادم",
+  "@serverPort": {
+    "description": "Translation for serverPort"
+  },
+  "serverSelectionRequired": "يجب تحديد خادم واحد على الأقل",
+  "@serverSelectionRequired": {
+    "description": "Translation for serverSelectionRequired"
+  },
+  "serverUpdatedSuccessfully": "تم تحديث الخادم بنجاح",
+  "@serverUpdatedSuccessfully": {
+    "description": "Translation for serverUpdatedSuccessfully"
+  },
+  "serverWillBeActiveWhenEnabled": "سيكون الخادم نشطًا عند التمكين",
+  "@serverWillBeActiveWhenEnabled": {
+    "description": "Translation for serverWillBeActiveWhenEnabled"
+  },
+  "servers": "الخوادم",
+  "@servers": {
+    "description": "Translation for servers"
+  },
+  "serversLabel": "الخوادم",
+  "@serversLabel": {
+    "description": "Translation for serversLabel"
+  },
+  "serversSelected": "{count} خادم (خوادم) محددة",
+  "@serversSelected": {
+    "description": "Translation for serversSelected",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "serviceActionFailed": "فشل إجراء الخدمة",
+  "@serviceActionFailed": {
+    "description": "Translation for serviceActionFailed"
+  },
+  "serviceControls": "عناصر تحكم الخدمة",
+  "@serviceControls": {
+    "description": "Translation for serviceControls"
+  },
+  "serviceRestarted": "تمت إعادة تشغيل الخدمة بنجاح",
+  "@serviceRestarted": {
+    "description": "Translation for serviceRestarted"
+  },
+  "serviceRestartedSuccessfully": "تمت إعادة تشغيل الخدمة بنجاح",
+  "@serviceRestartedSuccessfully": {
+    "description": "Translation for serviceRestartedSuccessfully"
+  },
+  "serviceRunning": "الخدمة قيد التشغيل",
+  "@serviceRunning": {
+    "description": "Translation for serviceRunning"
+  },
+  "serviceStarted": "تم تشغيل الخدمة بنجاح",
+  "@serviceStarted": {
+    "description": "Translation for serviceStarted"
+  },
+  "serviceStartedSuccessfully": "تم بدء الخدمة بنجاح",
+  "@serviceStartedSuccessfully": {
+    "description": "Translation for serviceStartedSuccessfully"
+  },
+  "serviceStatus": "حالة الخدمة",
+  "@serviceStatus": {
+    "description": "Translation for serviceStatus"
+  },
+  "serviceStopped": "تم إيقاف الخدمة بنجاح",
+  "@serviceStopped": {
+    "description": "Translation for serviceStopped"
+  },
+  "serviceStoppedSuccessfully": "تم إيقاف الخدمة بنجاح",
+  "@serviceStoppedSuccessfully": {
+    "description": "Translation for serviceStoppedSuccessfully"
+  },
+  "services": "الخدمات",
+  "@services": {
+    "description": "Translation for services"
+  },
+  "sessionTimeout": "مهلة الجلسة",
+  "@sessionTimeout": {
+    "description": "Translation for sessionTimeout"
+  },
+  "sessions": "الجلسات",
+  "@sessions": {
+    "description": "Translation for sessions"
+  },
+  "setAsActive": "تعيين كنشط",
+  "@setAsActive": {
+    "description": "Translation for setAsActive"
+  },
+  "setPin": "تعيين PIN",
+  "@setPin": {
+    "description": "Translation for setPin"
+  },
+  "settings": "الإعدادات",
+  "@settings": {
+    "description": "Translation for settings"
+  },
+  "severitiesAndTimeFilter": "{count} شدة • {timeFilter}",
+  "@severitiesAndTimeFilter": {
+    "description": "Translation for severitiesAndTimeFilter",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "timeFilter": {
+        "type": "String"
+      }
+    }
+  },
+  "severity": "الخطورة",
+  "@severity": {
+    "description": "Translation for severity"
+  },
+  "severityAlert": "تنبيه",
+  "@severityAlert": {
+    "description": "Translation for severityAlert"
+  },
+  "severityCritical": "حرج",
+  "@severityCritical": {
+    "description": "Translation for severityCritical"
+  },
+  "severityDebug": "تصحيح",
+  "@severityDebug": {
+    "description": "Translation for severityDebug"
+  },
+  "severityEmergency": "طوارئ",
+  "@severityEmergency": {
+    "description": "Translation for severityEmergency"
+  },
+  "severityEmergencyShort": "طوارئ",
+  "@severityEmergencyShort": {
+    "description": "Translation for severityEmergencyShort"
+  },
+  "severityError": "خطأ",
+  "@severityError": {
+    "description": "Translation for severityError"
+  },
+  "severityInformational": "معلوماتي",
+  "@severityInformational": {
+    "description": "Translation for severityInformational"
+  },
+  "severityInformationalShort": "معلومات",
+  "@severityInformationalShort": {
+    "description": "Translation for severityInformationalShort"
+  },
+  "severityNotice": "إشعار",
+  "@severityNotice": {
+    "description": "Translation for severityNotice"
+  },
+  "severityWarning": "تحذير",
+  "@severityWarning": {
+    "description": "Translation for severityWarning"
+  },
+  "showAdvancedSettings": "إظهار الإعدادات المتقدمة",
+  "@showAdvancedSettings": {
+    "description": "Translation for showAdvancedSettings"
+  },
+  "showAll": "عرض الكل",
+  "@showAll": {
+    "description": "Translation for showAll"
+  },
+  "showKey": "إظهار المفتاح",
+  "@showKey": {
+    "description": "Translation for showKey"
+  },
+  "showingEntriesCount": "عرض {start} إلى {end}",
+  "@showingEntriesCount": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "showingInstancesCount": "عرض {count} من {total}",
+  "@showingInstancesCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "showingZeroEntries": "عرض 0 إدخالات",
+  "@showingZeroEntries": {
+    "description": "Translation for showingZeroEntries"
+  },
+  "someConnectionsFailed": "فشلت بعض الاتصالات",
+  "@someConnectionsFailed": {
+    "description": "Translation for someConnectionsFailed"
+  },
+  "soon": "قريباً",
+  "@soon": {
+    "description": "Translation for soon"
+  },
+  "sortBy": "ترتيب حسب",
+  "@sortBy": {
+    "description": "Translation for sortBy"
+  },
+  "sortByBandwidth": "النطاق الترددي",
+  "@sortByBandwidth": {
+    "description": "Translation for sortByBandwidth"
+  },
+  "sortByHostname": "اسم المضيف",
+  "@sortByHostname": {
+    "description": "Translation for sortByHostname"
+  },
+  "sortByIP": "عنوان IP",
+  "@sortByIP": {
+    "description": "Translation for sortByIP"
+  },
+  "sortByManufacturer": "الشركة المصنعة",
+  "@sortByManufacturer": {
+    "description": "Translation for sortByManufacturer"
+  },
+  "source": "المصدر",
+  "@source": {
+    "description": "Translation for source"
+  },
+  "sourceAddress": "عنوان المصدر",
+  "@sourceAddress": {
+    "description": "Translation for sourceAddress"
+  },
+  "sourceIsRequired": "المصدر مطلوب",
+  "@sourceIsRequired": {
+    "description": "Translation for sourceIsRequired"
+  },
+  "sourcePort": "منفذ المصدر",
+  "@sourcePort": {
+    "description": "Translation for sourcePort"
+  },
+  "sourcePortOptional": "منفذ المصدر (اختياري)",
+  "@sourcePortOptional": {
+    "description": "Translation for sourcePortOptional"
+  },
+  "sshEnabled": "SSH مفعل",
+  "@sshEnabled": {
+    "description": "Translation for sshEnabled"
+  },
+  "start": "بدء",
+  "@start": {
+    "description": "Translation for start"
+  },
+  "startButton": "تشغيل",
+  "@startButton": {
+    "description": "Translation for startButton"
+  },
+  "startService": "بدء الخدمة",
+  "@startService": {
+    "description": "Translation for startService"
+  },
+  "startTime": "وقت البدء",
+  "@startTime": {
+    "description": "Translation for startTime"
+  },
+  "startWireguardService": "بدء خدمة WireGuard",
+  "@startWireguardService": {
+    "description": "Translation for startWireguardService"
+  },
+  "staticKeyContentPemFormat": "محتوى المفتاح الثابت بتنسيق PEM",
+  "@staticKeyContentPemFormat": {
+    "description": "Translation for staticKeyContentPemFormat"
+  },
+  "staticKeyCreatedSuccessfully": "تم إنشاء المفتاح الثابت بنجاح",
+  "@staticKeyCreatedSuccessfully": {
+    "description": "Translation for staticKeyCreatedSuccessfully"
+  },
+  "staticKeyDeletedSuccessfully": "تم حذف المفتاح الثابت بنجاح",
+  "@staticKeyDeletedSuccessfully": {
+    "description": "Translation for staticKeyDeletedSuccessfully"
+  },
+  "staticKeyDetails": "تفاصيل المفتاح الثابت",
+  "@staticKeyDetails": {
+    "description": "Translation for staticKeyDetails"
+  },
+  "staticKeyInfoHelp": "• Auth: يضيف مصادقة HMAC لقناة التحكم\n• Crypt: يشفر ويصادق جميع حزم قناة التحكم\n• Crypt V2: تشفير محسّن بأمان أفضل\n\nيمكنك إنشاء مفتاح جديد أو لصق مفتاح موجود.",
+  "@staticKeyInfoHelp": {
+    "description": "Translation for staticKeyInfoHelp"
+  },
+  "staticKeyInformation": "معلومات المفتاح الثابت",
+  "@staticKeyInformation": {
+    "description": "Translation for staticKeyInformation"
+  },
+  "staticKeyUpdatedSuccessfully": "تم تحديث المفتاح الثابت بنجاح",
+  "@staticKeyUpdatedSuccessfully": {
+    "description": "Translation for staticKeyUpdatedSuccessfully"
+  },
+  "staticKeys": "المفاتيح الثابتة",
+  "@staticKeys": {
+    "description": "Translation for staticKeys"
+  },
+  "staticLease": "ثابت",
+  "@staticLease": {
+    "description": "Translation for staticLease"
+  },
+  "status": "الحالة",
+  "@status": {
+    "description": "Translation for status"
+  },
+  "stop": "إيقاف",
+  "@stop": {
+    "description": "Translation for stop"
+  },
+  "stopButton": "إيقاف",
+  "@stopButton": {
+    "description": "Translation for stopButton"
+  },
+  "stopService": "إيقاف الخدمة",
+  "@stopService": {
+    "description": "Translation for stopService"
+  },
+  "stopped": "متوقف",
+  "@stopped": {
+    "description": "Translation for stopped"
+  },
+  "stoppedStatus": "متوقف",
+  "@stoppedStatus": {
+    "description": "Translation for stoppedStatus"
+  },
+  "storeAndGenerateNext": "حفظ وإنشاء التالي",
+  "@storeAndGenerateNext": {
+    "description": "Translation for storeAndGenerateNext"
+  },
+  "subnetAddedSuccessfully": "تمت إضافة الشبكة الفرعية بنجاح",
+  "@subnetAddedSuccessfully": {
+    "description": "Translation for subnetAddedSuccessfully"
+  },
+  "subnetCidr": "الشبكة الفرعية (CIDR)",
+  "@subnetCidr": {
+    "description": "Translation for subnetCidr"
+  },
+  "subnetDeletedSuccessfully": "تم حذف الشبكة الفرعية بنجاح",
+  "@subnetDeletedSuccessfully": {
+    "description": "Translation for subnetDeletedSuccessfully"
+  },
+  "subnetUpdatedSuccessfully": "تم تحديث الشبكة الفرعية بنجاح",
+  "@subnetUpdatedSuccessfully": {
+    "description": "Translation for subnetUpdatedSuccessfully"
+  },
+  "success": "نجاح",
+  "@success": {
+    "description": "Translation for success"
+  },
+  "successfullyConnected": "تم الاتصال بنجاح بـ {name}",
+  "@successfullyConnected": {
+    "description": "Translation for successfullyConnected",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Example Name"
+      }
+    }
+  },
+  "successfullyDisconnected": "تم قطع الاتصال بنجاح بـ {name}",
+  "@successfullyDisconnected": {
+    "description": "Translation for successfullyDisconnected",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Example Name"
+      }
+    }
+  },
+  "successfullyImportedProfiles": "تم استيراد {count} {count, plural, =1{ملف شخصي} other{ملفات شخصية}} بنجاح",
+  "@successfullyImportedProfiles": {
+    "description": "Translation for successfullyImportedProfiles",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "successfullyRestartedService": "تم إعادة تشغيل خدمة {type} بنجاح",
+  "@successfullyRestartedService": {
+    "description": "Translation for successfullyRestartedService",
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "OpenVPN"
+      }
+    }
+  },
+  "successfullyWokenDevices": "تم تنبيه {successCount} من {totalCount} جهاز بنجاح",
+  "@successfullyWokenDevices": {
+    "description": "Translation for successfullyWokenDevices",
+    "placeholders": {
+      "successCount": {
+        "type": "int",
+        "example": "5"
+      },
+      "totalCount": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "switchProfile": "تبديل الملف الشخصي",
+  "@switchProfile": {
+    "description": "Translation for switchProfile"
+  },
+  "switchProfileConfirmation": "هل أنت متأكد من رغبتك في تبديل الملفات الشخصية؟ سيتم إرجاعك إلى شاشة اختيار الملف الشخصي.",
+  "@switchProfileConfirmation": {
+    "description": "Translation for switchProfileConfirmation"
+  },
+  "systemDefault": "افتراضي النظام",
+  "@systemDefault": {
+    "description": "Translation for systemDefault"
+  },
+  "systemGeneratedRule": "هذه قاعدة تم إنشاؤها بواسطة النظام ولا يمكن تعديلها أو حذفها.",
+  "@systemGeneratedRule": {
+    "description": "Translation for systemGeneratedRule"
+  },
+  "systemGeneratedRulesCannotBeDeleted": "لا يمكن حذف القواعد التي تم إنشاؤها بواسطة النظام",
+  "@systemGeneratedRulesCannotBeDeleted": {
+    "description": "Translation for systemGeneratedRulesCannotBeDeleted"
+  },
+  "systemGeneratedRulesCannotBeModified": "لا يمكن تعديل القواعد التي تم إنشاؤها بواسطة النظام",
+  "@systemGeneratedRulesCannotBeModified": {
+    "description": "Translation for systemGeneratedRulesCannotBeModified"
+  },
+  "systemInfo": "معلومات النظام",
+  "@systemInfo": {
+    "description": "Translation for systemInfo"
+  },
+  "systemInformation": "معلومات النظام",
+  "@systemInformation": {
+    "description": "Translation for systemInformation"
+  },
+  "systemType": "نوع النظام",
+  "@systemType": {
+    "description": "Translation for systemType"
+  },
+  "tags": "العلامات",
+  "@tags": {
+    "description": "Translation for tags"
+  },
+  "tailscale": "Tailscale",
+  "@tailscale": {
+    "description": "Translation for tailscale"
+  },
+  "tailscaleAuthentication": "مصادقة Tailscale",
+  "@tailscaleAuthentication": {
+    "description": "Translation for tailscaleAuthentication"
+  },
+  "tailscaleServiceAction": "{action} خدمة Tailscale",
+  "@tailscaleServiceAction": {
+    "description": "Translation for tailscaleServiceAction",
+    "placeholders": {
+      "action": {
+        "type": "String",
+        "example": "start"
+      }
+    }
+  },
+  "tailscaleServiceActionConfirmation": "هل أنت متأكد أنك تريد {action} خدمة Tailscale؟",
+  "@tailscaleServiceActionConfirmation": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "tailscaleServiceActionSuccess": "تم {action} خدمة Tailscale بنجاح",
+  "@tailscaleServiceActionSuccess": {
+    "description": "Translation for tailscaleServiceActionSuccess",
+    "placeholders": {
+      "action": {
+        "type": "String",
+        "example": "start"
+      }
+    }
+  },
+  "tailscaleServiceActioning": "جاري {action} خدمة Tailscale...",
+  "@tailscaleServiceActioning": {
+    "description": "Translation for tailscaleServiceActioning",
+    "placeholders": {
+      "action": {
+        "type": "String",
+        "example": "start"
+      }
+    }
+  },
+  "tailscaleSettings": "إعدادات Tailscale",
+  "@tailscaleSettings": {
+    "description": "Translation for tailscaleSettings"
+  },
+  "tailscaleStatus": "حالة Tailscale",
+  "@tailscaleStatus": {
+    "description": "Translation for tailscaleStatus"
+  },
+  "tailscaleSubnets": "شبكات Tailscale الفرعية",
+  "@tailscaleSubnets": {
+    "description": "Translation for tailscaleSubnets"
+  },
+  "tailscaleVersion": "الإصدار",
+  "@tailscaleVersion": {
+    "description": "Label for Tailscale version information"
+  },
+  "tapPlusButtonToCreateFirstInstance": "اضغط على زر + لإنشاء أول مثيل",
+  "@tapPlusButtonToCreateFirstInstance": {
+    "description": "Translation for tapPlusButtonToCreateFirstInstance"
+  },
+  "tapPlusButtonToCreateFirstOverride": "اضغط على زر + لإنشاء أول تجاوز",
+  "@tapPlusButtonToCreateFirstOverride": {
+    "description": "Translation for tapPlusButtonToCreateFirstOverride"
+  },
+  "tapPlusButtonToCreateFirstStaticKey": "اضغط على زر + لإنشاء أول مفتاح ثابت",
+  "@tapPlusButtonToCreateFirstStaticKey": {
+    "description": "Translation for tapPlusButtonToCreateFirstStaticKey"
+  },
+  "tcpFlags": "علامات TCP",
+  "@tcpFlags": {
+    "description": "Translation for tcpFlags"
+  },
+  "tenMin": "10 دقائق",
+  "@tenMin": {
+    "description": "Translation for tenMin"
+  },
+  "testConnection": "اختبار الاتصال",
+  "@testConnection": {
+    "description": "Translation for testConnection"
+  },
+  "testConnections": "اختبار الاتصالات",
+  "@testConnections": {
+    "description": "Translation for testConnections"
+  },
+  "testProfile": "اختبار الملف الشخصي",
+  "@testProfile": {
+    "description": "Translation for testProfile"
+  },
+  "testingAllConnections": "اختبار جميع نقاط الاتصال...",
+  "@testingAllConnections": {
+    "description": "Translation for testingAllConnections"
+  },
+  "testingConnection": "اختبار الاتصال {current} من {total}: {endpoint}",
+  "@testingConnection": {
+    "description": "Translation for testingConnection",
+    "placeholders": {
+      "current": {
+        "type": "String",
+        "example": "1"
+      },
+      "endpoint": {
+        "type": "String",
+        "example": "1"
+      },
+      "total": {
+        "type": "String",
+        "example": "5"
+      }
+    }
+  },
+  "theme": "السمة",
+  "@theme": {
+    "description": "Translation for theme"
+  },
+  "thirtyMin": "30 دقيقة",
+  "@thirtyMin": {
+    "description": "Translation for thirtyMin"
+  },
+  "time": "الوقت",
+  "@time": {
+    "description": "Translation for time"
+  },
+  "timeRange": "النطاق الزمني",
+  "@timeRange": {
+    "description": "Translation for timeRange"
+  },
+  "timeRangeLabel": "النطاق الزمني",
+  "@timeRangeLabel": {
+    "description": "Translation for timeRangeLabel"
+  },
+  "timeout": "انتهت مهلة الطلب",
+  "@timeout": {
+    "description": "Translation for timeout"
+  },
+  "timestamp": "الطابع الزمني",
+  "@timestamp": {
+    "description": "Translation for timestamp"
+  },
+  "today": "اليوم",
+  "@today": {
+    "description": "Translation for today"
+  },
+  "totalBandwidth": "إجمالي النطاق الترددي",
+  "@totalBandwidth": {
+    "description": "Translation for totalBandwidth"
+  },
+  "totalDownload": "إجمالي التنزيل",
+  "@totalDownload": {
+    "description": "Translation for totalDownload"
+  },
+  "totalEntries": "إجمالي الإدخالات",
+  "@totalEntries": {
+    "description": "Translation for totalEntries"
+  },
+  "totalUpload": "إجمالي الرفع",
+  "@totalUpload": {
+    "description": "Translation for totalUpload"
+  },
+  "totalVPNs": "إجمالي VPN",
+  "@totalVPNs": {
+    "description": "Translation for totalVPNs"
+  },
+  "tryAdjustingFilters": "حاول ضبط مستوى الخطورة أو فلاتر التاريخ المحددة.",
+  "@tryAdjustingFilters": {
+    "description": "Translation for tryAdjustingFilters"
+  },
+  "tryDemoMode": "تجربة وضع العرض التوضيحي",
+  "@tryDemoMode": {
+    "description": "Translation for tryDemoMode"
+  },
+  "tryDifferentSearch": "جرب مصطلح بحث مختلف",
+  "@tryDifferentSearch": {
+    "description": "Translation for tryDifferentSearch"
+  },
+  "tunnelAddress": "عنوان النفق",
+  "@tunnelAddress": {
+    "description": "Translation for tunnelAddress"
+  },
+  "tunnelAddressCidr": "عنوان النفق (CIDR)",
+  "@tunnelAddressCidr": {
+    "description": "Translation for tunnelAddressCidr"
+  },
+  "tunnelAddressRequired": "مطلوب عنوان نفق واحد على الأقل",
+  "@tunnelAddressRequired": {
+    "description": "Translation for tunnelAddressRequired"
+  },
+  "tunnelAddresses": "عناوين النفق",
+  "@tunnelAddresses": {
+    "description": "Translation for tunnelAddresses"
+  },
+  "tunnelLabel": "النفق: {network}",
+  "@tunnelLabel": {
+    "description": "Translation for tunnelLabel",
+    "placeholders": {
+      "network": {
+        "type": "String"
+      }
+    }
+  },
+  "tunnelNetwork": "شبكة النفق",
+  "@tunnelNetwork": {
+    "description": "Translation for tunnelNetwork"
+  },
+  "tunnelSettings": "إعدادات النفق",
+  "@tunnelSettings": {
+    "description": "Translation for tunnelSettings"
+  },
+  "tunnelWithValue": "النفق: {value}",
+  "@tunnelWithValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "twoMin": "2 دقيقة",
+  "@twoMin": {
+    "description": "Translation for twoMin"
+  },
+  "type": "النوع",
+  "@type": {
+    "description": "Translation for type"
+  },
+  "typeWithValue": "النوع: {value}",
+  "@typeWithValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "udpPortDefault51820": "منفذ UDP (افتراضي: 51820)",
+  "@udpPortDefault51820": {
+    "description": "Translation for udpPortDefault51820"
+  },
+  "unableToAccessFilePath": "غير قادر على الوصول إلى مسار الملف",
+  "@unableToAccessFilePath": {
+    "description": "Translation for unableToAccessFilePath"
+  },
+  "unableToConnectToAnyEndpoint": "تعذر الاتصال بأي من نقاط النهاية المكونة. يرجى التحقق من إعدادات الشبكة والمحاولة مرة أخرى.",
+  "@unableToConnectToAnyEndpoint": {
+    "description": "Translation for unableToConnectToAnyEndpoint"
+  },
+  "unauthorized": "وصول غير مصرح به",
+  "@unauthorized": {
+    "description": "Translation for unauthorized"
+  },
+  "unitBytes": "بايت",
+  "@unitBytes": {
+    "description": "Translation for unitBytes"
+  },
+  "unitGigabytes": "جيجابايت",
+  "@unitGigabytes": {
+    "description": "Translation for unitGigabytes"
+  },
+  "unitKilobytes": "كيلوبايت",
+  "@unitKilobytes": {
+    "description": "Translation for unitKilobytes"
+  },
+  "unitMegabytes": "ميجابايت",
+  "@unitMegabytes": {
+    "description": "Translation for unitMegabytes"
+  },
+  "unitPerSecond": "/ث",
+  "@unitPerSecond": {
+    "description": "Translation for unitPerSecond"
+  },
+  "unitPetabytes": "بيتابايت",
+  "@unitPetabytes": {
+    "description": "Translation for unitPetabytes"
+  },
+  "unitTerabytes": "تيرابايت",
+  "@unitTerabytes": {
+    "description": "Translation for unitTerabytes"
+  },
+  "unknown": "غير معروف",
+  "@unknown": {
+    "description": "Translation for unknown"
+  },
+  "unknownStatus": "غير معروف",
+  "@unknownStatus": {
+    "description": "Translation for unknownStatus"
+  },
+  "unlock": "فتح",
+  "@unlock": {
+    "description": "Translation for unlock"
+  },
+  "unlockOPNsenseManager": "فتح OPNsense Manager",
+  "@unlockOPNsenseManager": {
+    "description": "Translation for unlockOPNsenseManager"
+  },
+  "unnamedHost": "مضيف بدون اسم",
+  "@unnamedHost": {
+    "description": "Translation for unnamedHost"
+  },
+  "unnamedInstance": "مثيل بدون اسم",
+  "@unnamedInstance": {
+    "description": "Translation for unnamedInstance"
+  },
+  "unnamedRule": "قاعدة بدون اسم",
+  "@unnamedRule": {
+    "description": "Translation for unnamedRule"
+  },
+  "unsavedChanges": "تغييرات غير محفوظة",
+  "@unsavedChanges": {
+    "description": "Translation for unsavedChanges"
+  },
+  "unsavedChangesConfirmation": "لديك تغييرات غير محفوظة. هل تريد تجاهلها والمتابعة؟",
+  "@unsavedChangesConfirmation": {
+    "description": "Translation for unsavedChangesConfirmation"
+  },
+  "update": "تحديث",
+  "@update": {
+    "description": "Translation for update"
+  },
+  "updateOverride": "تحديث التجاوز",
+  "@updateOverride": {
+    "description": "Translation for updateOverride"
+  },
+  "updatePeer": "تحديث النظير",
+  "@updatePeer": {
+    "description": "Translation for updatePeer"
+  },
+  "updatePinCode": "تحديث رمز PIN الخاص بك",
+  "@updatePinCode": {
+    "description": "Translation for updatePinCode"
+  },
+  "updateRule": "تحديث القاعدة",
+  "@updateRule": {
+    "description": "Translation for updateRule"
+  },
+  "updateServer": "تحديث الخادم",
+  "@updateServer": {
+    "description": "Translation for updateServer"
+  },
+  "updateStaticKey": "تحديث المفتاح الثابت",
+  "@updateStaticKey": {
+    "description": "Translation for updateStaticKey"
+  },
+  "upload": "الرفع",
+  "@upload": {
+    "description": "Translation for upload"
+  },
+  "uptime": "وقت التشغيل",
+  "@uptime": {
+    "description": "Translation for uptime"
+  },
+  "useBiometric": "استخدام البيومترية",
+  "@useBiometric": {
+    "description": "Translation for useBiometric"
+  },
+  "useBiometricToUnlock": "استخدم {biometricType} لفتح التطبيق",
+  "@useBiometricToUnlock": {
+    "description": "Translation for useBiometricToUnlock",
+    "placeholders": {
+      "biometricType": {
+        "type": "String",
+        "example": "OpenVPN"
+      }
+    }
+  },
+  "useExitNode": "استخدام عقدة الخروج",
+  "@useExitNode": {
+    "description": "Translation for useExitNode"
+  },
+  "useHttps": "استخدام HTTPS",
+  "@useHttps": {
+    "description": "Translation for useHttps"
+  },
+  "useHttpsDescription": "استخدام اتصال HTTPS آمن",
+  "@useHttpsDescription": {
+    "description": "Translation for useHttpsDescription"
+  },
+  "useHttpsLabel": "استخدام HTTPS",
+  "@useHttpsLabel": {
+    "description": "Translation for useHttpsLabel"
+  },
+  "useProtocolForCommunicating": "استخدم هذا البروتوكول للاتصال",
+  "@useProtocolForCommunicating": {
+    "description": "Translation for useProtocolForCommunicating"
+  },
+  "valid": "صالح",
+  "@valid": {
+    "description": "Translation for valid"
+  },
+  "validFrom": "صالح من",
+  "@validFrom": {
+    "description": "Translation for validFrom"
+  },
+  "verifyingConnection": "التحقق من الاتصال بـ {endpoint}...",
+  "@verifyingConnection": {
+    "description": "Translation for verifyingConnection",
+    "placeholders": {
+      "endpoint": {
+        "type": "String",
+        "example": "1"
+      }
+    }
+  },
+  "version": "الإصدار {version}",
+  "@version": {
+    "description": "Translation for version",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.0"
+      }
+    }
+  },
+  "versionLabel": "الإصدار",
+  "@versionLabel": {
+    "description": "Translation for versionLabel"
+  },
+  "viewDetails": "عرض التفاصيل",
+  "@viewDetails": {
+    "description": "Translation for viewDetails"
+  },
+  "viewFullLicense": "عرض الرخصة الكاملة",
+  "@viewFullLicense": {
+    "description": "Translation for viewFullLicense"
+  },
+  "virtualAddress": "العنوان الافتراضي",
+  "@virtualAddress": {
+    "description": "Translation for virtualAddress"
+  },
+  "vpn": "VPN",
+  "@vpn": {
+    "description": "Translation for vpn"
+  },
+  "vpnConnections": "اتصالات VPN",
+  "@vpnConnections": {
+    "description": "Translation for vpnConnections"
+  },
+  "vpnConnectionsWillAppear": "ستظهر اتصالات VPN هنا عند تكوينها",
+  "@vpnConnectionsWillAppear": {
+    "description": "Translation for vpnConnectionsWillAppear"
+  },
+  "vpnStatus": "حالة VPN",
+  "@vpnStatus": {
+    "description": "Translation for vpnStatus"
+  },
+  "vpnType": "نوع VPN",
+  "@vpnType": {
+    "description": "Translation for vpnType"
+  },
+  "wakeAll": "تنبيه الكل",
+  "@wakeAll": {
+    "description": "Translation for wakeAll"
+  },
+  "wakeAllDevices": "تنبيه جميع الأجهزة",
+  "@wakeAllDevices": {
+    "description": "Translation for wakeAllDevices"
+  },
+  "wakeAllDevicesConfirmation": "هل أنت متأكد من رغبتك في إرسال حزم التنبيه إلى جميع الأجهزة المكونة؟",
+  "@wakeAllDevicesConfirmation": {
+    "description": "Translation for wakeAllDevicesConfirmation"
+  },
+  "wakeAllResults": "نتائج تنبيه الكل",
+  "@wakeAllResults": {
+    "description": "Translation for wakeAllResults"
+  },
+  "wakeHost": "تنبيه المضيف",
+  "@wakeHost": {
+    "description": "Translation for wakeHost"
+  },
+  "wakeOnLan": "التنبيه عبر الشبكة",
+  "@wakeOnLan": {
+    "description": "Translation for wakeOnLan"
+  },
+  "wakingAllDevices": "جاري تنبيه جميع الأجهزة...",
+  "@wakingAllDevices": {
+    "description": "Translation for wakingAllDevices"
+  },
+  "warning": "تحذير",
+  "@warning": {
+    "description": "Translation for warning"
+  },
+  "winsServers": "خوادم WINS",
+  "@winsServers": {
+    "description": "Translation for winsServers"
+  },
+  "winsServersHelperText": "تعيين عنوان خادم WINS الأساسي (خادم اسم NetBIOS عبر TCP/IP). كرر هذا الخيار لتعيين عناوين خادم WINS الثانوية.",
+  "@winsServersHelperText": {
+    "description": "Translation for winsServersHelperText"
+  },
+  "wireguard": "WireGuard",
+  "@wireguard": {
+    "description": "Translation for wireguard"
+  },
+  "wireguardLogs": "سجلات WireGuard",
+  "@wireguardLogs": {
+    "description": "Translation for wireguardLogs"
+  },
+  "wireguardLogsExport": "تصدير سجلات WireGuard",
+  "@wireguardLogsExport": {
+    "description": "Translation for wireguardLogsExport"
+  },
+  "wireguardLogsExportedOn": "تم تصدير سجلات WireGuard في {date}",
+  "@wireguardLogsExportedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "wireguardPeers": "نظراء WireGuard",
+  "@wireguardPeers": {
+    "description": "Translation for wireguardPeers"
+  },
+  "wireguardServers": "خوادم WireGuard",
+  "@wireguardServers": {
+    "description": "Translation for wireguardServers"
+  },
+  "wireguardServiceStarted": "تم بدء خدمة WireGuard",
+  "@wireguardServiceStarted": {
+    "description": "Translation for wireguardServiceStarted"
+  },
+  "wireguardServiceStopped": "تم إيقاف خدمة WireGuard",
+  "@wireguardServiceStopped": {
+    "description": "Translation for wireguardServiceStopped"
+  },
+  "wireguardStatus": "حالة WireGuard",
+  "@wireguardStatus": {
+    "description": "Translation for wireguardStatus"
+  },
+  "withoutCredentials": "بدون بيانات الاعتماد",
+  "@withoutCredentials": {
+    "description": "Translation for withoutCredentials"
+  },
+  "wolPacketSentTo": "تم إرسال حزمة WOL إلى {host}",
+  "@wolPacketSentTo": {
+    "description": "Translation for wolPacketSentTo",
+    "placeholders": {
+      "host": {
+        "type": "String",
+        "example": "example.com"
+      }
+    }
+  },
+  "yes": "نعم",
+  "@yes": {
+    "description": "Translation for yes"
+  },
+  "yesterday": "أمس",
+  "@yesterday": {
+    "description": "Translation for yesterday"
+  },
+  "zeroSeconds": "0 ثانية",
+  "@zeroSeconds": {
+    "description": "Translation for zeroSeconds"
+  },
+  "addToList": "إضافة",
+  "@addToList": {
+    "description": "Translation for addToList"
+  },
+  "allFilterOption": "الكل",
+  "@allFilterOption": {
+    "description": "Translation for allFilterOption"
+  },
+  "commonNameLabel": "الاسم الشائع",
+  "@commonNameLabel": {
+    "description": "Translation for commonNameLabel"
+  },
+  "connectionBlockingDescription": "حظر اتصال العميل هذا بناءً على اسمه الشائع. لا تستخدم هذا الخيار لتعطيل عميل بشكل دائم بسبب مفتاح أو كلمة مرور مخترقة. استخدم CRL (قائمة إلغاء الشهادات) بدلاً من ذلك.",
+  "@connectionBlockingDescription": {
+    "description": "Translation for connectionBlockingDescription"
+  },
+  "deviceLabel": "الجهاز: {type}",
+  "@deviceLabel": {
+    "description": "Translation for deviceLabel",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "enableThisClientOverride": "تمكين تجاوز العميل المحدد هذا",
+  "@enableThisClientOverride": {
+    "description": "Translation for enableThisClientOverride"
+  },
+  "enterClientX509CommonName": "أدخل الاسم الشائع X.509 للعميل هنا.",
+  "@enterClientX509CommonName": {
+    "description": "Translation for enterClientX509CommonName"
+  },
+  "facility": "المرفق",
+  "@facility": {
+    "description": "Translation for facility"
+  },
+  "gatewayLabel": "البوابة: {gateway}",
+  "@gatewayLabel": {
+    "description": "Translation for gatewayLabel",
+    "placeholders": {
+      "gateway": {
+        "type": "String"
+      }
+    }
+  },
+  "invalidIpAddressMustBeIpv4OrIpv6": "عنوان IP غير صالح (يجب أن يكون IPv4 أو IPv6)",
+  "@invalidIpAddressMustBeIpv4OrIpv6": {
+    "description": "Translation for invalidIpAddressMustBeIpv4OrIpv6"
+  },
+  "localLabel": "محلي: {address}",
+  "@localLabel": {
+    "description": "Translation for localLabel",
+    "placeholders": {
+      "address": {
+        "type": "String"
+      }
+    }
+  },
+  "messageLabel": "الرسالة:",
+  "@messageLabel": {
+    "description": "Translation for messageLabel"
+  },
+  "pageOfTotal": "الصفحة {current} من {total}",
+  "@pageOfTotal": {
+    "description": "Translation for pageOfTotal",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "parser": "المحلل",
+  "@parser": {
+    "description": "Translation for parser"
+  },
+  "pidLabel": "PID: {pid}",
+  "@pidLabel": {
+    "description": "Translation for pidLabel",
+    "placeholders": {
+      "pid": {
+        "type": "String"
+      }
+    }
+  },
+  "processLabel": "العملية: {process}",
+  "@processLabel": {
+    "description": "Translation for processLabel",
+    "placeholders": {
+      "process": {
+        "type": "String"
+      }
+    }
+  },
+  "pushResetDescription": "لا ترث قائمة الدفع العامة لمثيل عميل معين. ملاحظة: --push-reset شامل جدًا: سيزيل جميع الخيارات تقريبًا من قائمة الخيارات المراد دفعها. في كثير من الحالات، سيحتاج بعض هذه الخيارات إلى إعادة تكوين بعد ذلك - على وجه التحديد، سيتم فقدان --topology subnet و --route-gateway وسيؤدي ذلك إلى كسر تكوينات العميل في كثير من الحالات.",
+  "@pushResetDescription": {
+    "description": "Translation for pushResetDescription"
+  },
+  "record": "السجل",
+  "@record": {
+    "description": "Translation for record"
+  },
+  "redirectGatewayDescription": "تنفيذ أوامر التوجيه تلقائيًا للتسبب في إعادة توجيه جميع حركة مرور IP الصادرة عبر VPN.",
+  "@redirectGatewayDescription": {
+    "description": "Translation for redirectGatewayDescription"
+  },
+  "registerDnsDescription": "تشغيل ipconfig /flushdns و ipconfig /registerdns عند بدء الاتصال. من المعروف أن هذا يدفع Windows إلى التعرف على خوادم DNS المدفوعة.",
+  "@registerDnsDescription": {
+    "description": "Translation for registerDnsDescription"
+  },
+  "remoteLabel": "بعيد: {info}",
+  "@remoteLabel": {
+    "description": "Translation for remoteLabel",
+    "placeholders": {
+      "info": {
+        "type": "String"
+      }
+    }
+  },
+  "selectedCount": "{count} محدد",
+  "@selectedCount": {
+    "description": "Translation for selectedCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "serverLabel": "الخادم: {info}",
+  "@serverLabel": {
+    "description": "Translation for serverLabel",
+    "placeholders": {
+      "info": {
+        "type": "String"
+      }
+    }
+  },
+  "severityLabel": "الشدة: {severity}",
+  "@severityLabel": {
+    "description": "Translation for severityLabel",
+    "placeholders": {
+      "severity": {
+        "type": "String"
+      }
+    }
+  },
+  "showingEntries": "عرض {start} إلى {end}",
+  "@showingEntries": {
+    "description": "Translation for showingEntries",
+    "placeholders": {
+      "start": {
+        "type": "int"
+      },
+      "end": {
+        "type": "int"
+      }
+    }
+  },
+  "statusLabel": "الحالة",
+  "@statusLabel": {
+    "description": "Translation for statusLabel"
+  },
+  "timestampLabel": "الطابع الزمني: {timestamp}",
+  "@timestampLabel": {
+    "description": "Translation for timestampLabel",
+    "placeholders": {
+      "timestamp": {
+        "type": "String"
+      }
+    }
+  },
+  "typeLabel": "النوع: {type}",
+  "@typeLabel": {
+    "description": "Translation for typeLabel",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "udp": "UDP",
+  "@udp": {
+    "description": "Translation for udp"
+  },
+  "unknownNetwork": "شبكة غير معروفة",
+  "@unknownNetwork": {
+    "description": "Translation for unknownNetwork"
+  },
+  "youMayEnterDescriptionForReference": "يمكنك إدخال وصف هنا للرجوع إليه (لا يتم تحليله).",
+  "@youMayEnterDescriptionForReference": {
+    "description": "Translation for youMayEnterDescriptionForReference"
+  }
 }

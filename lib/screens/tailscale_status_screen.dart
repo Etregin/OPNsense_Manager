@@ -19,6 +19,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../l10n/app_localizations.dart';
 import '../models/tailscale_status.dart';
 import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
@@ -97,32 +98,36 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
   }
 
   Future<void> _controlService(String action) async {
+    final l10n = AppLocalizations.of(context)!;
     final actionTitle = action == 'start'
-        ? 'Start'
+        ? l10n.start
         : action == 'stop'
-            ? 'Stop'
-            : 'Restart';
+            ? l10n.stop
+            : l10n.restart;
 
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('$actionTitle Tailscale Service'),
-        content: Text(
-            'Are you sure you want to $action the Tailscale service?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: action == 'stop' ? Colors.red : null,
+      builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
+        return AlertDialog(
+          title: Text(l10n.tailscaleServiceAction(actionTitle)),
+          content: Text(
+              l10n.tailscaleServiceActionConfirmation(action)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(l10n.cancel),
             ),
-            child: Text(actionTitle),
-          ),
-        ],
-      ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: action == 'stop' ? Colors.red : null,
+              ),
+              child: Text(actionTitle),
+            ),
+          ],
+        );
+      },
     );
 
     if (confirmed != true || !mounted) return;
@@ -131,7 +136,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('${actionTitle}ing Tailscale service...'),
+          content: Text(l10n.tailscaleServiceActioning(actionTitle)),
           duration: const Duration(seconds: 2),
         ),
       );
@@ -145,7 +150,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
         if (success) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Tailscale service ${action}ed successfully'),
+              content: Text(l10n.tailscaleServiceActionSuccess(actionTitle)),
               backgroundColor: Colors.green,
             ),
           );
@@ -153,7 +158,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to $action Tailscale service'),
+              content: Text(l10n.failedToActionTailscaleService(action)),
               backgroundColor: Colors.red,
             ),
           );
@@ -163,7 +168,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString()}'),
+            content: Text('${l10n.error}: ${e.toString()}'),
             backgroundColor: Colors.red,
           ),
         );
@@ -173,27 +178,28 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tailscale Status'),
+        title: Text(l10n.tailscaleStatus),
         actions: [
           // Service control buttons
           if (_status != null) ...[
             if (!_status!.serviceRunning)
               IconButton(
                 icon: const Icon(Icons.play_arrow, color: Colors.green),
-                tooltip: 'Start Service',
+                tooltip: l10n.startService,
                 onPressed: () => _controlService('start'),
               ),
             if (_status!.serviceRunning) ...[
               IconButton(
                 icon: const Icon(Icons.stop, color: Colors.red),
-                tooltip: 'Stop Service',
+                tooltip: l10n.stopService,
                 onPressed: () => _controlService('stop'),
               ),
               IconButton(
                 icon: const Icon(Icons.restart_alt, color: Colors.orange),
-                tooltip: 'Restart Service',
+                tooltip: l10n.restartService,
                 onPressed: () => _controlService('restart'),
               ),
             ],
@@ -221,6 +227,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
     }
 
     if (_errorMessage != null) {
+      final l10n = AppLocalizations.of(context)!;
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -228,7 +235,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
             const Icon(Icons.error_outline, size: 64, color: Colors.red),
             const SizedBox(height: 16),
             Text(
-              'Error loading data',
+              l10n.errorLoadingData,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
@@ -237,7 +244,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
             ElevatedButton.icon(
               onPressed: _loadData,
               icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
+              label: Text(l10n.retry),
             ),
           ],
         ),
@@ -245,7 +252,8 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
     }
 
     if (_status == null) {
-      return const Center(child: Text('No data available'));
+      final l10n = AppLocalizations.of(context)!;
+      return Center(child: Text(l10n.noDataAvailable));
     }
 
     return ListView(
@@ -274,22 +282,22 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
                 const Icon(Icons.info_outline, size: 24),
                 const SizedBox(width: 8),
                 Text(
-                  'Service Status',
+                  AppLocalizations.of(context)!.serviceStatus,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
             ),
             const Divider(height: 24),
-            _buildInfoRow('Service Running',
-                _status!.serviceRunning ? 'Yes' : 'No',
+            _buildInfoRow(AppLocalizations.of(context)!.serviceRunning,
+                _status!.serviceRunning ? AppLocalizations.of(context)!.yes : AppLocalizations.of(context)!.no,
                 valueColor:
                     _status!.serviceRunning ? Colors.green : Colors.red),
-            _buildInfoRow('Backend State', _status!.backendState,
+            _buildInfoRow(AppLocalizations.of(context)!.backendState, _status!.backendState,
                 valueColor: _status!.isConnected ? Colors.green : null),
-            _buildInfoRow('Status', _status!.statusDisplay),
+            _buildInfoRow(AppLocalizations.of(context)!.status, _status!.statusDisplay),
             if (_status!.version != null)
-              _buildInfoRow('Version', _status!.version!),
-            _buildInfoRow('Peers Count', _status!.peersCount.toString()),
+              _buildInfoRow(AppLocalizations.of(context)!.versionLabel, _status!.version!),
+            _buildInfoRow(AppLocalizations.of(context)!.peersCount, _status!.peersCount.toString()),
           ],
         ),
       ),
@@ -308,25 +316,25 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
                 const Icon(Icons.cloud_outlined, size: 24),
                 const SizedBox(width: 8),
                 Text(
-                  'Connection Details',
+                  AppLocalizations.of(context)!.connectionDetails,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
             ),
             const Divider(height: 24),
             if (_status!.ips.isNotEmpty) ...[
-              _buildInfoRow('IP Addresses', _status!.ips.join(', ')),
+              _buildInfoRow(AppLocalizations.of(context)!.ipAddresses, _status!.ips.join(', ')),
             ] else
-              _buildInfoRow('IP Addresses', 'None'),
+              _buildInfoRow(AppLocalizations.of(context)!.ipAddresses, AppLocalizations.of(context)!.none),
             if (_status!.connectedSince != null)
-              _buildInfoRow('Connected Since',
+              _buildInfoRow(AppLocalizations.of(context)!.connectedSince,
                   Formatters.formatDateTime(_status!.connectedSince!)),
             if (_status!.bytesReceived != null)
-              _buildInfoRow('Bytes Received',
+              _buildInfoRow(AppLocalizations.of(context)!.bytesReceived,
                   Formatters.formatBytes(_status!.bytesReceived!, context)),
             if (_status!.bytesSent != null)
               _buildInfoRow(
-                  'Bytes Sent', Formatters.formatBytes(_status!.bytesSent!, context)),
+                  AppLocalizations.of(context)!.bytesSent, Formatters.formatBytes(_status!.bytesSent!, context)),
           ],
         ),
       ),
@@ -345,29 +353,29 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
                 const Icon(Icons.network_check, size: 24),
                 const SizedBox(width: 8),
                 Text(
-                  'Network Configuration',
+                  AppLocalizations.of(context)!.networkConfiguration,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
             ),
             const Divider(height: 24),
-            _buildInfoRow('Accept Routes',
-                _status!.acceptRoutes ? 'Enabled' : 'Disabled'),
+            _buildInfoRow(AppLocalizations.of(context)!.acceptRoutes,
+                _status!.acceptRoutes ? AppLocalizations.of(context)!.enabled : AppLocalizations.of(context)!.disabled),
             if (_status!.advertiseRoutes != null &&
                 _status!.advertiseRoutes!.isNotEmpty)
-              _buildInfoRow('Advertise Routes', _status!.advertiseRoutes!),
+              _buildInfoRow(AppLocalizations.of(context)!.advertiseRoutes, _status!.advertiseRoutes!),
             _buildInfoRow(
-                'Use Exit Node', _status!.useExitNode ? 'Enabled' : 'Disabled'),
+                AppLocalizations.of(context)!.useExitNode, _status!.useExitNode ? AppLocalizations.of(context)!.enabled : AppLocalizations.of(context)!.disabled),
             if (_status!.exitNode != null && _status!.exitNode!.isNotEmpty)
-              _buildInfoRow('Exit Node', _status!.exitNode!),
+              _buildInfoRow(AppLocalizations.of(context)!.exitNode, _status!.exitNode!),
             _buildInfoRow(
-                'DNS Enabled', _status!.dnsEnabled ? 'Enabled' : 'Disabled'),
+                AppLocalizations.of(context)!.dnsEnabled, _status!.dnsEnabled ? AppLocalizations.of(context)!.enabled : AppLocalizations.of(context)!.disabled),
             _buildInfoRow(
-                'Magic DNS', _status!.magicDns ? 'Enabled' : 'Disabled'),
+                AppLocalizations.of(context)!.magicDns, _status!.magicDns ? AppLocalizations.of(context)!.enabled : AppLocalizations.of(context)!.disabled),
             _buildInfoRow(
-                'SSH Enabled', _status!.sshEnabled ? 'Enabled' : 'Disabled'),
+                AppLocalizations.of(context)!.sshEnabled, _status!.sshEnabled ? AppLocalizations.of(context)!.enabled : AppLocalizations.of(context)!.disabled),
             if (_status!.tags.isNotEmpty)
-              _buildInfoRow('Tags', _status!.tags.join(', ')),
+              _buildInfoRow(AppLocalizations.of(context)!.tags, _status!.tags.join(', ')),
           ],
         ),
       ),
@@ -392,7 +400,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Health Status',
+                  AppLocalizations.of(context)!.healthStatus,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],

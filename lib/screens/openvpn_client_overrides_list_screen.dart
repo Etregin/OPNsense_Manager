@@ -125,10 +125,11 @@ class _OpenvpnClientOverridesListScreenState
       await apiService.reconfigureOpenvpn();
 
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-                'Override ${clientOverride.enabled ? "disabled" : "enabled"} successfully'),
+                l10n.overrideToggledSuccessfully(clientOverride.enabled ? l10n.disabled : l10n.enabled)),
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 2),
           ),
@@ -137,9 +138,10 @@ class _OpenvpnClientOverridesListScreenState
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to toggle override: ${e.toString()}'),
+            content: Text(l10n.failedToToggleOverride(e.toString())),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 3),
           ),
@@ -160,7 +162,7 @@ class _OpenvpnClientOverridesListScreenState
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Override'),
+        title: Text(l10n.deleteOverride),
         content: Text(
           'Are you sure you want to delete override for "${clientOverride.commonName}"? This action cannot be undone.',
         ),
@@ -190,8 +192,8 @@ class _OpenvpnClientOverridesListScreenState
         
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Override deleted successfully'),
+            SnackBar(
+              content: Text(l10n.overrideDeletedSuccessfully),
               backgroundColor: Colors.green,
             ),
           );
@@ -201,7 +203,7 @@ class _OpenvpnClientOverridesListScreenState
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to delete override: ${e.toString()}'),
+              content: Text(l10n.failedToDeleteOverride(e.toString())),
               backgroundColor: Colors.red,
             ),
           );
@@ -294,7 +296,7 @@ class _OpenvpnClientOverridesListScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Client Specific Overrides'),
+        title: Text(l10n.clientSpecificOverrides),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -516,4 +518,4 @@ class _OpenvpnClientOverridesListScreenState
   }
 }
 
-// Made with Bob
+

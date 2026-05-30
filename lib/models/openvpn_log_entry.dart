@@ -75,4 +75,3 @@ class OpenvpnLogEntry {
   String get trimmedLine => line.trim();
 }
 
-// Made with Bob

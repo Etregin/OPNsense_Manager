@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/wireguard_peer.dart';
 
 /// Dialog for selecting WireGuard peers
@@ -59,12 +60,14 @@ class _PeerSelectorDialogState extends State<PeerSelectorDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return AlertDialog(
-      title: const Text('Select Peers'),
+      title: Text(l10n.selectPeers),
       content: SizedBox(
         width: double.maxFinite,
         child: widget.availablePeers.isEmpty
-            ? const Center(child: Text('No peers available'))
+            ? Center(child: Text(l10n.noPeersAvailable))
             : ListView.builder(
                 shrinkWrap: true,
                 itemCount: widget.availablePeers.length,

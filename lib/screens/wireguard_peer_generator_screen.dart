@@ -27,6 +27,7 @@ import '../viewmodels/wireguard_peer_generator_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/loading_overlay.dart';
 import '../utils/common_validators.dart';
+import '../l10n/app_localizations.dart';
 
 /// Screen for generating WireGuard peer configurations
 class WireGuardPeerGeneratorScreen extends StatefulWidget {
@@ -169,11 +170,12 @@ class _WireGuardPeerGeneratorScreenState
 
     if (_viewModel.psk != null) {
       _pskController.text = _viewModel.psk!;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Pre-shared key generated successfully'),
+        SnackBar(
+          content: Text(l10n.presharedKeyGeneratedSuccessfully),
           backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
         ),
       );
     }
@@ -184,10 +186,12 @@ class _WireGuardPeerGeneratorScreenState
       return;
     }
 
+    final l10n = AppLocalizations.of(context)!;
+
     if (_selectedServerUuid == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a server instance'),
+        SnackBar(
+          content: Text(l10n.selectServerInstance),
           backgroundColor: Colors.red,
         ),
       );
@@ -200,8 +204,8 @@ class _WireGuardPeerGeneratorScreenState
     
     if (privateKey.isEmpty || publicKey.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Private and public keys are required'),
+        SnackBar(
+          content: Text(l10n.keysRequired),
           backgroundColor: Colors.red,
         ),
       );
@@ -211,8 +215,8 @@ class _WireGuardPeerGeneratorScreenState
     final serverInfo = _viewModel.selectedServerInfo;
     if (serverInfo == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Server information not loaded'),
+        SnackBar(
+          content: Text(l10n.serverInfoNotLoaded),
           backgroundColor: Colors.red,
         ),
       );
@@ -238,8 +242,8 @@ class _WireGuardPeerGeneratorScreenState
     if (mounted) {
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Peer created successfully. Ready for next peer.'),
+          SnackBar(
+            content: Text(l10n.peerCreatedReadyForNext),
             backgroundColor: Colors.green,
           ),
         );
@@ -267,12 +271,13 @@ class _WireGuardPeerGeneratorScreenState
     final success = await _viewModel.applyConfiguration();
 
     if (mounted) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
             success
-                ? 'Configuration applied successfully'
-                : _viewModel.errorMessage ?? 'Failed to apply configuration',
+                ? l10n.configurationAppliedSuccessfully
+                : _viewModel.errorMessage ?? l10n.failedToApplyConfiguration,
           ),
           backgroundColor: success ? Colors.green : Colors.red,
         ),
@@ -313,11 +318,12 @@ class _WireGuardPeerGeneratorScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final builderData = _viewModel.builderData;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Peer Generator'),
+        title: Text(l10n.peerGenerator),
       ),
       drawer: AppDrawer(
         currentRoute: 'wireguard_peer_generator',
@@ -336,8 +342,8 @@ class _WireGuardPeerGeneratorScreenState
                       color: Colors.red,
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      'Error',
+                    Text(
+                      l10n.error,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -358,7 +364,7 @@ class _WireGuardPeerGeneratorScreenState
                         _loadData();
                       },
                       icon: const Icon(Icons.refresh),
-                      label: const Text('Retry'),
+                      label: Text(l10n.retry),
                     ),
                   ],
                 ),
@@ -373,9 +379,9 @@ class _WireGuardPeerGeneratorScreenState
                     // Instance Dropdown
                     DropdownButtonFormField<String>(
                       initialValue: _selectedServerUuid,
-                      decoration: const InputDecoration(
-                        labelText: 'Instance',
-                        prefixIcon: Icon(Icons.dns),
+                      decoration: InputDecoration(
+                        labelText: l10n.instance,
+                        prefixIcon: const Icon(Icons.dns),
                       ),
                       items: builderData.serverUuids.map((uuid) {
                         final server = builderData.servers[uuid]!;
@@ -388,20 +394,20 @@ class _WireGuardPeerGeneratorScreenState
                           ? null
                           : _onServerSelected,
                       validator: (value) =>
-                          value == null ? 'Please select an instance' : null,
+                          value == null ? l10n.pleaseSelectAnInstance : null,
                     ),
                     const SizedBox(height: 16),
 
                     // Endpoint
                     TextFormField(
                       controller: _endpointController,
-                      decoration: const InputDecoration(
-                        labelText: 'Endpoint',
+                      decoration: InputDecoration(
+                        labelText: l10n.endpoint,
                         hintText: 'server.example.com:51820',
-                        prefixIcon: Icon(Icons.public),
+                        prefixIcon: const Icon(Icons.public),
                       ),
                       validator: (value) =>
-                          CommonValidators.required(value, fieldName: 'Endpoint'),
+                          CommonValidators.required(value, fieldName: l10n.endpoint),
                       enabled: !_viewModel.isLoading,
                     ),
                     const SizedBox(height: 16),
@@ -409,13 +415,13 @@ class _WireGuardPeerGeneratorScreenState
                     // Name
                     TextFormField(
                       controller: _nameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Name',
-                        hintText: 'Client name',
-                        prefixIcon: Icon(Icons.label),
+                      decoration: InputDecoration(
+                        labelText: l10n.name,
+                        hintText: l10n.clientName,
+                        prefixIcon: const Icon(Icons.label),
                       ),
                       validator: (value) =>
-                          CommonValidators.required(value, fieldName: 'Name'),
+                          CommonValidators.required(value, fieldName: l10n.name),
                       enabled: !_viewModel.isLoading,
                     ),
                     const SizedBox(height: 16),
@@ -423,13 +429,13 @@ class _WireGuardPeerGeneratorScreenState
                     // Public Key
                     TextFormField(
                       controller: _publicKeyController,
-                      decoration: const InputDecoration(
-                        labelText: 'Public Key',
-                        hintText: 'Enter or generate public key',
-                        prefixIcon: Icon(Icons.key),
+                      decoration: InputDecoration(
+                        labelText: l10n.publicKey,
+                        hintText: l10n.enterOrGeneratePublicKey,
+                        prefixIcon: const Icon(Icons.key),
                       ),
                       validator: (value) =>
-                          CommonValidators.required(value, fieldName: 'Public Key'),
+                          CommonValidators.required(value, fieldName: l10n.publicKey),
                       enabled: !_viewModel.isLoading,
                       maxLines: 2,
                       style: const TextStyle(
@@ -442,13 +448,13 @@ class _WireGuardPeerGeneratorScreenState
                     // Private Key
                     TextFormField(
                       controller: _privateKeyController,
-                      decoration: const InputDecoration(
-                        labelText: 'Private Key',
-                        hintText: 'Enter or generate private key',
-                        prefixIcon: Icon(Icons.vpn_key),
+                      decoration: InputDecoration(
+                        labelText: l10n.privateKey,
+                        hintText: l10n.enterOrGeneratePrivateKey,
+                        prefixIcon: const Icon(Icons.vpn_key),
                       ),
                       validator: (value) =>
-                          CommonValidators.required(value, fieldName: 'Private Key'),
+                          CommonValidators.required(value, fieldName: l10n.privateKey),
                       enabled: !_viewModel.isLoading,
                       maxLines: 2,
                       style: const TextStyle(
@@ -472,20 +478,20 @@ class _WireGuardPeerGeneratorScreenState
                               ),
                             )
                           : const Icon(Icons.refresh),
-                      label: const Text('Generate New Key Pair'),
+                      label: Text(l10n.generateNewKeyPair),
                     ),
                     const SizedBox(height: 16),
 
                     // Address
                     TextFormField(
                       controller: _addressController,
-                      decoration: const InputDecoration(
-                        labelText: 'Address',
+                      decoration: InputDecoration(
+                        labelText: l10n.address,
                         hintText: '10.10.10.2/24',
-                        prefixIcon: Icon(Icons.location_on),
+                        prefixIcon: const Icon(Icons.location_on),
                       ),
                       validator: (value) =>
-                          CommonValidators.required(value, fieldName: 'Address'),
+                          CommonValidators.required(value, fieldName: l10n.address),
                       enabled: !_viewModel.isLoading,
                     ),
                     const SizedBox(height: 16),
@@ -494,8 +500,8 @@ class _WireGuardPeerGeneratorScreenState
                     TextFormField(
                       controller: _pskController,
                       decoration: InputDecoration(
-                        labelText: 'Pre-shared Key (Optional)',
-                        hintText: 'Enter or generate pre-shared key',
+                        labelText: l10n.presharedKeyOptional,
+                        hintText: l10n.enterOrGeneratePresharedKey,
                         prefixIcon: const Icon(Icons.security),
                         suffixIcon: IconButton(
                           icon: _viewModel.generatingPsk
@@ -510,7 +516,7 @@ class _WireGuardPeerGeneratorScreenState
                           onPressed: _viewModel.generatingPsk
                               ? null
                               : _generatePsk,
-                          tooltip: 'Generate pre-shared key',
+                          tooltip: l10n.generatePresharedKey,
                         ),
                       ),
                       enabled: !_viewModel.isLoading,
@@ -525,13 +531,13 @@ class _WireGuardPeerGeneratorScreenState
                     // Allowed IPs
                     TextFormField(
                       controller: _allowedIpsController,
-                      decoration: const InputDecoration(
-                        labelText: 'Allowed IPs',
+                      decoration: InputDecoration(
+                        labelText: l10n.allowedIpsLabel,
                         hintText: '0.0.0.0/0,::/0',
-                        prefixIcon: Icon(Icons.network_check),
+                        prefixIcon: const Icon(Icons.network_check),
                       ),
                       validator: (value) =>
-                          CommonValidators.required(value, fieldName: 'Allowed IPs'),
+                          CommonValidators.required(value, fieldName: l10n.allowedIpsLabel),
                       enabled: !_viewModel.isLoading,
                     ),
                     const SizedBox(height: 16),
@@ -539,11 +545,11 @@ class _WireGuardPeerGeneratorScreenState
                     // Keep Alive
                     TextFormField(
                       controller: _keepaliveController,
-                      decoration: const InputDecoration(
-                        labelText: 'Keep Alive Interval (Optional)',
+                      decoration: InputDecoration(
+                        labelText: l10n.keepAliveIntervalOptional,
                         hintText: '25',
-                        prefixIcon: Icon(Icons.timer),
-                        helperText: 'Seconds',
+                        prefixIcon: const Icon(Icons.timer),
+                        helperText: l10n.seconds,
                       ),
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -554,18 +560,18 @@ class _WireGuardPeerGeneratorScreenState
                     // DNS Server
                     TextFormField(
                       controller: _dnsController,
-                      decoration: const InputDecoration(
-                        labelText: 'DNS Server (Optional)',
+                      decoration: InputDecoration(
+                        labelText: l10n.dnsServerOptional,
                         hintText: '1.1.1.1',
-                        prefixIcon: Icon(Icons.dns),
+                        prefixIcon: const Icon(Icons.dns),
                       ),
                       enabled: !_viewModel.isLoading,
                     ),
                     const SizedBox(height: 24),
 
                     // Config Preview
-                    const Text(
-                      'Configuration Preview',
+                    Text(
+                      l10n.configurationPreview,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -587,8 +593,8 @@ class _WireGuardPeerGeneratorScreenState
                     const SizedBox(height: 24),
 
                     // QR Code
-                    const Text(
-                      'QR Code',
+                    Text(
+                      l10n.qrCode,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -613,7 +619,7 @@ class _WireGuardPeerGeneratorScreenState
                                     size: 200.0,
                                   ),
                                 )
-                              : const Text('Select server to generate QR code'),
+                              : Text(l10n.selectServerToGenerateQrCode),
                         ),
                       ),
                     ),
@@ -627,8 +633,8 @@ class _WireGuardPeerGeneratorScreenState
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
-                      child: const Text(
-                        'Store and Generate Next',
+                      child: Text(
+                        l10n.storeAndGenerateNext,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -639,8 +645,8 @@ class _WireGuardPeerGeneratorScreenState
 
                     // Enable WireGuard Toggle
                     SwitchListTile(
-                      title: const Text('Enable WireGuard'),
-                      subtitle: const Text('Start WireGuard service'),
+                      title: Text(l10n.enableWireguard),
+                      subtitle: Text(l10n.startWireguardService),
                       value: _viewModel.wireguardEnabled,
                       onChanged: _viewModel.isLoading
                           ? null
@@ -653,8 +659,8 @@ class _WireGuardPeerGeneratorScreenState
                                   SnackBar(
                                     content: Text(
                                       value
-                                          ? 'WireGuard service started'
-                                          : 'WireGuard service stopped',
+                                          ? l10n.wireguardServiceStarted
+                                          : l10n.wireguardServiceStopped,
                                     ),
                                     backgroundColor: Colors.green,
                                   ),
@@ -672,8 +678,8 @@ class _WireGuardPeerGeneratorScreenState
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
-                      child: const Text(
-                        'Apply',
+                      child: Text(
+                        l10n.apply,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

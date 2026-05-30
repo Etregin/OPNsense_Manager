@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Service for managing navigation and route handling in the app drawer
 class NavigationService {
@@ -79,10 +80,11 @@ class NavigationService {
 
   /// Show a "coming soon" snackbar and close drawer
   static void showComingSoon(BuildContext context, String feature) {
+    final l10n = AppLocalizations.of(context)!;
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('$feature - Coming soon'),
+        content: Text(l10n.featureComingSoon(feature)),
         duration: const Duration(seconds: 2),
       ),
     );

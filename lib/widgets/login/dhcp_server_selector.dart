@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import '../../models/dhcp_server_type.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Widget for selecting DHCP server type
 class DhcpServerSelector extends StatelessWidget {
@@ -34,20 +35,22 @@ class DhcpServerSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ListTile(
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.dns),
-          title: const Text('DHCP Server Type'),
-          subtitle: Text(selectedType.displayName),
+          title: Text(l10n.dhcpServerType),
+          subtitle: Text(selectedType.getDisplayName(context)),
           trailing: DropdownButton<DhcpServerType>(
             value: selectedType,
             items: DhcpServerType.values.map((type) {
               return DropdownMenuItem(
                 value: type,
-                child: Text(type.displayName),
+                child: Text(type.getDisplayName(context)),
               );
             }).toList(),
             onChanged: isLoading
@@ -62,7 +65,7 @@ class DhcpServerSelector extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
-            selectedType.description,
+            selectedType.getDescription(context),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Colors.grey[600],
                   fontStyle: FontStyle.italic,

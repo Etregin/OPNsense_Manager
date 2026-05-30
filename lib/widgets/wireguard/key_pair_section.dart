@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../utils/wireguard_validators.dart';
 
 /// Widget for WireGuard key pair input and generation
@@ -38,15 +39,16 @@ class KeyPairSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         // Public Key
         TextFormField(
           controller: publicKeyController,
-          decoration: const InputDecoration(
-            labelText: 'Public Key',
-            prefixIcon: Icon(Icons.vpn_key),
-            helperText: 'Base64 encoded public key',
+          decoration: InputDecoration(
+            labelText: l10n.publicKey,
+            prefixIcon: const Icon(Icons.vpn_key),
+            helperText: l10n.base64EncodedPublicKey,
           ),
           validator: WireGuardValidators.validateKey,
           enabled: !isLoading && !isGenerating,
@@ -57,10 +59,10 @@ class KeyPairSection extends StatelessWidget {
         // Private Key
         TextFormField(
           controller: privateKeyController,
-          decoration: const InputDecoration(
-            labelText: 'Private Key',
-            prefixIcon: Icon(Icons.lock),
-            helperText: 'Base64 encoded private key (keep secret)',
+          decoration: InputDecoration(
+            labelText: l10n.privateKey,
+            prefixIcon: const Icon(Icons.lock),
+            helperText: l10n.base64EncodedPrivateKeyKeepSecret,
           ),
           validator: WireGuardValidators.validateKey,
           enabled: !isLoading && !isGenerating,
@@ -79,7 +81,7 @@ class KeyPairSection extends StatelessWidget {
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
               : const Icon(Icons.refresh),
-          label: Text(isGenerating ? 'Generating...' : 'Generate Key Pair'),
+          label: Text(isGenerating ? l10n.generating : l10n.generateKeyPair),
         ),
       ],
     );

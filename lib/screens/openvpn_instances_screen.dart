@@ -134,17 +134,17 @@ class _OpenvpnInstancesScreenState extends State<OpenvpnInstancesScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('OpenVPN Instances'),
+        title: Text(l10n.openvpnInstances),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
+          tabs: [
             Tab(
-              text: 'Instances',
-              icon: Icon(Icons.vpn_lock),
+              text: l10n.instances,
+              icon: const Icon(Icons.vpn_lock),
             ),
             Tab(
-              text: 'Static Keys',
-              icon: Icon(Icons.vpn_key),
+              text: l10n.staticKeys,
+              icon: const Icon(Icons.vpn_key),
             ),
           ],
         ),
@@ -178,8 +178,8 @@ class _OpenvpnInstancesScreenState extends State<OpenvpnInstancesScreen>
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _tabController.index == 0 ? _onAddInstance : _onAddStaticKey,
         icon: const Icon(Icons.add),
-        label: Text(_tabController.index == 0 ? 'Add Instance' : 'Add Static Key'),
-        tooltip: _tabController.index == 0 ? 'Add OpenVPN Instance' : 'Add Static Key',
+        label: Text(_tabController.index == 0 ? l10n.addInstance : l10n.addStaticKey),
+        tooltip: _tabController.index == 0 ? l10n.addOpenVpnInstance : l10n.addStaticKeyTooltip,
       ),
     );
   }

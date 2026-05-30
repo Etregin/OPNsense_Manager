@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../viewmodels/tailscale_settings_form_state.dart';
 
 /// Widget for other Tailscale settings
@@ -32,6 +33,8 @@ class OtherSettingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -44,8 +47,8 @@ class OtherSettingsCard extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             SwitchListTile(
-              title: const Text('Enable SSH'),
-              subtitle: const Text('Allow SSH access through Tailscale'),
+              title: Text(l10n.enableSsh),
+              subtitle: Text(l10n.enableSshDescription),
               value: formState.enableSSH,
               onChanged: (value) {
                 formState.enableSSH = value;
@@ -54,8 +57,8 @@ class OtherSettingsCard extends StatelessWidget {
             ),
             const Divider(),
             SwitchListTile(
-              title: const Text('Disable SNAT'),
-              subtitle: const Text('Disable source NAT for subnet routes'),
+              title: Text(l10n.disableSnat),
+              subtitle: Text(l10n.disableSnatDescription),
               value: formState.disableSNAT,
               onChanged: (value) {
                 formState.disableSNAT = value;

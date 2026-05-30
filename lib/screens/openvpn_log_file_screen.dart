@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_log_entry.dart';
 import '../models/system_info.dart';
@@ -34,26 +35,11 @@ class OpenvpnLogFileScreen extends StatefulWidget {
 }
 
 class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
-  static const List<String> _severityOptions = <String>[
-    'Emergency',
-    'Alert',
-    'Critical',
-    'Error',
-    'Warning',
-    'Notice',
-    'Info',
-    'Debug',
-  ];
+  List<String> _severityOptions = <String>[];
 
   static const List<int> _rowCountOptions = <int>[50, 100, 200];
 
-  final Set<String> _selectedSeverities = <String>{
-    'Emergency',
-    'Alert',
-    'Critical',
-    'Error',
-    'Warning',
-  };
+  final Set<String> _selectedSeverities = <String>{};
   final Set<int> _selectedLogIndexes = <int>{};
 
   late OPNsenseApiService _apiService;
@@ -73,6 +59,24 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
     super.didChangeDependencies();
 
     if (!_isInitialized) {
+      final l10n = AppLocalizations.of(context)!;
+      _severityOptions = <String>[
+        l10n.emergency,
+        l10n.alert,
+        l10n.critical,
+        l10n.error,
+        l10n.warning,
+        l10n.notice,
+        l10n.info,
+        l10n.debug,
+      ];
+      _selectedSeverities.addAll([
+        l10n.emergency,
+        l10n.alert,
+        l10n.critical,
+        l10n.error,
+        l10n.warning,
+      ]);
       _apiService = context.read<OPNsenseApiService>();
       _isInitialized = true;
       _loadSystemInfo();
@@ -527,9 +531,10 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
                         );
 
                         if (context.mounted) {
+                          final l10n = AppLocalizations.of(context)!;
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Log entry copied'),
+                            SnackBar(
+                              content: Text(l10n.logEntryCopied),
                             ),
                           );
                         }
@@ -781,4 +786,3 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
   }
 }
 
-// Made with Bob

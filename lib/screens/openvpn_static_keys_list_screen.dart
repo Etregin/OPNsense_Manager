@@ -101,9 +101,9 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Static Key'),
+        title: Text(l10n.deleteStaticKey),
         content: Text(
-          'Are you sure you want to delete static key "${key.description.isNotEmpty ? key.description : key.keyid ?? "N/A"}"? This action cannot be undone.',
+          l10n.confirmDeleteStaticKey(key.description.isNotEmpty ? key.description : key.keyid ?? "N/A"),
         ),
         actions: [
           TextButton(
@@ -127,8 +127,8 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
         await apiService.deleteOpenvpnStaticKey(key.keyid!);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Static key deleted successfully'),
+            SnackBar(
+              content: Text(l10n.staticKeyDeletedSuccessfully),
               backgroundColor: Colors.green,
             ),
           );
@@ -138,7 +138,7 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to delete static key: ${e.toString()}'),
+              content: Text(l10n.failedToDeleteStaticKey(e.toString())),
               backgroundColor: Colors.red,
             ),
           );
@@ -153,24 +153,24 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(key.description.isNotEmpty ? key.description : 'Static Key Details'),
+        title: Text(key.description.isNotEmpty ? key.description : l10n.staticKeyDetails),
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               if (key.keyid != null)
-                _buildDetailRow('ID', key.keyid!),
-              _buildDetailRow('Mode', key.modeDescription),
-              _buildDetailRow('Valid', key.isValid ? 'Yes' : 'No'),
+                _buildDetailRow(l10n.id, key.keyid!),
+              _buildDetailRow(l10n.mode, key.modeDescription),
+              _buildDetailRow(l10n.valid, key.isValid ? l10n.yes : l10n.no),
               if (key.createdAt != null)
-                _buildDetailRow('Created', key.createdAt!.toString()),
+                _buildDetailRow(l10n.created, key.createdAt!.toString()),
               if (key.modifiedAt != null)
-                _buildDetailRow('Modified', key.modifiedAt!.toString()),
+                _buildDetailRow(l10n.modified, key.modifiedAt!.toString()),
               const Divider(),
-              const Text(
-                'Key:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              Text(
+                '${l10n.key}:',
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               Container(
@@ -190,17 +190,18 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
               const SizedBox(height: 12),
               ElevatedButton.icon(
                 onPressed: () {
+                  final l10n = AppLocalizations.of(context)!;
                   Clipboard.setData(ClipboardData(text: key.key));
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Key copied to clipboard'),
-                      duration: Duration(seconds: 2),
+                    SnackBar(
+                      content: Text(l10n.keyCopiedToClipboard),
+                      duration: const Duration(seconds: 2),
                       backgroundColor: Colors.green,
                     ),
                   );
                 },
                 icon: const Icon(Icons.copy),
-                label: const Text('Copy Key'),
+                label: Text(l10n.copyKey),
               ),
             ],
           ),
@@ -261,17 +262,17 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
           padding: const EdgeInsets.all(16.0),
           child: Row(
             children: [
-              const Text('Rows per page:'),
+              Text(l10n.rowsPerPage),
               const SizedBox(width: 12),
               DropdownButton<int>(
                 value: _rowCount,
-                items: const [
-                  DropdownMenuItem(value: 50, child: Text('50')),
-                  DropdownMenuItem(value: 100, child: Text('100')),
-                  DropdownMenuItem(value: 200, child: Text('200')),
-                  DropdownMenuItem(value: 500, child: Text('500')),
-                  DropdownMenuItem(value: 1000, child: Text('1000')),
-                  DropdownMenuItem(value: -1, child: Text('All')),
+                items: [
+                  const DropdownMenuItem(value: 50, child: Text('50')),
+                  const DropdownMenuItem(value: 100, child: Text('100')),
+                  const DropdownMenuItem(value: 200, child: Text('200')),
+                  const DropdownMenuItem(value: 500, child: Text('500')),
+                  const DropdownMenuItem(value: 1000, child: Text('1000')),
+                  DropdownMenuItem(value: -1, child: Text(l10n.all)),
                 ],
                 onChanged: (value) {
                   if (value != null) {
@@ -330,13 +331,13 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
                               ),
                               const SizedBox(height: 16),
                               Text(
-                                'No static keys configured',
+                                l10n.noStaticKeysConfigured,
                                 style: Theme.of(context).textTheme.titleMedium,
                               ),
                               const SizedBox(height: 8),
-                              const Text(
-                                'Tap the + button to create your first static key',
-                                style: TextStyle(color: Colors.grey),
+                              Text(
+                                l10n.tapPlusButtonToCreateFirstStaticKey,
+                                style: const TextStyle(color: Colors.grey),
                               ),
                             ],
                           ),
