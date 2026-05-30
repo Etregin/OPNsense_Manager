@@ -305,7 +305,7 @@ class _OpenvpnClientOverridesListScreenState
           ),
         ],
       ),
-      drawer: const AppDrawer(currentRoute: '/openvpn/client-overrides'),
+      drawer: const AppDrawer(currentRoute: 'openvpn_client_overrides'),
       body: Column(
         children: [
           // Search bar

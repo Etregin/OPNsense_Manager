@@ -22,6 +22,7 @@ import '../l10n/app_localizations.dart';
 import '../models/openvpn_client_override.dart';
 import '../models/openvpn_dropdown_option.dart';
 import '../services/demo_api_service.dart';
+import '../widgets/app_drawer.dart';
 import '../widgets/common/loading_overlay.dart';
 import '../widgets/common/form_section_container.dart';
 import '../widgets/openvpn/openvpn_form_field_widgets.dart' hide FormSectionContainer;
@@ -350,6 +351,7 @@ class _OpenvpnClientOverrideFormScreenState
           ),
         ],
       ),
+      drawer: const AppDrawer(currentRoute: 'openvpn_client_override_form'),
       body: LoadingOverlay(
         isLoading: _isSaving,
         message: l10n.savingOverride,

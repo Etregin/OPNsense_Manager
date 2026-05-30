@@ -52,7 +52,7 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
   String? _errorMessage;
   int _currentPage = 1;
   int _rowCount = 50;
-  String _selectedTimeFilter = 'No Limit';
+  String _selectedTimeFilter = 'Last Day';
 
   @override
   void didChangeDependencies() {
