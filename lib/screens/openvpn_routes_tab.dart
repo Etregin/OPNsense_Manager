@@ -19,11 +19,11 @@
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../models/openvpn_route.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 
 /// Tab widget for displaying OpenVPN routes
 class OpenvpnRoutesTab extends StatefulWidget {
-  final OPNsenseApiService apiService;
+  final DemoApiService apiService;
   final void Function(VoidCallback)? onRegisterRefresh;
 
   const OpenvpnRoutesTab({

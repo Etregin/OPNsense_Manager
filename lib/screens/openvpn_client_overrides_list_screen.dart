@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_client_override_list_item.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import '../widgets/openvpn/openvpn_client_override_card.dart';
 import '../widgets/app_drawer.dart';
 import '../l10n/app_localizations.dart';
@@ -71,7 +71,7 @@ class _OpenvpnClientOverridesListScreenState
     });
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
 
       final response = await apiService.searchClientOverrides(
         current: 1,
@@ -118,11 +118,11 @@ class _OpenvpnClientOverridesListScreenState
     });
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       await apiService.toggleClientOverride(clientOverride.uuid);
 
       // Apply the configuration change
-      await apiService.reconfigureOpenvpn();
+      // Reconfigure is handled automatically in demo mode
 
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
@@ -184,11 +184,11 @@ class _OpenvpnClientOverridesListScreenState
 
     if (confirmed == true && mounted) {
       try {
-        final apiService = context.read<OPNsenseApiService>();
+        final apiService = context.read<DemoApiService>();
         await apiService.deleteClientOverride(clientOverride.uuid);
         
         // Apply the configuration change
-        await apiService.reconfigureOpenvpn();
+        // Reconfigure is handled automatically in demo mode
         
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(

@@ -18,7 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import '../viewmodels/wireguard_status_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/wireguard/status_card.dart';
@@ -39,7 +39,7 @@ class _WireGuardStatusScreenState extends State<WireGuardStatusScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_viewModel == null) {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       _viewModel = WireGuardStatusViewModel(apiService);
     }
   }

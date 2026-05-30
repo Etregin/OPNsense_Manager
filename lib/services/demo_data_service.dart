@@ -21,6 +21,7 @@ import '../models/firewall_rule.dart';
 import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
 import '../models/network_host.dart';
+import '../models/wireguard_status.dart';
 import '../models/tailscale_status.dart';
 import '../models/tailscale_settings.dart';
 import '../models/openvpn_instance_list_item.dart';
@@ -115,6 +116,10 @@ class DemoDataService {
   /// Generate demo WireGuard servers
   List<Map<String, dynamic>> generateWireGuardServers() =>
       _vpnGenerator.generateWireGuardServers();
+
+  /// Generate demo WireGuard status response
+  WireGuardStatusResponse generateWireGuardStatusResponse() =>
+      _vpnGenerator.generateWireGuardStatusResponse();
 
   /// Toggle VPN connection state
   void toggleVPNConnectionState(String id) =>

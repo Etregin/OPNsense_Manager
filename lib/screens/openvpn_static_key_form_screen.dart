@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_static_key.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import '../widgets/common/loading_overlay.dart';
 import '../utils/common_validators.dart';
 
@@ -86,7 +86,7 @@ class _OpenvpnStaticKeyFormScreenState
     });
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       final staticKey = await apiService.getOpenvpnStaticKey(keyid);
 
       if (mounted) {
@@ -130,7 +130,7 @@ class _OpenvpnStaticKeyFormScreenState
     });
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       
       // Map UI mode to API mode
       String apiMode;
@@ -194,7 +194,7 @@ class _OpenvpnStaticKeyFormScreenState
     });
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
 
       final staticKey = OpenvpnStaticKey(
         keyid: widget.keyid,

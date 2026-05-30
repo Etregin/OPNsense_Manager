@@ -22,7 +22,7 @@ import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_log_entry.dart';
 import '../models/system_info.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import '../utils/formatters.dart';
 import '../widgets/app_drawer.dart';
 
@@ -42,7 +42,7 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
   final Set<String> _selectedSeverities = <String>{};
   final Set<int> _selectedLogIndexes = <int>{};
 
-  late OPNsenseApiService _apiService;
+  late DemoApiService _apiService;
   SystemInfo? _systemInfo;
 
   List<OpenvpnLogEntry> _logs = <OpenvpnLogEntry>[];
@@ -77,7 +77,7 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
         l10n.error,
         l10n.warning,
       ]);
-      _apiService = context.read<OPNsenseApiService>();
+      _apiService = context.read<DemoApiService>();
       _isInitialized = true;
       _loadSystemInfo();
       _loadLogs();

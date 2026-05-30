@@ -21,7 +21,7 @@ import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../models/openvpn_client_override.dart';
 import '../models/openvpn_dropdown_option.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import '../widgets/common/loading_overlay.dart';
 import '../widgets/common/form_section_container.dart';
 import '../widgets/openvpn/openvpn_form_field_widgets.dart' hide FormSectionContainer;
@@ -112,7 +112,7 @@ class _OpenvpnClientOverrideFormScreenState
     });
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       final override = await apiService.getClientOverride(widget.uuid);
 
       if (mounted) {
@@ -217,7 +217,7 @@ class _OpenvpnClientOverrideFormScreenState
     setState(() => _isSaving = true);
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       final override = _buildOverrideFromForm();
 
       await apiService.setClientOverride(widget.uuid ?? '', override);

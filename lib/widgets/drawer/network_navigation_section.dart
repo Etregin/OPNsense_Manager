@@ -22,7 +22,7 @@ import '../../l10n/app_localizations.dart';
 import '../../screens/live_network_monitor_screen.dart';
 import '../../screens/dhcp_leases_screen.dart';
 import '../../screens/wol_screen.dart';
-import '../../services/opnsense_api_service.dart';
+import '../../services/demo_api_service.dart';
 import 'navigation_tile.dart';
 
 /// Network navigation section for the app drawer
@@ -52,7 +52,7 @@ class _NetworkNavigationSectionState extends State<NetworkNavigationSection> {
     if (!mounted) return;
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       final isAvailable = await apiService.isWolPluginAvailable();
       
       if (mounted) {

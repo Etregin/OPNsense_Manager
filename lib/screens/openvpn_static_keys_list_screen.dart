@@ -20,14 +20,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_static_key.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import '../widgets/openvpn/openvpn_static_key_card.dart';
 import '../screens/openvpn_static_key_form_screen.dart';
 import '../l10n/app_localizations.dart';
 
 /// Screen for displaying OpenVPN static keys list with pagination
 class OpenvpnStaticKeysListScreen extends StatefulWidget {
-  final OPNsenseApiService apiService;
+  final DemoApiService apiService;
   final VoidCallback? onRefresh;
   final void Function(VoidCallback)? onRegisterRefresh;
 
@@ -72,7 +72,7 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
     });
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       final response = await apiService.searchOpenvpnStaticKeys(
         current: _currentPage,
         rowCount: _rowCount == -1 ? 9999 : _rowCount,
@@ -123,7 +123,7 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
 
     if (confirmed == true && mounted && key.keyid != null) {
       try {
-        final apiService = context.read<OPNsenseApiService>();
+        final apiService = context.read<DemoApiService>();
         await apiService.deleteOpenvpnStaticKey(key.keyid!);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(

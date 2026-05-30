@@ -22,7 +22,7 @@ import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../models/wireguard_client_builder.dart';
 import '../models/system_info.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import '../viewmodels/wireguard_peer_generator_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/loading_overlay.dart';
@@ -62,7 +62,7 @@ class _WireGuardPeerGeneratorScreenState
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_isInitialized) {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       _viewModel = WireGuardPeerGeneratorViewModel(
         apiService: apiService,
       );
@@ -81,7 +81,7 @@ class _WireGuardPeerGeneratorScreenState
 
   Future<void> _loadSystemInfo() async {
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       final systemInfo = await apiService.getSystemInfo();
 
       if (mounted) {

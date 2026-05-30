@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+export 'network/vip_service.dart' show CarpVipOption;
+
 import '../models/system_info.dart';
 import '../models/firewall_rule.dart';
 import '../models/firewall_alias.dart';
@@ -23,12 +25,20 @@ import '../models/vpn_connection.dart';
 import '../models/network_host.dart';
 import '../models/wireguard_server.dart';
 import '../models/wireguard_peer.dart';
+import '../models/wireguard_status.dart';
+import '../models/wireguard_key_pair.dart';
+import '../models/wireguard_client_builder.dart';
 import '../models/tailscale_status.dart';
 import '../models/tailscale_settings.dart';
 import '../models/wol_host.dart';
 import '../models/openvpn_search_response.dart';
 import '../models/openvpn_instance.dart';
 import '../models/openvpn_static_key.dart';
+import '../models/openvpn_session_search_response.dart';
+import '../models/openvpn_route_search_response.dart';
+import '../models/openvpn_client_override.dart';
+import '../models/openvpn_client_override_search_response.dart';
+import '../models/openvpn_log_search_response.dart';
 import 'demo_data_service.dart';
 import 'opnsense_api_service.dart';
 import 'demo/demo_api_decorator.dart';
@@ -280,6 +290,259 @@ class DemoApiService {
         delayMs: 400,
       );
 
+  /// Get WireGuard status response
+  Future<WireGuardStatusResponse> getWireGuardStatusResponse() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _demoDataService.generateWireGuardStatusResponse(),
+        realAction: () => _realApiService.getWireGuardStatusResponse(),
+        delayMs: 400,
+      );
+
+  /// Search WireGuard peers
+  Future<Map<String, dynamic>> searchWireGuardPeers({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          final peers = _demoDataService.generateWireGuardPeers();
+          return {
+            'rows': peers,
+            'rowCount': peers.length,
+            'total': peers.length,
+            'current': current,
+          };
+        },
+        realAction: () => _realApiService.searchWireGuardPeers(
+          current: current,
+          rowCount: rowCount,
+          sort: sort,
+        ),
+        delayMs: 400,
+      );
+
+  /// Get WireGuard peer details
+  Future<Map<String, dynamic>> getPeer(String uuid) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          final peers = _demoDataService.generateWireGuardPeers();
+          final peer = peers.firstWhere(
+            (p) => p['uuid'] == uuid,
+            orElse: () => peers.first,
+          );
+          return {'client': peer};
+        },
+        realAction: () => _realApiService.getPeer(uuid),
+        delayMs: 300,
+      );
+
+  /// Toggle WireGuard server
+  Future<void> toggleWireGuardServer(String uuid, bool enabled) =>
+      DemoApiDecorator.executeVoid(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.toggleWireGuardServer(uuid, enabled),
+        delayMs: 400,
+      );
+
+  /// Delete WireGuard server
+  Future<void> deleteWireGuardServer(String uuid) =>
+      DemoApiDecorator.executeVoid(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.deleteWireGuardServer(uuid),
+        delayMs: 400,
+      );
+
+  /// Create WireGuard server
+  Future<String> createWireGuardServer(WireGuardServerRequest request) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async =>
+            'wg-server-demo-${DateTime.now().millisecondsSinceEpoch}',
+        realAction: () => _realApiService.createWireGuardServer(request),
+        delayMs: 500,
+      );
+
+  /// Update WireGuard server
+  Future<void> updateWireGuardServer(String uuid, WireGuardServerRequest request) =>
+      DemoApiDecorator.executeVoid(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.updateWireGuardServer(uuid, request),
+        delayMs: 500,
+      );
+
+  /// Toggle WireGuard peer
+  Future<void> toggleWireGuardPeer(String uuid, bool enabled) =>
+      DemoApiDecorator.executeVoid(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.toggleWireGuardPeer(uuid, enabled),
+        delayMs: 400,
+      );
+
+  /// Delete WireGuard peer
+  Future<void> deleteWireGuardPeer(String uuid) =>
+      DemoApiDecorator.executeVoid(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.deleteWireGuardPeer(uuid),
+        delayMs: 400,
+      );
+
+  /// Create WireGuard peer
+  Future<String> createWireGuardPeer(WireGuardPeerRequest request) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async =>
+            'wg-peer-demo-${DateTime.now().millisecondsSinceEpoch}',
+        realAction: () => _realApiService.createWireGuardPeer(request),
+        delayMs: 500,
+      );
+
+  /// Update WireGuard peer
+  Future<void> updateWireGuardPeer(String uuid, WireGuardPeerRequest request) =>
+      DemoApiDecorator.executeVoid(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.updateWireGuardPeer(uuid, request),
+        delayMs: 500,
+      );
+
+  /// Generate WireGuard key pair
+  Future<WireGuardKeyPair> generateWireGuardKeyPair() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => WireGuardKeyPair(
+          privateKey: 'demo_private_key_${DateTime.now().millisecondsSinceEpoch}',
+          publicKey: 'demo_public_key_${DateTime.now().millisecondsSinceEpoch}',
+        ),
+        realAction: () => _realApiService.generateWireGuardKeyPair(),
+        delayMs: 300,
+      );
+
+  /// Generate WireGuard pre-shared key
+  Future<String> generateWireGuardPSK() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async =>
+            'demo_psk_${DateTime.now().millisecondsSinceEpoch}',
+        realAction: () => _realApiService.generateWireGuardPSK(),
+        delayMs: 300,
+      );
+
+  /// Get WireGuard client builder data
+  Future<WireGuardClientBuilder> getClientBuilder() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          final servers = _demoDataService.generateWireGuardServers();
+          final serverMap = <String, WireGuardBuilderServer>{};
+          for (final server in servers) {
+            serverMap[server['uuid'] as String] = WireGuardBuilderServer(
+              value: server['name'] as String,
+              selected: '0',
+            );
+          }
+          return WireGuardClientBuilder(servers: serverMap);
+        },
+        realAction: () => _realApiService.getClientBuilder(),
+        delayMs: 400,
+      );
+
+  /// Get WireGuard server info
+  Future<WireGuardServerInfo> getServerInfo(String uuid) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          final servers = _demoDataService.generateWireGuardServers();
+          final server = servers.firstWhere(
+            (s) => s['uuid'] == uuid,
+            orElse: () => servers.first,
+          );
+          return WireGuardServerInfo(
+            pubkey: server['pubkey'] as String? ?? 'demo_server_pubkey',
+            endpoint: '203.0.113.1',
+            port: server['port'] as String? ?? '51820',
+            tunneladdress: '10.10.10.2/24',
+            address: '10.10.10.0/24',
+            peerDns: '1.1.1.1',
+          );
+        },
+        realAction: () => _realApiService.getServerInfo(uuid),
+        delayMs: 300,
+      );
+
+  /// Add WireGuard client via builder
+  Future<void> addClientBuilder(WireGuardClientBuilderRequest request) =>
+      DemoApiDecorator.executeVoid(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.addClientBuilder(request),
+        delayMs: 500,
+      );
+
+  /// Reconfigure WireGuard service
+  Future<Map<String, dynamic>> reconfigureWireGuard() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'status': 'ok'},
+        realAction: () => _realApiService.reconfigureWireGuard(),
+        delayMs: 600,
+      );
+
+  /// Start WireGuard service
+  Future<Map<String, dynamic>> startWireGuardService() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'status': 'ok'},
+        realAction: () => _realApiService.startWireGuardService(),
+        delayMs: 500,
+      );
+
+  /// Stop WireGuard service
+  Future<Map<String, dynamic>> stopWireGuardService() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'status': 'ok'},
+        realAction: () => _realApiService.stopWireGuardService(),
+        delayMs: 500,
+      );
+
+  /// Get WireGuard logs
+  Future<Map<String, dynamic>> getWireGuardLogs({
+    int rowCount = 50,
+    List<String>? severity,
+    double? validFrom,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {
+          'rows': [],
+          'rowCount': 0,
+          'total': 0,
+        },
+        realAction: () => _realApiService.getWireGuardLogs(
+          rowCount: rowCount,
+          severity: severity,
+          validFrom: validFrom,
+        ),
+        delayMs: 400,
+      );
+
+  /// Get CARP VIP options
+  Future<List<CarpVipOption>> getCarpVipOptions() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => [],
+        realAction: () => _realApiService.getCarpVipOptions(),
+        delayMs: 300,
+      );
 
   /// Get network hosts with bandwidth usage
   Future<List<NetworkHost>> getNetworkHosts({String interface = 'lan'}) =>
@@ -635,6 +898,8 @@ class DemoApiService {
     int current = 1,
     int rowCount = 50,
     Map<String, dynamic>? sort,
+    String? searchPhrase,
+    String? enabled,
   }) =>
       DemoApiDecorator.execute(
         isDemoMode: _isDemoMode,
@@ -651,6 +916,8 @@ class DemoApiService {
           current: current,
           rowCount: rowCount,
           sort: sort,
+          searchPhrase: searchPhrase,
+          enabled: enabled,
         ),
         delayMs: 400,
       );
@@ -810,6 +1077,213 @@ class DemoApiService {
         demoAction: () async => {'result': 'deleted'},
         realAction: () => _realApiService.deleteOpenvpnStaticKey(keyid),
         delayMs: 300,
+      );
+
+  /// Generate OpenVPN static key
+  Future<String> generateOpenvpnStaticKey(String mode) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          // Generate a mock static key
+          return '''#
+# 2048 bit OpenVPN static key (Demo Mode)
+#
+-----BEGIN OpenVPN Static key V1-----
+${List.generate(16, (i) => List.generate(32, (j) => '0123456789abcdef'[(i * 32 + j) % 16]).join()).join('\n')}
+-----END OpenVPN Static key V1-----
+''';
+        },
+        realAction: () => _realApiService.generateOpenvpnStaticKey(mode),
+        delayMs: 500,
+      );
+
+  /// Reconfigure OpenVPN service
+  Future<Map<String, dynamic>> reconfigureOpenvpn() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'status': 'ok'},
+        realAction: () => _realApiService.reconfigureOpenvpn(),
+        delayMs: 800,
+      );
+
+  // ==================== OpenVPN Client Overrides ====================
+
+  /// Search OpenVPN client overrides
+  Future<OpenvpnClientOverrideSearchResponse> searchClientOverrides({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    String? searchPhrase,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          // Return empty list for demo mode - no client overrides in demo
+          return OpenvpnClientOverrideSearchResponse(
+            rows: [],
+            rowCount: 0,
+            total: 0,
+            current: current,
+          );
+        },
+        realAction: () => _realApiService.searchClientOverrides(
+          current: current,
+          rowCount: rowCount,
+          sort: sort,
+          searchPhrase: searchPhrase,
+        ),
+        delayMs: 300,
+      );
+
+  /// Get OpenVPN client override details
+  Future<OpenvpnClientOverride> getClientOverride(String? uuid) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          // Return empty override for demo mode
+          return OpenvpnClientOverride.empty();
+        },
+        realAction: () => _realApiService.getClientOverride(uuid),
+        delayMs: 300,
+      );
+
+  /// Set/update OpenVPN client override
+  Future<Map<String, dynamic>> setClientOverride(
+    String uuid,
+    OpenvpnClientOverride override,
+  ) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {
+          'result': 'saved',
+          'uuid': uuid.isEmpty ? 'demo-override-${DateTime.now().millisecondsSinceEpoch}' : uuid,
+        },
+        realAction: () => _realApiService.setClientOverride(uuid, override),
+        delayMs: 400,
+      );
+
+  /// Delete OpenVPN client override
+  Future<Map<String, dynamic>> deleteClientOverride(String uuid) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'result': 'deleted'},
+        realAction: () => _realApiService.deleteClientOverride(uuid),
+        delayMs: 300,
+      );
+
+  /// Toggle OpenVPN client override enabled state
+  Future<Map<String, dynamic>> toggleClientOverride(String uuid) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'result': 'ok'},
+        realAction: () => _realApiService.toggleClientOverride(uuid),
+        delayMs: 300,
+      );
+
+  // ==================== OpenVPN Logs ====================
+
+  /// Search OpenVPN logs
+  Future<OpenvpnLogSearchResponse> searchOpenvpnLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {
+          // Return empty logs for demo mode
+          return OpenvpnLogSearchResponse(
+            filters: '',
+            totalRows: 0,
+            rowCount: 0,
+            total: 0,
+            current: current,
+            rows: [],
+          );
+        },
+        realAction: () => _realApiService.searchOpenvpnLogs(
+          current: current,
+          rowCount: rowCount,
+          sort: sort,
+          severity: severity,
+          validFrom: validFrom,
+        ),
+        delayMs: 400,
+      );
+
+  // ==================== OpenVPN Connection Status ====================
+
+  /// Search OpenVPN sessions
+  Future<OpenvpnSessionSearchResponse> searchSessions({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => OpenvpnSessionSearchResponse(
+          rows: [],
+          rowCount: 0,
+          total: 0,
+          current: current,
+        ),
+        realAction: () => _realApiService.searchSessions(
+          current: current,
+          rowCount: rowCount,
+          sort: sort,
+        ),
+        delayMs: 300,
+      );
+
+  /// Search OpenVPN routes
+  Future<OpenvpnRouteSearchResponse> searchRoutes({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => OpenvpnRouteSearchResponse(
+          rows: [],
+          rowCount: 0,
+          total: 0,
+          current: current,
+        ),
+        realAction: () => _realApiService.searchRoutes(
+          current: current,
+          rowCount: rowCount,
+          sort: sort,
+        ),
+        delayMs: 300,
+      );
+
+  /// Start OpenVPN service
+  Future<Map<String, dynamic>> startService(String id) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'result': 'ok'},
+        realAction: () => _realApiService.startService(id),
+        delayMs: 500,
+      );
+
+  /// Stop OpenVPN service
+  Future<Map<String, dynamic>> stopService(String id) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'result': 'ok'},
+        realAction: () => _realApiService.stopService(id),
+        delayMs: 500,
+      );
+
+  /// Restart OpenVPN service
+  Future<Map<String, dynamic>> restartService(String id) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'result': 'ok'},
+        realAction: () => _realApiService.restartService(id),
+        delayMs: 500,
       );
 
   /// Clear service state

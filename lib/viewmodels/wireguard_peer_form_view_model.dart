@@ -19,12 +19,12 @@
 import '../models/wireguard_peer.dart';
 import '../models/wireguard_peer_response.dart';
 import '../models/wireguard_server.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import 'base/base_form_view_model.dart';
 
 /// ViewModel for WireGuard peer form
 class WireGuardPeerFormViewModel extends BaseFormViewModel {
-  final OPNsenseApiService _apiService;
+  final DemoApiService _apiService;
   final String? _existingPeerUuid;
 
   List<WireGuardServer> _availableServers = [];

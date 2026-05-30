@@ -22,7 +22,7 @@ import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_instance.dart';
 import '../models/openvpn_dropdown_option.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import '../widgets/common/loading_overlay.dart';
 import '../widgets/openvpn/openvpn_form_field_widgets.dart';
 import '../utils/common_validators.dart';
@@ -205,7 +205,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
     });
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       final instance = await apiService.getOpenvpnInstance(widget.vpnid);
       
       if (mounted) {
@@ -458,7 +458,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
     setState(() => _isSaving = true);
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       final instance = _buildInstanceFromForm();
       
       if (_isEditMode) {
@@ -585,7 +585,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
     setState(() => _isLoading = true);
     
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       final token = await apiService.generateOpenvpnAuthToken();
       
       if (!mounted) return;

@@ -30,7 +30,7 @@ import '../../screens/openvpn_log_file_screen.dart';
 import '../../screens/tailscale_authentication_screen.dart';
 import '../../screens/tailscale_settings_screen.dart';
 import '../../screens/tailscale_status_screen.dart';
-import '../../services/opnsense_api_service.dart';
+import '../../services/demo_api_service.dart';
 import '../../services/navigation/navigation_service.dart';
 import 'expansion_navigation_tile.dart';
 import 'navigation_tile.dart';
@@ -97,7 +97,7 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
     if (!mounted) return;
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       final isAvailable = await apiService.isTailscalePluginAvailable();
       
       if (mounted) {
@@ -125,7 +125,7 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
     });
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       final status = await apiService.getTailscaleStatus();
       
       if (mounted) {

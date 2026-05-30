@@ -18,6 +18,7 @@
 
 import 'dart:math';
 import '../../models/vpn_connection.dart';
+import '../../models/wireguard_status.dart';
 import '../../models/openvpn_instance_list_item.dart';
 import '../../models/openvpn_instance.dart';
 import '../../models/openvpn_static_key.dart';
@@ -396,6 +397,62 @@ f70f5dd3g5b11f0d2c4f9d6e8g3b2c5d
         verb: '3',
       );
     }
+  }
+
+  /// Generate demo WireGuard status response
+  WireGuardStatusResponse generateWireGuardStatusResponse() {
+    final now = DateTime.now();
+    final items = [
+      WireGuardStatusItem(
+        interfaceName: 'wg0',
+        type: 'interface',
+        publicKey: 'qRCwZSKInrMAq5sepfCdaCsRJaoLe5jhtzfiw7CjbwM=',
+        listenPort: '51820',
+        fwmark: 'off',
+        endpoint: '51820',
+        status: 'up',
+        name: 'Main WireGuard Server',
+        latestHandshakeAge: null,
+        latestHandshakeEpoch: null,
+        peerStatus: 'online',
+        ifname: 'wg0',
+      ),
+      WireGuardStatusItem(
+        interfaceName: 'wg0',
+        type: 'peer',
+        publicKey: 'xTIBA5rboUvnH4htodjb6e697QjLERt1NAB4mZqp8Dg=',
+        listenPort: '0',
+        fwmark: 'off',
+        endpoint: '203.0.113.50:41234',
+        status: 'up',
+        name: 'Mobile Device',
+        latestHandshakeAge: '2 minutes ago',
+        latestHandshakeEpoch: (now.millisecondsSinceEpoch ~/ 1000) - 120,
+        peerStatus: 'online',
+        ifname: 'wg0',
+      ),
+      WireGuardStatusItem(
+        interfaceName: 'wg0',
+        type: 'peer',
+        publicKey: 'HIgo9xNzJMWLKASShiTqIybxZ0U3wGLiUeJ1PKf8ykw=',
+        listenPort: '0',
+        fwmark: 'off',
+        endpoint: '198.51.100.75:52341',
+        status: 'up',
+        name: 'Laptop',
+        latestHandshakeAge: '45 seconds ago',
+        latestHandshakeEpoch: (now.millisecondsSinceEpoch ~/ 1000) - 45,
+        peerStatus: 'online',
+        ifname: 'wg0',
+      ),
+    ];
+
+    return WireGuardStatusResponse(
+      total: items.length,
+      rowCount: items.length,
+      current: 1,
+      rows: items,
+    );
   }
 
 }

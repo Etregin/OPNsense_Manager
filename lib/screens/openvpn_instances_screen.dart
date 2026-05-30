@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/system_info.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import '../widgets/app_drawer.dart';
 import '../l10n/app_localizations.dart';
 import 'openvpn_instances_list_screen.dart';
@@ -38,7 +38,7 @@ class OpenvpnInstancesScreen extends StatefulWidget {
 class _OpenvpnInstancesScreenState extends State<OpenvpnInstancesScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  late OPNsenseApiService _apiService;
+  late DemoApiService _apiService;
   SystemInfo? _systemInfo;
   bool _isInitialized = false;
   
@@ -57,7 +57,7 @@ class _OpenvpnInstancesScreenState extends State<OpenvpnInstancesScreen>
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_isInitialized) {
-      _apiService = context.read<OPNsenseApiService>();
+      _apiService = context.read<DemoApiService>();
       _isInitialized = true;
       _loadSystemInfo();
     }
@@ -79,7 +79,7 @@ class _OpenvpnInstancesScreenState extends State<OpenvpnInstancesScreen>
 
   Future<void> _loadSystemInfo() async {
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       final systemInfo = await apiService.getSystemInfo();
 
       if (mounted) {

@@ -18,13 +18,13 @@
 
 import 'package:flutter/foundation.dart';
 import '../models/wireguard_status.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 
 /// ViewModel for managing WireGuard status screen state
 ///
 /// Handles fetching and displaying WireGuard status data.
 class WireGuardStatusViewModel extends ChangeNotifier {
-  final OPNsenseApiService _apiService;
+  final DemoApiService _apiService;
 
   // State properties
   WireGuardStatusResponse? _statusResponse;

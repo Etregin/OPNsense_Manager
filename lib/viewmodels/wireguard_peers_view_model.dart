@@ -17,12 +17,12 @@
  */
 
 import '../models/wireguard_peer.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import 'base/base_list_view_model.dart';
 
 /// ViewModel for managing WireGuard peers list
 class WireGuardPeersViewModel extends BaseListViewModel<WireGuardPeer> {
-  final OPNsenseApiService _apiService;
+  final DemoApiService _apiService;
   final Set<String> _togglingPeers = {};
 
   WireGuardPeersViewModel(this._apiService);

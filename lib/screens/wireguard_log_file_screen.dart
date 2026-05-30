@@ -22,7 +22,7 @@ import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import '../services/vpn/wireguard_service.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/wireguard/wireguard_log_card.dart';
@@ -84,7 +84,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
 
     try {
       // Get the initialized API service from Provider
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       final severityLevels = WireGuardService.getSeverityLevels(_selectedSeverity);
 
       // Calculate validFrom timestamp based on time filter

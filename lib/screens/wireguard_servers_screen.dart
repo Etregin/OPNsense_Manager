@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/wireguard_server.dart';
 import '../models/system_info.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import '../widgets/app_drawer.dart';
 import '../l10n/app_localizations.dart';
 import 'wireguard_server_form_screen.dart';
@@ -56,7 +56,7 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
 
   Future<void> _loadSystemInfo() async {
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       final systemInfo = await apiService.getSystemInfo();
 
       if (mounted) {
@@ -76,7 +76,7 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
     });
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       final servers = await apiService.getWireGuardServers();
 
       if (mounted) {
@@ -118,7 +118,7 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
     });
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       await apiService.toggleWireGuardServer(server.uuid, !server.isEnabled);
 
       if (mounted) {
@@ -180,7 +180,7 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
 
     if (confirmed == true && mounted) {
       try {
-        final apiService = context.read<OPNsenseApiService>();
+        final apiService = context.read<DemoApiService>();
         await apiService.deleteWireGuardServer(server.uuid);
 
         if (mounted) {

@@ -18,12 +18,12 @@
 
 import '../models/wireguard_client_builder.dart';
 import '../models/wireguard_key_pair.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import 'base/base_form_view_model.dart';
 
 /// ViewModel for WireGuard peer generator screen
 class WireGuardPeerGeneratorViewModel extends BaseFormViewModel {
-  final OPNsenseApiService _apiService;
+  final DemoApiService _apiService;
 
   WireGuardClientBuilder? _builderData;
   WireGuardServerInfo? _selectedServerInfo;

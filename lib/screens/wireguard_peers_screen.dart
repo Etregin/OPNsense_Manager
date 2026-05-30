@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/wireguard_peer.dart';
 import '../models/system_info.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import '../viewmodels/wireguard_peers_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/wireguard/peer_card.dart';
@@ -44,7 +44,7 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_isInitialized) {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       _viewModel = WireGuardPeersViewModel(apiService);
       _isInitialized = true;
       _loadData();
@@ -66,7 +66,7 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
 
   Future<void> _loadSystemInfo() async {
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       final systemInfo = await apiService.getSystemInfo();
 
       if (mounted) {

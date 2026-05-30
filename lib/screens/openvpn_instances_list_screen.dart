@@ -20,14 +20,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_instance_list_item.dart';
-import '../services/opnsense_api_service.dart';
+import '../services/demo_api_service.dart';
 import '../widgets/openvpn/openvpn_instance_card.dart';
 import '../l10n/app_localizations.dart';
 import 'openvpn_instance_form_screen.dart';
 
 /// Screen for displaying OpenVPN instances list with pagination and search
 class OpenvpnInstancesListScreen extends StatefulWidget {
-  final OPNsenseApiService apiService;
+  final DemoApiService apiService;
   final VoidCallback? onRefresh;
   final void Function(VoidCallback)? onRegisterRefresh;
 
@@ -77,7 +77,7 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
     });
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       
       // Convert filter values for API
       final String? enabledParam = _statusFilter == 'all'
@@ -135,7 +135,7 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
     });
 
     try {
-      final apiService = context.read<OPNsenseApiService>();
+      final apiService = context.read<DemoApiService>();
       await apiService.toggleOpenvpnInstance(instance.uuid);
 
       // Apply the configuration change
@@ -200,7 +200,7 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
 
     if (confirmed == true && mounted) {
       try {
-        final apiService = context.read<OPNsenseApiService>();
+        final apiService = context.read<DemoApiService>();
         await apiService.deleteOpenvpnInstance(instance.uuid);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
