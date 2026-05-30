@@ -23,6 +23,7 @@ import 'package:provider/provider.dart';
 import 'screens/splash_screen.dart';
 import 'screens/openvpn_client_overrides_list_screen.dart';
 import 'screens/openvpn_client_override_form_screen.dart';
+import 'screens/openvpn_connection_status_screen.dart';
 import 'services/storage_service.dart';
 import 'services/opnsense_api_service.dart';
 import 'services/demo_api_service.dart';
@@ -194,6 +195,7 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
             final uuid = ModalRoute.of(context)?.settings.arguments as String?;
             return OpenvpnClientOverrideFormScreen(uuid: uuid);
           },
+          '/openvpn/connection-status': (context) => const OpenvpnConnectionStatusScreen(),
         },
         localizationsDelegates: const [
           AppLocalizations.delegate,

@@ -25,6 +25,8 @@ import '../../models/openvpn_search_response.dart';
 import '../../models/openvpn_client_override.dart';
 import '../../models/openvpn_client_override_search_response.dart';
 import '../../models/openvpn_static_key.dart';
+import '../../models/openvpn_session_search_response.dart';
+import '../../models/openvpn_route_search_response.dart';
 
 /// Service for OpenVPN operations
 ///
@@ -805,6 +807,196 @@ class OpenvpnService extends BaseOPNsenseService {
         return response.data as Map<String, dynamic>;
       } else {
         throw ApiException('Failed to toggle client override', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  // Connection Status Management Methods
+
+  /// Search/list OpenVPN sessions with pagination support
+  ///
+  /// Endpoint: POST /api/openvpn/service/search_sessions
+  /// Payload: {"current": 1, "rowCount": 50, "sort": {}}
+  ///
+  /// Parameters:
+  /// - [current]: Current page number (default: 1)
+  /// - [rowCount]: Number of rows per page (default: 50)
+  /// - [sort]: Sort configuration (default: {})
+  ///
+  /// Returns: [OpenvpnSessionSearchResponse] with paginated session list
+  Future<OpenvpnSessionSearchResponse> searchSessions({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+  }) async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post(
+        '/openvpn/service/search_sessions',
+        data: {
+          'current': current,
+          'rowCount': rowCount,
+          'sort': sort ?? {},
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return OpenvpnSessionSearchResponse.fromJson(
+          response.data as Map<String, dynamic>,
+        );
+      } else {
+        throw ApiException('Failed to search OpenVPN sessions', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Start an OpenVPN service
+  ///
+  /// Endpoint: POST /api/openvpn/service/start_service/{id}
+  /// Payload: {}
+  ///
+  /// Parameters:
+  /// - [id]: Service ID to start
+  ///
+  /// Returns: API response map with result status
+  Future<Map<String, dynamic>> startService(String id) async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post(
+        '/openvpn/service/start_service/$id',
+        data: {},
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        
+        // Check for explicit failure in response
+        if (data.containsKey('result') && data['result'] != 'ok') {
+          final message = data['message'] ?? 'Unknown error';
+          throw ApiException('Failed to start service: $message', response.statusCode);
+        }
+        
+        return data;
+      } else {
+        throw ApiException('Failed to start OpenVPN service', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Stop an OpenVPN service
+  ///
+  /// Endpoint: POST /api/openvpn/service/stop_service/{id}
+  /// Payload: {}
+  ///
+  /// Parameters:
+  /// - [id]: Service ID to stop
+  ///
+  /// Returns: API response map with result status
+  Future<Map<String, dynamic>> stopService(String id) async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post(
+        '/openvpn/service/stop_service/$id',
+        data: {},
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        
+        // Check for explicit failure in response
+        if (data.containsKey('result') && data['result'] != 'ok') {
+          final message = data['message'] ?? 'Unknown error';
+          throw ApiException('Failed to stop service: $message', response.statusCode);
+        }
+        
+        return data;
+      } else {
+        throw ApiException('Failed to stop OpenVPN service', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Restart an OpenVPN service
+  ///
+  /// Endpoint: POST /api/openvpn/service/restart_service/{id}
+  /// Payload: {}
+  ///
+  /// Parameters:
+  /// - [id]: Service ID to restart
+  ///
+  /// Returns: API response map with result status
+  Future<Map<String, dynamic>> restartService(String id) async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post(
+        '/openvpn/service/restart_service/$id',
+        data: {},
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        
+        // Check for explicit failure in response
+        if (data.containsKey('result') && data['result'] != 'ok') {
+          final message = data['message'] ?? 'Unknown error';
+          throw ApiException('Failed to restart service: $message', response.statusCode);
+        }
+        
+        return data;
+      } else {
+        throw ApiException('Failed to restart OpenVPN service', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Search/list OpenVPN routes with pagination support
+  ///
+  /// Endpoint: POST /api/openvpn/service/search_routes
+  /// Payload: {"current": 1, "rowCount": 50, "sort": {}}
+  ///
+  /// Parameters:
+  /// - [current]: Current page number (default: 1)
+  /// - [rowCount]: Number of rows per page (default: 50)
+  /// - [sort]: Sort configuration (default: {})
+  ///
+  /// Returns: [OpenvpnRouteSearchResponse] with paginated route list
+  Future<OpenvpnRouteSearchResponse> searchRoutes({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+  }) async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post(
+        '/openvpn/service/search_routes',
+        data: {
+          'current': current,
+          'sort': sort ?? {},
+          'rowCount': rowCount,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return OpenvpnRouteSearchResponse.fromJson(
+          response.data as Map<String, dynamic>,
+        );
+      } else {
+        throw ApiException('Failed to search OpenVPN routes', response.statusCode);
       }
     } on DioException catch (e) {
       throw handleDioError(e);

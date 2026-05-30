@@ -234,20 +234,6 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
-          title: 'Servers',
-          currentRoute: widget.currentRoute,
-          targetRoute: 'openvpn_servers',
-          contentPadding: const EdgeInsets.only(left: 96, right: 16),
-          onTap: () => NavigationService.showComingSoon(context, 'OpenVPN Servers'),
-        ),
-        NavigationTile(
-          title: 'Clients',
-          currentRoute: widget.currentRoute,
-          targetRoute: 'openvpn_clients',
-          contentPadding: const EdgeInsets.only(left: 96, right: 16),
-          onTap: () => NavigationService.showComingSoon(context, 'OpenVPN Clients'),
-        ),
-        NavigationTile(
           title: 'Client Overrides',
           currentRoute: widget.currentRoute,
           targetRoute: 'openvpn_client_overrides',
@@ -259,6 +245,26 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
             }
           },
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
+        ),
+        NavigationTile(
+          title: 'Connection Status',
+          currentRoute: widget.currentRoute,
+          targetRoute: 'openvpn_connection_status',
+          onTap: () {
+            if (widget.currentRoute != 'openvpn_connection_status') {
+              Navigator.of(context).pushReplacementNamed('/openvpn/connection-status');
+            } else {
+              Navigator.pop(context);
+            }
+          },
+          contentPadding: const EdgeInsets.only(left: 96, right: 16),
+        ),
+        NavigationTile(
+          title: 'Log File',
+          currentRoute: widget.currentRoute,
+          targetRoute: 'openvpn_log_file',
+          contentPadding: const EdgeInsets.only(left: 96, right: 16),
+          onTap: () => NavigationService.showComingSoon(context, 'OpenVPN Log File'),
         ),
       ],
     );

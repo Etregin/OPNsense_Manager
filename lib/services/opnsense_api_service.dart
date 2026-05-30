@@ -38,6 +38,8 @@ import '../models/openvpn_search_response.dart';
 import '../models/openvpn_static_key.dart';
 import '../models/openvpn_client_override.dart';
 import '../models/openvpn_client_override_search_response.dart';
+import '../models/openvpn_session_search_response.dart';
+import '../models/openvpn_route_search_response.dart';
 import '../utils/constants.dart';
 
 // Import all specialized services
@@ -493,6 +495,33 @@ class OPNsenseApiService {
   Future<Map<String, dynamic>> deleteClientOverride(String uuid) => _openvpnService.deleteClientOverride(uuid);
 
   Future<Map<String, dynamic>> toggleClientOverride(String uuid) => _openvpnService.toggleClientOverride(uuid);
+
+  // Connection Status methods
+  Future<OpenvpnSessionSearchResponse> searchSessions({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+  }) => _openvpnService.searchSessions(
+        current: current,
+        rowCount: rowCount,
+        sort: sort,
+      );
+
+  Future<Map<String, dynamic>> startService(String id) => _openvpnService.startService(id);
+
+  Future<Map<String, dynamic>> stopService(String id) => _openvpnService.stopService(id);
+
+  Future<Map<String, dynamic>> restartService(String id) => _openvpnService.restartService(id);
+
+  Future<OpenvpnRouteSearchResponse> searchRoutes({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+  }) => _openvpnService.searchRoutes(
+        current: current,
+        rowCount: rowCount,
+        sort: sort,
+      );
 
   // ============================================================================
   // Tailscale Service Delegations
