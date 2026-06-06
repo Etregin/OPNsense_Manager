@@ -401,7 +401,6 @@ f70f5dd3g5b11f0d2c4f9d6e8g3b2c5d
 
   /// Generate demo WireGuard status response
   WireGuardStatusResponse generateWireGuardStatusResponse() {
-    final now = DateTime.now();
     final items = [
       WireGuardStatusItem(
         interfaceName: 'wg0',
@@ -426,8 +425,8 @@ f70f5dd3g5b11f0d2c4f9d6e8g3b2c5d
         endpoint: '203.0.113.50:41234',
         status: 'up',
         name: 'Mobile Device',
-        latestHandshakeAge: '2 minutes ago',
-        latestHandshakeEpoch: (now.millisecondsSinceEpoch ~/ 1000) - 120,
+        latestHandshakeAge: 120,
+        latestHandshakeEpoch: DateTime.now().subtract(const Duration(seconds: 120)).toString().substring(0, 19).replaceFirst('T', ' '),
         peerStatus: 'online',
         ifname: 'wg0',
       ),
@@ -440,8 +439,8 @@ f70f5dd3g5b11f0d2c4f9d6e8g3b2c5d
         endpoint: '198.51.100.75:52341',
         status: 'up',
         name: 'Laptop',
-        latestHandshakeAge: '45 seconds ago',
-        latestHandshakeEpoch: (now.millisecondsSinceEpoch ~/ 1000) - 45,
+        latestHandshakeAge: 45,
+        latestHandshakeEpoch: DateTime.now().subtract(const Duration(seconds: 45)).toString().substring(0, 19).replaceFirst('T', ' '),
         peerStatus: 'online',
         ifname: 'wg0',
       ),

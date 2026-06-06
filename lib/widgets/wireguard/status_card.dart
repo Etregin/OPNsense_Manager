@@ -148,7 +148,7 @@ class StatusCard extends StatelessWidget {
               _buildInfoRow(
                 context,
                 'Handshake Age',
-                item.latestHandshakeAge!,
+                '${item.latestHandshakeAge!} seconds ago',
                 icon: Icons.access_time,
               ),
             
