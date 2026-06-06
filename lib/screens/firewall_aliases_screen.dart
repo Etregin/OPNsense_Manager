@@ -231,23 +231,13 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
+              _buildDetailRow('UUID', alias.uuid),
               _buildDetailRow(l10n.type, alias.typeDisplayName),
               _buildDetailRow(l10n.description, alias.description.isEmpty ? 'N/A' : alias.description),
+              _buildDetailRow('Loaded #', _formatNumber(alias.currentItems)),
               _buildDetailRow(l10n.enabled, alias.isEnabled ? 'Yes' : 'No'),
-              if (alias.proto.isNotEmpty)
-                _buildDetailRow(l10n.protocol, alias.proto.toUpperCase()),
-              if (alias.categories.isNotEmpty)
-                _buildDetailRow(l10n.categories, alias.categories),
-              const Divider(),
-              Text(
-                l10n.content,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              ...alias.contentList.map((item) => Padding(
-                padding: const EdgeInsets.only(left: 16, bottom: 4),
-                child: Text('• $item'),
-              )),
+              if (_formatCategories(alias.categories).isNotEmpty)
+                _buildDetailRow(l10n.categories, _formatCategories(alias.categories)),
             ],
           ),
         ),
@@ -280,6 +270,61 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
         ],
       ),
     );
+  }
+
+  /// Format number with thousand separators
+  String _formatNumber(String value) {
+    try {
+      final number = int.parse(value);
+      // Format with thousand separators
+      final formatter = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
+      return number.toString().replaceAllMapped(formatter, (Match m) => '${m[1]},');
+    } catch (e) {
+      // If parsing fails, return as-is
+      return value;
+    }
+  }
+
+  /// Format categories field - handles arrays and comma-separated values
+  String _formatCategories(String categories) {
+    if (categories.isEmpty) return '';
+    
+    // Handle empty array notation
+    if (categories.trim() == '[]' || categories.trim() == '{}') {
+      return '';
+    }
+    
+    // If it's a JSON array, try to parse it
+    if (categories.startsWith('[') && categories.endsWith(']')) {
+      try {
+        // Remove brackets and quotes, split by comma
+        final cleaned = categories
+            .substring(1, categories.length - 1)
+            .replaceAll('"', '')
+            .replaceAll("'", '')
+            .trim();
+        
+        if (cleaned.isEmpty) return '';
+        
+        return cleaned.split(',')
+            .map((e) => e.trim())
+            .where((e) => e.isNotEmpty)
+            .join(', ');
+      } catch (e) {
+        // If parsing fails, return as-is
+        return categories;
+      }
+    }
+    
+    // Handle comma-separated values
+    if (categories.contains(',')) {
+      return categories.split(',')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .join(', ');
+    }
+    
+    return categories;
   }
 
   @override
