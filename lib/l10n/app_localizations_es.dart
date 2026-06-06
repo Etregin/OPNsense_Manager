@@ -730,6 +730,16 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String disableRuleConfirmation(String description) {
+    return '¿Está seguro de que desea deshabilitar la regla \"$description\"?';
+  }
+
+  @override
+  String enableRuleConfirmation(String description) {
+    return '¿Está seguro de que desea habilitar la regla \"$description\"?';
+  }
+
+  @override
   String deleteServerConfirmation(String name) {
     return '¿Está seguro de que desea eliminar el servidor \"$name\"? Esta acción no se puede deshacer.';
   }

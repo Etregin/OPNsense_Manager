@@ -988,6 +988,26 @@
       }
     }
   },
+  "disableRuleConfirmation": "Sind Sie sicher, dass Sie die Regel \"{description}\" deaktivieren möchten?",
+  "@disableRuleConfirmation": {
+    "description": "Translation for disableRuleConfirmation",
+    "placeholders": {
+      "description": {
+        "type": "String",
+        "example": "192.168.1.1"
+      }
+    }
+  },
+  "enableRuleConfirmation": "Sind Sie sicher, dass Sie die Regel \"{description}\" aktivieren möchten?",
+  "@enableRuleConfirmation": {
+    "description": "Translation for enableRuleConfirmation",
+    "placeholders": {
+      "description": {
+        "type": "String",
+        "example": "192.168.1.1"
+      }
+    }
+  },
   "deleteServerConfirmation": "Möchten Sie den Server \"{name}\" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
   "@deleteServerConfirmation": {
     "description": "Translation for deleteServerConfirmation",

@@ -33,12 +33,30 @@ class FirewallAliasesScreen extends StatefulWidget {
 }
 
 class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
+  // All 14 alias types supported by OPNsense
+  static const List<String> _allAliasTypes = [
+    'host',
+    'network',
+    'port',
+    'url',
+    'urltable',
+    'urljson',
+    'geoip',
+    'networkgroup',
+    'mac',
+    'asn',
+    'dynipv6host',
+    'authgroup',
+    'internal',
+    'external',
+  ];
+
   List<FirewallAlias> _aliases = [];
   SystemInfo? _systemInfo;
   bool _isLoading = true;
   String? _errorMessage;
   String _searchQuery = '';
-  String? _filterType;
+  Set<String> _selectedTypes = {}; // Changed from String? to Set<String> for multi-select
   // Track which aliases are currently being toggled
   final Set<String> _togglingAliases = {};
 
@@ -99,9 +117,9 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
   List<FirewallAlias> get _filteredAliases {
     var filtered = _aliases;
 
-    // Apply type filter
-    if (_filterType != null && _filterType!.isNotEmpty) {
-      filtered = filtered.where((alias) => alias.type == _filterType).toList();
+    // Apply type filter - show aliases that match ANY of the selected types
+    if (_selectedTypes.isNotEmpty) {
+      filtered = filtered.where((alias) => _selectedTypes.contains(alias.type)).toList();
     }
 
     // Apply search filter
@@ -117,8 +135,88 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
     return filtered;
   }
 
-  Set<String> get _availableTypes {
-    return _aliases.map((alias) => alias.type).toSet();
+  void _showTypeFilterDialog() {
+    final l10n = AppLocalizations.of(context)!;
+    
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return AlertDialog(
+            title: Text(l10n.filterByType),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Select All / Clear All buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      TextButton.icon(
+                        onPressed: () {
+                          setDialogState(() {
+                            _selectedTypes = Set.from(_allAliasTypes);
+                          });
+                        },
+                        icon: const Icon(Icons.select_all),
+                        label: const Text('Select All'),
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          setDialogState(() {
+                            _selectedTypes.clear();
+                          });
+                        },
+                        icon: const Icon(Icons.clear),
+                        label: const Text('Clear All'),
+                      ),
+                    ],
+                  ),
+                  const Divider(),
+                  // Checkbox list for all types
+                  ..._allAliasTypes.map((type) {
+                    return CheckboxListTile(
+                      title: Text(FirewallAlias(
+                        uuid: '',
+                        name: '',
+                        type: type,
+                        content: '',
+                      ).typeDisplayName),
+                      value: _selectedTypes.contains(type),
+                      onChanged: (bool? value) {
+                        setDialogState(() {
+                          if (value == true) {
+                            _selectedTypes.add(type);
+                          } else {
+                            _selectedTypes.remove(type);
+                          }
+                        });
+                      },
+                      dense: true,
+                    );
+                  }),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(l10n.cancel),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    // Apply the filter
+                  });
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Apply'),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 
   Future<void> _toggleAlias(FirewallAlias alias, bool newValue) async {
@@ -231,23 +329,13 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
+              _buildDetailRow('UUID', alias.uuid),
               _buildDetailRow(l10n.type, alias.typeDisplayName),
               _buildDetailRow(l10n.description, alias.description.isEmpty ? 'N/A' : alias.description),
+              _buildDetailRow('Loaded #', _formatNumber(alias.currentItems)),
               _buildDetailRow(l10n.enabled, alias.isEnabled ? 'Yes' : 'No'),
-              if (alias.proto.isNotEmpty)
-                _buildDetailRow(l10n.protocol, alias.proto.toUpperCase()),
-              if (alias.categories.isNotEmpty)
-                _buildDetailRow(l10n.categories, alias.categories),
-              const Divider(),
-              Text(
-                l10n.content,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              ...alias.contentList.map((item) => Padding(
-                padding: const EdgeInsets.only(left: 16, bottom: 4),
-                child: Text('• $item'),
-              )),
+              if (_formatCategories(alias.categories).isNotEmpty)
+                _buildDetailRow(l10n.categories, _formatCategories(alias.categories)),
             ],
           ),
         ),
@@ -280,6 +368,61 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
         ],
       ),
     );
+  }
+
+  /// Format number with thousand separators
+  String _formatNumber(String value) {
+    try {
+      final number = int.parse(value);
+      // Format with thousand separators
+      final formatter = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
+      return number.toString().replaceAllMapped(formatter, (Match m) => '${m[1]},');
+    } catch (e) {
+      // If parsing fails, return as-is
+      return value;
+    }
+  }
+
+  /// Format categories field - handles arrays and comma-separated values
+  String _formatCategories(String categories) {
+    if (categories.isEmpty) return '';
+    
+    // Handle empty array notation
+    if (categories.trim() == '[]' || categories.trim() == '{}') {
+      return '';
+    }
+    
+    // If it's a JSON array, try to parse it
+    if (categories.startsWith('[') && categories.endsWith(']')) {
+      try {
+        // Remove brackets and quotes, split by comma
+        final cleaned = categories
+            .substring(1, categories.length - 1)
+            .replaceAll('"', '')
+            .replaceAll("'", '')
+            .trim();
+        
+        if (cleaned.isEmpty) return '';
+        
+        return cleaned.split(',')
+            .map((e) => e.trim())
+            .where((e) => e.isNotEmpty)
+            .join(', ');
+      } catch (e) {
+        // If parsing fails, return as-is
+        return categories;
+      }
+    }
+    
+    // Handle comma-separated values
+    if (categories.contains(',')) {
+      return categories.split(',')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .join(', ');
+    }
+    
+    return categories;
   }
 
   @override
@@ -327,34 +470,53 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                PopupMenuButton<String>(
-                  icon: const Icon(Icons.filter_list),
+                IconButton(
+                  icon: Icon(
+                    Icons.filter_list,
+                    color: _selectedTypes.isNotEmpty ? Theme.of(context).colorScheme.primary : null,
+                  ),
                   tooltip: l10n.filterByType,
-                  onSelected: (value) {
-                    setState(() {
-                      _filterType = value == 'all' ? null : value;
-                    });
-                  },
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      value: 'all',
-                      child: Text(l10n.allTypes),
-                    ),
-                    const PopupMenuDivider(),
-                    ..._availableTypes.map((type) => PopupMenuItem(
-                      value: type,
-                      child: Text(FirewallAlias(
-                        uuid: '',
-                        name: '',
-                        type: type,
-                        content: '',
-                      ).typeDisplayName),
-                    )),
-                  ],
+                  onPressed: _showTypeFilterDialog,
                 ),
               ],
             ),
           ),
+          // Active filter indicator
+          if (_selectedTypes.isNotEmpty)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Row(
+                children: [
+                  Chip(
+                    avatar: const Icon(Icons.filter_alt, size: 18),
+                    label: Text(
+                      _selectedTypes.length == 1
+                          ? FirewallAlias(
+                              uuid: '',
+                              name: '',
+                              type: _selectedTypes.first,
+                              content: '',
+                            ).typeDisplayName
+                          : '${_selectedTypes.length} types selected',
+                    ),
+                    onDeleted: () {
+                      setState(() {
+                        _selectedTypes.clear();
+                      });
+                    },
+                    deleteIcon: const Icon(Icons.close, size: 18),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    l10n.itemsCount(filteredAliases.length),
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           // Aliases list
           Expanded(
             child: _isLoading
@@ -389,7 +551,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                                 const Icon(Icons.inbox, size: 48, color: Colors.grey),
                                 const SizedBox(height: 16),
                                 Text(
-                                  _searchQuery.isNotEmpty || _filterType != null
+                                  _searchQuery.isNotEmpty || _selectedTypes.isNotEmpty
                                       ? l10n.noAliasesMatchFilters
                                       : l10n.noAliasesConfigured,
                                   style: Theme.of(context).textTheme.titleMedium,
@@ -529,11 +691,24 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
         return Icons.settings_ethernet;
       case 'url':
       case 'urltable':
+      case 'urljson':
         return Icons.link;
       case 'geoip':
         return Icons.public;
+      case 'networkgroup':
+        return Icons.group_work;
       case 'mac':
         return Icons.devices;
+      case 'asn':
+        return Icons.numbers;
+      case 'dynipv6host':
+        return Icons.dns;
+      case 'authgroup':
+        return Icons.group;
+      case 'internal':
+        return Icons.home;
+      case 'external':
+        return Icons.cloud;
       default:
         return Icons.label;
     }

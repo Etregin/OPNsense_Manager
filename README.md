@@ -168,7 +168,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed build instructions.
 - **Quick Navigation**: Easy access to all features from the main screen
 - **Pull-to-Refresh**: Update data with a simple swipe gesture
 - **Auto-Refresh**: Configurable automatic data updates
-<img src="screenshots/dashboard.png" width="250" alt="Dashboard">
+<img src="screenshots/Android/dashboard.png" width="250" alt="Dashboard">
 
 <a id="firewall-management"></a>
 ### 🔥 Firewall Management (Currently only works with "Firewall > Automation > Filter" rules)
@@ -185,7 +185,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed build instructions.
   - Port specifications and ranges
   - Rule descriptions and labels
   - Creation and modification timestamps
-  <img src="screenshots/firewall_rules.png" width="250" alt="Firewall Rules">
+  <img src="screenshots/Android/firewall_rules.png" width="250" alt="Firewall Rules">
 
 <a id="firewall-logs"></a>
 ### 📋 Firewall Logs
@@ -201,7 +201,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed build instructions.
   - Interface information
 - **Auto-Refresh**: Configurable automatic log updates (5-60 seconds)
 - **Log Limit**: Adjustable number of log entries displayed
-<img src="screenshots/firewall_logs.png" width="250" alt="Firewall Logs">
+<img src="screenshots/Android/firewall_logs.png" width="250" alt="Firewall Logs">
 <a id="live-network-monitoring"></a>
 ### 🌐 Live Network Monitoring
 - **Real-time Network Activity**: Monitor active connections and network traffic in real-time
@@ -214,7 +214,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed build instructions.
 - **Device Blocking**: Quickly block devices directly from the network monitor
 - **Auto-Refresh**: Configurable automatic updates to track network changes
 - **Search & Filter**: Find specific devices or connections quickly
-<img src="screenshots/live_network_monitor.png" width="250" alt="Live Network Monitor">
+<img src="screenshots/Android/live_network_monitor.png" width="250" alt="Live Network Monitor">
 
 <a id="dhcp-leases"></a>
 ### 📡 DHCP Lease Management
@@ -228,7 +228,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed build instructions.
 - **Device Blocking**: Block devices directly from the DHCP leases view
 - **Search Functionality**: Quickly find specific devices by IP, MAC, or hostname
 - **Pull-to-Refresh**: Update lease information on demand
-<img src="screenshots/dhcp_leases.png" width="250" alt="DHCP Leases">
+<img src="screenshots/Android/dhcp_leases.png" width="250" alt="DHCP Leases">
 
 
 <a id="system-info"></a>
@@ -246,7 +246,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed build instructions.
   - Platform (FreeBSD version)
   - System uptime
 - **Pull-to-Refresh**: Update system information on demand
-<img src="screenshots/system_info.png" width="250" alt="System Information">
+<img src="screenshots/Android/system_info.png" width="250" alt="System Information">
 
 <a id="service-management"></a>
 ### 🔧 Service Management
@@ -255,7 +255,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed build instructions.
 - **Confirmation Dialogs**: Prevent accidental service disruptions
 - **Visual Feedback**: Color-coded status indicators (running/stopped)
 - **Service List**: View all available system services
-<img src="screenshots/services.png" width="250" alt="Service Management">
+<img src="screenshots/Android/services.png" width="250" alt="Service Management">
 
 <a id="settings"></a>
 ### ⚙️ Settings
@@ -271,7 +271,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed build instructions.
   - Profile-specific credentials
 - **App Lock**: Manually lock the app for security
 - **About Screen**: View app information, version, and licenses
-<img src="screenshots/settings.png" width="250" alt="Settings">
+<img src="screenshots/Android/settings.png" width="250" alt="Settings">
 
 <a id="additional-features"></a>
 ### 🔄 Additional Features
@@ -282,7 +282,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed build instructions.
 - **Offline Support**: Graceful handling of network issues
 - **Material Design 3**: Modern, beautiful UI following Material Design guidelines
 - **Responsive Layout**: Optimized for various screen sizes
-<img src="screenshots/menu.png" width="250" alt="Menu">
+<img src="screenshots/Android/menu.png" width="250" alt="Menu">
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

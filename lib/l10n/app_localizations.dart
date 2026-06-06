@@ -1376,6 +1376,18 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete the rule \"{description}\"?'**
   String deleteRuleConfirmation(String description);
 
+  /// No description provided for @disableRuleConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to disable the rule \"{description}\"?'**
+  String disableRuleConfirmation(String description);
+
+  /// No description provided for @enableRuleConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to enable the rule \"{description}\"?'**
+  String enableRuleConfirmation(String description);
+
   /// No description provided for @deleteServerConfirmation.
   ///
   /// In en, this message translates to:

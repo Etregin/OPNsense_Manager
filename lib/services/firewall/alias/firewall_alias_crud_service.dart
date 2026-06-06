@@ -281,7 +281,7 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
 
     return FirewallAlias(
       uuid: aliasName,
-      name: aliasName,
+      name: aliasData['name']?.toString() ?? aliasName,
       type: aliasType,
       content: content,
       description: aliasData['description']?.toString() ?? '',
@@ -290,6 +290,7 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
       proto: aliasData['proto']?.toString() ?? '',
       interface: aliasData['interface']?.toString() ?? '',
       categories: aliasData['categories']?.toString() ?? '',
+      currentItems: aliasData['current_items']?.toString() ?? '0',
     );
   }
 }

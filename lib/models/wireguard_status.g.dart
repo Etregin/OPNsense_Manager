@@ -16,8 +16,8 @@ WireGuardStatusItem _$WireGuardStatusItemFromJson(Map<String, dynamic> json) =>
       endpoint: json['endpoint'] as String,
       status: json['status'] as String,
       name: json['name'] as String?,
-      latestHandshakeAge: json['latest-handshake-age'] as String?,
-      latestHandshakeEpoch: (json['latest-handshake-epoch'] as num?)?.toInt(),
+      latestHandshakeAge: (json['latest-handshake-age'] as num?)?.toInt(),
+      latestHandshakeEpoch: json['latest-handshake-epoch'] as String?,
       peerStatus: json['peer-status'] as String,
       ifname: json['ifname'] as String,
     );

@@ -51,13 +51,13 @@ class WireGuardStatusItem {
   /// Name/description (may be empty)
   final String? name;
   
-  /// Latest handshake age in human-readable format (e.g., "2 minutes ago")
+  /// Latest handshake age in seconds (numeric value or null)
   @JsonKey(name: 'latest-handshake-age')
-  final String? latestHandshakeAge;
+  final int? latestHandshakeAge;
   
-  /// Latest handshake epoch timestamp
+  /// Latest handshake epoch as formatted date string (e.g., "2026-06-06 12:53:56")
   @JsonKey(name: 'latest-handshake-epoch')
-  final int? latestHandshakeEpoch;
+  final String? latestHandshakeEpoch;
   
   /// Peer status: "online" or "offline"
   @JsonKey(name: 'peer-status')
@@ -99,7 +99,12 @@ class WireGuardStatusItem {
   /// Get latest handshake as DateTime (null if not available)
   DateTime? get latestHandshakeDateTime {
     if (latestHandshakeEpoch == null) return null;
-    return DateTime.fromMillisecondsSinceEpoch(latestHandshakeEpoch! * 1000);
+    try {
+      // Parse the date string format: "2026-06-06 12:53:56"
+      return DateTime.parse(latestHandshakeEpoch!.replaceFirst(' ', 'T'));
+    } catch (e) {
+      return null;
+    }
   }
   
   /// Check if public key is set (not "(none)")

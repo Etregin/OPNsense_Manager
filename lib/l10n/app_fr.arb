@@ -988,6 +988,26 @@
       }
     }
   },
+  "disableRuleConfirmation": "Êtes-vous sûr de vouloir désactiver la règle \"{description}\" ?",
+  "@disableRuleConfirmation": {
+    "description": "Translation for disableRuleConfirmation",
+    "placeholders": {
+      "description": {
+        "type": "String",
+        "example": "192.168.1.1"
+      }
+    }
+  },
+  "enableRuleConfirmation": "Êtes-vous sûr de vouloir activer la règle \"{description}\" ?",
+  "@enableRuleConfirmation": {
+    "description": "Translation for enableRuleConfirmation",
+    "placeholders": {
+      "description": {
+        "type": "String",
+        "example": "192.168.1.1"
+      }
+    }
+  },
   "deleteServerConfirmation": "Êtes-vous sûr de vouloir supprimer le serveur \"{name}\" ? Cette action ne peut pas être annulée.",
   "@deleteServerConfirmation": {
     "description": "Translation for deleteServerConfirmation",

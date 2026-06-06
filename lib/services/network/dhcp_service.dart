@@ -20,6 +20,7 @@ import 'package:dio/dio.dart';
 import '../base/base_opnsense_service.dart';
 import '../base/api_exception.dart';
 import '../dhcp_lease_adapter.dart';
+import '../../models/dhcp_server_type.dart';
 
 /// Service for DHCP operations
 class DHCPService extends BaseOPNsenseService {
@@ -30,8 +31,23 @@ class DHCPService extends BaseOPNsenseService {
     final serverType = config.dhcpServerType;
     
     try {
-      // Use the appropriate API endpoint for the server type
-      final response = await dio.get(serverType.apiEndpoint);
+      // Kea DHCP requires POST with payload, others use GET
+      final Response response;
+      if (serverType == DhcpServerType.kea) {
+        // Kea DHCP requires POST with search parameters
+        response = await dio.post(
+          serverType.apiEndpoint,
+          data: {
+            'current': 1,
+            'rowCount': 50,
+            'sort': {},
+            'selected_interfaces': [],
+          },
+        );
+      } else {
+        // dnsmasq and ISC DHCP use GET requests
+        response = await dio.get(serverType.apiEndpoint);
+      }
       
       if (response.statusCode == 200) {
         final data = response.data;

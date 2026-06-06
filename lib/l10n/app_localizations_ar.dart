@@ -714,6 +714,16 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String disableRuleConfirmation(String description) {
+    return 'هل أنت متأكد من أنك تريد تعطيل القاعدة \"$description\"؟';
+  }
+
+  @override
+  String enableRuleConfirmation(String description) {
+    return 'هل أنت متأكد من أنك تريد تفعيل القاعدة \"$description\"؟';
+  }
+
+  @override
   String deleteServerConfirmation(String name) {
     return 'هل أنت متأكد من حذف الخادم \"$name\"؟ لا يمكن التراجع عن هذا الإجراء.';
   }

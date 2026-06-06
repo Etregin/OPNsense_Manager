@@ -38,6 +38,8 @@ class FirewallAlias {
   final String interface;
   @JsonKey(name: 'categories', defaultValue: '')
   final String categories;
+  @JsonKey(name: 'current_items', defaultValue: '0')
+  final String currentItems;
 
   FirewallAlias({
     required this.uuid,
@@ -50,6 +52,7 @@ class FirewallAlias {
     this.proto = '',
     this.interface = '',
     this.categories = '',
+    this.currentItems = '0',
   });
 
   /// Check if alias is enabled
@@ -65,19 +68,27 @@ class FirewallAlias {
       case 'port':
         return 'Port(s)';
       case 'url':
-        return 'URL (IPs)';
+        return 'URL';
       case 'urltable':
-        return 'URL Table (IPs)';
+        return 'URL Table';
+      case 'urljson':
+        return 'URL (JSON)';
       case 'geoip':
         return 'GeoIP';
       case 'networkgroup':
         return 'Network Group';
       case 'mac':
         return 'MAC Address';
-      case 'external':
-        return 'External';
+      case 'asn':
+        return 'ASN';
+      case 'dynipv6host':
+        return 'Dynamic IPv6 Host';
+      case 'authgroup':
+        return 'Auth Group';
       case 'internal':
         return 'Internal';
+      case 'external':
+        return 'External';
       default:
         return type;
     }
@@ -108,6 +119,7 @@ class FirewallAlias {
     String? proto,
     String? interface,
     String? categories,
+    String? currentItems,
   }) {
     return FirewallAlias(
       uuid: uuid ?? this.uuid,
@@ -120,6 +132,7 @@ class FirewallAlias {
       proto: proto ?? this.proto,
       interface: interface ?? this.interface,
       categories: categories ?? this.categories,
+      currentItems: currentItems ?? this.currentItems,
     );
   }
 

@@ -54,6 +54,8 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
   }
 
   Future<void> _loadProfiles() async {
+    if (!mounted) return;
+    
     setState(() {
       _isLoading = true;
     });
@@ -71,6 +73,8 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
   }
 
   Future<void> _activateProfile(Profile profile) async {
+    if (!mounted) return;
+    
     // Show loading
     showDialog(
       context: context,
@@ -102,7 +106,9 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
       Navigator.of(context).pop(); // Close loading dialog
       
       if (result.success) {
-        await _loadProfiles();
+        if (mounted) {
+          await _loadProfiles();
+        }
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
@@ -332,6 +338,12 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
     required bool allowSelfSignedCerts,
     required DhcpServerType dhcpServerType,
   }) async {
+    if (!mounted) return;
+    
+    // Get the API services from context
+    final demoApiService = context.read<DemoApiService>();
+    final opnsenseApiService = context.read<OPNsenseApiService>();
+    
     final result = await _profileManager.saveProfile(
       id: id,
       name: name,
@@ -341,8 +353,13 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
       useHttps: useHttps,
       allowSelfSignedCerts: allowSelfSignedCerts,
       dhcpServerType: dhcpServerType,
+      context: context,
+      demoApiService: demoApiService,
+      opnsenseApiService: opnsenseApiService,
     );
 
+    if (!mounted) return;
+    
     if (result.success) {
       await _loadProfiles();
       if (mounted) {
@@ -367,6 +384,8 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
   }
 
   Future<void> _exportSingleProfile(Profile profile) async {
+    if (!mounted) return;
+    
     final l10n = AppLocalizations.of(context)!;
     
     // Show confirmation dialog for including credentials
@@ -394,6 +413,8 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
         ],
       ),
     );
+    
+    if (!mounted) return;
     
     // User cancelled
     if (includeCredentials == null) return;
@@ -430,6 +451,8 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
   }
 
   Future<void> _deleteProfile(Profile profile) async {
+    if (!mounted) return;
+    
     final l10n = AppLocalizations.of(context)!;
     
     final confirmed = await showDialog<bool>(
@@ -453,8 +476,12 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
       ),
     );
 
+    if (!mounted) return;
+    
     if (confirmed == true) {
       final success = await _profileManager.deleteProfile(profile.id);
+      
+      if (!mounted) return;
       
       if (success) {
         await _loadProfiles();
