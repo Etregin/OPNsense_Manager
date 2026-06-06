@@ -116,7 +116,8 @@ class ProfileManagerService {
 
   /// Save a profile (create or update)
   ///
-  /// Validates the profile data and saves it to storage
+  /// Validates the profile data and saves it to storage.
+  /// If the saved profile is the active one, re-initializes API services.
   Future<SaveResult> saveProfile({
     String? id,
     required String name,
@@ -126,6 +127,9 @@ class ProfileManagerService {
     required bool useHttps,
     required bool allowSelfSignedCerts,
     required DhcpServerType dhcpServerType,
+    BuildContext? context,
+    DemoApiService? demoApiService,
+    OPNsenseApiService? opnsenseApiService,
   }) async {
     try {
       // Get active connection for validation
@@ -180,6 +184,29 @@ class ProfileManagerService {
 
       await _profileService.saveProfile(profile);
 
+      // Check if this is the active profile and re-initialize if needed
+      final activeProfileId = await _profileService.getActiveProfileId();
+      if (profile.id == activeProfileId &&
+          context != null &&
+          demoApiService != null &&
+          opnsenseApiService != null) {
+        // Re-initialize by activating the updated profile
+        final activationResult = await activateProfile(
+          context: context,
+          profile: profile,
+          demoApiService: demoApiService,
+          opnsenseApiService: opnsenseApiService,
+        );
+        
+        // If activation fails, return the error
+        if (!activationResult.success) {
+          return SaveResult(
+            success: false,
+            errorMessage: 'Profile saved but failed to re-initialize: ${activationResult.errorMessage}',
+          );
+        }
+      }
+
       return SaveResult(
         success: true,
         profile: profile,
@@ -225,6 +252,7 @@ extension ProfileExtension on Profile {
       apiSecret: apiSecret,
       useHttps: useHttps,
       allowSelfSignedCerts: allowSelfSignedCerts,
+      dhcpServerType: dhcpServerType,
     );
   }
 }

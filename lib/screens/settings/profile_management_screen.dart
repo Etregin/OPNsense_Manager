@@ -332,6 +332,10 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
     required bool allowSelfSignedCerts,
     required DhcpServerType dhcpServerType,
   }) async {
+    // Get the API services from context
+    final demoApiService = context.read<DemoApiService>();
+    final opnsenseApiService = context.read<OPNsenseApiService>();
+    
     final result = await _profileManager.saveProfile(
       id: id,
       name: name,
@@ -341,6 +345,9 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
       useHttps: useHttps,
       allowSelfSignedCerts: allowSelfSignedCerts,
       dhcpServerType: dhcpServerType,
+      context: context,
+      demoApiService: demoApiService,
+      opnsenseApiService: opnsenseApiService,
     );
 
     if (result.success) {
