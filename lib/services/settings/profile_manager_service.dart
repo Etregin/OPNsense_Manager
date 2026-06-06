@@ -190,6 +190,14 @@ class ProfileManagerService {
           context != null &&
           demoApiService != null &&
           opnsenseApiService != null) {
+        // Check if the widget is still mounted before using context
+        if (!context.mounted) {
+          return SaveResult(
+            success: true,
+            profile: profile,
+          );
+        }
+        
         // Re-initialize by activating the updated profile
         final activationResult = await activateProfile(
           context: context,
