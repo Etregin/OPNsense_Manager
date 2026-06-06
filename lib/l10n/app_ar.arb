@@ -990,6 +990,26 @@
       }
     }
   },
+  "disableRuleConfirmation": "هل أنت متأكد من أنك تريد تعطيل القاعدة \"{description}\"؟",
+  "@disableRuleConfirmation": {
+    "description": "Translation for disableRuleConfirmation",
+    "placeholders": {
+      "description": {
+        "type": "String",
+        "example": "192.168.1.1"
+      }
+    }
+  },
+  "enableRuleConfirmation": "هل أنت متأكد من أنك تريد تفعيل القاعدة \"{description}\"؟",
+  "@enableRuleConfirmation": {
+    "description": "Translation for enableRuleConfirmation",
+    "placeholders": {
+      "description": {
+        "type": "String",
+        "example": "192.168.1.1"
+      }
+    }
+  },
   "deleteServerConfirmation": "هل أنت متأكد من حذف الخادم \"{name}\"؟ لا يمكن التراجع عن هذا الإجراء.",
   "@deleteServerConfirmation": {
     "description": "Translation for deleteServerConfirmation",

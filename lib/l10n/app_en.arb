@@ -961,6 +961,22 @@
       }
     }
   },
+  "disableRuleConfirmation": "Are you sure you want to disable the rule \"{description}\"?",
+  "@disableRuleConfirmation": {
+    "placeholders": {
+      "description": {
+        "type": "String"
+      }
+    }
+  },
+  "enableRuleConfirmation": "Are you sure you want to enable the rule \"{description}\"?",
+  "@enableRuleConfirmation": {
+    "placeholders": {
+      "description": {
+        "type": "String"
+      }
+    }
+  },
   "deleteServerConfirmation": "Are you sure you want to delete server \"{name}\"? This action cannot be undone.",
   "@deleteServerConfirmation": {
     "placeholders": {

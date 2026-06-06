@@ -131,7 +131,9 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
       builder: (context) => AlertDialog(
         title: Text(actionTitle),
         content: Text(
-          l10n.deleteRuleConfirmation(rule.description.isEmpty ? l10n.unnamedRule : rule.description),
+          rule.isEnabled
+            ? l10n.disableRuleConfirmation(rule.description.isEmpty ? l10n.unnamedRule : rule.description)
+            : l10n.enableRuleConfirmation(rule.description.isEmpty ? l10n.unnamedRule : rule.description),
         ),
         actions: [
           TextButton(
