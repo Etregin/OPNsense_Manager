@@ -122,17 +122,24 @@ class DhcpLeaseAdapter {
     // Normalize KEA DHCP field names to match our model
     return rawLeases.map((lease) {
       return {
-        'address': lease['ip-address'] ?? lease['address'] ?? '',
-        'hostname': lease['hostname'] ?? lease['fqdn-fwd'] ?? 'unknown',
-        'hwaddr': lease['hw-address'] ?? lease['hwaddr'] ?? lease['mac'] ?? '',
-        'mac_info': lease['mac_info'] ?? lease['vendor-class-data'],
+        'address': _safeToString(lease['ip-address'] ?? lease['address']),
+        'hostname': _safeToString(lease['hostname'] ?? lease['fqdn-fwd']) ?? 'unknown',
+        'hwaddr': _safeToString(lease['hw-address'] ?? lease['hwaddr'] ?? lease['mac']),
+        'mac_info': _safeToString(lease['mac_info'] ?? lease['vendor-class-data']),
         'starts': _parseKeaTime(lease['cltt']),
-        'ends': _parseKeaTime(lease['valid-lft'], lease['cltt']),
-        'expire': _parseKeaTime(lease['valid-lft'], lease['cltt']),
-        'state': lease['state'] ?? 'active',
+        'ends': _parseKeaTime(lease['valid-lft'] ?? lease['valid_lifetime'], lease['cltt']),
+        'expire': _parseKeaTime(lease['expire'] ?? lease['valid-lft'] ?? lease['valid_lifetime'], lease['cltt']),
+        'state': _safeToString(lease['state']) ?? 'active',
         'cltt': _parseKeaTime(lease['cltt']),
-        'if': lease['subnet-id']?.toString(),
-        'type': lease['type'] ?? 'dynamic',
+        'if': _safeToString(lease['subnet-id'] ?? lease['if']),
+        'if_descr': _safeToString(lease['if_descr']),
+        'if_name': _safeToString(lease['if_name']),
+        'type': _safeToString(lease['type']) ?? 'dynamic',
+        'prefix_len': _safeToString(lease['prefix_len']),
+        'duid': _safeToString(lease['duid']),
+        'client_id': _safeToString(lease['client_id']),
+        'iaid': _safeToString(lease['iaid']),
+        'is_reserved': lease['is_reserved'],
       };
     }).toList();
   }
@@ -191,5 +198,15 @@ class DhcpLeaseAdapter {
     }
     
     return null;
+  }
+
+  /// Safely convert a value to String, handling both int and String types
+  /// Returns null if the value is null or empty string
+  static String? _safeToString(dynamic value) {
+    if (value == null) return null;
+    if (value is String) {
+      return value.isEmpty ? null : value;
+    }
+    return value.toString();
   }
 }
