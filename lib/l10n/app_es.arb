@@ -988,6 +988,26 @@
       }
     }
   },
+  "disableRuleConfirmation": "¿Está seguro de que desea deshabilitar la regla \"{description}\"?",
+  "@disableRuleConfirmation": {
+    "description": "Translation for disableRuleConfirmation",
+    "placeholders": {
+      "description": {
+        "type": "String",
+        "example": "192.168.1.1"
+      }
+    }
+  },
+  "enableRuleConfirmation": "¿Está seguro de que desea habilitar la regla \"{description}\"?",
+  "@enableRuleConfirmation": {
+    "description": "Translation for enableRuleConfirmation",
+    "placeholders": {
+      "description": {
+        "type": "String",
+        "example": "192.168.1.1"
+      }
+    }
+  },
   "deleteServerConfirmation": "¿Está seguro de que desea eliminar el servidor \"{name}\"? Esta acción no se puede deshacer.",
   "@deleteServerConfirmation": {
     "description": "Translation for deleteServerConfirmation",
