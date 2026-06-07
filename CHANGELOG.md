@@ -11,6 +11,9 @@ All notable changes to OPNsense Manager will be documented in this file.
 
 ### Fixed
 
+- Resolved an issue on older android devices (Android 10) being unable to export profiles due to permission issues
+- Resolved a bug for KEA DHCP not displaying the proper lease type
+
 ## [1.6.1] - 2026-06-07
 
 ### Fixed
