@@ -1879,6 +1879,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get liveNetworkMonitor => 'مراقب الشبكة المباشر';
 
   @override
+  String get neighborDiscovery => 'اكتشاف الأجهزة المجاورة';
+
+  @override
   String get loading => 'جاري التحميل...';
 
   @override

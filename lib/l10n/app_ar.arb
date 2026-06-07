@@ -2717,6 +2717,10 @@
   "@liveNetworkMonitor": {
     "description": "Translation for liveNetworkMonitor"
   },
+  "neighborDiscovery": "اكتشاف الأجهزة المجاورة",
+  "@neighborDiscovery": {
+    "description": "Translation for neighborDiscovery"
+  },
   "loading": "جاري التحميل...",
   "@loading": {
     "description": "Translation for loading"

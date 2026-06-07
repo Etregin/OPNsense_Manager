@@ -1911,6 +1911,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get liveNetworkMonitor => 'Moniteur Réseau en Direct';
 
   @override
+  String get neighborDiscovery => 'Découverte des Voisins';
+
+  @override
   String get loading => 'Chargement...';
 
   @override
