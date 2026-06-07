@@ -18,6 +18,7 @@
 
 import 'dart:math';
 import '../../models/system_info.dart';
+import '../../models/thermal_sensor.dart';
 import 'demo_state_manager.dart';
 
 /// Generator for system-related demo data
@@ -120,6 +121,47 @@ class DemoSystemDataGenerator {
         'stddev': '${2 + _random.nextInt(4)}ms',
         'loss': '0%',
       },
+    ];
+  }
+
+  /// Generate demo thermal sensors with realistic temperatures
+  List<ThermalSensor> generateThermalSensors() {
+    return [
+      ThermalSensor(
+        device: 'cpu0',
+        deviceSeq: 0,
+        temperature: '${45 + _random.nextInt(15)}.0C',
+        typeTranslated: 'CPU Core 0',
+        type: 'cpu',
+      ),
+      ThermalSensor(
+        device: 'cpu1',
+        deviceSeq: 1,
+        temperature: '${45 + _random.nextInt(15)}.0C',
+        typeTranslated: 'CPU Core 1',
+        type: 'cpu',
+      ),
+      ThermalSensor(
+        device: 'cpu2',
+        deviceSeq: 2,
+        temperature: '${45 + _random.nextInt(15)}.0C',
+        typeTranslated: 'CPU Core 2',
+        type: 'cpu',
+      ),
+      ThermalSensor(
+        device: 'cpu3',
+        deviceSeq: 3,
+        temperature: '${45 + _random.nextInt(15)}.0C',
+        typeTranslated: 'CPU Core 3',
+        type: 'cpu',
+      ),
+      ThermalSensor(
+        device: 'acpitz0',
+        deviceSeq: 0,
+        temperature: '${40 + _random.nextInt(10)}.0C',
+        typeTranslated: 'Thermal Zone 0',
+        type: 'zone',
+      ),
     ];
   }
 }
