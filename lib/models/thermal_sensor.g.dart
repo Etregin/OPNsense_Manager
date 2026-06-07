@@ -9,17 +9,17 @@ part of 'thermal_sensor.dart';
 ThermalSensor _$ThermalSensorFromJson(Map<String, dynamic> json) =>
     ThermalSensor(
       device: json['device'] as String,
-      deviceSeq: (json['deviceSeq'] as num).toInt(),
+      deviceSeq: (json['device_seq'] as num).toInt(),
       temperature: json['temperature'] as String,
-      typeTranslated: json['typeTranslated'] as String,
+      typeTranslated: json['type_translated'] as String,
       type: json['type'] as String,
     );
 
 Map<String, dynamic> _$ThermalSensorToJson(ThermalSensor instance) =>
     <String, dynamic>{
       'device': instance.device,
-      'deviceSeq': instance.deviceSeq,
+      'device_seq': instance.deviceSeq,
       'temperature': instance.temperature,
-      'typeTranslated': instance.typeTranslated,
+      'type_translated': instance.typeTranslated,
       'type': instance.type,
     };

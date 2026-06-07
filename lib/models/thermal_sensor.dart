@@ -27,12 +27,14 @@ class ThermalSensor {
   final String device;
   
   /// Device sequence number
+  @JsonKey(name: 'device_seq')
   final int deviceSeq;
   
   /// Temperature reading as string (e.g., "45.0C")
   final String temperature;
   
   /// Translated sensor type description
+  @JsonKey(name: 'type_translated')
   final String typeTranslated;
   
   /// Sensor type identifier

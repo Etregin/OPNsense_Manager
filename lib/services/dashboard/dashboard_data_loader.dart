@@ -84,7 +84,10 @@ class DashboardDataLoader {
     try {
       final sensors = await _apiService.getSystemTemperature();
       return sensors;
-    } catch (e) {
+    } catch (e, stackTrace) {
+      // Log error for debugging
+      print('Error loading thermal sensors: $e');
+      print('Stack trace: $stackTrace');
       // Return null on error to distinguish from empty array (VM case)
       return null;
     }
