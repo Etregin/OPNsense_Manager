@@ -1,0 +1,81 @@
+OPNsense Manager is a professional mobile application for managing OPNsense firewall routers. Monitor system status, manage firewall rules, view logs, control services, and manage your network security from your mobile device.
+
+FEATURES:
+
+🔐 Authentication & Security
+• Secure API authentication with encrypted storage
+• Multiple profile management for different OPNsense instances
+• PIN lock with 4-6 digit code
+• Biometric authentication (Face ID, Touch ID, Fingerprint)
+• Auto-lock with configurable timeout
+• Platform-specific encrypted credential storage
+
+📊 Dashboard
+• Real-time system overview (hostname, version, platform)
+• Live CPU and memory usage monitoring
+• Service management (start, stop, restart)
+• Gateway status monitoring
+• System uptime display
+• Pull-to-refresh and auto-refresh
+
+🔥 Firewall Management
+• View, create, edit, and delete firewall rules
+• Toggle rules on/off with a single tap
+• Comprehensive rule configuration
+• Support for multiple interfaces and protocols
+• CIDR notation support
+
+📋 Firewall Logs
+• Real-time log viewing
+• Filter by action (Pass, Block, Reject)
+• Search functionality
+• Detailed packet information
+• Auto-refresh with configurable intervals
+
+🌐 Live Network Monitoring
+• Real-time network activity monitoring
+• Device discovery and connection tracking
+• Connection details (IPs, ports, protocols)
+• Device blocking capability
+• Search and filter options
+
+📡 DHCP Lease Management
+• View active DHCP leases
+• Complete lease information
+• Device blocking from leases view
+• Search by IP, MAC, or hostname
+
+🔧 VPN Management
+• OpenVPN connection management
+• Tailscale integration
+• WireGuard support
+• VPN status monitoring
+
+ℹ️ System Information
+• Firmware details and version
+• System status and uptime
+• Platform information
+• Repository details
+
+⚙️ Settings
+• Light/dark theme toggle
+• PIN lock configuration
+• Biometric authentication setup
+• Session timeout configuration
+• Profile management
+• Multi-language support (English, Arabic, German, Spanish, French)
+
+REQUIREMENTS:
+• Android 5.0 (API 21) or higher
+• OPNsense 20.7 or higher with API access enabled
+• Network connectivity to OPNsense firewall
+
+PRIVACY:
+• No data collection or tracking
+• All data stored locally on device
+• No third-party services
+• Direct connection to your firewall only
+• Open source - verify our claims
+
+LICENSE:
+GNU General Public License v3.0
