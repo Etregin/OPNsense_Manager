@@ -76,4 +76,4 @@ class ThermalSensor {
   int get hashCode => Object.hash(device, deviceSeq);
 }
 
-// Made with Bob
+

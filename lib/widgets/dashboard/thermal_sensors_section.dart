@@ -207,4 +207,4 @@ class _CompactSensorRow extends StatelessWidget {
   }
 }
 
-// Made with Bob
+
