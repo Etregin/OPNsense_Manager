@@ -178,14 +178,79 @@ class NeighborDiscoveryResponse {
       total.hashCode ^ rowCount.hashCode ^ current.hashCode;
 }
 
+/// Service widget captions for service control buttons
+@JsonSerializable()
+class ServiceWidget {
+  /// Caption for restart button
+  @JsonKey(name: 'caption_restart')
+  final String captionRestart;
+  
+  /// Caption for start button
+  @JsonKey(name: 'caption_start')
+  final String captionStart;
+  
+  /// Caption for stop button
+  @JsonKey(name: 'caption_stop')
+  final String captionStop;
+  
+  ServiceWidget({
+    required this.captionRestart,
+    required this.captionStart,
+    required this.captionStop,
+  });
+  
+  /// Create from JSON
+  factory ServiceWidget.fromJson(Map<String, dynamic> json) =>
+      _$ServiceWidgetFromJson(json);
+  
+  /// Convert to JSON
+  Map<String, dynamic> toJson() => _$ServiceWidgetToJson(this);
+
+  /// Create a copy with updated fields
+  ServiceWidget copyWith({
+    String? captionRestart,
+    String? captionStart,
+    String? captionStop,
+  }) {
+    return ServiceWidget(
+      captionRestart: captionRestart ?? this.captionRestart,
+      captionStart: captionStart ?? this.captionStart,
+      captionStop: captionStop ?? this.captionStop,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'ServiceWidget(captionRestart: $captionRestart, '
+        'captionStart: $captionStart, captionStop: $captionStop)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is ServiceWidget &&
+        other.captionRestart == captionRestart &&
+        other.captionStart == captionStart &&
+        other.captionStop == captionStop;
+  }
+
+  @override
+  int get hashCode =>
+      captionRestart.hashCode ^ captionStart.hashCode ^ captionStop.hashCode;
+}
+
 /// Response model for the neighbor discovery status endpoint
 @JsonSerializable()
 class NeighborDiscoveryStatus {
   /// Status of the neighbor discovery service
   final String status;
+  
+  /// Widget captions for service control buttons
+  final ServiceWidget? widget;
 
   NeighborDiscoveryStatus({
     required this.status,
+    this.widget,
   });
 
   /// Create from JSON
@@ -198,25 +263,29 @@ class NeighborDiscoveryStatus {
   /// Create a copy with updated fields
   NeighborDiscoveryStatus copyWith({
     String? status,
+    ServiceWidget? widget,
   }) {
     return NeighborDiscoveryStatus(
       status: status ?? this.status,
+      widget: widget ?? this.widget,
     );
   }
 
   @override
   String toString() {
-    return 'NeighborDiscoveryStatus(status: $status)';
+    return 'NeighborDiscoveryStatus(status: $status, widget: $widget)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is NeighborDiscoveryStatus && other.status == status;
+    return other is NeighborDiscoveryStatus &&
+        other.status == status &&
+        other.widget == widget;
   }
 
   @override
-  int get hashCode => status.hashCode;
+  int get hashCode => status.hashCode ^ widget.hashCode;
 }
 
 

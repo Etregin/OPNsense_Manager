@@ -46,10 +46,29 @@ Map<String, dynamic> _$NeighborDiscoveryResponseToJson(
   'rows': instance.rows,
 };
 
+ServiceWidget _$ServiceWidgetFromJson(Map<String, dynamic> json) =>
+    ServiceWidget(
+      captionRestart: json['caption_restart'] as String,
+      captionStart: json['caption_start'] as String,
+      captionStop: json['caption_stop'] as String,
+    );
+
+Map<String, dynamic> _$ServiceWidgetToJson(ServiceWidget instance) =>
+    <String, dynamic>{
+      'caption_restart': instance.captionRestart,
+      'caption_start': instance.captionStart,
+      'caption_stop': instance.captionStop,
+    };
+
 NeighborDiscoveryStatus _$NeighborDiscoveryStatusFromJson(
   Map<String, dynamic> json,
-) => NeighborDiscoveryStatus(status: json['status'] as String);
+) => NeighborDiscoveryStatus(
+  status: json['status'] as String,
+  widget: json['widget'] == null
+      ? null
+      : ServiceWidget.fromJson(json['widget'] as Map<String, dynamic>),
+);
 
 Map<String, dynamic> _$NeighborDiscoveryStatusToJson(
   NeighborDiscoveryStatus instance,
-) => <String, dynamic>{'status': instance.status};
+) => <String, dynamic>{'status': instance.status, 'widget': instance.widget};
