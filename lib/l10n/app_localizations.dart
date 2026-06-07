@@ -3398,6 +3398,12 @@ abstract class AppLocalizations {
   /// **'Live Network Monitor'**
   String get liveNetworkMonitor;
 
+  /// Translation for neighborDiscovery
+  ///
+  /// In en, this message translates to:
+  /// **'Neighbor Discovery'**
+  String get neighborDiscovery;
+
   /// Translation for loading
   ///
   /// In en, this message translates to:

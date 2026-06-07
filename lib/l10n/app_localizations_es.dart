@@ -1908,6 +1908,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get liveNetworkMonitor => 'Monitor de Red en Vivo';
 
   @override
+  String get neighborDiscovery => 'Descubrimiento de Vecinos';
+
+  @override
   String get loading => 'Cargando...';
 
   @override

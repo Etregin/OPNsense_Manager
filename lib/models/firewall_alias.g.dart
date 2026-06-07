@@ -18,6 +18,7 @@ FirewallAlias _$FirewallAliasFromJson(Map<String, dynamic> json) =>
       proto: json['proto'] as String? ?? '',
       interface: json['interface'] as String? ?? '',
       categories: json['categories'] as String? ?? '',
+      currentItems: json['current_items'] as String? ?? '0',
     );
 
 Map<String, dynamic> _$FirewallAliasToJson(FirewallAlias instance) =>
@@ -32,6 +33,7 @@ Map<String, dynamic> _$FirewallAliasToJson(FirewallAlias instance) =>
       'proto': instance.proto,
       'interface': instance.interface,
       'categories': instance.categories,
+      'current_items': instance.currentItems,
     };
 
 FirewallAliasRequest _$FirewallAliasRequestFromJson(
