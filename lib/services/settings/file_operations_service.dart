@@ -16,10 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:convert';
 import 'dart:io';
-import 'dart:developer' as developer;
 import 'package:file_picker/file_picker.dart';
-import 'package:path/path.dart' as path;
 import '../profile_service.dart';
 import '../../models/profile.dart';
 import '../../utils/formatters.dart';
@@ -61,7 +60,10 @@ class FileOperationsService {
       : _profileService = profileService ?? ProfileService();
 
   /// Exports all profiles to a JSON file
-  /// 
+  ///
+  /// Uses Storage Access Framework (SAF) on Android 10+ to allow users to choose
+  /// any location without permission issues. Works on all platforms.
+  ///
   /// [includeCredentials] - Whether to include API credentials in the export
   /// Returns an [ExportResult] with the operation status
   Future<ExportResult> exportProfiles({
@@ -76,32 +78,28 @@ class FileOperationsService {
       final timestamp = Formatters.formatTimestampForFilename(DateTime.now());
       final suggestedName = 'opnsense_profiles_$timestamp.json';
       
-      // Let user choose directory to save the file
-      final directoryPath = await FilePicker.getDirectoryPath(
-        dialogTitle: 'Choose Export Location',
+      // Convert string to bytes for saveFile
+      final bytes = utf8.encode(jsonString);
+      
+      // Use saveFile() which leverages SAF on Android 10+ and works on all platforms
+      // This allows users to choose any location without permission issues
+      final filePath = await FilePicker.saveFile(
+        dialogTitle: 'Save Profiles Export',
+        fileName: suggestedName,
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+        bytes: bytes,
       );
       
-      if (directoryPath == null) {
-        // User cancelled the directory picker
+      // User cancelled the operation
+      if (filePath == null) {
         return ExportResult(success: false);
       }
       
-      // Create full file path
-      final filePath = path.join(directoryPath, suggestedName);
-      
-      // Write file to chosen location
-      final file = File(filePath);
-      try {
-        await file.writeAsString(jsonString, flush: true);
-        
-        // Notify the system about the new file for proper indexing
-        await _triggerMediaStoreScan(filePath);
-        
-        return ExportResult(success: true, filePath: filePath);
-      } on FileSystemException catch (e) {
-        final errorMessage = PlatformErrorHandler.getFileSystemErrorMessage(e);
-        return ExportResult(success: false, errorMessage: errorMessage);
-      }
+      return ExportResult(success: true, filePath: filePath);
+    } on FileSystemException catch (e) {
+      final errorMessage = PlatformErrorHandler.getFileSystemErrorMessage(e);
+      return ExportResult(success: false, errorMessage: errorMessage);
     } catch (e) {
       return ExportResult(
         success: false,
@@ -111,6 +109,9 @@ class FileOperationsService {
   }
 
   /// Exports a single profile to a JSON file
+  ///
+  /// Uses Storage Access Framework (SAF) on Android 10+ to allow users to choose
+  /// any location without permission issues. Works on all platforms.
   ///
   /// [profile] - The profile to export
   /// [includeCredentials] - Whether to include API credentials in the export
@@ -130,32 +131,28 @@ class FileOperationsService {
       final safeName = profile.name.replaceAll(RegExp(r'[^\w\s-]'), '_');
       final suggestedName = 'opnsense_profile_${safeName}_$timestamp.json';
       
-      // Let user choose directory to save the file
-      final directoryPath = await FilePicker.getDirectoryPath(
-        dialogTitle: 'Choose Export Location',
+      // Convert string to bytes for saveFile
+      final bytes = utf8.encode(jsonString);
+      
+      // Use saveFile() which leverages SAF on Android 10+ and works on all platforms
+      // This allows users to choose any location without permission issues
+      final filePath = await FilePicker.saveFile(
+        dialogTitle: 'Save Profile Export',
+        fileName: suggestedName,
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+        bytes: bytes,
       );
       
-      if (directoryPath == null) {
-        // User cancelled the directory picker
+      // User cancelled the operation
+      if (filePath == null) {
         return ExportResult(success: false);
       }
       
-      // Create full file path
-      final filePath = path.join(directoryPath, suggestedName);
-      
-      // Write file to chosen location
-      final file = File(filePath);
-      try {
-        await file.writeAsString(jsonString, flush: true);
-        
-        // Notify the system about the new file for proper indexing
-        await _triggerMediaStoreScan(filePath);
-        
-        return ExportResult(success: true, filePath: filePath);
-      } on FileSystemException catch (e) {
-        final errorMessage = PlatformErrorHandler.getFileSystemErrorMessage(e);
-        return ExportResult(success: false, errorMessage: errorMessage);
-      }
+      return ExportResult(success: true, filePath: filePath);
+    } on FileSystemException catch (e) {
+      final errorMessage = PlatformErrorHandler.getFileSystemErrorMessage(e);
+      return ExportResult(success: false, errorMessage: errorMessage);
     } catch (e) {
       return ExportResult(
         success: false,
@@ -236,36 +233,6 @@ class FileOperationsService {
     }
   }
 
-  /// Triggers MediaStore scan on Android to make the file visible in file managers
-  Future<void> _triggerMediaStoreScan(String filePath) async {
-    if (Platform.isAndroid) {
-      try {
-        final ProcessResult result = await Process.run(
-          'am',
-          [
-            'broadcast',
-            '-a',
-            'android.intent.action.MEDIA_SCANNER_SCAN_FILE',
-            '-d',
-            'file://$filePath',
-          ],
-        );
-        
-        // Log the result for debugging
-        if (result.exitCode != 0) {
-          developer.log(
-            'MediaStore scan failed: ${result.stderr}',
-            name: 'FileOperationsService',
-          );
-        }
-      } catch (e) {
-        developer.log(
-          'Failed to trigger MediaStore scan: $e',
-          name: 'FileOperationsService',
-        );
-      }
-    }
-  }
 }
 
 
