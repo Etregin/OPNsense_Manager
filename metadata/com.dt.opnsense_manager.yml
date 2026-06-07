@@ -1,12 +1,9 @@
 Categories:
   - Internet
   - System
-
 License: GPL-3.0-only
-
 AuthorName: Etregin
 AuthorWebSite: https://github.com/Etregin
-
 SourceCode: https://github.com/Etregin/OPNsense_Manager
 IssueTracker: https://github.com/Etregin/OPNsense_Manager/issues
 
@@ -18,16 +15,32 @@ Repo: https://github.com/Etregin/OPNsense_Manager
 Builds:
   - versionName: 1.6.1
     versionCode: 11
-    commit: v1.6.1
-    subdir: android/app
+    commit: V1.6.1
     sudo:
       - apt-get update
-      - apt-get install -y openjdk-17-jdk-headless
-      - update-java-alternatives -a
+      - apt-get install -y openjdk-21-jdk-headless
+      - update-alternatives --auto java
     gradle:
       - yes
+    output: build/app/outputs/flutter-apk/app-release.apk
+    srclibs:
+      - flutter@3.44.0
+    rm:
+      - ios
+    prebuild:
+      - export PUB_CACHE=$(pwd)/.pub-cache
+      - sed -i '/org.gradle.java.home/d' android/gradle.properties
+      - echo "org.gradle.java.home=/usr/lib/jvm/java-21-openjdk-amd64" >> android/gradle.properties
+      - $$flutter$$/bin/flutter config --no-analytics
+      - $$flutter$$/bin/flutter pub get
+    scandelete:
+      - .pub-cache
+    build:
+      - export PUB_CACHE=$(pwd)/.pub-cache
+      - $$flutter$$/bin/flutter build apk
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
+UpdateCheckData: pubspec.yaml|version:\s.+\+(\d+)|.|version:\s(.+)\+
 CurrentVersion: 1.6.1
 CurrentVersionCode: 11
