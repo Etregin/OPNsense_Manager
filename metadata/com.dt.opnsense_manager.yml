@@ -1,0 +1,33 @@
+Categories:
+  - Internet
+  - System
+
+License: GPL-3.0-only
+
+AuthorName: Etregin
+AuthorWebSite: https://github.com/Etregin
+
+SourceCode: https://github.com/Etregin/OPNsense_Manager
+IssueTracker: https://github.com/Etregin/OPNsense_Manager/issues
+
+AutoName: OPNsense Manager
+
+RepoType: git
+Repo: https://github.com/Etregin/OPNsense_Manager
+
+Builds:
+  - versionName: 1.6.1
+    versionCode: 11
+    commit: v1.6.1
+    subdir: android/app
+    sudo:
+      - apt-get update
+      - apt-get install -y openjdk-17-jdk-headless
+      - update-java-alternatives -a
+    gradle:
+      - yes
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: 1.6.1
+CurrentVersionCode: 11
