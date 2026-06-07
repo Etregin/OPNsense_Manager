@@ -2,6 +2,15 @@
 
 All notable changes to OPNsense Manager will be documented in this file.
 
+
+## [1.7.0] - 
+
+### Added
+
+### Changed
+
+### Fixed
+
 ## [1.6.1] - 2026-06-07
 
 ### Fixed
