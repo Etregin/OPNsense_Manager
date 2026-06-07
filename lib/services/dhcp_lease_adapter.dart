@@ -134,7 +134,7 @@ class DhcpLeaseAdapter {
         'if': _safeToString(lease['subnet-id'] ?? lease['if']),
         'if_descr': _safeToString(lease['if_descr']),
         'if_name': _safeToString(lease['if_name']),
-        'type': _safeToString(lease['type']) ?? 'dynamic',
+        'type': (lease['is_reserved'] is List && (lease['is_reserved'] as List).isNotEmpty) ? 'static' : 'dynamic',
         'prefix_len': _safeToString(lease['prefix_len']),
         'duid': _safeToString(lease['duid']),
         'client_id': _safeToString(lease['client_id']),
