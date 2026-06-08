@@ -8,6 +8,7 @@ All notable changes to OPNsense Manager will be documented in this file.
 ### Added
 
 - Added Automatic neighbor discovery with pagination, the ability to search and start / stop / restart the service
+- Added Thermal Sensors information on the dashboard screen for applicable systems (Will not work with VMs)
 
 ### Changed
 

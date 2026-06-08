@@ -398,26 +398,17 @@ class SystemService extends BaseOPNsenseService {
             return data
                 .map((json) => ThermalSensor.fromJson(json as Map<String, dynamic>))
                 .toList();
-          } catch (e, stackTrace) {
-            print('Error parsing thermal sensor data: $e');
-            print('Raw data: $data');
-            print('Stack trace: $stackTrace');
+          } catch (e) {
             rethrow;
           }
         }
         
         // If response is not a list, return empty list
-        print('Warning: Thermal sensor response is not a list: ${data.runtimeType}');
         return [];
       } else {
         throw ApiException('Failed to get system temperature', response.statusCode);
       }
     } on DioException catch (e) {
-      print('DioException getting thermal sensors: ${e.message}');
-      if (e.response != null) {
-        print('Response status: ${e.response?.statusCode}');
-        print('Response data: ${e.response?.data}');
-      }
       throw handleDioError(e);
     }
   }
