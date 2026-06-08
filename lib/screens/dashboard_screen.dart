@@ -21,6 +21,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/system_info.dart';
+import '../models/thermal_sensor.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../services/profile_service.dart';
@@ -30,6 +31,7 @@ import '../widgets/app_drawer.dart';
 import '../widgets/dashboard/resource_usage_section.dart';
 import '../widgets/dashboard/services_section.dart';
 import '../widgets/dashboard/gateways_section.dart';
+import '../widgets/dashboard/thermal_sensors_section.dart';
 import '../l10n/app_localizations.dart';
 
 /// Main dashboard screen showing system overview
@@ -44,6 +46,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   SystemInfo? _systemInfo;
   Map<String, dynamic> _servicesData = {};
   List<Map<String, dynamic>> _gateways = [];
+  List<ThermalSensor>? _thermalSensors;
   bool _isLoading = true;
   String? _errorMessage;
   Timer? _refreshTimer;
@@ -107,6 +110,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           _systemInfo = dashboardData.systemInfo;
           _servicesData = dashboardData.servicesData;
           _gateways = dashboardData.gateways;
+          _thermalSensors = dashboardData.thermalSensors;
           _isLoading = false;
         });
       }
@@ -282,6 +286,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         if (_systemInfo != null)
           ResourceUsageSection(systemInfo: _systemInfo!),
         const SizedBox(height: 24),
+        
+        // Thermal Sensors Section
+        if (_thermalSensors != null)
+          ThermalSensorsSection(sensors: _thermalSensors!),
+        if (_thermalSensors != null)
+          const SizedBox(height: 24),
         
         // Services Section
         ServicesSection(

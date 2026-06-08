@@ -21,6 +21,7 @@ import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import '../models/opnsense_config.dart';
 import '../models/system_info.dart';
+import '../models/thermal_sensor.dart';
 import '../models/firewall_rule.dart';
 import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
@@ -215,6 +216,8 @@ class OPNsenseApiService {
   Future<Map<String, dynamic>> getSystemResources() => _systemService.getSystemResources();
   
   Future<SystemInfo> getSystemInfo() => _systemService.getSystemInfo();
+  
+  Future<List<ThermalSensor>> getSystemTemperature() => _systemService.getSystemTemperature();
   
   Future<void> rebootSystem() => _systemService.rebootSystem();
 

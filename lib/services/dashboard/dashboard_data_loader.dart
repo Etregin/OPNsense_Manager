@@ -17,6 +17,7 @@
  */
 
 import '../../models/system_info.dart';
+import '../../models/thermal_sensor.dart';
 import '../demo_api_service.dart';
 
 /// Data class for dashboard data
@@ -24,11 +25,13 @@ class DashboardData {
   final SystemInfo systemInfo;
   final Map<String, dynamic> servicesData;
   final List<Map<String, dynamic>> gateways;
+  final List<ThermalSensor>? thermalSensors;
 
   DashboardData({
     required this.systemInfo,
     required this.servicesData,
     required this.gateways,
+    this.thermalSensors,
   });
 }
 
@@ -44,12 +47,14 @@ class DashboardDataLoader {
       _apiService.getSystemInfo(),
       _loadServices(),
       _loadGateways(),
+      _loadThermalSensors(),
     ]);
 
     return DashboardData(
       systemInfo: results[0] as SystemInfo,
       servicesData: results[1] as Map<String, dynamic>,
       gateways: results[2] as List<Map<String, dynamic>>,
+      thermalSensors: results[3] as List<ThermalSensor>?,
     );
   }
 
@@ -70,6 +75,21 @@ class DashboardDataLoader {
       return gateways.cast<Map<String, dynamic>>();
     } catch (e) {
       return [];
+    }
+  }
+
+  /// Load thermal sensors data
+  /// Returns null if fetch fails, empty list if no sensors available (VM case)
+  Future<List<ThermalSensor>?> _loadThermalSensors() async {
+    try {
+      final sensors = await _apiService.getSystemTemperature();
+      return sensors;
+    } catch (e, stackTrace) {
+      // Log error for debugging
+      print('Error loading thermal sensors: $e');
+      print('Stack trace: $stackTrace');
+      // Return null on error to distinguish from empty array (VM case)
+      return null;
     }
   }
 }

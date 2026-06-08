@@ -17,6 +17,7 @@
  */
 
 import '../models/system_info.dart';
+import '../models/thermal_sensor.dart';
 import '../models/firewall_rule.dart';
 import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
@@ -73,6 +74,9 @@ class DemoDataService {
 
   /// Generate demo gateways
   List<Map<String, dynamic>> generateGateways() => _systemGenerator.generateGateways();
+
+  /// Generate demo thermal sensors
+  List<ThermalSensor> generateThermalSensors() => _systemGenerator.generateThermalSensors();
 
   // ==================== Firewall Data ====================
 

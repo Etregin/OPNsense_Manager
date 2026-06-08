@@ -19,6 +19,7 @@
 export 'network/vip_service.dart' show CarpVipOption;
 
 import '../models/system_info.dart';
+import '../models/thermal_sensor.dart';
 import '../models/firewall_rule.dart';
 import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
@@ -76,6 +77,14 @@ class DemoApiService {
         isDemoMode: _isDemoMode,
         demoAction: () async => _demoDataService.generateSystemInfo(),
         realAction: () => _realApiService.getSystemInfo(),
+      );
+
+  /// Get system temperature sensors
+  Future<List<ThermalSensor>> getSystemTemperature() => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _demoDataService.generateThermalSensors(),
+        realAction: () => _realApiService.getSystemTemperature(),
+        delayMs: 300,
       );
 
   /// Get firewall rules
