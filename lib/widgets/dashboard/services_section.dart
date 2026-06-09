@@ -89,8 +89,9 @@ class _ServicesSectionState extends State<ServicesSection> {
   Widget _buildServiceTile(Map<String, dynamic> service) {
     final l10n = AppLocalizations.of(context)!;
     // Handle different possible field names from OPNsense API
-    final name = (service['name'] ??
-            service['description'] ??
+    // Prioritize description field for display
+    final name = (service['description'] ??
+            service['name'] ??
             service['id'] ??
             l10n.unknown)
         .toString();
