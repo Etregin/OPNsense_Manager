@@ -2,6 +2,21 @@
 
 All notable changes to OPNsense Manager will be documented in this file.
 
+
+## [1.7.0] - 
+
+### Added
+- Added Automatic neighbor discovery with pagination, the ability to search and start / stop / restart the service
+- Added Thermal Sensors information on the dashboard screen for applicable systems (Will not work with VMs)
+
+### Changed
+- Adjusted the services section to show the description instead of the name to mimic the opnsense GUI
+- Adjusted Logo and added multiple options to work smoother and look cleaner on different operating systems
+
+### Fixed
+- Resolved an issue on older android devices (Android 10) being unable to export profiles due to permission issues
+- Resolved a bug for KEA DHCP not displaying the proper lease type
+
 ## [1.6.1] - 2026-06-07
 
 ### Fixed

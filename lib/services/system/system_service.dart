@@ -20,6 +20,7 @@ import 'package:dio/dio.dart';
 import '../base/base_opnsense_service.dart';
 import '../base/api_exception.dart';
 import '../../models/system_info.dart';
+import '../../models/thermal_sensor.dart';
 
 /// Service for system-related operations
 class SystemService extends BaseOPNsenseService {
@@ -372,6 +373,43 @@ class SystemService extends BaseOPNsenseService {
     } catch (_) {
       // Silently handle error
       rethrow;
+    }
+  }
+
+  /// Get system temperature sensors
+  /// Returns a list of thermal sensors or an empty list for VM systems
+  Future<List<ThermalSensor>> getSystemTemperature() async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.get('/diagnostics/system/system_temperature');
+      
+      if (response.statusCode == 200) {
+        final data = response.data;
+        
+        // Handle empty array response (common for VM systems without thermal sensors)
+        if (data is List) {
+          if (data.isEmpty) {
+            return [];
+          }
+          
+          // Parse list of thermal sensors
+          try {
+            return data
+                .map((json) => ThermalSensor.fromJson(json as Map<String, dynamic>))
+                .toList();
+          } catch (e) {
+            rethrow;
+          }
+        }
+        
+        // If response is not a list, return empty list
+        return [];
+      } else {
+        throw ApiException('Failed to get system temperature', response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
     }
   }
 

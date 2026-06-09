@@ -17,6 +17,7 @@
  */
 
 import '../models/system_info.dart';
+import '../models/thermal_sensor.dart';
 import '../models/firewall_rule.dart';
 import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
@@ -27,6 +28,7 @@ import '../models/tailscale_settings.dart';
 import '../models/openvpn_instance_list_item.dart';
 import '../models/openvpn_instance.dart';
 import '../models/openvpn_static_key.dart';
+import '../models/neighbor.dart';
 import 'demo/demo_state_manager.dart';
 import 'demo/demo_system_data_generator.dart';
 import 'demo/demo_firewall_data_generator.dart';
@@ -72,6 +74,9 @@ class DemoDataService {
 
   /// Generate demo gateways
   List<Map<String, dynamic>> generateGateways() => _systemGenerator.generateGateways();
+
+  /// Generate demo thermal sensors
+  List<ThermalSensor> generateThermalSensors() => _systemGenerator.generateThermalSensors();
 
   // ==================== Firewall Data ====================
 
@@ -146,6 +151,58 @@ class DemoDataService {
 
   /// Generate demo DHCP leases
   List<Map<String, dynamic>> generateDhcpLeases() => _networkGenerator.generateDhcpLeases();
+
+  /// Generate demo neighbors for neighbor discovery
+  List<Neighbor> generateNeighbors() {
+    final now = DateTime.now();
+    return [
+      Neighbor(
+        source: 'arp',
+        interfaceName: 'lan',
+        etherAddress: '00:11:22:33:44:55',
+        ipAddress: '192.168.1.100',
+        organizationName: 'Apple, Inc.',
+        firstSeen: (now.subtract(const Duration(days: 7)).millisecondsSinceEpoch ~/ 1000).toString(),
+        lastSeen: (now.subtract(const Duration(minutes: 5)).millisecondsSinceEpoch ~/ 1000).toString(),
+      ),
+      Neighbor(
+        source: 'arp',
+        interfaceName: 'lan',
+        etherAddress: 'AA:BB:CC:DD:EE:FF',
+        ipAddress: '192.168.1.101',
+        organizationName: 'Samsung Electronics Co.,Ltd',
+        firstSeen: (now.subtract(const Duration(days: 3)).millisecondsSinceEpoch ~/ 1000).toString(),
+        lastSeen: (now.subtract(const Duration(minutes: 15)).millisecondsSinceEpoch ~/ 1000).toString(),
+      ),
+      Neighbor(
+        source: 'ndp',
+        interfaceName: 'lan',
+        etherAddress: '11:22:33:44:55:66',
+        ipAddress: 'fe80::1234:5678:90ab:cdef',
+        organizationName: 'Intel Corporate',
+        firstSeen: (now.subtract(const Duration(days: 1)).millisecondsSinceEpoch ~/ 1000).toString(),
+        lastSeen: (now.subtract(const Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000).toString(),
+      ),
+      Neighbor(
+        source: 'arp',
+        interfaceName: 'lan',
+        etherAddress: '22:33:44:55:66:77',
+        ipAddress: '192.168.1.102',
+        organizationName: null,
+        firstSeen: (now.subtract(const Duration(hours: 12)).millisecondsSinceEpoch ~/ 1000).toString(),
+        lastSeen: (now.subtract(const Duration(minutes: 30)).millisecondsSinceEpoch ~/ 1000).toString(),
+      ),
+      Neighbor(
+        source: 'arp',
+        interfaceName: 'opt1',
+        etherAddress: '33:44:55:66:77:88',
+        ipAddress: '10.0.0.50',
+        organizationName: 'Raspberry Pi Foundation',
+        firstSeen: (now.subtract(const Duration(days: 14)).millisecondsSinceEpoch ~/ 1000).toString(),
+        lastSeen: (now.subtract(const Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000).toString(),
+      ),
+    ];
+  }
 
   // ==================== Service State ====================
 

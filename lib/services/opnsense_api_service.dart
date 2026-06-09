@@ -21,6 +21,7 @@ import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import '../models/opnsense_config.dart';
 import '../models/system_info.dart';
+import '../models/thermal_sensor.dart';
 import '../models/firewall_rule.dart';
 import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
@@ -41,6 +42,7 @@ import '../models/openvpn_client_override_search_response.dart';
 import '../models/openvpn_session_search_response.dart';
 import '../models/openvpn_route_search_response.dart';
 import '../models/openvpn_log_search_response.dart';
+import '../models/neighbor.dart';
 import '../utils/constants.dart';
 
 // Import all specialized services
@@ -54,6 +56,7 @@ import 'network/dhcp_service.dart';
 import 'network/gateway_service.dart';
 import 'network/vip_service.dart';
 import 'network/wol_service.dart';
+import 'network/neighbor_discovery_service.dart';
 import 'services/service_control_service.dart';
 import 'tailscale/tailscale_service.dart';
 import 'vpn/openvpn_service.dart';
@@ -84,6 +87,7 @@ class OPNsenseApiService {
   final GatewayService _gatewayService = GatewayService();
   final VipService _vipService = VipService();
   final WolService _wolService = WolService();
+  final NeighborDiscoveryService _neighborDiscoveryService = NeighborDiscoveryService();
   final ServiceControlService _serviceControlService = ServiceControlService();
   final TailscaleService _tailscaleService = TailscaleService();
 
@@ -131,6 +135,7 @@ class OPNsenseApiService {
     _gatewayService.init(_dio!, config);
     _vipService.init(_dio!, config);
     _wolService.init(_dio!, config);
+    _neighborDiscoveryService.init(_dio!, config);
     _serviceControlService.init(_dio!, config);
     _tailscaleService.init(_dio!, config);
   }
@@ -187,6 +192,7 @@ class OPNsenseApiService {
     _dhcpService.clear();
     _gatewayService.clear();
     _vipService.clear();
+    _neighborDiscoveryService.clear();
     _serviceControlService.clear();
     _tailscaleService.clear();
     
@@ -210,6 +216,8 @@ class OPNsenseApiService {
   Future<Map<String, dynamic>> getSystemResources() => _systemService.getSystemResources();
   
   Future<SystemInfo> getSystemInfo() => _systemService.getSystemInfo();
+  
+  Future<List<ThermalSensor>> getSystemTemperature() => _systemService.getSystemTemperature();
   
   Future<void> rebootSystem() => _systemService.rebootSystem();
 
@@ -403,6 +411,34 @@ class OPNsenseApiService {
   // ============================================================================
 
   Future<List<Map<String, dynamic>>> getDhcpLeases() => _dhcpService.getDhcpLeases();
+
+  // ============================================================================
+  // Neighbor Discovery Service Delegations
+  // ============================================================================
+
+  Future<NeighborDiscoveryStatus> checkNeighborDiscoveryStatus() =>
+      _neighborDiscoveryService.checkStatus();
+
+  Future<NeighborDiscoveryResponse> getNeighbors({
+    int current = 1,
+    int rowCount = 50,
+    String? searchPhrase,
+  }) async {
+    return await _neighborDiscoveryService.searchNeighbors(
+      current: current,
+      rowCount: rowCount,
+      searchPhrase: searchPhrase,
+    );
+  }
+
+  Future<Map<String, dynamic>> startNeighborDiscoveryService() =>
+      _neighborDiscoveryService.startService();
+
+  Future<Map<String, dynamic>> stopNeighborDiscoveryService() =>
+      _neighborDiscoveryService.stopService();
+
+  Future<Map<String, dynamic>> restartNeighborDiscoveryService() =>
+      _neighborDiscoveryService.restartService();
 
   // ============================================================================
   // WOL Service Delegations

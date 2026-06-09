@@ -19,6 +19,7 @@
 export 'network/vip_service.dart' show CarpVipOption;
 
 import '../models/system_info.dart';
+import '../models/thermal_sensor.dart';
 import '../models/firewall_rule.dart';
 import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
@@ -39,6 +40,7 @@ import '../models/openvpn_route_search_response.dart';
 import '../models/openvpn_client_override.dart';
 import '../models/openvpn_client_override_search_response.dart';
 import '../models/openvpn_log_search_response.dart';
+import '../models/neighbor.dart';
 import 'demo_data_service.dart';
 import 'opnsense_api_service.dart';
 import 'demo/demo_api_decorator.dart';
@@ -75,6 +77,14 @@ class DemoApiService {
         isDemoMode: _isDemoMode,
         demoAction: () async => _demoDataService.generateSystemInfo(),
         realAction: () => _realApiService.getSystemInfo(),
+      );
+
+  /// Get system temperature sensors
+  Future<List<ThermalSensor>> getSystemTemperature() => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _demoDataService.generateThermalSensors(),
+        realAction: () => _realApiService.getSystemTemperature(),
+        delayMs: 300,
       );
 
   /// Get firewall rules
@@ -560,6 +570,93 @@ class DemoApiService {
         demoAction: () async => _demoDataService.generateDhcpLeases(),
         realAction: () => _realApiService.getDhcpLeases(),
         delayMs: 400,
+      );
+
+  // ==================== Neighbor Discovery ====================
+
+  /// Check neighbor discovery service status
+  Future<NeighborDiscoveryStatus> checkNeighborDiscoveryStatus() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => NeighborDiscoveryStatus(status: 'running'),
+        realAction: () => _realApiService.checkNeighborDiscoveryStatus(),
+        delayMs: 300,
+      );
+
+  /// Get discovered neighbors
+  Future<NeighborDiscoveryResponse> getNeighbors({
+    int current = 1,
+    int rowCount = 50,
+    String? searchPhrase,
+  }) async {
+    return await DemoApiDecorator.execute<NeighborDiscoveryResponse>(
+      isDemoMode: _isDemoMode,
+      demoAction: () async {
+        var neighbors = _demoDataService.generateNeighbors();
+        
+        // Apply search filter in demo mode
+        if (searchPhrase != null && searchPhrase.isNotEmpty) {
+          neighbors = neighbors.where((n) =>
+            n.ipAddress.toLowerCase().contains(searchPhrase.toLowerCase()) ||
+            n.etherAddress.toLowerCase().contains(searchPhrase.toLowerCase()) ||
+            (n.organizationName?.toLowerCase().contains(searchPhrase.toLowerCase()) ?? false)
+          ).toList();
+        }
+        
+        final total = neighbors.length;
+        
+        // Apply pagination
+        final startIndex = (current - 1) * rowCount;
+        final endIndex = startIndex + rowCount;
+        if (startIndex < neighbors.length) {
+          neighbors = neighbors.sublist(
+            startIndex,
+            endIndex > neighbors.length ? neighbors.length : endIndex,
+          );
+        } else {
+          neighbors = [];
+        }
+        
+        return NeighborDiscoveryResponse(
+          total: total,
+          rowCount: rowCount,
+          current: current,
+          rows: neighbors,
+        );
+      },
+      realAction: () => _realApiService.getNeighbors(
+        current: current,
+        rowCount: rowCount,
+        searchPhrase: searchPhrase,
+      ),
+    );
+  }
+
+  /// Start neighbor discovery service
+  Future<Map<String, dynamic>> startNeighborDiscoveryService() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'result': 'ok'},
+        realAction: () => _realApiService.startNeighborDiscoveryService(),
+        delayMs: 500,
+      );
+
+  /// Stop neighbor discovery service
+  Future<Map<String, dynamic>> stopNeighborDiscoveryService() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'result': 'ok'},
+        realAction: () => _realApiService.stopNeighborDiscoveryService(),
+        delayMs: 500,
+      );
+
+  /// Restart neighbor discovery service
+  Future<Map<String, dynamic>> restartNeighborDiscoveryService() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'result': 'ok'},
+        realAction: () => _realApiService.restartNeighborDiscoveryService(),
+        delayMs: 800,
       );
 
   // ==================== Wake-on-LAN ====================

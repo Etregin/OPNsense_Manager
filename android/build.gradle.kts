@@ -5,14 +5,14 @@ allprojects {
     }
 }
 
-// Force all subprojects to use Java 17 and Kotlin JVM 17
+// Force all subprojects to use Java 21 and Kotlin JVM 21
 subprojects {
     afterEvaluate {
         if (project.hasProperty("android")) {
             extensions.configure<com.android.build.gradle.BaseExtension> {
                 compileOptions {
-                    sourceCompatibility = JavaVersion.VERSION_17
-                    targetCompatibility = JavaVersion.VERSION_17
+                    sourceCompatibility = JavaVersion.VERSION_21
+                    targetCompatibility = JavaVersion.VERSION_21
                 }
             }
         }
@@ -20,7 +20,7 @@ subprojects {
         // Configure Kotlin JVM target for all subprojects using compilerOptions DSL
         tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
             compilerOptions {
-                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
             }
         }
     }

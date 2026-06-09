@@ -1914,6 +1914,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get liveNetworkMonitor => 'Live-Netzwerkmonitor';
 
   @override
+  String get neighborDiscovery => 'Nachbarerkennung';
+
+  @override
   String get loading => 'Lädt...';
 
   @override

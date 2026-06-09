@@ -2,7 +2,7 @@ name: opnsense_manager
 description: "OPNsense Manager - A professional Flutter mobile application for managing OPNsense firewall routers."
 publish_to: 'none'
 
-version: 1.6.1+11
+version: 1.7.0+12
 
 environment:
   sdk: '>=3.12.0 <4.0.0'
@@ -130,7 +130,7 @@ flutter_native_splash:
   # Android 12+ specific configuration
   android_12:
     color: "#1a1a2e"
-    image: assets/images/opnsense_manager.png
+    image: assets/images/opnsense_manager_android12.png
     icon_background_color: "#1a1a2e"
   
   # iOS specific configuration

@@ -21,6 +21,7 @@ import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../../screens/live_network_monitor_screen.dart';
 import '../../screens/dhcp_leases_screen.dart';
+import '../../screens/neighbor_discovery_screen.dart';
 import '../../screens/wol_screen.dart';
 import '../../services/demo_api_service.dart';
 import 'navigation_tile.dart';
@@ -91,6 +92,13 @@ class _NetworkNavigationSectionState extends State<NetworkNavigationSection> {
           currentRoute: widget.currentRoute,
           targetRoute: 'dhcp_leases',
           destination: const DhcpLeasesScreen(),
+        ),
+        NavigationTile(
+          icon: Icons.devices,
+          title: l10n.neighborDiscovery,
+          currentRoute: widget.currentRoute,
+          targetRoute: 'neighbor_discovery',
+          destination: const NeighborDiscoveryScreen(),
         ),
         // Only show WOL tile if plugin is available and not loading
         if (!_loadingWolStatus && _wolPluginAvailable)

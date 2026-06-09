@@ -2716,6 +2716,10 @@
   "@liveNetworkMonitor": {
     "description": "Translation for liveNetworkMonitor"
   },
+  "neighborDiscovery": "Descubrimiento de Vecinos",
+  "@neighborDiscovery": {
+    "description": "Translation for neighborDiscovery"
+  },
   "loading": "Cargando...",
   "@loading": {
     "description": "Translation for loading"
