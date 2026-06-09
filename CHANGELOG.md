@@ -11,6 +11,7 @@ All notable changes to OPNsense Manager will be documented in this file.
 
 ### Changed
 - Adjusted the services section to show the description instead of the name to mimic the opnsense GUI
+- Adjusted Logo and added multiple options to work smoother and look cleaner on different operating systems
 
 ### Fixed
 - Resolved an issue on older android devices (Android 10) being unable to export profiles due to permission issues
