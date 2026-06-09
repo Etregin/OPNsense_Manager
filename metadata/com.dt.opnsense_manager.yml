@@ -4,7 +4,7 @@ Categories:
 License: GPL-3.0-only
 AuthorName: Etregin
 AuthorWebSite: https://github.com/Etregin
-SourceCode: https://github.com/Etregin/OPNsense_Manager
+SourceCode: https://github.com/Etregin/OPNsense_Manager/tree/V1.7.0
 IssueTracker: https://github.com/Etregin/OPNsense_Manager/issues
 
 AutoName: OPNsense Manager
@@ -15,13 +15,11 @@ Repo: https://github.com/Etregin/OPNsense_Manager
 Builds:
   - versionName: 1.7.0
     versionCode: 12
-    commit: V1.7.0
+    commit: 6a5bee6e43fc5472848ffc68a97b343f7b163f33
     sudo:
       - apt-get update
       - apt-get install -y openjdk-21-jdk-headless
       - update-alternatives --auto java
-    gradle:
-      - yes
     output: build/app/outputs/flutter-apk/app-release.apk
     srclibs:
       - flutter@3.44.0
