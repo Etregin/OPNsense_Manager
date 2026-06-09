@@ -13,9 +13,9 @@ RepoType: git
 Repo: https://github.com/Etregin/OPNsense_Manager
 
 Builds:
-  - versionName: 1.6.1
-    versionCode: 11
-    commit: V1.6.1
+  - versionName: 1.7.0
+    versionCode: 12
+    commit: V1.7.0
     sudo:
       - apt-get update
       - apt-get install -y openjdk-21-jdk-headless
@@ -42,5 +42,5 @@ Builds:
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
 UpdateCheckData: pubspec.yaml|version:\s.+\+(\d+)|.|version:\s(.+)\+
-CurrentVersion: 1.6.1
-CurrentVersionCode: 11
+CurrentVersion: 1.7.0
+CurrentVersionCode: 12

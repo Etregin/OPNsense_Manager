@@ -130,7 +130,7 @@ flutter_native_splash:
   # Android 12+ specific configuration
   android_12:
     color: "#1a1a2e"
-    image: assets/images/opnsense_manager.png
+    image: assets/images/opnsense_manager_android12.png
     icon_background_color: "#1a1a2e"
   
   # iOS specific configuration
