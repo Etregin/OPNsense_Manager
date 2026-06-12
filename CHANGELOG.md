@@ -2,6 +2,10 @@
 
 All notable changes to OPNsense Manager will be documented in this file.
 
+## [1.7.1] - 
+
+### Changed
+- Adjusted gradle file to include an fdroid flavor to support fdroid builds.
 
 ## [1.7.0] - 
 
