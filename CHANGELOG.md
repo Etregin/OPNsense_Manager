@@ -2,6 +2,17 @@
 
 All notable changes to OPNsense Manager will be documented in this file.
 
+## [1.8.0] - 
+
+### Added
+
+
+### Changed
+
+
+### Fixed
+
+
 ## [1.7.1] - 
 
 ### Changed
