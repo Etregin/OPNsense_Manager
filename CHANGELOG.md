@@ -2,7 +2,13 @@
 
 All notable changes to OPNsense Manager will be documented in this file.
 
-## [1.7.1] - 
+## [1.7.2] -
+
+### Changed
+- Updated minimum Flutter SDK version to 3.44.2
+- Updated dependency versions for improved compatibility
+
+## [1.7.1] -
 
 ### Changed
 - Adjusted gradle file to include an fdroid flavor to support fdroid builds.
