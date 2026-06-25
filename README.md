@@ -35,8 +35,12 @@ If you find this project useful, consider supporting its development:
 
 ## 📱 Get the App
 
-[![Google Play](https://img.shields.io/badge/Google_Play-Download-00C853?logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.dt.opnsense_manager)
-[![App Store](https://img.shields.io/badge/App_Store-Download-0D96F6?logo=app-store&logoColor=white)](https://apps.apple.com/us/app/opnsense-manager/id6767634059)
+
+<p align="center" style="line-height:0; margin:0; padding:0;">
+  <a href="https://play.google.com/store/apps/details?id=com.dt.opnsense_manager" target="_blank" style="text-decoration:none; border:none; outline:none;"><img src="https://raw.githubusercontent.com/Etregin/OPNsense_Manager/main/assets/images/GetItOnGooglePlay_Badge_Web_color_English.svg" alt="Get it on Google Play" height="50" style="margin-right:8px; vertical-align:middle; border:none; outline:none; display:inline-block;"></a>
+  <a href="https://apps.apple.com/us/app/opnsense-manager/id6767634059" target="_blank" style="text-decoration:none; border:none; outline:none;"><img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" height="50" style="margin-right:8px; vertical-align:middle; border:none; outline:none; display:inline-block; background:none;"></a>
+  <a href="https://f-droid.org/en/packages/com.dt.opnsense_manager/" target="_blank" style="text-decoration:none; border:none; outline:none;"><img src="https://f-droid.org/badge/get-it-on.svg" alt="Get it on F-Droid" height="70" style="margin-right:8px; vertical-align:middle; border:none; outline:none; display:inline-block; background:none;"></a>
+</p>
 
 </div>
 

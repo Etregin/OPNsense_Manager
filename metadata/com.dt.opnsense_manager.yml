@@ -12,9 +12,9 @@ RepoType: git
 Repo: https://github.com/Etregin/OPNsense_Manager
 
 Builds:
-  - versionName: 1.7.1
-    versionCode: 131
-    commit: 5eba00b1f4660a67dfa45c01df59deeef1746d7b
+  - versionName: 1.7.2
+    versionCode: 141
+    commit: 12612ea29e5ae231d4384fa46c2aad0772aae3eb
     output: build/app/outputs/flutter-apk/app-armeabi-v7a-fdroid-release.apk
     srclibs:
       - flutter@stable
@@ -25,6 +25,9 @@ Builds:
       - web
       - windows
     prebuild:
+      - flutterVersion=$(cat .flutter-version)
+      - '[[ $flutterVersion ]]'
+      - git -C $$flutter$$ checkout -f $flutterVersion
       - export PUB_CACHE=$(pwd)/.pub-cache
       - sed -i '/org.gradle.java.home/d' android/gradle.properties
       - $$flutter$$/bin/flutter config --no-analytics
@@ -33,11 +36,12 @@ Builds:
       - .pub-cache
     build:
       - export PUB_CACHE=$(pwd)/.pub-cache
-      - $$flutter$$/bin/flutter build apk --split-per-abi --flavor fdroid --target-platform android-arm
+      - $$flutter$$/bin/flutter build apk --split-per-abi --flavor fdroid --target-platform
+        android-arm
 
-  - versionName: 1.7.1
-    versionCode: 132
-    commit: 5eba00b1f4660a67dfa45c01df59deeef1746d7b
+  - versionName: 1.7.2
+    versionCode: 142
+    commit: 12612ea29e5ae231d4384fa46c2aad0772aae3eb
     output: build/app/outputs/flutter-apk/app-arm64-v8a-fdroid-release.apk
     srclibs:
       - flutter@stable
@@ -48,6 +52,9 @@ Builds:
       - web
       - windows
     prebuild:
+      - flutterVersion=$(cat .flutter-version)
+      - '[[ $flutterVersion ]]'
+      - git -C $$flutter$$ checkout -f $flutterVersion
       - export PUB_CACHE=$(pwd)/.pub-cache
       - sed -i '/org.gradle.java.home/d' android/gradle.properties
       - $$flutter$$/bin/flutter config --no-analytics
@@ -56,11 +63,12 @@ Builds:
       - .pub-cache
     build:
       - export PUB_CACHE=$(pwd)/.pub-cache
-      - $$flutter$$/bin/flutter build apk --split-per-abi --flavor fdroid --target-platform android-arm64
+      - $$flutter$$/bin/flutter build apk --split-per-abi --flavor fdroid --target-platform
+        android-arm64
 
-  - versionName: 1.7.1
-    versionCode: 133
-    commit: 5eba00b1f4660a67dfa45c01df59deeef1746d7b
+  - versionName: 1.7.2
+    versionCode: 143
+    commit: 12612ea29e5ae231d4384fa46c2aad0772aae3eb
     output: build/app/outputs/flutter-apk/app-x86_64-fdroid-release.apk
     srclibs:
       - flutter@stable
@@ -71,6 +79,9 @@ Builds:
       - web
       - windows
     prebuild:
+      - flutterVersion=$(cat .flutter-version)
+      - '[[ $flutterVersion ]]'
+      - git -C $$flutter$$ checkout -f $flutterVersion
       - export PUB_CACHE=$(pwd)/.pub-cache
       - sed -i '/org.gradle.java.home/d' android/gradle.properties
       - $$flutter$$/bin/flutter config --no-analytics
@@ -79,9 +90,8 @@ Builds:
       - .pub-cache
     build:
       - export PUB_CACHE=$(pwd)/.pub-cache
-      - $$flutter$$/bin/flutter build apk --split-per-abi --flavor fdroid --target-platform android-x64
-
-AllowedAPKSigningKeys: ca889bba23ca5c486a642ce077bcc5764ebf7194ef9e3cf99fd70c3eecf6a4b2
+      - $$flutter$$/bin/flutter build apk --split-per-abi --flavor fdroid --target-platform
+        android-x64
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
@@ -90,5 +100,5 @@ VercodeOperation:
   - '%c * 10 + 2'
   - '%c * 10 + 3'
 UpdateCheckData: pubspec.yaml|version:\s.+\+(\d+)|.|version:\s(.+)\+
-CurrentVersion: 1.7.1
-CurrentVersionCode: 133
+CurrentVersion: 1.7.2
+CurrentVersionCode: 143
