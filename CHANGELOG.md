@@ -12,6 +12,7 @@ All notable changes to OPNsense Manager will be documented in this file.
 
 ### Fixed
 
+- Removed the incorrectly placed floating refresh button from the neighbor discovery screen.
 
 ## [1.7.2] -
 
