@@ -599,11 +599,6 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
                   onRetry: _loadNeighbors,
                 )
               : _buildContent(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _isLoading ? null : _loadNeighbors,
-        tooltip: 'Refresh',
-        child: const Icon(Icons.refresh),
-      ),
     );
   }
 }
