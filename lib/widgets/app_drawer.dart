@@ -25,6 +25,7 @@ import '../screens/system_info_screen.dart';
 import '../screens/settings_screen.dart';
 import '../screens/profile_selection_screen.dart';
 import '../l10n/app_localizations.dart';
+import '../services/demo_api_service.dart';
 import '../services/navigation/navigation_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../services/profile_service.dart';
@@ -59,6 +60,13 @@ class _AppDrawerState extends State<AppDrawer> {
   bool _firewallExpanded = false;
   bool _vpnExpanded = false;
 
+  /// Internally fetched system info, used when the caller does not supply one.
+  SystemInfo? _internalSystemInfo;
+
+  /// Returns the system info to display: the caller-supplied value takes
+  /// precedence; falls back to the internally fetched value.
+  SystemInfo? get _effectiveSystemInfo => widget.systemInfo ?? _internalSystemInfo;
+
   @override
   void initState() {
     super.initState();
@@ -71,6 +79,28 @@ class _AppDrawerState extends State<AppDrawer> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Fetch system info internally only when the caller did not provide it.
+    if (widget.systemInfo == null && _internalSystemInfo == null) {
+      _fetchSystemInfo();
+    }
+  }
+
+  Future<void> _fetchSystemInfo() async {
+    try {
+      final info = await context.read<DemoApiService>().getSystemInfo();
+      if (mounted) {
+        setState(() {
+          _internalSystemInfo = info;
+        });
+      }
+    } catch (_) {
+      // System info is optional — silently ignore failures.
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     
@@ -79,7 +109,7 @@ class _AppDrawerState extends State<AppDrawer> {
         padding: EdgeInsets.zero,
         children: [
           // Drawer header with app branding
-          DrawerHeaderWidget(systemInfo: widget.systemInfo),
+          DrawerHeaderWidget(systemInfo: _effectiveSystemInfo),
           
           // 1. Dashboard navigation
           NavigationTile(

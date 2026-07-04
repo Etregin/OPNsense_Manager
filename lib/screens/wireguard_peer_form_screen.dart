@@ -26,7 +26,7 @@ import '../utils/snackbar_helper.dart';
 import '../viewmodels/wireguard_peer_form_view_model.dart';
 import '../widgets/common/loading_overlay.dart';
 import '../widgets/wireguard/list_manager_card.dart';
-import '../utils/common_validators.dart';
+import '../utils/validators.dart';
 import '../utils/wireguard_validators.dart';
 
 /// Form screen for creating/editing WireGuard peers (clients)
@@ -246,7 +246,7 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
                   hintText: l10n.myWireguardPeer,
                   prefixIcon: const Icon(Icons.label),
                 ),
-                validator: (value) => CommonValidators.required(value, fieldName: l10n.name),
+                validator: (value) => Validators.required(value, fieldName: l10n.name),
                 enabled: !_viewModel.isLoading,
               ),
               const SizedBox(height: 16),
@@ -366,7 +366,7 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
                   hintText: '192.168.1.1 or vpn.example.com',
                   prefixIcon: const Icon(Icons.dns),
                 ),
-                validator: (value) => CommonValidators.required(value, fieldName: l10n.endpointAddress),
+                validator: (value) => Validators.required(value, fieldName: l10n.endpointAddress),
                 enabled: !_viewModel.isLoading,
               ),
               const SizedBox(height: 16),
@@ -381,7 +381,7 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                validator: CommonValidators.port,
+                validator: Validators.port,
                 enabled: !_viewModel.isLoading,
               ),
               const SizedBox(height: 16),

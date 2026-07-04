@@ -26,7 +26,7 @@ import '../utils/snackbar_helper.dart';
 import '../viewmodels/openvpn_instance_form_view_model.dart';
 import '../widgets/common/loading_overlay.dart';
 import '../widgets/openvpn/openvpn_form_field_widgets.dart';
-import '../utils/common_validators.dart';
+import '../utils/validators.dart';
 
 /// Form screen for adding/editing OpenVPN instances
 class OpenvpnInstanceFormScreen extends StatefulWidget {
@@ -707,7 +707,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
           hintText: l10n.myOpenvpnInstance,
           prefixIcon: Icons.description,
           helperText: l10n.descriptionHelperText,
-          validator: (value) => CommonValidators.required(value, fieldName: l10n.description),
+          validator: (value) => Validators.required(value, fieldName: l10n.description),
         ),
         const SizedBox(height: 16),
         OpenvpnToggleField(

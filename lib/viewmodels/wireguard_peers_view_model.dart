@@ -79,8 +79,6 @@ class WireGuardPeersViewModel extends BaseListViewModel<WireGuardPeer> {
     await refresh();
   }
 
-  /// Refresh the peers list
-  Future<void> refreshPeers() => refresh();
 }
 
 

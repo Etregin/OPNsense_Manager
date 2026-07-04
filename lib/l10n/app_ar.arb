@@ -374,6 +374,30 @@
   "@authenticationSettings": {
     "description": "Translation for authenticationSettings"
   },
+  "authenticated": "مصادق عليه",
+  "@authenticated": {
+    "description": "Translation for authenticated"
+  },
+  "notAuthenticated": "غير مصادق عليه",
+  "@notAuthenticated": {
+    "description": "Translation for notAuthenticated"
+  },
+  "tailnet": "تيلنت",
+  "@tailnet": {
+    "description": "Translation for tailnet"
+  },
+  "deviceName": "اسم الجهاز",
+  "@deviceName": {
+    "description": "Translation for deviceName"
+  },
+  "authUrl": "رابط المصادقة",
+  "@authUrl": {
+    "description": "Translation for authUrl"
+  },
+  "user": "المستخدم",
+  "@user": {
+    "description": "Translation for user"
+  },
   "authorizedPeers": "الأقران المصرح لهم",
   "@authorizedPeers": {
     "description": "Translation for authorizedPeers"

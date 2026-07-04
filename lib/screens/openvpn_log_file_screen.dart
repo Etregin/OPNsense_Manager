@@ -21,7 +21,6 @@ import 'package:flutter/services.dart';
 import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_log_entry.dart';
-import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
 import '../utils/formatters.dart';
 import '../utils/snackbar_helper.dart';
@@ -46,7 +45,6 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
   final Set<int> _selectedLogIndexes = <int>{};
 
   late OpenvpnLogViewModel _viewModel;
-  SystemInfo? _systemInfo;
   bool _isInitialized = false;
   bool _isRefreshing = false;
   int _currentPage = 1;
@@ -85,7 +83,6 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
         currentPage: _currentPage,
       );
       _isInitialized = true;
-      _loadSystemInfo();
       _viewModel.loadItems();
     }
   }
@@ -94,19 +91,6 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
   void dispose() {
     _viewModel.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadSystemInfo() async {
-    try {
-      final systemInfo = await context.read<DemoApiService>().getSystemInfo();
-      if (mounted) {
-        setState(() {
-          _systemInfo = systemInfo;
-        });
-      }
-    } catch (_) {
-      // System info is optional for the drawer.
-    }
   }
 
   Future<void> _loadLogs({bool isRefresh = false}) async {
@@ -379,9 +363,8 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
                 ),
             ],
           ),
-          drawer: AppDrawer(
-            currentRoute: 'openvpn_logs',
-            systemInfo: _systemInfo,
+          drawer: const AppDrawer(
+            currentRoute: 'openvpn_logs'
           ),
           body: Column(
             children: [

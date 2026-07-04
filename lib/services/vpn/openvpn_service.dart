@@ -82,7 +82,7 @@ class OpenvpnService extends BaseOPNsenseService {
         
         return OpenvpnSearchResponse.fromJson(responseData);
       } else {
-        throw ApiException('Failed to search OpenVPN instances', response.statusCode);
+        throw ApiException('Failed to search OpenVPN instances', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -116,15 +116,15 @@ class OpenvpnService extends BaseOPNsenseService {
           
           // Ensure instanceData is a Map before casting
           if (instanceData is! Map<String, dynamic>) {
-            throw ApiException('Instance data is not a Map<String, dynamic>, got: ${instanceData.runtimeType}', response.statusCode);
+            throw ApiException('Instance data is not a Map<String, dynamic>, got: ${instanceData.runtimeType}', response.statusCode, ApiErrorType.unknown);
           }
           
           final instance = OpenvpnInstance.fromJson(instanceData);
           return instance;
         }
-        throw ApiException('Instance data not found in response', response.statusCode);
+        throw ApiException('Instance data not found in response', response.statusCode, ApiErrorType.unknown);
       } else {
-        throw ApiException('Failed to get OpenVPN instance', response.statusCode);
+        throw ApiException('Failed to get OpenVPN instance', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -163,18 +163,19 @@ class OpenvpnService extends BaseOPNsenseService {
             final errors = validations.entries
                 .map((e) => '${e.key}: ${e.value}')
                 .join(', ');
-            throw ApiException('Validation failed: $errors', response.statusCode);
+            throw ApiException('Validation failed: $errors', response.statusCode, ApiErrorType.unknown);
           }
 
           throw ApiException(
             'Failed to add instance: ${message ?? 'Unknown error'}',
             response.statusCode,
+          ApiErrorType.unknown,
           );
         }
 
         return data;
       } else {
-        throw ApiException('Failed to add OpenVPN instance', response.statusCode);
+        throw ApiException('Failed to add OpenVPN instance', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -217,18 +218,19 @@ class OpenvpnService extends BaseOPNsenseService {
             final errors = validations.entries
                 .map((e) => '${e.key}: ${e.value}')
                 .join(', ');
-            throw ApiException('Validation failed: $errors', response.statusCode);
+            throw ApiException('Validation failed: $errors', response.statusCode, ApiErrorType.unknown);
           }
 
           throw ApiException(
             'Failed to update instance: ${message ?? 'Unknown error'}',
             response.statusCode,
+          ApiErrorType.unknown,
           );
         }
 
         return data;
       } else {
-        throw ApiException('Failed to update OpenVPN instance', response.statusCode);
+        throw ApiException('Failed to update OpenVPN instance', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -256,7 +258,7 @@ class OpenvpnService extends BaseOPNsenseService {
         final result = response.data as Map<String, dynamic>;
         return result;
       } else {
-        throw ApiException('Failed to delete OpenVPN instance', response.statusCode);
+        throw ApiException('Failed to delete OpenVPN instance', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -283,7 +285,7 @@ class OpenvpnService extends BaseOPNsenseService {
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       } else {
-        throw ApiException('Failed to toggle OpenVPN instance', response.statusCode);
+        throw ApiException('Failed to toggle OpenVPN instance', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -308,12 +310,12 @@ class OpenvpnService extends BaseOPNsenseService {
         // Check for explicit failure in response
         if (data.containsKey('status') && data['status'] == 'failed') {
           final message = data['message'] ?? 'Unknown error';
-          throw ApiException('Failed to reconfigure OpenVPN: $message', response.statusCode);
+          throw ApiException('Failed to reconfigure OpenVPN: $message', response.statusCode, ApiErrorType.unknown);
         }
         
         return data;
       } else {
-        throw ApiException('Failed to reconfigure OpenVPN', response.statusCode);
+        throw ApiException('Failed to reconfigure OpenVPN', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -342,16 +344,16 @@ class OpenvpnService extends BaseOPNsenseService {
           if (data.containsKey('token')) {
             return data['token'] as String;
           }
-          throw ApiException('Key not found in response', response.statusCode);
+          throw ApiException('Key not found in response', response.statusCode, ApiErrorType.unknown);
         }
 
         if (data is String) {
           return data;
         }
 
-        throw ApiException('Invalid response format', response.statusCode);
+        throw ApiException('Invalid response format', response.statusCode, ApiErrorType.unknown);
       } else {
-        throw ApiException('Failed to generate auth token', response.statusCode);
+        throw ApiException('Failed to generate auth token', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -395,7 +397,7 @@ class OpenvpnService extends BaseOPNsenseService {
           response.data as Map<String, dynamic>,
         );
       } else {
-        throw ApiException('Failed to search OpenVPN logs', response.statusCode);
+        throw ApiException('Failed to search OpenVPN logs', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -437,7 +439,7 @@ class OpenvpnService extends BaseOPNsenseService {
           response.data as Map<String, dynamic>,
         );
       } else {
-        throw ApiException('Failed to search static keys', response.statusCode);
+        throw ApiException('Failed to search static keys', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -468,9 +470,9 @@ class OpenvpnService extends BaseOPNsenseService {
         if (data.containsKey('statickey')) {
           return OpenvpnStaticKey.fromJson(data['statickey'] as Map<String, dynamic>);
         }
-        throw ApiException('Static key data not found in response', response.statusCode);
+        throw ApiException('Static key data not found in response', response.statusCode, ApiErrorType.unknown);
       } else {
-        throw ApiException('Failed to get static key', response.statusCode);
+        throw ApiException('Failed to get static key', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -499,16 +501,16 @@ class OpenvpnService extends BaseOPNsenseService {
           if (data.containsKey('key')) {
             return data['key'] as String;
           }
-          throw ApiException('Key not found in response', response.statusCode);
+          throw ApiException('Key not found in response', response.statusCode, ApiErrorType.unknown);
         }
 
         if (data is String) {
           return data;
         }
 
-        throw ApiException('Invalid response format', response.statusCode);
+        throw ApiException('Invalid response format', response.statusCode, ApiErrorType.unknown);
       } else {
-        throw ApiException('Failed to generate static key', response.statusCode);
+        throw ApiException('Failed to generate static key', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -545,18 +547,19 @@ class OpenvpnService extends BaseOPNsenseService {
             final errors = validations.entries
                 .map((e) => '${e.key}: ${e.value}')
                 .join(', ');
-            throw ApiException('Validation failed: $errors', response.statusCode);
+            throw ApiException('Validation failed: $errors', response.statusCode, ApiErrorType.unknown);
           }
 
           throw ApiException(
             'Failed to add static key: ${message ?? 'Unknown error'}',
             response.statusCode,
+          ApiErrorType.unknown,
           );
         }
 
         return data;
       } else {
-        throw ApiException('Failed to add static key', response.statusCode);
+        throw ApiException('Failed to add static key', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -597,18 +600,19 @@ class OpenvpnService extends BaseOPNsenseService {
             final errors = validations.entries
                 .map((e) => '${e.key}: ${e.value}')
                 .join(', ');
-            throw ApiException('Validation failed: $errors', response.statusCode);
+            throw ApiException('Validation failed: $errors', response.statusCode, ApiErrorType.unknown);
           }
 
           throw ApiException(
             'Failed to update static key: ${message ?? 'Unknown error'}',
             response.statusCode,
+          ApiErrorType.unknown,
           );
         }
 
         return data;
       } else {
-        throw ApiException('Failed to update static key', response.statusCode);
+        throw ApiException('Failed to update static key', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -632,7 +636,7 @@ class OpenvpnService extends BaseOPNsenseService {
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       } else {
-        throw ApiException('Failed to delete static key', response.statusCode);
+        throw ApiException('Failed to delete static key', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -683,7 +687,7 @@ class OpenvpnService extends BaseOPNsenseService {
         
         return OpenvpnClientOverrideSearchResponse.fromJson(responseData);
       } else {
-        throw ApiException('Failed to search client overrides', response.statusCode);
+        throw ApiException('Failed to search client overrides', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -717,15 +721,15 @@ class OpenvpnService extends BaseOPNsenseService {
           
           // Ensure csoData is a Map before casting
           if (csoData is! Map<String, dynamic>) {
-            throw ApiException('CSO data is not a Map<String, dynamic>, got: ${csoData.runtimeType}', response.statusCode);
+            throw ApiException('CSO data is not a Map<String, dynamic>, got: ${csoData.runtimeType}', response.statusCode, ApiErrorType.unknown);
           }
           
           final override = OpenvpnClientOverride.fromJson(csoData);
           return override;
         }
-        throw ApiException('CSO data not found in response', response.statusCode);
+        throw ApiException('CSO data not found in response', response.statusCode, ApiErrorType.unknown);
       } else {
-        throw ApiException('Failed to get client override', response.statusCode);
+        throw ApiException('Failed to get client override', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -786,18 +790,19 @@ class OpenvpnService extends BaseOPNsenseService {
             final errors = validations.entries
                 .map((e) => '${e.key}: ${e.value}')
                 .join(', ');
-            throw ApiException('Validation failed: $errors', response.statusCode);
+            throw ApiException('Validation failed: $errors', response.statusCode, ApiErrorType.unknown);
           }
 
           throw ApiException(
             'Failed to set client override: ${message ?? 'Unknown error'}',
             response.statusCode,
+          ApiErrorType.unknown,
           );
         }
 
         return data;
       } else {
-        throw ApiException('Failed to set client override', response.statusCode);
+        throw ApiException('Failed to set client override', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -825,7 +830,7 @@ class OpenvpnService extends BaseOPNsenseService {
         final result = response.data as Map<String, dynamic>;
         return result;
       } else {
-        throw ApiException('Failed to delete client override', response.statusCode);
+        throw ApiException('Failed to delete client override', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -852,7 +857,7 @@ class OpenvpnService extends BaseOPNsenseService {
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       } else {
-        throw ApiException('Failed to toggle client override', response.statusCode);
+        throw ApiException('Failed to toggle client override', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -894,7 +899,7 @@ class OpenvpnService extends BaseOPNsenseService {
           response.data as Map<String, dynamic>,
         );
       } else {
-        throw ApiException('Failed to search OpenVPN sessions', response.statusCode);
+        throw ApiException('Failed to search OpenVPN sessions', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -925,12 +930,12 @@ class OpenvpnService extends BaseOPNsenseService {
         // Check for explicit failure in response
         if (data.containsKey('result') && data['result'] != 'ok') {
           final message = data['message'] ?? 'Unknown error';
-          throw ApiException('Failed to start service: $message', response.statusCode);
+          throw ApiException('Failed to start service: $message', response.statusCode, ApiErrorType.unknown);
         }
         
         return data;
       } else {
-        throw ApiException('Failed to start OpenVPN service', response.statusCode);
+        throw ApiException('Failed to start OpenVPN service', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -961,12 +966,12 @@ class OpenvpnService extends BaseOPNsenseService {
         // Check for explicit failure in response
         if (data.containsKey('result') && data['result'] != 'ok') {
           final message = data['message'] ?? 'Unknown error';
-          throw ApiException('Failed to stop service: $message', response.statusCode);
+          throw ApiException('Failed to stop service: $message', response.statusCode, ApiErrorType.unknown);
         }
         
         return data;
       } else {
-        throw ApiException('Failed to stop OpenVPN service', response.statusCode);
+        throw ApiException('Failed to stop OpenVPN service', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -997,12 +1002,12 @@ class OpenvpnService extends BaseOPNsenseService {
         // Check for explicit failure in response
         if (data.containsKey('result') && data['result'] != 'ok') {
           final message = data['message'] ?? 'Unknown error';
-          throw ApiException('Failed to restart service: $message', response.statusCode);
+          throw ApiException('Failed to restart service: $message', response.statusCode, ApiErrorType.unknown);
         }
         
         return data;
       } else {
-        throw ApiException('Failed to restart OpenVPN service', response.statusCode);
+        throw ApiException('Failed to restart OpenVPN service', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -1042,7 +1047,7 @@ class OpenvpnService extends BaseOPNsenseService {
           response.data as Map<String, dynamic>,
         );
       } else {
-        throw ApiException('Failed to search OpenVPN routes', response.statusCode);
+        throw ApiException('Failed to search OpenVPN routes', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);

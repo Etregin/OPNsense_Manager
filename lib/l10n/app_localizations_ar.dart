@@ -281,6 +281,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get authenticationSettings => 'إعدادات المصادقة';
 
   @override
+  String get authenticated => 'مصادق عليه';
+
+  @override
+  String get notAuthenticated => 'غير مصادق عليه';
+
+  @override
+  String get tailnet => 'تيلنت';
+
+  @override
+  String get deviceName => 'اسم الجهاز';
+
+  @override
+  String get authUrl => 'رابط المصادقة';
+
+  @override
+  String get user => 'المستخدم';
+
+  @override
   String get authorizedPeers => 'الأقران المصرح لهم';
 
   @override

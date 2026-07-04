@@ -21,7 +21,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
 import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
@@ -40,7 +39,6 @@ class FirewallLogsScreen extends StatefulWidget {
 
 class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
   late FirewallLogsViewModel _viewModel;
-  SystemInfo? _systemInfo;
   bool _isInitialized = false;
 
   bool _isPaused = false;
@@ -58,7 +56,6 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
       final apiService = context.read<DemoApiService>();
       _viewModel = FirewallLogsViewModel(apiService, historySize: _historySize);
       _isInitialized = true;
-      _loadSystemInfo();
       _viewModel.loadItems();
       _startAutoRefresh();
       _scrollController.addListener(_onScroll);
@@ -85,20 +82,6 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
           });
         }
       }
-    }
-  }
-
-  Future<void> _loadSystemInfo() async {
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      final systemInfo = await demoApiService.getSystemInfo();
-      if (mounted) {
-        setState(() {
-          _systemInfo = systemInfo;
-        });
-      }
-    } catch (e) {
-      // Silently fail - system info is optional for drawer
     }
   }
 
@@ -383,9 +366,8 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
                     ),
                   ],
           ),
-          drawer: AppDrawer(
-            currentRoute: 'firewall_logs',
-            systemInfo: _systemInfo,
+          drawer: const AppDrawer(
+            currentRoute: 'firewall_logs'
           ),
           body: Column(
             children: [

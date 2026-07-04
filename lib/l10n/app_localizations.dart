@@ -614,6 +614,42 @@ abstract class AppLocalizations {
   /// **'Authentication Settings'**
   String get authenticationSettings;
 
+  /// Translation for authenticated
+  ///
+  /// In en, this message translates to:
+  /// **'Authenticated'**
+  String get authenticated;
+
+  /// Translation for notAuthenticated
+  ///
+  /// In en, this message translates to:
+  /// **'Not Authenticated'**
+  String get notAuthenticated;
+
+  /// Translation for tailnet
+  ///
+  /// In en, this message translates to:
+  /// **'Tailnet'**
+  String get tailnet;
+
+  /// Translation for deviceName
+  ///
+  /// In en, this message translates to:
+  /// **'Device Name'**
+  String get deviceName;
+
+  /// Translation for authUrl
+  ///
+  /// In en, this message translates to:
+  /// **'Auth URL'**
+  String get authUrl;
+
+  /// Translation for user
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get user;
+
   /// Translation for authorizedPeers
   ///
   /// In en, this message translates to:

@@ -292,6 +292,24 @@ class AppLocalizationsDe extends AppLocalizations {
   String get authenticationSettings => 'Authentifizierungseinstellungen';
 
   @override
+  String get authenticated => 'Authentifiziert';
+
+  @override
+  String get notAuthenticated => 'Nicht authentifiziert';
+
+  @override
+  String get tailnet => 'Tailnet';
+
+  @override
+  String get deviceName => 'Gerätename';
+
+  @override
+  String get authUrl => 'Auth-URL';
+
+  @override
+  String get user => 'Benutzer';
+
+  @override
   String get authorizedPeers => 'Autorisierte Peers';
 
   @override

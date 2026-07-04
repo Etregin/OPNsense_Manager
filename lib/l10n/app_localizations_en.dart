@@ -284,6 +284,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authenticationSettings => 'Authentication Settings';
 
   @override
+  String get authenticated => 'Authenticated';
+
+  @override
+  String get notAuthenticated => 'Not Authenticated';
+
+  @override
+  String get tailnet => 'Tailnet';
+
+  @override
+  String get deviceName => 'Device Name';
+
+  @override
+  String get authUrl => 'Auth URL';
+
+  @override
+  String get user => 'User';
+
+  @override
   String get authorizedPeers => 'Authorized Peers';
 
   @override

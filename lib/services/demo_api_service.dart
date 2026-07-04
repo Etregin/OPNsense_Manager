@@ -832,7 +832,7 @@ class DemoApiService {
   Future<void> rebootSystem() => DemoApiDecorator.executeVoid(
         isDemoMode: _isDemoMode,
         demoAction: () async =>
-            throw ApiException('Cannot reboot in demo mode', 403),
+            throw const ApiException('Cannot reboot in demo mode', 403, ApiErrorType.unknown),
         realAction: () => _realApiService.rebootSystem(),
         delayMs: 500,
       );

@@ -20,46 +20,46 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/tailscale_status.dart';
-import '../../models/system_info.dart';
 import '../../services/demo_api_service.dart';
-import '../../services/vpn/vpn_connection_manager.dart';
 import '../../utils/snackbar_helper.dart';
 import '../../utils/constants.dart';
 import '../../utils/formatters.dart';
 import '../../l10n/app_localizations.dart';
+import '../../viewmodels/tailscale_status_view_model.dart';
+import '../../widgets/common/error_display.dart';
 
-/// Screen for displaying Tailscale status and configuration
-class TailscaleStatusScreen extends StatefulWidget {
-  final SystemInfo? systemInfo;
-
-  const TailscaleStatusScreen({
-    super.key,
-    this.systemInfo,
-  });
+/// Panel widget displaying Tailscale status — embedded inside VPNConnectionsScreen.
+///
+/// Distinct from `lib/screens/tailscale_status_screen.dart` which is the
+/// standalone full-screen version with its own Scaffold and AppDrawer.
+class TailscaleStatusPanel extends StatefulWidget {
+  const TailscaleStatusPanel({super.key});
 
   @override
-  State<TailscaleStatusScreen> createState() => _TailscaleStatusScreenState();
+  State<TailscaleStatusPanel> createState() => _TailscaleStatusPanelState();
 }
 
-class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
-  TailscaleStatus? _tailscaleStatus;
-  bool _isLoading = true;
-  String? _errorMessage;
+class _TailscaleStatusPanelState extends State<TailscaleStatusPanel> {
+  late TailscaleStatusViewModel _viewModel;
+  bool _isInitialized = false;
   Timer? _refreshTimer;
-  late VPNConnectionManager _connectionManager;
 
   @override
-  void initState() {
-    super.initState();
-    final demoApiService = context.read<DemoApiService>();
-    _connectionManager = VPNConnectionManager(demoApiService);
-    _loadData();
-    _startAutoRefresh();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      final apiService = context.read<DemoApiService>();
+      _viewModel = TailscaleStatusViewModel(apiService);
+      _isInitialized = true;
+      _viewModel.loadData();
+      _startAutoRefresh();
+    }
   }
 
   @override
   void dispose() {
     _refreshTimer?.cancel();
+    _viewModel.dispose();
     super.dispose();
   }
 
@@ -68,149 +68,111 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
       const Duration(seconds: 30),
       (timer) {
         if (mounted) {
-          _loadData();
+          _viewModel.loadData();
         }
       },
     );
-  }
-
-  Future<void> _loadData() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final data = await _connectionManager.loadTailscaleStatus();
-
-      if (mounted) {
-        setState(() {
-          _tailscaleStatus = data.status;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    if (_isLoading && _tailscaleStatus == null) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        if (_viewModel.isLoading && _viewModel.status == null) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    if (_errorMessage != null && _tailscaleStatus == null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        if (_viewModel.errorMessage != null && _viewModel.status == null) {
+          return ErrorDisplay(
+            message: _viewModel.errorMessage!,
+            onRetry: _viewModel.loadData,
+          );
+        }
+
+        final status = _viewModel.status;
+        if (status == null) {
+          return Center(child: Text(l10n.noDataAvailable));
+        }
+
+        return ListView(
+          padding: const EdgeInsets.all(AppConstants.standardPadding),
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.red[300],
-            ),
+            _buildAuthenticationSection(l10n, status),
             const SizedBox(height: 16),
-            Text(
-              l10n.errorLoadingVPNConnections,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Text(
-                _errorMessage!,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey[600]),
-              ),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: _loadData,
-              icon: const Icon(Icons.refresh),
-              label: Text(l10n.retry),
-            ),
+            _buildSettingsSection(l10n, status),
+            const SizedBox(height: 16),
+            _buildStatusSection(l10n, status),
           ],
-        ),
-      );
-    }
-
-    return ListView(
-      padding: const EdgeInsets.all(AppConstants.standardPadding),
-      children: [
-        _buildAuthenticationSection(),
-        const SizedBox(height: 16),
-        _buildSettingsSection(),
-        const SizedBox(height: 16),
-        _buildStatusSection(),
-      ],
+        );
+      },
     );
   }
 
-  Widget _buildAuthenticationSection() {
-    final status = _tailscaleStatus!;
+  Widget _buildAuthenticationSection(
+    AppLocalizations l10n,
+    TailscaleStatus status,
+  ) {
 
     return Card(
       child: ExpansionTile(
         initiallyExpanded: true,
         leading: Icon(
           status.authenticated ? Icons.verified_user : Icons.warning,
-          color: status.authenticated ? Colors.green : Colors.orange,
+          color: status.authenticated ? AppColors.success : AppColors.warning,
           size: 32,
         ),
-        title: const Text(
-          'Authentication',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        title: Text(
+          l10n.authentication,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         subtitle: Text(
-          status.authenticated ? 'Authenticated' : 'Not Authenticated',
+          status.authenticated ? l10n.authenticated : l10n.notAuthenticated,
           style: TextStyle(
-            color: status.authenticated ? Colors.green : Colors.orange,
+            color: status.authenticated ? AppColors.success : AppColors.warning,
             fontWeight: FontWeight.w500,
           ),
         ),
         children: [
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppConstants.standardPadding),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildDetailRow('Service State', status.serviceRunning ? 'Running' : 'Stopped'),
+                _buildDetailRow(
+                  l10n.serviceStatus,
+                  status.serviceRunning ? l10n.running : l10n.stopped,
+                ),
                 const SizedBox(height: 8),
-                _buildDetailRow('Auth Status', status.statusDisplay),
+                _buildDetailRow(l10n.status, status.statusDisplay),
                 const SizedBox(height: 8),
                 if (status.tailnet != null) ...[
-                  _buildDetailRow('Tailnet', status.tailnet!),
+                  _buildDetailRow(l10n.tailnet, status.tailnet!),
                   const SizedBox(height: 8),
                 ],
                 if (status.deviceName != null) ...[
-                  _buildDetailRow('Device Name', status.deviceName!),
+                  _buildDetailRow(l10n.deviceName, status.deviceName!),
                   const SizedBox(height: 8),
                 ],
                 if (status.user != null) ...[
-                  _buildDetailRow('User', status.user!),
+                  _buildDetailRow(l10n.user, status.user!),
                   const SizedBox(height: 8),
                 ],
                 if (status.authUrl != null) ...[
                   const SizedBox(height: 8),
                   ElevatedButton.icon(
                     onPressed: () {
-                      // In a real app, this would open the auth URL
-                      SnackBarHelper.showInfo(context, 'Auth URL: ${status.authUrl}');
+                      SnackBarHelper.showInfo(
+                        context,
+                        '${l10n.authUrl}: ${status.authUrl}',
+                      );
                     },
                     icon: const Icon(Icons.open_in_browser),
-                    label: const Text('Authenticate'),
+                    label: Text(l10n.authenticate),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
+                      backgroundColor: AppColors.warning,
                     ),
                   ),
                 ],
@@ -222,16 +184,13 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
     );
   }
 
-  Widget _buildSettingsSection() {
-    final status = _tailscaleStatus!;
-    final l10n = AppLocalizations.of(context)!;
-
+  Widget _buildSettingsSection(AppLocalizations l10n, TailscaleStatus status) {
     return Card(
       child: ExpansionTile(
         initiallyExpanded: true,
         leading: const Icon(
           Icons.settings,
-          color: Colors.blue,
+          color: AppColors.primary,
           size: 32,
         ),
         title: Text(
@@ -240,33 +199,50 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
         ),
         children: [
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppConstants.standardPadding),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildDetailRow('Accept Routes', status.acceptRoutes ? l10n.enabled : l10n.disabled),
+                _buildDetailRow(
+                  l10n.acceptRoutes,
+                  status.acceptRoutes ? l10n.enabled : l10n.disabled,
+                ),
                 const SizedBox(height: 8),
                 if (status.advertiseRoutes != null) ...[
-                  _buildDetailRow('Advertise Routes', status.advertiseRoutes!),
+                  _buildDetailRow(l10n.advertiseRoutes, status.advertiseRoutes!),
                   const SizedBox(height: 8),
                 ],
-                _buildDetailRow('Exit Node', status.exitNode ?? 'None'),
+                _buildDetailRow(
+                  l10n.exitNode,
+                  status.exitNode ?? l10n.none,
+                ),
                 const SizedBox(height: 8),
-                _buildDetailRow('Use Exit Node', status.useExitNode ? l10n.enabled : l10n.disabled),
+                _buildDetailRow(
+                  l10n.useExitNode,
+                  status.useExitNode ? l10n.enabled : l10n.disabled,
+                ),
                 const SizedBox(height: 8),
-                _buildDetailRow('DNS Enabled', status.dnsEnabled ? l10n.enabled : l10n.disabled),
+                _buildDetailRow(
+                  l10n.dnsEnabled,
+                  status.dnsEnabled ? l10n.enabled : l10n.disabled,
+                ),
                 const SizedBox(height: 8),
-                _buildDetailRow('MagicDNS', status.magicDns ? l10n.enabled : l10n.disabled),
+                _buildDetailRow(
+                  l10n.magicDns,
+                  status.magicDns ? l10n.enabled : l10n.disabled,
+                ),
                 const SizedBox(height: 8),
-                _buildDetailRow('SSH Enabled', status.sshEnabled ? l10n.enabled : l10n.disabled),
+                _buildDetailRow(
+                  l10n.sshEnabled,
+                  status.sshEnabled ? l10n.enabled : l10n.disabled,
+                ),
                 const SizedBox(height: 8),
                 if (status.tags.isNotEmpty) ...[
-                  _buildDetailRow('Tags', status.tags.join(', ')),
+                  _buildDetailRow(l10n.tags, status.tags.join(', ')),
                   const SizedBox(height: 8),
                 ],
-                if (status.hostname != null) ...[
+                if (status.hostname != null)
                   _buildDetailRow(l10n.hostname, status.hostname!),
-                ],
               ],
             ),
           ),
@@ -275,16 +251,13 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
     );
   }
 
-  Widget _buildStatusSection() {
-    final status = _tailscaleStatus!;
-    final l10n = AppLocalizations.of(context)!;
-
+  Widget _buildStatusSection(AppLocalizations l10n, TailscaleStatus status) {
     return Card(
       child: ExpansionTile(
         initiallyExpanded: true,
         leading: Icon(
           status.isConnected ? Icons.cloud_done : Icons.cloud_off,
-          color: status.isConnected ? Colors.green : Colors.grey,
+          color: status.isConnected ? AppColors.success : AppColors.disabled,
           size: 32,
         ),
         title: Text(
@@ -294,20 +267,23 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
         subtitle: Text(
           status.backendState,
           style: TextStyle(
-            color: status.isConnected ? Colors.green : Colors.grey,
+            color: status.isConnected ? AppColors.success : AppColors.disabled,
             fontWeight: FontWeight.w500,
           ),
         ),
         children: [
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppConstants.standardPadding),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildDetailRow('Connection State', status.backendState),
+                _buildDetailRow(l10n.connectionStatus, status.backendState),
                 const SizedBox(height: 8),
                 if (status.ips.isNotEmpty) ...[
-                  _buildDetailRow('IP Addresses', status.ips.join(', ')),
+                  _buildDetailRow(
+                    l10n.ipAddresses,
+                    status.ips.join(', '),
+                  ),
                   const SizedBox(height: 8),
                 ],
                 if (status.bytesReceived != null || status.bytesSent != null) ...[
@@ -338,13 +314,12 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
                   ),
                   const SizedBox(height: 8),
                 ],
-                _buildDetailRow('Peers Count', status.peersCount.toString()),
+                _buildDetailRow(l10n.peersCount, status.peersCount.toString()),
                 const SizedBox(height: 8),
-                _buildDetailRow('Health', status.healthDisplay),
+                _buildDetailRow(l10n.healthStatus, status.healthDisplay),
                 const SizedBox(height: 8),
-                if (status.version != null) ...[
-                  _buildDetailRow('Version', status.version!),
-                ],
+                if (status.version != null)
+                  _buildDetailRow(l10n.versionLabel, status.version!),
               ],
             ),
           ),
@@ -363,7 +338,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
             '$label:',
             style: const TextStyle(
               fontWeight: FontWeight.w500,
-              color: Colors.grey,
+              color: AppColors.disabled,
             ),
           ),
         ),
@@ -377,5 +352,3 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
     );
   }
 }
-
-

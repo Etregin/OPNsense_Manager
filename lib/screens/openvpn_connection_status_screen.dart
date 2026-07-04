@@ -19,7 +19,6 @@
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
 import '../widgets/app_drawer.dart';
 import 'openvpn_sessions_tab.dart';
@@ -37,7 +36,6 @@ class _OpenvpnConnectionStatusScreenState extends State<OpenvpnConnectionStatusS
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late DemoApiService _apiService;
-  SystemInfo? _systemInfo;
   bool _isInitialized = false;
   
   // Callbacks to refresh child tabs
@@ -57,7 +55,6 @@ class _OpenvpnConnectionStatusScreenState extends State<OpenvpnConnectionStatusS
     if (!_isInitialized) {
       _apiService = context.read<DemoApiService>();
       _isInitialized = true;
-      _loadSystemInfo();
     }
   }
 
@@ -75,21 +72,6 @@ class _OpenvpnConnectionStatusScreenState extends State<OpenvpnConnectionStatusS
     }
   }
 
-  Future<void> _loadSystemInfo() async {
-    try {
-      final apiService = context.read<DemoApiService>();
-      final systemInfo = await apiService.getSystemInfo();
-
-      if (mounted) {
-        setState(() {
-          _systemInfo = systemInfo;
-        });
-      }
-    } catch (e) {
-      // Silently fail - system info is optional for drawer
-    }
-  }
-  
   void _refreshCurrentTab() {
     if (_tabController.index == 0) {
       _refreshSessionsTab?.call();
@@ -126,9 +108,8 @@ class _OpenvpnConnectionStatusScreenState extends State<OpenvpnConnectionStatusS
           ),
         ],
       ),
-      drawer: AppDrawer(
-        currentRoute: 'openvpn_connection_status',
-        systemInfo: _systemInfo,
+      drawer: const AppDrawer(
+        currentRoute: 'openvpn_connection_status'
       ),
       body: TabBarView(
         controller: _tabController,

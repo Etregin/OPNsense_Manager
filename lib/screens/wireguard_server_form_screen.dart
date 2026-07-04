@@ -27,7 +27,7 @@ import '../widgets/common/loading_overlay.dart';
 import '../widgets/wireguard/key_pair_section.dart';
 import '../widgets/wireguard/list_manager_card.dart';
 import '../widgets/wireguard/peer_selector_dialog.dart';
-import '../utils/common_validators.dart';
+import '../utils/validators.dart';
 import '../utils/wireguard_validators.dart';
 import 'package:opnsense_manager/l10n/app_localizations.dart';
 
@@ -259,7 +259,7 @@ class _WireGuardServerFormScreenState
                   hintText: l10n.myWireguardServer,
                   prefixIcon: const Icon(Icons.label),
                 ),
-                validator: (value) => CommonValidators.required(value, fieldName: l10n.name),
+                validator: (value) => Validators.required(value, fieldName: l10n.name),
                 enabled: !_viewModel.isLoading,
               ),
               const SizedBox(height: 16),
@@ -275,7 +275,7 @@ class _WireGuardServerFormScreenState
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                validator: CommonValidators.port,
+                validator: Validators.port,
                 enabled: !_viewModel.isLoading,
               ),
               const SizedBox(height: 16),

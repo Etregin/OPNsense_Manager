@@ -19,7 +19,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/wireguard_peer.dart';
-import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/wireguard_peers_view_model.dart';
@@ -38,7 +37,6 @@ class WireGuardPeersScreen extends StatefulWidget {
 
 class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
   late WireGuardPeersViewModel _viewModel;
-  SystemInfo? _systemInfo;
   bool _isInitialized = false;
 
   @override
@@ -61,23 +59,7 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
   Future<void> _loadData() async {
     await Future.wait([
       _viewModel.loadItems(),
-      _loadSystemInfo(),
     ]);
-  }
-
-  Future<void> _loadSystemInfo() async {
-    try {
-      final apiService = context.read<DemoApiService>();
-      final systemInfo = await apiService.getSystemInfo();
-
-      if (mounted) {
-        setState(() {
-          _systemInfo = systemInfo;
-        });
-      }
-    } catch (e) {
-      // Silently fail - system info is optional for drawer
-    }
   }
 
   Future<void> _togglePeer(WireGuardPeer peer) async {
@@ -223,7 +205,7 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
 
     // Refresh the list if the form was saved successfully
     if (result == true && mounted) {
-      await _viewModel.refreshPeers();
+      await _viewModel.refresh();
     }
   }
 
@@ -244,14 +226,13 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
             actions: [
               IconButton(
                 icon: const Icon(Icons.refresh),
-                onPressed: _viewModel.refreshPeers,
+                onPressed: _viewModel.refresh,
                 tooltip: l10n.refresh,
               ),
             ],
           ),
-          drawer: AppDrawer(
-            currentRoute: 'wireguard_peers',
-            systemInfo: _systemInfo,
+          drawer: const AppDrawer(
+            currentRoute: 'wireguard_peers'
           ),
           body: Column(
             children: [
@@ -296,7 +277,7 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
                                 Text(errorMessage),
                                 const SizedBox(height: 16),
                                 ElevatedButton.icon(
-                                  onPressed: _viewModel.refreshPeers,
+                                  onPressed: _viewModel.refresh,
                                   icon: const Icon(Icons.refresh),
                                   label: Text(l10n.retry),
                                 ),
@@ -326,7 +307,7 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
                                 ),
                               )
                             : RefreshIndicator(
-                                onRefresh: _viewModel.refreshPeers,
+                                onRefresh: _viewModel.refresh,
                                 child: ListView.builder(
                                   itemCount: peers.length,
                                   itemBuilder: (context, index) {

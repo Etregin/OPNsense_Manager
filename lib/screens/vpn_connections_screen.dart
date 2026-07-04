@@ -24,7 +24,7 @@ import '../viewmodels/vpn_connections_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../l10n/app_localizations.dart';
 import 'vpn/vpn_connections_list_screen.dart';
-import 'vpn/tailscale_status_screen.dart';
+import 'vpn/tailscale_status_screen.dart' show TailscaleStatusPanel;
 
 /// Coordinator screen for VPN connections - routes to specialized screens
 class VPNConnectionsScreen extends StatefulWidget {
@@ -142,7 +142,7 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
     if (_isTailscaleMode) {
       return RefreshIndicator(
         onRefresh: _viewModel.loadItems,
-        child: TailscaleStatusScreen(systemInfo: _viewModel.systemInfo),
+        child: const TailscaleStatusPanel(),
       );
     } else {
       return RefreshIndicator(

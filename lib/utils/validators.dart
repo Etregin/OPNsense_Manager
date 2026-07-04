@@ -156,12 +156,58 @@ class Validators {
     return null;
   }
 
-  /// Get error message for required field validation
+  /// Get error message for required field validation (with l10n)
   static String? validateRequired(
       String? value, String fieldName, BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     if (value == null || value.trim().isEmpty) {
       return l10n.fieldIsRequired(fieldName);
+    }
+    return null;
+  }
+
+  /// Validate that [value] is non-empty. Returns a plain-English error or null.
+  ///
+  /// Use this overload in form validators that do not have access to a
+  /// [BuildContext] (e.g. inline `validator:` callbacks).
+  static String? required(String? value, {String fieldName = 'This field'}) {
+    if (value == null || value.trim().isEmpty) {
+      return '$fieldName is required';
+    }
+    return null;
+  }
+
+  /// Validate that [value] is a valid port number (1–65535).
+  ///
+  /// Context-free overload for inline `validator:` callbacks.
+  static String? port(String? value) {
+    if (value == null || value.isEmpty) return null;
+    if (!NetworkValidators.isValidPort(value)) {
+      return 'Invalid port (must be 1-65535)';
+    }
+    return null;
+  }
+
+  /// Validate maximum string length.
+  ///
+  /// Context-free overload for inline `validator:` callbacks.
+  static String? maxLength(String? value, int max,
+      {String fieldName = 'This field'}) {
+    if (value == null || value.isEmpty) return null;
+    if (value.length > max) {
+      return '$fieldName must be at most $max characters';
+    }
+    return null;
+  }
+
+  /// Run [validators] in order, returning the first non-null error message.
+  ///
+  /// Useful for combining multiple validators on a single form field.
+  static String? combine(
+      List<String? Function(String?)> validators, String? value) {
+    for (final validator in validators) {
+      final error = validator(value);
+      if (error != null) return error;
     }
     return null;
   }

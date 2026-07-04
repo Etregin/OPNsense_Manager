@@ -24,7 +24,7 @@ import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/openvpn_static_key_form_view_model.dart';
 import '../widgets/common/loading_overlay.dart';
-import '../utils/common_validators.dart';
+import '../utils/validators.dart';
 
 /// Form screen for creating/editing OpenVPN static keys
 class OpenvpnStaticKeyFormScreen extends StatefulWidget {
@@ -221,7 +221,7 @@ class _OpenvpnStaticKeyFormScreenState
                   helperText: l10n.staticKeyDescriptionHelper,
                 ),
                 validator: (value) =>
-                    CommonValidators.required(value, fieldName: 'Description'),
+                    Validators.required(value, fieldName: 'Description'),
                 enabled: !_viewModel.isLoading,
               ),
               const SizedBox(height: 16),
@@ -258,7 +258,7 @@ class _OpenvpnStaticKeyFormScreenState
                         }
                       },
                 validator: (value) =>
-                    CommonValidators.required(value, fieldName: 'Mode'),
+                    Validators.required(value, fieldName: 'Mode'),
               ),
               const SizedBox(height: 24),
 
@@ -307,7 +307,7 @@ class _OpenvpnStaticKeyFormScreenState
                   ),
                 ),
                 validator: (value) =>
-                    CommonValidators.required(value, fieldName: 'Key'),
+                    Validators.required(value, fieldName: 'Key'),
                 enabled: !_viewModel.isLoading,
               ),
               const SizedBox(height: 24),

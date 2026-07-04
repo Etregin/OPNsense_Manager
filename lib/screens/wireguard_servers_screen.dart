@@ -19,7 +19,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/wireguard_server.dart';
-import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/wireguard_servers_view_model.dart';
@@ -40,7 +39,6 @@ class WireGuardServersScreen extends StatefulWidget {
 
 class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
   late WireGuardServersViewModel _viewModel;
-  SystemInfo? _systemInfo;
   bool _isInitialized = false;
 
   @override
@@ -63,22 +61,7 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
   Future<void> _loadData() async {
     await Future.wait([
       _viewModel.loadItems(),
-      _loadSystemInfo(),
     ]);
-  }
-
-  Future<void> _loadSystemInfo() async {
-    try {
-      final apiService = context.read<DemoApiService>();
-      final systemInfo = await apiService.getSystemInfo();
-      if (mounted) {
-        setState(() {
-          _systemInfo = systemInfo;
-        });
-      }
-    } catch (e) {
-      // Silently fail - system info is optional for drawer
-    }
   }
 
   Future<void> _toggleServer(WireGuardServer server) async {
@@ -232,9 +215,8 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
               ),
             ],
           ),
-          drawer: AppDrawer(
-            currentRoute: 'wireguard_servers',
-            systemInfo: _systemInfo,
+          drawer: const AppDrawer(
+            currentRoute: 'wireguard_servers'
           ),
           body: Column(
             children: [

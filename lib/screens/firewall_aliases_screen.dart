@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../constants/firewall_constants.dart';
 import '../models/firewall_alias.dart';
-import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/firewall_aliases_view_model.dart';
@@ -40,7 +39,6 @@ class FirewallAliasesScreen extends StatefulWidget {
 
 class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
   late FirewallAliasesViewModel _viewModel;
-  SystemInfo? _systemInfo;
   bool _isInitialized = false;
   String _searchQuery = '';
   Set<String> _selectedTypes = {};
@@ -65,22 +63,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
   Future<void> _loadData() async {
     await Future.wait([
       _viewModel.loadItems(),
-      _loadSystemInfo(),
     ]);
-  }
-
-  Future<void> _loadSystemInfo() async {
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      final systemInfo = await demoApiService.getSystemInfo();
-      if (mounted) {
-        setState(() {
-          _systemInfo = systemInfo;
-        });
-      }
-    } catch (e) {
-      // Silently fail - system info is optional for drawer
-    }
   }
 
   List<FirewallAlias> _getFilteredAliases(List<FirewallAlias> allItems) {
@@ -329,9 +312,8 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
               ),
             ],
           ),
-          drawer: AppDrawer(
-            currentRoute: 'firewall_aliases',
-            systemInfo: _systemInfo,
+          drawer: const AppDrawer(
+            currentRoute: 'firewall_aliases'
           ),
           body: Column(
             children: [

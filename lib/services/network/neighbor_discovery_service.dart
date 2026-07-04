@@ -48,12 +48,13 @@ class NeighborDiscoveryService extends BaseOPNsenseService {
         if (data is Map<String, dynamic>) {
           return NeighborDiscoveryStatus.fromJson(data);
         } else {
-          throw ApiException('Invalid response format', response.statusCode);
+          throw ApiException('Invalid response format', response.statusCode, ApiErrorType.unknown);
         }
       } else {
         throw ApiException(
           'Failed to check neighbor discovery status: HTTP ${response.statusCode}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
@@ -63,6 +64,7 @@ class NeighborDiscoveryService extends BaseOPNsenseService {
       throw ApiException(
         'Failed to check neighbor discovery status: ${e.toString()}',
         null,
+          ApiErrorType.unknown,
       );
     }
   }
@@ -108,11 +110,12 @@ class NeighborDiscoveryService extends BaseOPNsenseService {
         if (responseData is Map<String, dynamic>) {
           return NeighborDiscoveryResponse.fromJson(responseData);
         }
-        throw ApiException('Invalid response format', response.statusCode);
+        throw ApiException('Invalid response format', response.statusCode, ApiErrorType.unknown);
       } else {
         throw ApiException(
           'Failed to search neighbors: HTTP ${response.statusCode}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
@@ -122,6 +125,7 @@ class NeighborDiscoveryService extends BaseOPNsenseService {
       throw ApiException(
         'Failed to search neighbors: ${e.toString()}',
         null,
+          ApiErrorType.unknown,
       );
     }
   }
@@ -145,6 +149,7 @@ class NeighborDiscoveryService extends BaseOPNsenseService {
         throw ApiException(
           'Failed to start service: HTTP ${response.statusCode}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
@@ -154,6 +159,7 @@ class NeighborDiscoveryService extends BaseOPNsenseService {
       throw ApiException(
         'Failed to start service: ${e.toString()}',
         null,
+          ApiErrorType.unknown,
       );
     }
   }
@@ -177,6 +183,7 @@ class NeighborDiscoveryService extends BaseOPNsenseService {
         throw ApiException(
           'Failed to stop service: HTTP ${response.statusCode}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
@@ -186,6 +193,7 @@ class NeighborDiscoveryService extends BaseOPNsenseService {
       throw ApiException(
         'Failed to stop service: ${e.toString()}',
         null,
+          ApiErrorType.unknown,
       );
     }
   }
@@ -209,6 +217,7 @@ class NeighborDiscoveryService extends BaseOPNsenseService {
         throw ApiException(
           'Failed to restart service: HTTP ${response.statusCode}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
@@ -218,6 +227,7 @@ class NeighborDiscoveryService extends BaseOPNsenseService {
       throw ApiException(
         'Failed to restart service: ${e.toString()}',
         null,
+          ApiErrorType.unknown,
       );
     }
   }

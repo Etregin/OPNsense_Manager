@@ -21,14 +21,13 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../models/wireguard_client_builder.dart';
-import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
 import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/wireguard_peer_generator_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/loading_overlay.dart';
-import '../utils/common_validators.dart';
+import '../utils/validators.dart';
 import '../l10n/app_localizations.dart';
 
 /// Screen for generating WireGuard peer configurations
@@ -44,7 +43,6 @@ class _WireGuardPeerGeneratorScreenState
     extends State<WireGuardPeerGeneratorScreen> {
   late WireGuardPeerGeneratorViewModel _viewModel;
   final _formKey = GlobalKey<FormState>();
-  SystemInfo? _systemInfo;
   bool _isInitialized = false;
 
   // Controllers
@@ -77,23 +75,7 @@ class _WireGuardPeerGeneratorScreenState
   Future<void> _loadData() async {
     await Future.wait([
       _viewModel.loadBuilderData(),
-      _loadSystemInfo(),
     ]);
-  }
-
-  Future<void> _loadSystemInfo() async {
-    try {
-      final apiService = context.read<DemoApiService>();
-      final systemInfo = await apiService.getSystemInfo();
-
-      if (mounted) {
-        setState(() {
-          _systemInfo = systemInfo;
-        });
-      }
-    } catch (e) {
-      // Silently fail - system info is optional for drawer
-    }
   }
 
   @override
@@ -289,9 +271,8 @@ class _WireGuardPeerGeneratorScreenState
       appBar: AppBar(
         title: Text(l10n.peerGenerator),
       ),
-      drawer: AppDrawer(
-        currentRoute: 'wireguard_peer_generator',
-        systemInfo: _systemInfo,
+      drawer: const AppDrawer(
+        currentRoute: 'wireguard_peer_generator'
       ),
       body: LoadingOverlay(
         isLoading: _viewModel.isLoading || _viewModel.loadingBuilder,
@@ -371,7 +352,7 @@ class _WireGuardPeerGeneratorScreenState
                         prefixIcon: const Icon(Icons.public),
                       ),
                       validator: (value) =>
-                          CommonValidators.required(value, fieldName: l10n.endpoint),
+                          Validators.required(value, fieldName: l10n.endpoint),
                       enabled: !_viewModel.isLoading,
                     ),
                     const SizedBox(height: 16),
@@ -385,7 +366,7 @@ class _WireGuardPeerGeneratorScreenState
                         prefixIcon: const Icon(Icons.label),
                       ),
                       validator: (value) =>
-                          CommonValidators.required(value, fieldName: l10n.name),
+                          Validators.required(value, fieldName: l10n.name),
                       enabled: !_viewModel.isLoading,
                     ),
                     const SizedBox(height: 16),
@@ -399,7 +380,7 @@ class _WireGuardPeerGeneratorScreenState
                         prefixIcon: const Icon(Icons.key),
                       ),
                       validator: (value) =>
-                          CommonValidators.required(value, fieldName: l10n.publicKey),
+                          Validators.required(value, fieldName: l10n.publicKey),
                       enabled: !_viewModel.isLoading,
                       maxLines: 2,
                       style: const TextStyle(
@@ -418,7 +399,7 @@ class _WireGuardPeerGeneratorScreenState
                         prefixIcon: const Icon(Icons.vpn_key),
                       ),
                       validator: (value) =>
-                          CommonValidators.required(value, fieldName: l10n.privateKey),
+                          Validators.required(value, fieldName: l10n.privateKey),
                       enabled: !_viewModel.isLoading,
                       maxLines: 2,
                       style: const TextStyle(
@@ -455,7 +436,7 @@ class _WireGuardPeerGeneratorScreenState
                         prefixIcon: const Icon(Icons.location_on),
                       ),
                       validator: (value) =>
-                          CommonValidators.required(value, fieldName: l10n.address),
+                          Validators.required(value, fieldName: l10n.address),
                       enabled: !_viewModel.isLoading,
                     ),
                     const SizedBox(height: 16),
@@ -501,7 +482,7 @@ class _WireGuardPeerGeneratorScreenState
                         prefixIcon: const Icon(Icons.network_check),
                       ),
                       validator: (value) =>
-                          CommonValidators.required(value, fieldName: l10n.allowedIpsLabel),
+                          Validators.required(value, fieldName: l10n.allowedIpsLabel),
                       enabled: !_viewModel.isLoading,
                     ),
                     const SizedBox(height: 16),

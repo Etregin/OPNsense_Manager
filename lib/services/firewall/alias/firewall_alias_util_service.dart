@@ -33,11 +33,11 @@ class FirewallAliasUtilService extends BaseOPNsenseService {
       if (response.statusCode == 200 && response.data is Map) {
         return response.data as Map<String, dynamic>;
       }
-      throw ApiException('Failed to get aliases', response.statusCode);
+      throw ApiException('Failed to get aliases', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to get aliases: ${e.toString()}', null);
+      throw ApiException('Failed to get aliases: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -62,11 +62,11 @@ class FirewallAliasUtilService extends BaseOPNsenseService {
         }
         return [];
       }
-      throw ApiException('Failed to list alias table', response.statusCode);
+      throw ApiException('Failed to list alias table', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to list alias table: ${e.toString()}', null);
+      throw ApiException('Failed to list alias table: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -84,11 +84,11 @@ class FirewallAliasUtilService extends BaseOPNsenseService {
       if (response.statusCode == 200 && response.data is Map) {
         return response.data as Map<String, dynamic>;
       }
-      throw ApiException('Failed to add to alias table', response.statusCode);
+      throw ApiException('Failed to add to alias table', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to add to alias table: ${e.toString()}', null);
+      throw ApiException('Failed to add to alias table: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -107,12 +107,12 @@ class FirewallAliasUtilService extends BaseOPNsenseService {
         return response.data as Map<String, dynamic>;
       }
       throw ApiException(
-          'Failed to delete from alias table', response.statusCode);
+          'Failed to delete from alias table', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
       throw ApiException(
-          'Failed to delete from alias table: ${e.toString()}', null);
+          'Failed to delete from alias table: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -127,11 +127,11 @@ class FirewallAliasUtilService extends BaseOPNsenseService {
       if (response.statusCode == 200 && response.data is Map) {
         return response.data as Map<String, dynamic>;
       }
-      throw ApiException('Failed to flush alias table', response.statusCode);
+      throw ApiException('Failed to flush alias table', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to flush alias table: ${e.toString()}', null);
+      throw ApiException('Failed to flush alias table: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -149,12 +149,12 @@ class FirewallAliasUtilService extends BaseOPNsenseService {
         return response.data as Map<String, dynamic>;
       }
       throw ApiException(
-          'Failed to find alias references', response.statusCode);
+          'Failed to find alias references', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
       throw ApiException(
-          'Failed to find alias references: ${e.toString()}', null);
+          'Failed to find alias references: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -168,11 +168,11 @@ class FirewallAliasUtilService extends BaseOPNsenseService {
       if (response.statusCode == 200 && response.data is Map) {
         return response.data as Map<String, dynamic>;
       }
-      throw ApiException('Failed to update bogons', response.statusCode);
+      throw ApiException('Failed to update bogons', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to update bogons: ${e.toString()}', null);
+      throw ApiException('Failed to update bogons: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 }

@@ -374,6 +374,30 @@
   "@authenticationSettings": {
     "description": "Translation for authenticationSettings"
   },
+  "authenticated": "Authentifiziert",
+  "@authenticated": {
+    "description": "Translation for authenticated"
+  },
+  "notAuthenticated": "Nicht authentifiziert",
+  "@notAuthenticated": {
+    "description": "Translation for notAuthenticated"
+  },
+  "tailnet": "Tailnet",
+  "@tailnet": {
+    "description": "Translation for tailnet"
+  },
+  "deviceName": "Gerätename",
+  "@deviceName": {
+    "description": "Translation for deviceName"
+  },
+  "authUrl": "Auth-URL",
+  "@authUrl": {
+    "description": "Translation for authUrl"
+  },
+  "user": "Benutzer",
+  "@user": {
+    "description": "Translation for user"
+  },
   "authorizedPeers": "Autorisierte Peers",
   "@authorizedPeers": {
     "description": "Translation for authorizedPeers"

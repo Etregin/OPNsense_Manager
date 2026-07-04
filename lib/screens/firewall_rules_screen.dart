@@ -20,7 +20,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/firewall_rule.dart';
-import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
 import '../services/firewall/firewall_rule_filter.dart';
 import '../utils/snackbar_helper.dart';
@@ -46,7 +45,6 @@ class FirewallRulesScreen extends StatefulWidget {
 
 class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
   late FirewallRulesViewModel _viewModel;
-  SystemInfo? _systemInfo;
   bool _isInitialized = false;
 
   @override
@@ -69,22 +67,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
   Future<void> _loadData() async {
     await Future.wait([
       _viewModel.loadItems(),
-      _loadSystemInfo(),
     ]);
-  }
-
-  Future<void> _loadSystemInfo() async {
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      final systemInfo = await demoApiService.getSystemInfo();
-      if (mounted) {
-        setState(() {
-          _systemInfo = systemInfo;
-        });
-      }
-    } catch (e) {
-      // Silently fail - system info is optional for drawer
-    }
   }
 
   Future<void> _toggleRule(FirewallRule rule) async {
@@ -198,9 +181,8 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
               ),
             ],
           ),
-          drawer: AppDrawer(
-            currentRoute: 'firewall_rules',
-            systemInfo: _systemInfo,
+          drawer: const AppDrawer(
+            currentRoute: 'firewall_rules'
           ),
           body: _buildBody(
             l10n: l10n,

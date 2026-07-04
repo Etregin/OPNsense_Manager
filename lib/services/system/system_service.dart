@@ -35,7 +35,7 @@ class SystemService extends BaseOPNsenseService {
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       } else {
-        throw ApiException('Failed to get system status', response.statusCode);
+        throw ApiException('Failed to get system status', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       if (e.response != null) {
@@ -138,7 +138,7 @@ class SystemService extends BaseOPNsenseService {
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       } else {
-        throw ApiException('Failed to get system resources', response.statusCode);
+        throw ApiException('Failed to get system resources', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -408,7 +408,7 @@ class SystemService extends BaseOPNsenseService {
         // If response is not a list, return empty list
         return [];
       } else {
-        throw ApiException('Failed to get system temperature', response.statusCode);
+        throw ApiException('Failed to get system temperature', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -424,7 +424,7 @@ class SystemService extends BaseOPNsenseService {
       
       if (response.statusCode == 200) {
       } else {
-        throw ApiException('Failed to reboot system', response.statusCode);
+        throw ApiException('Failed to reboot system', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);

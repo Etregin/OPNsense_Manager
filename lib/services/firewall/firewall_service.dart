@@ -163,12 +163,12 @@ class FirewallService extends BaseOPNsenseService {
         if (result == 'failed') {
           final validations = data['validations'] as Map<String, dynamic>?;
           final errorMessage = validations?.values.join(', ') ?? 'Unknown validation error';
-          throw ApiException('Failed to create rule: $errorMessage', 400);
+          throw ApiException('Failed to create rule: $errorMessage', 400, ApiErrorType.unknown);
         }
         
         final uuid = data['uuid'] as String?;
         if (uuid == null || uuid.isEmpty) {
-          throw ApiException('No UUID returned from addRule', 500);
+          throw const ApiException('No UUID returned from addRule', 500, ApiErrorType.unknown);
         }
         
         
@@ -183,7 +183,7 @@ class FirewallService extends BaseOPNsenseService {
         
         return uuid;
       } else {
-        throw ApiException('Failed to create firewall rule', response.statusCode);
+        throw ApiException('Failed to create firewall rule', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -338,7 +338,7 @@ class FirewallService extends BaseOPNsenseService {
         // Apply changes
         await applyFirewallChanges();
       } else {
-        throw ApiException('Failed to update firewall rule', response.statusCode);
+        throw ApiException('Failed to update firewall rule', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -357,7 +357,7 @@ class FirewallService extends BaseOPNsenseService {
         // Apply changes to make the toggle take effect
         await applyFirewallChanges();
       } else {
-        throw ApiException('Failed to toggle firewall rule', response.statusCode);
+        throw ApiException('Failed to toggle firewall rule', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -375,7 +375,7 @@ class FirewallService extends BaseOPNsenseService {
         // Apply changes
         await applyFirewallChanges();
       } else {
-        throw ApiException('Failed to delete firewall rule', response.statusCode);
+        throw ApiException('Failed to delete firewall rule', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -428,7 +428,7 @@ class FirewallService extends BaseOPNsenseService {
         
         return [];
       } else {
-        throw ApiException('Failed to get firewall logs', response.statusCode);
+        throw ApiException('Failed to get firewall logs', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       if (e.response != null) {

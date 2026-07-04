@@ -17,9 +17,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../models/system_info.dart';
-import '../services/demo_api_service.dart';
 import '../widgets/app_drawer.dart';
 import '../l10n/app_localizations.dart';
 import 'settings/general_settings_screen.dart';
@@ -37,34 +34,18 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  SystemInfo? _systemInfo;
   int _profilesTabIndex = 0;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _loadSystemInfo();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadSystemInfo() async {
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      final systemInfo = await demoApiService.getSystemInfo();
-      if (mounted) {
-        setState(() {
-          _systemInfo = systemInfo;
-        });
-      }
-    } catch (e) {
-      // Silently fail - system info is optional for drawer
-    }
   }
 
   void _onProfilesChanged() {
@@ -95,9 +76,8 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
           ],
         ),
       ),
-      drawer: AppDrawer(
-        currentRoute: 'settings',
-        systemInfo: _systemInfo,
+      drawer: const AppDrawer(
+        currentRoute: 'settings'
       ),
       body: TabBarView(
         controller: _tabController,

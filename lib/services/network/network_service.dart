@@ -74,12 +74,13 @@ class NetworkService extends BaseOPNsenseService {
         throw ApiException(
           'Failed to get traffic data: HTTP ${response.statusCode}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to get traffic data: ${e.toString()}', null);
+      throw ApiException('Failed to get traffic data: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -163,7 +164,7 @@ class NetworkService extends BaseOPNsenseService {
       
       return hosts;
     } catch (e) {
-      throw ApiException('Failed to get network hosts: ${e.toString()}', null);
+      throw ApiException('Failed to get network hosts: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 }

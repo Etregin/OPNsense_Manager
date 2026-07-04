@@ -85,7 +85,7 @@ class VPNService extends BaseOPNsenseService {
 
       return connections;
     } catch (e) {
-      throw ApiException('Failed to get VPN connections: ${e.toString()}', null);
+      throw ApiException('Failed to get VPN connections: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -281,7 +281,7 @@ class VPNService extends BaseOPNsenseService {
         version: version,
       );
     } catch (e) {
-      throw ApiException('Failed to get Tailscale details: ${e.toString()}', null);
+      throw ApiException('Failed to get Tailscale details: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -414,7 +414,7 @@ class VPNService extends BaseOPNsenseService {
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to toggle VPN connection: ${e.toString()}', null);
+      throw ApiException('Failed to toggle VPN connection: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -433,7 +433,7 @@ class VPNService extends BaseOPNsenseService {
           endpoint = ApiEndpoints.tailscaleServiceRestart;
           break;
         default:
-          throw ApiException('Unknown VPN type: $type', null);
+          throw ApiException('Unknown VPN type: $type', null, ApiErrorType.unknown);
       }
 
       final response = await dio.post(endpoint);
@@ -447,7 +447,7 @@ class VPNService extends BaseOPNsenseService {
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to restart VPN service: ${e.toString()}', null);
+      throw ApiException('Failed to restart VPN service: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -459,10 +459,10 @@ class VPNService extends BaseOPNsenseService {
       final connections = await getVPNConnections();
       return connections.firstWhere(
         (conn) => conn.id == id && conn.type.toLowerCase() == type.toLowerCase(),
-        orElse: () => throw ApiException('VPN connection not found', 404),
+        orElse: () => throw const ApiException('VPN connection not found', 404, ApiErrorType.unknown),
       );
     } catch (e) {
-      throw ApiException('Failed to get VPN connection details: ${e.toString()}', null);
+      throw ApiException('Failed to get VPN connection details: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 }
