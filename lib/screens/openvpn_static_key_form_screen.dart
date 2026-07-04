@@ -222,7 +222,7 @@ class _OpenvpnStaticKeyFormScreenState
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _isEditMode ? 'Edit Static Key' : 'Add Static Key',
+          _isEditMode ? l10n.editStaticKey : l10n.addStaticKey,
         ),
       ),
       body: LoadingOverlay(
@@ -259,11 +259,11 @@ class _OpenvpnStaticKeyFormScreenState
               // Description
               TextFormField(
                 controller: _descriptionController,
-                decoration: const InputDecoration(
-                  labelText: 'Description',
-                  hintText: 'My Static Key',
-                  prefixIcon: Icon(Icons.description),
-                  helperText: 'A descriptive name for this static key',
+                decoration: InputDecoration(
+                  labelText: l10n.description,
+                  hintText: l10n.myStaticKeyHint,
+                  prefixIcon: const Icon(Icons.description),
+                  helperText: l10n.staticKeyDescriptionHelper,
                 ),
                 validator: (value) =>
                     CommonValidators.required(value, fieldName: 'Description'),
@@ -274,10 +274,10 @@ class _OpenvpnStaticKeyFormScreenState
               // Mode dropdown
               DropdownButtonFormField<String>(
                 initialValue: _selectedMode,
-                decoration: const InputDecoration(
-                  labelText: 'Mode',
-                  prefixIcon: Icon(Icons.security),
-                  helperText: 'Select the key mode for authentication or encryption',
+                decoration: InputDecoration(
+                  labelText: l10n.mode,
+                  prefixIcon: const Icon(Icons.security),
+                  helperText: l10n.selectKeyModeHelper,
                 ),
                 items: [
                   DropdownMenuItem(
@@ -323,7 +323,7 @@ class _OpenvpnStaticKeyFormScreenState
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                   label: Text(
-                    _isGenerating ? 'Generating...' : 'Generate Key',
+                    _isGenerating ? l10n.generating : l10n.generateKey,
                   ),
                 ),
               ),
@@ -348,7 +348,7 @@ class _OpenvpnStaticKeyFormScreenState
                         _keyVisible = !_keyVisible;
                       });
                     },
-                    tooltip: _keyVisible ? 'Hide key' : 'Show key',
+                    tooltip: _keyVisible ? l10n.hideKey : l10n.showKey,
                   ),
                 ),
                 validator: (value) =>
@@ -370,7 +370,7 @@ class _OpenvpnStaticKeyFormScreenState
                           Icon(Icons.info_outline, color: Colors.blue[700]),
                           const SizedBox(width: 8),
                           Text(
-                            'Static Key Information',
+                            l10n.staticKeyInformation,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.blue[700],
@@ -380,10 +380,7 @@ class _OpenvpnStaticKeyFormScreenState
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        '• Auth: Adds HMAC authentication to control channel\n'
-                        '• Crypt: Encrypts and authenticates all control channel packets\n'
-                        '• Crypt V2: Enhanced encryption with improved security\n\n'
-                        'You can generate a new key or paste an existing one.',
+                        l10n.staticKeyHelpText,
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.blue[900],

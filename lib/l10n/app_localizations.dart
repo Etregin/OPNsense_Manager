@@ -6875,6 +6875,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You may enter a description here for your reference (not parsed).'**
   String get youMayEnterDescriptionForReference;
+
+  /// Memory label for actual used amount
+  ///
+  /// In en, this message translates to:
+  /// **'Actual Used'**
+  String get actualUsed;
+
+  /// Memory label for ARC cache
+  ///
+  /// In en, this message translates to:
+  /// **'ARC Cache'**
+  String get arcCache;
+
+  /// Banner text shown when app is in demo mode
+  ///
+  /// In en, this message translates to:
+  /// **'Demo Mode - Showing sample data'**
+  String get demoModeIndicator;
+
+  /// Section title for thermal sensors
+  ///
+  /// In en, this message translates to:
+  /// **'Thermal Sensors'**
+  String get thermalSensors;
+
+  /// Shown when no thermal sensors are found
+  ///
+  /// In en, this message translates to:
+  /// **'No thermal sensors available'**
+  String get noThermalSensorsAvailable;
+
+  /// Tooltip to collapse all sections
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse All'**
+  String get collapseAll;
+
+  /// Tooltip to expand all sections
+  ///
+  /// In en, this message translates to:
+  /// **'Expand All'**
+  String get expandAll;
+
+  /// Loading message while saving an OpenVPN instance
+  ///
+  /// In en, this message translates to:
+  /// **'Saving instance...'**
+  String get savingInstance;
+
+  /// Hint text for the static key description field
+  ///
+  /// In en, this message translates to:
+  /// **'My Static Key'**
+  String get myStaticKeyHint;
+
+  /// Helper text for the static key description field
+  ///
+  /// In en, this message translates to:
+  /// **'A descriptive name for this static key'**
+  String get staticKeyDescriptionHelper;
+
+  /// Helper text for the static key mode dropdown
+  ///
+  /// In en, this message translates to:
+  /// **'Select the key mode for authentication or encryption'**
+  String get selectKeyModeHelper;
+
+  /// Multi-line help text in the static key form info card
+  ///
+  /// In en, this message translates to:
+  /// **'• Auth: Adds HMAC authentication to control channel\n• Crypt: Encrypts and authenticates all control channel packets\n• Crypt V2: Enhanced encryption with improved security\n\nYou can generate a new key or paste an existing one.'**
+  String get staticKeyHelpText;
 }
 
 class _AppLocalizationsDelegate

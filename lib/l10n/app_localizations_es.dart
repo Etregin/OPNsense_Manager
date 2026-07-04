@@ -3863,4 +3863,44 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get youMayEnterDescriptionForReference =>
       'You may enter a description here for your reference (not parsed).';
+
+  @override
+  String get actualUsed => 'Uso real';
+
+  @override
+  String get arcCache => 'Caché ARC';
+
+  @override
+  String get demoModeIndicator => 'Modo demo - Mostrando datos de muestra';
+
+  @override
+  String get thermalSensors => 'Sensores térmicos';
+
+  @override
+  String get noThermalSensorsAvailable =>
+      'No hay sensores térmicos disponibles';
+
+  @override
+  String get collapseAll => 'Contraer todo';
+
+  @override
+  String get expandAll => 'Expandir todo';
+
+  @override
+  String get savingInstance => 'Guardando instancia...';
+
+  @override
+  String get myStaticKeyHint => 'Mi clave estática';
+
+  @override
+  String get staticKeyDescriptionHelper =>
+      'Un nombre descriptivo para esta clave estática';
+
+  @override
+  String get selectKeyModeHelper =>
+      'Seleccione el modo de clave para autenticación o cifrado';
+
+  @override
+  String get staticKeyHelpText =>
+      '• Auth: Agrega autenticación HMAC al canal de control\n• Crypt: Cifra y autentica todos los paquetes del canal de control\n• Crypt V2: Cifrado mejorado con mayor seguridad\n\nPuede generar una nueva clave o pegar una existente.';
 }

@@ -5193,5 +5193,53 @@
   "youMayEnterDescriptionForReference": "You may enter a description here for your reference (not parsed).",
   "@youMayEnterDescriptionForReference": {
     "description": "Translation for youMayEnterDescriptionForReference"
+  },
+  "actualUsed": "Actual Used",
+  "@actualUsed": {
+    "description": "Memory label for actual used amount"
+  },
+  "arcCache": "ARC Cache",
+  "@arcCache": {
+    "description": "Memory label for ARC cache"
+  },
+  "demoModeIndicator": "Demo Mode - Showing sample data",
+  "@demoModeIndicator": {
+    "description": "Banner text shown when app is in demo mode"
+  },
+  "thermalSensors": "Thermal Sensors",
+  "@thermalSensors": {
+    "description": "Section title for thermal sensors"
+  },
+  "noThermalSensorsAvailable": "No thermal sensors available",
+  "@noThermalSensorsAvailable": {
+    "description": "Shown when no thermal sensors are found"
+  },
+  "collapseAll": "Collapse All",
+  "@collapseAll": {
+    "description": "Tooltip to collapse all sections"
+  },
+  "expandAll": "Expand All",
+  "@expandAll": {
+    "description": "Tooltip to expand all sections"
+  },
+  "savingInstance": "Saving instance...",
+  "@savingInstance": {
+    "description": "Loading message while saving an OpenVPN instance"
+  },
+  "myStaticKeyHint": "My Static Key",
+  "@myStaticKeyHint": {
+    "description": "Hint text for the static key description field"
+  },
+  "staticKeyDescriptionHelper": "A descriptive name for this static key",
+  "@staticKeyDescriptionHelper": {
+    "description": "Helper text for the static key description field"
+  },
+  "selectKeyModeHelper": "Select the key mode for authentication or encryption",
+  "@selectKeyModeHelper": {
+    "description": "Helper text for the static key mode dropdown"
+  },
+  "staticKeyHelpText": "• Auth: Adds HMAC authentication to control channel\n• Crypt: Encrypts and authenticates all control channel packets\n• Crypt V2: Enhanced encryption with improved security\n\nYou can generate a new key or paste an existing one.",
+  "@staticKeyHelpText": {
+    "description": "Multi-line help text in the static key form info card"
   }
 }

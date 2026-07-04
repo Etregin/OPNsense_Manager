@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../utils/snackbar_helper.dart';
 
 /// Reusable widget for managing lists of items (tunnel addresses, DNS servers, etc.)
@@ -113,6 +114,7 @@ class AddItemDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final controller = TextEditingController();
     
     return AlertDialog(
@@ -129,7 +131,7 @@ class AddItemDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         ElevatedButton(
           onPressed: () {
@@ -142,7 +144,7 @@ class AddItemDialog extends StatelessWidget {
               Navigator.of(context).pop(value);
             }
           },
-          child: const Text('Add'),
+          child: Text(l10n.add),
         ),
       ],
     );

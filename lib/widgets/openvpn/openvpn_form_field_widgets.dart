@@ -384,14 +384,14 @@ class OpenvpnMultiSelectField extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
+                child: Text(AppLocalizations.of(context)!.cancel),
               ),
               ElevatedButton(
                 onPressed: () {
                   onChanged(selected);
                   Navigator.of(context).pop();
                 },
-                child: const Text('Done'),
+                child: Text(AppLocalizations.of(context)!.done),
               ),
             ],
           );
@@ -487,7 +487,7 @@ class OpenvpnArrayField extends StatelessWidget {
             OutlinedButton.icon(
               onPressed: enabled ? onAdd : null,
               icon: const Icon(Icons.add, size: 18),
-              label: const Text('Add'),
+              label: Text(AppLocalizations.of(context)!.add),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),

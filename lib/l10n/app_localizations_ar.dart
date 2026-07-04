@@ -3791,4 +3791,43 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get youMayEnterDescriptionForReference =>
       'يمكنك إدخال وصف هنا للرجوع إليه (لا يتم تحليله).';
+
+  @override
+  String get actualUsed => 'Actual Used';
+
+  @override
+  String get arcCache => 'ARC Cache';
+
+  @override
+  String get demoModeIndicator => 'Demo Mode - Showing sample data';
+
+  @override
+  String get thermalSensors => 'Thermal Sensors';
+
+  @override
+  String get noThermalSensorsAvailable => 'No thermal sensors available';
+
+  @override
+  String get collapseAll => 'Collapse All';
+
+  @override
+  String get expandAll => 'Expand All';
+
+  @override
+  String get savingInstance => 'Saving instance...';
+
+  @override
+  String get myStaticKeyHint => 'My Static Key';
+
+  @override
+  String get staticKeyDescriptionHelper =>
+      'A descriptive name for this static key';
+
+  @override
+  String get selectKeyModeHelper =>
+      'Select the key mode for authentication or encryption';
+
+  @override
+  String get staticKeyHelpText =>
+      '• Auth: Adds HMAC authentication to control channel\n• Crypt: Encrypts and authenticates all control channel packets\n• Crypt V2: Enhanced encryption with improved security\n\nYou can generate a new key or paste an existing one.';
 }

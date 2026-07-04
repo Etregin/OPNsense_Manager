@@ -602,18 +602,18 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
                 _sectionExpanded.updateAll((key, value) => newState);
               });
             },
-            tooltip: _allExpanded ? 'Collapse All' : 'Expand All',
+            tooltip: _allExpanded ? l10n.collapseAll : l10n.expandAll,
           ),
           IconButton(
             icon: const Icon(Icons.save),
             onPressed: _isSaving ? null : _saveInstance,
-            tooltip: 'Save',
+            tooltip: l10n.save,
           ),
         ],
       ),
       body: LoadingOverlay(
         isLoading: _isSaving,
-        message: 'Saving instance...',
+        message: l10n.savingInstance,
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())
             : _errorMessage != null
@@ -623,13 +623,13 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
                       children: [
                         const Icon(Icons.error_outline, size: 48, color: Colors.red),
                         const SizedBox(height: 16),
-                        const Text('Error loading instance'),
+                        Text(l10n.errorLoadingInstance),
                         const SizedBox(height: 8),
                         Text(_errorMessage!),
                         const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: _loadInstance,
-                          child: const Text('Retry'),
+                          child: Text(l10n.retry),
                         ),
                       ],
                     ),

@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/wireguard_peer.dart';
 
 /// Card widget for displaying WireGuard peer information
@@ -40,6 +41,7 @@ class PeerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     
     return Card(
@@ -110,23 +112,23 @@ class PeerCard extends StatelessWidget {
                 }
               },
               itemBuilder: (context) => [
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'edit',
                   child: Row(
                     children: [
-                      Icon(Icons.edit),
-                      SizedBox(width: 8),
-                      Text('Edit'),
+                      const Icon(Icons.edit),
+                      const SizedBox(width: 8),
+                      Text(l10n.edit),
                     ],
                   ),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'delete',
                   child: Row(
                     children: [
-                      Icon(Icons.delete, color: Colors.red),
-                      SizedBox(width: 8),
-                      Text('Delete', style: TextStyle(color: Colors.red)),
+                      const Icon(Icons.delete, color: Colors.red),
+                      const SizedBox(width: 8),
+                      Text(l10n.delete, style: const TextStyle(color: Colors.red)),
                     ],
                   ),
                 ),

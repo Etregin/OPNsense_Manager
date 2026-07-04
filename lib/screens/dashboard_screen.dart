@@ -198,30 +198,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
         children: [
           // Demo mode banner
           if (isDemoMode)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.orange.shade400, Colors.orange.shade600],
-                ),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.play_circle_outline, color: Colors.white),
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Text(
-                      'Demo Mode - Showing sample data',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+            Builder(
+              builder: (context) {
+                final l10n = AppLocalizations.of(context)!;
+                return Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.orange.shade400, Colors.orange.shade600],
                     ),
                   ),
-                  Icon(Icons.info_outline, color: Colors.white.withValues(alpha: 0.8), size: 20),
-                ],
-              ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.play_circle_outline, color: Colors.white),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          l10n.demoModeIndicator,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Icon(Icons.info_outline, color: Colors.white.withValues(alpha: 0.8), size: 20),
+                    ],
+                  ),
+                );
+              },
             ),
           // Main content
           Expanded(

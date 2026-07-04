@@ -453,7 +453,7 @@ anti-pattern (lines 188–298) that allows silent non-localised errors to surfac
 ## Phase 5 — Hardcoded Strings & Inline Color Remediation
 
 ### Sub-Task 5.1 — Localise Hardcoded English Strings in Widget Files
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 Multiple widget files contain hardcoded English strings in `Text()` widgets that bypass
@@ -753,7 +753,7 @@ eliminates the duplication and ensures all three actions apply identical validat
 ---
 
 ### Sub-Task 6.5 — Localise Remaining Hardcoded Strings in Form Screens
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 `lib/screens/openvpn_static_key_form_screen.dart` and
@@ -871,7 +871,7 @@ refactors. This sub-task handles any remaining cases.
 ---
 
 ### Sub-Task 7.2 — Harden `ErrorDisplay` with Localised Retry Label
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 `lib/widgets/common/error_display.dart` line 37 contains the only hardcoded English string

@@ -182,7 +182,7 @@ class LogDetailSheet extends StatelessWidget {
                       children: [
                         _buildDetailRow(
                           context,
-                          'Interface',
+                          l10n.interface,
                           log.interface.toUpperCase(),
                           icon: Icons.router,
                         ),
@@ -226,7 +226,7 @@ class LogDetailSheet extends StatelessWidget {
                         if (log.reason.isNotEmpty)
                           _buildDetailRow(
                             context,
-                            'Reason',
+                            l10n.reason,
                             log.reason,
                             icon: Icons.info,
                           ),
@@ -387,7 +387,7 @@ class LogDetailSheet extends StatelessWidget {
     details.writeln();
     
     details.writeln('${l10n.networkInformation}:');
-    details.writeln('  Interface: ${log.interface.toUpperCase()}');
+    details.writeln('  ${l10n.interface}: ${log.interface.toUpperCase()}');
     details.writeln('  ${l10n.action}: ${log.action.toUpperCase()}');
     if (log.length.isNotEmpty) {
       details.writeln('  ${l10n.packetLength}: ${log.length} bytes');
@@ -400,7 +400,7 @@ class LogDetailSheet extends StatelessWidget {
     details.writeln('${l10n.additionalInformation}:');
     details.writeln('  ${l10n.timestamp}: ${_formatTimestamp(log.timestamp)}');
     if (log.reason.isNotEmpty) {
-      details.writeln('  Reason: ${log.reason}');
+      details.writeln('  ${l10n.reason}: ${log.reason}');
     }
     if (log.label.isNotEmpty && log.label != log.ruleDescription) {
       details.writeln('  ${l10n.label}: ${log.label}');

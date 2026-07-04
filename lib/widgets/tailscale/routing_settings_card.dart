@@ -123,12 +123,12 @@ class RoutingSettingsCard extends StatelessWidget {
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context, false),
-                          child: const Text('Cancel'),
+                          child: Text(l10n.cancel),
                         ),
                         TextButton(
                           onPressed: () => Navigator.pop(context, true),
                           style: TextButton.styleFrom(foregroundColor: Colors.red),
-                          child: const Text('Discard'),
+                          child: Text(l10n.discard),
                         ),
                       ],
                     ),

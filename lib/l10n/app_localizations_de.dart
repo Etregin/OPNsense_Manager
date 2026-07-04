@@ -3863,4 +3863,43 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get youMayEnterDescriptionForReference =>
       'You may enter a description here for your reference (not parsed).';
+
+  @override
+  String get actualUsed => 'Tatsächlich verwendet';
+
+  @override
+  String get arcCache => 'ARC-Cache';
+
+  @override
+  String get demoModeIndicator => 'Demo-Modus - Beispieldaten werden angezeigt';
+
+  @override
+  String get thermalSensors => 'Thermosensoren';
+
+  @override
+  String get noThermalSensorsAvailable => 'Keine Thermosensoren verfügbar';
+
+  @override
+  String get collapseAll => 'Alle einklappen';
+
+  @override
+  String get expandAll => 'Alle ausklappen';
+
+  @override
+  String get savingInstance => 'Instanz wird gespeichert...';
+
+  @override
+  String get myStaticKeyHint => 'Mein statischer Schlüssel';
+
+  @override
+  String get staticKeyDescriptionHelper =>
+      'Ein beschreibender Name für diesen statischen Schlüssel';
+
+  @override
+  String get selectKeyModeHelper =>
+      'Wählen Sie den Schlüsselmodus für Authentifizierung oder Verschlüsselung';
+
+  @override
+  String get staticKeyHelpText =>
+      '• Auth: Fügt HMAC-Authentifizierung zum Steuerkanal hinzu\n• Crypt: Verschlüsselt und authentifiziert alle Steuerkanalpakete\n• Crypt V2: Erweiterte Verschlüsselung mit verbesserter Sicherheit\n\nSie können einen neuen Schlüssel generieren oder einen vorhandenen einfügen.';
 }

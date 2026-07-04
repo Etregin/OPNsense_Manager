@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/openvpn_static_key.dart';
 import '../../utils/snackbar_helper.dart';
 import 'package:intl/intl.dart';
@@ -39,6 +40,7 @@ class OpenvpnStaticKeyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     
     return Card(
@@ -102,23 +104,23 @@ class OpenvpnStaticKeyCard extends StatelessWidget {
                 }
               },
               itemBuilder: (context) => [
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'edit',
                   child: Row(
                     children: [
-                      Icon(Icons.edit),
-                      SizedBox(width: 8),
-                      Text('Edit'),
+                      const Icon(Icons.edit),
+                      const SizedBox(width: 8),
+                      Text(l10n.edit),
                     ],
                   ),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'delete',
                   child: Row(
                     children: [
-                      Icon(Icons.delete, color: Colors.red),
-                      SizedBox(width: 8),
-                      Text('Delete', style: TextStyle(color: Colors.red)),
+                      const Icon(Icons.delete, color: Colors.red),
+                      const SizedBox(width: 8),
+                      Text(l10n.delete, style: const TextStyle(color: Colors.red)),
                     ],
                   ),
                 ),

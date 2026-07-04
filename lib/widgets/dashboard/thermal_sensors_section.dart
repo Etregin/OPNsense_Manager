@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-
+import '../../l10n/app_localizations.dart';
 import '../../models/thermal_sensor.dart';
 
 /// Widget for displaying thermal sensor readings in a compact format.
@@ -31,6 +31,7 @@ class ThermalSensorsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -38,7 +39,7 @@ class ThermalSensorsSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Thermal Sensors',
+              l10n.thermalSensors,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -46,7 +47,7 @@ class ThermalSensorsSection extends StatelessWidget {
             const SizedBox(height: 12),
             if (sensors.isEmpty)
               Text(
-                'No thermal sensors available',
+                l10n.noThermalSensorsAvailable,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Colors.grey[600],
                     ),

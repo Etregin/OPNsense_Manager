@@ -5343,5 +5343,53 @@
   "youMayEnterDescriptionForReference": "You may enter a description here for your reference (not parsed).",
   "@youMayEnterDescriptionForReference": {
     "description": "Translation for youMayEnterDescriptionForReference"
+  },
+  "actualUsed": "Uso real",
+  "@actualUsed": {
+    "description": "Memory label for actual used amount"
+  },
+  "arcCache": "Caché ARC",
+  "@arcCache": {
+    "description": "Memory label for ARC cache"
+  },
+  "demoModeIndicator": "Modo demo - Mostrando datos de muestra",
+  "@demoModeIndicator": {
+    "description": "Banner text shown when app is in demo mode"
+  },
+  "thermalSensors": "Sensores térmicos",
+  "@thermalSensors": {
+    "description": "Section title for thermal sensors"
+  },
+  "noThermalSensorsAvailable": "No hay sensores térmicos disponibles",
+  "@noThermalSensorsAvailable": {
+    "description": "Shown when no thermal sensors are found"
+  },
+  "collapseAll": "Contraer todo",
+  "@collapseAll": {
+    "description": "Tooltip to collapse all sections"
+  },
+  "expandAll": "Expandir todo",
+  "@expandAll": {
+    "description": "Tooltip to expand all sections"
+  },
+  "savingInstance": "Guardando instancia...",
+  "@savingInstance": {
+    "description": "Loading message while saving an OpenVPN instance"
+  },
+  "myStaticKeyHint": "Mi clave estática",
+  "@myStaticKeyHint": {
+    "description": "Hint text for the static key description field"
+  },
+  "staticKeyDescriptionHelper": "Un nombre descriptivo para esta clave estática",
+  "@staticKeyDescriptionHelper": {
+    "description": "Helper text for the static key description field"
+  },
+  "selectKeyModeHelper": "Seleccione el modo de clave para autenticación o cifrado",
+  "@selectKeyModeHelper": {
+    "description": "Helper text for the static key mode dropdown"
+  },
+  "staticKeyHelpText": "• Auth: Agrega autenticación HMAC al canal de control\n• Crypt: Cifra y autentica todos los paquetes del canal de control\n• Crypt V2: Cifrado mejorado con mayor seguridad\n\nPuede generar una nueva clave o pegar una existente.",
+  "@staticKeyHelpText": {
+    "description": "Multi-line help text in the static key form info card"
   }
 }
