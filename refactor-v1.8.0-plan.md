@@ -725,7 +725,7 @@ by the manually-written `fromJson()` logic in model files. Removing it reduces n
 ---
 
 ### Sub-Task 6.4 — Extract Login Screen Duplicate Validation Logic
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 `lib/screens/login_screen.dart` has a connection-validation block that is copy-pasted

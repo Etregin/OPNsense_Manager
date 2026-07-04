@@ -116,17 +116,20 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Future<void> _handleTestProfile() async {
+  bool _validateForm() {
     if (!_formKey.currentState!.validate()) {
-      return;
+      return false;
     }
-
-    // Validate that we have at least one connection with a valid host
     if (_connections.isEmpty || _connections.every((c) => c.host.trim().isEmpty)) {
       final l10n = AppLocalizations.of(context)!;
       SnackBarHelper.showError(context, l10n.addConnectionEndpoint);
-      return;
+      return false;
     }
+    return true;
+  }
+
+  Future<void> _handleTestProfile() async {
+    if (!_validateForm()) return;
 
     setState(() => _loadingButton = 'test');
 
@@ -212,16 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleSaveProfile() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
-    // Validate that we have at least one connection with a valid host
-    if (_connections.isEmpty || _connections.every((c) => c.host.trim().isEmpty)) {
-      final l10n = AppLocalizations.of(context)!;
-      SnackBarHelper.showError(context, l10n.addConnectionEndpoint);
-      return;
-    }
+    if (!_validateForm()) return;
 
     // Get the active connection for the default name
     final activeConnection = _connections.firstWhere(
@@ -255,16 +249,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleSaveAndConnect() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
-    // Validate that we have at least one connection with a valid host
-    if (_connections.isEmpty || _connections.every((c) => c.host.trim().isEmpty)) {
-      final l10n = AppLocalizations.of(context)!;
-      SnackBarHelper.showError(context, l10n.addConnectionEndpoint);
-      return;
-    }
+    if (!_validateForm()) return;
 
     // Get the active connection for the default name
     final activeConnection = _connections.firstWhere(
