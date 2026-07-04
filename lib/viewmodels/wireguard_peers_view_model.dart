@@ -32,22 +32,18 @@ class WireGuardPeersViewModel extends BaseListViewModel<WireGuardPeer> {
 
   @override
   Future<List<WireGuardPeer>> fetchItems() async {
-    try {
-      final response = await _apiService.searchWireGuardPeers(
-        current: 1,
-        rowCount: 1000, // Get all peers
-      );
+    final response = await _apiService.searchWireGuardPeers(
+      current: 1,
+      rowCount: 1000, // Get all peers
+    );
 
-      if (response.containsKey('rows') && response['rows'] is List) {
-        final rows = response['rows'] as List;
-        return rows
-            .map((row) => WireGuardPeer.fromJson(row as Map<String, dynamic>))
-            .toList();
-      }
-      return [];
-    } catch (e) {
-      rethrow;
+    if (response.containsKey('rows') && response['rows'] is List) {
+      final rows = response['rows'] as List;
+      return rows
+          .map((row) => WireGuardPeer.fromJson(row as Map<String, dynamic>))
+          .toList();
     }
+    return [];
   }
 
   @override
@@ -71,8 +67,6 @@ class WireGuardPeersViewModel extends BaseListViewModel<WireGuardPeer> {
     try {
       await _apiService.toggleWireGuardPeer(uuid, enabled);
       await refresh();
-    } catch (e) {
-      rethrow;
     } finally {
       _togglingPeers.remove(uuid);
       notifyListeners();
@@ -81,12 +75,8 @@ class WireGuardPeersViewModel extends BaseListViewModel<WireGuardPeer> {
 
   /// Delete a peer
   Future<void> deletePeer(String uuid) async {
-    try {
-      await _apiService.deleteWireGuardPeer(uuid);
-      await refresh();
-    } catch (e) {
-      rethrow;
-    }
+    await _apiService.deleteWireGuardPeer(uuid);
+    await refresh();
   }
 
   /// Refresh the peers list

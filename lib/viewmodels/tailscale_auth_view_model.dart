@@ -16,50 +16,38 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/foundation.dart';
 import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
+import '../utils/constants.dart';
+import 'base/base_form_view_model.dart';
 
 /// ViewModel for the Tailscale authentication settings screen
-class TailscaleAuthViewModel extends ChangeNotifier {
+class TailscaleAuthViewModel extends BaseFormViewModel {
   final DemoApiService _apiService;
 
   SystemInfo? _systemInfo;
-  String _loginServer = 'https://login.tailscale.com';
+  String _loginServer = AppConstants.tailscaleLoginServer;
   String _preAuthKey = '';
-  bool _isLoading = false;
   bool _isSaving = false;
-  String? _errorMessage;
 
   SystemInfo? get systemInfo => _systemInfo;
   String get loginServer => _loginServer;
   String get preAuthKey => _preAuthKey;
-  bool get isLoading => _isLoading;
   bool get isSaving => _isSaving;
-  String? get errorMessage => _errorMessage;
 
   TailscaleAuthViewModel(this._apiService);
 
   Future<void> loadData() async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
-
-    try {
+    await executeWithLoading(() async {
       final results = await Future.wait([
         _apiService.getSystemInfo(),
         _apiService.getTailscaleAuthentication(),
       ]);
       _systemInfo = results[0] as SystemInfo;
       final authSettings = results[1] as Map<String, String?>;
-      _loginServer = authSettings['loginServer'] ?? 'https://login.tailscale.com';
+      _loginServer = authSettings['loginServer'] ?? AppConstants.tailscaleLoginServer;
       _preAuthKey = authSettings['preAuthKey'] ?? '';
-    } catch (e) {
-      _errorMessage = e.toString();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
+    });
   }
 
   Future<bool> saveSettings(String loginServer, String preAuthKey) async {

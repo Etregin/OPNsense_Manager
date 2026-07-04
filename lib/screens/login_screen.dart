@@ -450,6 +450,36 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 24),
 
+                  // Status message (progress updates — shown as neutral info, not an error)
+                  if (_viewModel.statusMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.infoBackground,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: AppColors.infoText.withValues(alpha: 0.3)),
+                        ),
+                        child: Row(
+                          children: [
+                            const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                _viewModel.statusMessage!,
+                                style: const TextStyle(color: AppColors.infoText),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
                   // Error Display
                   if (_viewModel.errorMessage != null)
                     Padding(

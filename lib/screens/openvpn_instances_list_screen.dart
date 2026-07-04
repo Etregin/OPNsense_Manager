@@ -62,7 +62,7 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
       roleFilter: _roleFilter,
       statusFilter: _statusFilter,
       rowCount: _rowCount,
-      searchQuery2: _searchQuery,
+      apiSearchQuery: _searchQuery,
     );
     // Register the refresh callback with parent
     widget.onRegisterRefresh?.call(_loadInstances);
@@ -85,7 +85,7 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
     _viewModel.roleFilter = _roleFilter;
     _viewModel.statusFilter = _statusFilter;
     _viewModel.rowCount = _rowCount;
-    _viewModel.searchQuery2 = _searchQuery;
+    _viewModel.apiSearchQuery = _searchQuery;
     await _viewModel.loadItems();
     if (mounted) {
       setState(() {

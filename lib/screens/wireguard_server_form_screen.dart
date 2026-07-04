@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../models/wireguard_server.dart';
+import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/wireguard_server_form_view_model.dart';
 import '../widgets/common/loading_overlay.dart';
@@ -77,7 +78,7 @@ class _WireGuardServerFormScreenState
     if (_viewModel.isEditing) {
       _loadServerData();
     } else {
-      _portController.text = '51820';
+      _portController.text = '${AppConstants.defaultWireGuardPort}';
     }
   }
 
@@ -268,7 +269,7 @@ class _WireGuardServerFormScreenState
                 controller: _portController,
                 decoration: InputDecoration(
                   labelText: l10n.port,
-                  hintText: '51820',
+                  hintText: '${AppConstants.defaultWireGuardPort}',
                   prefixIcon: const Icon(Icons.settings_ethernet),
                   helperText: l10n.udpPortDefault51820,
                 ),

@@ -47,10 +47,10 @@ class OpenvpnStaticKeyFormViewModel extends BaseFormViewModel {
 
     try {
       _loadedKey = await _apiService.getOpenvpnStaticKey(keyid);
-      setLoading(false);
     } catch (e) {
-      setLoading(false);
       setError(e.toString());
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -59,16 +59,17 @@ class OpenvpnStaticKeyFormViewModel extends BaseFormViewModel {
     _isGenerating = true;
     notifyListeners();
 
+    String? key;
     try {
-      final key = await _apiService.generateOpenvpnStaticKey(apiMode);
-      _isGenerating = false;
+      key = await _apiService.generateOpenvpnStaticKey(apiMode);
       clearError();
-      notifyListeners();
       return key;
     } catch (e) {
-      _isGenerating = false;
       setError(e.toString());
       return null;
+    } finally {
+      _isGenerating = false;
+      notifyListeners();
     }
   }
 

@@ -53,11 +53,12 @@ class WireGuardServerFormViewModel extends BaseFormViewModel {
 
     try {
       _availablePeers = await _apiService.getWireGuardPeers();
+      clearError();
+    } catch (e) {
+      setError('Failed to load peers: $e');
+    } finally {
       _loadingPeers = false;
       notifyListeners();
-    } catch (e) {
-      _loadingPeers = false;
-      setError('Failed to load peers: $e');
     }
   }
 
@@ -68,11 +69,11 @@ class WireGuardServerFormViewModel extends BaseFormViewModel {
 
     try {
       _carpVipOptions = await _apiService.getCarpVipOptions();
+    } catch (_) {
+      // Don't set error for CARP options as it's optional
+    } finally {
       _loadingCarpOptions = false;
       notifyListeners();
-    } catch (e) {
-      _loadingCarpOptions = false;
-      // Don't set error for CARP options as it's optional
     }
   }
 
@@ -83,15 +84,14 @@ class WireGuardServerFormViewModel extends BaseFormViewModel {
 
     try {
       final keyPair = await _apiService.generateWireGuardKeyPair();
-      _isGeneratingKeys = false;
-      clearError(); // Clear any previous errors on success
-      notifyListeners();
+      clearError();
       return keyPair;
     } catch (e) {
-      _isGeneratingKeys = false;
-      final errorMsg = 'Failed to generate keys: $e';
-      setError(errorMsg);
+      setError('Failed to generate keys: $e');
       return null;
+    } finally {
+      _isGeneratingKeys = false;
+      notifyListeners();
     }
   }
 

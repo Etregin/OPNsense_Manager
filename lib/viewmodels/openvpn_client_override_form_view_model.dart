@@ -42,10 +42,10 @@ class OpenvpnClientOverrideFormViewModel extends BaseFormViewModel {
 
     try {
       _loadedOverride = await _apiService.getClientOverride(_uuid);
-      setLoading(false);
     } catch (e) {
-      setLoading(false);
       setError(e.toString());
+    } finally {
+      setLoading(false);
     }
   }
 

@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../constants/firewall_constants.dart';
 import '../models/firewall_alias.dart';
 import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
@@ -38,24 +39,6 @@ class FirewallAliasesScreen extends StatefulWidget {
 }
 
 class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
-  // All 14 alias types supported by OPNsense
-  static const List<String> _allAliasTypes = [
-    'host',
-    'network',
-    'port',
-    'url',
-    'urltable',
-    'urljson',
-    'geoip',
-    'networkgroup',
-    'mac',
-    'asn',
-    'dynipv6host',
-    'authgroup',
-    'internal',
-    'external',
-  ];
-
   late FirewallAliasesViewModel _viewModel;
   SystemInfo? _systemInfo;
   bool _isInitialized = false;
@@ -124,7 +107,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                       TextButton.icon(
                         onPressed: () {
                           setDialogState(() {
-                            _selectedTypes = Set.from(_allAliasTypes);
+                            _selectedTypes = Set.from(FirewallConstants.aliasTypes);
                           });
                         },
                         icon: const Icon(Icons.select_all),
@@ -142,7 +125,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                     ],
                   ),
                   const Divider(),
-                  ..._allAliasTypes.map((type) {
+                  ...FirewallConstants.aliasTypes.map((type) {
                     return CheckboxListTile(
                       title: Text(FirewallAlias(
                         uuid: '',

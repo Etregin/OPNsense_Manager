@@ -21,6 +21,7 @@ import 'package:flutter/services.dart';
 import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/wireguard_peer.dart';
+import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/wireguard_peer_form_view_model.dart';
 import '../widgets/common/loading_overlay.dart';
@@ -73,7 +74,7 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
     if (_viewModel.isEditing) {
       _loadPeerData();
     } else {
-      _serverPortController.text = '51820';
+      _serverPortController.text = '${AppConstants.defaultWireGuardPort}';
     }
   }
 
@@ -375,7 +376,7 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
                 controller: _serverPortController,
                 decoration: InputDecoration(
                   labelText: l10n.endpointPort,
-                  hintText: '51820',
+                  hintText: '${AppConstants.defaultWireGuardPort}',
                   prefixIcon: const Icon(Icons.settings_ethernet),
                 ),
                 keyboardType: TextInputType.number,

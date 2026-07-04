@@ -28,14 +28,17 @@ class OpenvpnInstancesViewModel extends BaseListViewModel<OpenvpnInstanceListIte
   String roleFilter;
   String statusFilter;
   int rowCount;
-  String searchQuery2; // renamed to avoid collision with base class searchQuery
+
+  /// API-level search phrase sent to the server (distinct from the client-side
+  /// [searchQuery] from [BaseListViewModel] which filters already-loaded items).
+  String apiSearchQuery;
 
   OpenvpnInstancesViewModel(
     this._apiService, {
     this.roleFilter = 'all',
     this.statusFilter = 'all',
     this.rowCount = 50,
-    this.searchQuery2 = '',
+    this.apiSearchQuery = '',
   });
 
   /// Whether the given instance UUID is currently being toggled.
@@ -46,7 +49,7 @@ class OpenvpnInstancesViewModel extends BaseListViewModel<OpenvpnInstanceListIte
     final String? enabledParam = statusFilter == 'all'
         ? null
         : (statusFilter == 'enabled' ? '1' : '0');
-    final String? searchParam = searchQuery2.isEmpty ? null : searchQuery2;
+    final String? searchParam = apiSearchQuery.isEmpty ? null : apiSearchQuery;
 
     final response = await _apiService.searchOpenvpnInstances(
       current: 1,

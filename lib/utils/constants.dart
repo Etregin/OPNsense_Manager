@@ -59,6 +59,10 @@ class AppConstants {
   static const double iconSize = 24.0;
   static const double featureIconSize = 48.0;
   
+  // Domain Constants
+  static const int defaultWireGuardPort = 51820;
+  static const String tailscaleLoginServer = 'https://login.tailscale.com';
+
   // Supported Languages
   static const Map<String, String> supportedLanguages = {
     'en': 'English',

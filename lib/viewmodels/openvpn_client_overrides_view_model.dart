@@ -28,13 +28,16 @@ class OpenvpnClientOverridesViewModel
 
   String statusFilter;
   int rowCount;
-  String searchQuery2;
+
+  /// API-level search phrase sent to the server (distinct from the client-side
+  /// [searchQuery] from [BaseListViewModel] which filters already-loaded items).
+  String apiSearchQuery;
 
   OpenvpnClientOverridesViewModel(
     this._apiService, {
     this.statusFilter = 'all',
     this.rowCount = 50,
-    this.searchQuery2 = '',
+    this.apiSearchQuery = '',
   });
 
   /// Whether the given override UUID is currently being toggled.
@@ -45,7 +48,7 @@ class OpenvpnClientOverridesViewModel
     final response = await _apiService.searchClientOverrides(
       current: 1,
       rowCount: rowCount,
-      searchPhrase: searchQuery2.isNotEmpty ? searchQuery2 : null,
+      searchPhrase: apiSearchQuery.isNotEmpty ? apiSearchQuery : null,
     );
 
     List<OpenvpnClientOverrideListItem> filtered = response.rows;

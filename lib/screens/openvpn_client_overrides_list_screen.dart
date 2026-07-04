@@ -55,7 +55,7 @@ class _OpenvpnClientOverridesListScreenState
         apiService,
         statusFilter: _statusFilter,
         rowCount: _rowCount,
-        searchQuery2: _searchQuery,
+        apiSearchQuery: _searchQuery,
       );
       _isInitialized = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -76,7 +76,7 @@ class _OpenvpnClientOverridesListScreenState
   Future<void> _loadOverrides() async {
     _viewModel.statusFilter = _statusFilter;
     _viewModel.rowCount = _rowCount;
-    _viewModel.searchQuery2 = _searchQuery;
+    _viewModel.apiSearchQuery = _searchQuery;
     await _viewModel.loadItems();
   }
 

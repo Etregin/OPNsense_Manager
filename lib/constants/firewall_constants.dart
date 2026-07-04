@@ -16,30 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import '../models/system_info.dart';
-import '../services/demo_api_service.dart';
-import 'base/base_form_view_model.dart';
-
-/// ViewModel for the System Info screen
-class SystemInfoViewModel extends BaseFormViewModel {
-  final DemoApiService _apiService;
-
-  SystemInfo? _systemInfo;
-
-  SystemInfo? get systemInfo => _systemInfo;
-
-  SystemInfoViewModel(this._apiService);
-
-  Future<void> loadSystemInfo() async {
-    setLoading(true);
-    clearError();
-
-    try {
-      _systemInfo = await _apiService.getSystemInfo();
-    } catch (e) {
-      setError(e.toString());
-    } finally {
-      setLoading(false);
-    }
-  }
+/// Firewall-domain constants for the OPNsense Manager app.
+class FirewallConstants {
+  /// All 14 alias types supported by OPNsense.
+  static const List<String> aliasTypes = [
+    'host',
+    'network',
+    'port',
+    'url',
+    'urltable',
+    'urljson',
+    'geoip',
+    'networkgroup',
+    'mac',
+    'asn',
+    'dynipv6host',
+    'authgroup',
+    'internal',
+    'external',
+  ];
 }

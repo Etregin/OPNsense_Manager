@@ -16,45 +16,32 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/foundation.dart';
 import '../models/system_info.dart';
 import '../models/tailscale_status.dart';
 import '../services/demo_api_service.dart';
+import 'base/base_form_view_model.dart';
 
 /// ViewModel for the standalone Tailscale status screen
-class TailscaleStatusViewModel extends ChangeNotifier {
+class TailscaleStatusViewModel extends BaseFormViewModel {
   final DemoApiService _apiService;
 
   TailscaleStatus? _status;
   SystemInfo? _systemInfo;
-  bool _isLoading = false;
-  String? _errorMessage;
 
   TailscaleStatus? get status => _status;
   SystemInfo? get systemInfo => _systemInfo;
-  bool get isLoading => _isLoading;
-  String? get errorMessage => _errorMessage;
 
   TailscaleStatusViewModel(this._apiService);
 
   Future<void> loadData() async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
-
-    try {
+    await executeWithLoading(() async {
       final results = await Future.wait([
         _apiService.getTailscaleDetails(),
         _apiService.getSystemInfo(),
       ]);
       _status = results[0] as TailscaleStatus;
       _systemInfo = results[1] as SystemInfo;
-    } catch (e) {
-      _errorMessage = e.toString();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
+    });
   }
 
   Future<bool> controlService(String action) async {

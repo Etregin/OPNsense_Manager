@@ -42,10 +42,10 @@ class OpenvpnInstanceFormViewModel extends BaseFormViewModel {
 
     try {
       _loadedInstance = await _apiService.getOpenvpnInstance(_vpnid);
-      setLoading(false);
     } catch (e) {
-      setLoading(false);
       setError(e.toString());
+    } finally {
+      setLoading(false);
     }
   }
 
