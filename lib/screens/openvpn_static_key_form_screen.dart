@@ -20,9 +20,9 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_static_key.dart';
-import '../services/demo_api_service.dart';
 import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
+import '../viewmodels/openvpn_static_key_form_view_model.dart';
 import '../widgets/common/loading_overlay.dart';
 import '../utils/common_validators.dart';
 
@@ -39,6 +39,7 @@ class OpenvpnStaticKeyFormScreen extends StatefulWidget {
 
 class _OpenvpnStaticKeyFormScreenState
     extends State<OpenvpnStaticKeyFormScreen> {
+  late OpenvpnStaticKeyFormViewModel _viewModel;
   final _formKey = GlobalKey<FormState>();
 
   // Controllers
@@ -46,16 +47,17 @@ class _OpenvpnStaticKeyFormScreenState
   final _keyController = TextEditingController();
 
   // State
-  bool _isLoading = false;
-  bool _isSaving = false;
-  bool _isGenerating = false;
-  String? _errorMessage;
   String _selectedMode = 'auth';
   bool _keyVisible = false;
 
   @override
   void initState() {
     super.initState();
+    _viewModel = OpenvpnStaticKeyFormViewModel(
+      apiService: context.read(),
+      keyid: widget.keyid,
+    );
+    _viewModel.addListener(_onViewModelChanged);
 
     if (_isEditMode) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -68,44 +70,29 @@ class _OpenvpnStaticKeyFormScreenState
 
   @override
   void dispose() {
+    _viewModel.removeListener(_onViewModelChanged);
+    _viewModel.dispose();
     _descriptionController.dispose();
     _keyController.dispose();
     super.dispose();
   }
 
+  void _onViewModelChanged() {
+    if (mounted) setState(() {});
+  }
+
   bool get _isEditMode => widget.keyid != null;
 
   Future<void> _loadStaticKey() async {
-    final keyid = widget.keyid;
-    
-    if (keyid == null || keyid.isEmpty) {
-      return;
-    }
+    await _viewModel.loadStaticKey();
 
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final apiService = context.read<DemoApiService>();
-      final staticKey = await apiService.getOpenvpnStaticKey(keyid);
-
-      if (mounted) {
-        setState(() {
-          _descriptionController.text = staticKey.description;
-          _keyController.text = staticKey.key;
-          _selectedMode = _mapApiModeToUiMode(staticKey.mode);
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
+    if (mounted && _viewModel.loadedKey != null) {
+      final staticKey = _viewModel.loadedKey!;
+      setState(() {
+        _descriptionController.text = staticKey.description;
+        _keyController.text = staticKey.key;
+        _selectedMode = _mapApiModeToUiMode(staticKey.mode);
+      });
     }
   }
 
@@ -126,92 +113,59 @@ class _OpenvpnStaticKeyFormScreenState
   }
 
   Future<void> _generateKey() async {
-    setState(() {
-      _isGenerating = true;
-      _errorMessage = null;
-    });
+    final l10n = AppLocalizations.of(context)!;
 
-    try {
-      final apiService = context.read<DemoApiService>();
-      
-      // Map UI mode to API mode
-      String apiMode;
-      switch (_selectedMode) {
-        case 'auth':
-          apiMode = 'tls-auth';
-          break;
-        case 'crypt':
-          apiMode = 'tls-crypt';
-          break;
-        case 'crypt-v2':
-          apiMode = 'tls-crypt-v2-server';
-          break;
-        default:
-          apiMode = 'tls-auth';
-      }
+    // Map UI mode to API mode
+    String apiMode;
+    switch (_selectedMode) {
+      case 'auth':
+        apiMode = 'tls-auth';
+        break;
+      case 'crypt':
+        apiMode = 'tls-crypt';
+        break;
+      case 'crypt-v2':
+        apiMode = 'tls-crypt-v2-server';
+        break;
+      default:
+        apiMode = 'tls-auth';
+    }
 
-      final key = await apiService.generateOpenvpnStaticKey(apiMode);
+    final key = await _viewModel.generateKey(apiMode);
 
-      if (mounted) {
-        setState(() {
-          _keyController.text = key;
-          _isGenerating = false;
-        });
-        final l10n = AppLocalizations.of(context)!;
-        SnackBarHelper.showSuccess(context, l10n.keyGeneratedSuccessfully);
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isGenerating = false;
-        });
-        final l10n = AppLocalizations.of(context)!;
-        SnackBarHelper.showError(context, l10n.failedToGenerateKey(e.toString()), duration: const Duration(seconds: 4));
-      }
+    if (!mounted) return;
+
+    if (key != null) {
+      setState(() {
+        _keyController.text = key;
+      });
+      SnackBarHelper.showSuccess(context, l10n.keyGeneratedSuccessfully);
+    } else if (_viewModel.errorMessage != null) {
+      SnackBarHelper.showError(context, _viewModel.errorMessage!, duration: const Duration(seconds: 4));
     }
   }
 
   Future<void> _saveStaticKey() async {
     final l10n = AppLocalizations.of(context)!;
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      _isSaving = true;
-      _errorMessage = null;
-    });
+    final staticKey = OpenvpnStaticKey(
+      keyid: widget.keyid,
+      description: _descriptionController.text.trim(),
+      key: _keyController.text.trim(),
+      mode: _selectedMode,
+    );
 
-    try {
-      final apiService = context.read<DemoApiService>();
+    final success = await _viewModel.saveStaticKey(staticKey);
 
-      final staticKey = OpenvpnStaticKey(
-        keyid: widget.keyid,
-        description: _descriptionController.text.trim(),
-        key: _keyController.text.trim(),
-        mode: _selectedMode,
-      );
-
-      if (_isEditMode) {
-        await apiService.updateOpenvpnStaticKey(widget.keyid!, staticKey);
-      } else {
-        await apiService.addOpenvpnStaticKey(staticKey);
-      }
-
-      if (mounted) {
+    if (mounted) {
+      if (success) {
         SnackBarHelper.showSuccess(context, _isEditMode
             ? l10n.staticKeyUpdatedSuccessfully
             : l10n.staticKeyCreatedSuccessfully);
         Navigator.of(context).pop(true);
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isSaving = false;
-        });
-        SnackBarHelper.showError(context, l10n.failedToSaveStaticKey(e.toString()), duration: const Duration(seconds: 4));
+      } else {
+        SnackBarHelper.showError(context, _viewModel.errorMessage ?? l10n.failedToSaveStaticKey(''), duration: const Duration(seconds: 4));
       }
     }
   }
@@ -227,14 +181,14 @@ class _OpenvpnStaticKeyFormScreenState
         ),
       ),
       body: LoadingOverlay(
-        isLoading: _isLoading,
+        isLoading: _viewModel.isLoading,
         child: Form(
           key: _formKey,
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
               // Error message
-              if (_errorMessage != null)
+              if (_viewModel.errorMessage != null)
                 Container(
                   padding: const EdgeInsets.all(12),
                   margin: const EdgeInsets.only(bottom: 16),
@@ -249,7 +203,7 @@ class _OpenvpnStaticKeyFormScreenState
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          _errorMessage!,
+                          _viewModel.errorMessage!,
                           style: const TextStyle(color: Colors.red),
                         ),
                       ),
@@ -268,7 +222,7 @@ class _OpenvpnStaticKeyFormScreenState
                 ),
                 validator: (value) =>
                     CommonValidators.required(value, fieldName: 'Description'),
-                enabled: !_isSaving,
+                enabled: !_viewModel.isLoading,
               ),
               const SizedBox(height: 16),
 
@@ -294,7 +248,7 @@ class _OpenvpnStaticKeyFormScreenState
                     child: Text(l10n.cryptV2TlsEncryption),
                   ),
                 ],
-                onChanged: _isSaving
+                onChanged: _viewModel.isLoading
                     ? null
                     : (value) {
                         if (value != null) {
@@ -312,8 +266,8 @@ class _OpenvpnStaticKeyFormScreenState
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: _isSaving || _isGenerating ? null : _generateKey,
-                  icon: _isGenerating
+                  onPressed: _viewModel.isLoading || _viewModel.isGenerating ? null : _generateKey,
+                  icon: _viewModel.isGenerating
                       ? const SizedBox(
                           width: 16,
                           height: 16,
@@ -324,7 +278,7 @@ class _OpenvpnStaticKeyFormScreenState
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                   label: Text(
-                    _isGenerating ? l10n.generating : l10n.generateKey,
+                    _viewModel.isGenerating ? l10n.generating : l10n.generateKey,
                   ),
                 ),
               ),
@@ -354,7 +308,7 @@ class _OpenvpnStaticKeyFormScreenState
                 ),
                 validator: (value) =>
                     CommonValidators.required(value, fieldName: 'Key'),
-                enabled: !_isSaving,
+                enabled: !_viewModel.isLoading,
               ),
               const SizedBox(height: 24),
 
@@ -395,29 +349,19 @@ class _OpenvpnStaticKeyFormScreenState
 
               // Save Button
               ElevatedButton(
-                onPressed: _isSaving || _isGenerating ? null : _saveStaticKey,
+                onPressed: _viewModel.isLoading || _viewModel.isGenerating ? null : _saveStaticKey,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: Theme.of(context).primaryColor,
                   foregroundColor: Colors.white,
                 ),
-                child: _isSaving
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                      )
-                    : Text(
-                        _isEditMode ? l10n.updateStaticKey : l10n.createStaticKey,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                child: Text(
+                  _isEditMode ? l10n.updateStaticKey : l10n.createStaticKey,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ],
           ),

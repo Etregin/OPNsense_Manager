@@ -335,7 +335,7 @@ single source of duplication in the project.
 ---
 
 ### Sub-Task 3.2 — Migrate Form Screens to `BaseFormViewModel`
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 `BaseFormViewModel` provides `isLoading`, `errorMessage`, `hasUnsavedChanges`, and

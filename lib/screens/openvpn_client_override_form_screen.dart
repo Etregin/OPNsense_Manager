@@ -21,8 +21,8 @@ import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../models/openvpn_client_override.dart';
 import '../models/openvpn_dropdown_option.dart';
-import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
+import '../viewmodels/openvpn_client_override_form_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/loading_overlay.dart';
 import '../widgets/common/form_section_container.dart';
@@ -41,11 +41,8 @@ class OpenvpnClientOverrideFormScreen extends StatefulWidget {
 
 class _OpenvpnClientOverrideFormScreenState
     extends State<OpenvpnClientOverrideFormScreen> {
+  late OpenvpnClientOverrideFormViewModel _viewModel;
   final _formKey = GlobalKey<FormState>();
-
-  bool _isLoading = false;
-  bool _isSaving = false;
-  String? _errorMessage;
 
   // Form controllers
   final _commonNameController = TextEditingController();
@@ -87,6 +84,11 @@ class _OpenvpnClientOverrideFormScreenState
   @override
   void initState() {
     super.initState();
+    _viewModel = OpenvpnClientOverrideFormViewModel(
+      apiService: context.read(),
+      uuid: widget.uuid,
+    );
+    _viewModel.addListener(_onViewModelChanged);
     // Load override after the first frame to ensure context is available
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
@@ -97,6 +99,8 @@ class _OpenvpnClientOverrideFormScreenState
 
   @override
   void dispose() {
+    _viewModel.removeListener(_onViewModelChanged);
+    _viewModel.dispose();
     _commonNameController.dispose();
     _descriptionController.dispose();
     _tunnelNetworkController.dispose();
@@ -105,31 +109,19 @@ class _OpenvpnClientOverrideFormScreenState
     super.dispose();
   }
 
+  void _onViewModelChanged() {
+    if (mounted) setState(() {});
+  }
+
   bool get _isEditMode => widget.uuid != null;
 
   Future<void> _loadOverride() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
+    await _viewModel.loadOverride();
 
-    try {
-      final apiService = context.read<DemoApiService>();
-      final override = await apiService.getClientOverride(widget.uuid);
-
-      if (mounted) {
-        setState(() {
-          _loadOverrideData(override);
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
+    if (mounted && _viewModel.loadedOverride != null) {
+      setState(() {
+        _loadOverrideData(_viewModel.loadedOverride!);
+      });
     }
   }
 
@@ -205,30 +197,23 @@ class _OpenvpnClientOverrideFormScreenState
 
   Future<void> _saveOverride() async {
     final l10n = AppLocalizations.of(context)!;
-    
+
     if (!_formKey.currentState!.validate()) {
       SnackBarHelper.showError(context, l10n.fixFormErrors);
       return;
     }
 
-    setState(() => _isSaving = true);
+    final override = _buildOverrideFromForm();
+    final success = await _viewModel.saveOverride(override);
 
-    try {
-      final apiService = context.read<DemoApiService>();
-      final override = _buildOverrideFromForm();
-
-      await apiService.setClientOverride(widget.uuid ?? '', override);
-
-      if (mounted) {
+    if (mounted) {
+      if (success) {
         SnackBarHelper.showSuccess(context, _isEditMode
             ? l10n.overrideUpdatedSuccessfully
             : l10n.overrideCreatedSuccessfully);
         Navigator.of(context).pop(true);
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() => _isSaving = false);
-        SnackBarHelper.showError(context, l10n.failedToSaveOverride(e.toString()), duration: const Duration(seconds: 4));
+      } else {
+        SnackBarHelper.showError(context, _viewModel.errorMessage ?? l10n.failedToSaveOverride(''), duration: const Duration(seconds: 4));
       }
     }
   }
@@ -329,18 +314,16 @@ class _OpenvpnClientOverrideFormScreenState
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
-            onPressed: _isSaving ? null : _saveOverride,
+            onPressed: _viewModel.isLoading ? null : _saveOverride,
             tooltip: l10n.save,
           ),
         ],
       ),
       drawer: const AppDrawer(currentRoute: 'openvpn_client_override_form'),
       body: LoadingOverlay(
-        isLoading: _isSaving,
+        isLoading: _viewModel.isLoading,
         message: l10n.savingOverride,
-        child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : _errorMessage != null
+        child: _viewModel.errorMessage != null
                 ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -350,7 +333,7 @@ class _OpenvpnClientOverrideFormScreenState
                         const SizedBox(height: 16),
                         Text(l10n.errorLoadingOverride),
                         const SizedBox(height: 8),
-                        Text(_errorMessage!),
+                        Text(_viewModel.errorMessage!),
                         const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: _loadOverride,
@@ -369,7 +352,7 @@ class _OpenvpnClientOverrideFormScreenState
                         _buildClientSettings(),
                         const SizedBox(height: 16),
                         ElevatedButton(
-                          onPressed: _isSaving ? null : _saveOverride,
+                          onPressed: _viewModel.isLoading ? null : _saveOverride,
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
                           ),
