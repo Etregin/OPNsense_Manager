@@ -23,6 +23,7 @@ import '../l10n/app_localizations.dart';
 import '../models/tailscale_status.dart';
 import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
+import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
 import '../utils/formatters.dart';
 import '../widgets/app_drawer.dart';
@@ -154,18 +155,18 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
           if (_status != null) ...[
             if (!_status!.serviceRunning)
               IconButton(
-                icon: const Icon(Icons.play_arrow, color: Colors.green),
+                icon: const Icon(Icons.play_arrow, color: AppColors.success),
                 tooltip: l10n.startService,
                 onPressed: () => _controlService('start'),
               ),
             if (_status!.serviceRunning) ...[
               IconButton(
-                icon: const Icon(Icons.stop, color: Colors.red),
+                icon: const Icon(Icons.stop, color: AppColors.error),
                 tooltip: l10n.stopService,
                 onPressed: () => _controlService('stop'),
               ),
               IconButton(
-                icon: const Icon(Icons.restart_alt, color: Colors.orange),
+                icon: const Icon(Icons.restart_alt, color: AppColors.warning),
                 tooltip: l10n.restartService,
                 onPressed: () => _controlService('restart'),
               ),
@@ -237,9 +238,9 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
             _buildInfoRow(AppLocalizations.of(context)!.serviceRunning,
                 _status!.serviceRunning ? AppLocalizations.of(context)!.yes : AppLocalizations.of(context)!.no,
                 valueColor:
-                    _status!.serviceRunning ? Colors.green : Colors.red),
+                    _status!.serviceRunning ? AppColors.success : AppColors.error),
             _buildInfoRow(AppLocalizations.of(context)!.backendState, _status!.backendState,
-                valueColor: _status!.isConnected ? Colors.green : null),
+                valueColor: _status!.isConnected ? AppColors.success : null),
             _buildInfoRow(AppLocalizations.of(context)!.status, _status!.statusDisplay),
             if (_status!.version != null)
               _buildInfoRow(AppLocalizations.of(context)!.versionLabel, _status!.version!),
@@ -331,7 +332,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
   Widget _buildHealthCard() {
     final isHealthy = _status!.isHealthy;
     return Card(
-      color: isHealthy ? null : Colors.orange.withValues(alpha: 0.1),
+      color: isHealthy ? null : AppColors.warning.withValues(alpha: 0.1),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -342,7 +343,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
                 Icon(
                   isHealthy ? Icons.check_circle : Icons.warning,
                   size: 24,
-                  color: isHealthy ? Colors.green : Colors.orange,
+                  color: isHealthy ? AppColors.success : AppColors.warning,
                 ),
                 const SizedBox(width: 8),
                 Text(
@@ -356,7 +357,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
               children: [
                 Icon(
                   isHealthy ? Icons.check_circle : Icons.warning,
-                  color: isHealthy ? Colors.green : Colors.orange,
+                  color: isHealthy ? AppColors.success : AppColors.warning,
                   size: 20,
                 ),
                 const SizedBox(width: 8),
@@ -366,7 +367,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: isHealthy ? Colors.green : Colors.orange,
+                      color: isHealthy ? AppColors.success : AppColors.warning,
                     ),
                   ),
                 ),
@@ -390,7 +391,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
               label,
               style: TextStyle(
                 fontWeight: FontWeight.w500,
-                color: Colors.grey[600],
+                color: Theme.of(context).disabledColor,
               ),
             ),
           ),

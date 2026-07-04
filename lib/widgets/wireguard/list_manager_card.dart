@@ -52,14 +52,14 @@ class ListManagerCard extends StatelessWidget {
         if (items.isEmpty)
           Text(
             emptyMessage,
-            style: const TextStyle(color: Colors.grey),
+            style: TextStyle(color: Theme.of(context).disabledColor),
           )
         else
           ...items.map((item) => Card(
                 child: ListTile(
                   title: Text(item),
                   trailing: IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
+                    icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
                     onPressed: isLoading ? null : () => onRemove(item),
                   ),
                 ),

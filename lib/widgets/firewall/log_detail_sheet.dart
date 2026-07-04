@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../screens/firewall_logs_screen.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/constants.dart';
 import '../../utils/snackbar_helper.dart';
 
 /// Bottom sheet widget that displays detailed information about a firewall log entry
@@ -413,13 +414,13 @@ class LogDetailSheet extends StatelessWidget {
   Color _getActionColor(String action) {
     switch (action.toLowerCase()) {
       case 'pass':
-        return Colors.green;
+        return AppColors.success;
       case 'block':
-        return Colors.red;
+        return AppColors.error;
       case 'reject':
-        return Colors.orange;
+        return AppColors.warning;
       default:
-        return Colors.grey;
+        return AppColors.disabled;
     }
   }
 

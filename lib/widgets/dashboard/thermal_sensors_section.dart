@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/thermal_sensor.dart';
+import '../../utils/constants.dart';
 
 /// Widget for displaying thermal sensor readings in a compact format.
 class ThermalSensorsSection extends StatelessWidget {
@@ -49,7 +50,7 @@ class ThermalSensorsSection extends StatelessWidget {
               Text(
                 l10n.noThermalSensorsAvailable,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey[600],
+                      color: Theme.of(context).disabledColor,
                     ),
               )
             else
@@ -80,10 +81,9 @@ class ThermalSensorsSection extends StatelessWidget {
           children: [
             _CompactSensorRow(sensor: sensor),
             if (!isLast)
-              Divider(
+              const Divider(
                 height: 1,
                 thickness: 1,
-                color: Colors.grey[200],
               ),
           ],
         );
@@ -161,7 +161,7 @@ class _CompactSensorRow extends StatelessWidget {
                 Text(
                   deviceName,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey[600],
+                        color: Theme.of(context).disabledColor,
                       ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -194,12 +194,12 @@ class _CompactSensorRow extends StatelessWidget {
 
   Color _getTemperatureColor(double temperature) {
     if (temperature > 80) {
-      return Colors.red;
+      return AppColors.error;
     }
     if (temperature >= 60) {
-      return Colors.orange;
+      return AppColors.warning;
     }
-    return Colors.green;
+    return AppColors.success;
   }
 
   String _safeText(String value, {required String fallback}) {

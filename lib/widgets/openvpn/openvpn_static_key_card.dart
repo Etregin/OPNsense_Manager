@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/openvpn_static_key.dart';
+import '../../utils/constants.dart';
 import '../../utils/snackbar_helper.dart';
 import 'package:intl/intl.dart';
 
@@ -47,7 +48,7 @@ class OpenvpnStaticKeyCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: staticKey.isValid ? Colors.green : Colors.grey,
+          backgroundColor: staticKey.isValid ? AppColors.success : const Color(0xFF9E9E9E),
           child: const Icon(
             Icons.vpn_key,
             color: Colors.white,
@@ -74,9 +75,9 @@ class OpenvpnStaticKeyCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text(
                     '• ${_formatDate(staticKey.createdAt!)}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
-                      color: Colors.grey[600],
+                      color: AppColors.disabled,
                     ),
                   ),
                 ],
@@ -118,9 +119,9 @@ class OpenvpnStaticKeyCard extends StatelessWidget {
                   value: 'delete',
                   child: Row(
                     children: [
-                      const Icon(Icons.delete, color: Colors.red),
+                      Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
                       const SizedBox(width: 8),
-                      Text(l10n.delete, style: const TextStyle(color: Colors.red)),
+                      Text(l10n.delete, style: TextStyle(color: Theme.of(context).colorScheme.error)),
                     ],
                   ),
                 ),
@@ -134,7 +135,7 @@ class OpenvpnStaticKeyCard extends StatelessWidget {
   }
 
   Widget _buildModeBadge(ThemeData theme) {
-    final color = staticKey.isBidirectional ? Colors.blue : Colors.purple;
+    final color = staticKey.isBidirectional ? theme.colorScheme.primary : theme.colorScheme.secondary;
     final label = staticKey.modeDescription;
 
     return Container(

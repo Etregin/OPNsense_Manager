@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/wireguard_peer.dart';
+import '../../utils/constants.dart';
 
 /// Card widget for displaying WireGuard peer information
 class PeerCard extends StatelessWidget {
@@ -48,7 +49,7 @@ class PeerCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: peer.isEnabled ? Colors.green : Colors.grey,
+          backgroundColor: peer.isEnabled ? AppColors.success : Theme.of(context).disabledColor,
           child: Icon(
             peer.isEnabled ? Icons.vpn_key : Icons.vpn_key_off,
             color: Colors.white,
@@ -79,7 +80,7 @@ class PeerCard extends StatelessWidget {
                 'Keepalive: ${peer.keepaliveInterval}s',
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey[600],
+                  color: Theme.of(context).disabledColor,
                 ),
               ),
           ],
@@ -97,7 +98,7 @@ class PeerCard extends StatelessWidget {
               Switch(
                 value: peer.isEnabled,
                 onChanged: onToggle,
-                activeTrackColor: Colors.green,
+                activeTrackColor: AppColors.success,
               ),
             const SizedBox(width: 8),
             PopupMenuButton<String>(
@@ -126,9 +127,9 @@ class PeerCard extends StatelessWidget {
                   value: 'delete',
                   child: Row(
                     children: [
-                      const Icon(Icons.delete, color: Colors.red),
+                      Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
                       const SizedBox(width: 8),
-                      Text(l10n.delete, style: const TextStyle(color: Colors.red)),
+                      Text(l10n.delete, style: TextStyle(color: Theme.of(context).colorScheme.error)),
                     ],
                   ),
                 ),

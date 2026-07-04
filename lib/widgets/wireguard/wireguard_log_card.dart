@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../utils/color_helpers.dart';
 import '../../utils/formatters.dart';
 
 /// Model class for WireGuard log entries
@@ -68,22 +69,21 @@ class WireGuardLogCard extends StatelessWidget {
     required this.onTap,
   });
 
-  Color _getSeverityColor(String severity) {
+  Color _getSeverityColor(String severity, BuildContext context) {
     switch (severity.toLowerCase()) {
       case 'emergency':
       case 'alert':
       case 'critical':
-        return Colors.red;
       case 'error':
-        return Colors.orange;
+        return logLevelColor('error', context: context);
       case 'warning':
-        return Colors.yellow[700]!;
+        return logLevelColor('warning', context: context);
       case 'notice':
       case 'informational':
-        return Colors.blue;
+        return logLevelColor('info', context: context);
       case 'debug':
       default:
-        return Colors.grey;
+        return logLevelColor('debug', context: context);
     }
   }
 
@@ -110,7 +110,7 @@ class WireGuardLogCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final severityColor = _getSeverityColor(log.severity);
+    final severityColor = _getSeverityColor(log.severity, context);
     final severityIcon = _getSeverityIcon(log.severity);
 
     return Card(

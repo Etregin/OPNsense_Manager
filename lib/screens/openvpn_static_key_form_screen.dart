@@ -21,6 +21,7 @@ import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_static_key.dart';
 import '../services/demo_api_service.dart';
+import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
 import '../widgets/common/loading_overlay.dart';
 import '../utils/common_validators.dart';
@@ -359,7 +360,7 @@ class _OpenvpnStaticKeyFormScreenState
 
               // Help Card
               Card(
-                color: Colors.blue[50],
+                color: AppColors.infoBackground,
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
@@ -367,13 +368,13 @@ class _OpenvpnStaticKeyFormScreenState
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.info_outline, color: Colors.blue[700]),
+                          const Icon(Icons.info_outline, color: AppColors.infoText),
                           const SizedBox(width: 8),
                           Text(
                             l10n.staticKeyInformation,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: Colors.blue[700],
+                              color: AppColors.infoText,
                             ),
                           ),
                         ],
@@ -381,9 +382,9 @@ class _OpenvpnStaticKeyFormScreenState
                       const SizedBox(height: 8),
                       Text(
                         l10n.staticKeyHelpText,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 12,
-                          color: Colors.blue[900],
+                          color: AppColors.infoText,
                         ),
                       ),
                     ],

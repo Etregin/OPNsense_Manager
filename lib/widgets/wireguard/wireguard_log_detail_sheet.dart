@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../utils/color_helpers.dart';
 import '../../utils/formatters.dart';
 import '../../utils/snackbar_helper.dart';
 import 'wireguard_log_card.dart';
@@ -34,7 +35,7 @@ class WireGuardLogDetailSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final severityColor = _getSeverityColor(log.severity);
+    final severityColor = _getSeverityColor(log.severity, context);
 
     return DraggableScrollableSheet(
       initialChildSize: 0.7,
@@ -350,22 +351,21 @@ class WireGuardLogDetailSheet extends StatelessWidget {
     SnackBarHelper.showInfo(context, 'All details copied to clipboard');
   }
 
-  Color _getSeverityColor(String severity) {
+  Color _getSeverityColor(String severity, BuildContext context) {
     switch (severity.toLowerCase()) {
       case 'emergency':
       case 'alert':
       case 'critical':
-        return Colors.red;
       case 'error':
-        return Colors.orange;
+        return logLevelColor('error', context: context);
       case 'warning':
-        return Colors.yellow[700]!;
+        return logLevelColor('warning', context: context);
       case 'notice':
       case 'informational':
-        return Colors.blue;
+        return logLevelColor('info', context: context);
       case 'debug':
       default:
-        return Colors.grey;
+        return logLevelColor('debug', context: context);
     }
   }
 

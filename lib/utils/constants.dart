@@ -76,5 +76,8 @@ class AppColors {
   static const success = Color(0xFF4CAF50); // Green
   static const warning = Color(0xFFFF9800); // Orange
   static const error = Color(0xFFF44336); // Red
+  static const Color infoBackground = Color(0xFFE3F2FD); // matches Colors.blue[50]
+  static const Color infoText = Color(0xFF1565C0);        // matches Colors.blue[900]
+  static const Color disabled = Color(0xFF9E9E9E);        // matches Colors.grey
 }
 

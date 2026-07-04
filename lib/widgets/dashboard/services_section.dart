@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/constants.dart';
 
 /// Callback for service control actions
 typedef ServiceControlCallback = Future<void> Function(
@@ -106,7 +107,7 @@ class _ServicesSectionState extends State<ServicesSection> {
       dense: true,
       leading: Icon(
         isRunning ? Icons.check_circle : Icons.cancel,
-        color: isRunning ? Colors.green : Colors.red,
+        color: isRunning ? AppColors.success : AppColors.error,
         size: 20,
       ),
       title: Text(name),

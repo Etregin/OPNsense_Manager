@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/openvpn_client_override_list_item.dart';
+import '../../utils/constants.dart';
 
 /// Card widget for displaying OpenVPN client specific override information
 class OpenvpnClientOverrideCard extends StatelessWidget {
@@ -48,7 +49,7 @@ class OpenvpnClientOverrideCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: clientOverride.enabled ? Colors.green : Colors.grey,
+          backgroundColor: clientOverride.enabled ? AppColors.success : Theme.of(context).disabledColor,
           child: Icon(
             clientOverride.enabled ? Icons.check_circle : Icons.cancel,
             color: Colors.white,
@@ -94,14 +95,14 @@ class OpenvpnClientOverrideCard extends StatelessWidget {
                     Icon(
                       Icons.vpn_lock,
                       size: 14,
-                      color: Colors.grey[600],
+                      color: Theme.of(context).disabledColor,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       'Tunnel: ${clientOverride.tunnelNetwork}',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.grey[600],
+                        color: Theme.of(context).disabledColor,
                       ),
                     ),
                   ],
@@ -122,7 +123,7 @@ class OpenvpnClientOverrideCard extends StatelessWidget {
               Switch(
                 value: clientOverride.enabled,
                 onChanged: onToggle,
-                activeTrackColor: Colors.green,
+                activeTrackColor: AppColors.success,
               ),
             const SizedBox(width: 8),
             PopupMenuButton<String>(
@@ -151,9 +152,9 @@ class OpenvpnClientOverrideCard extends StatelessWidget {
                   value: 'delete',
                   child: Row(
                     children: [
-                      const Icon(Icons.delete, color: Colors.red),
+                      Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
                       const SizedBox(width: 8),
-                      Text(l10n.delete, style: const TextStyle(color: Colors.red)),
+                      Text(l10n.delete, style: TextStyle(color: Theme.of(context).colorScheme.error)),
                     ],
                   ),
                 ),
@@ -167,7 +168,7 @@ class OpenvpnClientOverrideCard extends StatelessWidget {
   }
 
   Widget _buildStatusBadge(ThemeData theme) {
-    final color = clientOverride.enabled ? Colors.green : Colors.grey;
+    final color = clientOverride.enabled ? AppColors.success : theme.disabledColor;
     final label = clientOverride.enabled ? 'Enabled' : 'Disabled';
 
     return Container(

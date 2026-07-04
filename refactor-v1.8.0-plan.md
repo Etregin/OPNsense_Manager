@@ -516,7 +516,7 @@ Hardcoded strings in screens:
 ---
 
 ### Sub-Task 5.2 — Replace Inline `Colors.X` References with `AppColors` and Theme Constants
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 300+ inline `Colors.red`, `Colors.green`, `Colors.orange`, `Colors.grey`, `Colors.blue`

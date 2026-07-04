@@ -392,7 +392,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
 
             // Help Card
             Card(
-              color: Colors.blue[50],
+              color: AppColors.infoBackground,
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -400,13 +400,13 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.info_outline, color: Colors.blue[700]),
+                        const Icon(Icons.info_outline, color: AppColors.infoText),
                         const SizedBox(width: 8),
                         Text(
                           l10n.ruleGuidelines,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Colors.blue[700],
+                            color: AppColors.infoText,
                           ),
                         ),
                       ],
@@ -414,9 +414,9 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                     const SizedBox(height: 8),
                     Text(
                       l10n.ruleGuidelinesText,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 12,
-                        color: Colors.blue[900],
+                        color: AppColors.infoText,
                       ),
                     ),
                   ],
