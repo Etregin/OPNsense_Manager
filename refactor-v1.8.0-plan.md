@@ -847,7 +847,7 @@ name changes, every occurrence must be found and updated manually. A `Routes` cl
 ## Phase 7 — Code Quality & Idiomatic Improvements
 
 ### Sub-Task 7.1 — Replace `.then()` Navigation Callbacks with `await`
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 Two screen files use `.then((_) => _loadXxx())` on `Navigator.push()` instead of `await`.

@@ -252,12 +252,13 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
     );
   }
 
-  void _navigateToForm([WireGuardServer? server]) {
-    Navigator.of(context).push(
+  Future<void> _navigateToForm([WireGuardServer? server]) async {
+    await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => WireGuardServerFormScreen(server: server),
       ),
-    ).then((_) => _loadServers());
+    );
+    if (mounted) _loadServers();
   }
 
   @override

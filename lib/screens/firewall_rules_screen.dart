@@ -201,15 +201,16 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
     RuleDetailSheet.show(
       context,
       rule: rule,
-      onEdit: () {
+      onEdit: () async {
         Navigator.of(context).pop();
-        Navigator.of(context).push(
+        await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => FirewallRuleFormScreen(
               rule: rule,
             ),
           ),
-        ).then((_) => _loadRules());
+        );
+        if (mounted) _loadRules();
       },
       onDelete: () {
         Navigator.of(context).pop();
@@ -238,12 +239,13 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
       ),
       body: _buildBody(),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.of(context).push(
+        onPressed: () async {
+          await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => const FirewallRuleFormScreen(),
             ),
-          ).then((_) => _loadRules());
+          );
+          if (mounted) _loadRules();
         },
         icon: const Icon(Icons.add),
         label: Text(l10n.newRule),
