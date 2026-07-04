@@ -5,6 +5,7 @@ import '../models/tailscale_settings.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../utils/snackbar_helper.dart';
+import '../widgets/common/confirmation_dialog.dart';
 
 class TailscaleSubnetsScreen extends StatefulWidget {
   const TailscaleSubnetsScreen({super.key});
@@ -129,26 +130,14 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
     final bool isDemoMode = demoApiService.isDemoMode;
     final opnsenseApiService = isDemoMode ? null : context.read<OPNsenseApiService>();
 
-    final confirmed = await showDialog<bool>(
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) {
-        final l10n = AppLocalizations.of(context)!;
-        return AlertDialog(
-          title: Text(l10n.deleteSubnet),
-          content: Text(l10n.deleteSubnetConfirmation(subnet)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(l10n.cancel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              style: TextButton.styleFrom(foregroundColor: Colors.red),
-              child: Text(l10n.delete),
-            ),
-          ],
-        );
-      },
+      title: l10n.deleteSubnet,
+      message: l10n.deleteSubnetConfirmation(subnet),
+      confirmText: l10n.delete,
+      cancelText: l10n.cancel,
+      isDestructive: true,
     );
 
     if (confirmed == true) {

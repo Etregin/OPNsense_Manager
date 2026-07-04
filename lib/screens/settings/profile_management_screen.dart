@@ -28,6 +28,7 @@ import '../../services/settings/file_operations_service.dart';
 import '../../utils/constants.dart';
 import '../../utils/snackbar_helper.dart';
 import '../../utils/validators.dart';
+import '../../widgets/common/confirmation_dialog.dart';
 import '../../widgets/settings/profile_card.dart';
 import '../../widgets/login/connection_endpoints_manager.dart';
 import '../../l10n/app_localizations.dart';
@@ -409,25 +410,13 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
     
     final l10n = AppLocalizations.of(context)!;
     
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.deleteProfile),
-        content: Text(l10n.deleteProfileConfirmation(profile.name)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
-            child: Text(l10n.delete),
-          ),
-        ],
-      ),
+      title: l10n.deleteProfile,
+      message: l10n.deleteProfileConfirmation(profile.name),
+      confirmText: l10n.delete,
+      cancelText: l10n.cancel,
+      isDestructive: true,
     );
 
     if (!mounted) return;

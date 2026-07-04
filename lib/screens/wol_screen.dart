@@ -88,18 +88,14 @@ class _WolScreenState extends State<WolScreen> {
   }
 
   Future<void> _wakeAllHosts() async {
+    final l10n = AppLocalizations.of(context)!;
     // Show confirmation dialog
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) {
-        final l10n = AppLocalizations.of(context)!;
-        return ConfirmationDialog(
-          title: l10n.wakeAllDevices,
-          message: l10n.wakeAllDevicesConfirmation,
-          confirmText: l10n.wakeAll,
-          cancelText: l10n.cancel,
-        );
-      },
+      title: l10n.wakeAllDevices,
+      message: l10n.wakeAllDevicesConfirmation,
+      confirmText: l10n.wakeAll,
+      cancelText: l10n.cancel,
     );
 
     if (confirmed != true) return;
@@ -187,18 +183,14 @@ class _WolScreenState extends State<WolScreen> {
     // Store context references before async operations
     final demoApiService = context.read<DemoApiService>();
 
-    final confirmed = await showDialog<bool>(
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) {
-        final l10n = AppLocalizations.of(context)!;
-        return ConfirmationDialog(
-          title: l10n.deleteHost,
-          message: l10n.deleteHostConfirmation(host.descr.isNotEmpty ? host.descr : host.mac),
-          confirmText: l10n.delete,
-          cancelText: l10n.cancel,
-          isDestructive: true,
-        );
-      },
+      title: l10n.deleteHost,
+      message: l10n.deleteHostConfirmation(host.descr.isNotEmpty ? host.descr : host.mac),
+      confirmText: l10n.delete,
+      cancelText: l10n.cancel,
+      isDestructive: true,
     );
 
     if (confirmed == true) {

@@ -23,6 +23,7 @@ import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/common/confirmation_dialog.dart';
 import '../widgets/common/error_display.dart';
 import '../widgets/common/empty_state_widget.dart';
 import '../l10n/app_localizations.dart';
@@ -258,27 +259,13 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
   Future<void> _deleteAlias(FirewallAlias alias) async {
     final l10n = AppLocalizations.of(context)!;
     
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.deleteRule),
-        content: Text(
-          l10n.deleteAliasConfirmation(alias.name),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
-            child: Text(l10n.delete),
-          ),
-        ],
-      ),
+      title: l10n.deleteRule,
+      message: l10n.deleteAliasConfirmation(alias.name),
+      confirmText: l10n.delete,
+      cancelText: l10n.cancel,
+      isDestructive: true,
     );
 
     if (confirmed == true && mounted) {

@@ -213,7 +213,7 @@ a single-point edit.
 ---
 
 ### Sub-Task 2.2 — Migrate Inline AlertDialog Confirmations to `ConfirmationDialog.show()`
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 19 screen files contain raw `showDialog<bool>(builder: (ctx) => AlertDialog(...))` blocks

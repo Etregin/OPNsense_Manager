@@ -28,6 +28,7 @@ import '../services/storage_service.dart';
 import '../utils/constants.dart';
 import '../utils/formatters.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/common/confirmation_dialog.dart';
 import '../widgets/common/error_display.dart';
 import '../widgets/common/empty_state_widget.dart';
 import '../l10n/app_localizations.dart';
@@ -948,45 +949,13 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
     final l10n = AppLocalizations.of(context)!;
     
     // Show confirmation dialog
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            Icon(
-              Icons.block,
-              color: Theme.of(context).colorScheme.error,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              l10n.blockHost,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-          ],
-        ),
-        content: Text(
-          l10n.blockHostConfirmation(host.hostname, host.address),
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-              foregroundColor: Theme.of(context).colorScheme.onError,
-            ),
-            child: Text(l10n.blockHost),
-          ),
-        ],
-      ),
+      title: l10n.blockHost,
+      message: l10n.blockHostConfirmation(host.hostname, host.address),
+      confirmText: l10n.blockHost,
+      cancelText: l10n.cancel,
+      isDestructive: true,
     );
 
     if (confirmed != true) return;

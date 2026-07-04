@@ -29,6 +29,7 @@ import '../services/dashboard/dashboard_data_loader.dart';
 import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/common/confirmation_dialog.dart';
 import '../widgets/dashboard/resource_usage_section.dart';
 import '../widgets/dashboard/services_section.dart';
 import '../widgets/dashboard/gateways_section.dart';
@@ -129,25 +130,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final l10n = AppLocalizations.of(context)!;
     // Show confirmation dialog
     final actionText = action == 'start' ? l10n.start : action == 'stop' ? l10n.stop : l10n.restart;
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.actionService(actionText)),
-        content: Text(l10n.confirmServiceAction(actionText, serviceName)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: action == 'stop' ? Colors.red : null,
-            ),
-            child: Text(actionText),
-          ),
-        ],
-      ),
+      title: l10n.actionService(actionText),
+      message: l10n.confirmServiceAction(actionText, serviceName),
+      confirmText: actionText,
+      cancelText: l10n.cancel,
+      isDestructive: action == 'stop',
     );
 
     if (confirmed != true) return;

@@ -26,6 +26,7 @@ import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
 import '../utils/formatters.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/common/confirmation_dialog.dart';
 import '../widgets/common/error_display.dart';
 
 /// Screen for displaying Tailscale status information
@@ -107,29 +108,13 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
             ? l10n.stop
             : l10n.restart;
 
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) {
-        final l10n = AppLocalizations.of(context)!;
-        return AlertDialog(
-          title: Text(l10n.tailscaleServiceAction(actionTitle)),
-          content: Text(
-              l10n.tailscaleServiceActionConfirmation(action)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(l10n.cancel),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context, true),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: action == 'stop' ? Colors.red : null,
-              ),
-              child: Text(actionTitle),
-            ),
-          ],
-        );
-      },
+      title: l10n.tailscaleServiceAction(actionTitle),
+      message: l10n.tailscaleServiceActionConfirmation(action),
+      confirmText: actionTitle,
+      cancelText: l10n.cancel,
+      isDestructive: action == 'stop',
     );
 
     if (confirmed != true || !mounted) return;

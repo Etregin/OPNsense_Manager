@@ -25,6 +25,7 @@ import '../../services/demo_api_service.dart';
 import '../../services/vpn/vpn_connection_manager.dart';
 import '../../utils/snackbar_helper.dart';
 import '../../utils/constants.dart';
+import '../../widgets/common/confirmation_dialog.dart';
 import '../../widgets/vpn/vpn_connection_card.dart';
 import '../../widgets/vpn/vpn_summary_cards.dart';
 import '../../l10n/app_localizations.dart';
@@ -110,27 +111,13 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
     final actionTitle = connection.isConnected ? l10n.disconnectVPN : l10n.connectVPN;
     final action = connection.isConnected ? l10n.disconnect : l10n.connect;
     
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(actionTitle),
-        content: Text(
-          '${l10n.deleteRuleConfirmation(connection.name).split('"')[0]}"${connection.name}"?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: connection.isConnected ? Colors.red : Colors.green,
-            ),
-            child: Text(action),
-          ),
-        ],
-      ),
+      title: actionTitle,
+      message: '${l10n.deleteRuleConfirmation(connection.name).split('"')[0]}"${connection.name}"?',
+      confirmText: action,
+      cancelText: l10n.cancel,
+      isDestructive: connection.isConnected,
     );
 
     if (confirmed != true || !mounted) return;
@@ -171,27 +158,13 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
   Future<void> _restartService(String type) async {
     final l10n = AppLocalizations.of(context)!;
     
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.restartVPNService),
-        content: Text(
-          l10n.restartServiceConfirmation(type.toUpperCase()),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange,
-            ),
-            child: Text(l10n.restart),
-          ),
-        ],
-      ),
+      title: l10n.restartVPNService,
+      message: l10n.restartServiceConfirmation(type.toUpperCase()),
+      confirmText: l10n.restart,
+      cancelText: l10n.cancel,
+      isDestructive: false,
     );
 
     if (confirmed != true || !mounted) return;

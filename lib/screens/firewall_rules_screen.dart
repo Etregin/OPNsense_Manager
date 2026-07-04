@@ -26,6 +26,7 @@ import '../services/firewall/firewall_rule_filter.dart';
 import '../utils/snackbar_helper.dart';
 import '../utils/constants.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/common/confirmation_dialog.dart';
 import '../widgets/common/error_display.dart';
 import '../widgets/common/empty_state_widget.dart';
 import '../widgets/firewall/firewall_rule_card.dart';
@@ -123,29 +124,15 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
     // Show confirmation dialog
     final action = rule.isEnabled ? l10n.disable : l10n.enable;
     final actionTitle = rule.isEnabled ? l10n.disableRule : l10n.enableRule;
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(actionTitle),
-        content: Text(
-          rule.isEnabled
-            ? l10n.disableRuleConfirmation(rule.description.isEmpty ? l10n.unnamedRule : rule.description)
-            : l10n.enableRuleConfirmation(rule.description.isEmpty ? l10n.unnamedRule : rule.description),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: rule.isEnabled ? Colors.orange : Colors.green,
-            ),
-            child: Text(action),
-          ),
-        ],
-      ),
+      title: actionTitle,
+      message: rule.isEnabled
+          ? l10n.disableRuleConfirmation(rule.description.isEmpty ? l10n.unnamedRule : rule.description)
+          : l10n.enableRuleConfirmation(rule.description.isEmpty ? l10n.unnamedRule : rule.description),
+      confirmText: action,
+      cancelText: l10n.cancel,
+      isDestructive: false,
     );
 
     if (confirmed != true) return;
@@ -184,25 +171,13 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
       return;
     }
 
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.deleteRule),
-        content: Text(
-          l10n.deleteRuleConfirmation(rule.description),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: Text(l10n.delete),
-          ),
-        ],
-      ),
+      title: l10n.deleteRule,
+      message: l10n.deleteRuleConfirmation(rule.description),
+      confirmText: l10n.delete,
+      cancelText: l10n.cancel,
+      isDestructive: true,
     );
 
     if (confirmed == true && mounted) {
