@@ -17,8 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
-import '../../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import '../../constants/routes.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/vpn_connection.dart';
 import '../../screens/wireguard_servers_screen.dart';
 import '../../screens/wireguard_peers_screen.dart';
@@ -67,9 +68,9 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
   void initState() {
     super.initState();
     // Auto-expand sub-sections based on current route
-    _wireguardExpanded = NavigationService.isRouteInSection(widget.currentRoute, 'wireguard_');
-    _openvpnExpanded = NavigationService.isRouteInSection(widget.currentRoute, 'openvpn_');
-    _tailscaleExpanded = NavigationService.isRouteInSection(widget.currentRoute, 'tailscale_');
+    _wireguardExpanded = NavigationService.isRouteInSection(widget.currentRoute, Routes.wireguardPrefix);
+    _openvpnExpanded = NavigationService.isRouteInSection(widget.currentRoute, Routes.openvpnPrefix);
+    _tailscaleExpanded = NavigationService.isRouteInSection(widget.currentRoute, Routes.tailscalePrefix);
     
     // Check Tailscale plugin availability
     _checkTailscaleAvailability();
@@ -182,35 +183,35 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         NavigationTile(
           title: l10n.servers,
           currentRoute: widget.currentRoute,
-          targetRoute: 'wireguard_servers',
+          targetRoute: Routes.wireguardServers,
           destination: const WireGuardServersScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
           title: l10n.peers,
           currentRoute: widget.currentRoute,
-          targetRoute: 'wireguard_peers',
+          targetRoute: Routes.wireguardPeers,
           destination: const WireGuardPeersScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
           title: l10n.peerGenerator,
           currentRoute: widget.currentRoute,
-          targetRoute: 'wireguard_peer_generator',
+          targetRoute: Routes.wireguardPeerGenerator,
           destination: const WireGuardPeerGeneratorScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
           title: l10n.status,
           currentRoute: widget.currentRoute,
-          targetRoute: 'wireguard_status',
+          targetRoute: Routes.wireguardStatus,
           destination: const WireGuardStatusScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
           title: l10n.logs,
           currentRoute: widget.currentRoute,
-          targetRoute: 'wireguard_logs',
+          targetRoute: Routes.wireguardLogs,
           destination: const WireGuardLogFileScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
@@ -234,16 +235,16 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         NavigationTile(
           title: l10n.instances,
           currentRoute: widget.currentRoute,
-          targetRoute: 'openvpn_instances',
+          targetRoute: Routes.openvpnInstances,
           destination: const OpenvpnInstancesScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
           title: l10n.clientOverrides,
           currentRoute: widget.currentRoute,
-          targetRoute: 'openvpn_client_overrides',
+          targetRoute: Routes.openvpnClientOverrides,
           onTap: () {
-            if (widget.currentRoute != 'openvpn_client_overrides') {
+            if (widget.currentRoute != Routes.openvpnClientOverrides) {
               Navigator.of(context).pushReplacementNamed('/openvpn/client-overrides');
             } else {
               Navigator.pop(context);
@@ -254,9 +255,9 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         NavigationTile(
           title: l10n.connectionStatus,
           currentRoute: widget.currentRoute,
-          targetRoute: 'openvpn_connection_status',
+          targetRoute: Routes.openvpnConnectionStatus,
           onTap: () {
-            if (widget.currentRoute != 'openvpn_connection_status') {
+            if (widget.currentRoute != Routes.openvpnConnectionStatus) {
               Navigator.of(context).pushReplacementNamed('/openvpn/connection-status');
             } else {
               Navigator.pop(context);
@@ -267,7 +268,7 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         NavigationTile(
           title: l10n.logFile,
           currentRoute: widget.currentRoute,
-          targetRoute: 'openvpn_logs',
+          targetRoute: Routes.openvpnLogs,
           destination: const OpenvpnLogFileScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
@@ -302,7 +303,7 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         NavigationTile(
           title: l10n.authentication,
           currentRoute: widget.currentRoute,
-          targetRoute: 'tailscale_authentication',
+          targetRoute: Routes.tailscaleAuthentication,
           destination: const TailscaleAuthenticationScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
           onBeforeNavigate: widget.onBeforeNavigate,
@@ -310,14 +311,14 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         NavigationTile(
           title: l10n.settings,
           currentRoute: widget.currentRoute,
-          targetRoute: 'tailscale_settings',
+          targetRoute: Routes.tailscaleSettings,
           destination: const TailscaleSettingsScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
           title: l10n.status,
           currentRoute: widget.currentRoute,
-          targetRoute: 'tailscale_status',
+          targetRoute: Routes.tailscaleStatus,
           destination: const TailscaleStatusScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),

@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../constants/routes.dart';
 import '../../l10n/app_localizations.dart';
 import '../../screens/settings_screen.dart';
 import '../../screens/profile_selection_screen.dart';
@@ -47,7 +48,7 @@ class SettingsNavigationSection extends StatelessWidget {
           icon: Icons.settings,
           title: l10n.settings,
           currentRoute: currentRoute,
-          targetRoute: 'settings',
+          targetRoute: Routes.settings,
           destination: const SettingsScreen(),
         ),
         ListTile(

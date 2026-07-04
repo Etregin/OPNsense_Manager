@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../constants/routes.dart';
 import '../models/system_info.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/system_info_screen.dart';
@@ -62,11 +63,11 @@ class _AppDrawerState extends State<AppDrawer> {
   void initState() {
     super.initState();
     // Auto-expand sections based on current route
-    _firewallExpanded = NavigationService.isRouteInSection(widget.currentRoute, 'firewall_');
-    _vpnExpanded = NavigationService.isRouteInSection(widget.currentRoute, 'vpn_') ||
-                   NavigationService.isRouteInSection(widget.currentRoute, 'wireguard_') ||
-                   NavigationService.isRouteInSection(widget.currentRoute, 'openvpn_') ||
-                   NavigationService.isRouteInSection(widget.currentRoute, 'tailscale_');
+    _firewallExpanded = NavigationService.isRouteInSection(widget.currentRoute, Routes.firewallPrefix);
+    _vpnExpanded = NavigationService.isRouteInSection(widget.currentRoute, Routes.vpnPrefix) ||
+                   NavigationService.isRouteInSection(widget.currentRoute, Routes.wireguardPrefix) ||
+                   NavigationService.isRouteInSection(widget.currentRoute, Routes.openvpnPrefix) ||
+                   NavigationService.isRouteInSection(widget.currentRoute, Routes.tailscalePrefix);
   }
 
   @override
@@ -85,7 +86,7 @@ class _AppDrawerState extends State<AppDrawer> {
             icon: Icons.dashboard,
             title: l10n.dashboard,
             currentRoute: widget.currentRoute,
-            targetRoute: 'dashboard',
+            targetRoute: Routes.dashboard,
             destination: const DashboardScreen(),
           ),
           
@@ -94,7 +95,7 @@ class _AppDrawerState extends State<AppDrawer> {
             icon: Icons.info_outline,
             title: l10n.systemInformation,
             currentRoute: widget.currentRoute,
-            targetRoute: 'system_info',
+            targetRoute: Routes.systemInfo,
             destination: const SystemInfoScreen(),
             onBeforeNavigate: widget.onBeforeNavigate,
           ),
@@ -134,7 +135,7 @@ class _AppDrawerState extends State<AppDrawer> {
             icon: Icons.settings,
             title: l10n.settings,
             currentRoute: widget.currentRoute,
-            targetRoute: 'settings',
+            targetRoute: Routes.settings,
             destination: const SettingsScreen(),
           ),
           
@@ -145,7 +146,7 @@ class _AppDrawerState extends State<AppDrawer> {
             icon: Icons.swap_horiz,
             title: l10n.switchProfile,
             currentRoute: widget.currentRoute,
-            targetRoute: 'switch_profile',
+            targetRoute: Routes.switchProfile,
             onTap: () => _handleSwitchProfile(context),
           ),
           

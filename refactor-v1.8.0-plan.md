@@ -805,7 +805,7 @@ addressed in Sub-Task 5.1).
 ---
 
 ### Sub-Task 6.6 — Extract Route Name Strings into a `Routes` Constants Class
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 Navigation route names (`'dashboard'`, `'system_info'`, `'settings'`, `'firewall_rules'`,

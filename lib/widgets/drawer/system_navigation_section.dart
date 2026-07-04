@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../constants/routes.dart';
 import '../../l10n/app_localizations.dart';
 import '../../screens/system_info_screen.dart';
 import '../../services/opnsense_api_service.dart';
@@ -46,7 +47,7 @@ class SystemNavigationSection extends StatelessWidget {
           icon: Icons.info_outline,
           title: l10n.systemInformation,
           currentRoute: currentRoute,
-          targetRoute: 'system_info',
+          targetRoute: Routes.systemInfo,
           destination: const SystemInfoScreen(),
           onBeforeNavigate: onBeforeNavigate,
         ),
