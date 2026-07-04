@@ -28,6 +28,7 @@ import '../../models/openvpn_static_key.dart';
 import '../../models/openvpn_session_search_response.dart';
 import '../../models/openvpn_route_search_response.dart';
 import '../../models/openvpn_log_search_response.dart';
+import '../../constants/api_endpoints.dart';
 
 /// Service for OpenVPN operations
 ///
@@ -72,7 +73,7 @@ class OpenvpnService extends BaseOPNsenseService {
       }
 
       final response = await dio.post(
-        '/openvpn/instances/search/',
+        ApiEndpoints.openvpnInstancesSearch,
         data: data,
       );
 
@@ -102,8 +103,8 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final endpoint = vpnid != null
-          ? '/openvpn/instances/get/$vpnid'
-          : '/openvpn/instances/get/';
+          ? ApiEndpoints.openvpnInstanceGet(vpnid)
+          : ApiEndpoints.openvpnInstancesGetNew;
 
       final response = await dio.get(endpoint);
 
@@ -146,7 +147,7 @@ class OpenvpnService extends BaseOPNsenseService {
       final payload = {'instance': instance.toJson()};
       
       final response = await dio.post(
-        '/openvpn/instances/add/',
+        ApiEndpoints.openvpnInstancesAdd,
         data: payload,
       );
 
@@ -200,7 +201,7 @@ class OpenvpnService extends BaseOPNsenseService {
       final payload = {'instance': instance.toJson()};
       
       final response = await dio.post(
-        '/openvpn/instances/set/$vpnid',
+        ApiEndpoints.openvpnInstanceSet(vpnid),
         data: payload,
       );
 
@@ -247,7 +248,7 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/openvpn/instances/del/$vpnid',
+        ApiEndpoints.openvpnInstanceDelete(vpnid),
         data: {}, // Empty payload as required by API
       );
 
@@ -275,7 +276,7 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/openvpn/instances/toggle/$vpnid',
+        ApiEndpoints.openvpnInstanceToggle(vpnid),
         data: {},
       );
 
@@ -297,7 +298,7 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/openvpn/service/reconfigure',
+        ApiEndpoints.openvpnServiceReconfigure,
         data: {},
       );
       
@@ -328,7 +329,7 @@ class OpenvpnService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/openvpn/instances/gen_key/auth-token');
+      final response = await dio.get(ApiEndpoints.openvpnAuthTokenGenerate);
 
       if (response.statusCode == 200) {
         final data = response.data;
@@ -385,7 +386,7 @@ class OpenvpnService extends BaseOPNsenseService {
       }
 
       final response = await dio.post(
-        '/diagnostics/log/core/openvpn',
+        ApiEndpoints.diagnosticsLogOpenvpn,
         data: data,
       );
 
@@ -423,7 +424,7 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/openvpn/instances/search_static_key/',
+        ApiEndpoints.openvpnStaticKeySearch,
         data: {
           'current': current,
           'rowCount': rowCount,
@@ -457,8 +458,8 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final endpoint = keyid != null
-          ? '/openvpn/instances/get_static_key/$keyid'
-          : '/openvpn/instances/get_static_key/';
+          ? ApiEndpoints.openvpnStaticKeyGet(keyid)
+          : ApiEndpoints.openvpnStaticKeyGetNew;
 
       final response = await dio.get(endpoint);
 
@@ -488,7 +489,7 @@ class OpenvpnService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/openvpn/instances/gen_key/$mode');
+      final response = await dio.get(ApiEndpoints.openvpnStaticKeyGenerate(mode));
 
       if (response.statusCode == 200) {
         final data = response.data;
@@ -528,7 +529,7 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/openvpn/instances/add_static_key/',
+        ApiEndpoints.openvpnStaticKeyAdd,
         data: {'statickey': key.toJson()},
       );
 
@@ -580,7 +581,7 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/openvpn/instances/set_static_key/$keyid',
+        ApiEndpoints.openvpnStaticKeySet(keyid),
         data: {'statickey': key.toJson()},
       );
 
@@ -626,7 +627,7 @@ class OpenvpnService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/openvpn/instances/del_static_key/$keyid');
+      final response = await dio.post(ApiEndpoints.openvpnStaticKeyDelete(keyid));
 
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -673,7 +674,7 @@ class OpenvpnService extends BaseOPNsenseService {
       }
 
       final response = await dio.post(
-        '/openvpn/client_overwrites/search/',
+        ApiEndpoints.openvpnClientOverridesSearch,
         data: data,
       );
 
@@ -703,8 +704,8 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final endpoint = (uuid != null && uuid.isNotEmpty)
-          ? '/openvpn/client_overwrites/get/$uuid'
-          : '/openvpn/client_overwrites/get/';
+          ? ApiEndpoints.openvpnClientOverrideGet(uuid)
+          : ApiEndpoints.openvpnClientOverrideGetNew;
 
       final response = await dio.get(endpoint);
 
@@ -759,10 +760,10 @@ class OpenvpnService extends BaseOPNsenseService {
       final String endpoint;
       if (uuid == null || uuid.isEmpty) {
         // New override - use add endpoint
-        endpoint = '/openvpn/client_overwrites/add/';
+        endpoint = ApiEndpoints.openvpnClientOverrideAdd;
       } else {
         // Existing override - use set endpoint with UUID
-        endpoint = '/openvpn/client_overwrites/set/$uuid';
+        endpoint = ApiEndpoints.openvpnClientOverrideSet(uuid);
       }
       
       final response = await dio.post(
@@ -816,7 +817,7 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/openvpn/client_overwrites/del/$uuid',
+        ApiEndpoints.openvpnClientOverrideDelete(uuid),
         data: {}, // Empty payload as required by API
       );
 
@@ -844,7 +845,7 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/openvpn/client_overwrites/toggle/$uuid',
+        ApiEndpoints.openvpnClientOverrideToggle(uuid),
         data: {},
       );
 
@@ -880,7 +881,7 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/openvpn/service/search_sessions',
+        ApiEndpoints.openvpnInstancesSearchSessions,
         data: {
           'current': current,
           'rowCount': rowCount,
@@ -914,7 +915,7 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/openvpn/service/start_service/$id',
+        ApiEndpoints.openvpnServiceStart(id),
         data: {},
       );
 
@@ -950,7 +951,7 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/openvpn/service/stop_service/$id',
+        ApiEndpoints.openvpnServiceStop(id),
         data: {},
       );
 
@@ -986,7 +987,7 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/openvpn/service/restart_service/$id',
+        ApiEndpoints.openvpnServiceRestart2(id),
         data: {},
       );
 
@@ -1028,7 +1029,7 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/openvpn/service/search_routes',
+        ApiEndpoints.openvpnInstancesSearchRoutes,
         data: {
           'current': current,
           'sort': sort ?? {},

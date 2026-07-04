@@ -20,6 +20,7 @@ import 'package:dio/dio.dart';
 import '../base/base_opnsense_service.dart';
 import '../base/api_exception.dart';
 import '../../models/firewall_rule.dart';
+import '../../constants/api_endpoints.dart';
 
 /// Service for firewall rule operations
 class FirewallService extends BaseOPNsenseService {
@@ -30,7 +31,7 @@ class FirewallService extends BaseOPNsenseService {
       final List<FirewallRule> allRules = [];
       
       // Fetch automation rules using /firewall/filter/get endpoint only
-      final automationResponse = await dio.get('/firewall/filter/get');
+      final automationResponse = await dio.get(ApiEndpoints.firewallRulesGet);
       
       if (automationResponse.statusCode == 200) {
         final data = automationResponse.data as Map<String, dynamic>;
@@ -83,7 +84,7 @@ class FirewallService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/firewall/filter/get');
+      final response = await dio.get(ApiEndpoints.firewallRulesGet);
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -149,7 +150,7 @@ class FirewallService extends BaseOPNsenseService {
       
       // According to OPNsense API docs, we need to wrap the rule in a 'rule' object
       final response = await dio.post(
-        '/firewall/filter/addRule',
+        ApiEndpoints.firewallRuleAdd,
         data: payload,
       );
       
@@ -267,7 +268,7 @@ class FirewallService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/firewall/filter/getRule/$uuid');
+      final response = await dio.get(ApiEndpoints.firewallRuleGetOne(uuid));
       
       
       if (response.statusCode == 200) {
@@ -329,7 +330,7 @@ class FirewallService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/firewall/filter/setRule/$uuid',
+        ApiEndpoints.firewallRuleSet(uuid),
         data: {'rule': request.toJson()},
       );
       
@@ -350,7 +351,7 @@ class FirewallService extends BaseOPNsenseService {
 
     try {
       // Use the toggle endpoint
-      final response = await dio.post('/firewall/filter/toggleRule/$uuid');
+      final response = await dio.post(ApiEndpoints.firewallRuleToggle(uuid));
       
       if (response.statusCode == 200) {
         // Apply changes to make the toggle take effect
@@ -368,7 +369,7 @@ class FirewallService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/firewall/filter/delRule/$uuid');
+      final response = await dio.post(ApiEndpoints.firewallRuleDelete(uuid));
       
       if (response.statusCode == 200) {
         // Apply changes
@@ -386,7 +387,7 @@ class FirewallService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      await dio.post('/firewall/filter/apply');
+      await dio.post(ApiEndpoints.firewallRulesApply);
     } on DioException catch (e) {
       throw handleDioError(e);
     }
@@ -401,7 +402,7 @@ class FirewallService extends BaseOPNsenseService {
       // Use the same endpoint as the web UI live view
       // Endpoint: /api/diagnostics/firewall/log
       final response = await dio.get(
-        '/diagnostics/firewall/log',
+        ApiEndpoints.diagnosticsFirewallLog,
         queryParameters: {
           'limit': limit, // Number of entries to fetch
         },

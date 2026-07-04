@@ -24,6 +24,7 @@ import '../../models/wireguard_peer.dart';
 import '../../models/wireguard_key_pair.dart';
 import '../../models/wireguard_client_builder.dart';
 import '../../models/wireguard_status.dart';
+import '../../constants/api_endpoints.dart';
 
 /// Service for WireGuard VPN operations
 class WireGuardService extends BaseOPNsenseService {
@@ -49,7 +50,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/wireguard/server/search_server');
+      final response = await dio.get(ApiEndpoints.wireguardServerSearch);
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -73,7 +74,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/wireguard/server/get_server/$uuid');
+      final response = await dio.get(ApiEndpoints.wireguardServerGet(uuid));
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -98,7 +99,7 @@ class WireGuardService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/wireguard/server/add_server',
+        ApiEndpoints.wireguardServerAdd,
         data: {'server': request.toJson()},
       );
       
@@ -124,7 +125,7 @@ class WireGuardService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/wireguard/server/set_server/$uuid',
+        ApiEndpoints.wireguardServerSet(uuid),
         data: {'server': request.toJson()},
       );
       
@@ -142,7 +143,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/wireguard/server/del_server/$uuid');
+      final response = await dio.post(ApiEndpoints.wireguardServerDelete(uuid));
       
       if (response.statusCode != 200) {
         throw ApiException('Failed to delete WireGuard server', response.statusCode);
@@ -159,7 +160,7 @@ class WireGuardService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/wireguard/server/toggle_server/$uuid',
+        ApiEndpoints.wireguardServerToggle(uuid),
         data: {'enabled': enabled ? '1' : '0'},
       );
       
@@ -189,7 +190,7 @@ class WireGuardService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/wireguard/client/search_client',
+        ApiEndpoints.wireguardClientSearch,
         data: {
           'current': current,
           'rowCount': rowCount,
@@ -214,7 +215,7 @@ class WireGuardService extends BaseOPNsenseService {
 
     try {
       // Use peer endpoint
-      final response = await dio.get('/wireguard/server/search_peer');
+      final response = await dio.get(ApiEndpoints.wireguardServerPeerSearch);
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -239,7 +240,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/wireguard/client/get_client/$uuid');
+      final response = await dio.get(ApiEndpoints.wireguardClientGet(uuid));
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -263,7 +264,7 @@ class WireGuardService extends BaseOPNsenseService {
 
     try {
       // Use peer endpoint
-      final response = await dio.get('/wireguard/server/get_peer/$uuid');
+      final response = await dio.get(ApiEndpoints.wireguardPeerGet(uuid));
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -289,7 +290,7 @@ class WireGuardService extends BaseOPNsenseService {
       final peerPayload = request.toJson();
 
       final response = await dio.post(
-        '/wireguard/client/add_client',
+        ApiEndpoints.wireguardClientAdd,
         data: {'client': peerPayload},
       );
 
@@ -339,7 +340,7 @@ class WireGuardService extends BaseOPNsenseService {
       final peerPayload = request.toJson();
 
       final response = await dio.post(
-        '/wireguard/client/set_client/$uuid',
+        ApiEndpoints.wireguardClientSet(uuid),
         data: {'client': peerPayload},
       );
 
@@ -379,7 +380,7 @@ class WireGuardService extends BaseOPNsenseService {
 
     try {
       // Use client endpoint
-      final response = await dio.post('/wireguard/client/del_client/$uuid');
+      final response = await dio.post(ApiEndpoints.wireguardClientDelete(uuid));
       
       if (response.statusCode != 200) {
         throw ApiException('Failed to delete WireGuard peer', response.statusCode);
@@ -397,7 +398,7 @@ class WireGuardService extends BaseOPNsenseService {
     try {
       // Use client endpoint
       final response = await dio.post(
-        '/wireguard/client/toggle_client/$uuid',
+        ApiEndpoints.wireguardClientToggle(uuid),
         data: {'enabled': enabled ? '1' : '0'},
       );
       
@@ -416,7 +417,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/wireguard/service/show');
+      final response = await dio.get(ApiEndpoints.wireguardServiceShow);
       
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -434,7 +435,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/wireguard/service/start');
+      final response = await dio.post(ApiEndpoints.wireguardServiceStart);
       
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -452,7 +453,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/wireguard/service/stop');
+      final response = await dio.post(ApiEndpoints.wireguardServiceStop);
       
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -470,7 +471,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/wireguard/service/restart');
+      final response = await dio.post(ApiEndpoints.wireguardServiceRestart);
       
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -489,7 +490,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/wireguard/service/reconfigure');
+      final response = await dio.post(ApiEndpoints.wireguardServiceReconfigure);
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -518,7 +519,7 @@ class WireGuardService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/wireguard/service/show',
+        ApiEndpoints.wireguardServiceShow,
         data: {
           'current': 1,
           'rowCount': 50,
@@ -546,7 +547,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/wireguard/server/key_pair');
+      final response = await dio.get(ApiEndpoints.wireguardServerKeyPair);
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -571,7 +572,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/wireguard/client/psk');
+      final response = await dio.get(ApiEndpoints.wireguardClientPsk);
       
       if (response.statusCode == 200) {
         final data = response.data;
@@ -601,7 +602,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/wireguard/service/start/$uuid');
+      final response = await dio.post(ApiEndpoints.wireguardServiceInstanceStart(uuid));
       
       if (response.statusCode != 200) {
         throw ApiException('Failed to start WireGuard instance', response.statusCode);
@@ -617,7 +618,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/wireguard/service/stop/$uuid');
+      final response = await dio.post(ApiEndpoints.wireguardServiceInstanceStop(uuid));
       
       if (response.statusCode != 200) {
         throw ApiException('Failed to stop WireGuard instance', response.statusCode);
@@ -633,7 +634,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/wireguard/service/restart/$uuid');
+      final response = await dio.post(ApiEndpoints.wireguardServiceInstanceRestart(uuid));
       
       if (response.statusCode != 200) {
         throw ApiException('Failed to restart WireGuard instance', response.statusCode);
@@ -652,7 +653,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/wireguard/client/get_client_builder');
+      final response = await dio.get(ApiEndpoints.wireguardClientBuilderGet);
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -677,7 +678,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/wireguard/client/get_server_info/$uuid');
+      final response = await dio.get(ApiEndpoints.wireguardServerInfoGet(uuid));
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -715,7 +716,7 @@ class WireGuardService extends BaseOPNsenseService {
       final payload = {'configbuilder': innerPayload};
 
       final response = await dio.post(
-        '/wireguard/client/add_client_builder',
+        ApiEndpoints.wireguardClientBuilderAdd,
         data: payload,
       );
 
@@ -809,7 +810,7 @@ class WireGuardService extends BaseOPNsenseService {
       }
 
       final response = await dio.post(
-        '/diagnostics/log/core/wireguard',
+        ApiEndpoints.diagnosticsLogWireguard,
         data: payload,
       );
 

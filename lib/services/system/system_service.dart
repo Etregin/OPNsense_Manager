@@ -22,6 +22,7 @@ import '../base/base_opnsense_service.dart';
 import '../base/api_exception.dart';
 import '../../models/system_info.dart';
 import '../../models/thermal_sensor.dart';
+import '../../constants/api_endpoints.dart';
 
 /// Service for system-related operations
 class SystemService extends BaseOPNsenseService {
@@ -29,7 +30,7 @@ class SystemService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/core/system/status');
+      final response = await dio.get(ApiEndpoints.systemStatus);
       
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -48,7 +49,7 @@ class SystemService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/core/firmware/info');
+      final response = await dio.get(ApiEndpoints.firmwareInfo);
       
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -59,7 +60,7 @@ class SystemService extends BaseOPNsenseService {
 
     // Try alternative endpoints
     try {
-      final response = await dio.get('/core/firmware/status');
+      final response = await dio.get(ApiEndpoints.firmwareStatus);
       
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -69,7 +70,7 @@ class SystemService extends BaseOPNsenseService {
     }
 
     try {
-      final response = await dio.get('/core/system/info');
+      final response = await dio.get(ApiEndpoints.systemInfo);
       
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -86,7 +87,7 @@ class SystemService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/diagnostics/activity/getActivity');
+      final response = await dio.get(ApiEndpoints.diagnosticsActivity);
       
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -104,7 +105,7 @@ class SystemService extends BaseOPNsenseService {
 
     // Try multiple endpoints for disk information
     try {
-      final response = await dio.get('/diagnostics/system/systemDisk');
+      final response = await dio.get(ApiEndpoints.diagnosticsSystemDisk);
       
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -115,7 +116,7 @@ class SystemService extends BaseOPNsenseService {
 
     // Try alternative endpoint
     try {
-      final response = await dio.get('/core/system/systemDisk');
+      final response = await dio.get(ApiEndpoints.systemDisk);
       
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -132,7 +133,7 @@ class SystemService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/diagnostics/system/systemResources');
+      final response = await dio.get(ApiEndpoints.diagnosticsSystemResources);
       
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -383,7 +384,7 @@ class SystemService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/diagnostics/system/system_temperature');
+      final response = await dio.get(ApiEndpoints.diagnosticsSystemTemperature);
       
       if (response.statusCode == 200) {
         final data = response.data;
@@ -419,7 +420,7 @@ class SystemService extends BaseOPNsenseService {
 
     try {
       
-      final response = await dio.post('/core/system/reboot');
+      final response = await dio.post(ApiEndpoints.systemReboot);
       
       if (response.statusCode == 200) {
       } else {

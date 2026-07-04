@@ -21,6 +21,7 @@ import '../base/base_opnsense_service.dart';
 import '../base/api_exception.dart';
 import '../../models/network_host.dart';
 import 'dhcp_service.dart';
+import '../../constants/api_endpoints.dart';
 
 /// Service for network operations
 class NetworkService extends BaseOPNsenseService {
@@ -33,7 +34,7 @@ class NetworkService extends BaseOPNsenseService {
     ensureInitialized();
     
     try {
-      final response = await dio.get('/diagnostics/traffic/top/$interface');
+      final response = await dio.get(ApiEndpoints.diagnosticsTrafficTopInterface(interface));
       
       if (response.statusCode == 200) {
         final data = response.data;

@@ -602,7 +602,7 @@ Sub-Task 2.1 (`SnackBarHelper`).
 ## Phase 6 — Service Layer & Form Screen Quality
 
 ### Sub-Task 6.1 — Extract API Endpoint Strings into a Constants Class
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 53+ API path strings are hardcoded inline across service files. String literals like
