@@ -25,6 +25,7 @@ import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
 import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
+import '../viewmodels/firewall_logs_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/firewall/log_detail_sheet.dart';
 import '../l10n/app_localizations.dart';
@@ -38,27 +39,30 @@ class FirewallLogsScreen extends StatefulWidget {
 }
 
 class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
-  final List<FirewallLogEntry> _logs = [];
+  late FirewallLogsViewModel _viewModel;
   SystemInfo? _systemInfo;
-  bool _isLoading = true;
+  bool _isInitialized = false;
+
   bool _isPaused = false;
-  String? _errorMessage;
   Timer? _refreshTimer;
   final ScrollController _scrollController = ScrollController();
   bool _autoScroll = true;
-  int _historySize = 100; // Default 100 entries
+  int _historySize = 100;
   final Set<int> _selectedIndices = {};
   bool _isSelectionMode = false;
 
   @override
-  void initState() {
-    super.initState();
-    _loadSystemInfo();
-    _loadLogs();
-    _startAutoRefresh();
-    
-    // Listen to scroll events to detect manual scrolling
-    _scrollController.addListener(_onScroll);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      final apiService = context.read<DemoApiService>();
+      _viewModel = FirewallLogsViewModel(apiService, historySize: _historySize);
+      _isInitialized = true;
+      _loadSystemInfo();
+      _viewModel.loadItems();
+      _startAutoRefresh();
+      _scrollController.addListener(_onScroll);
+    }
   }
 
   @override
@@ -66,16 +70,14 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
     _refreshTimer?.cancel();
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    _viewModel.dispose();
     super.dispose();
   }
 
   void _onScroll() {
-    // If user scrolls up from the bottom, disable auto-scroll
     if (_scrollController.hasClients) {
       final maxScroll = _scrollController.position.maxScrollExtent;
       final currentScroll = _scrollController.offset;
-      
-      // If user is not at the bottom (with 100px threshold), disable auto-scroll
       if (maxScroll - currentScroll > 100) {
         if (_autoScroll) {
           setState(() {
@@ -102,55 +104,26 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
 
   void _startAutoRefresh() {
     _refreshTimer = Timer.periodic(
-      const Duration(seconds: 3), // Refresh every 3 seconds for live logs
+      const Duration(seconds: 3),
       (timer) {
         if (!_isPaused && mounted) {
-          _loadLogs();
+          _viewModel.loadItems();
+          _doAutoScroll();
         }
       },
     );
   }
 
-  Future<void> _loadLogs() async {
-    if (_isPaused) return;
-
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      final logsData = await demoApiService.getFirewallLogs(limit: _historySize);
-
-      if (mounted) {
-        final parsedLogs = logsData
-            .map((log) => FirewallLogEntry.fromJson(log as Map<String, dynamic>))
-            .toList();
-
-        setState(() {
-          _logs.clear();
-          _logs.addAll(parsedLogs);
-          _isLoading = false;
-          _errorMessage = null;
-        });
-
-        // Auto-scroll to bottom if enabled and user is already near bottom
-        if (_autoScroll && _scrollController.hasClients) {
-          // Only auto-scroll if we're already near the bottom (within 200px)
-          final maxScroll = _scrollController.position.maxScrollExtent;
-          final currentScroll = _scrollController.offset;
-          
-          if (maxScroll - currentScroll < 200) {
-            _scrollController.animateTo(
-              maxScroll,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            );
-          }
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
+  void _doAutoScroll() {
+    if (_autoScroll && _scrollController.hasClients) {
+      final maxScroll = _scrollController.position.maxScrollExtent;
+      final currentScroll = _scrollController.offset;
+      if (maxScroll - currentScroll < 200) {
+        _scrollController.animateTo(
+          maxScroll,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
       }
     }
   }
@@ -158,7 +131,6 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
   void _togglePause() {
     setState(() {
       _isPaused = !_isPaused;
-      // Clear selection when resuming live view
       if (!_isPaused && _isSelectionMode) {
         _selectedIndices.clear();
         _isSelectionMode = false;
@@ -170,8 +142,6 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
     setState(() {
       _autoScroll = !_autoScroll;
     });
-    
-    // If enabling auto-scroll, scroll to bottom immediately
     if (_autoScroll && _scrollController.hasClients) {
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
@@ -183,10 +153,10 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
 
   void _clearLogs() {
     setState(() {
-      _logs.clear();
       _selectedIndices.clear();
       _isSelectionMode = false;
     });
+    _viewModel.setItems([]);
   }
 
   void _toggleSelection(int index) {
@@ -206,7 +176,8 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
   void _selectAll() {
     setState(() {
       _selectedIndices.clear();
-      _selectedIndices.addAll(List.generate(_logs.length, (index) => index));
+      _selectedIndices
+          .addAll(List.generate(_viewModel.items.length, (index) => index));
       _isSelectionMode = true;
     });
   }
@@ -220,12 +191,15 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
 
   Future<void> _copySelected() async {
     if (_selectedIndices.isEmpty) return;
+    final logs = _viewModel.items;
 
     final selectedLogs = _selectedIndices
-        .map((index) => _logs[index])
-        .map((log) => '${log.timestamp} | ${log.action.toUpperCase()} | '
+        .map((index) => logs[index])
+        .map((log) =>
+            '${log.timestamp} | ${log.action.toUpperCase()} | '
             '${log.sourceIp}:${log.sourcePort} → ${log.destIp}:${log.destPort} | '
-            'Proto: ${log.protocol} | IF: ${log.interface}${log.reason.isNotEmpty ? ' | Reason: ${log.reason}' : ''}')
+            'Proto: ${log.protocol} | IF: ${log.interface}'
+            '${log.reason.isNotEmpty ? ' | Reason: ${log.reason}' : ''}')
         .join('\n');
 
     await Clipboard.setData(ClipboardData(text: selectedLogs));
@@ -249,19 +223,24 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
             Text(l10n.selectNumberOfEntries),
             const SizedBox(height: 16),
             ...[50, 100, 200, 500, 1000].map((size) => ListTile(
-              title: Text('$size ${l10n.entries}'),
-              leading: Icon(
-                _historySize == size ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                color: _historySize == size ? Theme.of(context).primaryColor : null,
-              ),
-              onTap: () {
-                setState(() {
-                  _historySize = size;
-                });
-                Navigator.of(context).pop();
-                _loadLogs();
-              },
-            )),
+                  title: Text('$size ${l10n.entries}'),
+                  leading: Icon(
+                    _historySize == size
+                        ? Icons.radio_button_checked
+                        : Icons.radio_button_unchecked,
+                    color: _historySize == size
+                        ? Theme.of(context).primaryColor
+                        : null,
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _historySize = size;
+                      _viewModel.historySize = size;
+                    });
+                    Navigator.of(context).pop();
+                    _viewModel.loadItems();
+                  },
+                )),
           ],
         ),
         actions: [
@@ -303,113 +282,128 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      appBar: AppBar(
-        leading: _isSelectionMode
-            ? IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: _clearSelection,
-              )
-            : null,
-        title: Text(_isSelectionMode
-            ? '${_selectedIndices.length} ${l10n.selected}'
-            : l10n.firewallLogs),
-        actions: _isSelectionMode
-            ? [
-                IconButton(
-                  icon: const Icon(Icons.select_all),
-                  onPressed: _selectAll,
-                  tooltip: l10n.selectAll,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.copy),
-                  onPressed: _copySelected,
-                  tooltip: l10n.copy,
-                ),
-              ]
-            : [
-                PopupMenuButton<String>(
-                  icon: const Icon(Icons.more_vert),
-                  onSelected: (value) {
-                    switch (value) {
-                      case 'history_size':
-                        _showHistorySizeDialog();
-                        break;
-                      case 'auto_scroll':
-                        _toggleAutoScroll();
-                        break;
-                      case 'clear':
-                        _clearLogs();
-                        break;
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      value: 'history_size',
-                      child: Row(
-                        children: [
-                          const Icon(Icons.history, size: 20),
-                          const SizedBox(width: 12),
-                          Text('${l10n.historySize} ($_historySize)'),
-                        ],
-                      ),
+
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        final isLoading = _viewModel.isLoading;
+        final errorMessage = _viewModel.errorMessage;
+        final logs = _viewModel.items;
+
+        return Scaffold(
+          appBar: AppBar(
+            leading: _isSelectionMode
+                ? IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: _clearSelection,
+                  )
+                : null,
+            title: Text(_isSelectionMode
+                ? '${_selectedIndices.length} ${l10n.selected}'
+                : l10n.firewallLogs),
+            actions: _isSelectionMode
+                ? [
+                    IconButton(
+                      icon: const Icon(Icons.select_all),
+                      onPressed: _selectAll,
+                      tooltip: l10n.selectAll,
                     ),
-                    PopupMenuItem(
-                      value: 'auto_scroll',
-                      child: Row(
-                        children: [
-                          Icon(
-                            _autoScroll ? Icons.arrow_downward : Icons.arrow_downward_outlined,
-                            size: 20,
+                    IconButton(
+                      icon: const Icon(Icons.copy),
+                      onPressed: _copySelected,
+                      tooltip: l10n.copy,
+                    ),
+                  ]
+                : [
+                    PopupMenuButton<String>(
+                      icon: const Icon(Icons.more_vert),
+                      onSelected: (value) {
+                        switch (value) {
+                          case 'history_size':
+                            _showHistorySizeDialog();
+                            break;
+                          case 'auto_scroll':
+                            _toggleAutoScroll();
+                            break;
+                          case 'clear':
+                            _clearLogs();
+                            break;
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          value: 'history_size',
+                          child: Row(
+                            children: [
+                              const Icon(Icons.history, size: 20),
+                              const SizedBox(width: 12),
+                              Text('${l10n.historySize} ($_historySize)'),
+                            ],
                           ),
-                          const SizedBox(width: 12),
-                          Text(_autoScroll ? l10n.disableAutoScroll : l10n.enableAutoScroll),
-                        ],
-                      ),
+                        ),
+                        PopupMenuItem(
+                          value: 'auto_scroll',
+                          child: Row(
+                            children: [
+                              Icon(
+                                _autoScroll
+                                    ? Icons.arrow_downward
+                                    : Icons.arrow_downward_outlined,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 12),
+                              Text(_autoScroll
+                                  ? l10n.disableAutoScroll
+                                  : l10n.enableAutoScroll),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'clear',
+                          enabled: logs.isNotEmpty,
+                          child: Row(
+                            children: [
+                              const Icon(Icons.delete_sweep, size: 20),
+                              const SizedBox(width: 12),
+                              Text(l10n.clearLogs),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    PopupMenuItem(
-                      value: 'clear',
-                      enabled: _logs.isNotEmpty,
-                      child: Row(
-                        children: [
-                          const Icon(Icons.delete_sweep, size: 20),
-                          const SizedBox(width: 12),
-                          Text(l10n.clearLogs),
-                        ],
-                      ),
+                    IconButton(
+                      icon: Icon(_isPaused ? Icons.play_arrow : Icons.pause),
+                      onPressed: _togglePause,
+                      tooltip: _isPaused ? l10n.resume : l10n.pause,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.refresh),
+                      onPressed: isLoading ? null : _viewModel.loadItems,
+                      tooltip: l10n.refresh,
                     ),
                   ],
-                ),
-                IconButton(
-                  icon: Icon(_isPaused ? Icons.play_arrow : Icons.pause),
-                  onPressed: _togglePause,
-                  tooltip: _isPaused ? l10n.resume : l10n.pause,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.refresh),
-                  onPressed: _isLoading ? null : _loadLogs,
-                  tooltip: l10n.refresh,
-                ),
-              ],
-      ),
-      drawer: AppDrawer(
-        currentRoute: 'firewall_logs',
-        systemInfo: _systemInfo,
-      ),
-      body: Column(
-        children: [
-          _buildStatusBar(),
-          Expanded(child: _buildBody()),
-        ],
-      ),
+          ),
+          drawer: AppDrawer(
+            currentRoute: 'firewall_logs',
+            systemInfo: _systemInfo,
+          ),
+          body: Column(
+            children: [
+              _buildStatusBar(l10n, logs),
+              Expanded(child: _buildBody(l10n, isLoading, errorMessage, logs)),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildStatusBar() {
-    final l10n = AppLocalizations.of(context)!;
+  Widget _buildStatusBar(AppLocalizations l10n, List<FirewallLogEntry> logs) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      color: _isPaused ? Colors.orange.withValues(alpha: 0.1) : Colors.green.withValues(alpha: 0.1),
+      color: _isPaused
+          ? Colors.orange.withValues(alpha: 0.1)
+          : Colors.green.withValues(alpha: 0.1),
       child: Row(
         children: [
           Icon(
@@ -427,7 +421,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
           ),
           const Spacer(),
           Text(
-            '${_logs.length} ${l10n.entries}',
+            '${logs.length} ${l10n.entries}',
             style: TextStyle(
               fontSize: 12,
               color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -438,24 +432,22 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
     );
   }
 
-  Widget _buildBody() {
-    if (_isLoading && _logs.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+  Widget _buildBody(
+    AppLocalizations l10n,
+    bool isLoading,
+    String? errorMessage,
+    List<FirewallLogEntry> logs,
+  ) {
+    if (isLoading && logs.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
     }
 
-    if (_errorMessage != null && _logs.isEmpty) {
-      final l10n = AppLocalizations.of(context)!;
+    if (errorMessage != null && logs.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.red[300],
-            ),
+            Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
             const SizedBox(height: 16),
             Text(
               l10n.errorLoadingLogs,
@@ -465,14 +457,15 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: Text(
-                _errorMessage!,
+                errorMessage,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
-              onPressed: _loadLogs,
+              onPressed: _viewModel.loadItems,
               icon: const Icon(Icons.refresh),
               label: Text(l10n.retry),
             ),
@@ -481,27 +474,28 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
       );
     }
 
-    if (_logs.isEmpty) {
-      final l10n = AppLocalizations.of(context)!;
+    if (logs.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.article_outlined,
-              size: 64,
-              color: Colors.grey[400],
-            ),
+            Icon(Icons.article_outlined, size: 64, color: Colors.grey[400]),
             const SizedBox(height: 16),
             Text(
               l10n.noLogsAvailable,
-              style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: 8),
             Text(
               l10n.logsWillAppear,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
+              style: TextStyle(
+                  fontSize: 12,
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurfaceVariant
+                      .withValues(alpha: 0.7)),
             ),
           ],
         ),
@@ -511,30 +505,35 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
     return ListView.builder(
       controller: _scrollController,
       padding: const EdgeInsets.all(AppConstants.standardPadding),
-      itemCount: _logs.length,
+      itemCount: logs.length,
       itemBuilder: (context, index) {
-        final log = _logs[index];
+        final log = logs[index];
         final isSelected = _selectedIndices.contains(index);
-        return _buildLogEntry(log, index, isSelected);
+        return _buildLogEntry(l10n, log, index, isSelected);
       },
     );
   }
 
-  Widget _buildLogEntry(FirewallLogEntry log, int index, bool isSelected) {
+  Widget _buildLogEntry(
+    AppLocalizations l10n,
+    FirewallLogEntry log,
+    int index,
+    bool isSelected,
+  ) {
     final actionColor = _getActionColor(log.action);
     final actionIcon = _getActionIcon(log.action);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
-      color: isSelected ? Theme.of(context).primaryColor.withValues(alpha: 0.1) : null,
+      color: isSelected
+          ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
+          : null,
       child: InkWell(
         onTap: _isSelectionMode
             ? () => _toggleSelection(index)
             : () => _showLogDetails(log),
         onLongPress: () {
           if (!_isPaused) {
-            final l10n = AppLocalizations.of(context)!;
-            // Show message that selection is only available when paused
             SnackBarHelper.showInfo(context, l10n.pauseLiveViewToSelect);
             return;
           }
@@ -548,10 +547,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
                   value: isSelected,
                   onChanged: (_) => _toggleSelection(index),
                 )
-              : Icon(
-                  actionIcon,
-                  color: actionColor,
-                ),
+              : Icon(actionIcon, color: actionColor),
           title: Row(
             children: [
               Container(
@@ -583,11 +579,12 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 4),
-              // Show rule description if available
               if (log.ruleDescription.isNotEmpty) ...[
                 Row(
                   children: [
-                    Icon(Icons.rule, size: 12, color: Theme.of(context).colorScheme.primary),
+                    Icon(Icons.rule,
+                        size: 12,
+                        color: Theme.of(context).colorScheme.primary),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
@@ -604,24 +601,20 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
                 ),
                 const SizedBox(height: 2),
               ],
-              Builder(
-                builder: (context) {
-                  final l10n = AppLocalizations.of(context)!;
-                  return Text(
-                    '${l10n.protocol}: ${log.protocol} | ${l10n.interface}: ${log.interface}',
-                    style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant),
-                  );
-                }
+              Text(
+                '${l10n.protocol}: ${log.protocol} | ${l10n.interface}: ${log.interface}',
+                style: TextStyle(
+                    fontSize: 11,
+                    color:
+                        Theme.of(context).colorScheme.onSurfaceVariant),
               ),
               if (log.reason.isNotEmpty)
-                Builder(
-                  builder: (context) {
-                    final l10n = AppLocalizations.of(context)!;
-                    return Text(
-                      '${l10n.reason}: ${log.reason}',
-                      style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant),
-                    );
-                  }
+                Text(
+                  '${l10n.reason}: ${log.reason}',
+                  style: TextStyle(
+                      fontSize: 11,
+                      color:
+                          Theme.of(context).colorScheme.onSurfaceVariant),
                 ),
             ],
           ),
@@ -631,14 +624,22 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
             children: [
               Text(
                 log.timestamp,
-                style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
+                style: TextStyle(
+                    fontSize: 10,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurfaceVariant
+                        .withValues(alpha: 0.7)),
               ),
               if (!_isSelectionMode) ...[
                 const SizedBox(height: 4),
                 Icon(
                   Icons.info_outline,
                   size: 16,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurfaceVariant
+                      .withValues(alpha: 0.5),
                 ),
               ],
             ],
@@ -658,7 +659,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
   }
 }
 
-/// Firewall log entry model
+/// Log entry model for firewall logs — kept in this file for backward compatibility.
 class FirewallLogEntry {
   final String timestamp;
   final String action;
@@ -695,7 +696,6 @@ class FirewallLogEntry {
   });
 
   factory FirewallLogEntry.fromJson(Map<String, dynamic> json) {
-    // OPNsense log format fields
     return FirewallLogEntry(
       timestamp: json['timestamp'] ?? json['__timestamp__'] ?? json['time'] ?? '',
       action: json['action'] ?? json['act'] ?? '',
@@ -720,4 +720,3 @@ class FirewallLogEntry {
     return 'FirewallLogEntry(time: $timestamp, action: $action, $sourceIp:$sourcePort -> $destIp:$destPort, proto: $protocol, if: $interface, rule: $ruleDescription)';
   }
 }
-

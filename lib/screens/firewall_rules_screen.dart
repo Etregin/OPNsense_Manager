@@ -25,6 +25,7 @@ import '../services/demo_api_service.dart';
 import '../services/firewall/firewall_rule_filter.dart';
 import '../utils/snackbar_helper.dart';
 import '../utils/constants.dart';
+import '../viewmodels/firewall_rules_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/confirmation_dialog.dart';
 import '../widgets/common/error_display.dart';
@@ -44,22 +45,30 @@ class FirewallRulesScreen extends StatefulWidget {
 }
 
 class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
-  List<FirewallRule> _rules = [];
+  late FirewallRulesViewModel _viewModel;
   SystemInfo? _systemInfo;
-  bool _isLoading = true;
-  String? _errorMessage;
-  String? _selectedInterface;
-  Map<String, List<FirewallRule>> _rulesByInterface = {};
+  bool _isInitialized = false;
 
   @override
-  void initState() {
-    super.initState();
-    _loadData();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      final apiService = context.read<DemoApiService>();
+      _viewModel = FirewallRulesViewModel(apiService);
+      _isInitialized = true;
+      _loadData();
+    }
+  }
+
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
     await Future.wait([
-      _loadRules(),
+      _viewModel.loadItems(),
       _loadSystemInfo(),
     ]);
   }
@@ -68,7 +77,6 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
     try {
       final demoApiService = context.read<DemoApiService>();
       final systemInfo = await demoApiService.getSystemInfo();
-
       if (mounted) {
         setState(() {
           _systemInfo = systemInfo;
@@ -79,49 +87,13 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
     }
   }
 
-  Future<void> _loadRules() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      final allRules = await demoApiService.getFirewallRules();
-      
-      // Use filter utility to process rules
-      final rulesByInterface = FirewallRuleFilter.filterAndGroup(allRules);
-
-      if (mounted) {
-        setState(() {
-          _rules = FirewallRuleFilter.filterAutomationRules(allRules);
-          _rulesByInterface = rulesByInterface;
-          // Set default selected interface to the first one if available
-          if (_selectedInterface == null && rulesByInterface.isNotEmpty) {
-            _selectedInterface = FirewallRuleFilter.getFirstInterface(rulesByInterface);
-          }
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
   Future<void> _toggleRule(FirewallRule rule) async {
     final l10n = AppLocalizations.of(context)!;
-    // Prevent toggling system-generated rules
     if (rule.isSystemGenerated) {
       SnackBarHelper.showWarning(context, l10n.systemGeneratedRulesCannotBeModified);
       return;
     }
 
-    // Show confirmation dialog
     final action = rule.isEnabled ? l10n.disable : l10n.enable;
     final actionTitle = rule.isEnabled ? l10n.disableRule : l10n.enableRule;
     final confirmed = await ConfirmationDialog.show(
@@ -139,22 +111,11 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
     if (!mounted) return;
 
     try {
-      final demoApiService = context.read<DemoApiService>();
-      
-      // Show loading indicator
-      if (mounted) {
-        SnackBarHelper.showInfo(context, rule.isEnabled ? l10n.disablingRule : l10n.enablingRule);
-      }
-      
-      await demoApiService.toggleFirewallRule(rule.uuid);
-
-      // Wait a moment for OPNsense to process the change
+      SnackBarHelper.showInfo(context, rule.isEnabled ? l10n.disablingRule : l10n.enablingRule);
       await Future.delayed(const Duration(milliseconds: 1500));
-
+      await _viewModel.toggleRule(rule.uuid);
       if (mounted) {
         SnackBarHelper.showSuccess(context, rule.isEnabled ? l10n.ruleDisabledSuccessfully : l10n.ruleEnabledSuccessfully);
-        // Reload rules to reflect the change
-        await _loadRules();
       }
     } catch (e) {
       if (mounted) {
@@ -165,7 +126,6 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
 
   Future<void> _deleteRule(FirewallRule rule) async {
     final l10n = AppLocalizations.of(context)!;
-    // Prevent deleting system-generated rules
     if (rule.isSystemGenerated) {
       SnackBarHelper.showWarning(context, l10n.systemGeneratedRulesCannotBeDeleted);
       return;
@@ -182,12 +142,9 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
 
     if (confirmed == true && mounted) {
       try {
-        final demoApiService = context.read<DemoApiService>();
-        await demoApiService.deleteFirewallRule(rule.uuid);
-
+        await _viewModel.deleteRule(rule.uuid);
         if (mounted) {
           SnackBarHelper.showInfo(context, l10n.ruleDeleted);
-          _loadRules();
         }
       } catch (e) {
         if (mounted) {
@@ -205,12 +162,10 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
         Navigator.of(context).pop();
         await Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => FirewallRuleFormScreen(
-              rule: rule,
-            ),
+            builder: (context) => FirewallRuleFormScreen(rule: rule),
           ),
         );
-        if (mounted) _loadRules();
+        if (mounted) _viewModel.loadItems();
       },
       onDelete: () {
         Navigator.of(context).pop();
@@ -222,48 +177,73 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.firewallRules),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _isLoading ? null : _loadRules,
-            tooltip: l10n.refresh,
+
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        final isLoading = _viewModel.isLoading;
+        final errorMessage = _viewModel.errorMessage;
+        final rules = _viewModel.items;
+        final rulesByInterface = _viewModel.rulesByInterface;
+        final selectedInterface = _viewModel.selectedInterface;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(l10n.firewallRules),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: isLoading ? null : _viewModel.loadItems,
+                tooltip: l10n.refresh,
+              ),
+            ],
           ),
-        ],
-      ),
-      drawer: AppDrawer(
-        currentRoute: 'firewall_rules',
-        systemInfo: _systemInfo,
-      ),
-      body: _buildBody(),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          await Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const FirewallRuleFormScreen(),
-            ),
-          );
-          if (mounted) _loadRules();
-        },
-        icon: const Icon(Icons.add),
-        label: Text(l10n.newRule),
-      ),
+          drawer: AppDrawer(
+            currentRoute: 'firewall_rules',
+            systemInfo: _systemInfo,
+          ),
+          body: _buildBody(
+            l10n: l10n,
+            isLoading: isLoading,
+            errorMessage: errorMessage,
+            rules: rules,
+            rulesByInterface: rulesByInterface,
+            selectedInterface: selectedInterface,
+          ),
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const FirewallRuleFormScreen(),
+                ),
+              );
+              if (mounted) _viewModel.loadItems();
+            },
+            icon: const Icon(Icons.add),
+            label: Text(l10n.newRule),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildBody() {
-    if (_isLoading) {
+  Widget _buildBody({
+    required AppLocalizations l10n,
+    required bool isLoading,
+    required String? errorMessage,
+    required List<FirewallRule> rules,
+    required Map<String, List<FirewallRule>> rulesByInterface,
+    required String? selectedInterface,
+  }) {
+    if (isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (_errorMessage != null) {
-      return ErrorDisplay(message: _errorMessage!, onRetry: _loadRules);
+    if (errorMessage != null) {
+      return ErrorDisplay(message: errorMessage, onRetry: _viewModel.loadItems);
     }
 
-    if (_rules.isEmpty) {
-      final l10n = AppLocalizations.of(context)!;
+    if (rules.isEmpty) {
       return EmptyStateWidget(
         icon: Icons.security,
         title: l10n.noAutomationRulesFound,
@@ -271,34 +251,31 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
       );
     }
 
-    if (_rulesByInterface.isEmpty) {
-      return _buildNoInterfacesState();
+    if (rulesByInterface.isEmpty) {
+      return _buildNoInterfacesState(l10n);
     }
 
     return Column(
       children: [
-        // Interface selector
         InterfaceSelector(
-          interfaceRuleCounts: _rulesByInterface.map(
+          interfaceRuleCounts: rulesByInterface.map(
             (key, value) => MapEntry(key, value.length),
           ),
-          selectedInterface: _selectedInterface,
-          onInterfaceSelected: (interface) {
-            setState(() {
-              _selectedInterface = interface;
-            });
-          },
+          selectedInterface: selectedInterface,
+          onInterfaceSelected: _viewModel.selectInterface,
         ),
-        // Rules list for selected interface
         Expanded(
-          child: _buildRulesList(),
+          child: _buildRulesList(
+            l10n: l10n,
+            rulesByInterface: rulesByInterface,
+            selectedInterface: selectedInterface,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildNoInterfacesState() {
-    final l10n = AppLocalizations.of(context)!;
+  Widget _buildNoInterfacesState(AppLocalizations l10n) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -314,15 +291,18 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
     );
   }
 
-  Widget _buildRulesList() {
-    final l10n = AppLocalizations.of(context)!;
-    if (_selectedInterface == null) {
+  Widget _buildRulesList({
+    required AppLocalizations l10n,
+    required Map<String, List<FirewallRule>> rulesByInterface,
+    required String? selectedInterface,
+  }) {
+    if (selectedInterface == null) {
       return Center(child: Text(l10n.selectInterfaceToViewRules));
     }
 
     final rules = FirewallRuleFilter.getRulesForInterface(
-      _rulesByInterface,
-      _selectedInterface,
+      rulesByInterface,
+      selectedInterface,
     );
 
     if (rules.isEmpty) {
@@ -333,7 +313,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
             Icon(Icons.security, size: 64, color: Colors.grey[400]),
             const SizedBox(height: 16),
             Text(
-              l10n.noRulesForInterface(_selectedInterface!),
+              l10n.noRulesForInterface(selectedInterface),
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ],
@@ -342,7 +322,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
     }
 
     return RefreshIndicator(
-      onRefresh: _loadRules,
+      onRefresh: _viewModel.loadItems,
       child: ListView.separated(
         padding: const EdgeInsets.all(AppConstants.standardPadding),
         itemCount: rules.length,
@@ -359,5 +339,3 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
     );
   }
 }
-
-

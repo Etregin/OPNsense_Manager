@@ -18,10 +18,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import '../models/openvpn_static_key.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
+import '../viewmodels/openvpn_static_keys_view_model.dart';
 import '../widgets/openvpn/openvpn_static_key_card.dart';
 import '../screens/openvpn_static_key_form_screen.dart';
 import '../widgets/common/error_display.dart';
@@ -46,9 +46,7 @@ class OpenvpnStaticKeysListScreen extends StatefulWidget {
 }
 
 class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScreen> {
-  List<OpenvpnStaticKey> _staticKeys = [];
-  bool _isLoading = false;
-  String? _errorMessage;
+  late OpenvpnStaticKeysViewModel _viewModel;
   int _currentPage = 1;
   int _rowCount = 50;
   int _totalCount = 0;
@@ -56,6 +54,11 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
   @override
   void initState() {
     super.initState();
+    _viewModel = OpenvpnStaticKeysViewModel(
+      widget.apiService,
+      currentPage: _currentPage,
+      rowCount: _rowCount,
+    );
     // Register the refresh callback with parent
     widget.onRegisterRefresh?.call(_loadStaticKeys);
     // Load static keys after the first frame to ensure context is available
@@ -66,35 +69,20 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
     });
   }
 
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
+  }
+
   Future<void> _loadStaticKeys() async {
-    if (_isLoading) return;
-
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final apiService = context.read<DemoApiService>();
-      final response = await apiService.searchOpenvpnStaticKeys(
-        current: _currentPage,
-        rowCount: _rowCount == -1 ? 9999 : _rowCount,
-      );
-
-      if (mounted) {
-        setState(() {
-          _staticKeys = response.rows;
-          _totalCount = response.total;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
+    _viewModel.currentPage = _currentPage;
+    _viewModel.rowCount = _rowCount;
+    await _viewModel.loadItems();
+    if (mounted) {
+      setState(() {
+        _totalCount = _viewModel.items.length;
+      });
     }
   }
 
@@ -106,7 +94,8 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
       builder: (context) => AlertDialog(
         title: Text(l10n.deleteStaticKey),
         content: Text(
-          l10n.confirmDeleteStaticKey(key.description.isNotEmpty ? key.description : key.keyid ?? "N/A"),
+          l10n.confirmDeleteStaticKey(
+              key.description.isNotEmpty ? key.description : key.keyid ?? "N/A"),
         ),
         actions: [
           TextButton(
@@ -115,9 +104,7 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: Text(l10n.delete),
           ),
         ],
@@ -126,11 +113,9 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
 
     if (confirmed == true && mounted && key.keyid != null) {
       try {
-        final apiService = context.read<DemoApiService>();
-        await apiService.deleteOpenvpnStaticKey(key.keyid!);
+        await _viewModel.deleteStaticKey(key.keyid!);
         if (mounted) {
           SnackBarHelper.showSuccess(context, l10n.staticKeyDeletedSuccessfully);
-          await _loadStaticKeys();
         }
       } catch (e) {
         if (mounted) {
@@ -152,8 +137,7 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (key.keyid != null)
-                _buildDetailRow(l10n.id, key.keyid!),
+              if (key.keyid != null) _buildDetailRow(l10n.id, key.keyid!),
               _buildDetailRow(l10n.mode, key.modeDescription),
               _buildDetailRow(l10n.valid, key.isValid ? l10n.yes : l10n.no),
               if (key.createdAt != null)
@@ -174,10 +158,7 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
                 ),
                 child: SelectableText(
                   key.key,
-                  style: const TextStyle(
-                    fontFamily: 'monospace',
-                    fontSize: 11,
-                  ),
+                  style: const TextStyle(fontFamily: 'monospace', fontSize: 11),
                 ),
               ),
               const SizedBox(height: 12),
@@ -216,9 +197,7 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          Expanded(
-            child: Text(value),
-          ),
+          Expanded(child: Text(value)),
         ],
       ),
     );
@@ -231,7 +210,6 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
       ),
     );
 
-    // Reload the list if the form returned true (indicating a successful save)
     if (result == true && mounted) {
       await _loadStaticKeys();
       widget.onRefresh?.call();
@@ -242,74 +220,82 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Column(
-      children: [
-        // Pagination controls
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              Text(l10n.rowsPerPage),
-              const SizedBox(width: 12),
-              DropdownButton<int>(
-                value: _rowCount,
-                items: [
-                  const DropdownMenuItem(value: 50, child: Text('50')),
-                  const DropdownMenuItem(value: 100, child: Text('100')),
-                  const DropdownMenuItem(value: 200, child: Text('200')),
-                  const DropdownMenuItem(value: 500, child: Text('500')),
-                  const DropdownMenuItem(value: 1000, child: Text('1000')),
-                  DropdownMenuItem(value: -1, child: Text(l10n.all)),
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        final isLoading = _viewModel.isLoading;
+        final errorMessage = _viewModel.errorMessage;
+        final staticKeys = _viewModel.items;
+
+        return Column(
+          children: [
+            // Pagination controls
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Text(l10n.rowsPerPage),
+                  const SizedBox(width: 12),
+                  DropdownButton<int>(
+                    value: _rowCount,
+                    items: [
+                      const DropdownMenuItem(value: 50, child: Text('50')),
+                      const DropdownMenuItem(value: 100, child: Text('100')),
+                      const DropdownMenuItem(value: 200, child: Text('200')),
+                      const DropdownMenuItem(value: 500, child: Text('500')),
+                      const DropdownMenuItem(value: 1000, child: Text('1000')),
+                      DropdownMenuItem(value: -1, child: Text(l10n.all)),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          _rowCount = value;
+                          _currentPage = 1;
+                        });
+                        _loadStaticKeys();
+                      }
+                    },
+                  ),
+                  const Spacer(),
+                  Text('${staticKeys.length} / $_totalCount'),
                 ],
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      _rowCount = value;
-                      _currentPage = 1;
-                    });
-                    _loadStaticKeys();
-                  }
-                },
               ),
-              const Spacer(),
-              Text('${_staticKeys.length} / $_totalCount'),
-            ],
-          ),
-        ),
-        // Static keys list
-        Expanded(
-          child: _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : _errorMessage != null
-                  ? ErrorDisplay(message: _errorMessage!, onRetry: _loadStaticKeys)
-                  : _staticKeys.isEmpty
-                      ? EmptyStateWidget(
-                          icon: Icons.vpn_key,
-                          title: l10n.noStaticKeysConfigured,
-                          subtitle: l10n.tapPlusButtonToCreateFirstStaticKey,
-                        )
-                      : RefreshIndicator(
-                          onRefresh: () async {
-                            await _loadStaticKeys();
-                            widget.onRefresh?.call();
-                          },
-                          child: ListView.builder(
-                            itemCount: _staticKeys.length,
-                            itemBuilder: (context, index) {
-                              final key = _staticKeys[index];
-                              return OpenvpnStaticKeyCard(
-                                staticKey: key,
-                                onTap: () => _showStaticKeyDetails(key),
-                                onEdit: () => _onEditStaticKey(key),
-                                onDelete: () => _deleteStaticKey(key),
-                              );
-                            },
-                          ),
-                        ),
-        ),
-      ],
+            ),
+            // Static keys list
+            Expanded(
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : errorMessage != null
+                      ? ErrorDisplay(
+                          message: errorMessage, onRetry: _loadStaticKeys)
+                      : staticKeys.isEmpty
+                          ? EmptyStateWidget(
+                              icon: Icons.vpn_key,
+                              title: l10n.noStaticKeysConfigured,
+                              subtitle: l10n.tapPlusButtonToCreateFirstStaticKey,
+                            )
+                          : RefreshIndicator(
+                              onRefresh: () async {
+                                await _loadStaticKeys();
+                                widget.onRefresh?.call();
+                              },
+                              child: ListView.builder(
+                                itemCount: staticKeys.length,
+                                itemBuilder: (context, index) {
+                                  final key = staticKeys[index];
+                                  return OpenvpnStaticKeyCard(
+                                    staticKey: key,
+                                    onTap: () => _showStaticKeyDetails(key),
+                                    onEdit: () => _onEditStaticKey(key),
+                                    onDelete: () => _deleteStaticKey(key),
+                                  );
+                                },
+                              ),
+                            ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
-
-

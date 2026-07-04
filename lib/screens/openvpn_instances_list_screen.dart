@@ -18,10 +18,10 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../models/openvpn_instance_list_item.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
+import '../viewmodels/openvpn_instances_view_model.dart';
 import '../widgets/openvpn/openvpn_instance_card.dart';
 import '../widgets/common/error_display.dart';
 import '../widgets/common/empty_state_widget.dart';
@@ -46,21 +46,24 @@ class OpenvpnInstancesListScreen extends StatefulWidget {
 }
 
 class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen> {
-  List<OpenvpnInstanceListItem> _instances = [];
-  bool _isLoading = false;
-  String? _errorMessage;
-  int _currentPage = 1;
+  late OpenvpnInstancesViewModel _viewModel;
   int _rowCount = 50;
   int _totalCount = 0;
-  String _roleFilter = 'all'; // all, server, client
-  String _statusFilter = 'all'; // all, enabled, disabled
+  String _roleFilter = 'all';
+  String _statusFilter = 'all';
   String _searchQuery = '';
-  final Set<String> _togglingInstances = {};
   Timer? _searchDebounce;
 
   @override
   void initState() {
     super.initState();
+    _viewModel = OpenvpnInstancesViewModel(
+      widget.apiService,
+      roleFilter: _roleFilter,
+      statusFilter: _statusFilter,
+      rowCount: _rowCount,
+      searchQuery2: _searchQuery,
+    );
     // Register the refresh callback with parent
     widget.onRegisterRefresh?.call(_loadInstances);
     // Load instances after the first frame to ensure context is available
@@ -71,94 +74,41 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
     });
   }
 
-  Future<void> _loadInstances() async {
-    if (_isLoading) return;
-
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final apiService = context.read<DemoApiService>();
-      
-      // Convert filter values for API
-      final String? enabledParam = _statusFilter == 'all'
-          ? null
-          : (_statusFilter == 'enabled' ? '1' : '0');
-      final String? searchParam = _searchQuery.isEmpty ? null : _searchQuery;
-      
-      final response = await apiService.searchOpenvpnInstances(
-        current: _currentPage,
-        rowCount: _rowCount == -1 ? 9999 : _rowCount,
-        searchPhrase: searchParam,
-        enabled: enabledParam,
-      );
-
-      // Apply client-side role filtering
-      List<OpenvpnInstanceListItem> filteredInstances = _roleFilter == 'all'
-          ? response.rows
-          : response.filterByRole(_roleFilter);
-
-      // Apply client-side status filtering
-      if (_statusFilter != 'all') {
-        filteredInstances = filteredInstances.where((item) =>
-          _statusFilter == 'enabled' ? item.enabled : !item.enabled
-        ).toList();
-      }
-
-      if (mounted) {
-        setState(() {
-          _instances = filteredInstances;
-          _totalCount = filteredInstances.length;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
   @override
   void dispose() {
     _searchDebounce?.cancel();
+    _viewModel.dispose();
     super.dispose();
   }
 
+  Future<void> _loadInstances() async {
+    _viewModel.roleFilter = _roleFilter;
+    _viewModel.statusFilter = _statusFilter;
+    _viewModel.rowCount = _rowCount;
+    _viewModel.searchQuery2 = _searchQuery;
+    await _viewModel.loadItems();
+    if (mounted) {
+      setState(() {
+        _totalCount = _viewModel.items.length;
+      });
+    }
+  }
+
   Future<void> _toggleInstance(OpenvpnInstanceListItem instance) async {
-    if (_togglingInstances.contains(instance.uuid)) return;
-
-    setState(() {
-      _togglingInstances.add(instance.uuid);
-    });
-
     try {
-      final apiService = context.read<DemoApiService>();
-      await apiService.toggleOpenvpnInstance(instance.uuid);
-
-      // Apply the configuration change
-      await apiService.reconfigureOpenvpn();
-
+      await _viewModel.toggleInstance(instance.uuid);
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        SnackBarHelper.showSuccess(context, l10n.instanceToggledSuccessfully(instance.enabled ? l10n.disabled : l10n.enabled));
-        await _loadInstances();
+        SnackBarHelper.showSuccess(
+          context,
+          l10n.instanceToggledSuccessfully(
+              instance.enabled ? l10n.disabled : l10n.enabled),
+        );
       }
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
         SnackBarHelper.showError(context, l10n.failedToToggleInstance(e.toString()));
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _togglingInstances.remove(instance.uuid);
-        });
       }
     }
   }
@@ -171,7 +121,8 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
       builder: (context) => AlertDialog(
         title: Text(l10n.deleteInstance),
         content: Text(
-          l10n.confirmDeleteInstance(instance.description.isNotEmpty ? instance.description : instance.vpnid),
+          l10n.confirmDeleteInstance(
+              instance.description.isNotEmpty ? instance.description : instance.vpnid),
         ),
         actions: [
           TextButton(
@@ -180,9 +131,7 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: Text(l10n.delete),
           ),
         ],
@@ -191,11 +140,9 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
 
     if (confirmed == true && mounted) {
       try {
-        final apiService = context.read<DemoApiService>();
-        await apiService.deleteOpenvpnInstance(instance.uuid);
+        await _viewModel.deleteInstance(instance.uuid);
         if (mounted) {
           SnackBarHelper.showSuccess(context, l10n.instanceDeletedSuccessfully);
-          await _loadInstances();
         }
       } catch (e) {
         if (mounted) {
@@ -211,7 +158,9 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(instance.description.isNotEmpty ? instance.description : l10n.instanceDetails),
+        title: Text(instance.description.isNotEmpty
+            ? instance.description
+            : l10n.instanceDetails),
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -258,9 +207,7 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          Expanded(
-            child: Text(value),
-          ),
+          Expanded(child: Text(value)),
         ],
       ),
     );
@@ -272,8 +219,7 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
         builder: (context) => OpenvpnInstanceFormScreen(vpnid: instance.uuid),
       ),
     );
-    
-    // Refresh list if instance was updated
+
     if (result == true && mounted) {
       await _loadInstances();
       widget.onRefresh?.call();
@@ -284,168 +230,180 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Column(
-      children: [
-        // Search and filters
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              // Search bar
-              TextField(
-                decoration: InputDecoration(
-                  hintText: l10n.searchInstances,
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _searchQuery = value;
-                  });
-                  
-                  // Cancel previous timer
-                  _searchDebounce?.cancel();
-                  
-                  // Create new timer for debounced search
-                  _searchDebounce = Timer(const Duration(milliseconds: 500), () {
-                    _loadInstances();
-                  });
-                },
-              ),
-              const SizedBox(height: 12),
-              // Filters row
-              Row(
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        final isLoading = _viewModel.isLoading;
+        final errorMessage = _viewModel.errorMessage;
+        final instances = _viewModel.items;
+
+        return Column(
+          children: [
+            // Search and filters
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
                 children: [
-                  Expanded(
-                    child: DropdownButtonFormField<String>(
-                      initialValue: _roleFilter,
-                      decoration: InputDecoration(
-                        labelText: l10n.role,
-                        border: const OutlineInputBorder(),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  // Search bar
+                  TextField(
+                    decoration: InputDecoration(
+                      hintText: l10n.searchInstances,
+                      prefixIcon: const Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      items: [
-                        DropdownMenuItem(value: 'all', child: Text(l10n.allRoles)),
-                        DropdownMenuItem(value: 'server', child: Text(l10n.server)),
-                        DropdownMenuItem(value: 'client', child: Text(l10n.client)),
-                      ],
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            _roleFilter = value;
-                            _currentPage = 1; // Reset to first page
-                          });
-                          _loadInstances();
-                        }
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: DropdownButtonFormField<String>(
-                      initialValue: _statusFilter,
-                      decoration: InputDecoration(
-                        labelText: l10n.status,
-                        border: const OutlineInputBorder(),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
                       ),
-                      items: [
-                        DropdownMenuItem(value: 'all', child: Text(l10n.allStatus)),
-                        DropdownMenuItem(value: 'enabled', child: Text(l10n.enabled)),
-                        DropdownMenuItem(value: 'disabled', child: Text(l10n.disabled)),
-                      ],
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            _statusFilter = value;
-                            _currentPage = 1; // Reset to first page
-                          });
-                          _loadInstances();
-                        }
-                      },
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              // Row count selector
-              Row(
-                children: [
-                  Text(l10n.rowsPerPage),
-                  const SizedBox(width: 12),
-                  DropdownButton<int>(
-                    value: _rowCount,
-                    items: [
-                      const DropdownMenuItem(value: 50, child: Text('50')),
-                      const DropdownMenuItem(value: 100, child: Text('100')),
-                      const DropdownMenuItem(value: 200, child: Text('200')),
-                      const DropdownMenuItem(value: 500, child: Text('500')),
-                      const DropdownMenuItem(value: 1000, child: Text('1000')),
-                      DropdownMenuItem(value: -1, child: Text(l10n.all)),
-                    ],
                     onChanged: (value) {
-                      if (value != null) {
-                        setState(() {
-                          _rowCount = value;
-                          _currentPage = 1;
-                        });
+                      setState(() {
+                        _searchQuery = value;
+                      });
+                      _searchDebounce?.cancel();
+                      _searchDebounce = Timer(const Duration(milliseconds: 500), () {
                         _loadInstances();
-                      }
+                      });
                     },
                   ),
-                  const Spacer(),
-                  Text(l10n.showingInstancesCount(_instances.length.toString(), _totalCount.toString())),
+                  const SizedBox(height: 12),
+                  // Filters row
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          initialValue: _roleFilter,
+                          decoration: InputDecoration(
+                            labelText: l10n.role,
+                            border: const OutlineInputBorder(),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                          ),
+                          items: [
+                            DropdownMenuItem(value: 'all', child: Text(l10n.allRoles)),
+                            DropdownMenuItem(value: 'server', child: Text(l10n.server)),
+                            DropdownMenuItem(value: 'client', child: Text(l10n.client)),
+                          ],
+                          onChanged: (value) {
+                            if (value != null) {
+                              setState(() {
+                                _roleFilter = value;
+                              });
+                              _loadInstances();
+                            }
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          initialValue: _statusFilter,
+                          decoration: InputDecoration(
+                            labelText: l10n.status,
+                            border: const OutlineInputBorder(),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                          ),
+                          items: [
+                            DropdownMenuItem(value: 'all', child: Text(l10n.allStatus)),
+                            DropdownMenuItem(
+                                value: 'enabled', child: Text(l10n.enabled)),
+                            DropdownMenuItem(
+                                value: 'disabled', child: Text(l10n.disabled)),
+                          ],
+                          onChanged: (value) {
+                            if (value != null) {
+                              setState(() {
+                                _statusFilter = value;
+                              });
+                              _loadInstances();
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  // Row count selector
+                  Row(
+                    children: [
+                      Text(l10n.rowsPerPage),
+                      const SizedBox(width: 12),
+                      DropdownButton<int>(
+                        value: _rowCount,
+                        items: [
+                          const DropdownMenuItem(value: 50, child: Text('50')),
+                          const DropdownMenuItem(value: 100, child: Text('100')),
+                          const DropdownMenuItem(value: 200, child: Text('200')),
+                          const DropdownMenuItem(value: 500, child: Text('500')),
+                          const DropdownMenuItem(value: 1000, child: Text('1000')),
+                          DropdownMenuItem(value: -1, child: Text(l10n.all)),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              _rowCount = value;
+                            });
+                            _loadInstances();
+                          }
+                        },
+                      ),
+                      const Spacer(),
+                      Text(l10n.showingInstancesCount(
+                          instances.length.toString(), _totalCount.toString())),
+                    ],
+                  ),
                 ],
               ),
-            ],
-          ),
-        ),
-        // Instances list
-        Expanded(
-          child: _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : _errorMessage != null
-                  ? ErrorDisplay(message: _errorMessage!, onRetry: _loadInstances)
-                  : _instances.isEmpty
-                      ? EmptyStateWidget(
-                          icon: Icons.vpn_lock,
-                          title: _searchQuery.isNotEmpty || _roleFilter != 'all' || _statusFilter != 'all'
-                              ? l10n.noInstancesMatchFilters
-                              : l10n.noOpenvpnInstancesConfigured,
-                          subtitle: _searchQuery.isEmpty && _roleFilter == 'all' && _statusFilter == 'all'
-                              ? l10n.tapPlusButtonToCreateFirstInstance
-                              : null,
-                        )
-                      : RefreshIndicator(
-                          onRefresh: () async {
-                            await _loadInstances();
-                            widget.onRefresh?.call();
-                          },
-                          child: ListView.builder(
-                            itemCount: _instances.length,
-                            itemBuilder: (context, index) {
-                              final instance = _instances[index];
-                              return OpenvpnInstanceCard(
-                                instance: instance,
-                                isToggling: _togglingInstances.contains(instance.uuid),
-                                onTap: () => _showInstanceDetails(instance),
-                                onToggle: (value) => _toggleInstance(instance),
-                                onEdit: () => _onEditInstance(instance),
-                                onDelete: () => _deleteInstance(instance),
-                              );
-                            },
-                          ),
-                        ),
-        ),
-      ],
+            ),
+            // Instances list
+            Expanded(
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : errorMessage != null
+                      ? ErrorDisplay(
+                          message: errorMessage, onRetry: _loadInstances)
+                      : instances.isEmpty
+                          ? EmptyStateWidget(
+                              icon: Icons.vpn_lock,
+                              title: _searchQuery.isNotEmpty ||
+                                      _roleFilter != 'all' ||
+                                      _statusFilter != 'all'
+                                  ? l10n.noInstancesMatchFilters
+                                  : l10n.noOpenvpnInstancesConfigured,
+                              subtitle: _searchQuery.isEmpty &&
+                                      _roleFilter == 'all' &&
+                                      _statusFilter == 'all'
+                                  ? l10n.tapPlusButtonToCreateFirstInstance
+                                  : null,
+                            )
+                          : RefreshIndicator(
+                              onRefresh: () async {
+                                await _loadInstances();
+                                widget.onRefresh?.call();
+                              },
+                              child: ListView.builder(
+                                itemCount: instances.length,
+                                itemBuilder: (context, index) {
+                                  final instance = instances[index];
+                                  return OpenvpnInstanceCard(
+                                    instance: instance,
+                                    isToggling:
+                                        _viewModel.isToggling(instance.uuid),
+                                    onTap: () => _showInstanceDetails(instance),
+                                    onToggle: (value) =>
+                                        _toggleInstance(instance),
+                                    onEdit: () => _onEditInstance(instance),
+                                    onDelete: () => _deleteInstance(instance),
+                                  );
+                                },
+                              ),
+                            ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
-
-

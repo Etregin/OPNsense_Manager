@@ -22,6 +22,7 @@ import '../models/firewall_alias.dart';
 import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
+import '../viewmodels/firewall_aliases_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/confirmation_dialog.dart';
 import '../widgets/common/error_display.dart';
@@ -55,24 +56,32 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
     'external',
   ];
 
-  List<FirewallAlias> _aliases = [];
+  late FirewallAliasesViewModel _viewModel;
   SystemInfo? _systemInfo;
-  bool _isLoading = true;
-  String? _errorMessage;
+  bool _isInitialized = false;
   String _searchQuery = '';
-  Set<String> _selectedTypes = {}; // Changed from String? to Set<String> for multi-select
-  // Track which aliases are currently being toggled
-  final Set<String> _togglingAliases = {};
+  Set<String> _selectedTypes = {};
 
   @override
-  void initState() {
-    super.initState();
-    _loadData();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      final apiService = context.read<DemoApiService>();
+      _viewModel = FirewallAliasesViewModel(apiService);
+      _isInitialized = true;
+      _loadData();
+    }
+  }
+
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
     await Future.wait([
-      _loadAliases(),
+      _viewModel.loadItems(),
       _loadSystemInfo(),
     ]);
   }
@@ -81,7 +90,6 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
     try {
       final demoApiService = context.read<DemoApiService>();
       final systemInfo = await demoApiService.getSystemInfo();
-
       if (mounted) {
         setState(() {
           _systemInfo = systemInfo;
@@ -92,56 +100,14 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
     }
   }
 
-  Future<void> _loadAliases() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      final aliases = await demoApiService.getFirewallAliases();
-
-      if (mounted) {
-        setState(() {
-          _aliases = aliases;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  List<FirewallAlias> get _filteredAliases {
-    var filtered = _aliases;
-
-    // Apply type filter - show aliases that match ANY of the selected types
-    if (_selectedTypes.isNotEmpty) {
-      filtered = filtered.where((alias) => _selectedTypes.contains(alias.type)).toList();
-    }
-
-    // Apply search filter
-    if (_searchQuery.isNotEmpty) {
-      final query = _searchQuery.toLowerCase();
-      filtered = filtered.where((alias) {
-        return alias.name.toLowerCase().contains(query) ||
-            alias.description.toLowerCase().contains(query) ||
-            alias.content.toLowerCase().contains(query);
-      }).toList();
-    }
-
-    return filtered;
+  List<FirewallAlias> _getFilteredAliases(List<FirewallAlias> allItems) {
+    if (_selectedTypes.isEmpty) return allItems;
+    return allItems.where((alias) => _selectedTypes.contains(alias.type)).toList();
   }
 
   void _showTypeFilterDialog() {
     final l10n = AppLocalizations.of(context)!;
-    
+
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
@@ -152,7 +118,6 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Select All / Clear All buttons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -177,7 +142,6 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                     ],
                   ),
                   const Divider(),
-                  // Checkbox list for all types
                   ..._allAliasTypes.map((type) {
                     return CheckboxListTile(
                       title: Text(FirewallAlias(
@@ -210,7 +174,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    // Apply the filter
+                    // Trigger rebuild to apply type filter
                   });
                   Navigator.of(context).pop();
                 },
@@ -224,41 +188,26 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
   }
 
   Future<void> _toggleAlias(FirewallAlias alias, bool newValue) async {
-    // Prevent multiple simultaneous toggles
-    if (_togglingAliases.contains(alias.uuid)) {
-      return;
-    }
-
-    setState(() {
-      _togglingAliases.add(alias.uuid);
-    });
-
     try {
-      final demoApiService = context.read<DemoApiService>();
-      await demoApiService.toggleFirewallAlias(alias.uuid);
-
+      await _viewModel.toggleAlias(alias.uuid);
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        SnackBarHelper.showSuccess(context, alias.isEnabled ? l10n.aliasDisabledSuccessfully : l10n.aliasEnabledSuccessfully);
-        await _loadAliases();
+        SnackBarHelper.showSuccess(
+          context,
+          alias.isEnabled ? l10n.aliasDisabledSuccessfully : l10n.aliasEnabledSuccessfully,
+        );
       }
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
         SnackBarHelper.showError(context, l10n.failedToToggleAlias(e.toString()));
       }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _togglingAliases.remove(alias.uuid);
-        });
-      }
     }
   }
 
   Future<void> _deleteAlias(FirewallAlias alias) async {
     final l10n = AppLocalizations.of(context)!;
-    
+
     final confirmed = await ConfirmationDialog.show(
       context: context,
       title: l10n.deleteRule,
@@ -270,12 +219,9 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
 
     if (confirmed == true && mounted) {
       try {
-        final demoApiService = context.read<DemoApiService>();
-        await demoApiService.deleteFirewallAlias(alias.uuid);
-
+        await _viewModel.deleteAlias(alias.uuid);
         if (mounted) {
           SnackBarHelper.showSuccess(context, l10n.aliasDeletedSuccessfully);
-          _loadAliases();
         }
       } catch (e) {
         if (mounted) {
@@ -287,7 +233,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
 
   void _showAliasDetails(FirewallAlias alias) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -299,11 +245,20 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
             children: [
               _buildDetailRow('UUID', alias.uuid),
               _buildDetailRow(l10n.type, alias.typeDisplayName),
-              _buildDetailRow(l10n.description, alias.description.isEmpty ? 'N/A' : alias.description),
-              _buildDetailRow('Loaded #', _formatNumber(alias.currentItems)),
-              _buildDetailRow(l10n.enabled, alias.isEnabled ? 'Yes' : 'No'),
-              if (_formatCategories(alias.categories).isNotEmpty)
-                _buildDetailRow(l10n.categories, _formatCategories(alias.categories)),
+              _buildDetailRow(l10n.description, alias.description),
+              _buildDetailRow(l10n.enabled, alias.isEnabled ? l10n.yes : l10n.no),
+              const Divider(),
+              Text(
+                '${l10n.content}:',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              ...alias.contentList.take(20).map((item) => Padding(
+                padding: const EdgeInsets.only(left: 16, bottom: 4),
+                child: Text('• $item'),
+              )),
+              if (alias.contentList.length > 20)
+                Text('... and ${alias.contentList.length - 20} more'),
             ],
           ),
         ),
@@ -324,293 +279,14 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 100,
+            width: 120,
             child: Text(
               '$label:',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          Expanded(
-            child: Text(value),
-          ),
+          Expanded(child: Text(value)),
         ],
-      ),
-    );
-  }
-
-  /// Format number with thousand separators
-  String _formatNumber(String value) {
-    try {
-      final number = int.parse(value);
-      // Format with thousand separators
-      final formatter = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
-      return number.toString().replaceAllMapped(formatter, (Match m) => '${m[1]},');
-    } catch (e) {
-      // If parsing fails, return as-is
-      return value;
-    }
-  }
-
-  /// Format categories field - handles arrays and comma-separated values
-  String _formatCategories(String categories) {
-    if (categories.isEmpty) return '';
-    
-    // Handle empty array notation
-    if (categories.trim() == '[]' || categories.trim() == '{}') {
-      return '';
-    }
-    
-    // If it's a JSON array, try to parse it
-    if (categories.startsWith('[') && categories.endsWith(']')) {
-      try {
-        // Remove brackets and quotes, split by comma
-        final cleaned = categories
-            .substring(1, categories.length - 1)
-            .replaceAll('"', '')
-            .replaceAll("'", '')
-            .trim();
-        
-        if (cleaned.isEmpty) return '';
-        
-        return cleaned.split(',')
-            .map((e) => e.trim())
-            .where((e) => e.isNotEmpty)
-            .join(', ');
-      } catch (e) {
-        // If parsing fails, return as-is
-        return categories;
-      }
-    }
-    
-    // Handle comma-separated values
-    if (categories.contains(',')) {
-      return categories.split(',')
-          .map((e) => e.trim())
-          .where((e) => e.isNotEmpty)
-          .join(', ');
-    }
-    
-    return categories;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final filteredAliases = _filteredAliases;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.firewallAliases),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadAliases,
-            tooltip: l10n.refresh,
-          ),
-        ],
-      ),
-      drawer: AppDrawer(
-        currentRoute: 'firewall_aliases',
-        systemInfo: _systemInfo,
-      ),
-      body: Column(
-        children: [
-          // Search and filter bar
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: l10n.searchAliases,
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        _searchQuery = value;
-                      });
-                    },
-                  ),
-                ),
-                const SizedBox(width: 8),
-                IconButton(
-                  icon: Icon(
-                    Icons.filter_list,
-                    color: _selectedTypes.isNotEmpty ? Theme.of(context).colorScheme.primary : null,
-                  ),
-                  tooltip: l10n.filterByType,
-                  onPressed: _showTypeFilterDialog,
-                ),
-              ],
-            ),
-          ),
-          // Active filter indicator
-          if (_selectedTypes.isNotEmpty)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Row(
-                children: [
-                  Chip(
-                    avatar: const Icon(Icons.filter_alt, size: 18),
-                    label: Text(
-                      _selectedTypes.length == 1
-                          ? FirewallAlias(
-                              uuid: '',
-                              name: '',
-                              type: _selectedTypes.first,
-                              content: '',
-                            ).typeDisplayName
-                          : '${_selectedTypes.length} types selected',
-                    ),
-                    onDeleted: () {
-                      setState(() {
-                        _selectedTypes.clear();
-                      });
-                    },
-                    deleteIcon: const Icon(Icons.close, size: 18),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    l10n.itemsCount(filteredAliases.length),
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          // Aliases list
-          Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _errorMessage != null
-                    ? ErrorDisplay(message: _errorMessage!, onRetry: _loadAliases)
-                    : filteredAliases.isEmpty
-                        ? EmptyStateWidget(
-                            icon: Icons.inbox,
-                            title: _searchQuery.isNotEmpty || _selectedTypes.isNotEmpty
-                                ? l10n.noAliasesMatchFilters
-                                : l10n.noAliasesConfigured,
-                          )
-                        : RefreshIndicator(
-                            onRefresh: _loadAliases,
-                            child: ListView.builder(
-                              itemCount: filteredAliases.length,
-                              itemBuilder: (context, index) {
-                                final alias = filteredAliases[index];
-                                final isToggling = _togglingAliases.contains(alias.uuid);
-                                
-                                return Card(
-                                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                                  child: ListTile(
-                                    leading: CircleAvatar(
-                                      backgroundColor: alias.isEnabled
-                                          ? Colors.green
-                                          : Colors.grey,
-                                      child: Icon(
-                                        _getIconForType(alias.type),
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                    ),
-                                    title: Text(
-                                      alias.name,
-                                      style: const TextStyle(fontWeight: FontWeight.bold),
-                                    ),
-                                    subtitle: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(alias.typeDisplayName),
-                                        if (alias.description.isNotEmpty)
-                                          Text(
-                                            alias.description,
-                                            style: const TextStyle(fontSize: 12),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        Text(
-                                          l10n.itemsCount(alias.contentList.length),
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey[600],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    trailing: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        // Toggle switch with loading indicator
-                                        if (isToggling)
-                                          const SizedBox(
-                                            width: 24,
-                                            height: 24,
-                                            child: CircularProgressIndicator(strokeWidth: 2),
-                                          )
-                                        else
-                                          Switch(
-                                            value: alias.isEnabled,
-                                            onChanged: (value) => _toggleAlias(alias, value),
-                                            activeTrackColor: Colors.green,
-                                          ),
-                                        const SizedBox(width: 8),
-                                        // Menu button
-                                        PopupMenuButton<String>(
-                                          onSelected: (value) {
-                                            switch (value) {
-                                              case 'view':
-                                                _showAliasDetails(alias);
-                                                break;
-                                              case 'delete':
-                                                _deleteAlias(alias);
-                                                break;
-                                            }
-                                          },
-                                          itemBuilder: (context) => [
-                                            PopupMenuItem(
-                                              value: 'view',
-                                              child: Row(
-                                                children: [
-                                                  const Icon(Icons.visibility),
-                                                  const SizedBox(width: 8),
-                                                  Text(l10n.viewDetails),
-                                                ],
-                                              ),
-                                            ),
-                                            PopupMenuItem(
-                                              value: 'delete',
-                                              child: Row(
-                                                children: [
-                                                  const Icon(Icons.delete, color: Colors.red),
-                                                  const SizedBox(width: 8),
-                                                  Text(l10n.delete, style: const TextStyle(color: Colors.red)),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    onTap: () => _showAliasDetails(alias),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          SnackBarHelper.showInfo(context, l10n.createAliasComingSoon);
-        },
-        child: const Icon(Icons.add),
       ),
     );
   }
@@ -647,6 +323,258 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
         return Icons.label;
     }
   }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        final isLoading = _viewModel.isLoading;
+        final errorMessage = _viewModel.errorMessage;
+        final filteredAliases = _getFilteredAliases(_viewModel.items);
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(l10n.firewallAliases),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: _viewModel.loadItems,
+                tooltip: l10n.refresh,
+              ),
+            ],
+          ),
+          drawer: AppDrawer(
+            currentRoute: 'firewall_aliases',
+            systemInfo: _systemInfo,
+          ),
+          body: Column(
+            children: [
+              // Search and filter bar
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: l10n.searchAliases,
+                          prefixIcon: const Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            _searchQuery = value;
+                          });
+                          _viewModel.setSearchQuery(value);
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      icon: Icon(
+                        Icons.filter_list,
+                        color: _selectedTypes.isNotEmpty
+                            ? Theme.of(context).colorScheme.primary
+                            : null,
+                      ),
+                      tooltip: l10n.filterByType,
+                      onPressed: _showTypeFilterDialog,
+                    ),
+                  ],
+                ),
+              ),
+              // Active filter indicator
+              if (_selectedTypes.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  child: Row(
+                    children: [
+                      Chip(
+                        avatar: const Icon(Icons.filter_alt, size: 18),
+                        label: Text(
+                          _selectedTypes.length == 1
+                              ? FirewallAlias(
+                                  uuid: '',
+                                  name: '',
+                                  type: _selectedTypes.first,
+                                  content: '',
+                                ).typeDisplayName
+                              : '${_selectedTypes.length} types selected',
+                        ),
+                        onDeleted: () {
+                          setState(() {
+                            _selectedTypes.clear();
+                          });
+                        },
+                        deleteIcon: const Icon(Icons.close, size: 18),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        l10n.itemsCount(filteredAliases.length),
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              // Aliases list
+              Expanded(
+                child: isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : errorMessage != null
+                        ? ErrorDisplay(
+                            message: errorMessage,
+                            onRetry: _viewModel.loadItems,
+                          )
+                        : filteredAliases.isEmpty
+                            ? EmptyStateWidget(
+                                icon: Icons.inbox,
+                                title: _searchQuery.isNotEmpty ||
+                                        _selectedTypes.isNotEmpty
+                                    ? l10n.noAliasesMatchFilters
+                                    : l10n.noAliasesConfigured,
+                              )
+                            : RefreshIndicator(
+                                onRefresh: _viewModel.loadItems,
+                                child: ListView.builder(
+                                  itemCount: filteredAliases.length,
+                                  itemBuilder: (context, index) {
+                                    final alias = filteredAliases[index];
+                                    final isToggling =
+                                        _viewModel.isToggling(alias.uuid);
+
+                                    return Card(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 4),
+                                      child: ListTile(
+                                        leading: CircleAvatar(
+                                          backgroundColor: alias.isEnabled
+                                              ? Colors.green
+                                              : Colors.grey,
+                                          child: Icon(
+                                            _getIconForType(alias.type),
+                                            color: Colors.white,
+                                            size: 20,
+                                          ),
+                                        ),
+                                        title: Text(
+                                          alias.name,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        subtitle: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(alias.typeDisplayName),
+                                            if (alias.description.isNotEmpty)
+                                              Text(
+                                                alias.description,
+                                                style: const TextStyle(
+                                                    fontSize: 12),
+                                                maxLines: 1,
+                                                overflow:
+                                                    TextOverflow.ellipsis,
+                                              ),
+                                            Text(
+                                              l10n.itemsCount(
+                                                  alias.contentList.length),
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey[600],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            if (isToggling)
+                                              const SizedBox(
+                                                width: 24,
+                                                height: 24,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                        strokeWidth: 2),
+                                              )
+                                            else
+                                              Switch(
+                                                value: alias.isEnabled,
+                                                onChanged: (value) =>
+                                                    _toggleAlias(
+                                                        alias, value),
+                                                activeTrackColor: Colors.green,
+                                              ),
+                                            const SizedBox(width: 8),
+                                            PopupMenuButton<String>(
+                                              onSelected: (value) {
+                                                switch (value) {
+                                                  case 'view':
+                                                    _showAliasDetails(alias);
+                                                    break;
+                                                  case 'delete':
+                                                    _deleteAlias(alias);
+                                                    break;
+                                                }
+                                              },
+                                              itemBuilder: (context) => [
+                                                PopupMenuItem(
+                                                  value: 'view',
+                                                  child: Row(
+                                                    children: [
+                                                      const Icon(
+                                                          Icons.visibility),
+                                                      const SizedBox(width: 8),
+                                                      Text(l10n.viewDetails),
+                                                    ],
+                                                  ),
+                                                ),
+                                                PopupMenuItem(
+                                                  value: 'delete',
+                                                  child: Row(
+                                                    children: [
+                                                      const Icon(Icons.delete,
+                                                          color: Colors.red),
+                                                      const SizedBox(width: 8),
+                                                      Text(l10n.delete,
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .red)),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        onTap: () => _showAliasDetails(alias),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+              ),
+            ],
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              SnackBarHelper.showInfo(context, l10n.createAliasComingSoon);
+            },
+            child: const Icon(Icons.add),
+          ),
+        );
+      },
+    );
+  }
 }
-
-

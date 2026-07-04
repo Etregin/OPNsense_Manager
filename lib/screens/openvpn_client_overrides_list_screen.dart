@@ -21,6 +21,7 @@ import 'package:provider/provider.dart';
 import '../models/openvpn_client_override_list_item.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
+import '../viewmodels/openvpn_client_overrides_view_model.dart';
 import '../widgets/openvpn/openvpn_client_override_card.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/error_display.dart';
@@ -38,110 +39,62 @@ class OpenvpnClientOverridesListScreen extends StatefulWidget {
 
 class _OpenvpnClientOverridesListScreenState
     extends State<OpenvpnClientOverridesListScreen> {
-  List<OpenvpnClientOverrideListItem> _overrides = [];
-  List<OpenvpnClientOverrideListItem> _filteredOverrides = [];
-  bool _isLoading = false;
-  String? _errorMessage;
-  String _statusFilter = 'all'; // all, enabled, disabled
-  final Set<String> _togglingOverrides = {};
-  int _rowCount = 50; // Pagination row count
-  String _searchQuery = ''; // Search query
+  late OpenvpnClientOverridesViewModel _viewModel;
+  bool _isInitialized = false;
+  String _statusFilter = 'all';
+  int _rowCount = 50;
+  String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    // Load overrides after the first frame to ensure context is available
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        _loadOverrides();
-      }
-    });
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      final apiService = context.read<DemoApiService>();
+      _viewModel = OpenvpnClientOverridesViewModel(
+        apiService,
+        statusFilter: _statusFilter,
+        rowCount: _rowCount,
+        searchQuery2: _searchQuery,
+      );
+      _isInitialized = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _loadOverrides();
+        }
+      });
+    }
   }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _viewModel.dispose();
     super.dispose();
   }
 
   Future<void> _loadOverrides() async {
-    if (_isLoading) return;
-
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final apiService = context.read<DemoApiService>();
-
-      final response = await apiService.searchClientOverrides(
-        current: 1,
-        rowCount: _rowCount,
-        searchPhrase: _searchQuery.isNotEmpty ? _searchQuery : null,
-      );
-
-      if (mounted) {
-        setState(() {
-          _overrides = response.rows;
-          _applyFilters();
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  void _applyFilters() {
-    List<OpenvpnClientOverrideListItem> filtered = _overrides;
-
-    // Apply status filter
-    if (_statusFilter != 'all') {
-      filtered = filtered
-          .where((item) =>
-              _statusFilter == 'enabled' ? item.enabled : !item.enabled)
-          .toList();
-    }
-
-    _filteredOverrides = filtered;
+    _viewModel.statusFilter = _statusFilter;
+    _viewModel.rowCount = _rowCount;
+    _viewModel.searchQuery2 = _searchQuery;
+    await _viewModel.loadItems();
   }
 
   Future<void> _toggleOverride(OpenvpnClientOverrideListItem clientOverride) async {
-    if (_togglingOverrides.contains(clientOverride.uuid)) return;
-
-    setState(() {
-      _togglingOverrides.add(clientOverride.uuid);
-    });
-
     try {
-      final apiService = context.read<DemoApiService>();
-      await apiService.toggleClientOverride(clientOverride.uuid);
-
-      // Apply the configuration change
-      // Reconfigure is handled automatically in demo mode
-
+      await _viewModel.toggleOverride(clientOverride.uuid);
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        SnackBarHelper.showSuccess(context, l10n.overrideToggledSuccessfully(clientOverride.enabled ? l10n.disabled : l10n.enabled));
-        await _loadOverrides();
+        SnackBarHelper.showSuccess(
+          context,
+          l10n.overrideToggledSuccessfully(
+              clientOverride.enabled ? l10n.disabled : l10n.enabled),
+        );
       }
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
         SnackBarHelper.showError(context, l10n.failedToToggleOverride(e.toString()));
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _togglingOverrides.remove(clientOverride.uuid);
-        });
       }
     }
   }
@@ -163,9 +116,7 @@ class _OpenvpnClientOverridesListScreenState
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: Text(l10n.delete),
           ),
         ],
@@ -174,15 +125,9 @@ class _OpenvpnClientOverridesListScreenState
 
     if (confirmed == true && mounted) {
       try {
-        final apiService = context.read<DemoApiService>();
-        await apiService.deleteClientOverride(clientOverride.uuid);
-        
-        // Apply the configuration change
-        // Reconfigure is handled automatically in demo mode
-        
+        await _viewModel.deleteOverride(clientOverride.uuid);
         if (mounted) {
           SnackBarHelper.showSuccess(context, l10n.overrideDeletedSuccessfully);
-          await _loadOverrides();
         }
       } catch (e) {
         if (mounted) {
@@ -238,9 +183,7 @@ class _OpenvpnClientOverridesListScreenState
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          Expanded(
-            child: Text(value),
-          ),
+          Expanded(child: Text(value)),
         ],
       ),
     );
@@ -252,7 +195,6 @@ class _OpenvpnClientOverridesListScreenState
       arguments: clientOverride.uuid,
     );
 
-    // Refresh list if override was updated
     if (result == true && mounted) {
       await _loadOverrides();
     }
@@ -264,7 +206,6 @@ class _OpenvpnClientOverridesListScreenState
       arguments: null,
     );
 
-    // Refresh list if override was created
     if (result == true && mounted) {
       await _loadOverrides();
     }
@@ -274,186 +215,195 @@ class _OpenvpnClientOverridesListScreenState
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.clientSpecificOverrides),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadOverrides,
-            tooltip: 'Refresh',
-          ),
-        ],
-      ),
-      drawer: const AppDrawer(currentRoute: 'openvpn_client_overrides'),
-      body: Column(
-        children: [
-          // Search bar
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search overrides...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: _searchQuery.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          setState(() {
-                            _searchQuery = '';
-                            _searchController.clear();
-                          });
-                          _loadOverrides();
-                        },
-                      )
-                    : null,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        final isLoading = _viewModel.isLoading;
+        final errorMessage = _viewModel.errorMessage;
+        final overrides = _viewModel.items;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(l10n.clientSpecificOverrides),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: _loadOverrides,
+                tooltip: 'Refresh',
               ),
-              onChanged: (value) {
-                setState(() {
-                  _searchQuery = value;
-                });
-              },
-              onSubmitted: (_) => _loadOverrides(),
-            ),
+            ],
           ),
-          // Pagination dropdown
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              children: [
-                const Text(
-                  'Rows per page: ',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(width: 8),
-                DropdownButton<int>(
-                  value: _rowCount,
-                  items: const [
-                    DropdownMenuItem(value: 50, child: Text('50')),
-                    DropdownMenuItem(value: 100, child: Text('100')),
-                    DropdownMenuItem(value: 200, child: Text('200')),
-                    DropdownMenuItem(value: 500, child: Text('500')),
-                    DropdownMenuItem(value: 1000, child: Text('1000')),
-                    DropdownMenuItem(value: 9999, child: Text('All')),
-                  ],
+          drawer: const AppDrawer(currentRoute: 'openvpn_client_overrides'),
+          body: Column(
+            children: [
+              // Search bar
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search overrides...',
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: _searchQuery.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              setState(() {
+                                _searchQuery = '';
+                                _searchController.clear();
+                              });
+                              _loadOverrides();
+                            },
+                          )
+                        : null,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                   onChanged: (value) {
                     setState(() {
-                      _rowCount = value!;
+                      _searchQuery = value;
                     });
-                    _loadOverrides();
                   },
+                  onSubmitted: (_) => _loadOverrides(),
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          // Filter chips
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              children: [
-                const Text(
-                  'Filter: ',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              // Pagination dropdown
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  children: [
+                    const Text(
+                      'Rows per page: ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(width: 8),
+                    DropdownButton<int>(
+                      value: _rowCount,
+                      items: const [
+                        DropdownMenuItem(value: 50, child: Text('50')),
+                        DropdownMenuItem(value: 100, child: Text('100')),
+                        DropdownMenuItem(value: 200, child: Text('200')),
+                        DropdownMenuItem(value: 500, child: Text('500')),
+                        DropdownMenuItem(value: 1000, child: Text('1000')),
+                        DropdownMenuItem(value: 9999, child: Text('All')),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          _rowCount = value!;
+                        });
+                        _loadOverrides();
+                      },
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Wrap(
-                    spacing: 8,
-                    children: [
-                      FilterChip(
-                        label: const Text('All'),
-                        selected: _statusFilter == 'all',
-                        onSelected: (selected) {
-                          if (selected) {
-                            setState(() {
-                              _statusFilter = 'all';
-                              _applyFilters();
-                            });
-                          }
-                        },
-                      ),
-                      FilterChip(
-                        label: const Text('Enabled'),
-                        selected: _statusFilter == 'enabled',
-                        onSelected: (selected) {
-                          if (selected) {
-                            setState(() {
-                              _statusFilter = 'enabled';
-                              _applyFilters();
-                            });
-                          }
-                        },
-                      ),
-                      FilterChip(
-                        label: const Text('Disabled'),
-                        selected: _statusFilter == 'disabled',
-                        onSelected: (selected) {
-                          if (selected) {
-                            setState(() {
-                              _statusFilter = 'disabled';
-                              _applyFilters();
-                            });
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Overrides list
-          Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _errorMessage != null
-                    ? ErrorDisplay(message: _errorMessage!, onRetry: _loadOverrides)
-                    : _filteredOverrides.isEmpty
-                        ? EmptyStateWidget(
-                            icon: Icons.person_off,
-                            title: _statusFilter != 'all'
-                                ? 'No overrides match your filter'
-                                : 'No client specific overrides configured',
-                            subtitle: _statusFilter == 'all'
-                                ? 'Tap the + button to create your first override'
-                                : null,
-                          )
-                        : RefreshIndicator(
-                            onRefresh: _loadOverrides,
-                            child: ListView.builder(
-                              itemCount: _filteredOverrides.length,
-                              itemBuilder: (context, index) {
-                                final clientOverride = _filteredOverrides[index];
-                                return OpenvpnClientOverrideCard(
-                                  clientOverride: clientOverride,
-                                  isToggling: _togglingOverrides
-                                      .contains(clientOverride.uuid),
-                                  onTap: () =>
-                                      _showOverrideDetails(clientOverride),
-                                  onToggle: (value) =>
-                                      _toggleOverride(clientOverride),
-                                  onEdit: () => _onEditOverride(clientOverride),
-                                  onDelete: () =>
-                                      _deleteOverride(clientOverride),
-                                );
-                              },
-                            ),
+              ),
+              const SizedBox(height: 8),
+              // Filter chips
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  children: [
+                    const Text(
+                      'Filter: ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Wrap(
+                        spacing: 8,
+                        children: [
+                          FilterChip(
+                            label: const Text('All'),
+                            selected: _statusFilter == 'all',
+                            onSelected: (selected) {
+                              if (selected) {
+                                setState(() {
+                                  _statusFilter = 'all';
+                                });
+                                _loadOverrides();
+                              }
+                            },
                           ),
+                          FilterChip(
+                            label: const Text('Enabled'),
+                            selected: _statusFilter == 'enabled',
+                            onSelected: (selected) {
+                              if (selected) {
+                                setState(() {
+                                  _statusFilter = 'enabled';
+                                });
+                                _loadOverrides();
+                              }
+                            },
+                          ),
+                          FilterChip(
+                            label: const Text('Disabled'),
+                            selected: _statusFilter == 'disabled',
+                            onSelected: (selected) {
+                              if (selected) {
+                                setState(() {
+                                  _statusFilter = 'disabled';
+                                });
+                                _loadOverrides();
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Overrides list
+              Expanded(
+                child: isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : errorMessage != null
+                        ? ErrorDisplay(
+                            message: errorMessage, onRetry: _loadOverrides)
+                        : overrides.isEmpty
+                            ? EmptyStateWidget(
+                                icon: Icons.person_off,
+                                title: _statusFilter != 'all'
+                                    ? 'No overrides match your filter'
+                                    : 'No client specific overrides configured',
+                                subtitle: _statusFilter == 'all'
+                                    ? 'Tap the + button to create your first override'
+                                    : null,
+                              )
+                            : RefreshIndicator(
+                                onRefresh: _loadOverrides,
+                                child: ListView.builder(
+                                  itemCount: overrides.length,
+                                  itemBuilder: (context, index) {
+                                    final clientOverride = overrides[index];
+                                    return OpenvpnClientOverrideCard(
+                                      clientOverride: clientOverride,
+                                      isToggling:
+                                          _viewModel.isToggling(clientOverride.uuid),
+                                      onTap: () =>
+                                          _showOverrideDetails(clientOverride),
+                                      onToggle: (value) =>
+                                          _toggleOverride(clientOverride),
+                                      onEdit: () =>
+                                          _onEditOverride(clientOverride),
+                                      onDelete: () =>
+                                          _deleteOverride(clientOverride),
+                                    );
+                                  },
+                                ),
+                              ),
+              ),
+            ],
           ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _onAddOverride,
-        tooltip: 'Add Override',
-        child: const Icon(Icons.add),
-      ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: _onAddOverride,
+            tooltip: 'Add Override',
+            child: const Icon(Icons.add),
+          ),
+        );
+      },
     );
   }
 }
-
-
