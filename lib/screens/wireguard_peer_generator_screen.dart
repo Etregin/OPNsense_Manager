@@ -308,7 +308,7 @@ class _WireGuardPeerGeneratorScreenState
                     const SizedBox(height: 16),
                     Text(
                       l10n.error,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -536,7 +536,7 @@ class _WireGuardPeerGeneratorScreenState
                     // Config Preview
                     Text(
                       l10n.configurationPreview,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -559,7 +559,7 @@ class _WireGuardPeerGeneratorScreenState
                     // QR Code
                     Text(
                       l10n.qrCode,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -599,7 +599,7 @@ class _WireGuardPeerGeneratorScreenState
                       ),
                       child: Text(
                         l10n.storeAndGenerateNext,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -643,7 +643,7 @@ class _WireGuardPeerGeneratorScreenState
                       ),
                       child: Text(
                         l10n.apply,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),

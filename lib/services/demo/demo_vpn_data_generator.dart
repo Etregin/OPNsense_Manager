@@ -178,7 +178,7 @@ class DemoVPNDataGenerator {
   /// Generate demo OpenVPN instances for list view
   List<OpenvpnInstanceListItem> generateOpenvpnInstances() {
     return [
-      OpenvpnInstanceListItem(
+      const OpenvpnInstanceListItem(
         vpnid: 'openvpn-1',
         uuid: 'demo-uuid-openvpn-1',
         enabled: true,
@@ -191,7 +191,7 @@ class DemoVPNDataGenerator {
         remote: null,
         server: '10.8.0.0/24',
       ),
-      OpenvpnInstanceListItem(
+      const OpenvpnInstanceListItem(
         vpnid: 'openvpn-2',
         uuid: 'demo-uuid-openvpn-2',
         enabled: true,
@@ -204,7 +204,7 @@ class DemoVPNDataGenerator {
         remote: '203.0.113.10',
         server: null,
       ),
-      OpenvpnInstanceListItem(
+      const OpenvpnInstanceListItem(
         vpnid: 'openvpn-3',
         uuid: 'demo-uuid-openvpn-3',
         enabled: false,

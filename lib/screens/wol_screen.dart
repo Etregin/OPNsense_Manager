@@ -108,12 +108,12 @@ class _WolScreenState extends State<WolScreen> {
       builder: (context) => Center(
         child: Card(
           child: Padding(
-            padding: EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(24.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 16),
+                const CircularProgressIndicator(),
+                const SizedBox(height: 16),
                 Text(AppLocalizations.of(context)!.wakingAllDevices),
               ],
             ),
@@ -235,12 +235,12 @@ class _WolScreenState extends State<WolScreen> {
       builder: (context) => Center(
         child: Card(
           child: Padding(
-            padding: EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(24.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 16),
+                const CircularProgressIndicator(),
+                const SizedBox(height: 16),
                 Text(AppLocalizations.of(context)!.loadingHostData),
               ],
             ),
@@ -640,7 +640,7 @@ class _AddHostDialogState extends State<_AddHostDialog> {
                       initialValue: _selectedInterface,
                       decoration: InputDecoration(
                         labelText: l10n.interface,
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                       ),
                       items: _interfaceOptions.entries.map((entry) {
                         return DropdownMenuItem(
@@ -666,7 +666,7 @@ class _AddHostDialogState extends State<_AddHostDialog> {
                       decoration: InputDecoration(
                         labelText: l10n.macAddress,
                         hintText: l10n.macAddressHint,
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                       ),
                       validator: Validators.validateMacAddress,
                       textCapitalization: TextCapitalization.characters,
@@ -677,7 +677,7 @@ class _AddHostDialogState extends State<_AddHostDialog> {
                       decoration: InputDecoration(
                         labelText: l10n.description,
                         hintText: l10n.descriptionHint,
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {

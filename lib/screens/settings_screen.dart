@@ -117,12 +117,12 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
 class _GeneralAndSecurityTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return const SingleChildScrollView(
       child: Column(
         children: [
-          const GeneralSettingsScreen(),
-          const SizedBox(height: 16),
-          const SecuritySettingsScreen(),
+          GeneralSettingsScreen(),
+          SizedBox(height: 16),
+          SecuritySettingsScreen(),
         ],
       ),
     );
@@ -157,7 +157,7 @@ class _ProfilesTab extends StatelessWidget {
           Expanded(
             child: TabBarView(
               children: [
-                ProfileManagementScreen(),
+                const ProfileManagementScreen(),
                 ProfileImportExportScreen(
                   onProfilesChanged: onProfilesChanged,
                 ),

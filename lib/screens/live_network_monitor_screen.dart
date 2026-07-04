@@ -392,7 +392,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                 if (!_isLoading)
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.circle,
                         size: 8,
                         color: Colors.green,
@@ -1203,7 +1203,7 @@ class _InteractiveSparklineState extends State<InteractiveSparkline> {
                       color: Colors.black87,
                       borderRadius: BorderRadius.circular(4),
                       boxShadow: [
-                        BoxShadow(
+                        const BoxShadow(
                           color: Colors.black26,
                           blurRadius: 4,
                           offset: Offset(0, 2),

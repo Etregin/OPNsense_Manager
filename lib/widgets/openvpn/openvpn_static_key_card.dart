@@ -46,7 +46,7 @@ class OpenvpnStaticKeyCard extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: staticKey.isValid ? Colors.green : Colors.grey,
-          child: Icon(
+          child: const Icon(
             Icons.vpn_key,
             color: Colors.white,
             size: 20,

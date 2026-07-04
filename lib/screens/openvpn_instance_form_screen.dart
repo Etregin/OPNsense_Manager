@@ -623,7 +623,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
                       children: [
                         const Icon(Icons.error_outline, size: 48, color: Colors.red),
                         const SizedBox(height: 16),
-                        Text('Error loading instance'),
+                        const Text('Error loading instance'),
                         const SizedBox(height: 8),
                         Text(_errorMessage!),
                         const SizedBox(height: 16),

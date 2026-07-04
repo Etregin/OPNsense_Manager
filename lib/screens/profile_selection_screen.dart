@@ -549,7 +549,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                     onPressed: () => _editProfile(profile),
                     tooltip: l10n.edit,
                   ),
-                Icon(
+                const Icon(
                   Icons.arrow_forward_ios,
                   color: AppColors.primary,
                   size: 20,

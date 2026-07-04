@@ -892,7 +892,7 @@ separately for traceability.
 ---
 
 ### Sub-Task 7.3 — Strengthen `analysis_options.yaml` Lint Rules
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 The current `analysis_options.yaml` only inherits `flutter_lints` defaults and has both
@@ -928,7 +928,7 @@ trailing commas that introduce unnecessary widget rebuilds.
 ---
 
 ### Sub-Task 7.4 — Synchronise `AppConstants.appVersion` with `pubspec.yaml`
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 `lib/utils/constants.dart:27` declares `static const String appVersion = '1.7.2'` as a
