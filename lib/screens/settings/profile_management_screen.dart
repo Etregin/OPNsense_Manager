@@ -246,7 +246,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                       labelText: l10n.apiKeyLabel,
                       prefixIcon: const Icon(Icons.vpn_key),
                     ),
-                    validator: Validators.validateApiKey,
+                    validator: (v) => Validators.validateApiKey(v, context),
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
@@ -268,7 +268,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                       ),
                     ),
                     obscureText: obscureSecret,
-                    validator: Validators.validateApiSecret,
+                    validator: (v) => Validators.validateApiSecret(v, context),
                   ),
                 ],
               ),

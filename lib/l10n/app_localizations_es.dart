@@ -2015,6 +2015,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get macAddressHint => 'ej., 00:11:22:33:44:55';
 
   @override
+  String get macAddressIsRequired => 'Se requiere la dirección MAC';
+
+  @override
+  String get invalidMacAddressFormat =>
+      'Formato de dirección MAC inválido (ej., AA:BB:CC:DD:EE:FF)';
+
+  @override
   String get magicDns => 'Magic DNS';
 
   @override

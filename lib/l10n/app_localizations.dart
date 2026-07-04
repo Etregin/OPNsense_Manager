@@ -3566,6 +3566,18 @@ abstract class AppLocalizations {
   /// **'e.g., 00:11:22:33:44:55'**
   String get macAddressHint;
 
+  /// Validation error when MAC address field is empty
+  ///
+  /// In en, this message translates to:
+  /// **'MAC address is required'**
+  String get macAddressIsRequired;
+
+  /// Validation error for an invalid MAC address
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid MAC address format (e.g., AA:BB:CC:DD:EE:FF)'**
+  String get invalidMacAddressFormat;
+
   /// Translation for magicDns
   ///
   /// In en, this message translates to:

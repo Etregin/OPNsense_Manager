@@ -368,7 +368,7 @@ manually. Migrating them removes this duplication.
 ## Phase 4 — Validator Consolidation
 
 ### Sub-Task 4.1 — Consolidate Duplicate Validator Logic into a Unified Module
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 IP/CIDR/port validation logic is independently implemented in three separate files:

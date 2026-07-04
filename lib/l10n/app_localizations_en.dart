@@ -1992,6 +1992,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get macAddressHint => 'e.g., 00:11:22:33:44:55';
 
   @override
+  String get macAddressIsRequired => 'MAC address is required';
+
+  @override
+  String get invalidMacAddressFormat =>
+      'Invalid MAC address format (e.g., AA:BB:CC:DD:EE:FF)';
+
+  @override
   String get magicDns => 'Magic DNS';
 
   @override

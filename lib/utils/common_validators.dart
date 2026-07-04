@@ -1,3 +1,5 @@
+import 'network_validators.dart';
+
 class CommonValidators {
   static String? required(String? value, {String fieldName = 'This field'}) {
     if (value == null || value.trim().isEmpty) {
@@ -8,12 +10,7 @@ class CommonValidators {
 
   static String? ipAddress(String? value) {
     if (value == null || value.isEmpty) return null;
-    
-    final ipv4Pattern = RegExp(
-      r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
-    );
-    
-    if (!ipv4Pattern.hasMatch(value)) {
+    if (!NetworkValidators.isValidIPv4(value)) {
       return 'Invalid IP address';
     }
     return null;
@@ -21,28 +18,15 @@ class CommonValidators {
 
   static String? cidr(String? value) {
     if (value == null || value.isEmpty) return null;
-    
-    final parts = value.split('/');
-    if (parts.length != 2) {
+    if (!NetworkValidators.isValidCIDR(value)) {
       return 'Invalid CIDR notation (use format: IP/prefix)';
     }
-    
-    final ipError = ipAddress(parts[0]);
-    if (ipError != null) return ipError;
-    
-    final prefix = int.tryParse(parts[1]);
-    if (prefix == null || prefix < 0 || prefix > 32) {
-      return 'Invalid CIDR prefix (must be 0-32)';
-    }
-    
     return null;
   }
 
   static String? port(String? value) {
     if (value == null || value.isEmpty) return null;
-    
-    final port = int.tryParse(value);
-    if (port == null || port < 1 || port > 65535) {
+    if (!NetworkValidators.isValidPort(value)) {
       return 'Invalid port (must be 1-65535)';
     }
     return null;

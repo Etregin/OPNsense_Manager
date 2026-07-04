@@ -2847,6 +2847,14 @@
   "@macAddressHint": {
     "description": "Translation for macAddressHint"
   },
+  "macAddressIsRequired": "Se requiere la dirección MAC",
+  "@macAddressIsRequired": {
+    "description": "Validation error when MAC address field is empty"
+  },
+  "invalidMacAddressFormat": "Formato de dirección MAC inválido (ej., AA:BB:CC:DD:EE:FF)",
+  "@invalidMacAddressFormat": {
+    "description": "Validation error for an invalid MAC address"
+  },
   "magicDns": "Magic DNS",
   "@magicDns": {
     "description": "Translation for magicDns"

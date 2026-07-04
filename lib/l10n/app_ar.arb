@@ -2849,6 +2849,14 @@
   "@macAddressHint": {
     "description": "Translation for macAddressHint"
   },
+  "macAddressIsRequired": "عنوان MAC مطلوب",
+  "@macAddressIsRequired": {
+    "description": "Validation error when MAC address field is empty"
+  },
+  "invalidMacAddressFormat": "تنسيق عنوان MAC غير صالح (مثال: AA:BB:CC:DD:EE:FF)",
+  "@invalidMacAddressFormat": {
+    "description": "Validation error for an invalid MAC address"
+  },
   "magicDns": "Magic DNS",
   "@magicDns": {
     "description": "Translation for magicDns"

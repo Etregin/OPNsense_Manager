@@ -189,7 +189,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                 prefixIcon: const Icon(Icons.description),
               ),
               validator: (value) =>
-                  Validators.validateRequired(value, l10n.description),
+                  Validators.validateRequired(value, l10n.description, context),
               enabled: !_isLoading,
             ),
             const SizedBox(height: 16),

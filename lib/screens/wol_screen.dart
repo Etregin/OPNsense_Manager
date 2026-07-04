@@ -668,7 +668,7 @@ class _AddHostDialogState extends State<_AddHostDialog> {
                         hintText: l10n.macAddressHint,
                         border: const OutlineInputBorder(),
                       ),
-                      validator: Validators.validateMacAddress,
+                      validator: (v) => Validators.validateMacAddress(v, context),
                       textCapitalization: TextCapitalization.characters,
                     ),
                     const SizedBox(height: 16),

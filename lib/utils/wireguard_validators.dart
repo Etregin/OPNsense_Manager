@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'network_validators.dart';
+
 /// Validators specific to WireGuard configuration
 class WireGuardValidators {
   static const _wireGuardKeyLength = 44;
@@ -62,58 +64,19 @@ class WireGuardValidators {
   }
 
   /// Validate CIDR notation (IPv4 or IPv6)
-  static bool isValidCIDR(String cidr) {
-    final parts = cidr.split('/');
-    if (parts.length != 2) return false;
-
-    final prefix = int.tryParse(parts[1]);
-    if (prefix == null) return false;
-
-    // Check for IPv4
-    if (isValidIPv4(parts[0])) {
-      return prefix >= 0 && prefix <= 32;
-    }
-
-    // Check for IPv6
-    if (isValidIPv6(parts[0])) {
-      return prefix >= 0 && prefix <= 128;
-    }
-
-    return false;
-  }
+  static bool isValidCIDR(String cidr) =>
+      NetworkValidators.isValidCIDR(cidr, allowIPv6: true);
 
   /// Validate IP or CIDR notation (IPv4 or IPv6)
   /// Accepts both plain IPs and CIDR notation
-  static bool isValidIPOrCIDR(String value) {
-    // Check if it's a CIDR notation
-    if (value.contains('/')) {
-      return isValidCIDR(value);
-    }
-    
-    // Check if it's a plain IP address
-    return isValidIPv4(value) || isValidIPv6(value);
-  }
+  static bool isValidIPOrCIDR(String value) =>
+      NetworkValidators.isValidIPOrCIDR(value);
 
   /// Validate IPv4 address
-  static bool isValidIPv4(String ip) {
-    final parts = ip.split('.');
-    if (parts.length != 4) return false;
-
-    for (final part in parts) {
-      final num = int.tryParse(part);
-      if (num == null || num < 0 || num > 255) {
-        return false;
-      }
-    }
-    return true;
-  }
+  static bool isValidIPv4(String ip) => NetworkValidators.isValidIPv4(ip);
 
   /// Validate IPv6 address
-  static bool isValidIPv6(String ip) {
-    // Simplified IPv6 validation
-    final ipv6Pattern = RegExp(r'^([0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4}$');
-    return ipv6Pattern.hasMatch(ip);
-  }
+  static bool isValidIPv6(String ip) => NetworkValidators.isValidIPv6(ip);
 
   /// Validate allowed IPs (comma-separated CIDRs)
   static String? validateAllowedIPs(String? value) {
