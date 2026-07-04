@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import '../base/base_opnsense_service.dart';
 import '../base/api_exception.dart';
@@ -52,8 +53,8 @@ class SystemService extends BaseOPNsenseService {
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       }
-    } catch (_) {
-      // Silently handle error
+    } catch (e) {
+      debugPrint('[SystemService] Endpoint fallback: $e');
     }
 
     // Try alternative endpoints
@@ -63,8 +64,8 @@ class SystemService extends BaseOPNsenseService {
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       }
-    } catch (_) {
-      // Silently handle error
+    } catch (e) {
+      debugPrint('[SystemService] Endpoint fallback: $e');
     }
 
     try {
@@ -73,8 +74,8 @@ class SystemService extends BaseOPNsenseService {
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       }
-    } catch (_) {
-      // Silently handle error
+    } catch (e) {
+      debugPrint('[SystemService] Endpoint fallback: $e');
     }
 
     return {};
@@ -90,8 +91,8 @@ class SystemService extends BaseOPNsenseService {
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       }
-    } catch (_) {
-      // Silently handle error
+    } catch (e) {
+      debugPrint('[SystemService] Endpoint fallback: $e');
     }
 
     return {};
@@ -108,8 +109,8 @@ class SystemService extends BaseOPNsenseService {
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       }
-    } catch (_) {
-      // Silently handle error
+    } catch (e) {
+      debugPrint('[SystemService] Endpoint fallback: $e');
     }
 
     // Try alternative endpoint
@@ -119,8 +120,8 @@ class SystemService extends BaseOPNsenseService {
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       }
-    } catch (_) {
-      // Silently handle error
+    } catch (e) {
+      debugPrint('[SystemService] Endpoint fallback: $e');
     }
 
     return {};

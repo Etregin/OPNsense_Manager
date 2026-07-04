@@ -667,7 +667,7 @@ And 27+ additional inline strings across `wireguard_service.dart`, `openvpn_serv
 ---
 
 ### Sub-Task 6.2 — Remove Empty `catch (_)` Blocks in `system_service.dart`
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 `lib/services/system/system_service.dart` contains 5 consecutive empty `catch (_)` blocks
@@ -698,7 +698,7 @@ log the error at debug level before continuing to the next fallback.
 ---
 
 ### Sub-Task 6.3 — Remove Dead `ApiResponseParser` Utility Class
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 `lib/utils/api_response_parser.dart` defines a 65-line `ApiResponseParser` class with 6
