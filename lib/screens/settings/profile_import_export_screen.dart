@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import '../../services/settings/file_operations_service.dart';
 import '../../utils/constants.dart';
+import '../../utils/snackbar_helper.dart';
 import '../../widgets/settings/settings_section.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -76,26 +77,9 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
     
     if (mounted) {
       if (result.success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${l10n.exportSuccess}\nSaved to: ${result.filePath}'),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 8),
-            action: SnackBarAction(
-              label: l10n.ok,
-              textColor: Colors.white,
-              onPressed: () {},
-            ),
-          ),
-        );
+        SnackBarHelper.showSuccess(context, '${l10n.exportSuccess}\nSaved to: ${result.filePath}', duration: const Duration(seconds: 8));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result.errorMessage ?? l10n.exportFailed),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 5),
-          ),
-        );
+        SnackBarHelper.showError(context, result.errorMessage ?? l10n.exportFailed, duration: const Duration(seconds: 5));
       }
     }
   }
@@ -137,38 +121,22 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
         // Notify parent to reload profiles
         widget.onProfilesChanged();
         
-        String message;
-        Color backgroundColor;
-        
+        final String message;
         if (result.failedCount == 0) {
           message = l10n.successfullyImportedProfiles(result.successCount);
-          backgroundColor = Colors.green;
+          SnackBarHelper.showSuccess(context, message, duration: const Duration(seconds: 5));
         } else if (result.successCount == 0) {
           message = l10n.importFailedWithErrors(result.errors.join(', '));
-          backgroundColor = Colors.red;
+          SnackBarHelper.showError(context, message, duration: const Duration(seconds: 5));
         } else {
           message = l10n.importedWithFailures(result.successCount, result.failedCount);
-          backgroundColor = Colors.orange;
+          SnackBarHelper.showWarning(context, message, duration: const Duration(seconds: 5));
         }
-        
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(message),
-            backgroundColor: backgroundColor,
-            duration: const Duration(seconds: 5),
-          ),
-        );
       } else {
         final errorMessage = result.errors.isNotEmpty
             ? l10n.importFailed(result.errors.first)
             : l10n.importFailed('Unknown error');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(errorMessage),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 5),
-          ),
-        );
+        SnackBarHelper.showError(context, errorMessage, duration: const Duration(seconds: 5));
       }
     }
   }

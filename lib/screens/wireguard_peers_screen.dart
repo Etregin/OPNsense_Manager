@@ -21,6 +21,7 @@ import 'package:provider/provider.dart';
 import '../models/wireguard_peer.dart';
 import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
+import '../utils/snackbar_helper.dart';
 import '../viewmodels/wireguard_peers_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/wireguard/peer_card.dart';
@@ -84,26 +85,14 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
       await _viewModel.togglePeer(peer.uuid, !peer.isEnabled);
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(peer.isEnabled
-                ? l10n.peerDisabledSuccessfully
-                : l10n.peerEnabledSuccessfully),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 2),
-          ),
-        );
+        SnackBarHelper.showSuccess(context, peer.isEnabled
+            ? l10n.peerDisabledSuccessfully
+            : l10n.peerEnabledSuccessfully);
       }
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.failedToTogglePeer(e.toString())),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        SnackBarHelper.showError(context, l10n.failedToTogglePeer(e.toString()));
       }
     }
   }
@@ -137,22 +126,12 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
         await _viewModel.deletePeer(peer.uuid);
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.peerDeletedSuccessfully),
-              backgroundColor: Colors.green,
-            ),
-          );
+          SnackBarHelper.showSuccess(context, l10n.peerDeletedSuccessfully);
         }
       } catch (e) {
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.failedToDeletePeer(e.toString())),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.failedToDeletePeer(e.toString()));
         }
       }
     }

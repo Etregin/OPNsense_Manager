@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../utils/formatters.dart';
+import '../../utils/snackbar_helper.dart';
 import 'wireguard_log_card.dart';
 
 /// Bottom sheet widget that displays detailed information about a WireGuard log entry
@@ -317,12 +318,7 @@ class WireGuardLogDetailSheet extends StatelessWidget {
 
   void _copyToClipboard(BuildContext context, String text) {
     Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Copied to clipboard'),
-        duration: Duration(seconds: 1),
-      ),
-    );
+    SnackBarHelper.showInfo(context, 'Copied to clipboard', duration: const Duration(seconds: 1));
   }
 
   void _copyAllDetails(BuildContext context) {
@@ -351,12 +347,7 @@ class WireGuardLogDetailSheet extends StatelessWidget {
     }
     
     Clipboard.setData(ClipboardData(text: details.toString()));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('All details copied to clipboard'),
-        duration: Duration(seconds: 2),
-      ),
-    );
+    SnackBarHelper.showInfo(context, 'All details copied to clipboard');
   }
 
   Color _getSeverityColor(String severity) {

@@ -20,8 +20,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/neighbor.dart';
 import '../services/demo_api_service.dart';
+import '../utils/snackbar_helper.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/error_display.dart';
+import '../widgets/common/empty_state_widget.dart';
 
 /// Screen displaying discovered neighbors from OPNsense
 class NeighborDiscoveryScreen extends StatefulWidget {
@@ -112,9 +114,7 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
       
       // Show loading indicator
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Starting service...')),
-        );
+        SnackBarHelper.showInfo(context, 'Starting service...');
       }
       
       await demoApiService.startNeighborDiscoveryService();
@@ -123,15 +123,11 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
       await _checkServiceStatus();
       
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Service started successfully')),
-        );
+        SnackBarHelper.showInfo(context, 'Service started successfully');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to start service: ${e.toString()}')),
-        );
+        SnackBarHelper.showInfo(context, 'Failed to start service: ${e.toString()}');
       }
     }
   }
@@ -143,9 +139,7 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
       
       // Show loading indicator
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Stopping service...')),
-        );
+        SnackBarHelper.showInfo(context, 'Stopping service...');
       }
       
       await demoApiService.stopNeighborDiscoveryService();
@@ -154,15 +148,11 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
       await _checkServiceStatus();
       
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Service stopped successfully')),
-        );
+        SnackBarHelper.showInfo(context, 'Service stopped successfully');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to stop service: ${e.toString()}')),
-        );
+        SnackBarHelper.showInfo(context, 'Failed to stop service: ${e.toString()}');
       }
     }
   }
@@ -174,9 +164,7 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
       
       // Show loading indicator
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Restarting service...')),
-        );
+        SnackBarHelper.showInfo(context, 'Restarting service...');
       }
       
       await demoApiService.restartNeighborDiscoveryService();
@@ -185,15 +173,11 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
       await _checkServiceStatus();
       
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Service restarted successfully')),
-        );
+        SnackBarHelper.showInfo(context, 'Service restarted successfully');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to restart service: ${e.toString()}')),
-        );
+        SnackBarHelper.showInfo(context, 'Failed to restart service: ${e.toString()}');
       }
     }
   }
@@ -276,18 +260,9 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
         // Results list
         Expanded(
           child: _neighbors.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.devices_other, size: 64, color: Colors.grey[400]),
-                      const SizedBox(height: 16),
-                      Text(
-                        'No neighbors discovered',
-                        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                      ),
-                    ],
-                  ),
+              ? const EmptyStateWidget(
+                  icon: Icons.devices_other,
+                  title: 'No neighbors discovered',
                 )
               : RefreshIndicator(
                   onRefresh: _loadNeighbors,

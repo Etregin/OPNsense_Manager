@@ -23,6 +23,7 @@ import '../../models/vpn_connection.dart';
 import '../../models/system_info.dart';
 import '../../services/demo_api_service.dart';
 import '../../services/vpn/vpn_connection_manager.dart';
+import '../../utils/snackbar_helper.dart';
 import '../../utils/constants.dart';
 import '../../widgets/vpn/vpn_connection_card.dart';
 import '../../widgets/vpn/vpn_summary_cards.dart';
@@ -135,14 +136,9 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
     if (confirmed != true || !mounted) return;
 
     try {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(connection.isConnected 
-              ? l10n.disconnectingVPN(connection.name) 
-              : l10n.connectingVPN(connection.name)),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      SnackBarHelper.showInfo(context, connection.isConnected
+          ? l10n.disconnectingVPN(connection.name)
+          : l10n.connectingVPN(connection.name));
 
       final success = await _connectionManager.toggleConnection(
         connection.id,
@@ -152,40 +148,22 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
 
       if (mounted) {
         if (success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(connection.isConnected 
-                  ? l10n.successfullyDisconnected(connection.name) 
-                  : l10n.successfullyConnected(connection.name)),
-              backgroundColor: Colors.green,
-              duration: const Duration(seconds: 2),
-            ),
-          );
+          SnackBarHelper.showSuccess(context, connection.isConnected
+              ? l10n.successfullyDisconnected(connection.name)
+              : l10n.successfullyConnected(connection.name));
           await Future.delayed(const Duration(seconds: 1));
           if (mounted) {
             _loadData();
           }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(connection.isConnected 
-                  ? l10n.failedToDisconnect(connection.name) 
-                  : l10n.failedToConnect(connection.name)),
-              backgroundColor: Colors.red,
-              duration: const Duration(seconds: 3),
-            ),
-          );
+          SnackBarHelper.showError(context, connection.isConnected
+              ? l10n.failedToDisconnect(connection.name)
+              : l10n.failedToConnect(connection.name));
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${l10n.error}: ${e.toString()}'),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        SnackBarHelper.showError(context, '${l10n.error}: ${e.toString()}');
       }
     }
   }
@@ -219,47 +197,24 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
     if (confirmed != true || !mounted) return;
 
     try {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.restartingService(type.toUpperCase())),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      SnackBarHelper.showInfo(context, l10n.restartingService(type.toUpperCase()));
 
       final success = await _connectionManager.restartService(type);
 
       if (mounted) {
         if (success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.successfullyRestartedService(type.toUpperCase())),
-              backgroundColor: Colors.green,
-              duration: const Duration(seconds: 2),
-            ),
-          );
+          SnackBarHelper.showSuccess(context, l10n.successfullyRestartedService(type.toUpperCase()));
           await Future.delayed(const Duration(seconds: 2));
           if (mounted) {
             _loadData();
           }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.failedToRestartService(type.toUpperCase())),
-              backgroundColor: Colors.red,
-              duration: const Duration(seconds: 3),
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.failedToRestartService(type.toUpperCase()));
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${l10n.error}: ${e.toString()}'),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        SnackBarHelper.showError(context, '${l10n.error}: ${e.toString()}');
       }
     }
   }

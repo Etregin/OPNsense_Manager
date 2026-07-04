@@ -23,8 +23,10 @@ import '../l10n/app_localizations.dart';
 import '../models/tailscale_status.dart';
 import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
+import '../utils/snackbar_helper.dart';
 import '../utils/formatters.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/common/error_display.dart';
 
 /// Screen for displaying Tailscale status information
 class TailscaleStatusScreen extends StatefulWidget {
@@ -134,12 +136,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
 
     // Show progress
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.tailscaleServiceActioning(actionTitle)),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      SnackBarHelper.showInfo(context, l10n.tailscaleServiceActioning(actionTitle));
     }
 
     try {
@@ -148,30 +145,15 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
 
       if (mounted) {
         if (success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.tailscaleServiceActionSuccess(actionTitle)),
-              backgroundColor: Colors.green,
-            ),
-          );
+          SnackBarHelper.showSuccess(context, l10n.tailscaleServiceActionSuccess(actionTitle));
           _loadData();
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.failedToActionTailscaleService(action)),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.failedToActionTailscaleService(action));
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${l10n.error}: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, '${l10n.error}: ${e.toString()}');
       }
     }
   }
@@ -227,28 +209,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
     }
 
     if (_errorMessage != null) {
-      final l10n = AppLocalizations.of(context)!;
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 64, color: Colors.red),
-            const SizedBox(height: 16),
-            Text(
-              l10n.errorLoadingData,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            Text(_errorMessage!),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: _loadData,
-              icon: const Icon(Icons.refresh),
-              label: Text(l10n.retry),
-            ),
-          ],
-        ),
-      );
+      return ErrorDisplay(message: _errorMessage!, onRetry: _loadData);
     }
 
     if (_status == null) {

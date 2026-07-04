@@ -26,6 +26,7 @@ import '../../services/opnsense_api_service.dart';
 import '../../services/settings/profile_manager_service.dart';
 import '../../services/settings/file_operations_service.dart';
 import '../../utils/constants.dart';
+import '../../utils/snackbar_helper.dart';
 import '../../utils/validators.dart';
 import '../../widgets/settings/profile_card.dart';
 import '../../widgets/login/connection_endpoints_manager.dart';
@@ -111,32 +112,17 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
         }
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.activatedProfile(profile.name)),
-              backgroundColor: Colors.green,
-            ),
-          );
+          SnackBarHelper.showSuccess(context, l10n.activatedProfile(profile.name));
         }
       } else {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(result.errorMessage ?? AppLocalizations.of(context)!.activationFailed),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, result.errorMessage ?? AppLocalizations.of(context)!.activationFailed);
         }
       }
     } catch (e) {
       if (mounted) {
         Navigator.of(context).pop(); // Close loading dialog
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, 'Error: $e');
       }
     }
   }
@@ -298,12 +284,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                 if (formKey.currentState!.validate()) {
                   // Validate connections
                   if (connections.isEmpty || connections.every((c) => c.host.trim().isEmpty)) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(l10n.pleaseAddConnectionEndpoint),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
+                    SnackBarHelper.showError(context, l10n.pleaseAddConnectionEndpoint);
                     return;
                   }
                   
@@ -364,21 +345,11 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
       await _loadProfiles();
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(id == null ? l10n.profileAdded : l10n.profileUpdated),
-            backgroundColor: Colors.green,
-          ),
-        );
+        SnackBarHelper.showSuccess(context, id == null ? l10n.profileAdded : l10n.profileUpdated);
       }
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result.errorMessage ?? AppLocalizations.of(context)!.failedToSaveProfile),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, result.errorMessage ?? AppLocalizations.of(context)!.failedToSaveProfile);
       }
     }
   }
@@ -426,26 +397,9 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
     
     if (mounted) {
       if (result.success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${l10n.exportSuccess}\nSaved to: ${result.filePath}'),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 8),
-            action: SnackBarAction(
-              label: l10n.ok,
-              textColor: Colors.white,
-              onPressed: () {},
-            ),
-          ),
-        );
+        SnackBarHelper.showSuccess(context, '${l10n.exportSuccess}\nSaved to: ${result.filePath}', duration: const Duration(seconds: 8));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result.errorMessage ?? l10n.exportFailed),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 5),
-          ),
-        );
+        SnackBarHelper.showError(context, result.errorMessage ?? l10n.exportFailed, duration: const Duration(seconds: 5));
       }
     }
   }
@@ -486,21 +440,11 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
       if (success) {
         await _loadProfiles();
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.profileDeleted),
-              backgroundColor: Colors.green,
-            ),
-          );
+          SnackBarHelper.showSuccess(context, l10n.profileDeleted);
         }
       } else {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.failedToDeleteProfile),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.failedToDeleteProfile);
         }
       }
     }

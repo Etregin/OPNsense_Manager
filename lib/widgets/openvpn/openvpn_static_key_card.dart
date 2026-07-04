@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../models/openvpn_static_key.dart';
+import '../../utils/snackbar_helper.dart';
 import 'package:intl/intl.dart';
 
 /// Card widget for displaying OpenVPN static key information
@@ -169,13 +170,7 @@ class OpenvpnStaticKeyCard extends StatelessWidget {
 
   void _copyKeyToClipboard(BuildContext context) {
     Clipboard.setData(ClipboardData(text: staticKey.key));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Key copied to clipboard'),
-        duration: Duration(seconds: 2),
-        backgroundColor: Colors.green,
-      ),
-    );
+    SnackBarHelper.showSuccess(context, 'Key copied to clipboard');
   }
 }
 

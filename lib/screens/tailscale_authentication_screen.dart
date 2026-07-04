@@ -21,6 +21,7 @@ import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
+import '../utils/snackbar_helper.dart';
 import '../widgets/app_drawer.dart';
 
 /// Screen for managing Tailscale authentication
@@ -119,21 +120,11 @@ class _TailscaleAuthenticationScreenState
 
         final l10n = AppLocalizations.of(context)!;
         if (success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.authSettingsSavedSuccessfully),
-              backgroundColor: Colors.green,
-            ),
-          );
+          SnackBarHelper.showSuccess(context, l10n.authSettingsSavedSuccessfully);
           // Reload data to reflect any changes
           _loadData();
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.failedToSaveAuthSettings),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.failedToSaveAuthSettings);
         }
       }
     } catch (e) {
@@ -141,12 +132,7 @@ class _TailscaleAuthenticationScreenState
         setState(() {
           _isSaving = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, 'Error: ${e.toString()}');
       }
     }
   }

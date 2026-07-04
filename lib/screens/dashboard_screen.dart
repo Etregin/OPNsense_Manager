@@ -27,6 +27,7 @@ import '../services/opnsense_api_service.dart';
 import '../services/profile_service.dart';
 import '../services/dashboard/dashboard_data_loader.dart';
 import '../utils/constants.dart';
+import '../utils/snackbar_helper.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/dashboard/resource_usage_section.dart';
 import '../widgets/dashboard/services_section.dart';
@@ -157,12 +158,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final demoApiService = context.read<DemoApiService>();
       
       // Show loading indicator
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.actioningService(actionText, serviceName)),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      SnackBarHelper.showInfo(context, l10n.actioningService(actionText, serviceName));
 
       final success = await demoApiService.controlService(serviceId, action);
 
@@ -170,37 +166,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
         if (success) {
           final successMsg = action == 'start' ? l10n.serviceStarted :
                            action == 'stop' ? l10n.serviceStopped : l10n.serviceRestarted;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(successMsg),
-              backgroundColor: Colors.green,
-              duration: const Duration(seconds: 2),
-            ),
-          );
+          SnackBarHelper.showSuccess(context, successMsg);
           // Reload dashboard to reflect changes
           await Future.delayed(const Duration(seconds: 1));
           if (mounted) {
             _loadDashboardData();
           }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.serviceActionFailed),
-              backgroundColor: Colors.red,
-              duration: const Duration(seconds: 3),
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.serviceActionFailed);
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${l10n.error}: ${e.toString()}'),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        SnackBarHelper.showError(context, '${l10n.error}: ${e.toString()}');
       }
     }
   }

@@ -20,8 +20,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_client_override_list_item.dart';
 import '../services/demo_api_service.dart';
+import '../utils/snackbar_helper.dart';
 import '../widgets/openvpn/openvpn_client_override_card.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/common/error_display.dart';
+import '../widgets/common/empty_state_widget.dart';
 import '../l10n/app_localizations.dart';
 
 /// Screen for displaying OpenVPN client specific overrides list
@@ -126,26 +129,13 @@ class _OpenvpnClientOverridesListScreenState
 
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-                l10n.overrideToggledSuccessfully(clientOverride.enabled ? l10n.disabled : l10n.enabled)),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 2),
-          ),
-        );
+        SnackBarHelper.showSuccess(context, l10n.overrideToggledSuccessfully(clientOverride.enabled ? l10n.disabled : l10n.enabled));
         await _loadOverrides();
       }
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.failedToToggleOverride(e.toString())),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        SnackBarHelper.showError(context, l10n.failedToToggleOverride(e.toString()));
       }
     } finally {
       if (mounted) {
@@ -191,22 +181,12 @@ class _OpenvpnClientOverridesListScreenState
         // Reconfigure is handled automatically in demo mode
         
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.overrideDeletedSuccessfully),
-              backgroundColor: Colors.green,
-            ),
-          );
+          SnackBarHelper.showSuccess(context, l10n.overrideDeletedSuccessfully);
           await _loadOverrides();
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.failedToDeleteOverride(e.toString())),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.failedToDeleteOverride(e.toString()));
         }
       }
     }
@@ -432,58 +412,16 @@ class _OpenvpnClientOverridesListScreenState
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _errorMessage != null
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.error_outline,
-                              size: 48,
-                              color: Colors.red,
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              l10n.error,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(_errorMessage!),
-                            const SizedBox(height: 16),
-                            ElevatedButton.icon(
-                              onPressed: _loadOverrides,
-                              icon: const Icon(Icons.refresh),
-                              label: Text(l10n.retry),
-                            ),
-                          ],
-                        ),
-                      )
+                    ? ErrorDisplay(message: _errorMessage!, onRetry: _loadOverrides)
                     : _filteredOverrides.isEmpty
-                        ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.person_off,
-                                  size: 48,
-                                  color: Colors.grey,
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  _statusFilter != 'all'
-                                      ? 'No overrides match your filter'
-                                      : 'No client specific overrides configured',
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                                if (_statusFilter == 'all')
-                                  const SizedBox(height: 8),
-                                if (_statusFilter == 'all')
-                                  const Text(
-                                    'Tap the + button to create your first override',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                              ],
-                            ),
+                        ? EmptyStateWidget(
+                            icon: Icons.person_off,
+                            title: _statusFilter != 'all'
+                                ? 'No overrides match your filter'
+                                : 'No client specific overrides configured',
+                            subtitle: _statusFilter == 'all'
+                                ? 'Tap the + button to create your first override'
+                                : null,
                           )
                         : RefreshIndicator(
                             onRefresh: _loadOverrides,

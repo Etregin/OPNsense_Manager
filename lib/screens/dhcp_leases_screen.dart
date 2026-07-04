@@ -23,6 +23,8 @@ import '../models/dhcp_server_type.dart';
 import '../services/demo_api_service.dart';
 import '../services/profile_service.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/common/error_display.dart';
+import '../widgets/common/empty_state_widget.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/constants.dart';
 import 'package:intl/intl.dart';
@@ -357,57 +359,11 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _errorMessage != null
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.error_outline,
-                              size: 64,
-                              color: Theme.of(context).colorScheme.error,
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              l10n.error,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            const SizedBox(height: 8),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 32),
-                              child: Text(
-                                _errorMessage!,
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            ElevatedButton.icon(
-                              onPressed: _loadLeases,
-                              icon: const Icon(Icons.refresh),
-                              label: Text(l10n.retry),
-                            ),
-                          ],
-                        ),
-                      )
+                    ? ErrorDisplay(message: _errorMessage!, onRetry: _loadLeases)
                     : _filteredLeases.isEmpty
-                        ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.dns_outlined,
-                                  size: 64,
-                                  color: Colors.grey[400],
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  l10n.noLeasesFound,
-                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                        color: Colors.grey[600],
-                                      ),
-                                ),
-                              ],
-                            ),
+                        ? EmptyStateWidget(
+                            icon: Icons.dns_outlined,
+                            title: l10n.noLeasesFound,
                           )
                         : RefreshIndicator(
                             onRefresh: _loadLeases,

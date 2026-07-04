@@ -21,7 +21,10 @@ import 'package:provider/provider.dart';
 import '../models/firewall_alias.dart';
 import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
+import '../utils/snackbar_helper.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/common/error_display.dart';
+import '../widgets/common/empty_state_widget.dart';
 import '../l10n/app_localizations.dart';
 
 /// Firewall aliases management screen
@@ -235,25 +238,13 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
 
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(alias.isEnabled ? l10n.aliasDisabledSuccessfully : l10n.aliasEnabledSuccessfully),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 2),
-          ),
-        );
+        SnackBarHelper.showSuccess(context, alias.isEnabled ? l10n.aliasDisabledSuccessfully : l10n.aliasEnabledSuccessfully);
         await _loadAliases();
       }
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.failedToToggleAlias(e.toString())),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        SnackBarHelper.showError(context, l10n.failedToToggleAlias(e.toString()));
       }
     } finally {
       if (mounted) {
@@ -296,22 +287,12 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
         await demoApiService.deleteFirewallAlias(alias.uuid);
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.aliasDeletedSuccessfully),
-              backgroundColor: Colors.green,
-            ),
-          );
+          SnackBarHelper.showSuccess(context, l10n.aliasDeletedSuccessfully);
           _loadAliases();
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.failedToDeleteAlias(e.toString())),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.failedToDeleteAlias(e.toString()));
         }
       }
     }
@@ -522,42 +503,13 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _errorMessage != null
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                            const SizedBox(height: 16),
-                            Text(
-                              l10n.error,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(_errorMessage!),
-                            const SizedBox(height: 16),
-                            ElevatedButton.icon(
-                              onPressed: _loadAliases,
-                              icon: const Icon(Icons.refresh),
-                              label: Text(l10n.retry),
-                            ),
-                          ],
-                        ),
-                      )
+                    ? ErrorDisplay(message: _errorMessage!, onRetry: _loadAliases)
                     : filteredAliases.isEmpty
-                        ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.inbox, size: 48, color: Colors.grey),
-                                const SizedBox(height: 16),
-                                Text(
-                                  _searchQuery.isNotEmpty || _selectedTypes.isNotEmpty
-                                      ? l10n.noAliasesMatchFilters
-                                      : l10n.noAliasesConfigured,
-                                  style: Theme.of(context).textTheme.titleMedium,
-                                ),
-                              ],
-                            ),
+                        ? EmptyStateWidget(
+                            icon: Icons.inbox,
+                            title: _searchQuery.isNotEmpty || _selectedTypes.isNotEmpty
+                                ? l10n.noAliasesMatchFilters
+                                : l10n.noAliasesConfigured,
                           )
                         : RefreshIndicator(
                             onRefresh: _loadAliases,
@@ -669,12 +621,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.createAliasComingSoon),
-              duration: Duration(seconds: 2),
-            ),
-          );
+          SnackBarHelper.showInfo(context, l10n.createAliasComingSoon);
         },
         child: const Icon(Icons.add),
       ),

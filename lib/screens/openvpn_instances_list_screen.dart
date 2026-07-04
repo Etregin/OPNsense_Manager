@@ -21,7 +21,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_instance_list_item.dart';
 import '../services/demo_api_service.dart';
+import '../utils/snackbar_helper.dart';
 import '../widgets/openvpn/openvpn_instance_card.dart';
+import '../widgets/common/error_display.dart';
+import '../widgets/common/empty_state_widget.dart';
 import '../l10n/app_localizations.dart';
 import 'openvpn_instance_form_screen.dart';
 
@@ -143,25 +146,13 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
 
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.instanceToggledSuccessfully(instance.enabled ? l10n.disabled : l10n.enabled)),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 2),
-          ),
-        );
+        SnackBarHelper.showSuccess(context, l10n.instanceToggledSuccessfully(instance.enabled ? l10n.disabled : l10n.enabled));
         await _loadInstances();
       }
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.failedToToggleInstance(e.toString())),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        SnackBarHelper.showError(context, l10n.failedToToggleInstance(e.toString()));
       }
     } finally {
       if (mounted) {
@@ -203,22 +194,12 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
         final apiService = context.read<DemoApiService>();
         await apiService.deleteOpenvpnInstance(instance.uuid);
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.instanceDeletedSuccessfully),
-              backgroundColor: Colors.green,
-            ),
-          );
+          SnackBarHelper.showSuccess(context, l10n.instanceDeletedSuccessfully);
           await _loadInstances();
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.failedToDeleteInstance(e.toString())),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.failedToDeleteInstance(e.toString()));
         }
       }
     }
@@ -430,57 +411,16 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
           child: _isLoading
               ? const Center(child: CircularProgressIndicator())
               : _errorMessage != null
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.error_outline,
-                            size: 48,
-                            color: Colors.red,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            l10n.error,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(_errorMessage!),
-                          const SizedBox(height: 16),
-                          ElevatedButton.icon(
-                            onPressed: _loadInstances,
-                            icon: const Icon(Icons.refresh),
-                            label: Text(l10n.retry),
-                          ),
-                        ],
-                      ),
-                    )
+                  ? ErrorDisplay(message: _errorMessage!, onRetry: _loadInstances)
                   : _instances.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.vpn_lock,
-                                size: 48,
-                                color: Colors.grey,
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                _searchQuery.isNotEmpty || _roleFilter != 'all' || _statusFilter != 'all'
-                                    ? l10n.noInstancesMatchFilters
-                                    : l10n.noOpenvpnInstancesConfigured,
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                              if (_searchQuery.isEmpty && _roleFilter == 'all' && _statusFilter == 'all')
-                                const SizedBox(height: 8),
-                              if (_searchQuery.isEmpty && _roleFilter == 'all' && _statusFilter == 'all')
-                                Text(
-                                  l10n.tapPlusButtonToCreateFirstInstance,
-                                  style: const TextStyle(color: Colors.grey),
-                                ),
-                            ],
-                          ),
+                      ? EmptyStateWidget(
+                          icon: Icons.vpn_lock,
+                          title: _searchQuery.isNotEmpty || _roleFilter != 'all' || _statusFilter != 'all'
+                              ? l10n.noInstancesMatchFilters
+                              : l10n.noOpenvpnInstancesConfigured,
+                          subtitle: _searchQuery.isEmpty && _roleFilter == 'all' && _statusFilter == 'all'
+                              ? l10n.tapPlusButtonToCreateFirstInstance
+                              : null,
                         )
                       : RefreshIndicator(
                           onRefresh: () async {

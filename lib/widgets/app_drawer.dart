@@ -28,6 +28,7 @@ import '../services/navigation/navigation_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../services/profile_service.dart';
 import '../services/auth_service.dart';
+import '../utils/snackbar_helper.dart';
 import '../utils/constants.dart';
 import 'drawer/drawer_header_widget.dart';
 import 'drawer/navigation_tile.dart';
@@ -221,13 +222,7 @@ class _AppDrawerState extends State<AppDrawer> {
       } catch (e) {
         // Try to show error message if context is still valid
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to switch profile: ${e.toString()}'),
-              backgroundColor: Colors.red,
-              duration: const Duration(seconds: 5),
-            ),
-          );
+          SnackBarHelper.showError(context, 'Failed to switch profile: ${e.toString()}', duration: const Duration(seconds: 5));
         }
       }
     }
@@ -284,24 +279,13 @@ class _AppDrawerState extends State<AppDrawer> {
         if (context.mounted) {
           Navigator.of(context).pop(); // Close loading dialog
           
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.rebootSuccess),
-              duration: const Duration(seconds: 5),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.rebootSuccess, duration: const Duration(seconds: 5));
         }
       } catch (e) {
         if (context.mounted) {
           Navigator.of(context).pop(); // Close loading dialog
           
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.rebootFailedWithError(l10n.rebootFailed, e.toString())),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.rebootFailedWithError(l10n.rebootFailed, e.toString()));
         }
       }
     }

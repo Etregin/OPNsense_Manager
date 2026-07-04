@@ -25,6 +25,7 @@ import '../services/profile_service.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../services/settings/profile_import_service.dart';
+import '../utils/snackbar_helper.dart';
 import '../viewmodels/login_view_model.dart';
 import '../widgets/common/error_display.dart';
 import '../widgets/login/connection_endpoints_manager.dart';
@@ -123,12 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
     // Validate that we have at least one connection with a valid host
     if (_connections.isEmpty || _connections.every((c) => c.host.trim().isEmpty)) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.addConnectionEndpoint),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.addConnectionEndpoint);
       return;
     }
 
@@ -223,12 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
     // Validate that we have at least one connection with a valid host
     if (_connections.isEmpty || _connections.every((c) => c.host.trim().isEmpty)) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.addConnectionEndpoint),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.addConnectionEndpoint);
       return;
     }
 
@@ -258,12 +249,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (success) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.profileSaved),
-          backgroundColor: Colors.green,
-        ),
-      );
+      SnackBarHelper.showSuccess(context, l10n.profileSaved);
       Navigator.of(context).pop(true);
     }
   }
@@ -276,12 +262,7 @@ class _LoginScreenState extends State<LoginScreen> {
     // Validate that we have at least one connection with a valid host
     if (_connections.isEmpty || _connections.every((c) => c.host.trim().isEmpty)) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.addConnectionEndpoint),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.addConnectionEndpoint);
       return;
     }
 
@@ -355,27 +336,17 @@ class _LoginScreenState extends State<LoginScreen> {
       final failedCount = result['failed'] as int;
       final errors = result['errors'] as List<String>;
 
-      String message;
-      Color backgroundColor;
-
+      final String message;
       if (failedCount == 0) {
         message = l10n.successfullyImportedProfiles(successCount);
-        backgroundColor = Colors.green;
+        SnackBarHelper.showSuccess(context, message, duration: const Duration(seconds: 5));
       } else if (successCount == 0) {
         message = l10n.importFailedWithErrors(errors.join(', '));
-        backgroundColor = Colors.red;
+        SnackBarHelper.showError(context, message, duration: const Duration(seconds: 5));
       } else {
         message = l10n.importedWithFailures(successCount, failedCount);
-        backgroundColor = Colors.orange;
+        SnackBarHelper.showWarning(context, message, duration: const Duration(seconds: 5));
       }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: backgroundColor,
-          duration: const Duration(seconds: 5),
-        ),
-      );
 
       if (successCount > 0) {
         Navigator.of(context).pop(true);
@@ -383,12 +354,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       if (!mounted) return;
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.importFailed(e.toString())),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.importFailed(e.toString()));
     }
   }
 

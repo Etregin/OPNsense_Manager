@@ -21,6 +21,7 @@ import 'package:flutter/services.dart';
 import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/wireguard_peer.dart';
+import '../utils/snackbar_helper.dart';
 import '../viewmodels/wireguard_peer_form_view_model.dart';
 import '../widgets/common/loading_overlay.dart';
 import '../widgets/wireguard/list_manager_card.dart';
@@ -128,21 +129,9 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
         _pskController.text = psk;
       });
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.presharedKeyGeneratedSuccessfully),
-          backgroundColor: Colors.green,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      SnackBarHelper.showSuccess(context, l10n.presharedKeyGeneratedSuccessfully);
     } else if (_viewModel.errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_viewModel.errorMessage!),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 4),
-        ),
-      );
+      SnackBarHelper.showError(context, _viewModel.errorMessage!, duration: const Duration(seconds: 4));
     }
   }
 
@@ -152,22 +141,12 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     if (_tunnelAddresses.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.tunnelAddressRequired),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.tunnelAddressRequired);
       return;
     }
 
     if (_selectedServerUuids.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.serverSelectionRequired),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.serverSelectionRequired);
       return;
     }
 
@@ -196,26 +175,12 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
 
     if (mounted) {
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              _viewModel.isEditing
-                  ? l10n.peerUpdatedSuccessfully
-                  : l10n.peerCreatedSuccessfully,
-            ),
-            backgroundColor: Colors.green,
-          ),
-        );
+        SnackBarHelper.showSuccess(context, _viewModel.isEditing
+            ? l10n.peerUpdatedSuccessfully
+            : l10n.peerCreatedSuccessfully);
         Navigator.of(context).pop(true);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              _viewModel.errorMessage ?? l10n.failedToSavePeer,
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, _viewModel.errorMessage ?? l10n.failedToSavePeer);
       }
     }
   }

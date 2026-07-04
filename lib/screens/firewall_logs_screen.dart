@@ -24,6 +24,7 @@ import 'package:provider/provider.dart';
 import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
 import '../utils/constants.dart';
+import '../utils/snackbar_helper.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/firewall/log_detail_sheet.dart';
 import '../l10n/app_localizations.dart';
@@ -231,12 +232,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
 
     if (mounted) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.copiedLogEntries(_selectedIndices.length)),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      SnackBarHelper.showInfo(context, l10n.copiedLogEntries(_selectedIndices.length));
       _clearSelection();
     }
   }
@@ -539,13 +535,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
           if (!_isPaused) {
             final l10n = AppLocalizations.of(context)!;
             // Show message that selection is only available when paused
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.pauseLiveViewToSelect),
-                duration: const Duration(seconds: 2),
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
+            SnackBarHelper.showInfo(context, l10n.pauseLiveViewToSelect);
             return;
           }
           if (!_isSelectionMode) {

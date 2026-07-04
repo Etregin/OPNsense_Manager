@@ -20,6 +20,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
+import '../utils/snackbar_helper.dart';
 import '../viewmodels/tailscale_settings_view_model.dart';
 import '../viewmodels/tailscale_settings_form_state.dart';
 import '../widgets/app_drawer.dart';
@@ -113,17 +114,11 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
     final success = await _viewModel.saveChanges();
     if (mounted) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success
-                ? l10n.allSettingsSavedSuccessfully
-                : _viewModel.errorMessage ?? l10n.failedToSaveSettings,
-          ),
-          backgroundColor: success ? Colors.green : Colors.red,
-          duration: Duration(seconds: success ? 2 : 5),
-        ),
-      );
+      if (success) {
+        SnackBarHelper.showSuccess(context, l10n.allSettingsSavedSuccessfully);
+      } else {
+        SnackBarHelper.showError(context, _viewModel.errorMessage ?? l10n.failedToSaveSettings, duration: const Duration(seconds: 5));
+      }
     }
   }
 
@@ -134,12 +129,7 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
     }
     setState(() {});
     final l10n = AppLocalizations.of(context)!;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.changesDiscarded),
-        duration: const Duration(seconds: 1),
-      ),
-    );
+    SnackBarHelper.showInfo(context, l10n.changesDiscarded, duration: const Duration(seconds: 1));
   }
 
   Future<void> _controlService(String action) async {
@@ -160,26 +150,16 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
 
     if (!confirmed || !mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.tailscaleServiceActioning(actionTitle)),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    SnackBarHelper.showInfo(context, l10n.tailscaleServiceActioning(actionTitle));
 
     final success = await _viewModel.controlService(action);
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success
-                ? l10n.tailscaleServiceActionSuccess(actionTitle)
-                : _viewModel.errorMessage ?? l10n.failedToActionTailscaleService(action),
-          ),
-          backgroundColor: success ? Colors.green : Colors.red,
-        ),
-      );
+      if (success) {
+        SnackBarHelper.showSuccess(context, l10n.tailscaleServiceActionSuccess(actionTitle));
+      } else {
+        SnackBarHelper.showError(context, _viewModel.errorMessage ?? l10n.failedToActionTailscaleService(action));
+      }
     }
   }
 

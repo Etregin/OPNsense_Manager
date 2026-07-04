@@ -23,6 +23,7 @@ import 'package:provider/provider.dart';
 import '../models/openvpn_instance.dart';
 import '../models/openvpn_dropdown_option.dart';
 import '../services/demo_api_service.dart';
+import '../utils/snackbar_helper.dart';
 import '../widgets/common/loading_overlay.dart';
 import '../widgets/openvpn/openvpn_form_field_widgets.dart';
 import '../utils/common_validators.dart';
@@ -446,12 +447,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
     final l10n = AppLocalizations.of(context)!;
     
     if (!_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.fixFormErrors),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.fixFormErrors);
       return;
     }
 
@@ -468,28 +464,15 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
       }
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              _isEditMode
-                  ? l10n.instanceUpdatedSuccessfully
-                  : l10n.instanceCreatedSuccessfully,
-            ),
-            backgroundColor: Colors.green,
-          ),
-        );
+        SnackBarHelper.showSuccess(context, _isEditMode
+            ? l10n.instanceUpdatedSuccessfully
+            : l10n.instanceCreatedSuccessfully);
         Navigator.of(context).pop(true);
       }
     } catch (e) {
       if (mounted) {
         setState(() => _isSaving = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.failedToSaveInstance(e.toString())),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 4),
-          ),
-        );
+        SnackBarHelper.showError(context, l10n.failedToSaveInstance(e.toString()), duration: const Duration(seconds: 4));
       }
     }
   }
@@ -595,22 +578,12 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
         _isLoading = false;
       });
       
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.authTokenGeneratedSuccessfully),
-          backgroundColor: Colors.green,
-        ),
-      );
+      SnackBarHelper.showSuccess(context, l10n.authTokenGeneratedSuccessfully);
     } catch (e) {
       if (!mounted) return;
       
       setState(() => _isLoading = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.failedToGenerateToken(e.toString())),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.failedToGenerateToken(e.toString()));
     }
   }
 

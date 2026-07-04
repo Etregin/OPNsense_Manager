@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../utils/snackbar_helper.dart';
 
 /// Reusable widget for managing lists of items (tunnel addresses, DNS servers, etc.)
 class ListManagerCard extends StatelessWidget {
@@ -136,12 +137,7 @@ class AddItemDialog extends StatelessWidget {
             final error = validator(value);
             
             if (error != null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(error),
-                  backgroundColor: Colors.red,
-                ),
-              );
+              SnackBarHelper.showError(context, error);
             } else {
               Navigator.of(context).pop(value);
             }

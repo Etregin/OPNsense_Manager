@@ -23,6 +23,8 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../models/wireguard_client_builder.dart';
 import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
+import '../utils/constants.dart';
+import '../utils/snackbar_helper.dart';
 import '../viewmodels/wireguard_peer_generator_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/loading_overlay.dart';
@@ -171,13 +173,7 @@ class _WireGuardPeerGeneratorScreenState
     if (_viewModel.psk != null) {
       _pskController.text = _viewModel.psk!;
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.presharedKeyGeneratedSuccessfully),
-          backgroundColor: Colors.green,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      SnackBarHelper.showSuccess(context, l10n.presharedKeyGeneratedSuccessfully);
     }
   }
 
@@ -189,12 +185,7 @@ class _WireGuardPeerGeneratorScreenState
     final l10n = AppLocalizations.of(context)!;
 
     if (_selectedServerUuid == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.selectServerInstance),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.selectServerInstance);
       return;
     }
 
@@ -203,23 +194,13 @@ class _WireGuardPeerGeneratorScreenState
     final publicKey = _publicKeyController.text.trim();
     
     if (privateKey.isEmpty || publicKey.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.keysRequired),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.keysRequired);
       return;
     }
 
     final serverInfo = _viewModel.selectedServerInfo;
     if (serverInfo == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.serverInfoNotLoaded),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.serverInfoNotLoaded);
       return;
     }
 
@@ -241,12 +222,7 @@ class _WireGuardPeerGeneratorScreenState
 
     if (mounted) {
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.peerCreatedReadyForNext),
-            backgroundColor: Colors.green,
-          ),
-        );
+        SnackBarHelper.showSuccess(context, l10n.peerCreatedReadyForNext);
         // Reset form for next peer
         _nameController.clear();
         _pskController.clear();
@@ -255,14 +231,7 @@ class _WireGuardPeerGeneratorScreenState
           _selectedServerUuid = null;
         });
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              _viewModel.errorMessage ?? 'Failed to create peer',
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, _viewModel.errorMessage ?? 'Failed to create peer');
       }
     }
   }
@@ -272,16 +241,11 @@ class _WireGuardPeerGeneratorScreenState
 
     if (mounted) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success
-                ? l10n.configurationAppliedSuccessfully
-                : _viewModel.errorMessage ?? l10n.failedToApplyConfiguration,
-          ),
-          backgroundColor: success ? Colors.green : Colors.red,
-        ),
-      );
+      if (success) {
+        SnackBarHelper.showSuccess(context, l10n.configurationAppliedSuccessfully);
+      } else {
+        SnackBarHelper.showError(context, _viewModel.errorMessage ?? l10n.failedToApplyConfiguration);
+      }
     }
   }
 
@@ -652,17 +616,16 @@ class _WireGuardPeerGeneratorScreenState
                           ? null
                           : (value) async {
                               final messenger = ScaffoldMessenger.of(context);
+                              final message = value
+                                  ? l10n.wireguardServiceStarted
+                                  : l10n.wireguardServiceStopped;
                               final success =
                                   await _viewModel.toggleWireGuardService(value);
                               if (mounted && success) {
                                 messenger.showSnackBar(
                                   SnackBar(
-                                    content: Text(
-                                      value
-                                          ? l10n.wireguardServiceStarted
-                                          : l10n.wireguardServiceStopped,
-                                    ),
-                                    backgroundColor: Colors.green,
+                                    content: Text(message),
+                                    backgroundColor: AppColors.success,
                                   ),
                                 );
                               }

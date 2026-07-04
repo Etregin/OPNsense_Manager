@@ -22,6 +22,7 @@ import '../l10n/app_localizations.dart';
 import '../models/openvpn_client_override.dart';
 import '../models/openvpn_dropdown_option.dart';
 import '../services/demo_api_service.dart';
+import '../utils/snackbar_helper.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/loading_overlay.dart';
 import '../widgets/common/form_section_container.dart';
@@ -206,12 +207,7 @@ class _OpenvpnClientOverrideFormScreenState
     final l10n = AppLocalizations.of(context)!;
     
     if (!_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.fixFormErrors),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.fixFormErrors);
       return;
     }
 
@@ -224,28 +220,15 @@ class _OpenvpnClientOverrideFormScreenState
       await apiService.setClientOverride(widget.uuid ?? '', override);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              _isEditMode
-                  ? l10n.overrideUpdatedSuccessfully
-                  : l10n.overrideCreatedSuccessfully,
-            ),
-            backgroundColor: Colors.green,
-          ),
-        );
+        SnackBarHelper.showSuccess(context, _isEditMode
+            ? l10n.overrideUpdatedSuccessfully
+            : l10n.overrideCreatedSuccessfully);
         Navigator.of(context).pop(true);
       }
     } catch (e) {
       if (mounted) {
         setState(() => _isSaving = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.failedToSaveOverride(e.toString())),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 4),
-          ),
-        );
+        SnackBarHelper.showError(context, l10n.failedToSaveOverride(e.toString()), duration: const Duration(seconds: 4));
       }
     }
   }

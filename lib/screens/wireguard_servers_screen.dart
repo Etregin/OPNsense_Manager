@@ -21,7 +21,10 @@ import 'package:provider/provider.dart';
 import '../models/wireguard_server.dart';
 import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
+import '../utils/snackbar_helper.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/common/error_display.dart';
+import '../widgets/common/empty_state_widget.dart';
 import '../l10n/app_localizations.dart';
 import 'wireguard_server_form_screen.dart';
 
@@ -123,27 +126,15 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
 
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(server.isEnabled
-                ? l10n.serverDisabledSuccessfully
-                : l10n.serverEnabledSuccessfully),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 2),
-          ),
-        );
+        SnackBarHelper.showSuccess(context, server.isEnabled
+            ? l10n.serverDisabledSuccessfully
+            : l10n.serverEnabledSuccessfully);
         await _loadServers();
       }
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.failedToToggleServer(e.toString())),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        SnackBarHelper.showError(context, l10n.failedToToggleServer(e.toString()));
       }
     } finally {
       if (mounted) {
@@ -185,23 +176,13 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
 
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.serverDeletedSuccessfully),
-              backgroundColor: Colors.green,
-            ),
-          );
+          SnackBarHelper.showSuccess(context, l10n.serverDeletedSuccessfully);
           _loadServers();
         }
       } catch (e) {
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.failedToDeleteServer(e.toString())),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.failedToDeleteServer(e.toString()));
         }
       }
     }
@@ -336,42 +317,13 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _errorMessage != null
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                            const SizedBox(height: 16),
-                            Text(
-                              l10n.error,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(_errorMessage!),
-                            const SizedBox(height: 16),
-                            ElevatedButton.icon(
-                              onPressed: _loadServers,
-                              icon: const Icon(Icons.refresh),
-                              label: Text(l10n.retry),
-                            ),
-                          ],
-                        ),
-                      )
+                    ? ErrorDisplay(message: _errorMessage!, onRetry: _loadServers)
                     : filteredServers.isEmpty
-                        ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.security, size: 48, color: Colors.grey),
-                                const SizedBox(height: 16),
-                                Text(
-                                  _searchQuery.isNotEmpty
-                                      ? l10n.noServersMatchSearch
-                                      : l10n.noWireguardServersConfigured,
-                                  style: Theme.of(context).textTheme.titleMedium,
-                                ),
-                              ],
-                            ),
+                        ? EmptyStateWidget(
+                            icon: Icons.security,
+                            title: _searchQuery.isNotEmpty
+                                ? l10n.noServersMatchSearch
+                                : l10n.noWireguardServersConfigured,
                           )
                         : RefreshIndicator(
                             onRefresh: _loadServers,

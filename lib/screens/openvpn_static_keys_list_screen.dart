@@ -21,8 +21,11 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_static_key.dart';
 import '../services/demo_api_service.dart';
+import '../utils/snackbar_helper.dart';
 import '../widgets/openvpn/openvpn_static_key_card.dart';
 import '../screens/openvpn_static_key_form_screen.dart';
+import '../widgets/common/error_display.dart';
+import '../widgets/common/empty_state_widget.dart';
 import '../l10n/app_localizations.dart';
 
 /// Screen for displaying OpenVPN static keys list with pagination
@@ -126,22 +129,12 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
         final apiService = context.read<DemoApiService>();
         await apiService.deleteOpenvpnStaticKey(key.keyid!);
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.staticKeyDeletedSuccessfully),
-              backgroundColor: Colors.green,
-            ),
-          );
+          SnackBarHelper.showSuccess(context, l10n.staticKeyDeletedSuccessfully);
           await _loadStaticKeys();
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.failedToDeleteStaticKey(e.toString())),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.failedToDeleteStaticKey(e.toString()));
         }
       }
     }
@@ -192,13 +185,7 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
                 onPressed: () {
                   final l10n = AppLocalizations.of(context)!;
                   Clipboard.setData(ClipboardData(text: key.key));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(l10n.keyCopiedToClipboard),
-                      duration: const Duration(seconds: 2),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
+                  SnackBarHelper.showSuccess(context, l10n.keyCopiedToClipboard);
                 },
                 icon: const Icon(Icons.copy),
                 label: Text(l10n.copyKey),
@@ -294,53 +281,12 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
           child: _isLoading
               ? const Center(child: CircularProgressIndicator())
               : _errorMessage != null
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.error_outline,
-                            size: 48,
-                            color: Colors.red,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            l10n.error,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(_errorMessage!),
-                          const SizedBox(height: 16),
-                          ElevatedButton.icon(
-                            onPressed: _loadStaticKeys,
-                            icon: const Icon(Icons.refresh),
-                            label: Text(l10n.retry),
-                          ),
-                        ],
-                      ),
-                    )
+                  ? ErrorDisplay(message: _errorMessage!, onRetry: _loadStaticKeys)
                   : _staticKeys.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.vpn_key,
-                                size: 48,
-                                color: Colors.grey,
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                l10n.noStaticKeysConfigured,
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                l10n.tapPlusButtonToCreateFirstStaticKey,
-                                style: const TextStyle(color: Colors.grey),
-                              ),
-                            ],
-                          ),
+                      ? EmptyStateWidget(
+                          icon: Icons.vpn_key,
+                          title: l10n.noStaticKeysConfigured,
+                          subtitle: l10n.tapPlusButtonToCreateFirstStaticKey,
                         )
                       : RefreshIndicator(
                           onRefresh: () async {

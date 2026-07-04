@@ -22,6 +22,7 @@ import '../../l10n/app_localizations.dart';
 import '../../screens/system_info_screen.dart';
 import '../../services/opnsense_api_service.dart';
 import '../../utils/constants.dart';
+import '../../utils/snackbar_helper.dart';
 import 'navigation_tile.dart';
 
 /// System navigation section for the app drawer
@@ -123,24 +124,13 @@ class SystemNavigationSection extends StatelessWidget {
         if (context.mounted) {
           Navigator.of(context).pop(); // Close loading dialog
           
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.rebootSuccess),
-              duration: const Duration(seconds: 5),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.rebootSuccess, duration: const Duration(seconds: 5));
         }
       } catch (e) {
         if (context.mounted) {
           Navigator.of(context).pop(); // Close loading dialog
           
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.rebootFailedWithError(l10n.rebootFailed, e.toString())),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.rebootFailedWithError(l10n.rebootFailed, e.toString()));
         }
       }
     }

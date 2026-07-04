@@ -21,6 +21,7 @@ import 'package:flutter/services.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/connection_endpoint.dart';
 import '../../utils/common_validators.dart';
+import '../../utils/snackbar_helper.dart';
 
 /// Widget for managing multiple connection endpoints in a profile
 /// 
@@ -90,12 +91,7 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
     
     if (widget.connections.length <= 1) {
       // Show error - cannot delete last connection
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.cannotDeleteLastConnection),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.cannotDeleteLastConnection);
       return;
     }
 

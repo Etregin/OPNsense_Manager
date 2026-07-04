@@ -21,6 +21,7 @@ import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_static_key.dart';
 import '../services/demo_api_service.dart';
+import '../utils/snackbar_helper.dart';
 import '../widgets/common/loading_overlay.dart';
 import '../utils/common_validators.dart';
 
@@ -156,13 +157,7 @@ class _OpenvpnStaticKeyFormScreenState
           _isGenerating = false;
         });
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.keyGeneratedSuccessfully),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 2),
-          ),
-        );
+        SnackBarHelper.showSuccess(context, l10n.keyGeneratedSuccessfully);
       }
     } catch (e) {
       if (mounted) {
@@ -171,13 +166,7 @@ class _OpenvpnStaticKeyFormScreenState
           _isGenerating = false;
         });
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.failedToGenerateKey(e.toString())),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 4),
-          ),
-        );
+        SnackBarHelper.showError(context, l10n.failedToGenerateKey(e.toString()), duration: const Duration(seconds: 4));
       }
     }
   }
@@ -210,16 +199,9 @@ class _OpenvpnStaticKeyFormScreenState
       }
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              _isEditMode
-                  ? l10n.staticKeyUpdatedSuccessfully
-                  : l10n.staticKeyCreatedSuccessfully,
-            ),
-            backgroundColor: Colors.green,
-          ),
-        );
+        SnackBarHelper.showSuccess(context, _isEditMode
+            ? l10n.staticKeyUpdatedSuccessfully
+            : l10n.staticKeyCreatedSuccessfully);
         Navigator.of(context).pop(true);
       }
     } catch (e) {
@@ -228,13 +210,7 @@ class _OpenvpnStaticKeyFormScreenState
           _errorMessage = e.toString();
           _isSaving = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.failedToSaveStaticKey(e.toString())),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 4),
-          ),
-        );
+        SnackBarHelper.showError(context, l10n.failedToSaveStaticKey(e.toString()), duration: const Duration(seconds: 4));
       }
     }
   }

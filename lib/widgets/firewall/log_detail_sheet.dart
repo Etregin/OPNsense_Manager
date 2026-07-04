@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../screens/firewall_logs_screen.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/snackbar_helper.dart';
 
 /// Bottom sheet widget that displays detailed information about a firewall log entry
 class LogDetailSheet extends StatelessWidget {
@@ -358,12 +359,7 @@ class LogDetailSheet extends StatelessWidget {
   void _copyToClipboard(BuildContext context, String text) {
     final l10n = AppLocalizations.of(context)!;
     Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.copiedToClipboard),
-        duration: const Duration(seconds: 1),
-      ),
-    );
+    SnackBarHelper.showInfo(context, l10n.copiedToClipboard, duration: const Duration(seconds: 1));
   }
 
   void _copyAllDetails(BuildContext context) {
@@ -411,12 +407,7 @@ class LogDetailSheet extends StatelessWidget {
     }
     
     Clipboard.setData(ClipboardData(text: details.toString()));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.allDetailsCopiedToClipboard),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    SnackBarHelper.showInfo(context, l10n.allDetailsCopiedToClipboard);
   }
 
   Color _getActionColor(String action) {

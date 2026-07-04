@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 import '../models/firewall_rule.dart';
 import '../services/demo_api_service.dart';
 import '../utils/constants.dart';
+import '../utils/snackbar_helper.dart';
 import '../utils/validators.dart';
 import '../l10n/app_localizations.dart';
 
@@ -153,13 +154,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
 
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              widget.isEditing ? l10n.ruleUpdated : l10n.ruleCreated,
-            ),
-          ),
-        );
+        SnackBarHelper.showInfo(context, widget.isEditing ? l10n.ruleUpdated : l10n.ruleCreated);
         Navigator.of(context).pop();
       }
     } catch (e) {
@@ -168,9 +163,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
         setState(() {
           _isLoading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.errorSavingRule(e.toString()))),
-        );
+        SnackBarHelper.showInfo(context, l10n.errorSavingRule(e.toString()));
       }
     }
   }

@@ -23,8 +23,11 @@ import '../models/firewall_rule.dart';
 import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
 import '../services/firewall/firewall_rule_filter.dart';
+import '../utils/snackbar_helper.dart';
 import '../utils/constants.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/common/error_display.dart';
+import '../widgets/common/empty_state_widget.dart';
 import '../widgets/firewall/firewall_rule_card.dart';
 import '../widgets/firewall/interface_selector.dart';
 import '../widgets/firewall/rule_detail_sheet.dart';
@@ -113,13 +116,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
     final l10n = AppLocalizations.of(context)!;
     // Prevent toggling system-generated rules
     if (rule.isSystemGenerated) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.systemGeneratedRulesCannotBeModified),
-          backgroundColor: Colors.orange,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      SnackBarHelper.showWarning(context, l10n.systemGeneratedRulesCannotBeModified);
       return;
     }
 
@@ -159,12 +156,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
       
       // Show loading indicator
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(rule.isEnabled ? l10n.disablingRule : l10n.enablingRule),
-            duration: const Duration(seconds: 2),
-          ),
-        );
+        SnackBarHelper.showInfo(context, rule.isEnabled ? l10n.disablingRule : l10n.enablingRule);
       }
       
       await demoApiService.toggleFirewallRule(rule.uuid);
@@ -173,27 +165,13 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
       await Future.delayed(const Duration(milliseconds: 1500));
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              rule.isEnabled ? l10n.ruleDisabledSuccessfully : l10n.ruleEnabledSuccessfully,
-            ),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 2),
-          ),
-        );
+        SnackBarHelper.showSuccess(context, rule.isEnabled ? l10n.ruleDisabledSuccessfully : l10n.ruleEnabledSuccessfully);
         // Reload rules to reflect the change
         await _loadRules();
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.errorTogglingRule(e.toString())),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        SnackBarHelper.showError(context, l10n.errorTogglingRule(e.toString()));
       }
     }
   }
@@ -202,13 +180,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
     final l10n = AppLocalizations.of(context)!;
     // Prevent deleting system-generated rules
     if (rule.isSystemGenerated) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.systemGeneratedRulesCannotBeDeleted),
-          backgroundColor: Colors.orange,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      SnackBarHelper.showWarning(context, l10n.systemGeneratedRulesCannotBeDeleted);
       return;
     }
 
@@ -239,16 +211,12 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
         await demoApiService.deleteFirewallRule(rule.uuid);
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.ruleDeleted)),
-          );
+          SnackBarHelper.showInfo(context, l10n.ruleDeleted);
           _loadRules();
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.errorDeletingRule(e.toString()))),
-          );
+          SnackBarHelper.showInfo(context, l10n.errorDeletingRule(e.toString()));
         }
       }
     }
@@ -314,11 +282,16 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
     }
 
     if (_errorMessage != null) {
-      return _buildErrorState();
+      return ErrorDisplay(message: _errorMessage!, onRetry: _loadRules);
     }
 
     if (_rules.isEmpty) {
-      return _buildEmptyState();
+      final l10n = AppLocalizations.of(context)!;
+      return EmptyStateWidget(
+        icon: Icons.security,
+        title: l10n.noAutomationRulesFound,
+        subtitle: l10n.createFirstAutomationRule,
+      );
     }
 
     if (_rulesByInterface.isEmpty) {
@@ -344,56 +317,6 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
           child: _buildRulesList(),
         ),
       ],
-    );
-  }
-
-  Widget _buildErrorState() {
-    final l10n = AppLocalizations.of(context)!;
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
-          const SizedBox(height: 16),
-          Text(l10n.errorLoadingRules,
-              style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Text(_errorMessage!,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey[600])),
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton.icon(
-            onPressed: _loadRules,
-            icon: const Icon(Icons.refresh),
-            label: Text(l10n.retry),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    final l10n = AppLocalizations.of(context)!;
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.security, size: 64, color: Colors.grey[400]),
-          const SizedBox(height: 16),
-          Text(
-            l10n.noAutomationRulesFound,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            l10n.createFirstAutomationRule,
-            style: TextStyle(color: Colors.grey[600]),
-          ),
-        ],
-      ),
     );
   }
 

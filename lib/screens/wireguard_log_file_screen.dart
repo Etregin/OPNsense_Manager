@@ -20,7 +20,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../services/demo_api_service.dart';
+import '../utils/snackbar_helper.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/common/error_display.dart';
 import '../utils/formatters.dart';
 import 'package:opnsense_manager/l10n/app_localizations.dart';
 
@@ -366,11 +368,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
     await Clipboard.setData(ClipboardData(text: content));
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${selectedLogs.length} log entr${selectedLogs.length == 1 ? 'y' : 'ies'} copied'),
-        ),
-      );
+      SnackBarHelper.showInfo(context, '${selectedLogs.length} log entr${selectedLogs.length == 1 ? 'y' : 'ies'} copied');
 
       setState(() {
         _selectedLogIndexes.clear();
@@ -613,11 +611,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
 
                             if (context.mounted) {
                               final l10n = AppLocalizations.of(context)!;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(l10n.logEntryCopied),
-                                ),
-                              );
+                              SnackBarHelper.showInfo(context, l10n.logEntryCopied);
                             }
                           },
                           icon: const Icon(Icons.copy),
@@ -654,38 +648,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
     }
 
     if (_errorMessage != null && _logs.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.error_outline,
-                size: 64,
-                color: Theme.of(context).colorScheme.error,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Failed to load WireGuard logs',
-                style: Theme.of(context).textTheme.titleLarge,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                _errorMessage!,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton.icon(
-                onPressed: _loadLogs,
-                icon: const Icon(Icons.refresh),
-                label: const Text('Retry'),
-              ),
-            ],
-          ),
-        ),
-      );
+      return ErrorDisplay(message: _errorMessage!, onRetry: _loadLogs);
     }
 
     if (_logs.isEmpty) {

@@ -23,10 +23,13 @@ import 'package:provider/provider.dart';
 import '../models/network_host.dart';
 import '../models/firewall_rule.dart';
 import '../services/demo_api_service.dart';
+import '../utils/snackbar_helper.dart';
 import '../services/storage_service.dart';
 import '../utils/constants.dart';
 import '../utils/formatters.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/common/error_display.dart';
+import '../widgets/common/empty_state_widget.dart';
 import '../l10n/app_localizations.dart';
 
 /// Live Network Monitor screen showing real-time bandwidth usage
@@ -438,64 +441,15 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
     }
 
     if (_errorMessage != null && _hosts.isEmpty) {
-      final l10n = AppLocalizations.of(context)!;
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.red[300],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.error,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Text(
-                _errorMessage!,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey[600]),
-              ),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: _loadNetworkHosts,
-              icon: const Icon(Icons.refresh),
-              label: Text(l10n.retry),
-            ),
-          ],
-        ),
-      );
+      return ErrorDisplay(message: _errorMessage!, onRetry: _loadNetworkHosts);
     }
 
     if (_filteredHosts.isEmpty) {
       final l10n = AppLocalizations.of(context)!;
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.search_off,
-              size: 64,
-              color: Colors.grey[400],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.noHostsFound,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.tryDifferentSearch,
-              style: TextStyle(color: Colors.grey[600]),
-            ),
-          ],
-        ),
+      return EmptyStateWidget(
+        icon: Icons.search_off,
+        title: l10n.noHostsFound,
+        subtitle: l10n.tryDifferentSearch,
       );
     }
 
@@ -1039,12 +993,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
 
     // Show loading indicator
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.blockingHost),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      SnackBarHelper.showInfo(context, l10n.blockingHost);
     }
 
     if (!mounted) return;
@@ -1068,27 +1017,11 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
       await demoApiService.createFirewallRule(request);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.hostBlocked),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            action: SnackBarAction(
-              label: l10n.ok,
-              textColor: Theme.of(context).colorScheme.onPrimary,
-              onPressed: () {},
-            ),
-          ),
-        );
+        SnackBarHelper.showSuccess(context, l10n.hostBlocked);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${l10n.failedToBlockHost}: $e'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-            duration: const Duration(seconds: 4),
-          ),
-        );
+        SnackBarHelper.showError(context, '${l10n.failedToBlockHost}: $e', duration: const Duration(seconds: 4));
       }
     }
   }

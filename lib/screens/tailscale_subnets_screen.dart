@@ -4,6 +4,7 @@ import '../l10n/app_localizations.dart';
 import '../models/tailscale_settings.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
+import '../utils/snackbar_helper.dart';
 
 class TailscaleSubnetsScreen extends StatefulWidget {
   const TailscaleSubnetsScreen({super.key});
@@ -72,12 +73,7 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
           await _loadSubnets();
           if (mounted) {
             final l10n = AppLocalizations.of(context)!;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.subnetAddedSuccessfully),
-                backgroundColor: Colors.green,
-              ),
-            );
+            SnackBarHelper.showSuccess(context, l10n.subnetAddedSuccessfully);
           }
         } else {
           throw Exception('Failed to add subnet: ${response['result']}');
@@ -85,12 +81,7 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
       } catch (e) {
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.errorAddingSubnet(e.toString())),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.errorAddingSubnet(e.toString()));
         }
       }
     }
@@ -118,12 +109,7 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
           await _loadSubnets();
           if (mounted) {
             final l10n = AppLocalizations.of(context)!;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.subnetUpdatedSuccessfully),
-                backgroundColor: Colors.green,
-              ),
-            );
+            SnackBarHelper.showSuccess(context, l10n.subnetUpdatedSuccessfully);
           }
         } else {
           throw Exception('Failed to update subnet: ${response['result']}');
@@ -131,12 +117,7 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
       } catch (e) {
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.errorUpdatingSubnet(e.toString())),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.errorUpdatingSubnet(e.toString()));
         }
       }
     }
@@ -181,12 +162,7 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
           await _loadSubnets();
           if (mounted) {
             final l10n = AppLocalizations.of(context)!;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.subnetDeletedSuccessfully),
-                backgroundColor: Colors.green,
-              ),
-            );
+            SnackBarHelper.showSuccess(context, l10n.subnetDeletedSuccessfully);
           }
         } else {
           throw Exception('Failed to delete subnet: ${response['result']}');
@@ -194,12 +170,7 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
       } catch (e) {
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.errorDeletingSubnet(e.toString())),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.errorDeletingSubnet(e.toString()));
         }
       }
     }

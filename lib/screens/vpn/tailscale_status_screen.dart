@@ -23,6 +23,7 @@ import '../../models/tailscale_status.dart';
 import '../../models/system_info.dart';
 import '../../services/demo_api_service.dart';
 import '../../services/vpn/vpn_connection_manager.dart';
+import '../../utils/snackbar_helper.dart';
 import '../../utils/constants.dart';
 import '../../utils/formatters.dart';
 import '../../l10n/app_localizations.dart';
@@ -204,9 +205,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
                   ElevatedButton.icon(
                     onPressed: () {
                       // In a real app, this would open the auth URL
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Auth URL: ${status.authUrl}')),
-                      );
+                      SnackBarHelper.showInfo(context, 'Auth URL: ${status.authUrl}');
                     },
                     icon: const Icon(Icons.open_in_browser),
                     label: const Text('Authenticate'),
