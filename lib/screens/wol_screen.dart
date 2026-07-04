@@ -24,6 +24,7 @@ import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
 import '../utils/validators.dart';
 import '../utils/constants.dart';
+import '../viewmodels/wol_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/error_display.dart';
 import '../widgets/common/empty_state_widget.dart';
@@ -38,39 +39,24 @@ class WolScreen extends StatefulWidget {
 }
 
 class _WolScreenState extends State<WolScreen> {
-  List<WolHost> _hosts = [];
-  bool _isLoading = true;
-  String? _errorMessage;
+  late WolViewModel _viewModel;
+  bool _isInitialized = false;
 
   @override
-  void initState() {
-    super.initState();
-    _loadHosts();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      final apiService = context.read<DemoApiService>();
+      _viewModel = WolViewModel(apiService);
+      _isInitialized = true;
+      _viewModel.loadItems();
+    }
   }
 
-  Future<void> _loadHosts() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      final hosts = await demoApiService.getWolHosts();
-      if (mounted) {
-        setState(() {
-          _hosts = hosts;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
-    }
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
   }
 
   Future<void> _wakeHost(WolHost host) async {
@@ -187,7 +173,8 @@ class _WolScreenState extends State<WolScreen> {
     final confirmed = await ConfirmationDialog.show(
       context: context,
       title: l10n.deleteHost,
-      message: l10n.deleteHostConfirmation(host.descr.isNotEmpty ? host.descr : host.mac),
+      message: l10n.deleteHostConfirmation(
+          host.descr.isNotEmpty ? host.descr : host.mac),
       confirmText: l10n.delete,
       cancelText: l10n.cancel,
       isDestructive: true,
@@ -197,12 +184,14 @@ class _WolScreenState extends State<WolScreen> {
       try {
         await demoApiService.deleteWolHost(host.uuid);
         if (mounted) {
-          SnackBarHelper.showSuccess(context, AppLocalizations.of(context)!.hostDeletedSuccessfully);
-          await _loadHosts();
+          SnackBarHelper.showSuccess(
+              context, AppLocalizations.of(context)!.hostDeletedSuccessfully);
+          await _viewModel.loadItems();
         }
       } catch (e) {
         if (mounted) {
-          SnackBarHelper.showError(context, '${AppLocalizations.of(context)!.failedToDeleteHost}: ${e.toString()}');
+          SnackBarHelper.showError(context,
+              '${AppLocalizations.of(context)!.failedToDeleteHost}: ${e.toString()}');
         }
       }
     }
@@ -212,7 +201,7 @@ class _WolScreenState extends State<WolScreen> {
     showDialog(
       context: context,
       builder: (context) => _AddHostDialog(
-        onHostAdded: _loadHosts,
+        onHostAdded: _viewModel.loadItems,
       ),
     );
   }
@@ -221,14 +210,13 @@ class _WolScreenState extends State<WolScreen> {
     showDialog(
       context: context,
       builder: (context) => _AddHostDialog(
-        onHostAdded: _loadHosts,
+        onHostAdded: _viewModel.loadItems,
         existingHost: host,
       ),
     );
   }
 
   Future<void> _copyHost(WolHost host) async {
-    // Show loading indicator
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -252,70 +240,81 @@ class _WolScreenState extends State<WolScreen> {
     try {
       final demoApiService = context.read<DemoApiService>();
       final hostData = await demoApiService.copyWolHost(host.uuid);
-      
-      if (!mounted) return;
-      Navigator.of(context).pop(); // Close loading dialog
 
-      // Show the add dialog with copied data
+      if (!mounted) return;
+      Navigator.of(context).pop();
+
       showDialog(
         context: context,
         builder: (context) => _AddHostDialog(
-          onHostAdded: _loadHosts,
+          onHostAdded: _viewModel.loadItems,
           copiedHostData: hostData,
         ),
       );
     } catch (e) {
       if (!mounted) return;
-      Navigator.of(context).pop(); // Close loading dialog
-      
-      SnackBarHelper.showError(context, '${AppLocalizations.of(context)!.failedToCopyHost}: ${e.toString()}');
+      Navigator.of(context).pop();
+
+      SnackBarHelper.showError(context,
+          '${AppLocalizations.of(context)!.failedToCopyHost}: ${e.toString()}');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.wakeOnLan),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.flash_on),
-            onPressed: (_isLoading || _hosts.isEmpty) ? null : _wakeAllHosts,
-            tooltip: l10n.wakeAll,
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        final theme = Theme.of(context);
+        final hosts = _viewModel.items;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(l10n.wakeOnLan),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.flash_on),
+                onPressed: (_viewModel.isLoading || hosts.isEmpty)
+                    ? null
+                    : _wakeAllHosts,
+                tooltip: l10n.wakeAll,
+              ),
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed:
+                    _viewModel.isLoading ? null : _viewModel.loadItems,
+                tooltip: l10n.refresh,
+              ),
+            ],
           ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _isLoading ? null : _loadHosts,
-            tooltip: l10n.refresh,
+          drawer: const AppDrawer(currentRoute: 'wol'),
+          body: _buildBody(theme, l10n, hosts),
+          floatingActionButton: FloatingActionButton(
+            onPressed: _showAddHostDialog,
+            tooltip: l10n.addHost,
+            child: const Icon(Icons.add),
           ),
-        ],
-      ),
-      drawer: const AppDrawer(currentRoute: 'wol'),
-      body: _buildBody(theme, l10n),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showAddHostDialog,
-        tooltip: l10n.addHost,
-        child: const Icon(Icons.add),
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildBody(ThemeData theme, AppLocalizations l10n) {
-    if (_isLoading) {
+  Widget _buildBody(
+      ThemeData theme, AppLocalizations l10n, List<WolHost> hosts) {
+    if (_viewModel.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (_errorMessage != null) {
+    if (_viewModel.errorMessage != null) {
       return ErrorDisplay(
-        message: _errorMessage!,
-        onRetry: _loadHosts,
+        message: _viewModel.errorMessage!,
+        onRetry: _viewModel.loadItems,
       );
     }
 
-    if (_hosts.isEmpty) {
+    if (hosts.isEmpty) {
       return EmptyStateWidget(
         icon: Icons.devices_other,
         title: l10n.noWolHostsConfigured,
@@ -325,9 +324,9 @@ class _WolScreenState extends State<WolScreen> {
 
     return ListView.builder(
       padding: const EdgeInsets.all(AppConstants.standardPadding),
-      itemCount: _hosts.length,
+      itemCount: hosts.length,
       itemBuilder: (context, index) {
-        final host = _hosts[index];
+        final host = hosts[index];
         return _WolHostCard(
           host: host,
           onWake: () => _wakeHost(host),

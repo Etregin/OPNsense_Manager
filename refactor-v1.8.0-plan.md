@@ -257,7 +257,7 @@ duplicate AlertDialog boilerplate and standardises confirmation UX.
 ## Phase 3 — Screens Not Yet Using BaseListViewModel
 
 ### Sub-Task 3.1 — Migrate All Remaining List Screens to `BaseListViewModel`
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 `BaseListViewModel<T>` fully encapsulates `_isLoading`, `_errorMessage`, `_items`,

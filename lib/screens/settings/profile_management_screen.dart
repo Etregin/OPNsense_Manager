@@ -28,6 +28,7 @@ import '../../services/settings/file_operations_service.dart';
 import '../../utils/constants.dart';
 import '../../utils/snackbar_helper.dart';
 import '../../utils/validators.dart';
+import '../../viewmodels/profile_management_view_model.dart';
 import '../../widgets/common/confirmation_dialog.dart';
 import '../../widgets/settings/profile_card.dart';
 import '../../widgets/login/connection_endpoints_manager.dart';
@@ -38,41 +39,29 @@ class ProfileManagementScreen extends StatefulWidget {
   const ProfileManagementScreen({super.key});
 
   @override
-  State<ProfileManagementScreen> createState() => _ProfileManagementScreenState();
+  State<ProfileManagementScreen> createState() =>
+      _ProfileManagementScreenState();
 }
 
 class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
   final ProfileManagerService _profileManager = ProfileManagerService();
   final FileOperationsService _fileOperations = FileOperationsService();
-  
-  List<Profile> _profiles = [];
-  String? _activeProfileId;
-  bool _isLoading = true;
+  late ProfileManagementViewModel _viewModel;
 
   @override
   void initState() {
     super.initState();
-    _loadProfiles();
+    _viewModel = ProfileManagementViewModel(_profileManager);
+    _viewModel.loadItems();
   }
 
-  Future<void> _loadProfiles() async {
-    if (!mounted) return;
-    
-    setState(() {
-      _isLoading = true;
-    });
-
-    final profiles = await _profileManager.loadProfiles();
-    final activeId = await _profileManager.getActiveProfileId();
-
-    if (mounted) {
-      setState(() {
-        _profiles = profiles;
-        _activeProfileId = activeId;
-        _isLoading = false;
-      });
-    }
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
   }
+
+  Future<void> _loadProfiles() => _viewModel.loadItems();
 
   Future<void> _activateProfile(Profile profile) async {
     if (!mounted) return;
@@ -441,19 +430,24 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        if (_viewModel.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    return Column(
-      children: [
-        Expanded(
-          child: _profiles.isEmpty
-              ? _buildEmptyState()
-              : _buildProfilesList(),
-        ),
-        _buildAddProfileButton(),
-      ],
+        return Column(
+          children: [
+            Expanded(
+              child: _viewModel.items.isEmpty
+                  ? _buildEmptyState()
+                  : _buildProfilesList(),
+            ),
+            _buildAddProfileButton(),
+          ],
+        );
+      },
     );
   }
 
@@ -487,10 +481,10 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
   Widget _buildProfilesList() {
     return ListView.builder(
       padding: const EdgeInsets.all(AppConstants.standardPadding),
-      itemCount: _profiles.length,
+      itemCount: _viewModel.items.length,
       itemBuilder: (context, index) {
-        final profile = _profiles[index];
-        final isActive = profile.id == _activeProfileId;
+        final profile = _viewModel.items[index];
+        final isActive = profile.id == _viewModel.activeProfileId;
         
         return ProfileCard(
           profile: profile,

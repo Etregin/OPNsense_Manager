@@ -22,6 +22,7 @@ import '../models/dhcp_lease.dart';
 import '../models/dhcp_server_type.dart';
 import '../services/demo_api_service.dart';
 import '../services/profile_service.dart';
+import '../viewmodels/dhcp_leases_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/error_display.dart';
 import '../widgets/common/empty_state_widget.dart';
@@ -38,49 +39,51 @@ class DhcpLeasesScreen extends StatefulWidget {
 }
 
 class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
-  List<DhcpLease> _leases = [];
-  List<DhcpLease> _filteredLeases = [];
-  bool _isLoading = true;
-  String? _errorMessage;
+  late DhcpLeasesViewModel _viewModel;
+  bool _isInitialized = false;
+
+  // Local UI state: filter/sort live in the screen
   final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
   String _filterStatus = 'all'; // all, active, expired
   String _sortBy = 'hostname'; // hostname, ip, expiry
   bool _sortAscending = true;
   DhcpServerType? _dhcpServerType;
 
   @override
-  void initState() {
-    super.initState();
-    _loadDhcpServerType();
-    _loadLeases();
-    _searchController.addListener(_onSearchChanged);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      final apiService = context.read<DemoApiService>();
+      _viewModel = DhcpLeasesViewModel(apiService);
+      _isInitialized = true;
+      _loadDhcpServerType();
+      _viewModel.loadItems();
+      _searchController.addListener(_onSearchChanged);
+    }
   }
 
   @override
   void dispose() {
+    _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
+    _viewModel.dispose();
     super.dispose();
   }
 
   void _onSearchChanged() {
-    setState(() {
-      _searchQuery = _searchController.text.toLowerCase();
-      _filterLeases();
-    });
+    _viewModel.setSearchQuery(_searchController.text.toLowerCase());
   }
 
-  void _filterLeases() {
-    _filteredLeases = _leases.where((lease) {
+  List<DhcpLease> _applyLocalFiltersAndSort(List<DhcpLease> leases) {
+    final query = _searchController.text.toLowerCase();
+    var filtered = leases.where((lease) {
       // Apply search filter
-      final matchesSearch = _searchQuery.isEmpty ||
-          lease.hostname.toLowerCase().contains(_searchQuery) ||
-          lease.address.toLowerCase().contains(_searchQuery) ||
-          lease.macAddress.toLowerCase().contains(_searchQuery) ||
-          (lease.manufacturer?.toLowerCase().contains(_searchQuery) ?? false);
-
+      final matchesSearch = query.isEmpty ||
+          lease.hostname.toLowerCase().contains(query) ||
+          lease.address.toLowerCase().contains(query) ||
+          lease.macAddress.toLowerCase().contains(query) ||
+          (lease.manufacturer?.toLowerCase().contains(query) ?? false);
       if (!matchesSearch) return false;
-
       // Apply status filter
       switch (_filterStatus) {
         case 'active':
@@ -93,11 +96,10 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
     }).toList();
 
     // Apply sorting
-    _filteredLeases.sort((a, b) {
+    filtered.sort((a, b) {
       int comparison = 0;
       switch (_sortBy) {
         case 'ip':
-          // Sort by IP address (convert to comparable format)
           final aOctets = a.address.split('.').map(int.parse).toList();
           final bOctets = b.address.split('.').map(int.parse).toList();
           for (int i = 0; i < 4; i++) {
@@ -106,7 +108,6 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
           }
           break;
         case 'expiry':
-          // Sort by expiry time (nulls last)
           if (a.expiryDateTime == null && b.expiryDateTime == null) {
             comparison = 0;
           } else if (a.expiryDateTime == null) {
@@ -119,11 +120,14 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
           break;
         case 'hostname':
         default:
-          comparison = a.hostname.toLowerCase().compareTo(b.hostname.toLowerCase());
+          comparison =
+              a.hostname.toLowerCase().compareTo(b.hostname.toLowerCase());
           break;
       }
       return _sortAscending ? comparison : -comparison;
     });
+
+    return filtered;
   }
 
   Future<void> _loadDhcpServerType() async {
@@ -140,57 +144,33 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
     }
   }
 
-  Future<void> _loadLeases() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      final leasesData = await demoApiService.getDhcpLeases();
-      
-      final leases = leasesData.map((data) => DhcpLease.fromJson(data)).toList();
-
-      if (mounted) {
-        setState(() {
-          _leases = leases;
-          _filterLeases();
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.dhcpLeases),
-        actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.sort),
-            tooltip: l10n.sortBy,
-            onSelected: (value) {
-              setState(() {
-                if (_sortBy == value) {
-                  _sortAscending = !_sortAscending;
-                } else {
-                  _sortBy = value;
-                  _sortAscending = true;
-                }
-                _filterLeases();
-              });
-            },
+
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        final filteredLeases =
+            _applyLocalFiltersAndSort(_viewModel.items);
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(l10n.dhcpLeases),
+            actions: [
+              PopupMenuButton<String>(
+                icon: const Icon(Icons.sort),
+                tooltip: l10n.sortBy,
+                onSelected: (value) {
+                  setState(() {
+                    if (_sortBy == value) {
+                      _sortAscending = !_sortAscending;
+                    } else {
+                      _sortBy = value;
+                      _sortAscending = true;
+                    }
+                  });
+                },
             itemBuilder: (context) => [
               PopupMenuItem(
                 value: 'hostname',
@@ -239,145 +219,171 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
               ),
             ],
           ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _isLoading ? null : _loadLeases,
-            tooltip: l10n.refresh,
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed:
+                    _viewModel.isLoading ? null : _viewModel.loadItems,
+                tooltip: l10n.refresh,
+              ),
+            ],
           ),
-        ],
-      ),
-      drawer: const AppDrawer(currentRoute: 'dhcp_leases'),
-      body: Column(
-        children: [
-          // Search and filter bar
-          Padding(
-            padding: const EdgeInsets.all(AppConstants.standardPadding),
-            child: Column(
-              children: [
-                // Search field
-                TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: l10n.searchHostnameIpOrMac,
-                    prefixIcon: const Icon(Icons.search),
-                    suffixIcon: _searchQuery.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: () {
-                              _searchController.clear();
-                            },
-                          )
-                        : null,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppConstants.buttonBorderRadius),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                
-                // Status filter chips
-                Row(
+          drawer: const AppDrawer(currentRoute: 'dhcp_leases'),
+          body: Column(
+            children: [
+              // Search and filter bar
+              Padding(
+                padding:
+                    const EdgeInsets.all(AppConstants.standardPadding),
+                child: Column(
                   children: [
-                    Text(
-                      '${l10n.status}:',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            _buildFilterChip(l10n.all, 'all'),
-                            const SizedBox(width: 8),
-                            _buildFilterChip(l10n.active, 'active'),
-                            const SizedBox(width: 8),
-                            _buildFilterChip(l10n.expired, 'expired'),
-                          ],
+                    TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: l10n.searchHostnameIpOrMac,
+                        prefixIcon: const Icon(Icons.search),
+                        suffixIcon: _searchController.text.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  _viewModel.setSearchQuery('');
+                                },
+                              )
+                            : null,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                              AppConstants.buttonBorderRadius),
                         ),
                       ),
                     ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Text(
+                          '${l10n.status}:',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                _buildFilterChip(l10n.all, 'all'),
+                                const SizedBox(width: 8),
+                                _buildFilterChip(
+                                    l10n.active, 'active'),
+                                const SizedBox(width: 8),
+                                _buildFilterChip(
+                                    l10n.expired, 'expired'),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
-          ),
-          
-          // DHCP Server Type and Lease count
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppConstants.standardPadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (_dhcpServerType != null) ...[
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.settings_ethernet,
-                        size: 16,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        l10n.dhcpServerLabel(_dhcpServerType!.getDisplayName(context)),
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.secondary,
-                              fontWeight: FontWeight.w500,
-                            ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                ],
-                Row(
+              ),
+
+              // DHCP Server Type and Lease count
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppConstants.standardPadding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.dns,
-                      size: 16,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      l10n.leasesCount(_filteredLeases.length, _leases.length),
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.bold,
+                    if (_dhcpServerType != null) ...[
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.settings_ethernet,
+                            size: 16,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .secondary,
                           ),
+                          const SizedBox(width: 8),
+                          Text(
+                            l10n.dhcpServerLabel(
+                                _dhcpServerType!.getDisplayName(context)),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .secondary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                    ],
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.dns,
+                          size: 16,
+                          color:
+                              Theme.of(context).colorScheme.primary,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          l10n.leasesCount(filteredLeases.length,
+                              _viewModel.items.length),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+
+              const SizedBox(height: 8),
+
+              // Leases list
+              Expanded(
+                child: _viewModel.isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : _viewModel.errorMessage != null
+                        ? ErrorDisplay(
+                            message: _viewModel.errorMessage!,
+                            onRetry: _viewModel.loadItems)
+                        : filteredLeases.isEmpty
+                            ? EmptyStateWidget(
+                                icon: Icons.dns_outlined,
+                                title: l10n.noLeasesFound,
+                              )
+                            : RefreshIndicator(
+                                onRefresh: _viewModel.loadItems,
+                                child: ListView.builder(
+                                  padding: const EdgeInsets.all(
+                                      AppConstants.standardPadding),
+                                  itemCount: filteredLeases.length,
+                                  itemBuilder: (context, index) {
+                                    return _buildLeaseCard(
+                                        filteredLeases[index]);
+                                  },
+                                ),
+                              ),
+              ),
+            ],
           ),
-          
-          const SizedBox(height: 8),
-          
-          // Leases list
-          Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _errorMessage != null
-                    ? ErrorDisplay(message: _errorMessage!, onRetry: _loadLeases)
-                    : _filteredLeases.isEmpty
-                        ? EmptyStateWidget(
-                            icon: Icons.dns_outlined,
-                            title: l10n.noLeasesFound,
-                          )
-                        : RefreshIndicator(
-                            onRefresh: _loadLeases,
-                            child: ListView.builder(
-                              padding: const EdgeInsets.all(AppConstants.standardPadding),
-                              itemCount: _filteredLeases.length,
-                              itemBuilder: (context, index) {
-                                return _buildLeaseCard(_filteredLeases[index]);
-                              },
-                            ),
-                          ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -389,7 +395,6 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
       onSelected: (selected) {
         setState(() {
           _filterStatus = value;
-          _filterLeases();
         });
       },
       selectedColor: Theme.of(context).colorScheme.primaryContainer,

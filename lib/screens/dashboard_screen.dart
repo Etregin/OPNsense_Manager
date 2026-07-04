@@ -20,14 +20,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/system_info.dart';
-import '../models/thermal_sensor.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../services/profile_service.dart';
-import '../services/dashboard/dashboard_data_loader.dart';
 import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
+import '../viewmodels/dashboard_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/confirmation_dialog.dart';
 import '../widgets/dashboard/resource_usage_section.dart';
@@ -45,39 +43,39 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  SystemInfo? _systemInfo;
-  Map<String, dynamic> _servicesData = {};
-  List<Map<String, dynamic>> _gateways = [];
-  List<ThermalSensor>? _thermalSensors;
-  bool _isLoading = true;
-  String? _errorMessage;
+  late DashboardViewModel _viewModel;
+  bool _isInitialized = false;
   Timer? _refreshTimer;
-  DashboardDataLoader? _dataLoader;
 
   @override
-  void initState() {
-    super.initState();
-    _initializeAndLoad();
-    _startAutoRefresh();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      final apiService = context.read<DemoApiService>();
+      _viewModel = DashboardViewModel(apiService);
+      _isInitialized = true;
+      _initializeAndLoad();
+      _startAutoRefresh();
+    }
   }
 
   Future<void> _initializeAndLoad() async {
     // Ensure API service is initialized with active profile
     final profileService = context.read<ProfileService>();
     final apiService = context.read<OPNsenseApiService>();
-    
+
     final activeProfile = await profileService.getActiveProfile();
     if (activeProfile != null && !activeProfile.isDemo) {
-      // Re-initialize API service to ensure it's ready
       apiService.init(activeProfile.toOPNsenseConfig());
     }
-    
-    await _loadDashboardData();
+
+    await _viewModel.loadDashboardData();
   }
 
   @override
   void dispose() {
     _refreshTimer?.cancel();
+    _viewModel.dispose();
     super.dispose();
   }
 
@@ -86,50 +84,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
       const Duration(seconds: 30),
       (timer) {
         if (mounted) {
-          _loadDashboardData();
+          _viewModel.loadDashboardData();
         }
       },
     );
   }
 
-  Future<void> _loadDashboardData() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      
-      // Initialize data loader if not already done
-      _dataLoader ??= DashboardDataLoader(demoApiService);
-      
-      // Load all data in parallel using the data loader
-      final dashboardData = await _dataLoader!.loadAllData();
-
-      if (mounted) {
-        setState(() {
-          _systemInfo = dashboardData.systemInfo;
-          _servicesData = dashboardData.servicesData;
-          _gateways = dashboardData.gateways;
-          _thermalSensors = dashboardData.thermalSensors;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  Future<void> _controlService(String serviceId, String action, String serviceName) async {
+  Future<void> _controlService(
+      String serviceId, String action, String serviceName) async {
     final l10n = AppLocalizations.of(context)!;
-    // Show confirmation dialog
-    final actionText = action == 'start' ? l10n.start : action == 'stop' ? l10n.stop : l10n.restart;
+    final actionText = action == 'start'
+        ? l10n.start
+        : action == 'stop'
+            ? l10n.stop
+            : l10n.restart;
+
     final confirmed = await ConfirmationDialog.show(
       context: context,
       title: l10n.actionService(actionText),
@@ -143,23 +112,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (!mounted) return;
 
     try {
-      // Get API service before async gap
       final demoApiService = context.read<DemoApiService>();
-      
-      // Show loading indicator
-      SnackBarHelper.showInfo(context, l10n.actioningService(actionText, serviceName));
+      SnackBarHelper.showInfo(
+          context, l10n.actioningService(actionText, serviceName));
 
       final success = await demoApiService.controlService(serviceId, action);
 
       if (mounted) {
         if (success) {
-          final successMsg = action == 'start' ? l10n.serviceStarted :
-                           action == 'stop' ? l10n.serviceStopped : l10n.serviceRestarted;
+          final successMsg = action == 'start'
+              ? l10n.serviceStarted
+              : action == 'stop'
+                  ? l10n.serviceStopped
+                  : l10n.serviceRestarted;
           SnackBarHelper.showSuccess(context, successMsg);
-          // Reload dashboard to reflect changes
           await Future.delayed(const Duration(seconds: 1));
           if (mounted) {
-            _loadDashboardData();
+            _viewModel.loadDashboardData();
           }
         } else {
           SnackBarHelper.showError(context, l10n.serviceActionFailed);
@@ -167,146 +136,142 @@ class _DashboardScreenState extends State<DashboardScreen> {
       }
     } catch (e) {
       if (mounted) {
-        SnackBarHelper.showError(context, '${l10n.error}: ${e.toString()}');
+        SnackBarHelper.showError(
+            context, '${l10n.error}: ${e.toString()}');
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final demoApiService = context.watch<DemoApiService>();
     final isDemoMode = demoApiService.isDemoMode;
-    
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppConstants.appName),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _isLoading ? null : _loadDashboardData,
-            tooltip: l10n.refresh,
+
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text(AppConstants.appName),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: _viewModel.isLoading
+                    ? null
+                    : _viewModel.loadDashboardData,
+                tooltip: l10n.refresh,
+              ),
+            ],
           ),
-        ],
-      ),
-      drawer: AppDrawer(
-        currentRoute: 'dashboard',
-        systemInfo: _systemInfo,
-      ),
-      body: Column(
-        children: [
-          // Demo mode banner
-          if (isDemoMode)
-            Builder(
-              builder: (context) {
-                final l10n = AppLocalizations.of(context)!;
-                return Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.orange.shade400, Colors.orange.shade600],
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.play_circle_outline, color: Colors.white),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          l10n.demoModeIndicator,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+          drawer: AppDrawer(
+            currentRoute: 'dashboard',
+            systemInfo: _viewModel.systemInfo,
+          ),
+          body: Column(
+            children: [
+              // Demo mode banner
+              if (isDemoMode)
+                Builder(
+                  builder: (context) {
+                    final l10n = AppLocalizations.of(context)!;
+                    return Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.orange.shade400,
+                            Colors.orange.shade600,
+                          ],
                         ),
                       ),
-                      Icon(Icons.info_outline, color: Colors.white.withValues(alpha: 0.8), size: 20),
-                    ],
-                  ),
-                );
-              },
-            ),
-          // Main content
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: _loadDashboardData,
-              child: _buildBody(),
-            ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.play_circle_outline,
+                              color: Colors.white),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              l10n.demoModeIndicator,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Icon(Icons.info_outline,
+                              color: Colors.white.withValues(alpha: 0.8),
+                              size: 20),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              // Main content
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: _viewModel.loadDashboardData,
+                  child: _buildBody(l10n),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildBody() {
-    if (_isLoading && _systemInfo == null) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+  Widget _buildBody(AppLocalizations l10n) {
+    if (_viewModel.isLoading && _viewModel.systemInfo == null) {
+      return const Center(child: CircularProgressIndicator());
     }
 
-    if (_errorMessage != null && _systemInfo == null) {
-      return _buildErrorState();
+    if (_viewModel.errorMessage != null && _viewModel.systemInfo == null) {
+      return _buildErrorState(l10n);
     }
 
     return ListView(
       padding: const EdgeInsets.all(AppConstants.standardPadding),
       children: [
-        // Resource Usage Section
-        if (_systemInfo != null)
-          ResourceUsageSection(systemInfo: _systemInfo!),
+        if (_viewModel.systemInfo != null)
+          ResourceUsageSection(systemInfo: _viewModel.systemInfo!),
         const SizedBox(height: 24),
-        
-        // Thermal Sensors Section
-        if (_thermalSensors != null)
-          ThermalSensorsSection(sensors: _thermalSensors!),
-        if (_thermalSensors != null)
-          const SizedBox(height: 24),
-        
-        // Services Section
+        if (_viewModel.thermalSensors != null)
+          ThermalSensorsSection(sensors: _viewModel.thermalSensors!),
+        if (_viewModel.thermalSensors != null) const SizedBox(height: 24),
         ServicesSection(
-          servicesData: _servicesData,
+          servicesData: _viewModel.servicesData,
           onServiceControl: _controlService,
         ),
         const SizedBox(height: 24),
-        
-        // Gateways Section
-        GatewaysSection(gateways: _gateways),
+        GatewaysSection(gateways: _viewModel.gateways),
         const SizedBox(height: 24),
       ],
     );
   }
 
-  Widget _buildErrorState() {
-    final l10n = AppLocalizations.of(context)!;
+  Widget _buildErrorState(AppLocalizations l10n) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Colors.red[300],
-          ),
+          Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
           const SizedBox(height: 16),
-          Text(
-            l10n.error,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          Text(l10n.error, style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Text(
-              _errorMessage!,
+              _viewModel.errorMessage!,
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.grey[600]),
             ),
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
-            onPressed: _loadDashboardData,
+            onPressed: _viewModel.loadDashboardData,
             icon: const Icon(Icons.refresh),
             label: Text(l10n.retry),
           ),
@@ -315,5 +280,3 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 }
-
-

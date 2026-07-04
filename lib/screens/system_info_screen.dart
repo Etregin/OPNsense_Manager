@@ -19,10 +19,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
 import '../utils/constants.dart';
 import '../utils/formatters.dart';
+import '../viewmodels/system_info_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/error_display.dart';
 import '../l10n/app_localizations.dart';
@@ -36,102 +36,96 @@ class SystemInfoScreen extends StatefulWidget {
 }
 
 class _SystemInfoScreenState extends State<SystemInfoScreen> {
-  SystemInfo? _systemInfo;
-  bool _isLoading = true;
-  String? _errorMessage;
+  late SystemInfoViewModel _viewModel;
+  bool _isInitialized = false;
 
   @override
-  void initState() {
-    super.initState();
-    _loadSystemInfo();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      final apiService = context.read<DemoApiService>();
+      _viewModel = SystemInfoViewModel(apiService);
+      _isInitialized = true;
+      _viewModel.loadSystemInfo();
+    }
   }
 
-  Future<void> _loadSystemInfo() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      final systemInfo = await demoApiService.getSystemInfo();
-
-      if (mounted) {
-        setState(() {
-          _systemInfo = systemInfo;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
-    }
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.systemInformation),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _isLoading ? null : _loadSystemInfo,
-            tooltip: l10n.refresh,
+
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(l10n.systemInformation),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: _viewModel.isLoading ? null : _viewModel.loadSystemInfo,
+                tooltip: l10n.refresh,
+              ),
+            ],
           ),
-        ],
-      ),
-      drawer: AppDrawer(
-        currentRoute: 'system_info',
-        systemInfo: _systemInfo,
-      ),
-      body: RefreshIndicator(
-        onRefresh: _loadSystemInfo,
-        child: _buildBody(),
-      ),
+          drawer: AppDrawer(
+            currentRoute: 'system_info',
+            systemInfo: _viewModel.systemInfo,
+          ),
+          body: RefreshIndicator(
+            onRefresh: _viewModel.loadSystemInfo,
+            child: _buildBody(l10n),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildBody() {
-    if (_isLoading && _systemInfo == null) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+  Widget _buildBody(AppLocalizations l10n) {
+    if (_viewModel.isLoading && _viewModel.systemInfo == null) {
+      return const Center(child: CircularProgressIndicator());
     }
 
-    if (_errorMessage != null && _systemInfo == null) {
-      return ErrorDisplay(message: _errorMessage!, onRetry: _loadSystemInfo);
+    if (_viewModel.errorMessage != null && _viewModel.systemInfo == null) {
+      return ErrorDisplay(
+          message: _viewModel.errorMessage!, onRetry: _viewModel.loadSystemInfo);
     }
 
-    final l10n = AppLocalizations.of(context)!;
+    final systemInfo = _viewModel.systemInfo!;
     return ListView(
       padding: const EdgeInsets.all(AppConstants.standardPadding),
       children: [
         _buildInfoCard(
           l10n.systemInformation,
           [
-            _buildInfoRow(Icons.computer, l10n.hostname, _systemInfo!.hostname),
-            _buildInfoRow(Icons.dns, l10n.systemType, _systemInfo!.type),
-            _buildInfoRow(Icons.info_outline, l10n.versionLabel, _systemInfo!.version),
-            _buildInfoRow(Icons.architecture, l10n.architecture, _systemInfo!.architecture),
-            _buildInfoRow(Icons.memory, l10n.platform, _systemInfo!.platform),
-            if (_systemInfo!.commit.isNotEmpty)
-              _buildInfoRow(Icons.commit, l10n.gitCommit, _systemInfo!.commit),
-            if (_systemInfo!.mirror.isNotEmpty)
-              _buildInfoRow(Icons.cloud, l10n.packageMirror, _systemInfo!.mirror),
-            if (_systemInfo!.repositories.isNotEmpty)
-              _buildInfoRow(Icons.source, l10n.repository, _systemInfo!.repositories),
-            if (_systemInfo!.updatedOn != null && _systemInfo!.updatedOn!.isNotEmpty)
-              _buildInfoRow(Icons.update, l10n.lastUpdate, _systemInfo!.updatedOn!),
+            _buildInfoRow(Icons.computer, l10n.hostname, systemInfo.hostname),
+            _buildInfoRow(Icons.dns, l10n.systemType, systemInfo.type),
+            _buildInfoRow(Icons.info_outline, l10n.versionLabel, systemInfo.version),
+            _buildInfoRow(
+                Icons.architecture, l10n.architecture, systemInfo.architecture),
+            _buildInfoRow(Icons.memory, l10n.platform, systemInfo.platform),
+            if (systemInfo.commit.isNotEmpty)
+              _buildInfoRow(Icons.commit, l10n.gitCommit, systemInfo.commit),
+            if (systemInfo.mirror.isNotEmpty)
+              _buildInfoRow(
+                  Icons.cloud, l10n.packageMirror, systemInfo.mirror),
+            if (systemInfo.repositories.isNotEmpty)
+              _buildInfoRow(
+                  Icons.source, l10n.repository, systemInfo.repositories),
+            if (systemInfo.updatedOn != null &&
+                systemInfo.updatedOn!.isNotEmpty)
+              _buildInfoRow(
+                  Icons.update, l10n.lastUpdate, systemInfo.updatedOn!),
             _buildInfoRow(
               Icons.access_time,
               l10n.uptime,
-              Formatters.formatUptime(_systemInfo!.uptime, context),
+              Formatters.formatUptime(systemInfo.uptime, context),
             ),
           ],
         ),
@@ -181,10 +175,7 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
               children: [
                 Text(
                   label,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                 ),
                 const SizedBox(height: 2),
                 Text(
@@ -202,4 +193,3 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
     );
   }
 }
-

@@ -27,6 +27,7 @@ import '../utils/snackbar_helper.dart';
 import '../services/storage_service.dart';
 import '../utils/constants.dart';
 import '../utils/formatters.dart';
+import '../viewmodels/live_network_monitor_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/confirmation_dialog.dart';
 import '../widgets/common/error_display.dart';
@@ -38,63 +39,62 @@ class LiveNetworkMonitorScreen extends StatefulWidget {
   const LiveNetworkMonitorScreen({super.key});
 
   @override
-  State<LiveNetworkMonitorScreen> createState() => _LiveNetworkMonitorScreenState();
+  State<LiveNetworkMonitorScreen> createState() =>
+      _LiveNetworkMonitorScreenState();
 }
 
 class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
-  List<NetworkHost> _hosts = [];
-  List<NetworkHost> _filteredHosts = [];
-  bool _isLoading = true;
-  String? _errorMessage;
+  late LiveNetworkMonitorViewModel _viewModel;
+  bool _isInitialized = false;
   Timer? _refreshTimer;
   final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
 
-  // Store previous rates for sparkline effect
-  final Map<String, List<int>> _rateHistory = {};
-  static const int _maxHistoryLength = 20;
-  
-  // Bandwidth limit in Mbps (default 1000 = 1 Gbps)
+  // Local UI state kept in screen
   int _bandwidthLimitMbps = 1000;
-  
-  // Interface selection (default 'lan')
-  List<String> _selectedInterfaces = ['lan'];
   Map<String, String> _availableInterfaces = {'lan': 'LAN'};
-  
-  // Sort options
-  String _sortBy = ''; // bandwidth, hostname, ip, manufacturer
+  String _sortBy = '';
   bool _sortAscending = false;
 
   @override
-  void initState() {
-    super.initState();
-    _loadSettings();
-    _loadAvailableInterfaces();
-    _loadNetworkHosts();
-    _startAutoRefresh();
-    _searchController.addListener(_onSearchChanged);
-  }
-  
-  Future<void> _loadSettings() async {
-    final storageService = context.read<StorageService>();
-    final limit = await storageService.loadInt('network_monitor_bandwidth_limit');
-    final interfacesJson = await storageService.loadString('network_monitor_interfaces');
-    
-    if (mounted) {
-      setState(() {
-        if (limit != null) _bandwidthLimitMbps = limit;
-        if (interfacesJson != null && interfacesJson.isNotEmpty) {
-          try {
-            final List<dynamic> decoded = jsonDecode(interfacesJson);
-            _selectedInterfaces = decoded.cast<String>();
-          } catch (e) {
-            // Keep default if parsing fails
-          }
-        }
-      });
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      final apiService = context.read<DemoApiService>();
+      _viewModel = LiveNetworkMonitorViewModel(apiService);
+      _isInitialized = true;
+      _loadSettings();
+      _loadAvailableInterfaces();
+      _viewModel.loadItems();
+      _startAutoRefresh();
+      _searchController.addListener(_onSearchChanged);
     }
   }
-  
+
+  Future<void> _loadSettings() async {
+    final storageService = context.read<StorageService>();
+    final limit =
+        await storageService.loadInt('network_monitor_bandwidth_limit');
+    final interfacesJson =
+        await storageService.loadString('network_monitor_interfaces');
+
+    if (mounted) {
+      List<String> interfaces = _viewModel.selectedInterfaces;
+      if (limit != null) _bandwidthLimitMbps = limit;
+      if (interfacesJson != null && interfacesJson.isNotEmpty) {
+        try {
+          final List<dynamic> decoded = jsonDecode(interfacesJson);
+          interfaces = decoded.cast<String>();
+        } catch (e) {
+          // Keep default if parsing fails
+        }
+      }
+      setState(() {
+        _bandwidthLimitMbps = _bandwidthLimitMbps;
+      });
+      _viewModel.setSelectedInterfaces(interfaces);
+    }
+  }
+
   Future<void> _loadAvailableInterfaces() async {
     try {
       final demoApiService = context.read<DemoApiService>();
@@ -108,7 +108,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
       // Use default if loading fails
     }
   }
-  
+
   Future<void> _saveBandwidthLimit(int limitMbps) async {
     final storageService = context.read<StorageService>();
     await storageService.saveInt('network_monitor_bandwidth_limit', limitMbps);
@@ -120,58 +120,42 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
   @override
   void dispose() {
     _refreshTimer?.cancel();
+    _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
+    _viewModel.dispose();
     super.dispose();
   }
 
   void _startAutoRefresh() {
-    // Refresh every 2-3 seconds for live feed simulation
+    // Refresh every 2 seconds for live feed simulation
     _refreshTimer = Timer.periodic(
       const Duration(seconds: 2),
       (timer) {
         if (mounted) {
-          _loadNetworkHosts(showLoading: false);
+          _viewModel.loadItems();
         }
       },
     );
   }
 
   void _onSearchChanged() {
-    setState(() {
-      _searchQuery = _searchController.text.toLowerCase();
-      _filterHosts();
-    });
+    _viewModel.setSearchQuery(_searchController.text.toLowerCase());
   }
 
-  void _filterHosts() {
-    if (_searchQuery.isEmpty) {
-      _filteredHosts = List.from(_hosts);
-    } else {
-      _filteredHosts = _hosts.where((host) {
-        return host.hostname.toLowerCase().contains(_searchQuery) ||
-               host.address.toLowerCase().contains(_searchQuery) ||
-               (host.manufacturer?.toLowerCase().contains(_searchQuery) ?? false) ||
-               (host.macAddress?.toLowerCase().contains(_searchQuery) ?? false);
-      }).toList();
-    }
-    _sortHosts();
-  }
-  
-  void _sortHosts() {
-    _filteredHosts.sort((a, b) {
+  List<NetworkHost> _applyLocalSort(List<NetworkHost> hosts) {
+    final sorted = List<NetworkHost>.from(hosts);
+    sorted.sort((a, b) {
       int comparison = 0;
-      
-      // Default to bandwidth sorting (descending) if no sort is selected
       if (_sortBy.isEmpty) {
         return b.totalRate.compareTo(a.totalRate);
       }
-      
       switch (_sortBy) {
         case 'bandwidth':
           comparison = b.totalRate.compareTo(a.totalRate);
           break;
         case 'hostname':
-          comparison = a.hostname.toLowerCase().compareTo(b.hostname.toLowerCase());
+          comparison =
+              a.hostname.toLowerCase().compareTo(b.hostname.toLowerCase());
           break;
         case 'ip':
           comparison = _compareIpAddresses(a.address, b.address);
@@ -182,15 +166,14 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
           comparison = aMan.toLowerCase().compareTo(bMan.toLowerCase());
           break;
       }
-      
       return _sortAscending ? comparison : -comparison;
     });
+    return sorted;
   }
-  
+
   int _compareIpAddresses(String a, String b) {
     final aParts = a.split('.').map((e) => int.tryParse(e) ?? 0).toList();
     final bParts = b.split('.').map((e) => int.tryParse(e) ?? 0).toList();
-    
     for (int i = 0; i < 4; i++) {
       if (aParts[i] != bParts[i]) {
         return aParts[i].compareTo(bParts[i]);
@@ -199,84 +182,33 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
     return 0;
   }
 
-  Future<void> _loadNetworkHosts({bool showLoading = true}) async {
-    if (showLoading) {
-      setState(() {
-        _isLoading = true;
-        _errorMessage = null;
-      });
-    }
-
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      
-      // Fetch hosts from all selected interfaces and merge them
-      List<NetworkHost> allHosts = [];
-      for (final interface in _selectedInterfaces) {
-        final hosts = await demoApiService.getNetworkHosts(interface: interface);
-        allHosts.addAll(hosts);
-      }
-      
-      // Remove duplicates based on IP address (keep the one with highest bandwidth)
-      final Map<String, NetworkHost> uniqueHosts = {};
-      for (final host in allHosts) {
-        if (!uniqueHosts.containsKey(host.address) ||
-            host.totalRate > uniqueHosts[host.address]!.totalRate) {
-          uniqueHosts[host.address] = host;
-        }
-      }
-      
-      final hosts = uniqueHosts.values.toList();
-
-      // Update rate history for sparkline effect
-      for (final host in hosts) {
-        final history = _rateHistory.putIfAbsent(host.address, () => []);
-        history.add(host.totalRate);
-        if (history.length > _maxHistoryLength) {
-          history.removeAt(0);
-        }
-      }
-
-      if (mounted) {
-        setState(() {
-          _hosts = hosts;
-          _filterHosts();
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.liveNetworkMonitor),
-        actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.sort),
-            tooltip: l10n.sortBy,
-            onSelected: (value) {
-              setState(() {
-                if (_sortBy == value) {
-                  _sortAscending = !_sortAscending;
-                } else {
-                  _sortBy = value;
-                  // Bandwidth should be descending (highest first), others ascending
-                  _sortAscending = value != 'bandwidth';
-                }
-                _sortHosts();
-              });
-            },
+
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        final sortedHosts = _applyLocalSort(_viewModel.items);
+        final rateHistory = _viewModel.rateHistory;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(l10n.liveNetworkMonitor),
+            actions: [
+              PopupMenuButton<String>(
+                icon: const Icon(Icons.sort),
+                tooltip: l10n.sortBy,
+                onSelected: (value) {
+                  setState(() {
+                    if (_sortBy == value) {
+                      _sortAscending = !_sortAscending;
+                    } else {
+                      _sortBy = value;
+                      _sortAscending = value != 'bandwidth';
+                    }
+                  });
+                },
             itemBuilder: (context) => [
               PopupMenuItem(
                 value: 'bandwidth',
@@ -337,115 +269,126 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
             onPressed: _showSettingsDialog,
             tooltip: l10n.settings,
           ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _isLoading ? null : () => _loadNetworkHosts(),
-            tooltip: l10n.refresh,
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed:
+                    _viewModel.isLoading ? null : _viewModel.loadItems,
+                tooltip: l10n.refresh,
+              ),
+            ],
           ),
-        ],
-      ),
-      drawer: const AppDrawer(currentRoute: 'live_network_monitor'),
-      body: Column(
-        children: [
-          // Search bar
-          Padding(
-            padding: const EdgeInsets.all(AppConstants.standardPadding),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: l10n.searchHostnameOrIp,
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: _searchQuery.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          _searchController.clear();
-                        },
-                      )
-                    : null,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppConstants.buttonBorderRadius),
+          drawer: const AppDrawer(currentRoute: 'live_network_monitor'),
+          body: Column(
+            children: [
+              // Search bar
+              Padding(
+                padding:
+                    const EdgeInsets.all(AppConstants.standardPadding),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: l10n.searchHostnameOrIp,
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: _searchController.text.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              _searchController.clear();
+                              _viewModel.setSearchQuery('');
+                            },
+                          )
+                        : null,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(
+                          AppConstants.buttonBorderRadius),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          
-          // Host count and refresh indicator
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppConstants.standardPadding),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.devices,
-                  size: 16,
-                  color: Theme.of(context).colorScheme.primary,
+
+              // Host count and live indicator
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppConstants.standardPadding),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.devices,
+                      size: 16,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      l10n.activeHosts(sortedHosts.length),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    const Spacer(),
+                    if (!_viewModel.isLoading)
+                      Row(
+                        children: [
+                          const Icon(Icons.circle,
+                              size: 8, color: Colors.green),
+                          const SizedBox(width: 4),
+                          Text(
+                            l10n.live,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                        ],
+                      ),
+                  ],
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  l10n.activeHosts(_filteredHosts.length),
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
+              ),
+
+              const SizedBox(height: 12),
+
+              // Totals section
+              if (sortedHosts.isNotEmpty) ...[
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppConstants.standardPadding),
+                  child: _buildTotalsCard(sortedHosts),
                 ),
-                const Spacer(),
-                if (!_isLoading)
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.circle,
-                        size: 8,
-                        color: Colors.green,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        l10n.live,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Colors.green,
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                    ],
-                  ),
+                const SizedBox(height: 12),
               ],
-            ),
+
+              // Host list
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: _viewModel.loadItems,
+                  child: _buildBody(sortedHosts, rateHistory),
+                ),
+              ),
+            ],
           ),
-          
-          const SizedBox(height: 12),
-          
-          // Totals section
-          if (_filteredHosts.isNotEmpty) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppConstants.standardPadding),
-              child: _buildTotalsCard(),
-            ),
-            const SizedBox(height: 12),
-          ],
-          
-          // Host list
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: _loadNetworkHosts,
-              child: _buildBody(),
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildBody() {
-    if (_isLoading && _hosts.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+  Widget _buildBody(List<NetworkHost> hosts,
+      Map<String, List<int>> rateHistory) {
+    if (_viewModel.isLoading && hosts.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
     }
 
-    if (_errorMessage != null && _hosts.isEmpty) {
-      return ErrorDisplay(message: _errorMessage!, onRetry: _loadNetworkHosts);
+    if (_viewModel.errorMessage != null && hosts.isEmpty) {
+      return ErrorDisplay(
+          message: _viewModel.errorMessage!, onRetry: _viewModel.loadItems);
     }
 
-    if (_filteredHosts.isEmpty) {
+    if (hosts.isEmpty) {
       final l10n = AppLocalizations.of(context)!;
       return EmptyStateWidget(
         icon: Icons.search_off,
@@ -456,28 +399,27 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
 
     return ListView.builder(
       padding: const EdgeInsets.all(AppConstants.standardPadding),
-      itemCount: _filteredHosts.length,
+      itemCount: hosts.length,
       itemBuilder: (context, index) {
-        return _buildHostCard(_filteredHosts[index]);
+        return _buildHostCard(hosts[index], rateHistory);
       },
     );
   }
-  Widget _buildTotalsCard() {
+  Widget _buildTotalsCard(List<NetworkHost> hosts) {
     final l10n = AppLocalizations.of(context)!;
-    
-    // Calculate totals
+
     int totalDownload = 0;
     int totalUpload = 0;
     int activeHosts = 0;
-    
-    for (final host in _filteredHosts) {
+
+    for (final host in hosts) {
       totalDownload += host.rateIn;
       totalUpload += host.rateOut;
       if (host.totalRate > 0) {
         activeHosts++;
       }
     }
-    
+
     final totalBandwidth = totalDownload + totalUpload;
     
     return Card(
@@ -540,7 +482,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                 Expanded(
                   child: _buildTotalStat(
                     label: l10n.activeDevices,
-                    value: '$activeHosts / ${_filteredHosts.length}',
+                    value: '$activeHosts / ${hosts.length}',
                     icon: Icons.devices_other,
                     color: Colors.orange,
                   ),
@@ -605,9 +547,9 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
   }
 
 
-  Widget _buildHostCard(NetworkHost host) {
+  Widget _buildHostCard(NetworkHost host, Map<String, List<int>> rateHistory) {
     final l10n = AppLocalizations.of(context)!;
-    final history = _rateHistory[host.address] ?? [];
+    final history = rateHistory[host.address] ?? [];
     
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
@@ -825,7 +767,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
 
   void _showHostDetails(NetworkHost host) {
     final l10n = AppLocalizations.of(context)!;
-    final history = _rateHistory[host.address] ?? [];
+    final history = _viewModel.rateHistory[host.address] ?? [];
     
     showDialog(
       context: context,
@@ -998,7 +940,8 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
   void _showSettingsDialog() {
     final l10n = AppLocalizations.of(context)!;
     final controller = TextEditingController(text: _bandwidthLimitMbps.toString());
-    List<String> selectedInterfaces = List.from(_selectedInterfaces);
+    List<String> selectedInterfaces =
+        List.from(_viewModel.selectedInterfaces);
     
     showDialog(
       context: context,
@@ -1077,7 +1020,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                   if (context.mounted) {
                     Navigator.of(context).pop();
                     // Reload data with new interfaces
-                    _loadNetworkHosts();
+                    _viewModel.loadItems();
                   }
                 }
               },
@@ -1091,10 +1034,9 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
   
   Future<void> _saveInterfaces(List<String> interfaces) async {
     final storageService = context.read<StorageService>();
-    await storageService.saveString('network_monitor_interfaces', jsonEncode(interfaces));
-    setState(() {
-      _selectedInterfaces = interfaces;
-    });
+    await storageService.saveString(
+        'network_monitor_interfaces', jsonEncode(interfaces));
+    _viewModel.setSelectedInterfaces(interfaces);
   }
 
 

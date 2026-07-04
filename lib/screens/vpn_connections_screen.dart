@@ -19,8 +19,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
+import '../viewmodels/vpn_connections_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../l10n/app_localizations.dart';
 import 'vpn/vpn_connections_list_screen.dart';
@@ -29,7 +29,7 @@ import 'vpn/tailscale_status_screen.dart';
 /// Coordinator screen for VPN connections - routes to specialized screens
 class VPNConnectionsScreen extends StatefulWidget {
   final String? vpnType;
-  
+
   const VPNConnectionsScreen({super.key, this.vpnType});
 
   @override
@@ -37,8 +37,8 @@ class VPNConnectionsScreen extends StatefulWidget {
 }
 
 class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
-  SystemInfo? _systemInfo;
-  bool _isLoading = true;
+  late VpnConnectionsViewModel _viewModel;
+  bool _isInitialized = false;
   Timer? _refreshTimer;
   String _filterType = 'all';
 
@@ -46,19 +46,24 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
   bool get _isTailscaleMode => widget.vpnType == 'tailscale';
 
   @override
-  void initState() {
-    super.initState();
-    // Set initial filter based on vpnType parameter
-    if (widget.vpnType != null) {
-      _filterType = widget.vpnType!;
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      if (widget.vpnType != null) {
+        _filterType = widget.vpnType!;
+      }
+      final apiService = context.read<DemoApiService>();
+      _viewModel = VpnConnectionsViewModel(apiService);
+      _isInitialized = true;
+      _viewModel.loadItems();
+      _startAutoRefresh();
     }
-    _loadSystemInfo();
-    _startAutoRefresh();
   }
 
   @override
   void dispose() {
     _refreshTimer?.cancel();
+    _viewModel.dispose();
     super.dispose();
   }
 
@@ -67,81 +72,68 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
       const Duration(seconds: 30),
       (timer) {
         if (mounted) {
-          _loadSystemInfo();
+          _viewModel.loadItems();
         }
       },
     );
   }
 
-  Future<void> _loadSystemInfo() async {
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      final systemInfo = await demoApiService.getSystemInfo();
-
-      if (mounted) {
-        setState(() {
-          _systemInfo = systemInfo;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.vpnConnections),
-        actions: [
-          // Hide filter dropdown in Tailscale mode
-          if (!_isTailscaleMode)
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.filter_list),
-              tooltip: l10n.filterByType,
-              onSelected: (value) {
-                setState(() {
-                  _filterType = value;
-                });
-              },
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  value: 'all',
-                  child: Text(l10n.allVPNs),
+
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(l10n.vpnConnections),
+            actions: [
+              // Hide filter dropdown in Tailscale mode
+              if (!_isTailscaleMode)
+                PopupMenuButton<String>(
+                  icon: const Icon(Icons.filter_list),
+                  tooltip: l10n.filterByType,
+                  onSelected: (value) {
+                    setState(() {
+                      _filterType = value;
+                    });
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'all',
+                      child: Text(l10n.allVPNs),
+                    ),
+                    PopupMenuItem(
+                      value: 'openvpn',
+                      child: Text(l10n.openvpn),
+                    ),
+                    PopupMenuItem(
+                      value: 'wireguard',
+                      child: Text(l10n.wireguard),
+                    ),
+                    PopupMenuItem(
+                      value: 'tailscale',
+                      child: Text(l10n.tailscale),
+                    ),
+                  ],
                 ),
-                PopupMenuItem(
-                  value: 'openvpn',
-                  child: Text(l10n.openvpn),
-                ),
-                PopupMenuItem(
-                  value: 'wireguard',
-                  child: Text(l10n.wireguard),
-                ),
-                PopupMenuItem(
-                  value: 'tailscale',
-                  child: Text(l10n.tailscale),
-                ),
-              ],
-            ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _isLoading ? null : _loadSystemInfo,
-            tooltip: l10n.refresh,
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: _viewModel.isLoading ? null : _viewModel.loadItems,
+                tooltip: l10n.refresh,
+              ),
+            ],
           ),
-        ],
-      ),
-      drawer: AppDrawer(
-        currentRoute: widget.vpnType != null ? 'vpn_${widget.vpnType}' : 'vpn_connections',
-        systemInfo: _systemInfo,
-      ),
-      body: _buildBody(),
+          drawer: AppDrawer(
+            currentRoute: widget.vpnType != null
+                ? 'vpn_${widget.vpnType}'
+                : 'vpn_connections',
+            systemInfo: _viewModel.systemInfo,
+          ),
+          body: _buildBody(),
+        );
+      },
     );
   }
 
@@ -149,15 +141,15 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
     // Route to appropriate specialized screen
     if (_isTailscaleMode) {
       return RefreshIndicator(
-        onRefresh: _loadSystemInfo,
-        child: TailscaleStatusScreen(systemInfo: _systemInfo),
+        onRefresh: _viewModel.loadItems,
+        child: TailscaleStatusScreen(systemInfo: _viewModel.systemInfo),
       );
     } else {
       return RefreshIndicator(
-        onRefresh: _loadSystemInfo,
+        onRefresh: _viewModel.loadItems,
         child: VPNConnectionsListScreen(
           filterType: _filterType,
-          systemInfo: _systemInfo,
+          systemInfo: _viewModel.systemInfo,
         ),
       );
     }
