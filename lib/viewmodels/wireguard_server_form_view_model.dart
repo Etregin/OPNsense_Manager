@@ -69,7 +69,7 @@ class WireGuardServerFormViewModel extends BaseFormViewModel {
 
     try {
       _carpVipOptions = await _apiService.getCarpVipOptions();
-    } catch (_) {
+    } catch (e) {
       // Don't set error for CARP options as it's optional
     } finally {
       _loadingCarpOptions = false;

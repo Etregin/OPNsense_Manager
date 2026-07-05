@@ -488,7 +488,7 @@ Consolidates the remaining widget-file hardcoded strings not covered by C.1–C.
 ## Phase D — Silent `catch (_)` Block Remediation
 
 ### Sub-Task D.1 — Remediate `catch (_)` Blocks in Service & ViewModel Files
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 These files contain `catch (_) {}` or `catch (_) { // comment }` blocks that silently
@@ -541,7 +541,7 @@ actionable:
 ---
 
 ### Sub-Task D.2 — Remediate `catch (_)` in Model JSON Parsing and Formatting
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 Three distinct situations apply across these files — each requires a different fix:
@@ -611,7 +611,7 @@ intent explicit; any other exception will propagate normally.
 ---
 
 ### Sub-Task D.3 — Remediate Remaining `catch (_)` Blocks
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 Two remaining `catch (_)` blocks not covered by D.1–D.2:

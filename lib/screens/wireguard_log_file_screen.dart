@@ -274,7 +274,11 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
           (unixTimestamp * 1000).toInt(),
         );
         return Formatters.formatDateTime(dateTime.toLocal());
-      } catch (_) {
+      } catch (e) {
+        assert(() {
+          debugPrint('WireGuardLogFileScreen: failed to parse timestamp: $e');
+          return true;
+        }());
         return timestamp;
       }
     }

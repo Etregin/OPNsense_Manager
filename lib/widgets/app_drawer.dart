@@ -96,8 +96,11 @@ class _AppDrawerState extends State<AppDrawer> {
           _internalSystemInfo = info;
         });
       }
-    } catch (_) {
-      // System info is optional — silently ignore failures.
+    } catch (e) {
+      assert(() {
+        debugPrint('AppDrawer: failed to fetch system info: $e');
+        return true;
+      }());
     }
   }
 

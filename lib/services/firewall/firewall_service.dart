@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import '../base/base_opnsense_service.dart';
 import '../base/api_exception.dart';
@@ -49,8 +50,11 @@ class FirewallService extends BaseOPNsenseService {
                   if (rule is Map<String, dynamic>) {
                     try {
                       allRules.add(_parseFirewallRule(rule));
-                    } catch (_) {
-                      // Silently handle error
+                    } catch (e) {
+                      assert(() {
+                        debugPrint('FirewallService: failed to parse rule: $e');
+                        return true;
+                      }());
                     }
                   }
                 }
@@ -62,8 +66,11 @@ class FirewallService extends BaseOPNsenseService {
                       final ruleData = Map<String, dynamic>.from(entry.value as Map);
                       ruleData['uuid'] = entry.key; // Add UUID from key
                       allRules.add(_parseFirewallRule(ruleData));
-                    } catch (_) {
-                      // Silently handle error
+                    } catch (e) {
+                      assert(() {
+                        debugPrint('FirewallService: failed to parse rule: $e');
+                        return true;
+                      }());
                     }
                   }
                 }
