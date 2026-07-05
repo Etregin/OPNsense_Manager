@@ -58,7 +58,7 @@ class FirewallRule {
   });
 
   /// Check if rule is enabled
-  bool get isEnabled => enabled == "1";
+  bool get isEnabled => enabled == '1';
 
   /// Check if rule is system-generated (cannot be edited/deleted)
   /// System-generated rules have origin field set or come from automation
@@ -187,14 +187,14 @@ class FirewallRuleRequest {
     required this.destination,
     required this.destinationPort,
     required this.description,
-    this.enabled = "1",
-    this.sourceNot = "0",
-    this.destinationNot = "0",
-    this.ipProtocol = "inet",
-    this.direction = "in",
-    this.quick = "1",
-    this.sourcePort = "",
-    this.log = "0",
+    this.enabled = '1',
+    this.sourceNot = '0',
+    this.destinationNot = '0',
+    this.ipProtocol = 'inet',
+    this.direction = 'in',
+    this.quick = '1',
+    this.sourcePort = '',
+    this.log = '0',
   });
 
   /// Create from JSON

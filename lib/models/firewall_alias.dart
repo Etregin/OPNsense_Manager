@@ -56,7 +56,7 @@ class FirewallAlias {
   });
 
   /// Check if alias is enabled
-  bool get isEnabled => enabled == "1";
+  bool get isEnabled => enabled == '1';
 
   /// Get type display name
   String get typeDisplayName {

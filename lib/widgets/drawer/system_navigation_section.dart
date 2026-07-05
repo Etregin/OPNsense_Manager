@@ -22,6 +22,7 @@ import '../../constants/routes.dart';
 import '../../l10n/app_localizations.dart';
 import '../../screens/system_info_screen.dart';
 import '../../services/opnsense_api_service.dart';
+import '../../services/app_version_service.dart';
 import '../../utils/constants.dart';
 import '../../utils/snackbar_helper.dart';
 import 'navigation_tile.dart';
@@ -142,7 +143,7 @@ class SystemNavigationSection extends StatelessWidget {
     showAboutDialog(
       context: context,
       applicationName: AppConstants.appName,
-      applicationVersion: AppConstants.appVersion,
+      applicationVersion: context.read<AppVersionService>().version,
       applicationIcon: const Icon(Icons.router, size: 48),
       applicationLegalese: l10n.applicationLegalese,
       children: [

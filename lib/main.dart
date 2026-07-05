@@ -25,6 +25,7 @@ import 'screens/openvpn_client_overrides_list_screen.dart';
 import 'screens/openvpn_client_override_form_screen.dart';
 import 'screens/openvpn_connection_status_screen.dart';
 import 'screens/openvpn_log_file_screen.dart';
+import 'services/app_version_service.dart';
 import 'services/storage_service.dart';
 import 'services/opnsense_api_service.dart';
 import 'services/demo_api_service.dart';
@@ -57,6 +58,7 @@ void main() async {
     StorageService().init(),
     AuthService().init(),
     ProfileService().init(),
+    AppVersionService().init(),
   ]);
   
   // Migrate from old storage to profile-based storage (non-blocking)
@@ -177,6 +179,9 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
         ),
         Provider<ProfileService>(
           create: (_) => ProfileService(),
+        ),
+        Provider<AppVersionService>(
+          create: (_) => AppVersionService(),
         ),
         Provider<Function(String)>(
           create: (_) => _updateThemeMode,

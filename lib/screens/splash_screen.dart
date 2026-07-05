@@ -19,6 +19,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../services/app_version_service.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../services/auth_service.dart';
@@ -188,7 +189,7 @@ class _SplashScreenState extends State<SplashScreen> {
             const SizedBox(height: 8),
             // Version
             Text(
-              l10n.version(AppConstants.appVersion),
+              l10n.version(context.read<AppVersionService>().version),
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.white.withValues(alpha: 0.8),

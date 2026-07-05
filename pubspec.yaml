@@ -35,6 +35,7 @@ dependencies:
   # Utilities
   intl: ^0.20.2
   uuid: ^4.5.1
+  package_info_plus: ^10.2.0
   
   # Biometric Authentication
   local_auth: ^3.0.0

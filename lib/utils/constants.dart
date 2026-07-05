@@ -23,9 +23,7 @@ import 'package:flutter/material.dart';
 class AppConstants {
   // App Information
   static const String appName = 'OPNsense Manager';
-  // IMPORTANT: Must be manually updated to match pubspec.yaml version on every release
-  static const String appVersion = '1.7.2';
-  
+
   // API Configuration
   static const int defaultPort = 443;
   static const bool defaultUseHttps = true;

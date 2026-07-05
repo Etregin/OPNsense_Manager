@@ -287,7 +287,7 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
                                             Text(l10n.portLabel(server.port)),
                                             Text(l10n.tunnelLabel(server
                                                 .tunnelAddressList
-                                                .join(", "))),
+                                                .join(', '))),
                                             Text(
                                               l10n.peersConfigured(
                                                   server.peerUuidList.length),

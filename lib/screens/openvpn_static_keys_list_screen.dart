@@ -95,7 +95,7 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
         title: Text(l10n.deleteStaticKey),
         content: Text(
           l10n.confirmDeleteStaticKey(
-              key.description.isNotEmpty ? key.description : key.keyid ?? "N/A"),
+              key.description.isNotEmpty ? key.description : key.keyid ?? 'N/A'),
         ),
         actions: [
           TextButton(

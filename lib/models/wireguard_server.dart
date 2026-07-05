@@ -91,10 +91,10 @@ class WireGuardServer {
   });
 
   /// Check if server is enabled
-  bool get isEnabled => enabled == "1";
+  bool get isEnabled => enabled == '1';
   
   /// Check if automatic routes are disabled
-  bool get hasRoutesDisabled => disableroutes == "1";
+  bool get hasRoutesDisabled => disableroutes == '1';
   
   /// Get tunnel addresses as a list
   List<String> get tunnelAddressList {

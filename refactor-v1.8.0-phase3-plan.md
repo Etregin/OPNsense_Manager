@@ -60,7 +60,7 @@ explicit file + line-level evidence.
 ## Phase A — Dead Code Elimination
 
 ### Sub-Task A.1 — Delete Dead `lib/screens/vpn/tailscale_status_screen.dart`
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 Two files export a class named `TailscaleStatusScreen`:
@@ -104,7 +104,7 @@ that would break if both are ever imported in the same compilation unit.
 ---
 
 ### Sub-Task A.2 — Delete Dead `refreshPeers()` Wrapper in `WireGuardPeersViewModel`
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 `lib/viewmodels/wireguard_peers_view_model.dart` line 83 declares:
@@ -138,7 +138,7 @@ and is dead code.
 ---
 
 ### Sub-Task A.3 — Delete `CommonValidators` (Superseded by `Validators`)
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 `lib/utils/common_validators.dart` provides: `required()`, `ipAddress()`, `cidr()`, `port()`,
@@ -195,7 +195,7 @@ should be migrated to the l10n-aware `Validators` equivalents.
 ## Phase B — Type Safety Improvements
 
 ### Sub-Task B.1 — Replace `dynamic` with `Object?` in `BaseOPNsenseService`
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 `lib/services/base/base_opnsense_service.dart:117` declares:
@@ -230,7 +230,7 @@ a non-null-checked value, and `is` tests still work exactly the same.
 ---
 
 ### Sub-Task B.2 — Replace `dynamic` in `DhcpLeaseAdapter`
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 `lib/services/dhcp_lease_adapter.dart` uses `dynamic` in multiple private parsing methods:
@@ -265,7 +265,7 @@ catch accidental misuse.
 ---
 
 ### Sub-Task B.3 — Add `ApiErrorType` Enum to `ApiException`
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 `lib/services/base/api_exception.dart` defines `ApiException` with only `message` and
@@ -326,7 +326,7 @@ of `e.message.contains('credentials')`.
 ## Phase C — Screen Architecture Cleanup
 
 ### Sub-Task C.1 — Lift `_loadSystemInfo()` into `AppDrawer`
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 At least ten screens share an identical pattern:
@@ -386,7 +386,7 @@ duplicate pattern entirely. `AppDrawer` already receives `DemoApiService` via `c
 ---
 
 ### Sub-Task C.2 — Fix `BuildContext` Captured in `initState` in Dead Screen
-**Status:** [ ] pending (this is resolved by completing A.1 — delete the dead screen)
+**Status:** [x] done
 
 **Note:** This issue exists only in `lib/screens/vpn/tailscale_status_screen.dart:54`:
 ```dart
@@ -400,7 +400,7 @@ when Sub-Task A.1 deletes the file. No separate action required if A.1 is comple
 ## Phase D — Lint & Code Style Hardening
 
 ### Sub-Task D.1 — Enable `prefer_single_quotes` in `analysis_options.yaml`
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 `lib/analysis_options.yaml:27` has a commented-out rule:
@@ -434,7 +434,7 @@ one automated pass.
 ---
 
 ### Sub-Task D.2 — Replace `appVersion` Manual Sync with `package_info_plus`
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 `lib/utils/constants.dart:27` declares:
@@ -478,10 +478,10 @@ version at runtime, eliminating the synchronisation burden.
 ---
 
 ## Phase E — `BaseFormViewModel.executeWithLoading` Error Preservation
-**Status:** [ ] pending
+**Status:** [x] done
 
 ### Sub-Task E.1 — Preserve Exception Type in `executeWithLoading`
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 `lib/viewmodels/base/base_form_view_model.dart:64`:
@@ -547,7 +547,7 @@ identical strings. The fix is to:
 ## Phase F — Final Verification
 
 ### Sub-Task F.1 — Final Codebase Analysis Pass (Phase 3)
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 After all Phase A–E sub-tasks are complete, run a final full-project analysis to confirm

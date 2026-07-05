@@ -25,6 +25,7 @@ import '../screens/system_info_screen.dart';
 import '../screens/settings_screen.dart';
 import '../screens/profile_selection_screen.dart';
 import '../l10n/app_localizations.dart';
+import '../services/app_version_service.dart';
 import '../services/demo_api_service.dart';
 import '../services/navigation/navigation_service.dart';
 import '../services/opnsense_api_service.dart';
@@ -327,7 +328,7 @@ class _AppDrawerState extends State<AppDrawer> {
     showAboutDialog(
       context: context,
       applicationName: AppConstants.appName,
-      applicationVersion: AppConstants.appVersion,
+      applicationVersion: context.read<AppVersionService>().version,
       applicationIcon: const Icon(Icons.router, size: 48),
       applicationLegalese: l10n.applicationLegalese,
       children: [
