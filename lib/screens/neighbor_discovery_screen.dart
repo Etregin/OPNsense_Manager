@@ -226,7 +226,7 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
                   DropdownMenuItem(value: 200, child: Text('200')),
                   DropdownMenuItem(value: 500, child: Text('500')),
                   DropdownMenuItem(value: 1000, child: Text('1000')),
-                  DropdownMenuItem(value: 9999, child: Text('All')),
+                  DropdownMenuItem(value: AppConstants.allRowsSentinel, child: Text('All')),
                 ],
                 onChanged: (value) {
                   if (value != null) {

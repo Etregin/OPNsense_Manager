@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_client_override_list_item.dart';
+import '../utils/constants.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/openvpn_client_overrides_view_model.dart';
@@ -276,7 +277,7 @@ class _OpenvpnClientOverridesListScreenState
                         DropdownMenuItem(value: 200, child: Text('200')),
                         DropdownMenuItem(value: 500, child: Text('500')),
                         DropdownMenuItem(value: 1000, child: Text('1000')),
-                        DropdownMenuItem(value: 9999, child: Text('All')),
+                        DropdownMenuItem(value: AppConstants.allRowsSentinel, child: Text('All')),
                       ],
                       onChanged: (value) {
                         setState(() {

@@ -222,7 +222,7 @@ class _AppDrawerState extends State<AppDrawer> {
     Navigator.pop(context);
     
     // Wait a bit for drawer to close
-    await Future.delayed(const Duration(milliseconds: 150));
+    await Future.delayed(AppConstants.drawerCloseDelay);
     
     if (!context.mounted) {
       return;

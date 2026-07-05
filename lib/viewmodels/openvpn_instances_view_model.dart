@@ -18,6 +18,7 @@
 
 import '../models/openvpn_instance_list_item.dart';
 import '../services/demo_api_service.dart';
+import '../utils/constants.dart';
 import 'base/base_list_view_model.dart';
 
 /// ViewModel for the OpenVPN instances list screen.
@@ -53,7 +54,7 @@ class OpenvpnInstancesViewModel extends BaseListViewModel<OpenvpnInstanceListIte
 
     final response = await _apiService.searchOpenvpnInstances(
       current: 1,
-      rowCount: rowCount == -1 ? 9999 : rowCount,
+      rowCount: rowCount == -1 ? AppConstants.allRowsSentinel : rowCount,
       searchPhrase: searchParam,
       enabled: enabledParam,
     );

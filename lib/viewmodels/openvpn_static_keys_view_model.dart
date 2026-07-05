@@ -18,6 +18,7 @@
 
 import '../models/openvpn_static_key.dart';
 import '../services/demo_api_service.dart';
+import '../utils/constants.dart';
 import 'base/base_list_view_model.dart';
 
 /// ViewModel for the OpenVPN static keys list screen.
@@ -37,7 +38,7 @@ class OpenvpnStaticKeysViewModel extends BaseListViewModel<OpenvpnStaticKey> {
   Future<List<OpenvpnStaticKey>> fetchItems() async {
     final response = await _apiService.searchOpenvpnStaticKeys(
       current: currentPage,
-      rowCount: rowCount == -1 ? 9999 : rowCount,
+      rowCount: rowCount == -1 ? AppConstants.allRowsSentinel : rowCount,
     );
     return response.rows;
   }

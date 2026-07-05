@@ -95,7 +95,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
 
     try {
       SnackBarHelper.showInfo(context, rule.isEnabled ? l10n.disablingRule : l10n.enablingRule);
-      await Future.delayed(const Duration(milliseconds: 1500));
+      await Future.delayed(AppConstants.toggleDebounceDelay);
       await _viewModel.toggleRule(rule.uuid);
       if (mounted) {
         SnackBarHelper.showSuccess(context, rule.isEnabled ? l10n.ruleDisabledSuccessfully : l10n.ruleEnabledSuccessfully);

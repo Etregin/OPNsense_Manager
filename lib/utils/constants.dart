@@ -57,6 +57,14 @@ class AppConstants {
   static const double iconSize = 24.0;
   static const double featureIconSize = 48.0;
   
+  // Pagination sentinels
+  static const int maxPeerRowCount = 1000;  // max WireGuard peers to fetch per request
+  static const int allRowsSentinel = 9999;  // sentinel value meaning "fetch all rows"
+
+  // UI timing delays
+  static const Duration toggleDebounceDelay = Duration(milliseconds: 1500); // post-toggle feedback delay
+  static const Duration drawerCloseDelay    = Duration(milliseconds: 150);  // grace period for drawer close animation
+
   // Domain Constants
   static const int defaultWireGuardPort = 51820;
   static const String tailscaleLoginServer = 'https://login.tailscale.com';

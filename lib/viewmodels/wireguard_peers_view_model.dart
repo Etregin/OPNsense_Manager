@@ -18,6 +18,7 @@
 
 import '../models/wireguard_peer.dart';
 import '../services/demo_api_service.dart';
+import '../utils/constants.dart';
 import 'base/base_list_view_model.dart';
 
 /// ViewModel for managing WireGuard peers list
@@ -34,7 +35,7 @@ class WireGuardPeersViewModel extends BaseListViewModel<WireGuardPeer> {
   Future<List<WireGuardPeer>> fetchItems() async {
     final response = await _apiService.searchWireGuardPeers(
       current: 1,
-      rowCount: 1000, // Get all peers
+      rowCount: AppConstants.maxPeerRowCount,
     );
 
     if (response.containsKey('rows') && response['rows'] is List) {

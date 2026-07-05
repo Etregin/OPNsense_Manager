@@ -648,7 +648,7 @@ Two remaining `catch (_)` blocks not covered by D.1–D.2:
 ## Phase E — Magic Numbers & Inline Delay Constants
 
 ### Sub-Task E.1 — Extract Magic Numbers into Named Constants
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 These magic numbers are used without explanation in the code and should be named
