@@ -557,13 +557,13 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
                     Icon(
                       Icons.schedule,
                       size: 14,
-                      color: isExpired ? AppColors.danger : Theme.of(context).colorScheme.onSurfaceVariant,
+                      color: isExpired ? AppColors.error : Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       '${l10n.expires}: ${_formatDateTime(lease.expiryDateTime!)}',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: isExpired ? AppColors.danger : Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: isExpired ? AppColors.error : Theme.of(context).colorScheme.onSurfaceVariant,
                             fontSize: 11,
                           ),
                     ),

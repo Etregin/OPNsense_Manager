@@ -47,9 +47,9 @@ void main() async {
   // This removes the deprecated status bar and navigation bar colors
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarDividerColor: Colors.transparent,
+      statusBarColor: AppColors.transparent,
+      systemNavigationBarColor: AppColors.transparent,
+      systemNavigationBarDividerColor: AppColors.transparent,
     ),
   );
   
@@ -218,10 +218,10 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
           Locale('de'), // German
         ],
         theme: ThemeData(
-          primaryColor: const Color(AppConstants.primaryColorValue),
+          primaryColor: AppColors.primary,
           colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(AppConstants.primaryColorValue),
-            secondary: const Color(AppConstants.secondaryColorValue),
+            seedColor: AppColors.primary,
+            secondary: AppColors.secondary,
             brightness: Brightness.light,
           ),
           useMaterial3: true,
@@ -253,10 +253,10 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
           ),
         ),
         darkTheme: ThemeData(
-          primaryColor: const Color(AppConstants.primaryColorValue),
+          primaryColor: AppColors.primary,
           colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(AppConstants.primaryColorValue),
-            secondary: const Color(AppConstants.secondaryColorValue),
+            seedColor: AppColors.primary,
+            secondary: AppColors.secondary,
             brightness: Brightness.dark,
           ),
           useMaterial3: true,

@@ -55,7 +55,7 @@ class ProfileCard extends StatelessWidget {
               : AppColors.iconMuted,
           child: Icon(
             isActive ? Icons.check : Icons.dns,
-            color: Colors.white,
+            color: AppColors.onPrimary,
           ),
         ),
         title: Text(
@@ -121,9 +121,9 @@ class ProfileCard extends StatelessWidget {
               value: 'delete',
               child: Row(
                 children: [
-                  const Icon(Icons.delete, size: 20, color: AppColors.danger),
+                  const Icon(Icons.delete, size: 20, color: AppColors.error),
                   const SizedBox(width: 12),
-                  Text(l10n.delete, style: const TextStyle(color: AppColors.danger)),
+                  Text(l10n.delete, style: const TextStyle(color: AppColors.error)),
                 ],
               ),
             ),

@@ -69,7 +69,7 @@ class ServiceControlsCard extends StatelessWidget {
                     icon: const Icon(Icons.stop),
                     label: Text(l10n.stop),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.danger,
+                      backgroundColor: AppColors.error,
                     ),
                   ),
                 ),

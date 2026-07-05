@@ -330,7 +330,7 @@ class _OpenvpnClientOverrideFormScreenState
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(Icons.error_outline,
-                            size: 48, color: AppColors.danger),
+                            size: 48, color: AppColors.error),
                         const SizedBox(height: 16),
                         Text(l10n.errorLoadingOverride),
                         const SizedBox(height: 8),

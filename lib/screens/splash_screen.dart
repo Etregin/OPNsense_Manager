@@ -147,7 +147,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final l10n = AppLocalizations.of(context)!;
     
     return Scaffold(
-      backgroundColor: const Color(AppConstants.primaryColorValue),
+      backgroundColor: AppColors.primary,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -158,11 +158,11 @@ class _SplashScreenState extends State<SplashScreen> {
               height: 120,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.2),
+                    color: AppColors.shadow,
                     blurRadius: 20,
-                    offset: const Offset(0, 10),
+                    offset: Offset(0, 10),
                   ),
                 ],
               ),
@@ -183,7 +183,7 @@ class _SplashScreenState extends State<SplashScreen> {
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppColors.onPrimary,
               ),
             ),
             const SizedBox(height: 8),
@@ -192,13 +192,13 @@ class _SplashScreenState extends State<SplashScreen> {
               l10n.version(context.read<AppVersionService>().version),
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.white.withValues(alpha: 0.8),
+                color: AppColors.onPrimary.withValues(alpha: 0.8),
               ),
             ),
             const SizedBox(height: 48),
             // Loading Indicator
             const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.onPrimary),
             ),
           ],
         ),

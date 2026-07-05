@@ -284,7 +284,7 @@ class _WireGuardPeerGeneratorScreenState
                     const Icon(
                       Icons.error_outline,
                       size: 48,
-                      color: AppColors.danger,
+                      color: AppColors.error,
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -555,7 +555,7 @@ class _WireGuardPeerGeneratorScreenState
                               ? Container(
                                   padding: const EdgeInsets.all(16),
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: AppColors.onPrimary,
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: QrImageView(

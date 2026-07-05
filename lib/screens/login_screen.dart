@@ -185,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Icon(
                         success ? Icons.check_circle : Icons.error,
-                        color: success ? AppColors.success : AppColors.danger,
+                        color: success ? AppColors.success : AppColors.error,
                         size: 20,
                       ),
                       const SizedBox(width: 8),
@@ -193,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Text(
                           endpoint,
                           style: TextStyle(
-                            color: success ? AppColors.success : AppColors.danger,
+                            color: success ? AppColors.success : AppColors.error,
                           ),
                         ),
                       ),

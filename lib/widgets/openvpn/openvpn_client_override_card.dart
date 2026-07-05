@@ -52,7 +52,7 @@ class OpenvpnClientOverrideCard extends StatelessWidget {
           backgroundColor: clientOverride.enabled ? AppColors.success : Theme.of(context).disabledColor,
           child: Icon(
             clientOverride.enabled ? Icons.check_circle : Icons.cancel,
-            color: Colors.white,
+            color: AppColors.onPrimary,
             size: 20,
           ),
         ),

@@ -762,7 +762,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
   Color _getProgressColor(double progress) {
     if (progress < 0.5) return AppColors.success;
     if (progress < 0.75) return AppColors.warning;
-    return AppColors.danger;
+    return AppColors.error;
   }
 
   void _showHostDetails(NetworkHost host) {
@@ -1142,11 +1142,11 @@ class _InteractiveSparklineState extends State<InteractiveSparkline> {
                     width: tooltipWidth,
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Colors.black87,
+                      color: AppColors.onSurface,
                       borderRadius: BorderRadius.circular(4),
                       boxShadow: [
                         const BoxShadow(
-                          color: Colors.black26,
+                          color: AppColors.shadowLight,
                           blurRadius: 4,
                           offset: Offset(0, 2),
                         ),
@@ -1155,7 +1155,7 @@ class _InteractiveSparklineState extends State<InteractiveSparkline> {
                     child: Text(
                       Formatters.formatBytesPerSecond(widget.data[_selectedIndex!], context, decimals: 2),
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: AppColors.onPrimary,
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                       ),

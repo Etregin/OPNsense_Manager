@@ -214,7 +214,7 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
             const Icon(
               Icons.error_outline,
               size: 64,
-              color: AppColors.danger,
+              color: AppColors.error,
             ),
             const SizedBox(height: 16),
             Text(

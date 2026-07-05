@@ -112,7 +112,7 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.danger,
+              backgroundColor: AppColors.error,
             ),
             child: Text(l10n.delete),
           ),
@@ -283,7 +283,7 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
                               onPressed: widget.enabled && !isOnlyConnection
                                   ? () => _showDeleteConfirmation(index)
                                   : null,
-                              color: isOnlyConnection ? theme.disabledColor : AppColors.danger,
+                              color: isOnlyConnection ? theme.disabledColor : AppColors.error,
                               padding: EdgeInsets.zero,
                               constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
                             ),

@@ -50,7 +50,7 @@ class StatusCard extends StatelessWidget {
                   height: 12,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: item.isUp ? AppColors.success : AppColors.danger,
+                    color: item.isUp ? AppColors.success : AppColors.error,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -90,7 +90,7 @@ class StatusCard extends StatelessWidget {
               l10n.status,
               item.status.toUpperCase(),
               icon: Icons.power_settings_new,
-              valueColor: item.isUp ? AppColors.success : AppColors.danger,
+              valueColor: item.isUp ? AppColors.success : AppColors.error,
             ),
             
             // Device (interface name like wg0, wg1)

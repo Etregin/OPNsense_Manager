@@ -128,7 +128,7 @@ class RoutingSettingsCard extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () => Navigator.pop(context, true),
-                          style: TextButton.styleFrom(foregroundColor: AppColors.danger),
+                          style: TextButton.styleFrom(foregroundColor: AppColors.error),
                           child: Text(l10n.discard),
                         ),
                       ],

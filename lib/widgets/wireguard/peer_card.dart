@@ -52,7 +52,7 @@ class PeerCard extends StatelessWidget {
           backgroundColor: peer.isEnabled ? AppColors.success : Theme.of(context).disabledColor,
           child: Icon(
             peer.isEnabled ? Icons.vpn_key : Icons.vpn_key_off,
-            color: Colors.white,
+            color: AppColors.onPrimary,
             size: 20,
           ),
         ),

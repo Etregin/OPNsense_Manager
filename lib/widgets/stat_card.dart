@@ -127,11 +127,11 @@ class ProgressStatCard extends StatelessWidget {
     if (progressColor != null) return progressColor!;
     
     if (progress >= 0.9) {
-      return const Color(AppConstants.errorColorValue);
+      return AppColors.error;
     } else if (progress >= 0.7) {
-      return const Color(AppConstants.warningColorValue);
+      return AppColors.warning;
     } else {
-      return const Color(AppConstants.successColorValue);
+      return AppColors.success;
     }
   }
 
@@ -247,11 +247,11 @@ class StackedProgressStatCard extends StatelessWidget {
     
     // Color based on primary progress only (actual memory usage)
     if (primaryProgress >= 0.9) {
-      return const Color(AppConstants.errorColorValue);
+      return AppColors.error;
     } else if (primaryProgress >= 0.7) {
-      return const Color(AppConstants.warningColorValue);
+      return AppColors.warning;
     } else {
-      return const Color(AppConstants.successColorValue);
+      return AppColors.success;
     }
   }
 

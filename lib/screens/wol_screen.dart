@@ -139,7 +139,7 @@ class _WolScreenState extends State<WolScreen> {
                 const SizedBox(height: 16),
                 Text(
                   AppLocalizations.of(context)!.failedDevices,
-                  style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.danger),
+                  style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.error),
                 ),
                 const SizedBox(height: 8),
                 ...failedResults.map((result) => Text(
@@ -434,9 +434,9 @@ class _WolHostCard extends StatelessWidget {
                       value: 'delete',
                       child: Row(
                         children: [
-                          const Icon(Icons.delete, size: 20, color: AppColors.danger),
+                          const Icon(Icons.delete, size: 20, color: AppColors.error),
                           const SizedBox(width: 8),
-                          Text(AppLocalizations.of(context)!.delete, style: const TextStyle(color: AppColors.danger)),
+                          Text(AppLocalizations.of(context)!.delete, style: const TextStyle(color: AppColors.error)),
                         ],
                       ),
                     ),

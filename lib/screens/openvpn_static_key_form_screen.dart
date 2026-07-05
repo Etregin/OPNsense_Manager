@@ -193,18 +193,18 @@ class _OpenvpnStaticKeyFormScreenState
                   padding: const EdgeInsets.all(12),
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
-                    color: AppColors.danger.withValues(alpha: 0.05),
+                    color: AppColors.error.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.danger),
+                    border: Border.all(color: AppColors.error),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.error_outline, color: AppColors.danger),
+                      const Icon(Icons.error_outline, color: AppColors.error),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
                           _viewModel.errorMessage!,
-                          style: const TextStyle(color: AppColors.danger),
+                          style: const TextStyle(color: AppColors.error),
                         ),
                       ),
                     ],
@@ -353,7 +353,7 @@ class _OpenvpnStaticKeyFormScreenState
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: Theme.of(context).primaryColor,
-                  foregroundColor: Colors.white,
+                  foregroundColor: AppColors.onPrimary,
                 ),
                 child: Text(
                   _isEditMode ? l10n.updateStaticKey : l10n.createStaticKey,

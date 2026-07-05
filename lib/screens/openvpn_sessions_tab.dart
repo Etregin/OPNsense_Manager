@@ -322,7 +322,7 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
                               : const Icon(Icons.stop, size: 18),
                           label: const Text('Stop'),
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.danger,
+                            foregroundColor: AppColors.error,
                           ),
                         ),
                       ] else if (session.canStart) ...[
@@ -338,7 +338,7 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
                           label: const Text('Start'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.success,
-                            foregroundColor: Colors.white,
+                            foregroundColor: AppColors.onPrimary,
                           ),
                         ),
                       ],

@@ -39,7 +39,7 @@ class FirewallRuleCard extends StatelessWidget {
       case 'pass':
         return AppColors.success;
       case 'block':
-        return AppColors.danger;
+        return AppColors.error;
       case 'reject':
         return AppColors.warning;
       default:
@@ -188,7 +188,7 @@ class FirewallRuleCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: isDark ? AppColors.surfaceLight : Colors.black87,
+                  color: isDark ? AppColors.surfaceLight : AppColors.onSurface,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),

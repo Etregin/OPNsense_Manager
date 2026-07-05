@@ -48,10 +48,10 @@ class OpenvpnStaticKeyCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: staticKey.isValid ? AppColors.success : const Color(0xFF9E9E9E),
+          backgroundColor: staticKey.isValid ? AppColors.success : AppColors.disabled,
           child: const Icon(
             Icons.vpn_key,
-            color: Colors.white,
+            color: AppColors.onPrimary,
             size: 20,
           ),
         ),

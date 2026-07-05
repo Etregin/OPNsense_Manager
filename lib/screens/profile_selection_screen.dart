@@ -236,7 +236,8 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
   Widget _buildContent(List<Profile> profiles) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDark ? Theme.of(context).textTheme.bodyLarge?.color ?? Colors.white : Colors.white;
+    final colorScheme = Theme.of(context).colorScheme;
+    final textColor = isDark ? colorScheme.onSurface : AppColors.onPrimary;
 
     return Scaffold(
       body: Container(
@@ -292,17 +293,17 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Card(
-                    color: AppColors.danger.withValues(alpha: 0.1),
+                    color: AppColors.error.withValues(alpha: 0.1),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Row(
                         children: [
-                          const Icon(Icons.error, color: AppColors.danger),
+                          const Icon(Icons.error, color: AppColors.error),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               _errorMessage!,
-                              style: const TextStyle(color: AppColors.danger),
+                              style: const TextStyle(color: AppColors.error),
                             ),
                           ),
                         ],
@@ -356,7 +357,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                   decoration: BoxDecoration(
                     color: isDark
                         ? Theme.of(context).cardColor
-                        : Colors.white,
+                        : AppColors.onPrimary,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: _isLoading
@@ -381,12 +382,12 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                         label: Text(l10n.tryDemoMode),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: isDark
-                              ? Theme.of(context).primaryColor
-                              : Colors.white,
+                              ? colorScheme.primary
+                              : AppColors.onPrimary,
                           side: BorderSide(
                             color: isDark
-                                ? Theme.of(context).primaryColor
-                                : Colors.white,
+                                ? colorScheme.primary
+                                : AppColors.onPrimary,
                             width: 2,
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -406,10 +407,10 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                         label: Text(l10n.createNewProfile),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: isDark
-                              ? Theme.of(context).primaryColor
-                              : Colors.white,
+                              ? colorScheme.primary
+                              : AppColors.onPrimary,
                           foregroundColor: isDark
-                              ? Colors.white
+                              ? AppColors.onPrimary
                               : AppColors.primary,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(

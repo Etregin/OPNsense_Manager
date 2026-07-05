@@ -396,7 +396,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: Theme.of(context).primaryColor,
-                  foregroundColor: Colors.white,
+                  foregroundColor: AppColors.onPrimary,
                 ),
                 child: Text(
                   widget.isEditing ? l10n.updateRule : l10n.createRule,

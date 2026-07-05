@@ -41,13 +41,6 @@ class AppConstants {
   static const String keyApiSecret = 'api_secret';
   static const String keyUseHttps = 'use_https';
   
-  // Theme Colors - Matching OPNsense Manager Logo
-  static const int primaryColorValue = 0xFF046371; // Deep Teal (Shield body)
-  static const int secondaryColorValue = 0xFF00FFFF; // Electric Cyan (Wi-Fi signal)
-  static const int successColorValue = 0xFF4CAF50; // Green
-  static const int warningColorValue = 0xFFFF9800; // Orange
-  static const int errorColorValue = 0xFFF44336; // Red
-  
   // UI Constants
   static const double standardPadding = 16.0;
   static const double compactPadding = 8.0;
@@ -79,21 +72,46 @@ class AppConstants {
   };
 }
 
-/// App color constants
+/// Centralised colour palette for OPNsense Manager.
+///
+/// Groups:
+///   • Brand       — primary, secondary
+///   • Status      — success, warning, error, disabled
+///   • Text/Surface — textSecondary, iconMuted, surfaceMid, surfaceLight
+///   • Info         — info, infoBackground, infoText, infoIcon
+///   • Warning tones — warningBackground, warningLight, warningIcon, warningDark
+///   • On-color/Surface tokens — onPrimary, transparent
+///   • Shadow/Overlay tokens   — shadow, shadowLight, overlay, onSurface
+///
+/// MIGRATION REFERENCE (old → new):
+///   AppConstants.primaryColorValue   → AppColors.primary
+///   AppConstants.secondaryColorValue → AppColors.secondary
+///   AppConstants.successColorValue   → AppColors.success
+///   AppConstants.warningColorValue   → AppColors.warning
+///   AppConstants.errorColorValue     → AppColors.error
+///   AppColors.danger                 → AppColors.error       (removed — identical value)
+///   AppColors.online                 → AppColors.success     (removed — identical value)
+///   AppColors.offline                → AppColors.disabled    (removed — identical value)
+///   Colors.white (on coloured bg)    → AppColors.onPrimary
+///   Colors.white (dark-mode ternary) → Theme.of(ctx).colorScheme.onSurface
+///   Colors.white70                   → AppColors.onPrimary.withValues(alpha: 0.7)
+///   Colors.black.withValues(a:0.2)   → AppColors.shadow
+///   Colors.black.withValues(a:0.1)   → AppColors.shadow.withValues(alpha: 0.5)
+///   Colors.black54                   → AppColors.overlay
+///   Colors.black87                   → AppColors.onSurface
+///   Colors.black26                   → AppColors.shadowLight
+///   Colors.redAccent                 → AppColors.error
+///   Colors.transparent               → AppColors.transparent
+///   const Color(0xFF9E9E9E)          → AppColors.disabled
 class AppColors {
   static const Color primary   = Color(0xFF046371); // Deep Teal (Shield body)
   static const Color secondary = Color(0xFF00FFFF); // Electric Cyan (Wi-Fi signal)
 
   // Semantic status colours
-  static const Color success = Color(0xFF4CAF50); // Colors.green
-  static const Color warning = Color(0xFFFF9800); // Colors.orange
-  static const Color error   = Color(0xFFF44336); // Colors.red
-  static const Color danger  = Color(0xFFF44336); // Colors.red (alias for error)
+  static const Color success  = Color(0xFF4CAF50); // Colors.green
+  static const Color warning  = Color(0xFFFF9800); // Colors.orange
+  static const Color error    = Color(0xFFF44336); // Colors.red
   static const Color disabled = Color(0xFF9E9E9E); // Colors.grey
-
-  // Online / offline aliases (semantic clarity at call sites)
-  static const Color online  = Color(0xFF4CAF50); // Colors.green  (= success)
-  static const Color offline = Color(0xFF9E9E9E); // Colors.grey   (= disabled)
 
   // Text & icon tones (Material grey scale)
   static const Color textSecondary = Color(0xFF757575); // Colors.grey[600]
@@ -112,6 +130,16 @@ class AppColors {
   static const Color warningLight      = Color(0xFFFFE0B2); // Colors.orange[100]  (shade100)
   static const Color warningIcon       = Color(0xFFF57C00); // Colors.orange[700]
   static const Color warningDark       = Color(0xFFE65100); // Colors.orange[900]
+
+  // On-color & surface tokens
+  static const Color onPrimary  = Color(0xFFFFFFFF); // White — text/icons on primary-coloured surfaces
+  static const Color transparent = Color(0x00000000); // Fully transparent
+
+  // Shadow & overlay tokens
+  static const Color shadow      = Color(0x33000000); // 20% black — card/logo drop-shadows
+  static const Color shadowLight = Color(0x42000000); // 26% black — tooltip shadows
+  static const Color overlay     = Color(0x8A000000); // 54% black — loading modal overlay
+  static const Color onSurface   = Color(0xDD000000); // 87% black — high-emphasis text on light surfaces
 }
 
 /// Non-translatable display strings — brand names, technical acronyms,

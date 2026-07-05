@@ -429,7 +429,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                                               : AppColors.disabled,
                                           child: Icon(
                                             _getIconForType(alias.type),
-                                            color: Colors.white,
+                                            color: AppColors.onPrimary,
                                             size: 20,
                                           ),
                                         ),
@@ -510,12 +510,12 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                                                   child: Row(
                                                     children: [
                                                       const Icon(Icons.delete,
-                                                          color: AppColors.danger),
+                                                          color: AppColors.error),
                                                       const SizedBox(width: 8),
                                                       Text(l10n.delete,
                                                           style:
                                                               const TextStyle(
-                                                                  color: AppColors.danger)),
+                                                                  color: AppColors.error)),
                                                     ],
                                                   ),
                                                 ),

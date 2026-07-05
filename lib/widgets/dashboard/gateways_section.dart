@@ -119,7 +119,7 @@ class _GatewaysSectionState extends State<GatewaysSection> {
       dense: true,
       leading: Icon(
         isOnline ? Icons.check_circle : Icons.error,
-        color: isOnline ? AppColors.success : AppColors.danger,
+        color: isOnline ? AppColors.success : AppColors.error,
         size: 20,
       ),
       title: Text(name),
@@ -132,14 +132,14 @@ class _GatewaysSectionState extends State<GatewaysSection> {
             delay.toString(),
             style: TextStyle(
               fontSize: 12,
-              color: isOnline ? AppColors.success : AppColors.danger,
+              color: isOnline ? AppColors.success : AppColors.error,
             ),
           ),
           Text(
             loss.toString(),
             style: TextStyle(
               fontSize: 12,
-              color: isOnline ? AppColors.success : AppColors.danger,
+              color: isOnline ? AppColors.success : AppColors.error,
             ),
           ),
         ],

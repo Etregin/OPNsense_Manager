@@ -42,13 +42,13 @@ class DrawerHeaderWidget extends StatelessWidget {
           const Icon(
             Icons.router,
             size: 48,
-            color: Colors.white,
+            color: AppColors.onPrimary,
           ),
           const SizedBox(height: 8),
           const Text(
             AppConstants.appName,
             style: TextStyle(
-              color: Colors.white,
+              color: AppColors.onPrimary,
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
@@ -56,8 +56,8 @@ class DrawerHeaderWidget extends StatelessWidget {
           if (systemInfo != null)
             Text(
               systemInfo!.hostname,
-              style: const TextStyle(
-                color: Colors.white70,
+              style: TextStyle(
+                color: AppColors.onPrimary.withValues(alpha: 0.7),
                 fontSize: 14,
               ),
             ),

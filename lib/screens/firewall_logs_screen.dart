@@ -241,7 +241,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
       case 'pass':
     return AppColors.success;
   case 'block':
-    return AppColors.danger;
+    return AppColors.error;
   case 'reject':
     return AppColors.warning;
   default:
@@ -429,7 +429,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 64, color: AppColors.danger),
+            const Icon(Icons.error_outline, size: 64, color: AppColors.error),
             const SizedBox(height: 16),
             Text(
               l10n.errorLoadingLogs,
@@ -635,7 +635,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       builder: (context) => LogDetailSheet(log: log),
     );
   }

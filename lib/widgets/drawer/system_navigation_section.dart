@@ -53,10 +53,10 @@ class SystemNavigationSection extends StatelessWidget {
           onBeforeNavigate: onBeforeNavigate,
         ),
         ListTile(
-          leading: const Icon(Icons.restart_alt, color: AppColors.danger),
+          leading: const Icon(Icons.restart_alt, color: AppColors.error),
           title: Text(
             l10n.rebootSystem,
-            style: const TextStyle(color: AppColors.danger),
+            style: const TextStyle(color: AppColors.error),
           ),
           onTap: () {
             Navigator.pop(context);
@@ -95,7 +95,7 @@ class SystemNavigationSection extends StatelessWidget {
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            style: TextButton.styleFrom(foregroundColor: AppColors.danger),
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
             child: Text(l10n.restart),
           ),
         ],

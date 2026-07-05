@@ -257,7 +257,7 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
                                 const Icon(
                                   Icons.error_outline,
                                   size: 48,
-                                  color: AppColors.danger,
+                                  color: AppColors.error,
                                 ),
                                 const SizedBox(height: 16),
                                 Text(

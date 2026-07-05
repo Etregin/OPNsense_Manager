@@ -217,7 +217,7 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
                                     ),
                                     IconButton(
                                       icon: const Icon(Icons.delete),
-                                      color: AppColors.danger,
+                                      color: AppColors.error,
                                       onPressed: () => _deleteSubnet(
                                           uuid, subnet.subnet ?? ''),
                                     ),

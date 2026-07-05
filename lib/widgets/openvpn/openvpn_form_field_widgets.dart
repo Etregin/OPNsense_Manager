@@ -533,7 +533,7 @@ class OpenvpnArrayField extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   IconButton(
-                    icon: const Icon(Icons.delete, color: AppColors.danger),
+                    icon: const Icon(Icons.delete, color: AppColors.error),
                     onPressed: enabled ? () => onRemove(index) : null,
                   ),
                 ],

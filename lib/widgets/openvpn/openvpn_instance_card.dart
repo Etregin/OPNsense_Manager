@@ -52,7 +52,7 @@ class OpenvpnInstanceCard extends StatelessWidget {
           backgroundColor: instance.enabled ? AppColors.success : Theme.of(context).disabledColor,
           child: Icon(
             instance.enabled ? Icons.vpn_lock : Icons.vpn_lock_outlined,
-            color: Colors.white,
+            color: AppColors.onPrimary,
             size: 20,
           ),
         ),

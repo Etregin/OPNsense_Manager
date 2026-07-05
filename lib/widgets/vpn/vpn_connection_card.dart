@@ -60,13 +60,13 @@ class VPNConnectionCard extends StatelessWidget {
                 Icon(
                   connection.isConnected ? Icons.check_circle : Icons.cancel,
                   size: 16,
-                  color: connection.isConnected ? AppColors.success : AppColors.danger,
+                  color: connection.isConnected ? AppColors.success : AppColors.error,
                 ),
                 const SizedBox(width: 4),
                 Text(
                   connection.statusDisplay,
                   style: TextStyle(
-                    color: connection.isConnected ? AppColors.success : AppColors.danger,
+                    color: connection.isConnected ? AppColors.success : AppColors.error,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -80,7 +80,7 @@ class VPNConnectionCard extends StatelessWidget {
             IconButton(
               icon: Icon(
                 connection.isConnected ? Icons.stop : Icons.play_arrow,
-                color: connection.isConnected ? AppColors.danger : AppColors.success,
+                color: connection.isConnected ? AppColors.error : AppColors.success,
               ),
               onPressed: onToggle,
               tooltip: connection.isConnected ? l10n.disconnect : l10n.connect,

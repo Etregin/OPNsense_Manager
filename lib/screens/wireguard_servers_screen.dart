@@ -272,7 +272,7 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
                                               : AppColors.disabled,
                                           child: const Icon(
                                             Icons.security,
-                                            color: Colors.white,
+                                            color: AppColors.onPrimary,
                                             size: 20,
                                           ),
                                         ),
@@ -359,12 +359,12 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
                                                   child: Row(
                                                     children: [
                                                       const Icon(Icons.delete,
-                                                          color: AppColors.danger),
+                                                          color: AppColors.error),
                                                       const SizedBox(width: 8),
                                                       Text(l10n.delete,
                                                           style:
                                                               const TextStyle(
-                                                                  color: AppColors.danger)),
+                                                                  color: AppColors.error)),
                                                     ],
                                                   ),
                                                 ),

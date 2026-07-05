@@ -113,10 +113,11 @@ class _PinLockScreenState extends State<PinLockScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? Theme.of(context).scaffoldBackgroundColor : Theme.of(context).primaryColor;
-    final textColor = isDark ? Theme.of(context).textTheme.bodyLarge?.color ?? Colors.white : Colors.white;
-    final iconBackgroundColor = isDark ? Theme.of(context).cardColor : Colors.white;
-    final iconColor = Theme.of(context).primaryColor;
+    final colorScheme = Theme.of(context).colorScheme;
+    final backgroundColor = isDark ? Theme.of(context).scaffoldBackgroundColor : colorScheme.primary;
+    final textColor = isDark ? colorScheme.onSurface : AppColors.onPrimary;
+    final iconBackgroundColor = isDark ? Theme.of(context).cardColor : AppColors.onPrimary;
+    final iconColor = colorScheme.primary;
     
     return Scaffold(
       body: Container(
@@ -148,11 +149,11 @@ class _PinLockScreenState extends State<PinLockScreen> {
                     decoration: BoxDecoration(
                       color: iconBackgroundColor,
                       shape: BoxShape.circle,
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
+                          color: AppColors.shadow,
                           blurRadius: 20,
-                          offset: const Offset(0, 10),
+                          offset: Offset(0, 10),
                         ),
                       ],
                     ),
@@ -201,7 +202,7 @@ class _PinLockScreenState extends State<PinLockScreen> {
                         filled: true,
                         fillColor: isDark
                             ? Theme.of(context).cardColor
-                            : Colors.white.withValues(alpha: 0.2),
+                            : AppColors.onPrimary.withValues(alpha: 0.2),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                           borderSide: BorderSide.none,
@@ -214,7 +215,7 @@ class _PinLockScreenState extends State<PinLockScreen> {
                         counterText: '',
                         errorText: _errorMessage.isEmpty ? null : _errorMessage,
                         errorStyle: TextStyle(
-                          color: isDark ? Colors.redAccent : Colors.white,
+                          color: isDark ? AppColors.error : AppColors.onPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -231,8 +232,8 @@ class _PinLockScreenState extends State<PinLockScreen> {
                     child: ElevatedButton(
                       onPressed: _isAuthenticating ? null : _verifyPin,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isDark ? Theme.of(context).primaryColor : Colors.white,
-                        foregroundColor: isDark ? Colors.white : Theme.of(context).primaryColor,
+                        backgroundColor: isDark ? colorScheme.primary : AppColors.onPrimary,
+                        foregroundColor: isDark ? AppColors.onPrimary : colorScheme.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(28),
                         ),
@@ -244,7 +245,7 @@ class _PinLockScreenState extends State<PinLockScreen> {
                               height: 24,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: isDark ? Colors.white : Theme.of(context).primaryColor,
+                                color: isDark ? AppColors.onPrimary : colorScheme.primary,
                               ),
                             )
                           : Text(

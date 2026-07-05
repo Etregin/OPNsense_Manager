@@ -193,8 +193,8 @@ class RuleDetailSheet extends StatelessWidget {
             icon: const Icon(Icons.delete),
             label: Text(l10n.delete),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.danger,
-              foregroundColor: Colors.white,
+              backgroundColor: AppColors.error,
+              foregroundColor: AppColors.onPrimary,
             ),
           ),
         ),

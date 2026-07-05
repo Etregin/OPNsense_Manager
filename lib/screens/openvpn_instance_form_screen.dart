@@ -595,7 +595,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.error_outline, size: 48, color: AppColors.danger),
+                        const Icon(Icons.error_outline, size: 48, color: AppColors.error),
                         const SizedBox(height: 16),
                         Text(l10n.errorLoadingInstance),
                         const SizedBox(height: 8),

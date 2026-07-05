@@ -190,19 +190,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       child: Row(
                         children: [
                           const Icon(Icons.play_circle_outline,
-                              color: Colors.white),
+                              color: AppColors.onPrimary),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               l10n.demoModeIndicator,
                               style: const TextStyle(
-                                color: Colors.white,
+                                color: AppColors.onPrimary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
                           Icon(Icons.info_outline,
-                              color: Colors.white.withValues(alpha: 0.8),
+                              color: AppColors.onPrimary.withValues(alpha: 0.8),
                               size: 20),
                         ],
                       ),
@@ -257,7 +257,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.error_outline, size: 64, color: AppColors.danger),
+          const Icon(Icons.error_outline, size: 64, color: AppColors.error),
           const SizedBox(height: 16),
           Text(l10n.error, style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
