@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../models/openvpn_client_override.dart';
+import '../utils/constants.dart';
 import '../models/openvpn_dropdown_option.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/openvpn_client_override_form_view_model.dart';
@@ -329,7 +330,7 @@ class _OpenvpnClientOverrideFormScreenState
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(Icons.error_outline,
-                            size: 48, color: Colors.red),
+                            size: 48, color: AppColors.danger),
                         const SizedBox(height: 16),
                         Text(l10n.errorLoadingOverride),
                         const SizedBox(height: 8),

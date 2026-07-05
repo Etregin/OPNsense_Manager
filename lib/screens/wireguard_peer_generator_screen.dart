@@ -284,7 +284,7 @@ class _WireGuardPeerGeneratorScreenState
                     const Icon(
                       Icons.error_outline,
                       size: 48,
-                      color: Colors.red,
+                      color: AppColors.danger,
                     ),
                     const SizedBox(height: 16),
                     Text(

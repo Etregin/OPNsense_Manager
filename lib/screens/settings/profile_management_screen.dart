@@ -363,7 +363,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
             style: TextButton.styleFrom(
-              foregroundColor: Colors.orange,
+              foregroundColor: AppColors.warning,
             ),
             child: Text(l10n.includeCredentials),
           ),
@@ -456,22 +456,22 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.dns_outlined,
             size: 64,
-            color: Colors.grey[400],
+            color: AppColors.iconMuted,
           ),
           const SizedBox(height: 16),
           Text(
             AppLocalizations.of(context)!.noProfiles,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Colors.grey[600],
+                  color: AppColors.textSecondary,
                 ),
           ),
           const SizedBox(height: 8),
           Text(
             AppLocalizations.of(context)!.addProfileToManageInstances,
-            style: TextStyle(color: Colors.grey[600]),
+            style: const TextStyle(color: AppColors.textSecondary),
           ),
         ],
       ),

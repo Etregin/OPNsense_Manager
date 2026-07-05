@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../services/demo_api_service.dart';
+import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
 import '../utils/formatters.dart';
 import '../viewmodels/wireguard_log_view_model.dart';
@@ -250,9 +251,9 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
       case 'Error':
         return colorScheme.error;
       case 'Warning':
-        return Colors.orange;
+        return AppColors.warning;
       case 'Notice':
-        return Colors.amber;
+        return AppColors.warning;
       case 'Info':
       case 'Informational':
         return colorScheme.primary;

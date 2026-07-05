@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/neighbor.dart';
+import '../utils/constants.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/neighbor_discovery_view_model.dart';
@@ -141,16 +142,16 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
                       style: const TextStyle(fontSize: 12),
                     ),
                     backgroundColor: serviceStatus == 'running'
-                        ? Colors.green.shade100
+                        ? AppColors.success.withValues(alpha: 0.15)
                         : serviceStatus == 'stopped'
-                            ? Colors.orange.shade100
-                            : Colors.grey.shade200,
+                            ? AppColors.warning.withValues(alpha: 0.15)
+                            : AppColors.surfaceLight,
                     labelStyle: TextStyle(
                       color: serviceStatus == 'running'
-                          ? Colors.green.shade900
+                          ? AppColors.success
                           : serviceStatus == 'stopped'
-                              ? Colors.orange.shade900
-                              : Colors.grey.shade700,
+                              ? AppColors.warning
+                              : AppColors.textSecondary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -357,12 +358,12 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
             const SizedBox(height: 8),
             Row(
               children: [
-                Icon(Icons.schedule, size: 14, color: Colors.grey[600]),
+                const Icon(Icons.schedule, size: 14, color: AppColors.textSecondary),
                 const SizedBox(width: 6),
                 Text(
                   'First seen: ${_formatLastSeen(neighbor.firstSeen)}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey[600],
+                        color: AppColors.textSecondary,
                         fontSize: 12,
                       ),
                 ),
@@ -371,12 +372,12 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
             const SizedBox(height: 4),
             Row(
               children: [
-                Icon(Icons.access_time, size: 14, color: Colors.grey[600]),
+                const Icon(Icons.access_time, size: 14, color: AppColors.textSecondary),
                 const SizedBox(width: 6),
                 Text(
                   'Last seen: ${_formatLastSeen(neighbor.lastSeen)}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey[600],
+                        color: AppColors.textSecondary,
                         fontSize: 12,
                       ),
                 ),

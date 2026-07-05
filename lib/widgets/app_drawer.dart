@@ -183,10 +183,10 @@ class _AppDrawerState extends State<AppDrawer> {
           
           // 7. Reboot System (individual tile)
           ListTile(
-            leading: const Icon(Icons.restart_alt, color: Colors.red),
+            leading: const Icon(Icons.restart_alt, color: AppColors.danger),
             title: Text(
               l10n.rebootSystem,
-              style: const TextStyle(color: Colors.red),
+              style: const TextStyle(color: AppColors.danger),
             ),
             onTap: () {
               Navigator.pop(context);
@@ -267,7 +267,7 @@ class _AppDrawerState extends State<AppDrawer> {
       builder: (context) => AlertDialog(
         title: Row(
           children: [
-            const Icon(Icons.warning, color: Colors.orange),
+            const Icon(Icons.warning, color: AppColors.warning),
             const SizedBox(width: 8),
             Text(l10n.rebootSystem),
           ],
@@ -280,7 +280,7 @@ class _AppDrawerState extends State<AppDrawer> {
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            style: TextButton.styleFrom(foregroundColor: AppColors.danger),
             child: Text(l10n.restart),
           ),
         ],

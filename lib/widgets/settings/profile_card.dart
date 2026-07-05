@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import '../../models/profile.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/constants.dart';
 
 /// A reusable card widget for displaying profile information
 class ProfileCard extends StatelessWidget {
@@ -50,8 +51,8 @@ class ProfileCard extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: isActive 
-              ? Theme.of(context).primaryColor 
-              : Colors.grey[400],
+              ? Theme.of(context).primaryColor
+              : AppColors.iconMuted,
           child: Icon(
             isActive ? Icons.check : Icons.dns,
             color: Colors.white,
@@ -120,9 +121,9 @@ class ProfileCard extends StatelessWidget {
               value: 'delete',
               child: Row(
                 children: [
-                  const Icon(Icons.delete, size: 20, color: Colors.red),
+                  const Icon(Icons.delete, size: 20, color: AppColors.danger),
                   const SizedBox(width: 12),
-                  Text(l10n.delete, style: const TextStyle(color: Colors.red)),
+                  Text(l10n.delete, style: const TextStyle(color: AppColors.danger)),
                 ],
               ),
             ),

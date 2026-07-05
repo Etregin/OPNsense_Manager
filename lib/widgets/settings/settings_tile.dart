@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../utils/constants.dart';
 
 /// A reusable settings tile widget
 /// 
@@ -64,8 +65,8 @@ class SettingsTile extends StatelessWidget {
                     Text(
                       subtitle!,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.grey[600],
-                          ),
+                                color: AppColors.textSecondary,
+                              ),
                     ),
                   ],
                 ],

@@ -193,18 +193,18 @@ class _OpenvpnStaticKeyFormScreenState
                   padding: const EdgeInsets.all(12),
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
-                    color: Colors.red[50],
+                    color: AppColors.danger.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.red),
+                    border: Border.all(color: AppColors.danger),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.error_outline, color: Colors.red),
+                      const Icon(Icons.error_outline, color: AppColors.danger),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
                           _viewModel.errorMessage!,
-                          style: const TextStyle(color: Colors.red),
+                          style: const TextStyle(color: AppColors.danger),
                         ),
                       ),
                     ],

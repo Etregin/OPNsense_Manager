@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/openvpn_dropdown_option.dart';
+import '../../utils/constants.dart';
 
 /// Role selector widget for OpenVPN instances
 class OpenvpnRoleSelector extends StatelessWidget {
@@ -247,7 +248,7 @@ class OpenvpnDropdownField extends StatelessWidget {
           enabled: false,
           child: Text(
             optgroup,
-            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+            style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.disabled),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
           ),
@@ -334,7 +335,7 @@ class OpenvpnMultiSelectField extends StatelessWidget {
                     optgroup,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey,
+                      color: AppColors.disabled,
                       fontSize: 14,
                     ),
                   ),
@@ -509,7 +510,7 @@ class OpenvpnArrayField extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
               emptyMessage,
-              style: const TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+              style: const TextStyle(color: AppColors.disabled, fontStyle: FontStyle.italic),
             ),
           )
         else
@@ -532,7 +533,7 @@ class OpenvpnArrayField extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
+                    icon: const Icon(Icons.delete, color: AppColors.danger),
                     onPressed: enabled ? () => onRemove(index) : null,
                   ),
                 ],

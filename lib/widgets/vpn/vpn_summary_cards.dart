@@ -48,14 +48,14 @@ class VPNSummaryCards extends StatelessWidget {
                     Icon(
                       Icons.vpn_lock,
                       size: 32,
-                      color: connectedCount > 0 ? Colors.green : Colors.grey,
+                      color: connectedCount > 0 ? AppColors.success : AppColors.disabled,
                     ),
                     const SizedBox(height: 8),
                     Text(
                       '$connectedCount / $totalCount',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: connectedCount > 0 ? Colors.green : Colors.grey,
+                        color: connectedCount > 0 ? AppColors.success : AppColors.disabled,
                       ),
                     ),
                     Text(l10n.connected),
@@ -74,14 +74,14 @@ class VPNSummaryCards extends StatelessWidget {
                     const Icon(
                       Icons.router,
                       size: 32,
-                      color: Colors.blue,
+                      color: AppColors.info,
                     ),
                     const SizedBox(height: 8),
                     Text(
                       '$totalCount',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+                        color: AppColors.info,
                       ),
                     ),
                     Text(l10n.totalVPNs),

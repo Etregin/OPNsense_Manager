@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../services/demo_api_service.dart';
+import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/tailscale_auth_view_model.dart';
 import '../widgets/app_drawer.dart';
@@ -141,7 +142,7 @@ class _TailscaleAuthenticationScreenState
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 64, color: Colors.red),
+            const Icon(Icons.error_outline, size: 64, color: AppColors.danger),
             const SizedBox(height: 16),
             Text(
               l10n.errorLoadingData,

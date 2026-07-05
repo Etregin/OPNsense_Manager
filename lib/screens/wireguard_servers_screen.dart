@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/wireguard_server.dart';
+import '../utils/constants.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/wireguard_servers_view_model.dart';
@@ -267,8 +268,8 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
                                       child: ListTile(
                                         leading: CircleAvatar(
                                           backgroundColor: server.isEnabled
-                                              ? Colors.green
-                                              : Colors.grey,
+                                              ? AppColors.success
+                                              : AppColors.disabled,
                                           child: const Icon(
                                             Icons.security,
                                             color: Colors.white,
@@ -291,9 +292,9 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
                                             Text(
                                               l10n.peersConfigured(
                                                   server.peerUuidList.length),
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontSize: 12,
-                                                color: Colors.grey[600],
+                                                color: AppColors.textSecondary,
                                               ),
                                             ),
                                           ],
@@ -314,7 +315,7 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
                                                 value: server.isEnabled,
                                                 onChanged: (value) =>
                                                     _toggleServer(server),
-                                                activeTrackColor: Colors.green,
+                                                activeTrackColor: AppColors.success,
                                               ),
                                             const SizedBox(width: 8),
                                             PopupMenuButton<String>(
@@ -358,13 +359,12 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
                                                   child: Row(
                                                     children: [
                                                       const Icon(Icons.delete,
-                                                          color: Colors.red),
+                                                          color: AppColors.danger),
                                                       const SizedBox(width: 8),
                                                       Text(l10n.delete,
                                                           style:
                                                               const TextStyle(
-                                                                  color: Colors
-                                                                      .red)),
+                                                                  color: AppColors.danger)),
                                                     ],
                                                   ),
                                                 ),

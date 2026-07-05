@@ -26,6 +26,8 @@ import '../widgets/openvpn/openvpn_instance_card.dart';
 import '../widgets/common/error_display.dart';
 import '../widgets/common/empty_state_widget.dart';
 import '../l10n/app_localizations.dart';
+import '../widgets/common/confirmation_dialog.dart';
+
 import 'openvpn_instance_form_screen.dart';
 
 /// Screen for displaying OpenVPN instances list with pagination and search
@@ -116,26 +118,14 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
   Future<void> _deleteInstance(OpenvpnInstanceListItem instance) async {
     final l10n = AppLocalizations.of(context)!;
 
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.deleteInstance),
-        content: Text(
-          l10n.confirmDeleteInstance(
-              instance.description.isNotEmpty ? instance.description : instance.vpnid),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: Text(l10n.delete),
-          ),
-        ],
-      ),
+      title: l10n.deleteInstance,
+      message: l10n.confirmDeleteInstance(
+          instance.description.isNotEmpty ? instance.description : instance.vpnid),
+      confirmText: l10n.delete,
+      cancelText: l10n.cancel,
+      isDestructive: true,
     );
 
     if (confirmed == true && mounted) {

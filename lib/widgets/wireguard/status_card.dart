@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../models/wireguard_status.dart';
+import '../../utils/constants.dart';
 
 /// Card widget for displaying WireGuard status information
 class StatusCard extends StatelessWidget {
@@ -47,7 +48,7 @@ class StatusCard extends StatelessWidget {
                   height: 12,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: item.isUp ? Colors.green : Colors.red,
+                    color: item.isUp ? AppColors.success : AppColors.danger,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -65,13 +66,13 @@ class StatusCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: item.isInterface ? Colors.blue.withValues(alpha: 0.1) : Colors.orange.withValues(alpha: 0.1),
+                    color: item.isInterface ? AppColors.info.withValues(alpha: 0.1) : AppColors.warning.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
                     item.type,
                     style: TextStyle(
-                      color: item.isInterface ? Colors.blue : Colors.orange,
+                      color: item.isInterface ? AppColors.info : AppColors.warning,
                       fontWeight: FontWeight.w500,
                       fontSize: 12,
                     ),
@@ -87,7 +88,7 @@ class StatusCard extends StatelessWidget {
               'Status',
               item.status.toUpperCase(),
               icon: Icons.power_settings_new,
-              valueColor: item.isUp ? Colors.green : Colors.red,
+              valueColor: item.isUp ? AppColors.success : AppColors.danger,
             ),
             
             // Device (interface name like wg0, wg1)
@@ -140,7 +141,7 @@ class StatusCard extends StatelessWidget {
                 'Peer Status',
                 item.peerStatus,
                 icon: Icons.link,
-                valueColor: item.isOnline ? Colors.green : Colors.grey,
+                valueColor: item.isOnline ? AppColors.success : AppColors.disabled,
               ),
             
             // Handshake Age (only if not null)
@@ -194,7 +195,7 @@ class StatusCard extends StatelessWidget {
             Icon(
               icon,
               size: 16,
-              color: Colors.grey[600],
+              color: AppColors.textSecondary,
             ),
             const SizedBox(width: 8),
           ],
@@ -202,8 +203,8 @@ class StatusCard extends StatelessWidget {
             width: 110,
             child: Text(
               '$label:',
-              style: TextStyle(
-                color: Colors.grey[600],
+              style: const TextStyle(
+                color: AppColors.textSecondary,
                 fontSize: 13,
               ),
             ),

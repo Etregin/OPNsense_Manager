@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import '../../models/vpn_connection.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/constants.dart';
 import '../../utils/formatters.dart';
 
 /// Widget for displaying detailed VPN connection information
@@ -102,7 +103,7 @@ class VPNDetailSection extends StatelessWidget {
             '$label:',
             style: const TextStyle(
               fontWeight: FontWeight.w500,
-              color: Colors.grey,
+              color: AppColors.disabled,
             ),
           ),
         ),

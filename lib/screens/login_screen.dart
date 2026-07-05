@@ -171,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     : l10n.someConnectionsFailed,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: successCount == totalCount ? Colors.green : Colors.orange,
+                  color: successCount == totalCount ? AppColors.success : AppColors.warning,
                 ),
               ),
               const SizedBox(height: 16),
@@ -185,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Icon(
                         success ? Icons.check_circle : Icons.error,
-                        color: success ? Colors.green : Colors.red,
+                        color: success ? AppColors.success : AppColors.danger,
                         size: 20,
                       ),
                       const SizedBox(width: 8),
@@ -193,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Text(
                           endpoint,
                           style: TextStyle(
-                            color: success ? Colors.green : Colors.red,
+                            color: success ? AppColors.success : AppColors.danger,
                           ),
                         ),
                       ),
@@ -504,7 +504,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     l10n.needHelpCheckDocumentation,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.grey[600],
+                          color: AppColors.textSecondary,
                         ),
                   ),
                 ],

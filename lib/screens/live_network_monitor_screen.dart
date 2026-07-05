@@ -333,7 +333,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                       Row(
                         children: [
                           const Icon(Icons.circle,
-                              size: 8, color: Colors.green),
+                              size: 8, color: AppColors.success),
                           const SizedBox(width: 4),
                           Text(
                             l10n.live,
@@ -341,7 +341,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                                 .textTheme
                                 .bodySmall
                                 ?.copyWith(
-                                  color: Colors.green,
+                                  color: AppColors.success,
                                   fontWeight: FontWeight.bold,
                                 ),
                           ),
@@ -453,7 +453,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                     label: l10n.totalDownload,
                     value: Formatters.formatBytesPerSecond(totalDownload, context, decimals: 1),
                     icon: Icons.arrow_downward,
-                    color: Colors.green,
+                    color: AppColors.success,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -462,7 +462,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                     label: l10n.totalUpload,
                     value: Formatters.formatBytesPerSecond(totalUpload, context, decimals: 1),
                     icon: Icons.arrow_upward,
-                    color: Colors.blue,
+                    color: AppColors.info,
                   ),
                 ),
               ],
@@ -484,7 +484,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                     label: l10n.activeDevices,
                     value: '$activeHosts / ${hosts.length}',
                     icon: Icons.devices_other,
-                    color: Colors.orange,
+                    color: AppColors.warning,
                   ),
                 ),
               ],
@@ -592,10 +592,10 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                       ],
                     ),
                   ),
-                  Icon(
+                  const Icon(
                     Icons.chevron_right,
                     size: 20,
-                    color: Colors.grey[400],
+                    color: AppColors.iconMuted,
                   ),
                 ],
               ),
@@ -637,7 +637,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                       label: l10n.download,
                       rate: host.rateIn,
                       icon: Icons.arrow_downward,
-                      color: Colors.green,
+                      color: AppColors.success,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -646,7 +646,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                       label: l10n.upload,
                       rate: host.rateOut,
                       icon: Icons.arrow_upward,
-                      color: Colors.blue,
+                      color: AppColors.info,
                     ),
                   ),
                 ],
@@ -749,7 +749,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
           child: LinearProgressIndicator(
             value: progress,
             minHeight: 8,
-            backgroundColor: Colors.grey[300],
+            backgroundColor: AppColors.surfaceMid,
             valueColor: AlwaysStoppedAnimation<Color>(
               _getProgressColor(progress),
             ),
@@ -760,9 +760,9 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
   }
 
   Color _getProgressColor(double progress) {
-    if (progress < 0.5) return Colors.green;
-    if (progress < 0.75) return Colors.orange;
-    return Colors.red;
+    if (progress < 0.5) return AppColors.success;
+    if (progress < 0.75) return AppColors.warning;
+    return AppColors.danger;
   }
 
   void _showHostDetails(NetworkHost host) {

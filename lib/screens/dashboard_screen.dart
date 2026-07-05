@@ -179,11 +179,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 12),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Colors.orange.shade400,
-                            Colors.orange.shade600,
+                            AppColors.warning,
+                            AppColors.warning,
                           ],
                         ),
                       ),
@@ -257,7 +257,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
+          const Icon(Icons.error_outline, size: 64, color: AppColors.danger),
           const SizedBox(height: 16),
           Text(l10n.error, style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
@@ -266,7 +266,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Text(
               _viewModel.errorMessage!,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey[600]),
+              style: const TextStyle(color: AppColors.textSecondary),
             ),
           ),
           const SizedBox(height: 24),

@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/connection_endpoint.dart';
+import '../../utils/constants.dart';
 import '../../utils/validators.dart';
 import '../../utils/snackbar_helper.dart';
 
@@ -111,7 +112,7 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: FilledButton.styleFrom(
-              backgroundColor: Colors.red,
+              backgroundColor: AppColors.danger,
             ),
             child: Text(l10n.delete),
           ),
@@ -282,7 +283,7 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
                               onPressed: widget.enabled && !isOnlyConnection
                                   ? () => _showDeleteConfirmation(index)
                                   : null,
-                              color: isOnlyConnection ? theme.disabledColor : Colors.red,
+                              color: isOnlyConnection ? theme.disabledColor : AppColors.danger,
                               padding: EdgeInsets.zero,
                               constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
                             ),

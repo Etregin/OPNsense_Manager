@@ -42,13 +42,13 @@ class InterfaceSelector extends StatelessWidget {
       padding: const EdgeInsets.all(AppConstants.standardPadding),
       decoration: BoxDecoration(
         color: Theme.of(context).brightness == Brightness.dark
-            ? Colors.grey[850]
-            : Colors.grey[100],
+            ? Theme.of(context).colorScheme.surfaceContainerHighest
+            : AppColors.surfaceLight,
         border: Border(
           bottom: BorderSide(
             color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.grey[700]!
-                : Colors.grey[300]!,
+                ? AppColors.surfaceMid
+                : AppColors.surfaceMid,
           ),
         ),
       ),
@@ -59,7 +59,7 @@ class InterfaceSelector extends StatelessWidget {
             l10n.selectInterface,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey[600],
+                  color: AppColors.textSecondary,
                 ),
           ),
           const SizedBox(height: 8),

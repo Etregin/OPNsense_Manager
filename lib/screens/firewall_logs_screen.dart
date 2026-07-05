@@ -239,13 +239,13 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
   Color _getActionColor(String action) {
     switch (action.toLowerCase()) {
       case 'pass':
-        return Colors.green;
-      case 'block':
-        return Colors.red;
-      case 'reject':
-        return Colors.orange;
-      default:
-        return Colors.grey;
+    return AppColors.success;
+  case 'block':
+    return AppColors.danger;
+  case 'reject':
+    return AppColors.warning;
+  default:
+    return AppColors.disabled;
     }
   }
 
@@ -384,21 +384,21 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: _isPaused
-          ? Colors.orange.withValues(alpha: 0.1)
-          : Colors.green.withValues(alpha: 0.1),
+          ? AppColors.warning.withValues(alpha: 0.1)
+          : AppColors.success.withValues(alpha: 0.1),
       child: Row(
         children: [
           Icon(
             _isPaused ? Icons.pause_circle : Icons.fiber_manual_record,
             size: 16,
-            color: _isPaused ? Colors.orange : Colors.green,
+            color: _isPaused ? AppColors.warning : AppColors.success,
           ),
           const SizedBox(width: 8),
           Text(
             _isPaused ? l10n.paused : l10n.live,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: _isPaused ? Colors.orange : Colors.green,
+              color: _isPaused ? AppColors.warning : AppColors.success,
             ),
           ),
           const Spacer(),
@@ -429,7 +429,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
+            const Icon(Icons.error_outline, size: 64, color: AppColors.danger),
             const SizedBox(height: 16),
             Text(
               l10n.errorLoadingLogs,
@@ -461,7 +461,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.article_outlined, size: 64, color: Colors.grey[400]),
+            const Icon(Icons.article_outlined, size: 64, color: AppColors.iconMuted),
             const SizedBox(height: 16),
             Text(
               l10n.noLogsAvailable,

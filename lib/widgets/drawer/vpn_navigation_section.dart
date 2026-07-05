@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../constants/routes.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/constants.dart';
 import '../../models/vpn_connection.dart';
 import '../../screens/wireguard_servers_screen.dart';
 import '../../screens/wireguard_peers_screen.dart';
@@ -341,13 +342,13 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(
           color: _tailscaleStatus!.isConnected
-              ? Colors.green.withValues(alpha: 0.2)
-              : Colors.grey.withValues(alpha: 0.2),
+              ? AppColors.success.withValues(alpha: 0.2)
+              : AppColors.disabled.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: _tailscaleStatus!.isConnected
-                ? Colors.green
-                : Colors.grey,
+                ? AppColors.success
+                : AppColors.disabled,
             width: 1,
           ),
         ),
@@ -357,8 +358,8 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
             fontSize: 10,
             fontWeight: FontWeight.bold,
             color: _tailscaleStatus!.isConnected
-                ? Colors.green.shade700
-                : Colors.grey.shade700,
+                ? AppColors.success
+                : AppColors.disabled,
           ),
         ),
       );
@@ -367,19 +368,19 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: Colors.orange.withValues(alpha: 0.2),
+        color: AppColors.warning.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: Colors.orange,
+          color: AppColors.warning,
           width: 1,
         ),
       ),
       child: Text(
         l10n.unknown,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.bold,
-          color: Colors.orange.shade700,
+          color: AppColors.warning,
         ),
       ),
     );

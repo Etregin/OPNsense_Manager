@@ -292,17 +292,17 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Card(
-                    color: Colors.red.shade100,
+                    color: AppColors.danger.withValues(alpha: 0.1),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Row(
                         children: [
-                          Icon(Icons.error, color: Colors.red.shade700),
+                          const Icon(Icons.error, color: AppColors.danger),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               _errorMessage!,
-                              style: TextStyle(color: Colors.red.shade700),
+                              style: const TextStyle(color: AppColors.danger),
                             ),
                           ),
                         ],
@@ -316,18 +316,18 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Card(
-                    color: Colors.blue.shade50,
+                    color: AppColors.info.withValues(alpha: 0.1),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Row(
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             width: 20,
                             height: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.blue.shade700,
+                                AppColors.info,
                               ),
                             ),
                           ),
@@ -335,8 +335,8 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                           Expanded(
                             child: Text(
                               _connectionStatus!,
-                              style: TextStyle(
-                                color: Colors.blue.shade700,
+                              style: const TextStyle(
+                                color: AppColors.info,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -435,16 +435,16 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.folder_open,
               size: 80,
-              color: Colors.grey.shade400,
+              color: AppColors.iconMuted,
             ),
             const SizedBox(height: 16),
             Text(
               l10n.noProfilesYet,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Colors.grey.shade700,
+                    color: AppColors.textSecondary,
                     fontWeight: FontWeight.bold,
                   ),
             ),
@@ -453,7 +453,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
               l10n.createYourFirstProfile,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey.shade600,
+                    color: AppColors.textSecondary,
                   ),
             ),
           ],

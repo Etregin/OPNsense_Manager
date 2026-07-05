@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/wireguard_peer.dart';
+import '../utils/constants.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/wireguard_peers_view_model.dart';
@@ -26,6 +27,8 @@ import '../widgets/app_drawer.dart';
 import '../widgets/wireguard/peer_card.dart';
 import '../l10n/app_localizations.dart';
 import 'wireguard_peer_form_screen.dart';
+import '../widgets/common/confirmation_dialog.dart';
+
 
 /// Screen for managing WireGuard peers
 class WireGuardPeersScreen extends StatefulWidget {
@@ -82,25 +85,13 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
   Future<void> _deletePeer(WireGuardPeer peer) async {
     final l10n = AppLocalizations.of(context)!;
 
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.deletePeer),
-        content: Text(l10n.deletePeerConfirmation(peer.name)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
-            child: Text(l10n.delete),
-          ),
-        ],
-      ),
+      title: l10n.deletePeer,
+      message: l10n.deletePeerConfirmation(peer.name),
+      confirmText: l10n.delete,
+      cancelText: l10n.cancel,
+      isDestructive: true,
     );
 
     if (confirmed == true && mounted) {
@@ -266,7 +257,7 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
                                 const Icon(
                                   Icons.error_outline,
                                   size: 48,
-                                  color: Colors.red,
+                                  color: AppColors.danger,
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
@@ -292,7 +283,7 @@ class _WireGuardPeersScreenState extends State<WireGuardPeersScreen> {
                                     const Icon(
                                       Icons.vpn_key,
                                       size: 48,
-                                      color: Colors.grey,
+                                      color: AppColors.disabled,
                                     ),
                                     const SizedBox(height: 16),
                                     Text(

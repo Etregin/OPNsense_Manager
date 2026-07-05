@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../utils/constants.dart';
 import '../widgets/app_drawer.dart';
 import '../l10n/app_localizations.dart';
 import 'settings/general_settings_screen.dart';
@@ -128,7 +129,7 @@ class _ProfilesTab extends StatelessWidget {
         children: [
           TabBar(
             labelColor: Theme.of(context).primaryColor,
-            unselectedLabelColor: Colors.grey,
+            unselectedLabelColor: AppColors.disabled,
             tabs: [
               Tab(text: l10n.manageProfiles),
               Tab(text: l10n.importExport),

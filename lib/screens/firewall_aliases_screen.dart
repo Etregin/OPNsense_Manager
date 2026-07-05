@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../constants/firewall_constants.dart';
+import '../utils/constants.dart';
 import '../models/firewall_alias.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
@@ -384,8 +385,8 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                       const SizedBox(width: 8),
                       Text(
                         l10n.itemsCount(filteredAliases.length),
-                        style: TextStyle(
-                          color: Colors.grey[600],
+                        style: const TextStyle(
+                          color: AppColors.textSecondary,
                           fontSize: 12,
                         ),
                       ),
@@ -424,8 +425,8 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                                       child: ListTile(
                                         leading: CircleAvatar(
                                           backgroundColor: alias.isEnabled
-                                              ? Colors.green
-                                              : Colors.grey,
+                                              ? AppColors.success
+                                              : AppColors.disabled,
                                           child: Icon(
                                             _getIconForType(alias.type),
                                             color: Colors.white,
@@ -454,9 +455,9 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                                             Text(
                                               l10n.itemsCount(
                                                   alias.contentList.length),
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontSize: 12,
-                                                color: Colors.grey[600],
+                                                color: AppColors.textSecondary,
                                               ),
                                             ),
                                           ],
@@ -478,7 +479,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                                                 onChanged: (value) =>
                                                     _toggleAlias(
                                                         alias, value),
-                                                activeTrackColor: Colors.green,
+                                                activeTrackColor: AppColors.success,
                                               ),
                                             const SizedBox(width: 8),
                                             PopupMenuButton<String>(
@@ -509,13 +510,12 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                                                   child: Row(
                                                     children: [
                                                       const Icon(Icons.delete,
-                                                          color: Colors.red),
+                                                          color: AppColors.danger),
                                                       const SizedBox(width: 8),
                                                       Text(l10n.delete,
                                                           style:
                                                               const TextStyle(
-                                                                  color: Colors
-                                                                      .red)),
+                                                                  color: AppColors.danger)),
                                                     ],
                                                   ),
                                                 ),

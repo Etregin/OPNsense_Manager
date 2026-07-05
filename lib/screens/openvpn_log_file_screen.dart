@@ -21,6 +21,7 @@ import 'package:flutter/services.dart';
 import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_log_entry.dart';
+import '../utils/constants.dart';
 import '../services/demo_api_service.dart';
 import '../utils/formatters.dart';
 import '../utils/snackbar_helper.dart';
@@ -220,9 +221,9 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
       case 'Error':
         return colorScheme.error;
       case 'Warning':
-        return Colors.orange;
+        return AppColors.warning;
       case 'Notice':
-        return Colors.amber;
+        return AppColors.warning;
       case 'Info':
       case 'Informational':
         return colorScheme.primary;

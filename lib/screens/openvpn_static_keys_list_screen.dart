@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../models/openvpn_static_key.dart';
+import '../utils/constants.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/openvpn_static_keys_view_model.dart';
@@ -27,6 +28,8 @@ import '../screens/openvpn_static_key_form_screen.dart';
 import '../widgets/common/error_display.dart';
 import '../widgets/common/empty_state_widget.dart';
 import '../l10n/app_localizations.dart';
+import '../widgets/common/confirmation_dialog.dart';
+
 
 /// Screen for displaying OpenVPN static keys list with pagination
 class OpenvpnStaticKeysListScreen extends StatefulWidget {
@@ -89,26 +92,14 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
   Future<void> _deleteStaticKey(OpenvpnStaticKey key) async {
     final l10n = AppLocalizations.of(context)!;
 
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.deleteStaticKey),
-        content: Text(
-          l10n.confirmDeleteStaticKey(
-              key.description.isNotEmpty ? key.description : key.keyid ?? 'N/A'),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: Text(l10n.delete),
-          ),
-        ],
-      ),
+      title: l10n.deleteStaticKey,
+      message: l10n.confirmDeleteStaticKey(
+          key.description.isNotEmpty ? key.description : key.keyid ?? 'N/A'),
+      confirmText: l10n.delete,
+      cancelText: l10n.cancel,
+      isDestructive: true,
     );
 
     if (confirmed == true && mounted && key.keyid != null) {
@@ -153,7 +144,7 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.grey[100],
+                  color: AppColors.surfaceLight,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: SelectableText(

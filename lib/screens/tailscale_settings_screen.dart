@@ -20,6 +20,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
+import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/tailscale_settings_view_model.dart';
 import '../viewmodels/tailscale_settings_form_state.dart';
@@ -145,6 +146,7 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
       title: l10n.tailscaleServiceAction(actionTitle),
       message: l10n.tailscaleServiceActionConfirmation(action),
       confirmText: actionTitle,
+      cancelText: l10n.cancel,
       isDestructive: action == 'stop',
     );
 
@@ -184,6 +186,7 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
       title: l10n.unsavedChanges,
       message: l10n.unsavedChangesConfirmation,
       confirmText: l10n.discard,
+      cancelText: l10n.cancel,
       isDestructive: true,
     );
 
@@ -234,7 +237,7 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
                 children: [
                   FloatingActionButton.extended(
                     onPressed: _viewModel.isLoading ? null : _discardChanges,
-                    backgroundColor: Colors.grey,
+                    backgroundColor: AppColors.disabled,
                     heroTag: 'discard',
                     icon: const Icon(Icons.close),
                     label: Text(AppLocalizations.of(context)!.discard),

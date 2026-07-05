@@ -73,13 +73,29 @@ class AppConstants {
 
 /// App color constants
 class AppColors {
-  static const primary = Color(0xFF046371); // Deep Teal (Shield body)
-  static const secondary = Color(0xFF00FFFF); // Electric Cyan (Wi-Fi signal)
-  static const success = Color(0xFF4CAF50); // Green
-  static const warning = Color(0xFFFF9800); // Orange
-  static const error = Color(0xFFF44336); // Red
-  static const Color infoBackground = Color(0xFFE3F2FD); // matches Colors.blue[50]
-  static const Color infoText = Color(0xFF1565C0);        // matches Colors.blue[900]
-  static const Color disabled = Color(0xFF9E9E9E);        // matches Colors.grey
+  static const Color primary   = Color(0xFF046371); // Deep Teal (Shield body)
+  static const Color secondary = Color(0xFF00FFFF); // Electric Cyan (Wi-Fi signal)
+
+  // Semantic status colours
+  static const Color success = Color(0xFF4CAF50); // Colors.green
+  static const Color warning = Color(0xFFFF9800); // Colors.orange
+  static const Color error   = Color(0xFFF44336); // Colors.red
+  static const Color danger  = Color(0xFFF44336); // Colors.red (alias for error)
+  static const Color disabled = Color(0xFF9E9E9E); // Colors.grey
+
+  // Online / offline aliases (semantic clarity at call sites)
+  static const Color online  = Color(0xFF4CAF50); // Colors.green  (= success)
+  static const Color offline = Color(0xFF9E9E9E); // Colors.grey   (= disabled)
+
+  // Text & icon tones (Material grey scale)
+  static const Color textSecondary = Color(0xFF757575); // Colors.grey[600]
+  static const Color iconMuted     = Color(0xFFBDBDBD); // Colors.grey[400]
+  static const Color surfaceMid    = Color(0xFFE0E0E0); // Colors.grey[300]
+  static const Color surfaceLight  = Color(0xFFEEEEEE); // Colors.grey[200]
+
+  // Informational
+  static const Color info            = Color(0xFF2196F3); // Colors.blue
+  static const Color infoBackground  = Color(0xFFE3F2FD); // Colors.blue[50]
+  static const Color infoText        = Color(0xFF1565C0); // Colors.blue[900]
 }
 

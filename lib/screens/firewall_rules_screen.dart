@@ -262,7 +262,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.security, size: 64, color: Colors.grey[400]),
+          const Icon(Icons.security, size: 64, color: AppColors.iconMuted),
           const SizedBox(height: 16),
           Text(
             l10n.noInterfacesWithAutomationRules,
@@ -292,7 +292,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.security, size: 64, color: Colors.grey[400]),
+            const Icon(Icons.security, size: 64, color: AppColors.iconMuted),
             const SizedBox(height: 16),
             Text(
               l10n.noRulesForInterface(selectedInterface),

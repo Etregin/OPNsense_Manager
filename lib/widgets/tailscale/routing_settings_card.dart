@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/tailscale_settings.dart';
+import '../../utils/constants.dart';
 import '../../viewmodels/tailscale_settings_form_state.dart';
 
 /// Widget for Tailscale routing settings
@@ -127,7 +128,7 @@ class RoutingSettingsCard extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () => Navigator.pop(context, true),
-                          style: TextButton.styleFrom(foregroundColor: Colors.red),
+                          style: TextButton.styleFrom(foregroundColor: AppColors.danger),
                           child: Text(l10n.discard),
                         ),
                       ],

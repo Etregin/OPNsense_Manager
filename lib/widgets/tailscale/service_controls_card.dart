@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../utils/constants.dart';
 
 /// Widget for Tailscale service control buttons
 class ServiceControlsCard extends StatelessWidget {
@@ -55,7 +56,7 @@ class ServiceControlsCard extends StatelessWidget {
                     icon: const Icon(Icons.play_arrow),
                     label: const Text('Start'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
+                      backgroundColor: AppColors.success,
                     ),
                   ),
                 ),
@@ -66,7 +67,7 @@ class ServiceControlsCard extends StatelessWidget {
                     icon: const Icon(Icons.stop),
                     label: const Text('Stop'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
+                      backgroundColor: AppColors.danger,
                     ),
                   ),
                 ),

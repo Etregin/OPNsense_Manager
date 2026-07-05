@@ -134,7 +134,7 @@ class RuleDetailSheet extends StatelessWidget {
               label,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.grey,
+                color: AppColors.disabled,
               ),
             ),
           ),
@@ -152,19 +152,19 @@ class RuleDetailSheet extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.orange.withValues(alpha: 0.1),
+        color: AppColors.warning.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+        border: Border.all(color: AppColors.warning.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
-          Icon(Icons.info_outline, color: Colors.orange[700], size: 20),
+          const Icon(Icons.info_outline, color: AppColors.warning, size: 20),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               l10n.systemGeneratedRule,
-              style: TextStyle(
-                color: Colors.orange[700],
+              style: const TextStyle(
+                color: AppColors.warning,
                 fontSize: 12,
               ),
             ),
@@ -193,7 +193,7 @@ class RuleDetailSheet extends StatelessWidget {
             icon: const Icon(Icons.delete),
             label: Text(l10n.delete),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
+              backgroundColor: AppColors.danger,
               foregroundColor: Colors.white,
             ),
           ),

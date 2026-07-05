@@ -421,8 +421,8 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
                 children: [
                   Icon(
                     isExpired ? Icons.computer_outlined : Icons.computer,
-                    color: isExpired 
-                        ? Colors.grey 
+                    color: isExpired
+                        ? AppColors.disabled
                         : Theme.of(context).colorScheme.primary,
                     size: 18,
                   ),
@@ -432,7 +432,7 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
                       lease.hostname,
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: isExpired ? Colors.grey : null,
+                            color: isExpired ? AppColors.disabled : null,
                           ),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -442,8 +442,8 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
                       color: lease.isStatic
-                          ? Colors.blue[100]
-                          : Colors.orange[100],
+                          ? AppColors.info.withValues(alpha: 0.15)
+                          : AppColors.warning.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -451,7 +451,7 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: lease.isStatic ? Colors.blue[900] : Colors.orange[900],
+                        color: lease.isStatic ? AppColors.infoText : AppColors.warning,
                       ),
                     ),
                   ),
@@ -461,8 +461,8 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
                       color: isExpired
-                          ? Colors.grey[300]
-                          : Colors.green[100],
+                          ? AppColors.surfaceMid
+                          : AppColors.success.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -470,15 +470,15 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: isExpired ? Colors.grey[700] : Colors.green[900],
+                        color: isExpired ? AppColors.textSecondary : AppColors.success,
                       ),
                     ),
                   ),
                   const SizedBox(width: 4),
-                  Icon(
+                  const Icon(
                     Icons.chevron_right,
                     size: 20,
-                    color: Colors.grey[400],
+                    color: AppColors.iconMuted,
                   ),
                 ],
               ),
@@ -557,13 +557,13 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
                     Icon(
                       Icons.schedule,
                       size: 14,
-                      color: isExpired ? Colors.red : Theme.of(context).colorScheme.onSurfaceVariant,
+                      color: isExpired ? AppColors.danger : Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       '${l10n.expires}: ${_formatDateTime(lease.expiryDateTime!)}',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: isExpired ? Colors.red : Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: isExpired ? AppColors.danger : Theme.of(context).colorScheme.onSurfaceVariant,
                             fontSize: 11,
                           ),
                     ),
@@ -684,9 +684,9 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
             width: 120,
             child: Text(
               label,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.grey[700],
+                color: AppColors.textSecondary,
               ),
             ),
           ),

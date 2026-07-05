@@ -21,6 +21,7 @@ import 'package:flutter/services.dart';
 import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_instance.dart';
+import '../utils/constants.dart';
 import '../models/openvpn_dropdown_option.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/openvpn_instance_form_view_model.dart';
@@ -594,7 +595,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                        const Icon(Icons.error_outline, size: 48, color: AppColors.danger),
                         const SizedBox(height: 16),
                         Text(l10n.errorLoadingInstance),
                         const SizedBox(height: 8),
