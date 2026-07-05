@@ -23,7 +23,7 @@ import '../utils/app_colors.dart';
 import '../viewmodels/wireguard_status_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/wireguard/status_card.dart';
-import 'package:opnsense_manager/l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 /// Screen for displaying WireGuard service status
 class WireGuardStatusScreen extends StatefulWidget {

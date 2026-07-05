@@ -64,6 +64,7 @@ abstract class BaseOPNsenseService {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
+      case DioExceptionType.transformTimeout:
         return const ApiException('Connection timeout', null, ApiErrorType.timeout);
       case DioExceptionType.badResponse:
         final statusCode = e.response?.statusCode;
@@ -78,11 +79,16 @@ abstract class BaseOPNsenseService {
         }
       case DioExceptionType.cancel:
         return const ApiException('Request cancelled', null, ApiErrorType.cancelled);
+      case DioExceptionType.badCertificate:
+        return const ApiException(
+          'Certificate validation failed. The server is using a self-signed certificate. '
+          'Please enable "Allow Self-Signed Certificates" in connection settings.',
+          null,
+          ApiErrorType.certificateError,
+        );
       case DioExceptionType.connectionError:
-        // Check for certificate validation errors
-        if (e.message?.contains('CERTIFICATE_VERIFY_FAILED') == true ||
-            e.message?.contains('certificate') == true ||
-            e.error is HandshakeException) {
+      case DioExceptionType.unknown:
+        if (_isCertificateError(e)) {
           return const ApiException(
             'Certificate validation failed. The server is using a self-signed certificate. '
             'Please enable "Allow Self-Signed Certificates" in connection settings.',
@@ -94,26 +100,13 @@ abstract class BaseOPNsenseService {
           return const ApiException('Network error: Unable to connect', null, ApiErrorType.networkError);
         }
         return ApiException('Connection error: ${e.message}', null, ApiErrorType.networkError);
-      case DioExceptionType.unknown:
-        // Check for certificate validation errors in unknown type as well
-        if (e.message?.contains('CERTIFICATE_VERIFY_FAILED') == true ||
-            e.message?.contains('certificate') == true ||
-            e.error is HandshakeException) {
-          return const ApiException(
-            'Certificate validation failed. The server is using a self-signed certificate. '
-            'Please enable "Allow Self-Signed Certificates" in connection settings.',
-            null,
-            ApiErrorType.certificateError,
-          );
-        }
-        if (e.error is SocketException) {
-          return const ApiException('Network error: Unable to connect', null, ApiErrorType.networkError);
-        }
-        return ApiException('Unknown error: ${e.message}', null, ApiErrorType.unknown);
-      default:
-        return ApiException('Request failed: ${e.message}', null, ApiErrorType.unknown);
     }
   }
+
+  bool _isCertificateError(DioException e) =>
+      e.message?.contains('CERTIFICATE_VERIFY_FAILED') == true ||
+      e.message?.contains('certificate') == true ||
+      e.error is HandshakeException;
 
   /// Extract selected value from OPNsense dropdown structure
   String extractSelectedValue(Object? field, {bool returnDisplayValue = false}) {

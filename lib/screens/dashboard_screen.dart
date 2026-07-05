@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
+import '../utils/auto_refresh_mixin.dart';
 import '../services/profile_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
@@ -43,10 +44,10 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
+class _DashboardScreenState extends State<DashboardScreen>
+    with AutoRefreshMixin {
   late DashboardViewModel _viewModel;
   bool _isInitialized = false;
-  Timer? _refreshTimer;
 
   @override
   void didChangeDependencies() {
@@ -56,12 +57,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _viewModel = DashboardViewModel(apiService);
       _isInitialized = true;
       _initializeAndLoad();
-      _startAutoRefresh();
+      startAutoRefresh(AppConstants.dashboardRefreshInterval, _viewModel.loadDashboardData);
     }
   }
 
   Future<void> _initializeAndLoad() async {
-    // Ensure API service is initialized with active profile
     final profileService = context.read<ProfileService>();
     final apiService = context.read<OPNsenseApiService>();
 
@@ -75,20 +75,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   void dispose() {
-    _refreshTimer?.cancel();
     _viewModel.dispose();
     super.dispose();
-  }
-
-  void _startAutoRefresh() {
-    _refreshTimer = Timer.periodic(
-      const Duration(seconds: 30),
-      (timer) {
-        if (mounted) {
-          _viewModel.loadDashboardData();
-        }
-      },
-    );
   }
 
   Future<void> _controlService(
@@ -129,7 +117,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           SnackBarHelper.showSuccess(context, successMsg);
           await Future.delayed(const Duration(seconds: 1));
           if (mounted) {
-            _viewModel.loadDashboardData();
+            unawaited(_viewModel.loadDashboardData());
           }
         } else {
           SnackBarHelper.showError(context, l10n.serviceActionFailed);

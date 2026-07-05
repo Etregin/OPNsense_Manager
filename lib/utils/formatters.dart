@@ -25,7 +25,7 @@ import '../utils/constants.dart';
 /// Utility class for formatting data
 class Formatters {
   /// Format bytes to human-readable format (B, KB, MB, GB, TB)
-  static String formatBytes(int bytes, BuildContext context, {int decimals = 2}) {
+  static String formatBytes(int bytes, {int decimals = 2}) {
     if (bytes <= 0) return '0 ${StringConstants.unitB}';
     
     const suffixes = [
@@ -48,8 +48,8 @@ class Formatters {
   }
   
   /// Format bytes per second to human-readable format
-  static String formatBytesPerSecond(int bytesPerSecond, BuildContext context, {int decimals = 2}) {
-    return '${formatBytes(bytesPerSecond, context, decimals: decimals)}${StringConstants.unitPerSec}';
+  static String formatBytesPerSecond(int bytesPerSecond, {int decimals = 2}) {
+    return '${formatBytes(bytesPerSecond, decimals: decimals)}${StringConstants.unitPerSec}';
   }
   
   /// Format uptime in seconds to human-readable format

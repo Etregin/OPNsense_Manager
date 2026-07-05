@@ -17,7 +17,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/color_helpers.dart';
@@ -321,11 +320,11 @@ class WireGuardLogDetailSheet extends StatelessWidget {
   }
 
   void _copyToClipboard(BuildContext context, String text) {
-    Clipboard.setData(ClipboardData(text: text));
-    SnackBarHelper.showInfo(context, 'Copied to clipboard', duration: const Duration(seconds: 1));
+    SnackBarHelper.copyToClipboard(context, text);
   }
 
   void _copyAllDetails(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final details = StringBuffer();
     
     details.writeln('=== WireGuard Log Details ===\n');
@@ -350,8 +349,11 @@ class WireGuardLogDetailSheet extends StatelessWidget {
       details.writeln('  Host: ${log.host}');
     }
     
-    Clipboard.setData(ClipboardData(text: details.toString()));
-    SnackBarHelper.showInfo(context, 'All details copied to clipboard');
+    SnackBarHelper.copyToClipboard(
+      context,
+      details.toString(),
+      successMessage: l10n.allDetailsCopiedToClipboard,
+    );
   }
 
   IconData _getSeverityIcon(String severity) {

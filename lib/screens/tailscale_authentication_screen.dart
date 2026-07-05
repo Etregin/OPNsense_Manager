@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
@@ -91,7 +92,7 @@ class _TailscaleAuthenticationScreenState
         if (success) {
           SnackBarHelper.showSuccess(
               context, l10n.authSettingsSavedSuccessfully);
-          _viewModel.loadData();
+          unawaited(_viewModel.loadData());
         } else {
           SnackBarHelper.showError(context, l10n.failedToSaveAuthSettings);
         }

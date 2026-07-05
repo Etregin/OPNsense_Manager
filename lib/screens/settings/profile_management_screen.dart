@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/profile.dart';
@@ -68,7 +69,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
     if (!mounted) return;
     
     // Show loading
-    showDialog(
+    unawaited(showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
@@ -81,7 +82,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
           ],
         ),
       ),
-    );
+    ));
 
     try {
       final demoApiService = context.read<DemoApiService>();

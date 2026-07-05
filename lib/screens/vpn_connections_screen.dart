@@ -16,10 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/demo_api_service.dart';
+import '../utils/auto_refresh_mixin.dart';
 import '../utils/constants.dart';
 import '../viewmodels/vpn_connections_view_model.dart';
 import '../widgets/app_drawer.dart';
@@ -37,10 +37,10 @@ class VPNConnectionsScreen extends StatefulWidget {
   State<VPNConnectionsScreen> createState() => _VPNConnectionsScreenState();
 }
 
-class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
+class _VPNConnectionsScreenState extends State<VPNConnectionsScreen>
+    with AutoRefreshMixin {
   late VpnConnectionsViewModel _viewModel;
   bool _isInitialized = false;
-  Timer? _refreshTimer;
   String _filterType = 'all';
 
   /// Check if we're in Tailscale-specific mode
@@ -57,26 +57,14 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
       _viewModel = VpnConnectionsViewModel(apiService);
       _isInitialized = true;
       _viewModel.loadItems();
-      _startAutoRefresh();
+      startAutoRefresh(AppConstants.dashboardRefreshInterval, _viewModel.loadItems);
     }
   }
 
   @override
   void dispose() {
-    _refreshTimer?.cancel();
     _viewModel.dispose();
     super.dispose();
-  }
-
-  void _startAutoRefresh() {
-    _refreshTimer = Timer.periodic(
-      const Duration(seconds: 30),
-      (timer) {
-        if (mounted) {
-          _viewModel.loadItems();
-        }
-      },
-    );
   }
 
   @override

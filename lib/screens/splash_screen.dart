@@ -17,6 +17,7 @@
  */
 
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/app_version_service.dart';
@@ -60,13 +61,14 @@ class _SplashScreenState extends State<SplashScreen> {
     if (authRequired) {
       // Show PIN lock screen
       if (!mounted) return;
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => PinLockScreen(
-            onAuthenticated: (pinContext) async {
-              // Navigate from the PIN lock screen context
-              await _proceedToAppWithContext(pinContext, profileService, demoApiService, realApiService);
-            },
+      unawaited(
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => PinLockScreen(
+              onAuthenticated: (pinContext) async {
+                await _proceedToAppWithContext(pinContext, profileService, demoApiService, realApiService);
+              },
+            ),
           ),
         ),
       );
@@ -119,25 +121,29 @@ class _SplashScreenState extends State<SplashScreen> {
 
       if (isConnected) {
         // Navigate to dashboard
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const DashboardScreen(),
+        unawaited(
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => const DashboardScreen(),
+            ),
           ),
         );
       } else {
-        // Connection failed, go to profile selection
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const ProfileSelectionScreen(),
+        unawaited(
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => const ProfileSelectionScreen(),
+            ),
           ),
         );
       }
     } else {
-      // No active profile, go to profile selection
       if (!context.mounted) return;
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const ProfileSelectionScreen(),
+      unawaited(
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const ProfileSelectionScreen(),
+          ),
         ),
       );
     }

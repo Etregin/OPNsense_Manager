@@ -69,14 +69,14 @@ class VPNDetailSection extends StatelessWidget {
                 Expanded(
                   child: _buildDetailRow(
                     l10n.received,
-                    Formatters.formatBytes(connection.bytesReceived!, context),
+                    Formatters.formatBytes(connection.bytesReceived!),
                   ),
                 ),
               if (connection.bytesSent != null)
                 Expanded(
                   child: _buildDetailRow(
                     l10n.sent,
-                    Formatters.formatBytes(connection.bytesSent!, context),
+                    Formatters.formatBytes(connection.bytesSent!),
                   ),
                 ),
             ],

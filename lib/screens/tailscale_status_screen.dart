@@ -23,6 +23,7 @@ import '../l10n/app_localizations.dart';
 import '../models/tailscale_status.dart';
 import '../services/demo_api_service.dart';
 import '../utils/app_colors.dart';
+import '../utils/auto_refresh_mixin.dart';
 import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
 import '../utils/formatters.dart';
@@ -39,10 +40,10 @@ class TailscaleStatusScreen extends StatefulWidget {
   State<TailscaleStatusScreen> createState() => _TailscaleStatusScreenState();
 }
 
-class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
+class _TailscaleStatusScreenState extends State<TailscaleStatusScreen>
+    with AutoRefreshMixin {
   late TailscaleStatusViewModel _viewModel;
   bool _isInitialized = false;
-  Timer? _refreshTimer;
 
   @override
   void didChangeDependencies() {
@@ -52,26 +53,14 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
       _viewModel = TailscaleStatusViewModel(apiService);
       _isInitialized = true;
       _viewModel.loadData();
-      _startAutoRefresh();
+      startAutoRefresh(AppConstants.dashboardRefreshInterval, _viewModel.loadData);
     }
   }
 
   @override
   void dispose() {
-    _refreshTimer?.cancel();
     _viewModel.dispose();
     super.dispose();
-  }
-
-  void _startAutoRefresh() {
-    _refreshTimer = Timer.periodic(
-      const Duration(seconds: 30),
-      (timer) {
-        if (mounted) {
-          _viewModel.loadData();
-        }
-      },
-    );
   }
 
   Future<void> _controlService(String action) async {
@@ -101,7 +90,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
         if (success) {
           SnackBarHelper.showSuccess(
               context, l10n.tailscaleServiceActionSuccess(actionTitle));
-          _viewModel.loadData();
+          unawaited(_viewModel.loadData());
         } else {
           SnackBarHelper.showError(
               context, l10n.failedToActionTailscaleService(action));
@@ -251,10 +240,10 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
                   Formatters.formatDateTime(status.connectedSince!)),
             if (status.bytesReceived != null)
               _buildInfoRow(l10n.bytesReceived,
-                  Formatters.formatBytes(status.bytesReceived!, context)),
+                  Formatters.formatBytes(status.bytesReceived!)),
             if (status.bytesSent != null)
               _buildInfoRow(l10n.bytesSent,
-                  Formatters.formatBytes(status.bytesSent!, context)),
+                  Formatters.formatBytes(status.bytesSent!)),
           ],
         ),
       ),

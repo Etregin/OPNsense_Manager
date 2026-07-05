@@ -17,6 +17,7 @@
  */
 
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/firewall_rule.dart';
@@ -148,7 +149,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
             builder: (context) => FirewallRuleFormScreen(rule: rule),
           ),
         );
-        if (mounted) _viewModel.loadItems();
+        if (mounted) unawaited(_viewModel.loadItems());
       },
       onDelete: () {
         Navigator.of(context).pop();
@@ -199,7 +200,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
                   builder: (context) => const FirewallRuleFormScreen(),
                 ),
               );
-              if (mounted) _viewModel.loadItems();
+              if (mounted) unawaited(_viewModel.loadItems());
             },
             icon: const Icon(Icons.add),
             label: Text(l10n.newRule),

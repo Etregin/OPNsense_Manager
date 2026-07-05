@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/snackbar_helper.dart';
@@ -44,8 +45,10 @@ class NavigationService {
 
     // Navigate to destination
     if (context.mounted) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => destination),
+      unawaited(
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => destination),
+        ),
       );
     }
   }

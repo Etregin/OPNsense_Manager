@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../constants/routes.dart';
@@ -106,7 +107,7 @@ class SystemNavigationSection extends StatelessWidget {
     if (confirmed == true && context.mounted) {
       try {
         // Show loading indicator
-        showDialog(
+        unawaited(showDialog(
           context: context,
           barrierDismissible: false,
           builder: (context) => AlertDialog(
@@ -119,7 +120,7 @@ class SystemNavigationSection extends StatelessWidget {
               ],
             ),
           ),
-        );
+        ));
 
         final apiService = context.read<OPNsenseApiService>();
         await apiService.rebootSystem();

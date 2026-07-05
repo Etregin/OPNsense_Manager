@@ -29,7 +29,7 @@ import '../widgets/wireguard/list_manager_card.dart';
 import '../widgets/wireguard/peer_selector_dialog.dart';
 import '../utils/validators.dart';
 import '../utils/wireguard_validators.dart';
-import 'package:opnsense_manager/l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 /// Refactored form screen for creating/editing WireGuard servers
 class WireGuardServerFormScreen extends StatefulWidget {

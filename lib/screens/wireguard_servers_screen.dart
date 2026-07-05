@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/wireguard_server.dart';
@@ -191,7 +192,7 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
         builder: (context) => WireGuardServerFormScreen(server: server),
       ),
     );
-    if (mounted) _viewModel.loadItems();
+    if (mounted) unawaited(_viewModel.loadItems());
   }
 
   @override

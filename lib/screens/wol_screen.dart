@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
@@ -89,7 +90,7 @@ class _WolScreenState extends State<WolScreen> {
 
     // Show loading indicator
     if (!mounted) return;
-    showDialog(
+    unawaited(showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => Center(
@@ -107,7 +108,7 @@ class _WolScreenState extends State<WolScreen> {
           ),
         ),
       ),
-    );
+    ));
 
     // Store context references before async operations
     final demoApiService = context.read<DemoApiService>();
@@ -124,7 +125,7 @@ class _WolScreenState extends State<WolScreen> {
       final failedResults = results.where((r) => !r.isSuccess).toList();
 
       // Show results dialog
-      showDialog(
+      unawaited(showDialog(
         context: navigator.context,
         builder: (context) => AlertDialog(
           title: Text(AppLocalizations.of(context)!.wakeAllResults),
@@ -157,7 +158,7 @@ class _WolScreenState extends State<WolScreen> {
             ),
           ],
         ),
-      );
+      ));
     } catch (e) {
       if (!mounted) return;
       navigator.pop(); // Close loading dialog
@@ -218,7 +219,7 @@ class _WolScreenState extends State<WolScreen> {
   }
 
   Future<void> _copyHost(WolHost host) async {
-    showDialog(
+    unawaited(showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => Center(
@@ -236,7 +237,7 @@ class _WolScreenState extends State<WolScreen> {
           ),
         ),
       ),
-    );
+    ));
 
     try {
       final demoApiService = context.read<DemoApiService>();
@@ -245,13 +246,13 @@ class _WolScreenState extends State<WolScreen> {
       if (!mounted) return;
       Navigator.of(context).pop();
 
-      showDialog(
+      unawaited(showDialog(
         context: context,
         builder: (context) => _AddHostDialog(
           onHostAdded: _viewModel.loadItems,
           copiedHostData: hostData,
         ),
-      );
+      ));
     } catch (e) {
       if (!mounted) return;
       Navigator.of(context).pop();

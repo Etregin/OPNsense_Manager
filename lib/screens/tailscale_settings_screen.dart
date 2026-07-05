@@ -21,6 +21,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/app_colors.dart';
+import '../utils/auto_refresh_mixin.dart';
+import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/tailscale_settings_view_model.dart';
 import '../viewmodels/tailscale_settings_form_state.dart';
@@ -44,11 +46,11 @@ class TailscaleSettingsScreen extends StatefulWidget {
       _TailscaleSettingsScreenState();
 }
 
-class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
+class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen>
+    with AutoRefreshMixin {
   late TailscaleSettingsViewModel _viewModel;
   late TailscaleSettingsFormState _formState;
   final _formKey = GlobalKey<FormState>();
-  Timer? _refreshTimer;
   bool _showServiceControls = false;
 
   @override
@@ -64,12 +66,14 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
     );
     _viewModel.addListener(_onViewModelChanged);
     _loadData();
-    _startAutoRefresh();
+    startAutoRefresh(
+      AppConstants.dashboardRefreshInterval,
+      () { if (!_viewModel.hasUnsavedChanges) _loadData(); },
+    );
   }
 
   @override
   void dispose() {
-    _refreshTimer?.cancel();
     _viewModel.removeListener(_onViewModelChanged);
     _viewModel.dispose();
     _formState.dispose();
@@ -85,17 +89,6 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
         }
       });
     }
-  }
-
-  void _startAutoRefresh() {
-    _refreshTimer = Timer.periodic(
-      const Duration(seconds: 30),
-      (timer) {
-        if (mounted && !_viewModel.hasUnsavedChanges) {
-          _loadData();
-        }
-      },
-    );
   }
 
   Future<void> _loadData() async {
@@ -173,7 +166,7 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
       ),
     );
     if (mounted && !_viewModel.hasUnsavedChanges) {
-      _loadData();
+      unawaited(_loadData());
     }
   }
 

@@ -16,11 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/tailscale_status.dart';
 import '../../services/demo_api_service.dart';
+import '../../utils/auto_refresh_mixin.dart';
 import '../../utils/snackbar_helper.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
@@ -40,10 +40,10 @@ class TailscaleStatusPanel extends StatefulWidget {
   State<TailscaleStatusPanel> createState() => _TailscaleStatusPanelState();
 }
 
-class _TailscaleStatusPanelState extends State<TailscaleStatusPanel> {
+class _TailscaleStatusPanelState extends State<TailscaleStatusPanel>
+    with AutoRefreshMixin {
   late TailscaleStatusViewModel _viewModel;
   bool _isInitialized = false;
-  Timer? _refreshTimer;
 
   @override
   void didChangeDependencies() {
@@ -53,26 +53,14 @@ class _TailscaleStatusPanelState extends State<TailscaleStatusPanel> {
       _viewModel = TailscaleStatusViewModel(apiService);
       _isInitialized = true;
       _viewModel.loadData();
-      _startAutoRefresh();
+      startAutoRefresh(AppConstants.dashboardRefreshInterval, _viewModel.loadData);
     }
   }
 
   @override
   void dispose() {
-    _refreshTimer?.cancel();
     _viewModel.dispose();
     super.dispose();
-  }
-
-  void _startAutoRefresh() {
-    _refreshTimer = Timer.periodic(
-      const Duration(seconds: 30),
-      (timer) {
-        if (mounted) {
-          _viewModel.loadData();
-        }
-      },
-    );
   }
 
   @override
@@ -294,14 +282,14 @@ class _TailscaleStatusPanelState extends State<TailscaleStatusPanel> {
                         Expanded(
                           child: _buildDetailRow(
                             l10n.received,
-                            Formatters.formatBytes(status.bytesReceived!, context),
+                            Formatters.formatBytes(status.bytesReceived!),
                           ),
                         ),
                       if (status.bytesSent != null)
                         Expanded(
                           child: _buildDetailRow(
                             l10n.sent,
-                            Formatters.formatBytes(status.bytesSent!, context),
+                            Formatters.formatBytes(status.bytesSent!),
                           ),
                         ),
                     ],

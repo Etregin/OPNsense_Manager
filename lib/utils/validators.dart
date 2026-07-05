@@ -23,89 +23,45 @@ import 'network_validators.dart';
 
 /// Utility class for input validation
 class Validators {
-  /// Validate IP address (IPv4)
-  static bool isValidIPv4(String ip) => NetworkValidators.isValidIPv4(ip);
-
-  /// Validate hostname
-  static bool isValidHostname(String hostname) =>
-      NetworkValidators.isValidHostname(hostname);
-
-  /// Validate port number
-  static bool isValidPort(String port) => NetworkValidators.isValidPort(port);
-
-  /// Validate CIDR notation (e.g., 192.168.1.0/24)
-  static bool isValidCIDR(String cidr) => NetworkValidators.isValidCIDR(cidr);
-
-  /// Validate port range (e.g., 80-443)
-  static bool isValidPortRange(String portRange) =>
-      NetworkValidators.isValidPortRange(portRange);
-
   /// Validate source/destination field (any, IP, CIDR, or alias)
   static bool isValidSourceDestination(String value) {
     if (value.isEmpty) return false;
-
-    // Allow "any"
     if (value.toLowerCase() == 'any') return true;
-
-    // Check if it's a valid IP
-    if (isValidIPv4(value)) return true;
-
-    // Check if it's a valid CIDR
-    if (isValidCIDR(value)) return true;
-
-    // Allow alphanumeric aliases (simplified validation)
+    if (NetworkValidators.isValidIPv4(value)) return true;
+    if (NetworkValidators.isValidCIDR(value)) return true;
     final aliasPattern = RegExp(r'^[a-zA-Z0-9_-]+$');
-    if (aliasPattern.hasMatch(value)) return true;
-
-    return false;
+    return aliasPattern.hasMatch(value);
   }
 
   /// Validate destination port field (any, port, port range, or alias)
   static bool isValidDestinationPort(String value) {
     if (value.isEmpty) return false;
-
-    // Allow "any"
     if (value.toLowerCase() == 'any') return true;
-
-    // Check if it's a valid port or port range
-    if (isValidPortRange(value)) return true;
-
-    // Allow alphanumeric aliases (simplified validation)
+    if (NetworkValidators.isValidPortRange(value)) return true;
     final aliasPattern = RegExp(r'^[a-zA-Z0-9_-]+$');
-    if (aliasPattern.hasMatch(value)) return true;
-
-    return false;
+    return aliasPattern.hasMatch(value);
   }
 
   /// Validate API key format (basic validation)
   static bool isValidApiKey(String apiKey) {
     if (apiKey.isEmpty) return false;
-    // API keys are typically alphanumeric with some special characters
     return apiKey.length >= 10;
   }
 
   /// Validate API secret format (basic validation)
   static bool isValidApiSecret(String apiSecret) {
     if (apiSecret.isEmpty) return false;
-    // API secrets are typically alphanumeric with some special characters
     return apiSecret.length >= 10;
   }
 
   /// Validate non-empty string
-  static bool isNotEmpty(String value) {
-    return value.trim().isNotEmpty;
-  }
-
-  /// Validate MAC address format
-  static bool isValidMacAddress(String mac) =>
-      NetworkValidators.isValidMacAddress(mac);
+  static bool isNotEmpty(String value) => value.trim().isNotEmpty;
 
   /// Validate quota limit (must be positive number)
   static bool isValidQuotaLimit(String value) {
     if (value.isEmpty) return false;
     final num = int.tryParse(value);
-    if (num == null) return false;
-    return num > 0;
+    return num != null && num > 0;
   }
 
   /// Get error message for host validation
@@ -114,7 +70,7 @@ class Validators {
     if (value == null || value.isEmpty) {
       return l10n.hostIsRequired;
     }
-    if (!isValidHostname(value)) {
+    if (!NetworkValidators.isValidHostname(value)) {
       return l10n.invalidHostnameOrIp;
     }
     return null;
@@ -126,7 +82,7 @@ class Validators {
     if (value == null || value.isEmpty) {
       return l10n.portIsRequired;
     }
-    if (!isValidPort(value)) {
+    if (!NetworkValidators.isValidPort(value)) {
       return l10n.portMustBeBetween;
     }
     return null;
@@ -218,7 +174,7 @@ class Validators {
     if (value == null || value.isEmpty) {
       return l10n.macAddressIsRequired;
     }
-    if (!isValidMacAddress(value)) {
+    if (!NetworkValidators.isValidMacAddress(value)) {
       return l10n.invalidMacAddressFormat;
     }
     return null;

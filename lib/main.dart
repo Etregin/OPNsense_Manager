@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -41,9 +42,7 @@ void main() async {
   
   // Enable edge-to-edge display for proper Android 15+ support
   // This makes the app draw behind system bars (status bar and navigation bar)
-  SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.edgeToEdge,
-  );
+  unawaited(SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge));
   
   // Set system UI overlay style to be transparent
   // This removes the deprecated status bar and navigation bar colors
@@ -64,7 +63,7 @@ void main() async {
   ]);
   
   // Migrate from old storage to profile-based storage (non-blocking)
-  ProfileService().migrateFromOldStorage();
+  unawaited(ProfileService().migrateFromOldStorage());
   
   runApp(const OPNsenseManagerApp());
 }

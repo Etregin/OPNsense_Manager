@@ -27,7 +27,7 @@ import '../utils/formatters.dart';
 import '../viewmodels/wireguard_log_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/error_display.dart';
-import 'package:opnsense_manager/l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 /// Model class for WireGuard log entries
 class WireGuardLogEntry {

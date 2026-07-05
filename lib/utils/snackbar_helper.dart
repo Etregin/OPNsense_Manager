@@ -17,7 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'app_colors.dart';
+import '../l10n/app_localizations.dart';
 
 /// Utility class providing static helpers for showing consistent SnackBars.
 class SnackBarHelper {
@@ -37,6 +39,26 @@ class SnackBarHelper {
 
   static void showInfo(BuildContext context, String message, {Duration duration = const Duration(seconds: 2)}) {
     _show(context, message, duration: duration);
+  }
+
+  /// Copy [text] to the clipboard and show a success snackbar.
+  ///
+  /// Uses [successMessage] if provided; otherwise falls back to the
+  /// localised [AppLocalizations.copiedToClipboard] string.
+  static Future<void> copyToClipboard(
+    BuildContext context,
+    String text, {
+    String? successMessage,
+    Duration duration = const Duration(seconds: 1),
+  }) async {
+    await Clipboard.setData(ClipboardData(text: text));
+    if (context.mounted) {
+      showInfo(
+        context,
+        successMessage ?? AppLocalizations.of(context)!.copiedToClipboard,
+        duration: duration,
+      );
+    }
   }
 
   static void _show(BuildContext context, String message, {Color? backgroundColor, Duration duration = const Duration(seconds: 2)}) {

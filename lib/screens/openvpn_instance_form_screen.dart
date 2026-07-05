@@ -61,7 +61,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _renegSecController = TextEditingController();
-  final _authGenTokenController = TextEditingController(); // Changed from bool to TextEditingController
+  final _authGenTokenController = TextEditingController();
   final _authTokenRenewalController = TextEditingController();
   final _authTokenSecretController = TextEditingController();
   final _httpProxyController = TextEditingController();
@@ -74,7 +74,6 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
   final _maxclientsController = TextEditingController();
   final _keepaliveIntervalController = TextEditingController();
   final _keepaliveTimeoutController = TextEditingController();
-  // DNS Domain is now an array field, no longer needs a controller
   List<String> _dnsDomain = [];
   List<String> _pushExcludedRoutes = [];
   

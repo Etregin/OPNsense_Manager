@@ -47,7 +47,6 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
   // Controllers
   final _nameController = TextEditingController();
   final _publicKeyController = TextEditingController();
-  final _privateKeyController = TextEditingController(); // Dummy for KeyPairSection
   final _pskController = TextEditingController();
   final _serverAddressController = TextEditingController();
   final _serverPortController = TextEditingController();
@@ -84,7 +83,6 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
     _viewModel.dispose();
     _nameController.dispose();
     _publicKeyController.dispose();
-    _privateKeyController.dispose();
     _pskController.dispose();
     _serverAddressController.dispose();
     _serverPortController.dispose();

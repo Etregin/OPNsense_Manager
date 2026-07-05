@@ -453,7 +453,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                 Expanded(
                   child: _buildTotalStat(
                     label: l10n.totalDownload,
-                    value: Formatters.formatBytesPerSecond(totalDownload, context, decimals: 1),
+                    value: Formatters.formatBytesPerSecond(totalDownload, decimals: 1),
                     icon: Icons.arrow_downward,
                     color: AppColors.success,
                   ),
@@ -462,7 +462,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                 Expanded(
                   child: _buildTotalStat(
                     label: l10n.totalUpload,
-                    value: Formatters.formatBytesPerSecond(totalUpload, context, decimals: 1),
+                    value: Formatters.formatBytesPerSecond(totalUpload, decimals: 1),
                     icon: Icons.arrow_upward,
                     color: AppColors.info,
                   ),
@@ -475,7 +475,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                 Expanded(
                   child: _buildTotalStat(
                     label: l10n.totalBandwidth,
-                    value: Formatters.formatBytesPerSecond(totalBandwidth, context, decimals: 1),
+                    value: Formatters.formatBytesPerSecond(totalBandwidth, decimals: 1),
                     icon: Icons.swap_vert,
                     color: AppColors.bandwidth,
                   ),
@@ -705,7 +705,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
           ),
           const SizedBox(height: 2),
           Text(
-            Formatters.formatBytesPerSecond(rate, context, decimals: 1),
+            Formatters.formatBytesPerSecond(rate, decimals: 1),
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
@@ -799,15 +799,15 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
               const Divider(height: 24),
               _buildDetailRow(
                 l10n.download,
-                Formatters.formatBytesPerSecond(host.rateIn, context, decimals: 2),
+                Formatters.formatBytesPerSecond(host.rateIn, decimals: 2),
               ),
               _buildDetailRow(
                 l10n.upload,
-                Formatters.formatBytesPerSecond(host.rateOut, context, decimals: 2),
+                Formatters.formatBytesPerSecond(host.rateOut, decimals: 2),
               ),
               _buildDetailRow(
                 l10n.totalBandwidth,
-                Formatters.formatBytesPerSecond(host.totalRate, context, decimals: 2),
+                Formatters.formatBytesPerSecond(host.totalRate, decimals: 2),
               ),
               if (history.isNotEmpty) ...[
                 const Divider(height: 24),
@@ -1015,8 +1015,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                   await _saveInterfaces(selectedInterfaces);
                   if (context.mounted) {
                     Navigator.of(context).pop();
-                    // Reload data with new interfaces
-                    _viewModel.loadItems();
+                    unawaited(_viewModel.loadItems());
                   }
                 }
               },
@@ -1149,7 +1148,7 @@ class _InteractiveSparklineState extends State<InteractiveSparkline> {
                       ],
                     ),
                     child: Text(
-                      Formatters.formatBytesPerSecond(widget.data[_selectedIndex!], context, decimals: 2),
+                      Formatters.formatBytesPerSecond(widget.data[_selectedIndex!], decimals: 2),
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onInverseSurface,
                         fontSize: 12,

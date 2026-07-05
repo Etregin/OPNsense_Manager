@@ -17,6 +17,7 @@
  */
 
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/profile.dart';
@@ -71,8 +72,10 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
         demoApiService.setDemoMode(true);
         await profileService.setActiveProfile(profile.id);
         if (mounted) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const DashboardScreen()),
+          unawaited(
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => const DashboardScreen()),
+            ),
           );
         }
         return;
@@ -163,8 +166,10 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
       await profileService.setActiveProfile(updatedProfile.id);
       
       if (mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const DashboardScreen()),
+        unawaited(
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const DashboardScreen()),
+          ),
         );
       }
       

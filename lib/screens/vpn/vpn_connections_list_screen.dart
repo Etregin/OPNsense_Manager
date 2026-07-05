@@ -23,6 +23,7 @@ import '../../models/vpn_connection.dart';
 import '../../models/system_info.dart';
 import '../../services/demo_api_service.dart';
 import '../../services/vpn/vpn_connection_manager.dart';
+import '../../utils/auto_refresh_mixin.dart';
 import '../../utils/snackbar_helper.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
@@ -47,11 +48,11 @@ class VPNConnectionsListScreen extends StatefulWidget {
   State<VPNConnectionsListScreen> createState() => _VPNConnectionsListScreenState();
 }
 
-class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
+class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen>
+    with AutoRefreshMixin {
   List<VPNConnection> _connections = [];
   bool _isLoading = true;
   String? _errorMessage;
-  Timer? _refreshTimer;
   late VPNConnectionManager _connectionManager;
   String _filterType = 'all';
 
@@ -62,24 +63,7 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
     final demoApiService = context.read<DemoApiService>();
     _connectionManager = VPNConnectionManager(demoApiService);
     _loadData();
-    _startAutoRefresh();
-  }
-
-  @override
-  void dispose() {
-    _refreshTimer?.cancel();
-    super.dispose();
-  }
-
-  void _startAutoRefresh() {
-    _refreshTimer = Timer.periodic(
-      const Duration(seconds: 30),
-      (timer) {
-        if (mounted) {
-          _loadData();
-        }
-      },
-    );
+    startAutoRefresh(AppConstants.dashboardRefreshInterval, _loadData);
   }
 
   Future<void> _loadData() async {
@@ -141,7 +125,7 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
               : l10n.successfullyConnected(connection.name));
           await Future.delayed(const Duration(seconds: 1));
           if (mounted) {
-            _loadData();
+            unawaited(_loadData());
           }
         } else {
           SnackBarHelper.showError(context, connection.isConnected
@@ -180,7 +164,7 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
           SnackBarHelper.showSuccess(context, l10n.successfullyRestartedService(type.toUpperCase()));
           await Future.delayed(const Duration(seconds: 2));
           if (mounted) {
-            _loadData();
+            unawaited(_loadData());
           }
         } else {
           SnackBarHelper.showError(context, l10n.failedToRestartService(type.toUpperCase()));

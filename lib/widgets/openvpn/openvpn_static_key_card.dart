@@ -17,7 +17,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/openvpn_static_key.dart';
 import '../../utils/app_colors.dart';
@@ -173,8 +172,7 @@ class OpenvpnStaticKeyCard extends StatelessWidget {
   }
 
   void _copyKeyToClipboard(BuildContext context) {
-    Clipboard.setData(ClipboardData(text: staticKey.key));
-    SnackBarHelper.showSuccess(context, 'Key copied to clipboard');
+    SnackBarHelper.copyToClipboard(context, staticKey.key);
   }
 }
 

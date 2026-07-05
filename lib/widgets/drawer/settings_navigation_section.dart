@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../constants/routes.dart';
@@ -112,12 +113,12 @@ class SettingsNavigationSection extends StatelessWidget {
       apiService.clear();
 
       // Navigate to profile selection
-      navigator.pushAndRemoveUntil(
+      unawaited(navigator.pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (context) => const ProfileSelectionScreen(),
         ),
         (route) => false,
-      );
+      ));
     }
   }
 
@@ -131,11 +132,10 @@ class SettingsNavigationSection extends StatelessWidget {
     await authService.clearSession();
     
     // Navigate to PIN lock screen
-    navigator.pushAndRemoveUntil(
+    unawaited(navigator.pushAndRemoveUntil(
       MaterialPageRoute(
         builder: (context) => PinLockScreen(
           onAuthenticated: (ctx) async {
-            // After successful authentication, check if we still have an active profile
             final activeProfile = await profileService.getActiveProfile();
             
             if (context.mounted) {
@@ -144,27 +144,27 @@ class SettingsNavigationSection extends StatelessWidget {
                 apiService.init(activeProfile.toOPNsenseConfig());
                 
                 // Navigate back to dashboard
-                Navigator.of(ctx).pushAndRemoveUntil(
+                unawaited(Navigator.of(ctx).pushAndRemoveUntil(
                   MaterialPageRoute(
                     builder: (context) => const DashboardScreen(),
                   ),
                   (route) => false,
-                );
+                ));
               } else {
                 // No active profile, go to profile selection
-                Navigator.of(ctx).pushAndRemoveUntil(
+                unawaited(Navigator.of(ctx).pushAndRemoveUntil(
                   MaterialPageRoute(
                     builder: (context) => const ProfileSelectionScreen(),
                   ),
                   (route) => false,
-                );
+                ));
               }
             }
           },
         ),
       ),
       (route) => false,
-    );
+    ));
   }
 }
 
