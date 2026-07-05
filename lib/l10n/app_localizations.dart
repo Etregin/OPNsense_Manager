@@ -4781,7 +4781,7 @@ abstract class AppLocalizations {
   /// No description provided for @selectServerAndGenerateKeys.
   ///
   /// In en, this message translates to:
-  /// **'# Select a server and generate keys to preview configuration'**
+  /// **'Select a server and generate keys to preview configuration'**
   String get selectServerAndGenerateKeys;
 
   /// No description provided for @selectServerForQrCode.
@@ -5321,12 +5321,8 @@ abstract class AppLocalizations {
   /// Success message showing how many devices were woken
   ///
   /// In en, this message translates to:
-  /// **'Successfully woken {successCount} of {totalCount} device{plural}'**
-  String successfullyWokenDevices(
-    int successCount,
-    int totalCount,
-    String plural,
-  );
+  /// **'Successfully woken {successCount} of {totalCount} {successCount, plural, =1{device} other{devices}}'**
+  String successfullyWokenDevices(int successCount, int totalCount);
 
   /// No description provided for @switchProfile.
   ///

@@ -2261,7 +2261,7 @@
   "@selectNumberOfEntries": {},
   "selectPeers": "Peers auswählen",
   "@selectPeers": {},
-  "selectServerAndGenerateKeys": "# Server auswählen und Schlüssel generieren, um Konfiguration anzuzeigen",
+  "selectServerAndGenerateKeys": "Server auswählen und Schlüssel generieren, um Konfiguration anzuzeigen",
   "@selectServerAndGenerateKeys": {},
   "selectServerForQrCode": "Server für QR-Code auswählen",
   "@selectServerForQrCode": {},
@@ -2494,7 +2494,7 @@
       }
     }
   },
-  "successfullyWokenDevices": "{successCount} von {totalCount} Gerät(en) erfolgreich aufgeweckt",
+  "successfullyWokenDevices": "{successCount} von {totalCount} {successCount, plural, =1{Gerät} other{Geräte}} erfolgreich aufgeweckt",
   "@successfullyWokenDevices": {
     "placeholders": {
       "successCount": {

@@ -132,7 +132,7 @@ class _WolScreenState extends State<WolScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                AppLocalizations.of(context)!.successfullyWokenDevices(successCount, results.length, results.length > 1 ? 's' : ''),
+                AppLocalizations.of(context)!.successfullyWokenDevices(successCount, results.length),
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               if (failedResults.isNotEmpty) ...[

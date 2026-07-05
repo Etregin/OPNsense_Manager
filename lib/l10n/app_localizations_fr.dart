@@ -2675,7 +2675,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get selectServerAndGenerateKeys =>
-      '# Sélectionnez un serveur et générez des clés pour prévisualiser la configuration';
+      'Sélectionnez un serveur et générez des clés pour prévisualiser la configuration';
 
   @override
   String get selectServerForQrCode =>
@@ -2975,12 +2975,14 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String successfullyWokenDevices(
-    int successCount,
-    int totalCount,
-    String plural,
-  ) {
-    return '$successCount appareil(s) réveillé(s) avec succès sur $totalCount';
+  String successfullyWokenDevices(int successCount, int totalCount) {
+    String _temp0 = intl.Intl.pluralLogic(
+      successCount,
+      locale: localeName,
+      other: 'appareils réveillés',
+      one: 'appareil réveillé',
+    );
+    return '$successCount $_temp0 avec succès sur $totalCount';
   }
 
   @override

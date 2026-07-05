@@ -2253,7 +2253,7 @@
   "@selectNumberOfEntries": {},
   "selectPeers": "تحديد النظراء",
   "@selectPeers": {},
-  "selectServerAndGenerateKeys": "# حدد خادمًا وأنشئ مفاتيح لمعاينة التكوين",
+  "selectServerAndGenerateKeys": "حدد خادمًا وأنشئ مفاتيح لمعاينة التكوين",
   "@selectServerAndGenerateKeys": {},
   "selectServerForQrCode": "تحديد الخادم لإنشاء رمز QR",
   "@selectServerForQrCode": {},
@@ -2486,7 +2486,7 @@
       }
     }
   },
-  "successfullyWokenDevices": "تم تنبيه {successCount} من {totalCount} جهاز بنجاح",
+  "successfullyWokenDevices": "تم تنبيه {successCount} من {totalCount} {successCount, plural, =0{جهاز} =1{جهاز} =2{جهازين} few{أجهزة} many{جهازًا} other{جهاز}} بنجاح",
   "@successfullyWokenDevices": {
     "placeholders": {
       "successCount": {

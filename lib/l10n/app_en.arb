@@ -2215,7 +2215,7 @@
   "@selectNumberOfEntries": {},
   "selectPeers": "Select Peers",
   "@selectPeers": {},
-  "selectServerAndGenerateKeys": "# Select a server and generate keys to preview configuration",
+  "selectServerAndGenerateKeys": "Select a server and generate keys to preview configuration",
   "@selectServerAndGenerateKeys": {},
   "selectServerForQrCode": "Select server to generate QR code",
   "@selectServerForQrCode": {},
@@ -2444,7 +2444,7 @@
       }
     }
   },
-  "successfullyWokenDevices": "Successfully woken {successCount} of {totalCount} device{plural}",
+  "successfullyWokenDevices": "Successfully woken {successCount} of {totalCount} {successCount, plural, =1{device} other{devices}}",
   "@successfullyWokenDevices": {
     "description": "Success message showing how many devices were woken",
     "placeholders": {
@@ -2455,10 +2455,6 @@
       "totalCount": {
         "type": "int",
         "example": "5"
-      },
-      "plural": {
-        "type": "String",
-        "example": "s"
       }
     }
   },

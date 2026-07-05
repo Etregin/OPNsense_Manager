@@ -2621,7 +2621,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get selectServerAndGenerateKeys =>
-      '# حدد خادمًا وأنشئ مفاتيح لمعاينة التكوين';
+      'حدد خادمًا وأنشئ مفاتيح لمعاينة التكوين';
 
   @override
   String get selectServerForQrCode => 'تحديد الخادم لإنشاء رمز QR';
@@ -2914,12 +2914,18 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String successfullyWokenDevices(
-    int successCount,
-    int totalCount,
-    String plural,
-  ) {
-    return 'تم تنبيه $successCount من $totalCount جهاز بنجاح';
+  String successfullyWokenDevices(int successCount, int totalCount) {
+    String _temp0 = intl.Intl.pluralLogic(
+      successCount,
+      locale: localeName,
+      other: 'جهاز',
+      many: 'جهازًا',
+      few: 'أجهزة',
+      two: 'جهازين',
+      one: 'جهاز',
+      zero: 'جهاز',
+    );
+    return 'تم تنبيه $successCount من $totalCount $_temp0 بنجاح';
   }
 
   @override
