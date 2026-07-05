@@ -18,7 +18,7 @@
 
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
-import '../../utils/constants.dart';
+import '../../utils/app_colors.dart';
 
 /// Callback for service control actions
 typedef ServiceControlCallback = Future<void> Function(

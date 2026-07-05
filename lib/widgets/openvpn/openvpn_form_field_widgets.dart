@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/openvpn_dropdown_option.dart';
-import '../../utils/constants.dart';
+import '../../utils/app_colors.dart';
 
 /// Role selector widget for OpenVPN instances
 class OpenvpnRoleSelector extends StatelessWidget {

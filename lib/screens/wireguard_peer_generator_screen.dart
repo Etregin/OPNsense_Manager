@@ -22,7 +22,7 @@ import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../models/wireguard_client_builder.dart';
 import '../services/demo_api_service.dart';
-import '../utils/constants.dart';
+import '../utils/app_colors.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/wireguard_peer_generator_view_model.dart';
 import '../widgets/app_drawer.dart';

@@ -23,6 +23,7 @@ import '../models/firewall_rule.dart';
 import '../services/demo_api_service.dart';
 import '../services/firewall/firewall_rule_filter.dart';
 import '../utils/snackbar_helper.dart';
+import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../viewmodels/firewall_rules_view_model.dart';
 import '../widgets/app_drawer.dart';

@@ -32,6 +32,7 @@ import '../widgets/login/connection_endpoints_manager.dart';
 import '../widgets/login/credentials_fields_section.dart';
 import '../widgets/login/dhcp_server_selector.dart';
 import '../widgets/login/login_form_actions.dart';
+import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../l10n/app_localizations.dart';
 import 'dashboard_screen.dart';

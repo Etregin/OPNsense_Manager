@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_static_key.dart';
-import '../utils/constants.dart';
+import '../utils/app_colors.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/openvpn_static_key_form_view_model.dart';
 import '../widgets/common/loading_overlay.dart';

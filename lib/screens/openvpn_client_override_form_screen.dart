@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../models/openvpn_client_override.dart';
-import '../utils/constants.dart';
+import '../utils/app_colors.dart';
 import '../models/openvpn_dropdown_option.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/openvpn_client_override_form_view_model.dart';

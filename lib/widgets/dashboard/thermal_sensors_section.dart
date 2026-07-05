@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/thermal_sensor.dart';
-import '../../utils/constants.dart';
+import '../../utils/color_helpers.dart';
 
 /// Widget for displaying thermal sensor readings in a compact format.
 class ThermalSensorsSection extends StatelessWidget {
@@ -123,7 +123,7 @@ class _CompactSensorRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final temperature = sensor.temperatureValue;
-    final color = _getTemperatureColor(temperature);
+    final color = thermalColor(temperature);
     final sensorName = _safeText(sensor.typeTranslated, fallback: 'Unknown');
     final deviceName = _safeText(sensor.device, fallback: 'Unknown device');
 
@@ -190,16 +190,6 @@ class _CompactSensorRow extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Color _getTemperatureColor(double temperature) {
-    if (temperature > 80) {
-      return AppColors.error;
-    }
-    if (temperature >= 60) {
-      return AppColors.warning;
-    }
-    return AppColors.success;
   }
 
   String _safeText(String value, {required String fallback}) {

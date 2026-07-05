@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/wireguard_peer.dart';
-import '../../utils/constants.dart';
+import '../../utils/app_colors.dart';
 
 /// Card widget for displaying WireGuard peer information
 class PeerCard extends StatelessWidget {

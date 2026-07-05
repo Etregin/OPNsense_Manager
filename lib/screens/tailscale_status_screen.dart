@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../models/tailscale_status.dart';
 import '../services/demo_api_service.dart';
+import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
 import '../utils/formatters.dart';

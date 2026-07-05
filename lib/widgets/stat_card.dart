@@ -18,6 +18,8 @@
 
 
 import 'package:flutter/material.dart';
+import '../utils/app_colors.dart';
+import '../utils/color_helpers.dart';
 import '../utils/constants.dart';
 
 /// Reusable card widget for displaying statistics
@@ -125,14 +127,7 @@ class ProgressStatCard extends StatelessWidget {
 
   Color _getProgressColor(BuildContext context) {
     if (progressColor != null) return progressColor!;
-    
-    if (progress >= 0.9) {
-      return AppColors.error;
-    } else if (progress >= 0.7) {
-      return AppColors.warning;
-    } else {
-      return AppColors.success;
-    }
+    return resourceUsageColor(progress);
   }
 
   @override

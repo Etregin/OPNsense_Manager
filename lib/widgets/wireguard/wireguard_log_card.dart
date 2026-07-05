@@ -69,24 +69,6 @@ class WireGuardLogCard extends StatelessWidget {
     required this.onTap,
   });
 
-  Color _getSeverityColor(String severity, BuildContext context) {
-    switch (severity.toLowerCase()) {
-      case 'emergency':
-      case 'alert':
-      case 'critical':
-      case 'error':
-        return logLevelColor('error', context: context);
-      case 'warning':
-        return logLevelColor('warning', context: context);
-      case 'notice':
-      case 'informational':
-        return logLevelColor('info', context: context);
-      case 'debug':
-      default:
-        return logLevelColor('debug', context: context);
-    }
-  }
-
   IconData _getSeverityIcon(String severity) {
     switch (severity.toLowerCase()) {
       case 'emergency':
@@ -110,7 +92,7 @@ class WireGuardLogCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final severityColor = _getSeverityColor(log.severity, context);
+    final severityColor = wireguardSeverityColor(log.severity, context: context);
     final severityIcon = _getSeverityIcon(log.severity);
 
     return Card(

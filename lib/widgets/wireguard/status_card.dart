@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/wireguard_status.dart';
-import '../../utils/constants.dart';
+import '../../utils/app_colors.dart';
 
 /// Card widget for displaying WireGuard status information
 class StatusCard extends StatelessWidget {

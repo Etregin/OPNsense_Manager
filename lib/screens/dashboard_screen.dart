@@ -23,6 +23,7 @@ import 'package:provider/provider.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../services/profile_service.dart';
+import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/dashboard_view_model.dart';

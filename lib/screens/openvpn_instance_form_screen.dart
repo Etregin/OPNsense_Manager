@@ -21,7 +21,7 @@ import 'package:flutter/services.dart';
 import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_instance.dart';
-import '../utils/constants.dart';
+import '../utils/app_colors.dart';
 import '../models/openvpn_dropdown_option.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/openvpn_instance_form_view_model.dart';

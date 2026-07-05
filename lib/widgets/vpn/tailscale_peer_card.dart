@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import '../../utils/constants.dart';
+import '../../utils/app_colors.dart';
 
 /// Widget for displaying a Tailscale peer card
 /// This is a placeholder for future Tailscale peer display functionality

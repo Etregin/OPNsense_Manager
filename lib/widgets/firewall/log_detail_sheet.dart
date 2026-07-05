@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../screens/firewall_logs_screen.dart';
 import '../../l10n/app_localizations.dart';
-import '../../utils/constants.dart';
+import '../../utils/color_helpers.dart';
 import '../../utils/snackbar_helper.dart';
 
 /// Bottom sheet widget that displays detailed information about a firewall log entry
@@ -36,7 +36,7 @@ class LogDetailSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final actionColor = _getActionColor(log.action);
+    final actionColor = firewallActionColor(log.action);
 
     return DraggableScrollableSheet(
       initialChildSize: 0.7,
@@ -409,19 +409,6 @@ class LogDetailSheet extends StatelessWidget {
     
     Clipboard.setData(ClipboardData(text: details.toString()));
     SnackBarHelper.showInfo(context, l10n.allDetailsCopiedToClipboard);
-  }
-
-  Color _getActionColor(String action) {
-    switch (action.toLowerCase()) {
-      case 'pass':
-        return AppColors.success;
-      case 'block':
-        return AppColors.error;
-      case 'reject':
-        return AppColors.warning;
-      default:
-        return AppColors.disabled;
-    }
   }
 
   IconData _getActionIcon(String action) {

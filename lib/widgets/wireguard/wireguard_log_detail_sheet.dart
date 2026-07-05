@@ -37,7 +37,7 @@ class WireGuardLogDetailSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final severityColor = _getSeverityColor(log.severity, context);
+    final severityColor = wireguardSeverityColor(log.severity, context: context);
 
     return DraggableScrollableSheet(
       initialChildSize: 0.7,
@@ -351,24 +351,6 @@ class WireGuardLogDetailSheet extends StatelessWidget {
     
     Clipboard.setData(ClipboardData(text: details.toString()));
     SnackBarHelper.showInfo(context, 'All details copied to clipboard');
-  }
-
-  Color _getSeverityColor(String severity, BuildContext context) {
-    switch (severity.toLowerCase()) {
-      case 'emergency':
-      case 'alert':
-      case 'critical':
-      case 'error':
-        return logLevelColor('error', context: context);
-      case 'warning':
-        return logLevelColor('warning', context: context);
-      case 'notice':
-      case 'informational':
-        return logLevelColor('info', context: context);
-      case 'debug':
-      default:
-        return logLevelColor('debug', context: context);
-    }
   }
 
   IconData _getSeverityIcon(String severity) {

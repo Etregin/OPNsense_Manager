@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import '../../utils/constants.dart';
+import '../../utils/app_colors.dart';
 
 /// A reusable settings tile widget
 /// 

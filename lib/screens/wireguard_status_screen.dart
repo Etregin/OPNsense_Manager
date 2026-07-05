@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/demo_api_service.dart';
-import '../utils/constants.dart';
+import '../utils/app_colors.dart';
 import '../viewmodels/wireguard_status_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/wireguard/status_card.dart';

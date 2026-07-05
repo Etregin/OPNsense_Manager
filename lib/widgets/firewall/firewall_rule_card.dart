@@ -18,6 +18,8 @@
 
 import 'package:flutter/material.dart';
 import '../../models/firewall_rule.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/color_helpers.dart';
 import '../../utils/constants.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -33,19 +35,6 @@ class FirewallRuleCard extends StatelessWidget {
     required this.onTap,
     this.onToggle,
   });
-
-  Color _getTypeColor() {
-    switch (rule.type.toLowerCase()) {
-      case 'pass':
-        return AppColors.success;
-      case 'block':
-        return AppColors.error;
-      case 'reject':
-        return AppColors.warning;
-      default:
-        return AppColors.disabled;
-    }
-  }
 
   IconData _getTypeIcon() {
     switch (rule.type.toLowerCase()) {
@@ -79,12 +68,12 @@ class FirewallRuleCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: _getTypeColor().withValues(alpha: 0.1),
+                      color: firewallActionColor(rule.type).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
                       _getTypeIcon(),
-                      color: _getTypeColor(),
+                      color: firewallActionColor(rule.type),
                       size: 20,
                     ),
                   ),

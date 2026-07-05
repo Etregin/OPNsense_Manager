@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import '../../utils/constants.dart';
+import '../../utils/app_colors.dart';
 
 /// A reusable empty-state widget displaying an icon, title, optional subtitle,
 /// and an optional action widget (e.g. a button).

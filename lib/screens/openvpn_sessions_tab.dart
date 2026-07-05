@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../models/openvpn_session.dart';
 import '../services/demo_api_service.dart';
-import '../utils/constants.dart';
+import '../utils/app_colors.dart';
 import '../utils/snackbar_helper.dart';
 
 /// Tab widget for displaying OpenVPN sessions

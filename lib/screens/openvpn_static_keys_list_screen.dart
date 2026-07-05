@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../models/openvpn_static_key.dart';
-import '../utils/constants.dart';
+import '../utils/app_colors.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/openvpn_static_keys_view_model.dart';

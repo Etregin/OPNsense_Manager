@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'constants.dart'; // for AppColors
+import 'app_colors.dart';
 
 /// Utility class providing static helpers for showing consistent SnackBars.
 class SnackBarHelper {

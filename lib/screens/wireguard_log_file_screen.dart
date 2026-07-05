@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../services/demo_api_service.dart';
-import '../utils/constants.dart';
+import '../utils/color_helpers.dart';
 import '../utils/snackbar_helper.dart';
 import '../utils/formatters.dart';
 import '../viewmodels/wireguard_log_view_model.dart';
@@ -241,28 +241,6 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
     await _loadLogs();
   }
 
-  Color _severityColor(BuildContext context, String severity) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    switch (severity) {
-      case 'Emergency':
-      case 'Alert':
-      case 'Critical':
-      case 'Error':
-        return colorScheme.error;
-      case 'Warning':
-        return AppColors.warning;
-      case 'Notice':
-        return AppColors.warning;
-      case 'Info':
-      case 'Informational':
-        return colorScheme.primary;
-      case 'Debug':
-      default:
-        return colorScheme.outline;
-    }
-  }
-
   String _formatTimestamp(String timestamp) {
     try {
       final parsed = DateTime.parse(timestamp);
@@ -441,7 +419,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
                   label: Text(severity),
                   avatar: CircleAvatar(
                     radius: 6,
-                    backgroundColor: _severityColor(context, severity),
+                    backgroundColor: logFileSeverityColor(context, severity),
                   ),
                   onSelected: (selected) => _toggleSeverity(severity, selected),
                 );
@@ -681,7 +659,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
           }
 
           final log = logs[index];
-          final severityColor = _severityColor(context, log.severity);
+          final severityColor = logFileSeverityColor(context, log.severity);
           final isSelected = _selectedLogIndexes.contains(index);
 
           return Card(

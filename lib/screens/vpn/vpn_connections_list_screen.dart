@@ -24,6 +24,7 @@ import '../../models/system_info.dart';
 import '../../services/demo_api_service.dart';
 import '../../services/vpn/vpn_connection_manager.dart';
 import '../../utils/snackbar_helper.dart';
+import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
 import '../../widgets/common/confirmation_dialog.dart';
 import '../../widgets/vpn/vpn_connection_card.dart';

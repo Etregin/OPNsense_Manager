@@ -24,6 +24,7 @@ import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../services/auth_service.dart';
 import '../services/profile_service.dart';
+import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../l10n/app_localizations.dart';
 import 'profile_selection_screen.dart';

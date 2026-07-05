@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/openvpn_client_override_list_item.dart';
-import '../../utils/constants.dart';
+import '../../utils/app_colors.dart';
 
 /// Card widget for displaying OpenVPN client specific override information
 class OpenvpnClientOverrideCard extends StatelessWidget {

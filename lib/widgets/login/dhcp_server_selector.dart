@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import '../../models/dhcp_server_type.dart';
 import '../../l10n/app_localizations.dart';
-import '../../utils/constants.dart';
+import '../../utils/app_colors.dart';
 
 /// Widget for selecting DHCP server type
 class DhcpServerSelector extends StatelessWidget {

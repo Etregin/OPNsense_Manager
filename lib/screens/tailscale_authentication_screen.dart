@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../services/demo_api_service.dart';
-import '../utils/constants.dart';
+import '../utils/app_colors.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/tailscale_auth_view_model.dart';
 import '../widgets/app_drawer.dart';

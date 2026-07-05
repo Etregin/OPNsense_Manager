@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import '../../models/vpn_connection.dart';
 import '../../l10n/app_localizations.dart';
-import '../../utils/constants.dart';
+import '../../utils/app_colors.dart';
 import 'vpn_detail_section.dart';
 
 /// Widget for displaying a single VPN connection card

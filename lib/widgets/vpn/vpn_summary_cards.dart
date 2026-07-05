@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
 
 /// Widget for displaying VPN connection summary statistics

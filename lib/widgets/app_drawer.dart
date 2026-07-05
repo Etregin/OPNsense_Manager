@@ -32,6 +32,7 @@ import '../services/opnsense_api_service.dart';
 import '../services/profile_service.dart';
 import '../services/auth_service.dart';
 import '../utils/snackbar_helper.dart';
+import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import 'drawer/drawer_header_widget.dart';
 import 'drawer/navigation_tile.dart';

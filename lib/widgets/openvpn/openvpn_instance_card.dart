@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/openvpn_instance_list_item.dart';
-import '../../utils/constants.dart';
+import '../../utils/app_colors.dart';
 
 /// Card widget for displaying OpenVPN instance information
 class OpenvpnInstanceCard extends StatelessWidget {

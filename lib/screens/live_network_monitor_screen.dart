@@ -25,6 +25,8 @@ import '../models/firewall_rule.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
 import '../services/storage_service.dart';
+import '../utils/app_colors.dart';
+import '../utils/color_helpers.dart';
 import '../utils/constants.dart';
 import '../utils/formatters.dart';
 import '../viewmodels/live_network_monitor_view_model.dart';
@@ -751,18 +753,12 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
             minHeight: 8,
             backgroundColor: AppColors.surfaceMid,
             valueColor: AlwaysStoppedAnimation<Color>(
-              _getProgressColor(progress),
+              bandwidthProgressColor(progress),
             ),
           ),
         ),
       ],
     );
-  }
-
-  Color _getProgressColor(double progress) {
-    if (progress < 0.5) return AppColors.success;
-    if (progress < 0.75) return AppColors.warning;
-    return AppColors.error;
   }
 
   void _showHostDetails(NetworkHost host) {

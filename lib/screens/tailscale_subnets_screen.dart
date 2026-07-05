@@ -22,7 +22,7 @@ import '../l10n/app_localizations.dart';
 import '../models/tailscale_settings.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
-import '../utils/constants.dart';
+import '../utils/app_colors.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/tailscale_subnets_view_model.dart';
 import '../widgets/common/confirmation_dialog.dart';

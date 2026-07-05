@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
 import '../../l10n/app_localizations.dart';
 import 'rule_filter_chip.dart';

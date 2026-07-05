@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import '../../services/settings/file_operations_service.dart';
+import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
 import '../../utils/snackbar_helper.dart';
 import '../../widgets/settings/settings_section.dart';

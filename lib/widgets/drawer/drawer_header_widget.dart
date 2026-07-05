@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import '../../models/system_info.dart';
+import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
 
 /// Reusable drawer header widget with app branding and system info

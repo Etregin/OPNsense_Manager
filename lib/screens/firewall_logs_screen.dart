@@ -22,6 +22,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../services/demo_api_service.dart';
+import '../utils/app_colors.dart';
+import '../utils/color_helpers.dart';
 import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/firewall_logs_view_model.dart';
@@ -234,19 +236,6 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
         ],
       ),
     );
-  }
-
-  Color _getActionColor(String action) {
-    switch (action.toLowerCase()) {
-      case 'pass':
-    return AppColors.success;
-  case 'block':
-    return AppColors.error;
-  case 'reject':
-    return AppColors.warning;
-  default:
-    return AppColors.disabled;
-    }
   }
 
   IconData _getActionIcon(String action) {
@@ -502,7 +491,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
     int index,
     bool isSelected,
   ) {
-    final actionColor = _getActionColor(log.action);
+    final actionColor = firewallActionColor(log.action);
     final actionIcon = _getActionIcon(log.action);
 
     return Card(

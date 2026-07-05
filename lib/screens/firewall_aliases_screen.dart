@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../constants/firewall_constants.dart';
-import '../utils/constants.dart';
+import '../utils/app_colors.dart';
 import '../models/firewall_alias.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';

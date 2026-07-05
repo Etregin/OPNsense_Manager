@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/tailscale_settings.dart';
-import '../../utils/constants.dart';
+import '../../utils/app_colors.dart';
 import '../../viewmodels/tailscale_settings_form_state.dart';
 
 /// Widget for Tailscale routing settings

@@ -27,6 +27,7 @@ import '../widgets/app_drawer.dart';
 import '../widgets/common/error_display.dart';
 import '../widgets/common/empty_state_widget.dart';
 import '../l10n/app_localizations.dart';
+import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import 'package:intl/intl.dart';
 

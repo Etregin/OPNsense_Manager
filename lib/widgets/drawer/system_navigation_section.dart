@@ -23,6 +23,7 @@ import '../../l10n/app_localizations.dart';
 import '../../screens/system_info_screen.dart';
 import '../../services/opnsense_api_service.dart';
 import '../../services/app_version_service.dart';
+import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
 import '../../utils/snackbar_helper.dart';
 import 'navigation_tile.dart';
