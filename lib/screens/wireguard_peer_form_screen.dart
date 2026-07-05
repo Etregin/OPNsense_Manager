@@ -142,7 +142,7 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     if (_tunnelAddresses.isEmpty) {
-      SnackBarHelper.showError(context, l10n.tunnelAddressRequired);
+      SnackBarHelper.showError(context, l10n.atLeastOneTunnelAddressRequired);
       return;
     }
 

@@ -117,9 +117,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addStaticKey => 'Add Static Key';
 
   @override
-  String get addStaticKeyTooltip => 'Add Static Key';
-
-  @override
   String get addSubnet => 'Add Subnet';
 
   @override
@@ -354,10 +351,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cannotDeleteLastConnection =>
-      'Cannot delete the last connection endpoint';
-
-  @override
-  String get cannotDeleteLastConnectionTooltip =>
       'Cannot delete the last connection endpoint';
 
   @override
@@ -805,9 +798,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get disabled => 'Disabled';
 
   @override
-  String get disabledStatus => 'disabled';
-
-  @override
   String get disablingRule => 'Disabling rule...';
 
   @override
@@ -952,9 +942,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enabled => 'Enabled';
-
-  @override
-  String get enabledStatus => 'enabled';
 
   @override
   String get enablingRule => 'Enabling rule...';
@@ -1463,9 +1450,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hostIpAddress => 'Host / IP Address';
 
   @override
-  String get hostIpAddressLabel => 'Host/IP Address';
-
-  @override
   String get hostIsRequired => 'Host is required';
 
   @override
@@ -1842,11 +1826,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logDetails => 'Log Details';
-
-  @override
-  String logEntriesCopied(int count, String entries) {
-    return '$count log $entries copied';
-  }
 
   @override
   String get logEntryCopied => 'Log entry copied';
@@ -2597,9 +2576,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get running => 'Running';
 
   @override
-  String get runningStatus => 'Running';
-
-  @override
   String get save => 'Save';
 
   @override
@@ -2696,10 +2672,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectServerInstance => 'Please select a server instance';
 
   @override
-  String get selectServerToGenerateQrCode =>
-      'Select server to generate QR code';
-
-  @override
   String get selectServers => 'Select Servers';
 
   @override
@@ -2728,9 +2700,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get server => 'Server';
-
-  @override
-  String get serverActiveWhenEnabled => 'Server will be active when enabled';
 
   @override
   String get serverAddress => 'Server Address';
@@ -2825,15 +2794,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get severity => 'Severity';
 
   @override
-  String get severityAlert => 'Alert';
-
-  @override
-  String get severityCritical => 'Critical';
-
-  @override
-  String get severityDebug => 'Debug';
-
-  @override
   String get severityEmergency => 'Emergency';
 
   @override
@@ -2847,12 +2807,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get severityInformationalShort => 'Info';
-
-  @override
-  String get severityNotice => 'Notice';
-
-  @override
-  String get severityWarning => 'Warning';
 
   @override
   String get showAdvancedSettings => 'Show Advanced Settings';
@@ -2959,9 +2913,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stopped => 'Stopped';
 
   @override
-  String get stoppedStatus => 'Stopped';
-
-  @override
   String get storeAndGenerateNext => 'Store and Generate Next';
 
   @override
@@ -3035,9 +2986,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get systemGeneratedRulesCannotBeModified =>
       'System-generated rules cannot be modified';
-
-  @override
-  String get systemInfo => 'System Information';
 
   @override
   String get systemInformation => 'System Information';
@@ -3171,9 +3119,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tunnelAddressCidr => 'Tunnel Address (CIDR)';
 
   @override
-  String get tunnelAddressRequired => 'At least one tunnel address is required';
-
-  @override
   String get tunnelAddresses => 'Tunnel Addresses';
 
   @override
@@ -3218,9 +3163,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unknown => 'Unknown';
-
-  @override
-  String get unknownStatus => 'Unknown';
 
   @override
   String get unlock => 'Unlock';
@@ -3530,9 +3472,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get savingInstance => 'Saving instance...';
-
-  @override
-  String get myStaticKeyHint => 'My Static Key';
 
   @override
   String get staticKeyDescriptionHelper =>

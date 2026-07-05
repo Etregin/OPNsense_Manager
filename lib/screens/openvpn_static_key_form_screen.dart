@@ -216,7 +216,7 @@ class _OpenvpnStaticKeyFormScreenState
                 controller: _descriptionController,
                 decoration: InputDecoration(
                   labelText: l10n.description,
-                  hintText: l10n.myStaticKeyHint,
+                  hintText: l10n.myStaticKey,
                   prefixIcon: const Icon(Icons.description),
                   helperText: l10n.staticKeyDescriptionHelper,
                 ),

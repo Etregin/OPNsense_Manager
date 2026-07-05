@@ -156,7 +156,7 @@ class _OpenvpnInstancesScreenState extends State<OpenvpnInstancesScreen>
         onPressed: _tabController.index == 0 ? _onAddInstance : _onAddStaticKey,
         icon: const Icon(Icons.add),
         label: Text(_tabController.index == 0 ? l10n.addInstance : l10n.addStaticKey),
-        tooltip: _tabController.index == 0 ? l10n.addOpenVpnInstance : l10n.addStaticKeyTooltip,
+        tooltip: _tabController.index == 0 ? l10n.addOpenVpnInstance : l10n.addStaticKey,
       ),
     );
   }

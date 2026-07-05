@@ -118,9 +118,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addStaticKey => 'Agregar Clave Estática';
 
   @override
-  String get addStaticKeyTooltip => 'Agregar Clave Estática';
-
-  @override
   String get addSubnet => 'Agregar Subred';
 
   @override
@@ -362,10 +359,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get cannotDeleteLastConnection =>
-      'No se puede eliminar el último punto de conexión';
-
-  @override
-  String get cannotDeleteLastConnectionTooltip =>
       'No se puede eliminar el último punto de conexión';
 
   @override
@@ -816,9 +809,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get disabled => 'Deshabilitado';
 
   @override
-  String get disabledStatus => 'deshabilitado';
-
-  @override
   String get disablingRule => 'Desactivando regla...';
 
   @override
@@ -965,9 +955,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get enabled => 'Habilitado';
-
-  @override
-  String get enabledStatus => 'habilitado';
 
   @override
   String get enablingRule => 'Activando regla...';
@@ -1479,9 +1466,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get hostIpAddress => 'Host / Dirección IP';
 
   @override
-  String get hostIpAddressLabel => 'Host/Dirección IP';
-
-  @override
   String get hostIsRequired => 'El host es obligatorio';
 
   @override
@@ -1862,11 +1846,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get logDetails => 'Detalles del registro';
-
-  @override
-  String logEntriesCopied(int count, String entries) {
-    return '$count $entries de registro copiadas';
-  }
 
   @override
   String get logEntryCopied => 'Entrada de registro copiada';
@@ -2634,9 +2613,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get running => 'En Ejecución';
 
   @override
-  String get runningStatus => 'En Ejecución';
-
-  @override
   String get save => 'Guardar';
 
   @override
@@ -2736,10 +2712,6 @@ class AppLocalizationsEs extends AppLocalizations {
       'Por favor seleccione una instancia de servidor';
 
   @override
-  String get selectServerToGenerateQrCode =>
-      'Seleccione el servidor para generar el código QR';
-
-  @override
   String get selectServers => 'Seleccionar Servidores';
 
   @override
@@ -2768,10 +2740,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get server => 'Servidor';
-
-  @override
-  String get serverActiveWhenEnabled =>
-      'El servidor estará activo cuando se habilite';
 
   @override
   String get serverAddress => 'Dirección del servidor';
@@ -2868,15 +2836,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get severity => 'Gravedad';
 
   @override
-  String get severityAlert => 'Alerta';
-
-  @override
-  String get severityCritical => 'Crítico';
-
-  @override
-  String get severityDebug => 'Depuración';
-
-  @override
   String get severityEmergency => 'Emergencia';
 
   @override
@@ -2890,12 +2849,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get severityInformationalShort => 'Info';
-
-  @override
-  String get severityNotice => 'Aviso';
-
-  @override
-  String get severityWarning => 'Advertencia';
 
   @override
   String get showAdvancedSettings => 'Mostrar Configuración Avanzada';
@@ -3006,9 +2959,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get stopped => 'Detenido';
 
   @override
-  String get stoppedStatus => 'Detenido';
-
-  @override
   String get storeAndGenerateNext => 'Guardar y generar siguiente';
 
   @override
@@ -3082,9 +3032,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get systemGeneratedRulesCannotBeModified =>
       'Las reglas generadas por el sistema no se pueden modificar';
-
-  @override
-  String get systemInfo => 'Información del Sistema';
 
   @override
   String get systemInformation => 'Información del Sistema';
@@ -3220,10 +3167,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tunnelAddressCidr => 'Dirección del túnel (CIDR)';
 
   @override
-  String get tunnelAddressRequired =>
-      'Se requiere al menos una dirección de túnel';
-
-  @override
   String get tunnelAddresses => 'Direcciones del túnel';
 
   @override
@@ -3269,9 +3212,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get unknown => 'Desconocido';
-
-  @override
-  String get unknownStatus => 'Desconocido';
 
   @override
   String get unlock => 'Desbloquear';
@@ -3582,9 +3522,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get savingInstance => 'Guardando instancia...';
-
-  @override
-  String get myStaticKeyHint => 'Mi clave estática';
 
   @override
   String get staticKeyDescriptionHelper =>

@@ -296,12 +296,6 @@ abstract class AppLocalizations {
   /// **'Add Static Key'**
   String get addStaticKey;
 
-  /// No description provided for @addStaticKeyTooltip.
-  ///
-  /// In en, this message translates to:
-  /// **'Add Static Key'**
-  String get addStaticKeyTooltip;
-
   /// No description provided for @addSubnet.
   ///
   /// In en, this message translates to:
@@ -745,12 +739,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cannot delete the last connection endpoint'**
   String get cannotDeleteLastConnection;
-
-  /// No description provided for @cannotDeleteLastConnectionTooltip.
-  ///
-  /// In en, this message translates to:
-  /// **'Cannot delete the last connection endpoint'**
-  String get cannotDeleteLastConnectionTooltip;
 
   /// No description provided for @carpVhidToDepend.
   ///
@@ -1526,12 +1514,6 @@ abstract class AppLocalizations {
   /// **'Disabled'**
   String get disabled;
 
-  /// No description provided for @disabledStatus.
-  ///
-  /// In en, this message translates to:
-  /// **'disabled'**
-  String get disabledStatus;
-
   /// No description provided for @disablingRule.
   ///
   /// In en, this message translates to:
@@ -1807,12 +1789,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enabled'**
   String get enabled;
-
-  /// No description provided for @enabledStatus.
-  ///
-  /// In en, this message translates to:
-  /// **'enabled'**
-  String get enabledStatus;
 
   /// No description provided for @enablingRule.
   ///
@@ -2648,12 +2624,6 @@ abstract class AppLocalizations {
   /// **'Host / IP Address'**
   String get hostIpAddress;
 
-  /// No description provided for @hostIpAddressLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Host/IP Address'**
-  String get hostIpAddressLabel;
-
   /// No description provided for @hostIsRequired.
   ///
   /// In en, this message translates to:
@@ -3289,12 +3259,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Log Details'**
   String get logDetails;
-
-  /// No description provided for @logEntriesCopied.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} log {entries} copied'**
-  String logEntriesCopied(int count, String entries);
 
   /// No description provided for @logEntryCopied.
   ///
@@ -4694,12 +4658,6 @@ abstract class AppLocalizations {
   /// **'Running'**
   String get running;
 
-  /// No description provided for @runningStatus.
-  ///
-  /// In en, this message translates to:
-  /// **'Running'**
-  String get runningStatus;
-
   /// No description provided for @save.
   ///
   /// In en, this message translates to:
@@ -4880,12 +4838,6 @@ abstract class AppLocalizations {
   /// **'Please select a server instance'**
   String get selectServerInstance;
 
-  /// No description provided for @selectServerToGenerateQrCode.
-  ///
-  /// In en, this message translates to:
-  /// **'Select server to generate QR code'**
-  String get selectServerToGenerateQrCode;
-
   /// No description provided for @selectServers.
   ///
   /// In en, this message translates to:
@@ -4939,12 +4891,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Server'**
   String get server;
-
-  /// No description provided for @serverActiveWhenEnabled.
-  ///
-  /// In en, this message translates to:
-  /// **'Server will be active when enabled'**
-  String get serverActiveWhenEnabled;
 
   /// No description provided for @serverAddress.
   ///
@@ -5120,24 +5066,6 @@ abstract class AppLocalizations {
   /// **'Severity'**
   String get severity;
 
-  /// No description provided for @severityAlert.
-  ///
-  /// In en, this message translates to:
-  /// **'Alert'**
-  String get severityAlert;
-
-  /// No description provided for @severityCritical.
-  ///
-  /// In en, this message translates to:
-  /// **'Critical'**
-  String get severityCritical;
-
-  /// No description provided for @severityDebug.
-  ///
-  /// In en, this message translates to:
-  /// **'Debug'**
-  String get severityDebug;
-
   /// No description provided for @severityEmergency.
   ///
   /// In en, this message translates to:
@@ -5167,18 +5095,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Info'**
   String get severityInformationalShort;
-
-  /// No description provided for @severityNotice.
-  ///
-  /// In en, this message translates to:
-  /// **'Notice'**
-  String get severityNotice;
-
-  /// No description provided for @severityWarning.
-  ///
-  /// In en, this message translates to:
-  /// **'Warning'**
-  String get severityWarning;
 
   /// No description provided for @showAdvancedSettings.
   ///
@@ -5384,12 +5300,6 @@ abstract class AppLocalizations {
   /// **'Stopped'**
   String get stopped;
 
-  /// No description provided for @stoppedStatus.
-  ///
-  /// In en, this message translates to:
-  /// **'Stopped'**
-  String get stoppedStatus;
-
   /// No description provided for @storeAndGenerateNext.
   ///
   /// In en, this message translates to:
@@ -5495,12 +5405,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'System-generated rules cannot be modified'**
   String get systemGeneratedRulesCannotBeModified;
-
-  /// No description provided for @systemInfo.
-  ///
-  /// In en, this message translates to:
-  /// **'System Information'**
-  String get systemInfo;
 
   /// No description provided for @systemInformation.
   ///
@@ -5736,12 +5640,6 @@ abstract class AppLocalizations {
   /// **'Tunnel Address (CIDR)'**
   String get tunnelAddressCidr;
 
-  /// No description provided for @tunnelAddressRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'At least one tunnel address is required'**
-  String get tunnelAddressRequired;
-
   /// No description provided for @tunnelAddresses.
   ///
   /// In en, this message translates to:
@@ -5819,12 +5717,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unknown'**
   String get unknown;
-
-  /// No description provided for @unknownStatus.
-  ///
-  /// In en, this message translates to:
-  /// **'Unknown'**
-  String get unknownStatus;
 
   /// No description provided for @unlock.
   ///
@@ -6353,12 +6245,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Saving instance...'**
   String get savingInstance;
-
-  /// Hint text for the static key description field
-  ///
-  /// In en, this message translates to:
-  /// **'My Static Key'**
-  String get myStaticKeyHint;
 
   /// Helper text for the static key description field
   ///

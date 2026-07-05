@@ -564,7 +564,7 @@ class _WireGuardPeerGeneratorScreenState
                                     size: 200.0,
                                   ),
                                 )
-                              : Text(l10n.selectServerToGenerateQrCode),
+                              : Text(l10n.selectServerForQrCode),
                         ),
                       ),
                     ),

@@ -116,9 +116,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get addStaticKey => 'إضافة مفتاح ثابت';
 
   @override
-  String get addStaticKeyTooltip => 'إضافة مفتاح ثابت';
-
-  @override
   String get addSubnet => 'إضافة شبكة فرعية';
 
   @override
@@ -350,10 +347,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cannotDeleteLastConnection => 'لا يمكن حذف نقطة الاتصال الأخيرة';
-
-  @override
-  String get cannotDeleteLastConnectionTooltip =>
-      'لا يمكن حذف نقطة الاتصال الأخيرة';
 
   @override
   String get carpVhidToDepend => 'CARP VHID للاعتماد عليه';
@@ -799,9 +792,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get disabled => 'معطل';
 
   @override
-  String get disabledStatus => 'معطل';
-
-  @override
   String get disablingRule => 'جاري تعطيل القاعدة...';
 
   @override
@@ -944,9 +934,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get enabled => 'مفعّل';
-
-  @override
-  String get enabledStatus => 'مفعّل';
 
   @override
   String get enablingRule => 'جاري تفعيل القاعدة...';
@@ -1455,9 +1442,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get hostIpAddress => 'المضيف / عنوان IP';
 
   @override
-  String get hostIpAddressLabel => 'المضيف/عنوان IP';
-
-  @override
   String get hostIsRequired => 'المضيف مطلوب';
 
   @override
@@ -1834,11 +1818,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get logDetails => 'تفاصيل السجل';
-
-  @override
-  String logEntriesCopied(int count, String entries) {
-    return 'تم نسخ $count $entries من السجل';
-  }
 
   @override
   String get logEntryCopied => 'تم نسخ إدخال السجل';
@@ -2585,9 +2564,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get running => 'قيد التشغيل';
 
   @override
-  String get runningStatus => 'قيد التشغيل';
-
-  @override
   String get save => 'حفظ';
 
   @override
@@ -2682,9 +2658,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get selectServerInstance => 'الرجاء تحديد مثيل الخادم';
 
   @override
-  String get selectServerToGenerateQrCode => 'حدد الخادم لإنشاء رمز QR';
-
-  @override
   String get selectServers => 'تحديد الخوادم';
 
   @override
@@ -2713,9 +2686,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get server => 'الخادم';
-
-  @override
-  String get serverActiveWhenEnabled => 'سيكون الخادم نشطاً عند التفعيل';
 
   @override
   String get serverAddress => 'عنوان الخادم';
@@ -2809,15 +2779,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get severity => 'الخطورة';
 
   @override
-  String get severityAlert => 'تنبيه';
-
-  @override
-  String get severityCritical => 'حرج';
-
-  @override
-  String get severityDebug => 'تصحيح';
-
-  @override
   String get severityEmergency => 'طوارئ';
 
   @override
@@ -2831,12 +2792,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get severityInformationalShort => 'معلومات';
-
-  @override
-  String get severityNotice => 'إشعار';
-
-  @override
-  String get severityWarning => 'تحذير';
 
   @override
   String get showAdvancedSettings => 'إظهار الإعدادات المتقدمة';
@@ -2943,9 +2898,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get stopped => 'متوقف';
 
   @override
-  String get stoppedStatus => 'متوقف';
-
-  @override
   String get storeAndGenerateNext => 'حفظ وإنشاء التالي';
 
   @override
@@ -3019,9 +2971,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get systemGeneratedRulesCannotBeModified =>
       'لا يمكن تعديل القواعد التي تم إنشاؤها بواسطة النظام';
-
-  @override
-  String get systemInfo => 'معلومات النظام';
 
   @override
   String get systemInformation => 'معلومات النظام';
@@ -3155,9 +3104,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tunnelAddressCidr => 'عنوان النفق (CIDR)';
 
   @override
-  String get tunnelAddressRequired => 'مطلوب عنوان نفق واحد على الأقل';
-
-  @override
   String get tunnelAddresses => 'عناوين النفق';
 
   @override
@@ -3202,9 +3148,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get unknown => 'غير معروف';
-
-  @override
-  String get unknownStatus => 'غير معروف';
 
   @override
   String get unlock => 'فتح';
@@ -3512,9 +3455,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get savingInstance => 'Saving instance...';
-
-  @override
-  String get myStaticKeyHint => 'My Static Key';
 
   @override
   String get staticKeyDescriptionHelper =>

@@ -279,7 +279,7 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
                             // Delete button
                             IconButton(
                               icon: const Icon(Icons.delete, size: 20),
-                              tooltip: isOnlyConnection ? l10n.cannotDeleteLastConnectionTooltip : l10n.delete,
+                              tooltip: isOnlyConnection ? l10n.cannotDeleteLastConnection : l10n.delete,
                               onPressed: widget.enabled && !isOnlyConnection
                                   ? () => _showDeleteConfirmation(index)
                                   : null,
