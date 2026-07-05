@@ -1332,14 +1332,6 @@
       }
     }
   },
-  "importFailedWithErrors": "Import failed: {errors}",
-  "@importFailedWithErrors": {
-    "placeholders": {
-      "errors": {
-        "type": "String"
-      }
-    }
-  },
   "importProfiles": "Import Profiles",
   "@importProfiles": {},
   "importProfilesDialog": "How should existing profiles be handled?\n\n• Keep Both: Import with new IDs\n• Overwrite: Replace existing profiles",

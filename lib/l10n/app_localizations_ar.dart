@@ -1473,11 +1473,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String importFailedWithErrors(String errors) {
-    return 'فشل الاستيراد: $errors';
-  }
-
-  @override
   String get importProfiles => 'استيراد الملفات الشخصية';
 
   @override

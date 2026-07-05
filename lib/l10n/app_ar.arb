@@ -1361,15 +1361,6 @@
       }
     }
   },
-  "importFailedWithErrors": "فشل الاستيراد: {errors}",
-  "@importFailedWithErrors": {
-    "placeholders": {
-      "errors": {
-        "type": "String",
-        "example": "Error message"
-      }
-    }
-  },
   "importProfiles": "استيراد الملفات الشخصية",
   "@importProfiles": {},
   "importProfilesDialog": "كيف يجب التعامل مع الملفات الشخصية الموجودة؟\n\n• الاحتفاظ بكليهما: الاستيراد بمعرفات جديدة\n• الكتابة فوق: استبدال الملفات الشخصية الموجودة",

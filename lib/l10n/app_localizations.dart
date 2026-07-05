@@ -2678,12 +2678,6 @@ abstract class AppLocalizations {
   /// **'Import failed: {error}'**
   String importFailed(String error);
 
-  /// No description provided for @importFailedWithErrors.
-  ///
-  /// In en, this message translates to:
-  /// **'Import failed: {errors}'**
-  String importFailedWithErrors(String errors);
-
   /// No description provided for @importProfiles.
   ///
   /// In en, this message translates to:

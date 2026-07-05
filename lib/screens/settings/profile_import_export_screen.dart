@@ -126,7 +126,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
           message = l10n.successfullyImportedProfiles(result.successCount);
           SnackBarHelper.showSuccess(context, message, duration: const Duration(seconds: 5));
         } else if (result.successCount == 0) {
-          message = l10n.importFailedWithErrors(result.errors.join(', '));
+          message = l10n.importFailed(result.errors.join(', '));
           SnackBarHelper.showError(context, message, duration: const Duration(seconds: 5));
         } else {
           message = l10n.importedWithFailures(result.successCount, result.failedCount);

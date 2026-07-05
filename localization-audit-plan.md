@@ -14,7 +14,7 @@
 
 ## Sub-Task 1 — Remove Exact-Duplicate Keys (same English value, different key)
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ### Intent
 Three pairs of keys exist where both keys carry an identical (or semantically-equivalent) English value and are used in **different** call sites. Keeping both creates translation maintenance burden: translators must translate the same sentence twice, and de-sync is inevitable.
@@ -57,7 +57,7 @@ The survivor key is chosen by semantic precision; the redundant key is removed f
 
 ## Sub-Task 2 — Merge Near-Duplicate Keys (same meaning, slightly different wording)
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ### Intent
 Several pairs of keys express the same concept with only minor wording variation, and their **two** Dart call sites can be unified. Keeping both wastes translator effort and risks inconsistency.
@@ -99,7 +99,7 @@ For each pair: keep the more precise/complete key, update the one Dart file that
 
 ## Sub-Task 3 — Remove Non-Translatable Strings
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ### Intent
 Strings that embed brand names (WireGuard, OpenVPN, Tailscale), protocol acronyms used as UI labels, or UI-text that contains a brand name as a structural part of the phrase should remain in the ARB **only** if the surrounding sentence has genuine linguistic variation across locales. If the string is purely the brand name itself — acting as a section title with no translatable words — it should be hardcoded.
@@ -177,7 +177,7 @@ The four translation files must also be updated with their locale-appropriate IC
 
 ## Sub-Task 4 — Fix `importFailed` / `importFailedWithErrors` Near-Duplicate
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ### Intent
 Two keys exist for import failure messages with subtly different placeholder naming (`{error}` vs `{errors}`), but their usage pattern in code is consistent: `importFailed` is used when there is a **single error string** and `importFailedWithErrors` is used when there is a **joined list of errors**. Both render as `"Import failed: <text>"`. The difference is only in the parameter name, not in the translated phrase itself — which means translators translated the same sentence twice.

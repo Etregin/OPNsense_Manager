@@ -1368,15 +1368,6 @@
       }
     }
   },
-  "importFailedWithErrors": "Échec de l'importation : {errors}",
-  "@importFailedWithErrors": {
-    "placeholders": {
-      "errors": {
-        "type": "String",
-        "example": "Error message"
-      }
-    }
-  },
   "importProfiles": "Importer les Profils",
   "@importProfiles": {},
   "importProfilesDialog": "Comment les profils existants doivent-ils être traités ?\n\n• Conserver les Deux : Importer avec de nouveaux IDs\n• Écraser : Remplacer les profils existants",

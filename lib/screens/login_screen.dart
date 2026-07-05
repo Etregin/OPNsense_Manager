@@ -326,7 +326,7 @@ class _LoginScreenState extends State<LoginScreen> {
         message = l10n.successfullyImportedProfiles(successCount);
         SnackBarHelper.showSuccess(context, message, duration: const Duration(seconds: 5));
       } else if (successCount == 0) {
-        message = l10n.importFailedWithErrors(errors.join(', '));
+        message = l10n.importFailed(errors.join(', '));
         SnackBarHelper.showError(context, message, duration: const Duration(seconds: 5));
       } else {
         message = l10n.importedWithFailures(successCount, failedCount);

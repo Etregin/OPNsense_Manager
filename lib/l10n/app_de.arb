@@ -1368,15 +1368,6 @@
       }
     }
   },
-  "importFailedWithErrors": "Import fehlgeschlagen: {errors}",
-  "@importFailedWithErrors": {
-    "placeholders": {
-      "errors": {
-        "type": "String",
-        "example": "Error message"
-      }
-    }
-  },
   "importProfiles": "Profile importieren",
   "@importProfiles": {},
   "importProfilesDialog": "Wie sollen vorhandene Profile behandelt werden?\n\n• Beide Behalten: Mit neuen IDs importieren\n• Überschreiben: Vorhandene Profile ersetzen",

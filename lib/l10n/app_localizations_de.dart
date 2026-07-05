@@ -1506,11 +1506,6 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String importFailedWithErrors(String errors) {
-    return 'Import fehlgeschlagen: $errors';
-  }
-
-  @override
   String get importProfiles => 'Profile importieren';
 
   @override
