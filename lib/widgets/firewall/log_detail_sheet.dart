@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../screens/firewall_logs_screen.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/app_colors.dart';
 import '../../utils/color_helpers.dart';
 import '../../utils/snackbar_helper.dart';
 
@@ -57,7 +58,7 @@ class LogDetailSheet extends StatelessWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
+                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: AppColors.opacityDivider),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -86,7 +87,7 @@ class LogDetailSheet extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
-                              color: actionColor.withValues(alpha: 0.1),
+                              color: actionColor.withValues(alpha: AppColors.opacitySubtle),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(

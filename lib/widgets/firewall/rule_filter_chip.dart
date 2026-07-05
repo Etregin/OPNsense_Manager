@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../utils/app_colors.dart';
 
 /// Filter chip widget for firewall rule filtering
 class RuleFilterChip extends StatelessWidget {
@@ -39,7 +40,7 @@ class RuleFilterChip extends StatelessWidget {
       label: Text('$label ($count)'),
       selected: isSelected,
       onSelected: (_) => onSelected(),
-      selectedColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+      selectedColor: Theme.of(context).colorScheme.primary.withValues(alpha: AppColors.opacityLight),
       checkmarkColor: Theme.of(context).colorScheme.primary,
     );
   }

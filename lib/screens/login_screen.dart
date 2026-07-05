@@ -460,7 +460,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         decoration: BoxDecoration(
                           color: AppColors.infoBackground,
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: AppColors.infoText.withValues(alpha: 0.3)),
+                          border: Border.all(color: AppColors.infoText.withValues(alpha: AppColors.opacityDivider)),
                         ),
                         child: Row(
                           children: [

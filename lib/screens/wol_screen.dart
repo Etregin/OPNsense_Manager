@@ -390,7 +390,7 @@ class _WolHostCard extends StatelessWidget {
                         host.mac,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontFamily: 'monospace',
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                          color: theme.colorScheme.onSurface.withValues(alpha: AppColors.opacityStrong),
                         ),
                       ),
                     ],
@@ -451,13 +451,13 @@ class _WolHostCard extends StatelessWidget {
                 Icon(
                   Icons.network_check,
                   size: 16,
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                  color: theme.colorScheme.onSurface.withValues(alpha: AppColors.opacitySubdued),
                 ),
                 const SizedBox(width: 8),
                 Text(
                   'Interface: ${host.interfaceDisplay}',
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                    color: theme.colorScheme.onSurface.withValues(alpha: AppColors.opacitySubdued),
                   ),
                 ),
               ],

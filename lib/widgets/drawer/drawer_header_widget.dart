@@ -58,7 +58,7 @@ class DrawerHeaderWidget extends StatelessWidget {
             Text(
               systemInfo!.hostname,
               style: TextStyle(
-                color: AppColors.onPrimary.withValues(alpha: 0.7),
+                color: AppColors.onPrimary.withValues(alpha: AppColors.opacityStrong),
                 fontSize: 14,
               ),
             ),

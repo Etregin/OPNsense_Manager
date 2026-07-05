@@ -60,7 +60,7 @@ class StatCard extends StatelessWidget {
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: (iconColor ?? Theme.of(context).colorScheme.primary)
-                          .withValues(alpha: 0.1),
+                          .withValues(alpha: AppColors.opacitySubtle),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -145,7 +145,7 @@ class ProgressStatCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.1),
+                    color: color.withValues(alpha: AppColors.opacitySubtle),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
@@ -255,7 +255,7 @@ class StackedProgressStatCard extends StatelessWidget {
     
     // Use a lighter shade of the primary color for ARC
     final primary = _getPrimaryColor(context);
-    return primary.withValues(alpha: 0.4);
+    return primary.withValues(alpha: AppColors.opacityMedium);
   }
 
   @override
@@ -276,7 +276,7 @@ class StackedProgressStatCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: primary.withValues(alpha: 0.1),
+                    color: primary.withValues(alpha: AppColors.opacitySubtle),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
@@ -487,7 +487,7 @@ class QuickActionCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12), // Reduced from 16
                 decoration: BoxDecoration(
-                  color: iconColor.withValues(alpha: 0.1),
+                  color: iconColor.withValues(alpha: AppColors.opacitySubtle),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(

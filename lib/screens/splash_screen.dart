@@ -193,7 +193,7 @@ class _SplashScreenState extends State<SplashScreen> {
               l10n.version(context.read<AppVersionService>().version),
               style: TextStyle(
                 fontSize: 16,
-                color: AppColors.onPrimary.withValues(alpha: 0.8),
+                color: AppColors.onPrimary.withValues(alpha: AppColors.opacityHeavy),
               ),
             ),
             const SizedBox(height: 48),

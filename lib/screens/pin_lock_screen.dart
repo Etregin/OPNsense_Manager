@@ -133,7 +133,7 @@ class _PinLockScreenState extends State<PinLockScreen> {
                   ]
                 : [
                     Theme.of(context).colorScheme.primary,
-                    Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
+                    Theme.of(context).colorScheme.primary.withValues(alpha: AppColors.opacityStrong),
                   ],
           ),
         ),
@@ -180,7 +180,7 @@ class _PinLockScreenState extends State<PinLockScreen> {
                     l10n.unlockOpnsenseManager,
                     style: TextStyle(
                       fontSize: 16,
-                      color: textColor.withValues(alpha: 0.7),
+                      color: textColor.withValues(alpha: AppColors.opacityStrong),
                     ),
                   ),
                   const SizedBox(height: 48),
@@ -203,14 +203,14 @@ class _PinLockScreenState extends State<PinLockScreen> {
                         filled: true,
                         fillColor: isDark
                             ? colorScheme.surfaceContainerLow
-                            : AppColors.onPrimary.withValues(alpha: 0.2),
+                            : AppColors.onPrimary.withValues(alpha: AppColors.opacityLight),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                           borderSide: BorderSide.none,
                         ),
                         hintText: '••••••',
                         hintStyle: TextStyle(
-                          color: textColor.withValues(alpha: 0.5),
+                          color: textColor.withValues(alpha: AppColors.opacityHalf),
                           letterSpacing: 16,
                         ),
                         counterText: '',

@@ -303,7 +303,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
   Widget _buildHealthCard(AppLocalizations l10n, TailscaleStatus status) {
     final isHealthy = status.isHealthy;
     return Card(
-      color: isHealthy ? null : AppColors.warning.withValues(alpha: 0.1),
+      color: isHealthy ? null : AppColors.warning.withValues(alpha: AppColors.opacitySubtle),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -360,7 +360,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
               label,
               style: TextStyle(
                 fontWeight: FontWeight.w500,
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: AppColors.opacityMuted),
               ),
             ),
           ),

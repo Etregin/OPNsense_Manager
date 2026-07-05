@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../utils/app_colors.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/snackbar_helper.dart';
 
@@ -52,7 +53,7 @@ class ListManagerCard extends StatelessWidget {
         if (items.isEmpty)
           Text(
             emptyMessage,
-            style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38)),
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: AppColors.opacityMuted)),
           )
         else
           ...items.map((item) => Card(

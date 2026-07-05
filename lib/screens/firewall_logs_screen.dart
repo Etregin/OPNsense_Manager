@@ -370,11 +370,11 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
   }
 
   Widget _buildStatusBar(AppLocalizations l10n, List<FirewallLogEntry> logs) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      color: _isPaused
-          ? AppColors.warning.withValues(alpha: 0.1)
-          : AppColors.success.withValues(alpha: 0.1),
+   return Container(
+     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+     color: _isPaused
+         ? AppColors.warning.withValues(alpha: AppColors.opacitySubtle)
+         : AppColors.success.withValues(alpha: AppColors.opacitySubtle),
       child: Row(
         children: [
           Icon(
@@ -466,7 +466,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
                   color: Theme.of(context)
                       .colorScheme
                       .onSurfaceVariant
-                      .withValues(alpha: 0.7)),
+                      .withValues(alpha: AppColors.opacityStrong)),
             ),
           ],
         ),
@@ -497,7 +497,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       color: isSelected
-          ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
+          ? Theme.of(context).colorScheme.primary.withValues(alpha: AppColors.opacitySubtle)
           : null,
       child: InkWell(
         onTap: _isSelectionMode
@@ -524,7 +524,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: actionColor.withValues(alpha: 0.1),
+                  color: actionColor.withValues(alpha: AppColors.opacitySubtle),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -600,7 +600,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
                     color: Theme.of(context)
                         .colorScheme
                         .onSurfaceVariant
-                        .withValues(alpha: 0.7)),
+                        .withValues(alpha: AppColors.opacityStrong)),
               ),
               if (!_isSelectionMode) ...[
                 const SizedBox(height: 4),
@@ -610,7 +610,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
                   color: Theme.of(context)
                       .colorScheme
                       .onSurfaceVariant
-                      .withValues(alpha: 0.5),
+                      .withValues(alpha: AppColors.opacityHalf),
                 ),
               ],
             ],

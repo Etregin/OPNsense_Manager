@@ -71,6 +71,11 @@ class AppColors {
 
   // Informational
   static const Color info            = Color(0xFF2196F3); // Colors.blue
+  /// Light-blue background for informational banners — **light mode only**.
+  ///
+  /// This is a fixed hex value and does not adapt to dark mode. Use
+  /// `Theme.of(ctx).colorScheme.primaryContainer` for a fully adaptive
+  /// equivalent when building theme-agnostic UI.
   static const Color infoBackground  = Color(0xFFE3F2FD); // Colors.blue[50]
   static const Color infoText        = Color(0xFF1565C0); // Colors.blue[900]
   static const Color infoIcon        = Color(0xFF1976D2); // Colors.blue[700]
@@ -91,9 +96,22 @@ class AppColors {
   static const Color overlay     = Color(0x8A000000); // 54% black — loading modal overlay
 
   // Opacity constants — use with .withValues(alpha: ...)
-  static const double opacitySubtle   = 0.10; // icon/status container backgrounds
+  //
+  // Ordered by ascending opacity. Prefer these named constants over raw floats
+  // so every call-site is self-documenting and values stay consistent.
+  static const double opacityBare     = 0.05; // barely-visible tint (e.g. severe-error bg)
+  static const double opacitySubtle   = 0.10; // status/icon container backgrounds
   static const double opacityDisabled = 0.12; // disabled-state backgrounds (M3 standard)
+  static const double opacityFaint    = 0.15; // softer tint for status containers
+  static const double opacityLight    = 0.20; // drawer status badges, pin-pad overlay
+  static const double opacityDivider  = 0.30; // border/divider overlays, sheet handles
   static const double opacityMuted    = 0.38; // disabled text/icons (M3 standard)
+  static const double opacityMedium   = 0.40; // progress track fill, mid-opacity charts
+  static const double opacityHalf     = 0.50; // pin-pad text, log row secondary labels
+  static const double opacitySubdued  = 0.60; // secondary text in low-contrast contexts
+  static const double opacityStrong   = 0.70; // gradient stops, chart area fill
+  static const double opacityHeavy    = 0.80; // near-opaque subtitles (splash, dashboard)
+  static const double opacityAlmost   = 0.90; // near-opaque text (profile subtitle)
 
   // Chart / Miscellaneous
   static const Color bandwidth = Color(0xFF9C27B0); // Purple — total-bandwidth stat chip

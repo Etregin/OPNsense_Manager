@@ -143,9 +143,9 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
                       style: const TextStyle(fontSize: 12),
                     ),
                     backgroundColor: serviceStatus == 'running'
-                        ? AppColors.success.withValues(alpha: 0.15)
+                        ? AppColors.success.withValues(alpha: AppColors.opacityFaint)
                         : serviceStatus == 'stopped'
-                            ? AppColors.warning.withValues(alpha: 0.15)
+                            ? AppColors.warning.withValues(alpha: AppColors.opacityFaint)
                             : Theme.of(context).colorScheme.surfaceContainerHighest,
                     labelStyle: TextStyle(
                       color: serviceStatus == 'running'

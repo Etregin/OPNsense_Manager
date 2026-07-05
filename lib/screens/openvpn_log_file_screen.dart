@@ -21,6 +21,7 @@ import 'package:flutter/services.dart';
 import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_log_entry.dart';
+import '../utils/app_colors.dart';
 import '../utils/color_helpers.dart';
 import '../services/demo_api_service.dart';
 import '../utils/formatters.dart';
@@ -501,7 +502,7 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
                                 color: Theme.of(context)
                                     .colorScheme
                                     .onSurfaceVariant
-                                    .withValues(alpha: 0.4),
+                                    .withValues(alpha: AppColors.opacityMedium),
                                 borderRadius: BorderRadius.circular(2),
                               ),
                             ),

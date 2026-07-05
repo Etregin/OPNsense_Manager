@@ -49,7 +49,7 @@ class PeerCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: peer.isEnabled ? AppColors.success : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12),
+          backgroundColor: peer.isEnabled ? AppColors.success : Theme.of(context).colorScheme.onSurface.withValues(alpha: AppColors.opacityDisabled),
           child: Icon(
             peer.isEnabled ? Icons.vpn_key : Icons.vpn_key_off,
             color: AppColors.onPrimary,
@@ -80,7 +80,7 @@ class PeerCard extends StatelessWidget {
                 'Keepalive: ${peer.keepaliveInterval}s',
                 style: TextStyle(
                   fontSize: 12,
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: AppColors.opacityMuted),
                 ),
               ),
           ],

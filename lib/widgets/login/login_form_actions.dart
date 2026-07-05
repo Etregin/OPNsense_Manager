@@ -70,7 +70,7 @@ class LoginFormActions extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
               side: BorderSide(
-                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: AppColors.opacityHalf),
                 width: 1.5,
               ),
             ),
@@ -179,7 +179,7 @@ class LoginFormActions extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
               side: BorderSide(
-                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: AppColors.opacityHalf),
                 width: 1,
               ),
             ),

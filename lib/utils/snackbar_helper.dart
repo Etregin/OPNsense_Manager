@@ -42,7 +42,14 @@ class SnackBarHelper {
   static void _show(BuildContext context, String message, {Color? backgroundColor, Duration duration = const Duration(seconds: 2)}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
+        // Enforce white text when a semantic background color is applied so
+        // legibility is guaranteed regardless of future palette changes.
+        content: Text(
+          message,
+          style: backgroundColor != null
+              ? const TextStyle(color: AppColors.onPrimary)
+              : null,
+        ),
         backgroundColor: backgroundColor,
         duration: duration,
       ),

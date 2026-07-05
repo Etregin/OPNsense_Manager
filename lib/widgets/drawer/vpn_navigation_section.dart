@@ -343,8 +343,8 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(
           color: _tailscaleStatus!.isConnected
-              ? AppColors.success.withValues(alpha: 0.2)
-              : AppColors.disabled.withValues(alpha: 0.2),
+              ? AppColors.success.withValues(alpha: AppColors.opacityLight)
+              : AppColors.disabled.withValues(alpha: AppColors.opacityLight),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: _tailscaleStatus!.isConnected
@@ -369,7 +369,7 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: AppColors.warning.withValues(alpha: 0.2),
+        color: AppColors.warning.withValues(alpha: AppColors.opacityLight),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: AppColors.warning,

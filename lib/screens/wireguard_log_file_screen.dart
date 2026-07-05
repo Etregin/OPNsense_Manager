@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../services/demo_api_service.dart';
+import '../utils/app_colors.dart';
 import '../utils/color_helpers.dart';
 import '../utils/snackbar_helper.dart';
 import '../utils/formatters.dart';
@@ -539,7 +540,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
                                 color: Theme.of(context)
                                     .colorScheme
                                     .onSurfaceVariant
-                                    .withValues(alpha: 0.4),
+                                    .withValues(alpha: AppColors.opacityMedium),
                                 borderRadius: BorderRadius.circular(2),
                               ),
                             ),

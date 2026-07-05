@@ -97,7 +97,7 @@ Color logLevelColor(String level, {required BuildContext context}) {
     case 'info':
       return Theme.of(context).colorScheme.primary;
     default:
-      return Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38);
+      return Theme.of(context).colorScheme.onSurface.withValues(alpha: AppColors.opacityMuted);
   }
 }
 

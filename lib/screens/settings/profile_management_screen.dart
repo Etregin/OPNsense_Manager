@@ -509,7 +509,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
         color: Theme.of(context).colorScheme.surfaceContainerLow,
         boxShadow: [
           BoxShadow(
-            color: AppColors.shadow.withValues(alpha: 0.5),
+            color: AppColors.shadow.withValues(alpha: AppColors.opacityHalf),
             blurRadius: 4,
             offset: const Offset(0, -2),
           ),

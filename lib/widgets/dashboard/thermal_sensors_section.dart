@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/thermal_sensor.dart';
+import '../../utils/app_colors.dart';
 import '../../utils/color_helpers.dart';
 
 /// Widget for displaying thermal sensor readings in a compact format.
@@ -50,7 +51,7 @@ class ThermalSensorsSection extends StatelessWidget {
               Text(
                 l10n.noThermalSensorsAvailable,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: AppColors.opacityMuted),
                     ),
               )
             else
@@ -135,7 +136,7 @@ class _CompactSensorRow extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
+              color: color.withValues(alpha: AppColors.opacitySubtle),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
@@ -161,7 +162,7 @@ class _CompactSensorRow extends StatelessWidget {
                 Text(
                   deviceName,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: AppColors.opacityMuted),
                       ),
                   overflow: TextOverflow.ellipsis,
                 ),

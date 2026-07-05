@@ -253,7 +253,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                   ]
                 : [
                     AppColors.primary,
-                    AppColors.primary.withValues(alpha: 0.7),
+                    AppColors.primary.withValues(alpha: AppColors.opacityStrong),
                   ],
           ),
         ),
@@ -282,7 +282,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                     Text(
                       l10n.selectAProfileOrCreateNewOne,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: textColor.withValues(alpha: 0.9),
+                            color: textColor.withValues(alpha: AppColors.opacityHeavy + AppColors.opacitySubtle),
                           ),
                     ),
                   ],
@@ -294,7 +294,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Card(
-                    color: AppColors.error.withValues(alpha: 0.1),
+                    color: AppColors.error.withValues(alpha: AppColors.opacitySubtle),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Row(
@@ -318,7 +318,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Card(
-                    color: AppColors.info.withValues(alpha: 0.1),
+                    color: AppColors.info.withValues(alpha: AppColors.opacitySubtle),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Row(
@@ -479,7 +479,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
           child: ListTile(
             contentPadding: const EdgeInsets.all(16),
             leading: CircleAvatar(
-              backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+              backgroundColor: AppColors.primary.withValues(alpha: AppColors.opacitySubtle),
               child: Icon(
                 profile.isDemo ? Icons.play_circle_outline : Icons.router,
                 color: AppColors.primary,

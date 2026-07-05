@@ -203,7 +203,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           Icon(Icons.info_outline,
-                              color: AppColors.onPrimary.withValues(alpha: 0.8),
+                              color: AppColors.onPrimary.withValues(alpha: AppColors.opacityHeavy),
                               size: 20),
                         ],
                       ),

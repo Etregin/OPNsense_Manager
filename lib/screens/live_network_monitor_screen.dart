@@ -506,10 +506,10 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withValues(alpha: AppColors.opacitySubtle),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: color.withValues(alpha: 0.3),
+          color: color.withValues(alpha: AppColors.opacityDivider),
           width: 1,
         ),
       ),
@@ -683,7 +683,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withValues(alpha: AppColors.opacitySubtle),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Column(
@@ -1187,14 +1187,14 @@ class SparklinePainter extends CustomPainter {
     if (data.isEmpty || maxValue == 0) return;
 
     final paint = Paint()
-      ..color = color.withValues(alpha: 0.7)
+      ..color = color.withValues(alpha: AppColors.opacityStrong)
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
 
     final fillPaint = Paint()
-      ..color = color.withValues(alpha: 0.1)
+      ..color = color.withValues(alpha: AppColors.opacitySubtle)
       ..style = PaintingStyle.fill;
 
     final path = Path();
@@ -1235,7 +1235,7 @@ class SparklinePainter extends CustomPainter {
       
       // Draw outer circle
       final outerCirclePaint = Paint()
-        ..color = color.withValues(alpha: 0.3)
+        ..color = color.withValues(alpha: AppColors.opacityDivider)
         ..style = PaintingStyle.fill;
       canvas.drawCircle(Offset(x, y), 8, outerCirclePaint);
       

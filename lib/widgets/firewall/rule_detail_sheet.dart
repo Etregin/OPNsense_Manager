@@ -153,9 +153,9 @@ class RuleDetailSheet extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.warning.withValues(alpha: 0.1),
+        color: AppColors.warning.withValues(alpha: AppColors.opacitySubtle),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.warning.withValues(alpha: 0.3)),
+        border: Border.all(color: AppColors.warning.withValues(alpha: AppColors.opacityDivider)),
       ),
       child: Row(
         children: [
