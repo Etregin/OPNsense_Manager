@@ -20,104 +20,57 @@ import 'package:flutter/material.dart';
 
 /// Centralised colour palette for OPNsense Manager.
 ///
-/// Groups:
-///   • Brand            — primary, secondary
-///   • Status           — success, warning, error, disabled
-///   • Info             — info, infoBackground*, infoText*, infoIcon*
-///   • Warning tones    — warningBackground*, warningLight*, warningIcon, warningDark*
-///   • On-color tokens  — onPrimary, transparent
-///   • Shadow/Overlay   — shadow, shadowLight, overlay
-///   • Opacity constants
-///   • Chart/Misc       — bandwidth
-///
-/// Tokens marked * are light-mode only (fixed hex values). At call-sites that
-/// render in both light and dark mode, use the equivalent colorScheme token:
-///   infoBackground    → colorScheme.primaryContainer
-///   infoText          → colorScheme.onPrimaryContainer
-///   infoIcon          → colorScheme.onPrimaryContainer
-///   warningBackground → colorScheme.errorContainer
-///   warningDark       → colorScheme.onErrorContainer
-///
-/// MIGRATION REFERENCE (old → new):
-///   AppConstants.primaryColorValue   → AppColors.primary
-///   AppConstants.secondaryColorValue → AppColors.secondary
-///   AppConstants.successColorValue   → AppColors.success
-///   AppConstants.warningColorValue   → AppColors.warning
-///   AppConstants.errorColorValue     → AppColors.error
-///   AppColors.danger                 → AppColors.error       (removed — identical value)
-///   AppColors.online                 → AppColors.success     (removed — identical value)
-///   AppColors.offline                → AppColors.disabled    (removed — identical value)
-///   Colors.white (on coloured bg)    → AppColors.onPrimary
-///   Colors.white (dark-mode ternary) → Theme.of(ctx).colorScheme.onSurface
-///   Colors.white70                   → AppColors.onPrimary.withValues(alpha: 0.7)
-///   Colors.black.withValues(a:0.2)   → AppColors.shadow
-///   Colors.black.withValues(a:0.1)   → AppColors.shadow.withValues(alpha: 0.5)
-///   Colors.black54                   → AppColors.overlay
-///   Colors.black87                   → Theme.of(ctx).colorScheme.onSurface  (was AppColors.onSurface)
-///   Colors.black26                   → AppColors.shadowLight
-///   Colors.redAccent                 → AppColors.error
-///   Colors.transparent               → AppColors.transparent
-///   const Color(0xFF9E9E9E)          → AppColors.disabled
-///
-/// REMOVED TOKENS (replaced with dynamic colorScheme equivalents for dark-mode correctness):
-///   AppColors.textSecondary          → Theme.of(ctx).colorScheme.onSurfaceVariant
-///   AppColors.iconMuted              → Theme.of(ctx).colorScheme.onSurfaceVariant
-///   AppColors.surfaceLight           → Theme.of(ctx).colorScheme.surfaceContainerHighest
-///   AppColors.surfaceMid             → Theme.of(ctx).colorScheme.surfaceContainerHighest
-///   AppColors.surfaceMid (border)    → Theme.of(ctx).colorScheme.outlineVariant
-///   AppColors.onSurface (text)       → Theme.of(ctx).colorScheme.onSurface
-///   AppColors.onSurface (tooltip bg) → Theme.of(ctx).colorScheme.inverseSurface
-///   Tooltip text on inverseSurface   → Theme.of(ctx).colorScheme.onInverseSurface
+/// Tokens marked * are light-mode only. In adaptive UI, prefer the equivalent
+/// colorScheme token: infoBackground → primaryContainer, infoText/infoIcon →
+/// onPrimaryContainer, warningBackground → errorContainer, warningDark →
+/// onErrorContainer.
 class AppColors {
-  static const Color primary   = Color(0xFF046371); // Deep Teal (Shield body)
-  static const Color secondary = Color(0xFF00FFFF); // Electric Cyan (Wi-Fi signal)
+  // Brand
+  static const Color primary   = Color(0xFF046371); // Deep Teal
+  static const Color secondary = Color(0xFF00FFFF); // Electric Cyan
 
-  // Semantic status colours
-  static const Color success  = Color(0xFF4CAF50); // Colors.green
-  static const Color warning  = Color(0xFFFF9800); // Colors.orange
-  static const Color error    = Color(0xFFF44336); // Colors.red
-  static const Color disabled = Color(0xFF9E9E9E); // Colors.grey
+  // Status
+  static const Color success  = Color(0xFF4CAF50);
+  static const Color warning  = Color(0xFFFF9800);
+  static const Color error    = Color(0xFFF44336);
+  static const Color disabled = Color(0xFF9E9E9E);
 
-  // Informational
-  // Light-mode only — in adaptive UI use colorScheme.primaryContainer / onPrimaryContainer instead.
-  static const Color info            = Color(0xFF2196F3); // Colors.blue
-  static const Color infoBackground  = Color(0xFFE3F2FD); // Colors.blue[50]
-  static const Color infoText        = Color(0xFF1565C0); // Colors.blue[900]
-  static const Color infoIcon        = Color(0xFF1976D2); // Colors.blue[700]
+  // Informational — light-mode only *
+  static const Color info            = Color(0xFF2196F3);
+  static const Color infoBackground  = Color(0xFFE3F2FD);
+  static const Color infoText        = Color(0xFF1565C0);
+  static const Color infoIcon        = Color(0xFF1976D2);
 
-  // Warning tones (orange scale)
-  // Background/text tokens are light-mode only — use colorScheme.errorContainer / onErrorContainer in adaptive UI.
-  static const Color warningBackground = Color(0xFFFFF3E0); // Colors.orange[50]
-  static const Color warningLight      = Color(0xFFFFE0B2); // Colors.orange[100]  (shade100)
-  static const Color warningIcon       = Color(0xFFF57C00); // Colors.orange[700] — readable in both modes
-  static const Color warningDark       = Color(0xFFE65100); // Colors.orange[900]
+  // Warning tones — background/text tokens are light-mode only *
+  static const Color warningBackground = Color(0xFFFFF3E0);
+  static const Color warningLight      = Color(0xFFFFE0B2);
+  static const Color warningIcon       = Color(0xFFF57C00); // readable in both modes
+  static const Color warningDark       = Color(0xFFE65100);
 
-  // On-color & surface tokens
-  static const Color onPrimary  = Color(0xFFFFFFFF); // White — text/icons on primary-coloured surfaces
-  static const Color transparent = Color(0x00000000); // Fully transparent
+  // On-color
+  static const Color onPrimary   = Color(0xFFFFFFFF);
+  static const Color transparent = Color(0x00000000);
 
-  // Shadow & overlay tokens
-  static const Color shadow      = Color(0x33000000); // 20% black — card/logo drop-shadows
-  static const Color shadowLight = Color(0x42000000); // 26% black — tooltip shadows
-  static const Color overlay     = Color(0x8A000000); // 54% black — loading modal overlay
+  // Shadow & overlay
+  static const Color shadow      = Color(0x33000000); // 20% black
+  static const Color shadowLight = Color(0x42000000); // 26% black
+  static const Color overlay     = Color(0x8A000000); // 54% black
 
-  // Opacity constants — use with .withValues(alpha: ...)
-  //
-  // Ordered by ascending opacity. Prefer these named constants over raw floats
-  // so every call-site is self-documenting and values stay consistent.
-  static const double opacityBare     = 0.05; // barely-visible tint (e.g. severe-error bg)
-  static const double opacitySubtle   = 0.10; // status/icon container backgrounds
-  static const double opacityDisabled = 0.12; // disabled-state backgrounds (M3 standard)
-  static const double opacityFaint    = 0.15; // softer tint for status containers
-  static const double opacityLight    = 0.20; // drawer status badges, pin-pad overlay
-  static const double opacityDivider  = 0.30; // border/divider overlays, sheet handles
-  static const double opacityMuted    = 0.38; // disabled text/icons (M3 standard)
-  static const double opacityMedium   = 0.40; // progress track fill, mid-opacity charts
-  static const double opacityHalf     = 0.50; // pin-pad text, log row secondary labels
-  static const double opacitySubdued  = 0.60; // secondary text in low-contrast contexts
-  static const double opacityStrong   = 0.70; // gradient stops, chart area fill
-  static const double opacityHeavy    = 0.80; // near-opaque subtitles (splash, dashboard)
+  // Opacity constants — use with .withValues(alpha: ...).
+  // Ordered by ascending opacity.
+  static const double opacityBare     = 0.05;
+  static const double opacitySubtle   = 0.10;
+  static const double opacityDisabled = 0.12; // M3 disabled-state backgrounds
+  static const double opacityFaint    = 0.15;
+  static const double opacityLight    = 0.20;
+  static const double opacityDivider  = 0.30;
+  static const double opacityMuted    = 0.38; // M3 disabled text/icons
+  static const double opacityMedium   = 0.40;
+  static const double opacityHalf     = 0.50;
+  static const double opacitySubdued  = 0.60;
+  static const double opacityStrong   = 0.70;
+  static const double opacityHeavy    = 0.80;
 
-  // Chart / Miscellaneous
-  static const Color bandwidth = Color(0xFF9C27B0); // Purple — total-bandwidth stat chip; kept centrally for reuse in future bandwidth charts.
+  // Chart
+  static const Color bandwidth = Color(0xFF9C27B0); // Purple
 }
