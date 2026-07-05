@@ -180,9 +180,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get allVpns => 'جميع VPN';
 
   @override
-  String get allowSelfSigned => 'السماح بالشهادة الموقعة ذاتياً';
-
-  @override
   String get allowSelfSignedCertificates => 'السماح بالشهادات الموقعة ذاتياً';
 
   @override
@@ -2491,9 +2488,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get routing => 'التوجيه';
-
-  @override
-  String get rowsPerPage => 'صفوف لكل صفحة';
 
   @override
   String get rowsPerPageLabel => 'الصفوف لكل صفحة: ';

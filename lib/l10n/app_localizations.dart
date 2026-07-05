@@ -422,12 +422,6 @@ abstract class AppLocalizations {
   /// **'All VPNs'**
   String get allVpns;
 
-  /// No description provided for @allowSelfSigned.
-  ///
-  /// In en, this message translates to:
-  /// **'Allow Self-Signed Certificate'**
-  String get allowSelfSigned;
-
   /// No description provided for @allowSelfSignedCertificates.
   ///
   /// In en, this message translates to:
@@ -4531,12 +4525,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Routing'**
   String get routing;
-
-  /// No description provided for @rowsPerPage.
-  ///
-  /// In en, this message translates to:
-  /// **'Rows per page'**
-  String get rowsPerPage;
 
   /// No description provided for @rowsPerPageLabel.
   ///

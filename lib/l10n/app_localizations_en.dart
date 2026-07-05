@@ -181,9 +181,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get allVpns => 'All VPNs';
 
   @override
-  String get allowSelfSigned => 'Allow Self-Signed Certificate';
-
-  @override
   String get allowSelfSignedCertificates => 'Allow Self-Signed Certificates';
 
   @override
@@ -2503,9 +2500,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get routing => 'Routing';
-
-  @override
-  String get rowsPerPage => 'Rows per page';
 
   @override
   String get rowsPerPageLabel => 'Rows per page: ';

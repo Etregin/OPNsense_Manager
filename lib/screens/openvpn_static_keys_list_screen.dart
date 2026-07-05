@@ -225,7 +225,7 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
               padding: const EdgeInsets.all(16.0),
               child: Row(
                 children: [
-                  Text(l10n.rowsPerPage),
+                  Text(l10n.rowsPerPageLabel),
                   const SizedBox(width: 12),
                   DropdownButton<int>(
                     value: _rowCount,

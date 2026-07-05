@@ -88,7 +88,7 @@ class ConnectionFieldsSection extends StatelessWidget {
 
         // Self-Signed Certificate Toggle
         SwitchListTile(
-          title: Text(l10n.allowSelfSigned),
+          title: Text(l10n.allowSelfSignedCertificates),
           subtitle: Text(
             l10n.selfSignedCertWarning,
           ),

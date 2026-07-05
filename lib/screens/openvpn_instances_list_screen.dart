@@ -318,7 +318,7 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
                   // Row count selector
                   Row(
                     children: [
-                      Text(l10n.rowsPerPage),
+                      Text(l10n.rowsPerPageLabel),
                       const SizedBox(width: 12),
                       DropdownButton<int>(
                         value: _rowCount,
