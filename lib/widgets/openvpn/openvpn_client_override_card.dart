@@ -49,7 +49,7 @@ class OpenvpnClientOverrideCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: clientOverride.enabled ? AppColors.success : Theme.of(context).disabledColor,
+          backgroundColor: clientOverride.enabled ? AppColors.success : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12),
           child: Icon(
             clientOverride.enabled ? Icons.check_circle : Icons.cancel,
             color: AppColors.onPrimary,
@@ -95,14 +95,14 @@ class OpenvpnClientOverrideCard extends StatelessWidget {
                     Icon(
                       Icons.vpn_lock,
                       size: 14,
-                      color: Theme.of(context).disabledColor,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
                     ),
                     const SizedBox(width: 4),
                     Text(
                       'Tunnel: ${clientOverride.tunnelNetwork}',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Theme.of(context).disabledColor,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
                       ),
                     ),
                   ],

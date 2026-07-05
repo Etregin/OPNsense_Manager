@@ -140,6 +140,9 @@ class AppColors {
   static const Color shadowLight = Color(0x42000000); // 26% black — tooltip shadows
   static const Color overlay     = Color(0x8A000000); // 54% black — loading modal overlay
   static const Color onSurface   = Color(0xDD000000); // 87% black — high-emphasis text on light surfaces
+
+  // Chart / Miscellaneous
+  static const Color bandwidth = Color(0xFF9C27B0); // Purple — total-bandwidth stat chip
 }
 
 /// Non-translatable display strings — brand names, technical acronyms,

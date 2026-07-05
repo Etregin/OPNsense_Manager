@@ -52,7 +52,7 @@ class ListManagerCard extends StatelessWidget {
         if (items.isEmpty)
           Text(
             emptyMessage,
-            style: TextStyle(color: Theme.of(context).disabledColor),
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38)),
           )
         else
           ...items.map((item) => Card(

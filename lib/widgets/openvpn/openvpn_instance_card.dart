@@ -49,7 +49,7 @@ class OpenvpnInstanceCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: instance.enabled ? AppColors.success : Theme.of(context).disabledColor,
+          backgroundColor: instance.enabled ? AppColors.success : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12),
           child: Icon(
             instance.enabled ? Icons.vpn_lock : Icons.vpn_lock_outlined,
             color: AppColors.onPrimary,
@@ -98,7 +98,7 @@ class OpenvpnInstanceCard extends StatelessWidget {
                 'Device: ${instance.devType}',
                 style: TextStyle(
                   fontSize: 12,
-                  color: Theme.of(context).disabledColor,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
                 ),
               ),
           ],

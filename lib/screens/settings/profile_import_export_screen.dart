@@ -155,7 +155,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
             ListTile(
               leading: Icon(
                 Icons.upload_file,
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.primary,
               ),
               title: Text(l10n.import),
               subtitle: Text(l10n.importProfilesSubtitle),
@@ -166,7 +166,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
             ListTile(
               leading: Icon(
                 Icons.download,
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.primary,
               ),
               title: Text(l10n.exportAllProfiles),
               subtitle: Text(l10n.exportAllProfilesSubtitle),

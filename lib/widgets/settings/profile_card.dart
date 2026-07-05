@@ -51,7 +51,7 @@ class ProfileCard extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: isActive 
-              ? Theme.of(context).primaryColor
+              ? Theme.of(context).colorScheme.primary
               : AppColors.iconMuted,
           child: Icon(
             isActive ? Icons.check : Icons.dns,

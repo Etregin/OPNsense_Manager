@@ -395,7 +395,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                 onPressed: _viewModel.isLoading ? null : _saveRule,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: Theme.of(context).primaryColor,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: AppColors.onPrimary,
                 ),
                 child: Text(

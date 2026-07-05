@@ -377,7 +377,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
               subtitle: Text(l10n.requirePinToUnlock),
               secondary: Icon(
                 Icons.pin,
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.primary,
               ),
               value: _pinEnabled,
               onChanged: _togglePinLock,
@@ -387,7 +387,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
               ListTile(
                 leading: Icon(
                   Icons.edit,
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 title: Text(l10n.changePin),
                 subtitle: Text(l10n.updatePinCode),
@@ -404,7 +404,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
                     : l10n.enablePinLockFirstBiometric),
                 secondary: Icon(
                   Icons.fingerprint,
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 value: _biometricEnabled,
                 onChanged: _pinEnabled ? _toggleBiometric : null,
@@ -415,7 +415,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
               ListTile(
                 leading: Icon(
                   Icons.timer,
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 title: Text(l10n.lockTimeoutLabel),
                 subtitle: Text(l10n.lockAfterMinutes(_lockTimeout)),

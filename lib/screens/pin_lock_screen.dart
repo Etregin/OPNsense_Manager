@@ -114,9 +114,9 @@ class _PinLockScreenState extends State<PinLockScreen> {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;
-    final backgroundColor = isDark ? Theme.of(context).scaffoldBackgroundColor : colorScheme.primary;
+    final backgroundColor = isDark ? colorScheme.surface : colorScheme.primary;
     final textColor = isDark ? colorScheme.onSurface : AppColors.onPrimary;
-    final iconBackgroundColor = isDark ? Theme.of(context).cardColor : AppColors.onPrimary;
+    final iconBackgroundColor = isDark ? colorScheme.surfaceContainerLow : AppColors.onPrimary;
     final iconColor = colorScheme.primary;
     
     return Scaffold(
@@ -131,8 +131,8 @@ class _PinLockScreenState extends State<PinLockScreen> {
                     backgroundColor,
                   ]
                 : [
-                    Theme.of(context).primaryColor,
-                    Theme.of(context).primaryColor.withValues(alpha: 0.7),
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
                   ],
           ),
         ),
@@ -201,7 +201,7 @@ class _PinLockScreenState extends State<PinLockScreen> {
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: isDark
-                            ? Theme.of(context).cardColor
+                            ? colorScheme.surfaceContainerLow
                             : AppColors.onPrimary.withValues(alpha: 0.2),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),

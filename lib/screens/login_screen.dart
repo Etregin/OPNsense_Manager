@@ -362,7 +362,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Icon(
                     Icons.security,
                     size: 80,
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                   const SizedBox(height: 16),
 

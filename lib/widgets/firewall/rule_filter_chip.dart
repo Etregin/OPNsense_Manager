@@ -39,8 +39,8 @@ class RuleFilterChip extends StatelessWidget {
       label: Text('$label ($count)'),
       selected: isSelected,
       onSelected: (_) => onSelected(),
-      selectedColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
-      checkmarkColor: Theme.of(context).primaryColor,
+      selectedColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+      checkmarkColor: Theme.of(context).colorScheme.primary,
     );
   }
 }

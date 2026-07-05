@@ -212,7 +212,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
                         ? Icons.radio_button_checked
                         : Icons.radio_button_unchecked,
                     color: _historySize == size
-                        ? Theme.of(context).primaryColor
+                        ? Theme.of(context).colorScheme.primary
                         : null,
                   ),
                   onTap: () {
@@ -508,7 +508,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       color: isSelected
-          ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
+          ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
           : null,
       child: InkWell(
         onTap: _isSelectionMode

@@ -420,7 +420,7 @@ class OpenvpnMultiSelectField extends StatelessWidget {
               prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
               suffixIcon: Icon(
                 Icons.arrow_drop_down,
-                color: enabled ? null : Theme.of(context).disabledColor,
+                color: enabled ? null : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
               ),
               enabled: enabled,
             ),

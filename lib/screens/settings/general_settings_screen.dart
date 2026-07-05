@@ -90,7 +90,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                     : _themeMode == 'light'
                         ? Icons.light_mode
                         : Icons.brightness_auto,
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.primary,
               ),
               title: Text(l10n.theme),
               subtitle: Text(
@@ -139,7 +139,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
             ListTile(
               leading: Icon(
                 Icons.language,
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.primary,
               ),
               title: Text(l10n.language),
               subtitle: Text(

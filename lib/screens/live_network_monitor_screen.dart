@@ -475,7 +475,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                     label: l10n.totalBandwidth,
                     value: Formatters.formatBytesPerSecond(totalBandwidth, context, decimals: 1),
                     icon: Icons.swap_vert,
-                    color: Colors.purple,
+                    color: AppColors.bandwidth,
                   ),
                 ),
                 const SizedBox(width: 12),

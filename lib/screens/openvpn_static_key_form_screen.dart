@@ -352,7 +352,7 @@ class _OpenvpnStaticKeyFormScreenState
                 onPressed: _viewModel.isLoading || _viewModel.isGenerating ? null : _saveStaticKey,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: Theme.of(context).primaryColor,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: AppColors.onPrimary,
                 ),
                 child: Text(

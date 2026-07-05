@@ -505,7 +505,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
     return Container(
       padding: const EdgeInsets.all(AppConstants.standardPadding),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
         boxShadow: [
           BoxShadow(
             color: AppColors.shadow.withValues(alpha: 0.5),

@@ -247,8 +247,8 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
             end: Alignment.bottomRight,
             colors: isDark
                 ? [
-                    Theme.of(context).scaffoldBackgroundColor,
-                    Theme.of(context).scaffoldBackgroundColor,
+                    Theme.of(context).colorScheme.surface,
+                    Theme.of(context).colorScheme.surface,
                   ]
                 : [
                     AppColors.primary,
@@ -356,7 +356,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                   margin: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: isDark
-                        ? Theme.of(context).cardColor
+                        ? Theme.of(context).colorScheme.surfaceContainerLow
                         : AppColors.onPrimary,
                     borderRadius: BorderRadius.circular(16),
                   ),

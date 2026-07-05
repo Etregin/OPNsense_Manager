@@ -359,7 +359,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
               label,
               style: TextStyle(
                 fontWeight: FontWeight.w500,
-                color: Theme.of(context).disabledColor,
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
               ),
             ),
           ),

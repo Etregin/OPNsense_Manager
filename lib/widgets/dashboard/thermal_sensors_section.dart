@@ -50,7 +50,7 @@ class ThermalSensorsSection extends StatelessWidget {
               Text(
                 l10n.noThermalSensorsAvailable,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).disabledColor,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
                     ),
               )
             else
@@ -161,7 +161,7 @@ class _CompactSensorRow extends StatelessWidget {
                 Text(
                   deviceName,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).disabledColor,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
                       ),
                   overflow: TextOverflow.ellipsis,
                 ),

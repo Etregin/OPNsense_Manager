@@ -128,7 +128,7 @@ class _ProfilesTab extends StatelessWidget {
       child: Column(
         children: [
           TabBar(
-            labelColor: Theme.of(context).primaryColor,
+            labelColor: Theme.of(context).colorScheme.primary,
             unselectedLabelColor: AppColors.disabled,
             tabs: [
               Tab(text: l10n.manageProfiles),
