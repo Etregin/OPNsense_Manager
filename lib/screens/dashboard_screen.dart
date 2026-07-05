@@ -267,7 +267,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Text(
               _viewModel.errorMessage!,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.textSecondary),
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
           ),
           const SizedBox(height: 24),

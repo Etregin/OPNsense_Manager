@@ -224,7 +224,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                     child: Text(
                       dhcpServerType.getDescription(context),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.textSecondary,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                             fontStyle: FontStyle.italic,
                           ),
                     ),
@@ -457,22 +457,22 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
+          Icon(
             Icons.dns_outlined,
             size: 64,
-            color: AppColors.iconMuted,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
           const SizedBox(height: 16),
           Text(
             AppLocalizations.of(context)!.noProfiles,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppColors.textSecondary,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
           ),
           const SizedBox(height: 8),
           Text(
             AppLocalizations.of(context)!.addProfileToManageInstances,
-            style: const TextStyle(color: AppColors.textSecondary),
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
           ),
         ],
       ),

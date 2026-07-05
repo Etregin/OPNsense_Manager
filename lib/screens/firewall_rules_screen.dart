@@ -23,7 +23,6 @@ import '../models/firewall_rule.dart';
 import '../services/demo_api_service.dart';
 import '../services/firewall/firewall_rule_filter.dart';
 import '../utils/snackbar_helper.dart';
-import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../viewmodels/firewall_rules_view_model.dart';
 import '../widgets/app_drawer.dart';
@@ -263,7 +262,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.security, size: 64, color: AppColors.iconMuted),
+          Icon(Icons.security, size: 64, color: Theme.of(context).colorScheme.onSurfaceVariant),
           const SizedBox(height: 16),
           Text(
             l10n.noInterfacesWithAutomationRules,
@@ -293,7 +292,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.security, size: 64, color: AppColors.iconMuted),
+            Icon(Icons.security, size: 64, color: Theme.of(context).colorScheme.onSurfaceVariant),
             const SizedBox(height: 16),
             Text(
               l10n.noRulesForInterface(selectedInterface),

@@ -52,7 +52,7 @@ class ProfileCard extends StatelessWidget {
         leading: CircleAvatar(
           backgroundColor: isActive 
               ? Theme.of(context).colorScheme.primary
-              : AppColors.iconMuted,
+              : Theme.of(context).colorScheme.onSurfaceVariant,
           child: Icon(
             isActive ? Icons.check : Icons.dns,
             color: AppColors.onPrimary,

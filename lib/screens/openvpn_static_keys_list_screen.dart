@@ -19,7 +19,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../models/openvpn_static_key.dart';
-import '../utils/app_colors.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/openvpn_static_keys_view_model.dart';
@@ -144,7 +143,7 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceLight,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: SelectableText(

@@ -450,7 +450,7 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.article_outlined, size: 64, color: AppColors.iconMuted),
+            Icon(Icons.article_outlined, size: 64, color: Theme.of(context).colorScheme.onSurfaceVariant),
             const SizedBox(height: 16),
             Text(
               l10n.noLogsAvailable,

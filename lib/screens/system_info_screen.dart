@@ -20,7 +20,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/demo_api_service.dart';
-import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../utils/formatters.dart';
 import '../viewmodels/system_info_view_model.dart';
@@ -168,7 +167,7 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: AppColors.textSecondary),
+          Icon(icon, size: 20, color: Theme.of(context).colorScheme.onSurfaceVariant),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -176,7 +175,7 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
               children: [
                 Text(
                   label,
-                  style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                  style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
                 ),
                 const SizedBox(height: 2),
                 Text(

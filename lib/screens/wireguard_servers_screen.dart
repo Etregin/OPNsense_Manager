@@ -292,9 +292,9 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
                                             Text(
                                               l10n.peersConfigured(
                                                   server.peerUuidList.length),
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 fontSize: 12,
-                                                color: AppColors.textSecondary,
+                                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                                               ),
                                             ),
                                           ],

@@ -505,7 +505,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     l10n.needHelpCheckDocumentation,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.textSecondary,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                   ),
                 ],

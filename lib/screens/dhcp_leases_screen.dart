@@ -462,7 +462,7 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
                       color: isExpired
-                          ? AppColors.surfaceMid
+                          ? Theme.of(context).colorScheme.surfaceContainerHighest
                           : AppColors.success.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -471,15 +471,15 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: isExpired ? AppColors.textSecondary : AppColors.success,
+                        color: isExpired ? Theme.of(context).colorScheme.onSurfaceVariant : AppColors.success,
                       ),
                     ),
                   ),
                   const SizedBox(width: 4),
-                  const Icon(
+                  Icon(
                     Icons.chevron_right,
                     size: 20,
-                    color: AppColors.iconMuted,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ],
               ),
@@ -685,9 +685,9 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
             width: 120,
             child: Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: AppColors.textSecondary,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ),

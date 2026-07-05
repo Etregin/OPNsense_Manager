@@ -385,8 +385,8 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                       const SizedBox(width: 8),
                       Text(
                         l10n.itemsCount(filteredAliases.length),
-                        style: const TextStyle(
-                          color: AppColors.textSecondary,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fontSize: 12,
                         ),
                       ),
@@ -455,9 +455,9 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                                             Text(
                                               l10n.itemsCount(
                                                   alias.contentList.length),
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 fontSize: 12,
-                                                color: AppColors.textSecondary,
+                                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                                               ),
                                             ),
                                           ],

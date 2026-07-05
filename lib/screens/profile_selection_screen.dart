@@ -437,16 +437,16 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.folder_open,
               size: 80,
-              color: AppColors.iconMuted,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
             const SizedBox(height: 16),
             Text(
               l10n.noProfilesYet,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.bold,
                   ),
             ),
@@ -455,7 +455,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
               l10n.createYourFirstProfile,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
             ),
           ],
@@ -523,8 +523,8 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                 const SizedBox(height: 4),
                 Text(
                   '${profile.useHttps ? StringConstants.https : StringConstants.http}://${profile.host}:${profile.port}',
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 14,
                   ),
                 ),
@@ -532,8 +532,8 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                   const SizedBox(height: 4),
                   Text(
                     l10n.lastUsed(_formatDate(profile.lastUsed!, l10n)),
-                    style: const TextStyle(
-                      color: AppColors.iconMuted,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       fontSize: 12,
                     ),
                   ),

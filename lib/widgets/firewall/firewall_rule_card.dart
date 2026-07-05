@@ -52,7 +52,7 @@ class FirewallRuleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
       child: InkWell(
@@ -94,9 +94,9 @@ class FirewallRuleCard extends StatelessWidget {
                         const SizedBox(height: 4),
                         Text(
                           '${rule.typeDisplayName} • ${rule.interfaceName} • ${rule.protocolDisplayName}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
-                            color: AppColors.textSecondary,
+                            color: colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -113,7 +113,7 @@ class FirewallRuleCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.surfaceMid : AppColors.surfaceLight,
+                  color: colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
@@ -129,7 +129,7 @@ class FirewallRuleCard extends StatelessWidget {
                     Icon(
                       Icons.arrow_forward,
                       size: 16,
-                      color: isDark ? AppColors.iconMuted : AppColors.textSecondary,
+                      color: colorScheme.onSurfaceVariant,
                     ),
                     Expanded(
                       child: _buildRuleInfo(
@@ -151,14 +151,14 @@ class FirewallRuleCard extends StatelessWidget {
 
   Widget _buildRuleInfo(
       BuildContext context, String label, String value, IconData icon) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Row(
       children: [
         Icon(
           icon,
           size: 14,
-          color: isDark ? AppColors.iconMuted : AppColors.textSecondary,
+          color: colorScheme.onSurfaceVariant,
         ),
         const SizedBox(width: 6),
         Expanded(
@@ -169,7 +169,7 @@ class FirewallRuleCard extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontSize: 10,
-                  color: isDark ? AppColors.iconMuted : AppColors.textSecondary,
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
               Text(
@@ -177,7 +177,7 @@ class FirewallRuleCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: isDark ? AppColors.surfaceLight : AppColors.onSurface,
+                  color: colorScheme.onSurface,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),

@@ -44,11 +44,21 @@ import 'package:flutter/material.dart';
 ///   Colors.black.withValues(a:0.2)   → AppColors.shadow
 ///   Colors.black.withValues(a:0.1)   → AppColors.shadow.withValues(alpha: 0.5)
 ///   Colors.black54                   → AppColors.overlay
-///   Colors.black87                   → AppColors.onSurface
+///   Colors.black87                   → Theme.of(ctx).colorScheme.onSurface  (was AppColors.onSurface)
 ///   Colors.black26                   → AppColors.shadowLight
 ///   Colors.redAccent                 → AppColors.error
 ///   Colors.transparent               → AppColors.transparent
 ///   const Color(0xFF9E9E9E)          → AppColors.disabled
+///
+/// REMOVED TOKENS (replaced with dynamic colorScheme equivalents for dark-mode correctness):
+///   AppColors.textSecondary          → Theme.of(ctx).colorScheme.onSurfaceVariant
+///   AppColors.iconMuted              → Theme.of(ctx).colorScheme.onSurfaceVariant
+///   AppColors.surfaceLight           → Theme.of(ctx).colorScheme.surfaceContainerHighest
+///   AppColors.surfaceMid             → Theme.of(ctx).colorScheme.surfaceContainerHighest
+///   AppColors.surfaceMid (border)    → Theme.of(ctx).colorScheme.outlineVariant
+///   AppColors.onSurface (text)       → Theme.of(ctx).colorScheme.onSurface
+///   AppColors.onSurface (tooltip bg) → Theme.of(ctx).colorScheme.inverseSurface
+///   Tooltip text on inverseSurface   → Theme.of(ctx).colorScheme.onInverseSurface
 class AppColors {
   static const Color primary   = Color(0xFF046371); // Deep Teal (Shield body)
   static const Color secondary = Color(0xFF00FFFF); // Electric Cyan (Wi-Fi signal)
@@ -58,12 +68,6 @@ class AppColors {
   static const Color warning  = Color(0xFFFF9800); // Colors.orange
   static const Color error    = Color(0xFFF44336); // Colors.red
   static const Color disabled = Color(0xFF9E9E9E); // Colors.grey
-
-  // Text & icon tones (Material grey scale)
-  static const Color textSecondary = Color(0xFF757575); // Colors.grey[600]
-  static const Color iconMuted     = Color(0xFFBDBDBD); // Colors.grey[400]
-  static const Color surfaceMid    = Color(0xFFE0E0E0); // Colors.grey[300]
-  static const Color surfaceLight  = Color(0xFFEEEEEE); // Colors.grey[200]
 
   // Informational
   static const Color info            = Color(0xFF2196F3); // Colors.blue
@@ -85,7 +89,11 @@ class AppColors {
   static const Color shadow      = Color(0x33000000); // 20% black — card/logo drop-shadows
   static const Color shadowLight = Color(0x42000000); // 26% black — tooltip shadows
   static const Color overlay     = Color(0x8A000000); // 54% black — loading modal overlay
-  static const Color onSurface   = Color(0xDD000000); // 87% black — high-emphasis text on light surfaces
+
+  // Opacity constants — use with .withValues(alpha: ...)
+  static const double opacitySubtle   = 0.10; // icon/status container backgrounds
+  static const double opacityDisabled = 0.12; // disabled-state backgrounds (M3 standard)
+  static const double opacityMuted    = 0.38; // disabled text/icons (M3 standard)
 
   // Chart / Miscellaneous
   static const Color bandwidth = Color(0xFF9C27B0); // Purple — total-bandwidth stat chip

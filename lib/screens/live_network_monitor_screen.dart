@@ -594,10 +594,10 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
                       ],
                     ),
                   ),
-                  const Icon(
+                  Icon(
                     Icons.chevron_right,
                     size: 20,
-                    color: AppColors.iconMuted,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ],
               ),
@@ -751,7 +751,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
           child: LinearProgressIndicator(
             value: progress,
             minHeight: 8,
-            backgroundColor: AppColors.surfaceMid,
+            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
             valueColor: AlwaysStoppedAnimation<Color>(
               bandwidthProgressColor(progress),
             ),
@@ -1138,7 +1138,7 @@ class _InteractiveSparklineState extends State<InteractiveSparkline> {
                     width: tooltipWidth,
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.onSurface,
+                      color: Theme.of(context).colorScheme.inverseSurface,
                       borderRadius: BorderRadius.circular(4),
                       boxShadow: [
                         const BoxShadow(
@@ -1150,8 +1150,8 @@ class _InteractiveSparklineState extends State<InteractiveSparkline> {
                     ),
                     child: Text(
                       Formatters.formatBytesPerSecond(widget.data[_selectedIndex!], context, decimals: 2),
-                      style: const TextStyle(
-                        color: AppColors.onPrimary,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onInverseSurface,
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                       ),

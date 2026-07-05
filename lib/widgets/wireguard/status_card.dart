@@ -197,7 +197,7 @@ class StatusCard extends StatelessWidget {
             Icon(
               icon,
               size: 16,
-              color: AppColors.textSecondary,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
             const SizedBox(width: 8),
           ],
@@ -205,8 +205,8 @@ class StatusCard extends StatelessWidget {
             width: 110,
             child: Text(
               '$label:',
-              style: const TextStyle(
-                color: AppColors.textSecondary,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: 13,
               ),
             ),

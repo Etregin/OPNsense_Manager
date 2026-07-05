@@ -146,13 +146,13 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
                         ? AppColors.success.withValues(alpha: 0.15)
                         : serviceStatus == 'stopped'
                             ? AppColors.warning.withValues(alpha: 0.15)
-                            : AppColors.surfaceLight,
+                            : Theme.of(context).colorScheme.surfaceContainerHighest,
                     labelStyle: TextStyle(
                       color: serviceStatus == 'running'
                           ? AppColors.success
                           : serviceStatus == 'stopped'
                               ? AppColors.warning
-                              : AppColors.textSecondary,
+                              : Theme.of(context).colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -359,12 +359,12 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
             const SizedBox(height: 8),
             Row(
               children: [
-                const Icon(Icons.schedule, size: 14, color: AppColors.textSecondary),
+                Icon(Icons.schedule, size: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
                 const SizedBox(width: 6),
                 Text(
                   'First seen: ${_formatLastSeen(neighbor.firstSeen)}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontSize: 12,
                       ),
                 ),
@@ -373,12 +373,12 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
             const SizedBox(height: 4),
             Row(
               children: [
-                const Icon(Icons.access_time, size: 14, color: AppColors.textSecondary),
+                Icon(Icons.access_time, size: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
                 const SizedBox(width: 6),
                 Text(
                   'Last seen: ${_formatLastSeen(neighbor.lastSeen)}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontSize: 12,
                       ),
                 ),
