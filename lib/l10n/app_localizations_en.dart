@@ -3868,4 +3868,48 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get staticKeyHelpText =>
       '• Auth: Adds HMAC authentication to control channel\n• Crypt: Encrypts and authenticates all control channel packets\n• Crypt V2: Enhanced encryption with improved security\n\nYou can generate a new key or paste an existing one.';
+
+  @override
+  String get device => 'Device';
+
+  @override
+  String get listenPort => 'Listen Port';
+
+  @override
+  String get fwMark => 'FW Mark';
+
+  @override
+  String get peerStatus => 'Peer Status';
+
+  @override
+  String get handshakeAge => 'Handshake Age';
+
+  @override
+  String secondsAgo(int count) {
+    return '$count seconds ago';
+  }
+
+  @override
+  String get handshake => 'Handshake';
+
+  @override
+  String get processInformation => 'Process Information';
+
+  @override
+  String get processName => 'Process Name';
+
+  @override
+  String get processId => 'Process ID';
+
+  @override
+  String get logMessage => 'Log Message';
+
+  @override
+  String get message => 'Message';
+
+  @override
+  String get timestampInformation => 'Timestamp Information';
+
+  @override
+  String get rawTimestamp => 'Raw Timestamp';
 }

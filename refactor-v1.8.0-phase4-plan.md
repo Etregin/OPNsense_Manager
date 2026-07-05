@@ -342,7 +342,7 @@ addressed separately from widget files to keep each sub-task reviewable independ
 ## Phase C — Hardcoded English UI Strings in Widget Files
 
 ### Sub-Task C.1 — Localise `ServiceControlsCard` Strings
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 `lib/widgets/tailscale/service_controls_card.dart` has five hardcoded English strings:
@@ -383,7 +383,7 @@ The widget accepts callbacks but no `BuildContext`-derived l10n. It must import
 ---
 
 ### Sub-Task C.2 — Localise `StatusCard` (WireGuard) Strings
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 `lib/widgets/wireguard/status_card.dart` uses hardcoded English strings as row labels:
@@ -422,7 +422,7 @@ The widget accepts callbacks but no `BuildContext`-derived l10n. It must import
 ---
 
 ### Sub-Task C.3 — Localise `WireGuardLogDetailSheet` Strings
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 `lib/widgets/wireguard/wireguard_log_detail_sheet.dart` has these hardcoded labels
@@ -456,7 +456,7 @@ used as section headers and row labels:
 ---
 
 ### Sub-Task C.4 — Localise Remaining Widget Hardcoded Strings
-**Status:** [ ] pending
+**Status:** [x] done
 
 **Intent:**
 Consolidates the remaining widget-file hardcoded strings not covered by C.1–C.3:

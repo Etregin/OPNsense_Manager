@@ -5417,5 +5417,66 @@
   "staticKeyHelpText": "• Auth: Adds HMAC authentication to control channel\n• Crypt: Encrypts and authenticates all control channel packets\n• Crypt V2: Enhanced encryption with improved security\n\nYou can generate a new key or paste an existing one.",
   "@staticKeyHelpText": {
     "description": "Multi-line help text in the static key form info card"
+  },
+  "device": "الجهاز",
+  "@device": {
+    "description": "Label for device/interface row"
+  },
+  "listenPort": "منفذ الاستماع",
+  "@listenPort": {
+    "description": "Label for listen port row in WireGuard status"
+  },
+  "fwMark": "علامة جدار الحماية",
+  "@fwMark": {
+    "description": "Label for firewall mark row in WireGuard status"
+  },
+  "peerStatus": "حالة النظير",
+  "@peerStatus": {
+    "description": "Label for peer status row in WireGuard status"
+  },
+  "handshakeAge": "عمر المصافحة",
+  "@handshakeAge": {
+    "description": "Label for handshake age row in WireGuard status"
+  },
+  "secondsAgo": "منذ {count} ثانية",
+  "@secondsAgo": {
+    "description": "Displays elapsed time in seconds",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "handshake": "المصافحة",
+  "@handshake": {
+    "description": "Label for handshake timestamp row in WireGuard status"
+  },
+  "processInformation": "معلومات العملية",
+  "@processInformation": {
+    "description": "Section header for process information in log detail"
+  },
+  "processName": "اسم العملية",
+  "@processName": {
+    "description": "Label for process name row in log detail"
+  },
+  "processId": "معرّف العملية",
+  "@processId": {
+    "description": "Label for process ID row in log detail"
+  },
+  "logMessage": "رسالة السجل",
+  "@logMessage": {
+    "description": "Section header for log message in log detail"
+  },
+  "message": "الرسالة",
+  "@message": {
+    "description": "Label for message row in log detail"
+  },
+  "timestampInformation": "معلومات الطابع الزمني",
+  "@timestampInformation": {
+    "description": "Section header for timestamp information in log detail"
+  },
+  "rawTimestamp": "الطابع الزمني الخام",
+  "@rawTimestamp": {
+    "description": "Label for raw timestamp row in log detail"
   }
 }

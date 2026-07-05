@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/wireguard_status.dart';
 import '../../utils/constants.dart';
 
@@ -32,6 +33,7 @@ class StatusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Padding(
@@ -85,7 +87,7 @@ class StatusCard extends StatelessWidget {
             // Status (up/down)
             _buildInfoRow(
               context,
-              'Status',
+              l10n.status,
               item.status.toUpperCase(),
               icon: Icons.power_settings_new,
               valueColor: item.isUp ? AppColors.success : AppColors.danger,
@@ -94,7 +96,7 @@ class StatusCard extends StatelessWidget {
             // Device (interface name like wg0, wg1)
             _buildInfoRow(
               context,
-              'Device',
+              l10n.device,
               item.interfaceName,
               icon: Icons.router,
             ),
@@ -103,7 +105,7 @@ class StatusCard extends StatelessWidget {
             if (item.name != null && item.name!.isNotEmpty)
               _buildInfoRow(
                 context,
-                'Name',
+                l10n.name,
                 item.name!,
                 icon: Icons.label,
               ),
@@ -111,7 +113,7 @@ class StatusCard extends StatelessWidget {
             // Listen Port
             _buildInfoRow(
               context,
-              'Listen Port',
+              l10n.listenPort,
               item.listenPort,
               icon: Icons.settings_ethernet,
             ),
@@ -120,7 +122,7 @@ class StatusCard extends StatelessWidget {
             if (item.endpoint.isNotEmpty && item.endpoint != item.listenPort)
               _buildInfoRow(
                 context,
-                'Endpoint',
+                l10n.endpoint,
                 item.endpoint,
                 icon: Icons.location_on,
               ),
@@ -129,7 +131,7 @@ class StatusCard extends StatelessWidget {
             if (item.fwmark.isNotEmpty && item.fwmark != 'off' && item.fwmark != '0')
               _buildInfoRow(
                 context,
-                'FW Mark',
+                l10n.fwMark,
                 item.fwmark,
                 icon: Icons.security,
               ),
@@ -138,7 +140,7 @@ class StatusCard extends StatelessWidget {
             if (item.peerStatus.isNotEmpty)
               _buildInfoRow(
                 context,
-                'Peer Status',
+                l10n.peerStatus,
                 item.peerStatus,
                 icon: Icons.link,
                 valueColor: item.isOnline ? AppColors.success : AppColors.disabled,
@@ -148,8 +150,8 @@ class StatusCard extends StatelessWidget {
             if (item.latestHandshakeAge != null)
               _buildInfoRow(
                 context,
-                'Handshake Age',
-                '${item.latestHandshakeAge!} seconds ago',
+                l10n.handshakeAge,
+                l10n.secondsAgo(item.latestHandshakeAge!),
                 icon: Icons.access_time,
               ),
             
@@ -157,7 +159,7 @@ class StatusCard extends StatelessWidget {
             if (item.hasPublicKey)
               _buildInfoRow(
                 context,
-                'Public Key',
+                l10n.publicKey,
                 item.publicKey,
                 icon: Icons.vpn_key,
                 monospace: true,
@@ -167,7 +169,7 @@ class StatusCard extends StatelessWidget {
             if (item.latestHandshakeDateTime != null)
               _buildInfoRow(
                 context,
-                'Handshake',
+                l10n.handshake,
                 DateFormat('yyyy-MM-dd HH:mm:ss').format(item.latestHandshakeDateTime!),
                 icon: Icons.schedule,
                 monospace: true,

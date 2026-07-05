@@ -74,7 +74,7 @@ class OpenvpnStaticKeyCard extends StatelessWidget {
                 if (staticKey.createdAt != null) ...[
                   const SizedBox(width: 8),
                   Text(
-                    '• ${_formatDate(staticKey.createdAt!)}',
+                    '• ${_formatDate(context, staticKey.createdAt!)}',
                     style: const TextStyle(
                       fontSize: 12,
                       color: AppColors.disabled,
@@ -156,14 +156,15 @@ class OpenvpnStaticKeyCard extends StatelessWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
+  String _formatDate(BuildContext context, DateTime date) {
+    final l10n = AppLocalizations.of(context)!;
     final now = DateTime.now();
     final difference = now.difference(date);
 
     if (difference.inDays == 0) {
-      return 'Today';
+      return l10n.today;
     } else if (difference.inDays == 1) {
-      return 'Yesterday';
+      return l10n.yesterday;
     } else if (difference.inDays < 7) {
       return '${difference.inDays} days ago';
     } else {

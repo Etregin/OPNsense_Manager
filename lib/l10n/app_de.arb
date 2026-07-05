@@ -5415,5 +5415,66 @@
   "staticKeyHelpText": "• Auth: Fügt HMAC-Authentifizierung zum Steuerkanal hinzu\n• Crypt: Verschlüsselt und authentifiziert alle Steuerkanalpakete\n• Crypt V2: Erweiterte Verschlüsselung mit verbesserter Sicherheit\n\nSie können einen neuen Schlüssel generieren oder einen vorhandenen einfügen.",
   "@staticKeyHelpText": {
     "description": "Multi-line help text in the static key form info card"
+  },
+  "device": "Gerät",
+  "@device": {
+    "description": "Label for device/interface row"
+  },
+  "listenPort": "Lausch-Port",
+  "@listenPort": {
+    "description": "Label for listen port row in WireGuard status"
+  },
+  "fwMark": "FW-Markierung",
+  "@fwMark": {
+    "description": "Label for firewall mark row in WireGuard status"
+  },
+  "peerStatus": "Peer-Status",
+  "@peerStatus": {
+    "description": "Label for peer status row in WireGuard status"
+  },
+  "handshakeAge": "Handshake-Alter",
+  "@handshakeAge": {
+    "description": "Label for handshake age row in WireGuard status"
+  },
+  "secondsAgo": "vor {count} Sekunden",
+  "@secondsAgo": {
+    "description": "Displays elapsed time in seconds",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "handshake": "Handshake",
+  "@handshake": {
+    "description": "Label for handshake timestamp row in WireGuard status"
+  },
+  "processInformation": "Prozessinformationen",
+  "@processInformation": {
+    "description": "Section header for process information in log detail"
+  },
+  "processName": "Prozessname",
+  "@processName": {
+    "description": "Label for process name row in log detail"
+  },
+  "processId": "Prozess-ID",
+  "@processId": {
+    "description": "Label for process ID row in log detail"
+  },
+  "logMessage": "Protokollnachricht",
+  "@logMessage": {
+    "description": "Section header for log message in log detail"
+  },
+  "message": "Nachricht",
+  "@message": {
+    "description": "Label for message row in log detail"
+  },
+  "timestampInformation": "Zeitstempel-Informationen",
+  "@timestampInformation": {
+    "description": "Section header for timestamp information in log detail"
+  },
+  "rawTimestamp": "Roh-Zeitstempel",
+  "@rawTimestamp": {
+    "description": "Label for raw timestamp row in log detail"
   }
 }

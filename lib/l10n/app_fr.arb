@@ -5415,5 +5415,66 @@
   "staticKeyHelpText": "• Auth : Ajoute l'authentification HMAC au canal de contrôle\n• Crypt : Chiffre et authentifie tous les paquets du canal de contrôle\n• Crypt V2 : Chiffrement amélioré avec une sécurité accrue\n\nVous pouvez générer une nouvelle clé ou coller une clé existante.",
   "@staticKeyHelpText": {
     "description": "Multi-line help text in the static key form info card"
+  },
+  "device": "Appareil",
+  "@device": {
+    "description": "Label for device/interface row"
+  },
+  "listenPort": "Port d'écoute",
+  "@listenPort": {
+    "description": "Label for listen port row in WireGuard status"
+  },
+  "fwMark": "Marque FW",
+  "@fwMark": {
+    "description": "Label for firewall mark row in WireGuard status"
+  },
+  "peerStatus": "État du pair",
+  "@peerStatus": {
+    "description": "Label for peer status row in WireGuard status"
+  },
+  "handshakeAge": "Âge du handshake",
+  "@handshakeAge": {
+    "description": "Label for handshake age row in WireGuard status"
+  },
+  "secondsAgo": "il y a {count} secondes",
+  "@secondsAgo": {
+    "description": "Displays elapsed time in seconds",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "handshake": "Handshake",
+  "@handshake": {
+    "description": "Label for handshake timestamp row in WireGuard status"
+  },
+  "processInformation": "Informations sur le processus",
+  "@processInformation": {
+    "description": "Section header for process information in log detail"
+  },
+  "processName": "Nom du processus",
+  "@processName": {
+    "description": "Label for process name row in log detail"
+  },
+  "processId": "ID du processus",
+  "@processId": {
+    "description": "Label for process ID row in log detail"
+  },
+  "logMessage": "Message du journal",
+  "@logMessage": {
+    "description": "Section header for log message in log detail"
+  },
+  "message": "Message",
+  "@message": {
+    "description": "Label for message row in log detail"
+  },
+  "timestampInformation": "Informations d'horodatage",
+  "@timestampInformation": {
+    "description": "Section header for timestamp information in log detail"
+  },
+  "rawTimestamp": "Horodatage brut",
+  "@rawTimestamp": {
+    "description": "Label for raw timestamp row in log detail"
   }
 }

@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../utils/constants.dart';
 
 /// Widget for Tailscale service control buttons
@@ -34,15 +35,16 @@ class ServiceControlsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Service Controls',
-              style: TextStyle(
+            Text(
+              l10n.serviceControls,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -54,7 +56,7 @@ class ServiceControlsCard extends StatelessWidget {
                   child: ElevatedButton.icon(
                     onPressed: onStart,
                     icon: const Icon(Icons.play_arrow),
-                    label: const Text('Start'),
+                    label: Text(l10n.start),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.success,
                     ),
@@ -65,7 +67,7 @@ class ServiceControlsCard extends StatelessWidget {
                   child: ElevatedButton.icon(
                     onPressed: onStop,
                     icon: const Icon(Icons.stop),
-                    label: const Text('Stop'),
+                    label: Text(l10n.stop),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.danger,
                     ),
@@ -76,7 +78,7 @@ class ServiceControlsCard extends StatelessWidget {
                   child: ElevatedButton.icon(
                     onPressed: onRestart,
                     icon: const Icon(Icons.refresh),
-                    label: const Text('Restart'),
+                    label: Text(l10n.restart),
                   ),
                 ),
               ],

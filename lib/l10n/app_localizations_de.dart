@@ -3920,4 +3920,48 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get staticKeyHelpText =>
       '• Auth: Fügt HMAC-Authentifizierung zum Steuerkanal hinzu\n• Crypt: Verschlüsselt und authentifiziert alle Steuerkanalpakete\n• Crypt V2: Erweiterte Verschlüsselung mit verbesserter Sicherheit\n\nSie können einen neuen Schlüssel generieren oder einen vorhandenen einfügen.';
+
+  @override
+  String get device => 'Gerät';
+
+  @override
+  String get listenPort => 'Lausch-Port';
+
+  @override
+  String get fwMark => 'FW-Markierung';
+
+  @override
+  String get peerStatus => 'Peer-Status';
+
+  @override
+  String get handshakeAge => 'Handshake-Alter';
+
+  @override
+  String secondsAgo(int count) {
+    return 'vor $count Sekunden';
+  }
+
+  @override
+  String get handshake => 'Handshake';
+
+  @override
+  String get processInformation => 'Prozessinformationen';
+
+  @override
+  String get processName => 'Prozessname';
+
+  @override
+  String get processId => 'Prozess-ID';
+
+  @override
+  String get logMessage => 'Protokollnachricht';
+
+  @override
+  String get message => 'Nachricht';
+
+  @override
+  String get timestampInformation => 'Zeitstempel-Informationen';
+
+  @override
+  String get rawTimestamp => 'Roh-Zeitstempel';
 }

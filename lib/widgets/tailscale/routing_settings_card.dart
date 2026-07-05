@@ -75,9 +75,9 @@ class RoutingSettingsCard extends StatelessWidget {
                 hintText: l10n.selectExitNode,
               ),
               items: [
-                const DropdownMenuItem<String>(
+                DropdownMenuItem<String>(
                   value: '',
-                  child: Text('None'),
+                  child: Text(l10n.none),
                 ),
                 if (settings?.useExitNode != null)
                   ...settings!.useExitNode!.entries

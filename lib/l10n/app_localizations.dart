@@ -6983,6 +6983,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'• Auth: Adds HMAC authentication to control channel\n• Crypt: Encrypts and authenticates all control channel packets\n• Crypt V2: Enhanced encryption with improved security\n\nYou can generate a new key or paste an existing one.'**
   String get staticKeyHelpText;
+
+  /// Label for device/interface row
+  ///
+  /// In en, this message translates to:
+  /// **'Device'**
+  String get device;
+
+  /// Label for listen port row in WireGuard status
+  ///
+  /// In en, this message translates to:
+  /// **'Listen Port'**
+  String get listenPort;
+
+  /// Label for firewall mark row in WireGuard status
+  ///
+  /// In en, this message translates to:
+  /// **'FW Mark'**
+  String get fwMark;
+
+  /// Label for peer status row in WireGuard status
+  ///
+  /// In en, this message translates to:
+  /// **'Peer Status'**
+  String get peerStatus;
+
+  /// Label for handshake age row in WireGuard status
+  ///
+  /// In en, this message translates to:
+  /// **'Handshake Age'**
+  String get handshakeAge;
+
+  /// Displays elapsed time in seconds
+  ///
+  /// In en, this message translates to:
+  /// **'{count} seconds ago'**
+  String secondsAgo(int count);
+
+  /// Label for handshake timestamp row in WireGuard status
+  ///
+  /// In en, this message translates to:
+  /// **'Handshake'**
+  String get handshake;
+
+  /// Section header for process information in log detail
+  ///
+  /// In en, this message translates to:
+  /// **'Process Information'**
+  String get processInformation;
+
+  /// Label for process name row in log detail
+  ///
+  /// In en, this message translates to:
+  /// **'Process Name'**
+  String get processName;
+
+  /// Label for process ID row in log detail
+  ///
+  /// In en, this message translates to:
+  /// **'Process ID'**
+  String get processId;
+
+  /// Section header for log message in log detail
+  ///
+  /// In en, this message translates to:
+  /// **'Log Message'**
+  String get logMessage;
+
+  /// Label for message row in log detail
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get message;
+
+  /// Section header for timestamp information in log detail
+  ///
+  /// In en, this message translates to:
+  /// **'Timestamp Information'**
+  String get timestampInformation;
+
+  /// Label for raw timestamp row in log detail
+  ///
+  /// In en, this message translates to:
+  /// **'Raw Timestamp'**
+  String get rawTimestamp;
 }
 
 class _AppLocalizationsDelegate

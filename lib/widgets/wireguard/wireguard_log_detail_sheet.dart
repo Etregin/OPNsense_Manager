@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../l10n/app_localizations.dart';
 import '../../utils/color_helpers.dart';
 import '../../utils/formatters.dart';
 import '../../utils/snackbar_helper.dart';
@@ -34,6 +35,7 @@ class WireGuardLogDetailSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final severityColor = _getSeverityColor(log.severity, context);
 
@@ -115,27 +117,27 @@ class WireGuardLogDetailSheet extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   children: [
                     // Process Information Section
-                    _buildSectionHeader(context, 'Process Information', Icons.settings),
+                    _buildSectionHeader(context, l10n.processInformation, Icons.settings),
                     _buildDetailCard(
                       context,
                       children: [
                         _buildDetailRow(
                           context,
-                          'Process Name',
+                          l10n.processName,
                           log.processName,
                           icon: Icons.app_settings_alt,
                           copyable: true,
                         ),
                         _buildDetailRow(
                           context,
-                          'Process ID',
+                          l10n.processId,
                           log.processPid.toString(),
                           icon: Icons.tag,
                           copyable: true,
                         ),
                         _buildDetailRow(
                           context,
-                          'Severity',
+                          l10n.severity,
                           log.severity,
                           icon: _getSeverityIcon(log.severity),
                           valueColor: severityColor,
@@ -143,7 +145,7 @@ class WireGuardLogDetailSheet extends StatelessWidget {
                         if (log.facility != null && log.facility!.isNotEmpty)
                           _buildDetailRow(
                             context,
-                            'Facility',
+                            l10n.facility,
                             log.facility!,
                             icon: Icons.category,
                           ),
@@ -152,13 +154,13 @@ class WireGuardLogDetailSheet extends StatelessWidget {
                     const SizedBox(height: 16),
                     
                     // Log Message Section
-                    _buildSectionHeader(context, 'Log Message', Icons.message),
+                    _buildSectionHeader(context, l10n.logMessage, Icons.message),
                     _buildDetailCard(
                       context,
                       children: [
                         _buildDetailRow(
                           context,
-                          'Message',
+                          l10n.message,
                           log.line,
                           icon: Icons.description,
                           copyable: true,
@@ -169,20 +171,20 @@ class WireGuardLogDetailSheet extends StatelessWidget {
                     const SizedBox(height: 16),
                     
                     // Timestamp Information Section
-                    _buildSectionHeader(context, 'Timestamp Information', Icons.access_time),
+                    _buildSectionHeader(context, l10n.timestampInformation, Icons.access_time),
                     _buildDetailCard(
                       context,
                       children: [
                         _buildDetailRow(
                           context,
-                          'Timestamp',
+                          l10n.timestamp,
                           _formatTimestamp(log.timestamp),
                           icon: Icons.schedule,
                           copyable: true,
                         ),
                         _buildDetailRow(
                           context,
-                          'Raw Timestamp',
+                          l10n.rawTimestamp,
                           log.timestamp,
                           icon: Icons.code,
                           copyable: true,
@@ -190,7 +192,7 @@ class WireGuardLogDetailSheet extends StatelessWidget {
                         if (log.host != null && log.host!.isNotEmpty)
                           _buildDetailRow(
                             context,
-                            'Host',
+                            l10n.host,
                             log.host!,
                             icon: Icons.computer,
                             copyable: true,

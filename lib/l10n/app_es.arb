@@ -5415,5 +5415,66 @@
   "staticKeyHelpText": "• Auth: Agrega autenticación HMAC al canal de control\n• Crypt: Cifra y autentica todos los paquetes del canal de control\n• Crypt V2: Cifrado mejorado con mayor seguridad\n\nPuede generar una nueva clave o pegar una existente.",
   "@staticKeyHelpText": {
     "description": "Multi-line help text in the static key form info card"
+  },
+  "device": "Dispositivo",
+  "@device": {
+    "description": "Label for device/interface row"
+  },
+  "listenPort": "Puerto de escucha",
+  "@listenPort": {
+    "description": "Label for listen port row in WireGuard status"
+  },
+  "fwMark": "Marca FW",
+  "@fwMark": {
+    "description": "Label for firewall mark row in WireGuard status"
+  },
+  "peerStatus": "Estado del par",
+  "@peerStatus": {
+    "description": "Label for peer status row in WireGuard status"
+  },
+  "handshakeAge": "Antigüedad del handshake",
+  "@handshakeAge": {
+    "description": "Label for handshake age row in WireGuard status"
+  },
+  "secondsAgo": "hace {count} segundos",
+  "@secondsAgo": {
+    "description": "Displays elapsed time in seconds",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "handshake": "Handshake",
+  "@handshake": {
+    "description": "Label for handshake timestamp row in WireGuard status"
+  },
+  "processInformation": "Información del proceso",
+  "@processInformation": {
+    "description": "Section header for process information in log detail"
+  },
+  "processName": "Nombre del proceso",
+  "@processName": {
+    "description": "Label for process name row in log detail"
+  },
+  "processId": "ID del proceso",
+  "@processId": {
+    "description": "Label for process ID row in log detail"
+  },
+  "logMessage": "Mensaje del registro",
+  "@logMessage": {
+    "description": "Section header for log message in log detail"
+  },
+  "message": "Mensaje",
+  "@message": {
+    "description": "Label for message row in log detail"
+  },
+  "timestampInformation": "Información de marca temporal",
+  "@timestampInformation": {
+    "description": "Section header for timestamp information in log detail"
+  },
+  "rawTimestamp": "Marca temporal sin procesar",
+  "@rawTimestamp": {
+    "description": "Label for raw timestamp row in log detail"
   }
 }
