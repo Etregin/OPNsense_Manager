@@ -114,3 +114,58 @@ class AppColors {
   static const Color warningDark       = Color(0xFFE65100); // Colors.orange[900]
 }
 
+/// Non-translatable display strings — brand names, technical acronyms,
+/// unit symbols, and form-field hint text that are identical in every locale.
+/// These must never be passed through AppLocalizations.
+class StringConstants {
+  StringConstants._();
+
+  // App / product names (not translated — use as-is in all locales)
+  static const String wireguard    = 'WireGuard';
+  static const String openvpn      = 'OpenVPN';
+  static const String tailscale    = 'Tailscale';
+  static const String dnsmasq      = 'Dnsmasq';
+  static const String iscDhcp      = 'ISC DHCP';
+  static const String keaDhcp      = 'Kea DHCP';
+  static const String magicDns     = 'Magic DNS';
+
+  // Network protocol acronyms (universally recognised — never translated)
+  static const String tcp          = 'TCP';
+  static const String udp          = 'UDP';
+  static const String tcpUdp       = 'TCP/UDP';
+  static const String icmp         = 'ICMP';
+  static const String icmpv6       = 'ICMPv6';
+  static const String igmp         = 'IGMP';
+  static const String ipv6Protocol = 'IPv6';
+  static const String ospf         = 'OSPF';
+  static const String ah           = 'AH';
+  static const String esp          = 'ESP';
+  static const String gre          = 'GRE';
+  static const String pim          = 'PIM';
+  static const String http         = 'http';
+  static const String https        = 'https';
+
+  // Data unit symbols (SI / IEC — language-invariant)
+  static const String unitB        = 'B';
+  static const String unitKB       = 'KB';
+  static const String unitMB       = 'MB';
+  static const String unitGB       = 'GB';
+  static const String unitTB       = 'TB';
+  static const String unitPB       = 'PB';
+  static const String unitPerSec   = '/s';
+  static const String of1Gbps      = 'of 1 Gbps';
+  static const String hourAbbrev   = 'h';
+  static const String minuteAbbrev = 'm';
+  static const String secondAbbrev = 's';
+
+  // Technical hint / example text for form fields
+  static const String ipv4CidrHint       = '10.8.0.0/24';
+  static const String ipv6CidrHint       = 'fd00::/64';
+  static const String ipv4OrIpv6CidrHint = '10.8.0.0/24 or fd00::/64';
+  static const String routeGatewayHint   = '10.8.0.1';
+  static const String defaultPortHint    = '443';
+
+  // Legal / license metadata (verbatim — must not be translated)
+  static const String gnuLicenseTitle = 'GNU General Public License v3.0';
+}
+

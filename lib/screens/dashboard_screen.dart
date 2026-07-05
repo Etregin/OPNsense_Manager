@@ -121,10 +121,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (mounted) {
         if (success) {
           final successMsg = action == 'start'
-              ? l10n.serviceStarted
+              ? l10n.serviceStartedSuccessfully
               : action == 'stop'
-                  ? l10n.serviceStopped
-                  : l10n.serviceRestarted;
+                  ? l10n.serviceStoppedSuccessfully
+                  : l10n.serviceRestartedSuccessfully;
           SnackBarHelper.showSuccess(context, successMsg);
           await Future.delayed(const Duration(seconds: 1));
           if (mounted) {

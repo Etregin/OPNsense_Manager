@@ -122,7 +122,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
                     return l10n.pinTooShort;
                   }
                   if (!RegExp(r'^\d+$').hasMatch(value)) {
-                    return l10n.invalidPIN;
+                    return l10n.invalidPin;
                   }
                   return null;
                 },
@@ -188,7 +188,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
     final result = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.changePinTitle),
+        title: Text(l10n.changePin),
         content: Form(
           key: formKey,
           child: Column(
@@ -267,7 +267,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
                 Navigator.of(dialogContext).pop(true);
               }
             },
-            child: Text(l10n.changePinTitle),
+            child: Text(l10n.changePin),
           ),
         ],
       ),
@@ -373,7 +373,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
           icon: Icons.security,
           children: [
             SwitchListTile(
-              title: Text(l10n.pinLockTitle),
+              title: Text(l10n.pinLock),
               subtitle: Text(l10n.requirePinToUnlock),
               secondary: Icon(
                 Icons.pin,
@@ -389,7 +389,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
                   Icons.edit,
                   color: Theme.of(context).primaryColor,
                 ),
-                title: Text(l10n.changePinTitle),
+                title: Text(l10n.changePin),
                 subtitle: Text(l10n.updatePinCode),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: _showChangePinDialog,

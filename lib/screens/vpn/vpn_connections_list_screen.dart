@@ -108,7 +108,7 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
 
   Future<void> _toggleConnection(VPNConnection connection) async {
     final l10n = AppLocalizations.of(context)!;
-    final actionTitle = connection.isConnected ? l10n.disconnectVPN : l10n.connectVPN;
+    final actionTitle = connection.isConnected ? l10n.disconnectVpn : l10n.connectVpn;
     final action = connection.isConnected ? l10n.disconnect : l10n.connect;
     
     final confirmed = await ConfirmationDialog.show(
@@ -160,7 +160,7 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
     
     final confirmed = await ConfirmationDialog.show(
       context: context,
-      title: l10n.restartVPNService,
+      title: l10n.restartVpnService,
       message: l10n.restartServiceConfirmation(type.toUpperCase()),
       confirmText: l10n.restart,
       cancelText: l10n.cancel,
@@ -218,7 +218,7 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              l10n.errorLoadingVPNConnections,
+              l10n.errorLoadingVpnConnections,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
@@ -256,7 +256,7 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
             const SizedBox(height: 16),
             Text(
               _filterType == 'all'
-                  ? l10n.noVPNConnectionsFound
+                  ? l10n.noVpnConnectionsFound
                   : l10n.noConnectionsFound(_filterType.toUpperCase()),
               style: Theme.of(context).textTheme.titleLarge,
             ),

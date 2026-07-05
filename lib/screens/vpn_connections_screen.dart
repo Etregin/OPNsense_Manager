@@ -20,6 +20,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/demo_api_service.dart';
+import '../utils/constants.dart';
 import '../viewmodels/vpn_connections_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../l10n/app_localizations.dart';
@@ -102,19 +103,19 @@ class _VPNConnectionsScreenState extends State<VPNConnectionsScreen> {
                   itemBuilder: (context) => [
                     PopupMenuItem(
                       value: 'all',
-                      child: Text(l10n.allVPNs),
+                      child: Text(l10n.allVpns),
                     ),
-                    PopupMenuItem(
+                    const PopupMenuItem(
                       value: 'openvpn',
-                      child: Text(l10n.openvpn),
+                      child: Text(StringConstants.openvpn),
                     ),
-                    PopupMenuItem(
+                    const PopupMenuItem(
                       value: 'wireguard',
-                      child: Text(l10n.wireguard),
+                      child: Text(StringConstants.wireguard),
                     ),
-                    PopupMenuItem(
+                    const PopupMenuItem(
                       value: 'tailscale',
-                      child: Text(l10n.tailscale),
+                      child: Text(StringConstants.tailscale),
                     ),
                   ],
                 ),

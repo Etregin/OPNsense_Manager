@@ -477,12 +477,12 @@ class _WireGuardPeerGeneratorScreenState
                     TextFormField(
                       controller: _allowedIpsController,
                       decoration: InputDecoration(
-                        labelText: l10n.allowedIpsLabel,
+                        labelText: l10n.allowedIps,
                         hintText: '0.0.0.0/0,::/0',
                         prefixIcon: const Icon(Icons.network_check),
                       ),
                       validator: (value) =>
-                          Validators.required(value, fieldName: l10n.allowedIpsLabel),
+                          Validators.required(value, fieldName: l10n.allowedIps),
                       enabled: !_viewModel.isLoading,
                     ),
                     const SizedBox(height: 16),

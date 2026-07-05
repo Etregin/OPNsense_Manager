@@ -309,7 +309,7 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
                           const SizedBox(width: 8),
                           Text(
                             l10n.dhcpServerLabel(
-                                _dhcpServerType!.getDisplayName(context)),
+                                _dhcpServerType!.displayName),
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall
@@ -588,20 +588,20 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
       if (absDiff.inDays > 0) {
         return l10n.daysAgo(absDiff.inDays);
       } else if (absDiff.inHours > 0) {
-        return l10n.hoursAgo(absDiff.inHours.toString());
+        return l10n.hoursAgo(absDiff.inHours);
       } else if (absDiff.inMinutes > 0) {
-        return l10n.minutesAgo(absDiff.inMinutes.toString());
+        return l10n.minutesAgo(absDiff.inMinutes);
       } else {
         return l10n.justNow;
       }
     } else {
       // Active
       if (difference.inDays > 0) {
-        return l10n.inDays(difference.inDays.toString());
+        return l10n.inDays(difference.inDays);
       } else if (difference.inHours > 0) {
-        return l10n.inHours(difference.inHours.toString());
+        return l10n.inHours(difference.inHours);
       } else if (difference.inMinutes > 0) {
-        return l10n.inMinutes(difference.inMinutes.toString());
+        return l10n.inMinutes(difference.inMinutes);
       } else {
         return l10n.soon;
       }

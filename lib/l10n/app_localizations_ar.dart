@@ -79,9 +79,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get add => 'إضافة';
 
   @override
-  String get addButton => 'إضافة';
-
-  @override
   String get addClientOverride => 'إضافة تجاوز العميل';
 
   @override
@@ -183,7 +180,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get allTypes => 'جميع الأنواع';
 
   @override
-  String get allVPNs => 'جميع VPN';
+  String get allVpns => 'جميع VPN';
 
   @override
   String get allowSelfSigned => 'السماح بالشهادة الموقعة ذاتياً';
@@ -197,9 +194,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get allowedIps => 'عناوين IP المسموح بها';
-
-  @override
-  String get allowedIpsLabel => 'عناوين IP المسموح بها';
 
   @override
   String get any => 'أي';
@@ -222,26 +216,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get apiKeyIsRequired => 'مفتاح API مطلوب';
 
   @override
-  String get apiKeyLabel => 'مفتاح API';
-
-  @override
   String get apiSecret => 'سر API';
 
   @override
   String get apiSecretIsRequired => 'سر API مطلوب';
 
   @override
-  String get apiSecretLabel => 'سر API';
-
-  @override
-  String get appName => 'مدير OPNsense';
-
-  @override
   String get appearance => 'المظهر';
-
-  @override
-  String get applicationLegalese =>
-      '© 2026 OPNsense Manager\n\nمرخص بموجب رخصة جنو العمومية الإصدار 3.0\n\nهذا البرنامج مجاني: يمكنك إعادة توزيعه و/أو تعديله بموجب شروط رخصة جنو العمومية كما نشرتها مؤسسة البرمجيات الحرة، سواء الإصدار 3 من الرخصة، أو (حسب اختيارك) أي إصدار لاحق.';
 
   @override
   String get apply => 'تطبيق';
@@ -365,9 +346,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cancel => 'إلغاء';
 
   @override
-  String get cancelButton => 'إلغاء';
-
-  @override
   String get cannotBeUndone => 'لا يمكن التراجع عن هذا الإجراء.';
 
   @override
@@ -384,10 +362,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get categories => 'الفئات';
 
   @override
-  String get changePIN => 'تغيير PIN';
-
-  @override
-  String get changePinTitle => 'تغيير PIN';
+  String get changePin => 'تغيير PIN';
 
   @override
   String get changesDiscarded => 'تم تجاهل التغييرات';
@@ -478,9 +453,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get confirmNewPin => 'تأكيد رمز PIN الجديد';
 
   @override
-  String get confirmPIN => 'تأكيد PIN';
-
-  @override
   String get confirmPin => 'تأكيد رمز PIN';
 
   @override
@@ -492,11 +464,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get connect => 'اتصال';
 
   @override
-  String get connectToYourOPNsenseFirewall =>
+  String get connectToYourOpnsenseFirewall =>
       'اتصل بجدار الحماية OPNsense الخاص بك';
 
   @override
-  String get connectVPN => 'اتصال VPN';
+  String get connectVpn => 'اتصال VPN';
 
   @override
   String get connected => 'متصل';
@@ -516,10 +488,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get connectionBlocking => 'حظر الاتصال';
-
-  @override
-  String get connectionBlockingSubtitle =>
-      'حظر اتصال العميل هذا بناءً على اسمه الشائع. لا تستخدم هذا الخيار لتعطيل عميل بشكل دائم بسبب مفتاح أو كلمة مرور مخترقة. استخدم CRL (قائمة إلغاء الشهادات) بدلاً من ذلك.';
 
   @override
   String get connectionDetails => 'تفاصيل الاتصال';
@@ -585,13 +553,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get copyKey => 'نسخ المفتاح';
 
   @override
-  String get copyKeyTooltip => 'نسخ المفتاح';
-
-  @override
   String get copySelected => 'نسخ المحدد';
-
-  @override
-  String get copyTooltip => 'نسخ';
 
   @override
   String get cpuUsage => 'استخدام المعالج';
@@ -721,9 +683,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get deleteProfileTitle => 'حذف الملف الشخصي';
-
-  @override
   String get deleteRule => 'حذف القاعدة';
 
   @override
@@ -781,9 +740,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get descriptionRequired => 'الوصف مطلوب';
-
-  @override
-  String get descriptiveNameForStaticKey => 'اسم وصفي لهذا المفتاح الثابت';
 
   @override
   String get destination => 'الوجهة';
@@ -855,7 +811,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get disconnect => 'قطع الاتصال';
 
   @override
-  String get disconnectVPN => 'قطع اتصال VPN';
+  String get disconnectVpn => 'قطع اتصال VPN';
 
   @override
   String get disconnected => 'غير متصل';
@@ -907,13 +863,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dnsmasqDescription => 'خادم DNS و DHCP خفيف الوزن';
 
   @override
-  String get dnsmasqServerName => 'Dnsmasq';
-
-  @override
   String get done => 'تم';
-
-  @override
-  String get doneButton => 'تم';
 
   @override
   String get download => 'التنزيل';
@@ -996,9 +946,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get enabled => 'مفعّل';
 
   @override
-  String get enabledLabel => 'مفعّل';
-
-  @override
   String get enabledStatus => 'مفعّل';
 
   @override
@@ -1036,9 +983,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get enterOrGeneratePublicKey => 'أدخل أو أنشئ مفتاحًا عامًا';
-
-  @override
-  String get enterPIN => 'أدخل PIN';
 
   @override
   String get enterPin => 'أدخل رمز PIN';
@@ -1106,7 +1050,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorLoadingSystemInfo => 'خطأ في تحميل معلومات النظام';
 
   @override
-  String get errorLoadingVPNConnections => 'خطأ في تحميل اتصالات VPN';
+  String get errorLoadingVpnConnections => 'خطأ في تحميل اتصالات VPN';
 
   @override
   String errorPrefix(String message) {
@@ -1201,9 +1145,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get exportProfilesContent =>
       'هل تريد تضمين بيانات اعتماد API في التصدير؟\n\nتحذير: سيؤدي تضمين بيانات الاعتماد إلى تخزين مفاتيح API والأسرار بنص عادي. قم بتضمين بيانات الاعتماد فقط إذا كنت ستخزن الملف بشكل آمن.';
-
-  @override
-  String get exportProfilesTitle => 'تصدير الملفات الشخصية';
 
   @override
   String get exportSuccess => 'نجح التصدير';
@@ -1418,9 +1359,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get filters => 'المرشحات';
 
   @override
-  String get filtersLabel => 'الفلاتر';
-
-  @override
   String get firewall => 'جدار الحماية';
 
   @override
@@ -1487,13 +1425,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get gitCommit => 'التزام Git';
 
   @override
-  String get gnuLicenseText =>
-      'هذا البرنامج مجاني: يمكنك إعادة توزيعه و/أو تعديله بموجب شروط رخصة جنو العمومية كما نشرتها مؤسسة البرمجيات الحرة، سواء الإصدار 3 من الرخصة، أو (حسب اختيارك) أي إصدار لاحق.\n\nيتم توزيع هذا البرنامج على أمل أن يكون مفيداً، ولكن دون أي ضمان؛ حتى بدون الضمان الضمني للتسويق أو الملاءمة لغرض معين. راجع رخصة جنو العمومية لمزيد من التفاصيل.\n\nيجب أن تكون قد تلقيت نسخة من رخصة جنو العمومية مع هذا البرنامج. إذا لم يكن الأمر كذلك، راجع <https://www.gnu.org/licenses/>.\n\nلماذا GPLv3؟\n\n• يضمن بقاء البرنامج مجانياً ومفتوح المصدر\n• يجب أن تكون أي تعديلات أو مشتقات مفتوحة المصدر أيضاً\n• للمستخدمين حرية استخدام ودراسة ومشاركة وتعديل البرنامج\n• يستفيد المجتمع من التحسينات والمساهمات';
-
-  @override
-  String get gnuLicenseTitle => 'رخصة جنو العمومية الإصدار 3.0';
-
-  @override
   String get healthStatus => 'حالة الصحة';
 
   @override
@@ -1542,21 +1473,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get hour => 'ساعة';
 
   @override
-  String get hourAbbrev => 'س';
-
-  @override
   String get hours => 'ساعات';
 
   @override
-  String hoursAgo(String hours) {
+  String hoursAgo(int hours) {
     return 'منذ $hours ساعة';
   }
-
-  @override
-  String get http => 'http';
-
-  @override
-  String get https => 'https';
 
   @override
   String get id => 'المعرف';
@@ -1566,9 +1488,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get importAndExport => 'الاستيراد والتصدير';
-
-  @override
-  String get importExport => 'الاستيراد والتصدير';
 
   @override
   String get importExportDescription =>
@@ -1595,9 +1514,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get importProfilesSubtitle => 'استيراد الملفات الشخصية من ملف JSON';
 
   @override
-  String get importProfilesTitle => 'استيراد الملفات التعريفية';
-
-  @override
   String get importSuccess => 'نجح الاستيراد';
 
   @override
@@ -1617,17 +1533,17 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String inDays(String days) {
+  String inDays(int days) {
     return 'خلال $days يوم';
   }
 
   @override
-  String inHours(String hours) {
+  String inHours(int hours) {
     return 'خلال $hours ساعة';
   }
 
   @override
-  String inMinutes(String minutes) {
+  String inMinutes(int minutes) {
     return 'خلال $minutes دقيقة';
   }
 
@@ -1688,10 +1604,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invalidBase64Format => 'تنسيق Base64 غير صالح';
 
   @override
-  String get invalidCidrFormat =>
-      'تدوين CIDR غير صالح (استخدم الصيغة: IP/prefix)';
-
-  @override
   String get invalidCidrNotation =>
       'تدوين CIDR غير صالح (استخدم التنسيق: IP/prefix)';
 
@@ -1740,7 +1652,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invalidIpv6Prefix => 'بادئة IPv6 غير صالحة (يجب أن تكون 0-128)';
 
   @override
-  String get invalidPIN => 'PIN غير صالح';
+  String get invalidPin => 'PIN غير صالح';
 
   @override
   String get invalidPortFormat => 'تنسيق المنفذ غير صالح';
@@ -1758,31 +1670,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ipAddresses => 'عناوين IP';
 
   @override
-  String get ipv4CidrHint => '10.8.0.0/24';
-
-  @override
-  String get ipv4OrIpv6CidrHint => '10.8.0.0/24 أو fd00::/64';
-
-  @override
   String get ipv4TunnelNetwork => 'شبكة النفق IPv4';
-
-  @override
-  String get ipv4TunnelNetworkHint => '10.8.0.0/24';
-
-  @override
-  String get ipv6CidrHint => 'fd00::/64';
 
   @override
   String get ipv6TunnelNetwork => 'شبكة النفق IPv6';
 
   @override
-  String get ipv6TunnelNetworkHint => 'fd00::/64';
-
-  @override
   String get iscDhcpDescription => 'خادم DHCP من Internet Systems Consortium';
-
-  @override
-  String get iscDhcpServerName => 'ISC DHCP';
 
   @override
   String itemsCount(int count) {
@@ -1794,9 +1688,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get keaDhcpDescription => 'خادم DHCP حديث وعالي الأداء';
-
-  @override
-  String get keaDhcpServerName => 'Kea DHCP';
 
   @override
   String get keepAliveIntervalOptional => 'فترة الحفاظ على الاتصال (اختياري)';
@@ -1818,11 +1709,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get keyGeneratedSuccessfully => 'تم إنشاء المفتاح بنجاح';
-
-  @override
-  String keyLabel(String id) {
-    return 'المفتاح $id';
-  }
 
   @override
   String keyWithId(String id) {
@@ -2008,9 +1894,6 @@ class AppLocalizationsAr extends AppLocalizations {
       'تنسيق عنوان MAC غير صالح (مثال: AA:BB:CC:DD:EE:FF)';
 
   @override
-  String get magicDns => 'Magic DNS';
-
-  @override
   String get manageProfiles => 'إدارة الملفات الشخصية';
 
   @override
@@ -2032,13 +1915,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get minute => 'دقيقة';
 
   @override
-  String get minuteAbbrev => 'د';
-
-  @override
   String get minutes => 'دقائق';
 
   @override
-  String minutesAgo(String minutes) {
+  String minutesAgo(int minutes) {
     return 'منذ $minutes دقيقة';
   }
 
@@ -2118,9 +1998,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get next => 'التالي';
 
   @override
-  String get nextButton => 'التالي';
-
-  @override
   String get no => 'لا';
 
   @override
@@ -2141,9 +2018,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String noConnectionsFound(String type) {
     return 'لم يتم العثور على اتصالات $type';
   }
-
-  @override
-  String get noData => 'لا توجد بيانات متاحة';
 
   @override
   String get noDataAvailable => 'لا توجد بيانات متاحة';
@@ -2263,7 +2137,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noTunnelAddressesConfigured => 'لم يتم تكوين عناوين النفق';
 
   @override
-  String get noVPNConnectionsFound => 'لم يتم العثور على اتصالات VPN';
+  String get noVpnConnectionsFound => 'لم يتم العثور على اتصالات VPN';
 
   @override
   String get noWinsServersConfigured => 'لم يتم تكوين خوادم WINS';
@@ -2301,9 +2175,6 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعيين عنوان خادم NTP الأساسي (بروتوكول وقت الشبكة). كرر هذا الخيار لتعيين عناوين خادم NTP الثانوية.';
 
   @override
-  String get of1Gbps => 'من 1 جيجابت في الثانية';
-
-  @override
   String get offline => 'غير متصل';
 
   @override
@@ -2317,9 +2188,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get online => 'متصل';
-
-  @override
-  String get openvpn => 'OpenVPN';
 
   @override
   String get openvpnConnectionStatus => 'حالة اتصال OpenVPN';
@@ -2367,11 +2235,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get packetLength => 'طول الحزمة';
 
   @override
-  String pageOfPages(String current, String total) {
-    return 'الصفحة $current من $total';
-  }
-
-  @override
   String get pass => 'سماح';
 
   @override
@@ -2382,9 +2245,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get paused => 'متوقف مؤقتاً';
-
-  @override
-  String get peerActiveWhenEnabled => 'سيكون النظير نشطاً عند التفعيل';
 
   @override
   String get peerCreatedReadyForNext =>
@@ -2445,9 +2305,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pinLockEnabled => 'تم تفعيل قفل PIN';
 
   @override
-  String get pinLockTitle => 'قفل PIN';
-
-  @override
   String get pinMismatch => 'رموز PIN غير متطابقة';
 
   @override
@@ -2458,10 +2315,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get platform => 'المنصة';
-
-  @override
-  String get pleaseAddConnectionEndpoint =>
-      'يرجى إضافة نقطة اتصال واحدة على الأقل';
 
   @override
   String get pleaseEnterCurrentPin => 'الرجاء إدخال رمز PIN الحالي';
@@ -2499,9 +2352,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get portMustBeBetween => 'يجب أن يكون المنفذ بين 1 و 65535';
 
   @override
-  String get portPlaceholder => '443';
-
-  @override
   String get preAuthKey => 'مفتاح المصادقة المسبقة';
 
   @override
@@ -2522,9 +2372,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get previous => 'السابق';
 
   @override
-  String get previousButton => 'السابق';
-
-  @override
   String get privateKey => 'المفتاح الخاص';
 
   @override
@@ -2541,9 +2388,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get profileName => 'اسم الملف الشخصي';
-
-  @override
-  String get profileNameLabel => 'اسم الملف التعريفي';
 
   @override
   String get profileNameOptional => 'اسم الملف الشخصي (اختياري)';
@@ -2569,42 +2413,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get protocol => 'البروتوكول';
 
   @override
-  String get protocolAh => 'AH';
-
-  @override
-  String get protocolEsp => 'ESP';
-
-  @override
-  String get protocolGre => 'GRE';
-
-  @override
-  String get protocolIcmp => 'ICMP';
-
-  @override
-  String get protocolIcmpv6 => 'ICMPv6';
-
-  @override
-  String get protocolIgmp => 'IGMP';
-
-  @override
-  String get protocolIpv6 => 'IPv6';
-
-  @override
-  String get protocolOspf => 'OSPF';
-
-  @override
-  String get protocolPim => 'PIM';
-
-  @override
-  String get protocolTcp => 'TCP';
-
-  @override
-  String get protocolTcpUdp => 'TCP/UDP';
-
-  @override
-  String get protocolUdp => 'UDP';
-
-  @override
   String get publicKey => 'المفتاح العام';
 
   @override
@@ -2620,10 +2428,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pushReset => 'إعادة تعيين الدفع';
-
-  @override
-  String get pushResetSubtitle =>
-      'لا ترث قائمة الدفع العامة لمثيل عميل معين. ملاحظة: --push-reset شامل جداً: سيزيل تقريباً جميع الخيارات من قائمة الخيارات المراد دفعها. في كثير من الحالات، سيحتاج بعض هذه الخيارات إلى إعادة تكوين بعد ذلك - على وجه التحديد، --topology subnet و --route-gateway سيضيعان وهذا سيكسر تكوينات العميل في كثير من الحالات.';
 
   @override
   String get pushVirtualIpEndpoints =>
@@ -2663,21 +2467,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get redirectGateway => 'إعادة توجيه البوابة';
 
   @override
-  String get redirectGatewayHelperText =>
-      'تنفيذ أوامر التوجيه تلقائياً لإعادة توجيه جميع حركة مرور IP الصادرة عبر VPN.';
-
-  @override
   String get refresh => 'تحديث';
 
   @override
-  String get refreshTooltip => 'تحديث';
-
-  @override
   String get registerDns => 'تسجيل DNS';
-
-  @override
-  String get registerDnsSubtitle =>
-      'تشغيل ipconfig /flushdns و ipconfig /registerdns عند بدء الاتصال. من المعروف أن هذا يدفع Windows للتعرف على خوادم DNS المدفوعة.';
 
   @override
   String get reject => 'رفض';
@@ -2705,9 +2498,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get restart => 'إعادة التشغيل';
 
   @override
-  String get restartButton => 'إعادة التشغيل';
-
-  @override
   String get restartService => 'إعادة تشغيل الخدمة';
 
   @override
@@ -2716,7 +2506,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get restartVPNService => 'إعادة تشغيل خدمة VPN';
+  String get restartVpnService => 'إعادة تشغيل خدمة VPN';
 
   @override
   String restartingService(String type) {
@@ -2730,9 +2520,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get retry => 'إعادة المحاولة';
 
   @override
-  String get retryButton => 'إعادة المحاولة';
-
-  @override
   String get role => 'الدور';
 
   @override
@@ -2743,9 +2530,6 @@ class AppLocalizationsAr extends AppLocalizations {
       'حدد بوابة افتراضية لاستخدامها للعميل المتصل. بدون تعيين واحد، يتم تقديم العنوان الأول في كتلة الشبكة. عند تقسيم شبكة النفق (الخادم)، قد لا يكون هذا متاحًا من العميل.';
 
   @override
-  String get routeGatewayHint => '10.8.0.1';
-
-  @override
   String get routes => 'المسارات';
 
   @override
@@ -2753,9 +2537,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get rowsPerPage => 'صفوف لكل صفحة';
-
-  @override
-  String get rowsPerPageDropdown => 'الصفوف لكل صفحة';
 
   @override
   String get rowsPerPageLabel => 'الصفوف لكل صفحة: ';
@@ -2816,9 +2597,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get saveSettings => 'حفظ الإعدادات';
 
   @override
-  String get saveTooltip => 'حفظ';
-
-  @override
   String get saveWithoutTesting => 'حفظ بدون اختبار';
 
   @override
@@ -2855,9 +2633,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get second => 'ثانية';
 
   @override
-  String get secondAbbrev => 'ث';
-
-  @override
   String get seconds => 'ثواني';
 
   @override
@@ -2881,10 +2656,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get selectInterfaceToViewRules => 'حدد واجهة لعرض القواعد';
-
-  @override
-  String get selectKeyModeForAuthOrEncryption =>
-      'حدد وضع المفتاح للمصادقة أو التشفير';
 
   @override
   String selectLabel(String label) {
@@ -2919,9 +2690,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get selectServersHelperText =>
       'حدد خوادم OpenVPN التي ينطبق عليها هذا التجاوز، اتركه فارغاً للكل';
-
-  @override
-  String get selectServersTitle => 'تحديد الخوادم';
 
   @override
   String get selectVhid => 'اختر VHID';
@@ -2989,9 +2757,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get servers => 'الخوادم';
 
   @override
-  String get serversLabel => 'الخوادم';
-
-  @override
   String serversSelected(int count) {
     return '$count خادم (خوادم) محددة';
   }
@@ -3003,25 +2768,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get serviceControls => 'عناصر تحكم الخدمة';
 
   @override
-  String get serviceRestarted => 'تمت إعادة تشغيل الخدمة بنجاح';
-
-  @override
   String get serviceRestartedSuccessfully => 'تمت إعادة تشغيل الخدمة بنجاح';
 
   @override
   String get serviceRunning => 'الخدمة قيد التشغيل';
 
   @override
-  String get serviceStarted => 'تم تشغيل الخدمة بنجاح';
-
-  @override
   String get serviceStartedSuccessfully => 'تم بدء الخدمة بنجاح';
 
   @override
   String get serviceStatus => 'حالة الخدمة';
-
-  @override
-  String get serviceStopped => 'تم إيقاف الخدمة بنجاح';
 
   @override
   String get serviceStoppedSuccessfully => 'تم إيقاف الخدمة بنجاح';
@@ -3092,11 +2848,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get showKey => 'إظهار المفتاح';
 
   @override
-  String showingEntriesCount(String start, String end) {
-    return 'عرض $start إلى $end';
-  }
-
-  @override
   String showingInstancesCount(String count, String total) {
     return 'عرض $count من $total';
   }
@@ -3147,9 +2898,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get start => 'بدء';
 
   @override
-  String get startButton => 'تشغيل';
-
-  @override
   String get startService => 'بدء الخدمة';
 
   @override
@@ -3171,10 +2919,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get staticKeyDetails => 'تفاصيل المفتاح الثابت';
 
   @override
-  String get staticKeyInfoHelp =>
-      '• Auth: يضيف مصادقة HMAC لقناة التحكم\n• Crypt: يشفر ويصادق جميع حزم قناة التحكم\n• Crypt V2: تشفير محسّن بأمان أفضل\n\nيمكنك إنشاء مفتاح جديد أو لصق مفتاح موجود.';
-
-  @override
   String get staticKeyInformation => 'معلومات المفتاح الثابت';
 
   @override
@@ -3191,9 +2935,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get stop => 'إيقاف';
-
-  @override
-  String get stopButton => 'إيقاف';
 
   @override
   String get stopService => 'إيقاف الخدمة';
@@ -3292,9 +3033,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tags => 'العلامات';
 
   @override
-  String get tailscale => 'Tailscale';
-
-  @override
   String get tailscaleAuthentication => 'مصادقة Tailscale';
 
   @override
@@ -3377,9 +3115,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get timeRange => 'النطاق الزمني';
 
   @override
-  String get timeRangeLabel => 'النطاق الزمني';
-
-  @override
   String get timeout => 'انتهت مهلة الطلب';
 
   @override
@@ -3401,7 +3136,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get totalUpload => 'إجمالي الرفع';
 
   @override
-  String get totalVPNs => 'إجمالي VPN';
+  String get totalVpns => 'إجمالي VPN';
 
   @override
   String get tryAdjustingFilters =>
@@ -3466,27 +3201,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get unauthorized => 'وصول غير مصرح به';
 
   @override
-  String get unitBytes => 'بايت';
-
-  @override
-  String get unitGigabytes => 'جيجابايت';
-
-  @override
-  String get unitKilobytes => 'كيلوبايت';
-
-  @override
-  String get unitMegabytes => 'ميجابايت';
-
-  @override
-  String get unitPerSecond => '/ث';
-
-  @override
-  String get unitPetabytes => 'بيتابايت';
-
-  @override
-  String get unitTerabytes => 'تيرابايت';
-
-  @override
   String get unknown => 'غير معروف';
 
   @override
@@ -3496,7 +3210,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get unlock => 'فتح';
 
   @override
-  String get unlockOPNsenseManager => 'فتح OPNsense Manager';
+  String get unlockOpnsenseManager => 'فتح OPNsense Manager';
 
   @override
   String get unnamedHost => 'مضيف بدون اسم';
@@ -3557,9 +3271,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get useHttpsDescription => 'استخدام اتصال HTTPS آمن';
-
-  @override
-  String get useHttpsLabel => 'استخدام HTTPS';
 
   @override
   String get useProtocolForCommunicating => 'استخدم هذا البروتوكول للاتصال';
@@ -3640,9 +3351,6 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعيين عنوان خادم WINS الأساسي (خادم اسم NetBIOS عبر TCP/IP). كرر هذا الخيار لتعيين عناوين خادم WINS الثانوية.';
 
   @override
-  String get wireguard => 'WireGuard';
-
-  @override
   String get wireguardLogs => 'سجلات WireGuard';
 
   @override
@@ -3686,15 +3394,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get zeroSeconds => '0 ثانية';
 
   @override
-  String get addToList => 'إضافة';
-
-  @override
-  String get allFilterOption => 'الكل';
-
-  @override
-  String get commonNameLabel => 'الاسم الشائع';
-
-  @override
   String get connectionBlockingDescription =>
       'حظر اتصال العميل هذا بناءً على اسمه الشائع. لا تستخدم هذا الخيار لتعطيل عميل بشكل دائم بسبب مفتاح أو كلمة مرور مخترقة. استخدم CRL (قائمة إلغاء الشهادات) بدلاً من ذلك.';
 
@@ -3704,22 +3403,12 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get enableThisClientOverride => 'تمكين تجاوز العميل المحدد هذا';
-
-  @override
-  String get enterClientX509CommonName => 'أدخل الاسم الشائع X.509 للعميل هنا.';
-
-  @override
   String get facility => 'المرفق';
 
   @override
   String gatewayLabel(String gateway) {
     return 'البوابة: $gateway';
   }
-
-  @override
-  String get invalidIpAddressMustBeIpv4OrIpv6 =>
-      'عنوان IP غير صالح (يجب أن يكون IPv4 أو IPv6)';
 
   @override
   String localLabel(String address) {
@@ -3788,9 +3477,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get statusLabel => 'الحالة';
-
-  @override
   String timestampLabel(String timestamp) {
     return 'الطابع الزمني: $timestamp';
   }
@@ -3801,14 +3487,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get udp => 'UDP';
-
-  @override
   String get unknownNetwork => 'شبكة غير معروفة';
-
-  @override
-  String get youMayEnterDescriptionForReference =>
-      'يمكنك إدخال وصف هنا للرجوع إليه (لا يتم تحليله).';
 
   @override
   String get actualUsed => 'Actual Used';

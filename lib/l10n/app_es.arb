@@ -1,44 +1,25 @@
 {
   "@@locale": "es",
   "about": "Acerca de",
-  "@about": {
-    "description": "Translation for about"
-  },
+  "@about": {},
   "aboutDescription": "Una aplicación móvil Flutter profesional para administrar routers de firewall OPNsense.",
-  "@aboutDescription": {
-    "description": "Translation for aboutDescription"
-  },
+  "@aboutDescription": {},
   "aboutImportExport": "Acerca de importar y exportar",
-  "@aboutImportExport": {
-    "description": "Translation for aboutImportExport"
-  },
+  "@aboutImportExport": {},
   "acceptDns": "Aceptar DNS",
-  "@acceptDns": {
-    "description": "Translation for acceptDns"
-  },
+  "@acceptDns": {},
   "acceptDnsDescription": "Usar servidores DNS proporcionados por Tailscale",
-  "@acceptDnsDescription": {
-    "description": "Translation for acceptDnsDescription"
-  },
+  "@acceptDnsDescription": {},
   "acceptRoutes": "Aceptar Rutas",
-  "@acceptRoutes": {
-    "description": "Translation for acceptRoutes"
-  },
+  "@acceptRoutes": {},
   "acceptSubnetRoutes": "Aceptar Rutas de Subred",
-  "@acceptSubnetRoutes": {
-    "description": "Translation for acceptSubnetRoutes"
-  },
+  "@acceptSubnetRoutes": {},
   "acceptSubnetRoutesDescription": "Aceptar rutas anunciadas por otros nodos",
-  "@acceptSubnetRoutesDescription": {
-    "description": "Translation for acceptSubnetRoutesDescription"
-  },
+  "@acceptSubnetRoutesDescription": {},
   "action": "Acción",
-  "@action": {
-    "description": "Translation for action"
-  },
+  "@action": {},
   "actionService": "{action} Servicio",
   "@actionService": {
-    "description": "Translation for actionService",
     "placeholders": {
       "action": {
         "type": "String",
@@ -48,7 +29,6 @@
   },
   "actioningService": "{action} {name}...",
   "@actioningService": {
-    "description": "Translation for actioningService",
     "placeholders": {
       "action": {
         "type": "String",
@@ -61,12 +41,9 @@
     }
   },
   "activate": "Activar",
-  "@activate": {
-    "description": "Translation for activate"
-  },
+  "@activate": {},
   "activatedProfile": "Perfil activado: {name}",
   "@activatedProfile": {
-    "description": "Translation for activatedProfile",
     "placeholders": {
       "name": {
         "type": "String",
@@ -75,24 +52,15 @@
     }
   },
   "activatingProfile": "Activando perfil...",
-  "@activatingProfile": {
-    "description": "Translation for activatingProfile"
-  },
+  "@activatingProfile": {},
   "activationFailed": "Activación fallida",
-  "@activationFailed": {
-    "description": "Translation for activationFailed"
-  },
+  "@activationFailed": {},
   "active": "Activo",
-  "@active": {
-    "description": "Translation for active"
-  },
+  "@active": {},
   "activeDevices": "Dispositivos Activos",
-  "@activeDevices": {
-    "description": "Translation for activeDevices"
-  },
+  "@activeDevices": {},
   "activeHosts": "{count} host(s) activo(s)",
   "@activeHosts": {
-    "description": "Translation for activeHosts",
     "placeholders": {
       "count": {
         "type": "int",
@@ -101,188 +69,93 @@
     }
   },
   "activeProfile": "Perfil Activo",
-  "@activeProfile": {
-    "description": "Translation for activeProfile"
-  },
+  "@activeProfile": {},
   "add": "Agregar",
-  "@add": {
-    "description": "Translation for add"
-  },
-  "addButton": "Agregar",
-  "@addButton": {
-    "description": "Translation for addButton"
-  },
+  "@add": {},
   "addClientOverride": "Agregar Anulación del Cliente",
-  "@addClientOverride": {
-    "description": "Translation for addClientOverride"
-  },
+  "@addClientOverride": {},
   "addConnection": "Agregar conexión",
-  "@addConnection": {
-    "description": "Translation for addConnection"
-  },
+  "@addConnection": {},
   "addConnectionEndpoint": "Por favor agregue al menos un punto de conexión",
-  "@addConnectionEndpoint": {
-    "description": "Translation for addConnectionEndpoint"
-  },
+  "@addConnectionEndpoint": {},
   "addDnsServer": "Agregar servidor DNS",
-  "@addDnsServer": {
-    "description": "Translation for addDnsServer"
-  },
+  "@addDnsServer": {},
   "addHost": "Agregar host",
-  "@addHost": {
-    "description": "Translation for addHost"
-  },
+  "@addHost": {},
   "addHostToGetStarted": "Agregue un host para comenzar",
-  "@addHostToGetStarted": {
-    "description": "Translation for addHostToGetStarted"
-  },
+  "@addHostToGetStarted": {},
   "addInstance": "Agregar Instancia",
-  "@addInstance": {
-    "description": "Translation for addInstance"
-  },
+  "@addInstance": {},
   "addOpenVpnInstance": "Agregar Instancia OpenVPN",
-  "@addOpenVpnInstance": {
-    "description": "Translation for addOpenVpnInstance"
-  },
+  "@addOpenVpnInstance": {},
   "addOverride": "Agregar Anulación",
-  "@addOverride": {
-    "description": "Translation for addOverride"
-  },
+  "@addOverride": {},
   "addProfile": "Agregar Perfil",
-  "@addProfile": {
-    "description": "Translation for addProfile"
-  },
+  "@addProfile": {},
   "addProfileToManageInstances": "Agregue un perfil para administrar instancias de OPNsense",
-  "@addProfileToManageInstances": {
-    "description": "Translation for addProfileToManageInstances"
-  },
+  "@addProfileToManageInstances": {},
   "addStaticKey": "Agregar Clave Estática",
-  "@addStaticKey": {
-    "description": "Translation for addStaticKey"
-  },
+  "@addStaticKey": {},
   "addStaticKeyTooltip": "Agregar Clave Estática",
-  "@addStaticKeyTooltip": {
-    "description": "Translation for addStaticKeyTooltip"
-  },
+  "@addStaticKeyTooltip": {},
   "addSubnet": "Agregar Subred",
-  "@addSubnet": {
-    "description": "Translation for addSubnet"
-  },
+  "@addSubnet": {},
   "addTunnelAddress": "Agregar dirección de túnel",
-  "@addTunnelAddress": {
-    "description": "Translation for addTunnelAddress"
-  },
+  "@addTunnelAddress": {},
   "additionalInformation": "Información adicional",
-  "@additionalInformation": {
-    "description": "Translation for additionalInformation"
-  },
+  "@additionalInformation": {},
   "address": "Dirección",
-  "@address": {
-    "description": "Translation for address"
-  },
+  "@address": {},
   "addressIsRequired": "La dirección es obligatoria",
-  "@addressIsRequired": {
-    "description": "Translation for addressIsRequired"
-  },
+  "@addressIsRequired": {},
   "advertiseExitNode": "Anunciar Nodo de Salida",
-  "@advertiseExitNode": {
-    "description": "Translation for advertiseExitNode"
-  },
+  "@advertiseExitNode": {},
   "advertiseExitNodeDescription": "Permitir que otros dispositivos enruten a través de este nodo",
-  "@advertiseExitNodeDescription": {
-    "description": "Translation for advertiseExitNodeDescription"
-  },
+  "@advertiseExitNodeDescription": {},
   "advertiseRoutes": "Anunciar Rutas",
-  "@advertiseRoutes": {
-    "description": "Translation for advertiseRoutes"
-  },
+  "@advertiseRoutes": {},
   "alert": "Alerta",
-  "@alert": {
-    "description": "Translation for alert"
-  },
+  "@alert": {},
   "aliasDeletedSuccessfully": "Alias eliminado exitosamente",
-  "@aliasDeletedSuccessfully": {
-    "description": "Translation for aliasDeletedSuccessfully"
-  },
+  "@aliasDeletedSuccessfully": {},
   "aliasDisabledSuccessfully": "Alias deshabilitado exitosamente",
-  "@aliasDisabledSuccessfully": {
-    "description": "Translation for aliasDisabledSuccessfully"
-  },
+  "@aliasDisabledSuccessfully": {},
   "aliasEnabledSuccessfully": "Alias habilitado exitosamente",
-  "@aliasEnabledSuccessfully": {
-    "description": "Translation for aliasEnabledSuccessfully"
-  },
+  "@aliasEnabledSuccessfully": {},
   "aliases": "Alias",
-  "@aliases": {
-    "description": "Translation for aliases"
-  },
+  "@aliases": {},
   "all": "Todos",
-  "@all": {
-    "description": "Translation for all"
-  },
+  "@all": {},
   "allConnectionsSuccessful": "Todas las conexiones probadas exitosamente",
-  "@allConnectionsSuccessful": {
-    "description": "Translation for allConnectionsSuccessful"
-  },
+  "@allConnectionsSuccessful": {},
   "allDetailsCopiedToClipboard": "Todos los detalles copiados al portapapeles",
-  "@allDetailsCopiedToClipboard": {
-    "description": "Translation for allDetailsCopiedToClipboard"
-  },
+  "@allDetailsCopiedToClipboard": {},
   "allRoles": "Todos los Roles",
-  "@allRoles": {
-    "description": "Translation for allRoles"
-  },
+  "@allRoles": {},
   "allSettingsSavedSuccessfully": "Todas las configuraciones guardadas exitosamente",
-  "@allSettingsSavedSuccessfully": {
-    "description": "Translation for allSettingsSavedSuccessfully"
-  },
+  "@allSettingsSavedSuccessfully": {},
   "allStatus": "Todos los Estados",
-  "@allStatus": {
-    "description": "Translation for allStatus"
-  },
+  "@allStatus": {},
   "allTypes": "Todos los tipos",
-  "@allTypes": {
-    "description": "Translation for allTypes"
-  },
-  "allVPNs": "Todas las VPN",
-  "@allVPNs": {
-    "description": "Translation for allVPNs"
-  },
+  "@allTypes": {},
+  "allVpns": "Todas las VPN",
+  "@allVpns": {},
   "allowSelfSigned": "Permitir Certificado Autofirmado",
-  "@allowSelfSigned": {
-    "description": "Translation for allowSelfSigned"
-  },
+  "@allowSelfSigned": {},
   "allowSelfSignedCertificates": "Permitir certificados autofirmados",
-  "@allowSelfSignedCertificates": {
-    "description": "Translation for allowSelfSignedCertificates"
-  },
+  "@allowSelfSignedCertificates": {},
   "allowSelfSignedCertificatesDescription": "Aceptar certificados SSL autofirmados",
-  "@allowSelfSignedCertificatesDescription": {
-    "description": "Translation for allowSelfSignedCertificatesDescription"
-  },
+  "@allowSelfSignedCertificatesDescription": {},
   "allowedIps": "IPs permitidas",
-  "@allowedIps": {
-    "description": "Translation for allowedIps"
-  },
-  "allowedIpsLabel": "IPs permitidas",
-  "@allowedIpsLabel": {
-    "description": "Translation for allowedIpsLabel"
-  },
+  "@allowedIps": {},
   "any": "Cualquiera",
-  "@any": {
-    "description": "Translation for any"
-  },
+  "@any": {},
   "anyIpAddressCidrOrAlias": "cualquiera, dirección IP, CIDR o alias",
-  "@anyIpAddressCidrOrAlias": {
-    "description": "Translation for anyIpAddressCidrOrAlias"
-  },
+  "@anyIpAddressCidrOrAlias": {},
   "anyPortNumberRangeOrAlias": "cualquiera, número de puerto, rango o alias",
-  "@anyPortNumberRangeOrAlias": {
-    "description": "Translation for anyPortNumberRangeOrAlias"
-  },
+  "@anyPortNumberRangeOrAlias": {},
   "apiError": "Error de API: {message}",
   "@apiError": {
-    "description": "Translation for apiError",
     "placeholders": {
       "message": {
         "type": "String",
@@ -291,160 +164,75 @@
     }
   },
   "apiKey": "Clave API",
-  "@apiKey": {
-    "description": "Translation for apiKey"
-  },
+  "@apiKey": {},
   "apiKeyIsRequired": "La clave API es obligatoria",
-  "@apiKeyIsRequired": {
-    "description": "Translation for apiKeyIsRequired"
-  },
-  "apiKeyLabel": "Clave API",
-  "@apiKeyLabel": {
-    "description": "Translation for apiKeyLabel"
-  },
+  "@apiKeyIsRequired": {},
   "apiSecret": "Secreto API",
-  "@apiSecret": {
-    "description": "Translation for apiSecret"
-  },
+  "@apiSecret": {},
   "apiSecretIsRequired": "El secreto API es obligatorio",
-  "@apiSecretIsRequired": {
-    "description": "Translation for apiSecretIsRequired"
-  },
-  "apiSecretLabel": "Secreto API",
-  "@apiSecretLabel": {
-    "description": "Translation for apiSecretLabel"
-  },
-  "appName": "Administrador OPNsense",
-  "@appName": {
-    "description": "Translation for appName"
-  },
+  "@apiSecretIsRequired": {},
   "appearance": "Apariencia",
-  "@appearance": {
-    "description": "Translation for appearance"
-  },
-  "applicationLegalese": "© 2026 OPNsense Manager\n\nLicenciado bajo la Licencia Pública General de GNU v3.0\n\nEste programa es software libre: puede redistribuirlo y/o modificarlo bajo los términos de la Licencia Pública General de GNU publicada por la Free Software Foundation, ya sea la versión 3 de la Licencia, o (a su elección) cualquier versión posterior.",
-  "@applicationLegalese": {
-    "description": "Translation for applicationLegalese"
-  },
+  "@appearance": {},
   "apply": "Aplicar",
-  "@apply": {
-    "description": "Translation for apply"
-  },
+  "@apply": {},
   "architecture": "Arquitectura",
-  "@architecture": {
-    "description": "Translation for architecture"
-  },
+  "@architecture": {},
   "atLeastOneTunnelAddressRequired": "Se requiere al menos una dirección de túnel",
-  "@atLeastOneTunnelAddressRequired": {
-    "description": "Translation for atLeastOneTunnelAddressRequired"
-  },
+  "@atLeastOneTunnelAddressRequired": {},
   "authSettingsSavedSuccessfully": "Configuración de autenticación guardada exitosamente",
-  "@authSettingsSavedSuccessfully": {
-    "description": "Translation for authSettingsSavedSuccessfully"
-  },
+  "@authSettingsSavedSuccessfully": {},
   "authTlsAuthentication": "Auth (Autenticación TLS)",
-  "@authTlsAuthentication": {
-    "description": "Translation for authTlsAuthentication"
-  },
+  "@authTlsAuthentication": {},
   "authTokenGeneratedSuccessfully": "Token de autenticación generado exitosamente",
-  "@authTokenGeneratedSuccessfully": {
-    "description": "Translation for authTokenGeneratedSuccessfully"
-  },
+  "@authTokenGeneratedSuccessfully": {},
   "authenticate": "Autenticar",
-  "@authenticate": {
-    "description": "Translation for authenticate"
-  },
+  "@authenticate": {},
   "authenticateToUnlock": "Autentíquese para desbloquear OPNsense Manager",
-  "@authenticateToUnlock": {
-    "description": "Translation for authenticateToUnlock"
-  },
+  "@authenticateToUnlock": {},
   "authentication": "Autenticación",
-  "@authentication": {
-    "description": "Translation for authentication"
-  },
+  "@authentication": {},
   "authenticationFailed": "Autenticación fallida",
-  "@authenticationFailed": {
-    "description": "Translation for authenticationFailed"
-  },
+  "@authenticationFailed": {},
   "authenticationRequired": "Autenticación Requerida",
-  "@authenticationRequired": {
-    "description": "Translation for authenticationRequired"
-  },
+  "@authenticationRequired": {},
   "authenticationSettings": "Configuración de Autenticación",
-  "@authenticationSettings": {
-    "description": "Translation for authenticationSettings"
-  },
+  "@authenticationSettings": {},
   "authenticated": "Autenticado",
-  "@authenticated": {
-    "description": "Translation for authenticated"
-  },
+  "@authenticated": {},
   "notAuthenticated": "No autenticado",
-  "@notAuthenticated": {
-    "description": "Translation for notAuthenticated"
-  },
+  "@notAuthenticated": {},
   "tailnet": "Tailnet",
-  "@tailnet": {
-    "description": "Translation for tailnet"
-  },
+  "@tailnet": {},
   "deviceName": "Nombre del dispositivo",
-  "@deviceName": {
-    "description": "Translation for deviceName"
-  },
+  "@deviceName": {},
   "authUrl": "URL de autenticación",
-  "@authUrl": {
-    "description": "Translation for authUrl"
-  },
+  "@authUrl": {},
   "user": "Usuario",
-  "@user": {
-    "description": "Translation for user"
-  },
+  "@user": {},
   "authorizedPeers": "Pares autorizados",
-  "@authorizedPeers": {
-    "description": "Translation for authorizedPeers"
-  },
+  "@authorizedPeers": {},
   "autoRefresh": "Actualización Automática",
-  "@autoRefresh": {
-    "description": "Translation for autoRefresh"
-  },
+  "@autoRefresh": {},
   "backendState": "Estado del Backend",
-  "@backendState": {
-    "description": "Translation for backendState"
-  },
+  "@backendState": {},
   "bandwidthLimit": "Límite de Ancho de Banda",
-  "@bandwidthLimit": {
-    "description": "Translation for bandwidthLimit"
-  },
+  "@bandwidthLimit": {},
   "bandwidthLimitMbps": "Límite de Ancho de Banda (Mbps)",
-  "@bandwidthLimitMbps": {
-    "description": "Translation for bandwidthLimitMbps"
-  },
+  "@bandwidthLimitMbps": {},
   "base64EncodedPrivateKeyKeepSecret": "Clave privada codificada en Base64 (¡mantener en secreto!)",
-  "@base64EncodedPrivateKeyKeepSecret": {
-    "description": "Translation for base64EncodedPrivateKeyKeepSecret"
-  },
+  "@base64EncodedPrivateKeyKeepSecret": {},
   "base64EncodedPublicKey": "Clave pública codificada en Base64",
-  "@base64EncodedPublicKey": {
-    "description": "Translation for base64EncodedPublicKey"
-  },
+  "@base64EncodedPublicKey": {},
   "biometricAuth": "Autenticación Biométrica",
-  "@biometricAuth": {
-    "description": "Translation for biometricAuth"
-  },
+  "@biometricAuth": {},
   "biometricAuthFailed": "La autenticación biométrica falló o fue cancelada",
-  "@biometricAuthFailed": {
-    "description": "Translation for biometricAuthFailed"
-  },
+  "@biometricAuthFailed": {},
   "biometricLockDisabled": "Bloqueo biométrico deshabilitado",
-  "@biometricLockDisabled": {
-    "description": "Translation for biometricLockDisabled"
-  },
+  "@biometricLockDisabled": {},
   "biometricLockEnabled": "Bloqueo biométrico habilitado",
-  "@biometricLockEnabled": {
-    "description": "Translation for biometricLockEnabled"
-  },
+  "@biometricLockEnabled": {},
   "biometricLockTitle": "Bloqueo {biometricType}",
   "@biometricLockTitle": {
-    "description": "Translation for biometricLockTitle",
     "placeholders": {
       "biometricType": {
         "type": "String",
@@ -453,20 +241,13 @@
     }
   },
   "biometricNotAvailable": "La autenticación biométrica no está disponible en este dispositivo",
-  "@biometricNotAvailable": {
-    "description": "Translation for biometricNotAvailable"
-  },
+  "@biometricNotAvailable": {},
   "block": "Bloquear",
-  "@block": {
-    "description": "Translation for block"
-  },
+  "@block": {},
   "blockHost": "Bloquear host",
-  "@blockHost": {
-    "description": "Translation for blockHost"
-  },
+  "@blockHost": {},
   "blockHostConfirmation": "¿Está seguro de que desea bloquear {hostname} ({ip})?\n\nEsto creará una regla de firewall para bloquear todo el tráfico de este host.",
   "@blockHostConfirmation": {
-    "description": "Translation for blockHostConfirmation",
     "placeholders": {
       "hostname": {
         "type": "String",
@@ -479,117 +260,57 @@
     }
   },
   "blockingHost": "Bloqueando host...",
-  "@blockingHost": {
-    "description": "Translation for blockingHost"
-  },
+  "@blockingHost": {},
   "bytesReceived": "Bytes Recibidos",
-  "@bytesReceived": {
-    "description": "Translation for bytesReceived"
-  },
+  "@bytesReceived": {},
   "bytesSent": "Bytes Enviados",
-  "@bytesSent": {
-    "description": "Translation for bytesSent"
-  },
+  "@bytesSent": {},
   "cancel": "Cancelar",
-  "@cancel": {
-    "description": "Translation for cancel"
-  },
-  "cancelButton": "Cancelar",
-  "@cancelButton": {
-    "description": "Translation for cancelButton"
-  },
+  "@cancel": {},
   "cannotBeUndone": "Esta acción no se puede deshacer.",
-  "@cannotBeUndone": {
-    "description": "Translation for cannotBeUndone"
-  },
+  "@cannotBeUndone": {},
   "cannotDeleteLastConnection": "No se puede eliminar el último punto de conexión",
-  "@cannotDeleteLastConnection": {
-    "description": "Translation for cannotDeleteLastConnection"
-  },
+  "@cannotDeleteLastConnection": {},
   "cannotDeleteLastConnectionTooltip": "No se puede eliminar el último punto de conexión",
-  "@cannotDeleteLastConnectionTooltip": {
-    "description": "Translation for cannotDeleteLastConnectionTooltip"
-  },
+  "@cannotDeleteLastConnectionTooltip": {},
   "carpVhidToDepend": "CARP VHID del que depender",
-  "@carpVhidToDepend": {
-    "description": "Translation for carpVhidToDepend"
-  },
+  "@carpVhidToDepend": {},
   "categories": "Categorías",
-  "@categories": {
-    "description": "Translation for categories"
-  },
-  "changePIN": "Cambiar PIN",
-  "@changePIN": {
-    "description": "Translation for changePIN"
-  },
-  "changePinTitle": "Cambiar PIN",
-  "@changePinTitle": {
-    "description": "Translation for changePinTitle"
-  },
+  "@categories": {},
+  "changePin": "Cambiar PIN",
+  "@changePin": {},
   "changesDiscarded": "Cambios descartados",
-  "@changesDiscarded": {
-    "description": "Translation for changesDiscarded"
-  },
+  "@changesDiscarded": {},
   "checkIfWireguardIsConfiguredAndRunning": "Verifique si WireGuard está configurado y en ejecución",
-  "@checkIfWireguardIsConfiguredAndRunning": {
-    "description": "Translation for checkIfWireguardIsConfiguredAndRunning"
-  },
+  "@checkIfWireguardIsConfiguredAndRunning": {},
   "chooseExportLocation": "Elegir Ubicación de Exportación",
-  "@chooseExportLocation": {
-    "description": "Translation for chooseExportLocation"
-  },
+  "@chooseExportLocation": {},
   "cidrNotationRequired": "Se requiere notación CIDR",
-  "@cidrNotationRequired": {
-    "description": "Translation for cidrNotationRequired"
-  },
+  "@cidrNotationRequired": {},
   "clearLogs": "Limpiar registros",
-  "@clearLogs": {
-    "description": "Translation for clearLogs"
-  },
+  "@clearLogs": {},
   "clearSelection": "Limpiar selección",
-  "@clearSelection": {
-    "description": "Translation for clearSelection"
-  },
+  "@clearSelection": {},
   "client": "Cliente",
-  "@client": {
-    "description": "Translation for client"
-  },
+  "@client": {},
   "clientAddress": "Dirección del Cliente",
-  "@clientAddress": {
-    "description": "Translation for clientAddress"
-  },
+  "@clientAddress": {},
   "clientName": "Nombre del cliente",
-  "@clientName": {
-    "description": "Translation for clientName"
-  },
+  "@clientName": {},
   "clientOverrides": "Anulaciones de cliente",
-  "@clientOverrides": {
-    "description": "Translation for clientOverrides"
-  },
+  "@clientOverrides": {},
   "clientSettings": "Configuración del Cliente",
-  "@clientSettings": {
-    "description": "Translation for clientSettings"
-  },
+  "@clientSettings": {},
   "clientSpecificOverrides": "Anulaciones Específicas del Cliente",
-  "@clientSpecificOverrides": {
-    "description": "Translation for clientSpecificOverrides"
-  },
+  "@clientSpecificOverrides": {},
   "clientX509CommonNameHelper": "Ingrese aquí el nombre común X.509 del cliente.",
-  "@clientX509CommonNameHelper": {
-    "description": "Translation for clientX509CommonNameHelper"
-  },
+  "@clientX509CommonNameHelper": {},
   "close": "Cerrar",
-  "@close": {
-    "description": "Translation for close"
-  },
+  "@close": {},
   "commonName": "Nombre Común",
-  "@commonName": {
-    "description": "Translation for commonName"
-  },
+  "@commonName": {},
   "commonNameRequired": "El nombre común es obligatorio",
-  "@commonNameRequired": {
-    "description": "Translation for commonNameRequired"
-  },
+  "@commonNameRequired": {},
   "commonNameWithValue": "Nombre Común: {value}",
   "@commonNameWithValue": {
     "placeholders": {
@@ -599,25 +320,15 @@
     }
   },
   "configurationAppliedSuccessfully": "Configuración aplicada exitosamente",
-  "@configurationAppliedSuccessfully": {
-    "description": "Translation for configurationAppliedSuccessfully"
-  },
+  "@configurationAppliedSuccessfully": {},
   "configurationPreview": "Vista previa de configuración",
-  "@configurationPreview": {
-    "description": "Translation for configurationPreview"
-  },
+  "@configurationPreview": {},
   "configureAdvertisedSubnets": "Configurar subredes anunciadas",
-  "@configureAdvertisedSubnets": {
-    "description": "Translation for configureAdvertisedSubnets"
-  },
+  "@configureAdvertisedSubnets": {},
   "configured": "Configurado",
-  "@configured": {
-    "description": "Translation for configured"
-  },
+  "@configured": {},
   "confirmDelete": "Confirmar Eliminación",
-  "@confirmDelete": {
-    "description": "Translation for confirmDelete"
-  },
+  "@confirmDelete": {},
   "confirmDeleteInstance": "¿Está seguro de que desea eliminar la instancia \"{name}\"? Esta acción no se puede deshacer.",
   "@confirmDeleteInstance": {
     "placeholders": {
@@ -643,20 +354,11 @@
     }
   },
   "confirmNewPin": "Confirmar Nuevo PIN",
-  "@confirmNewPin": {
-    "description": "Translation for confirmNewPin"
-  },
-  "confirmPIN": "Confirmar PIN",
-  "@confirmPIN": {
-    "description": "Translation for confirmPIN"
-  },
+  "@confirmNewPin": {},
   "confirmPin": "Confirmar PIN",
-  "@confirmPin": {
-    "description": "Translation for confirmPin"
-  },
+  "@confirmPin": {},
   "confirmServiceAction": "¿{action} \"{name}\"?",
   "@confirmServiceAction": {
-    "description": "Translation for confirmServiceAction",
     "placeholders": {
       "action": {
         "type": "String",
@@ -669,28 +371,17 @@
     }
   },
   "connect": "Conectar",
-  "@connect": {
-    "description": "Translation for connect"
-  },
-  "connectToYourOPNsenseFirewall": "Conéctese a su firewall OPNsense",
-  "@connectToYourOPNsenseFirewall": {
-    "description": "Translation for connectToYourOPNsenseFirewall"
-  },
-  "connectVPN": "Conectar VPN",
-  "@connectVPN": {
-    "description": "Translation for connectVPN"
-  },
+  "@connect": {},
+  "connectToYourOpnsenseFirewall": "Conéctese a su firewall OPNsense",
+  "@connectToYourOpnsenseFirewall": {},
+  "connectVpn": "Conectar VPN",
+  "@connectVpn": {},
   "connected": "Conectado",
-  "@connected": {
-    "description": "Translation for connected"
-  },
+  "@connected": {},
   "connectedSince": "Conectado Desde",
-  "@connectedSince": {
-    "description": "Translation for connectedSince"
-  },
+  "@connectedSince": {},
   "connectedSuccessfullyVia": "Conectado exitosamente a través de: {endpoint}",
   "@connectedSuccessfullyVia": {
-    "description": "Translation for connectedSuccessfullyVia",
     "placeholders": {
       "endpoint": {
         "type": "String",
@@ -700,7 +391,6 @@
   },
   "connectingVPN": "Conectando {name}...",
   "@connectingVPN": {
-    "description": "Translation for connectingVPN",
     "placeholders": {
       "name": {
         "type": "String",
@@ -709,32 +399,17 @@
     }
   },
   "connectionBlocking": "Bloqueo de conexión",
-  "@connectionBlocking": {
-    "description": "Translation for connectionBlocking"
-  },
-  "connectionBlockingSubtitle": "Bloquee esta conexión de cliente según su nombre común. No use esta opción para deshabilitar permanentemente un cliente debido a una clave o contraseña comprometida. Use una CRL (lista de revocación de certificados) en su lugar.",
-  "@connectionBlockingSubtitle": {
-    "description": "Translation for connectionBlockingSubtitle"
-  },
+  "@connectionBlocking": {},
   "connectionDetails": "Detalles de Conexión",
-  "@connectionDetails": {
-    "description": "Translation for connectionDetails"
-  },
+  "@connectionDetails": {},
   "connectionEndpoints": "Puntos de conexión",
-  "@connectionEndpoints": {
-    "description": "Translation for connectionEndpoints"
-  },
+  "@connectionEndpoints": {},
   "connectionEndpointsHelp": "Administre múltiples puntos de conexión para este perfil. La aplicación intentará cada punto final en orden hasta que se establezca una conexión exitosa.",
-  "@connectionEndpointsHelp": {
-    "description": "Translation for connectionEndpointsHelp"
-  },
+  "@connectionEndpointsHelp": {},
   "connectionFailed": "Conexión fallida. Verifique los registros de la consola para más detalles.\n\nProblemas comunes:\n• El dispositivo no está en la misma red que OPNsense\n• Dirección IP o puerto incorrectos\n• Firewall bloqueando la conexión\n• Credenciales API inválidas",
-  "@connectionFailed": {
-    "description": "Translation for connectionFailed"
-  },
+  "@connectionFailed": {},
   "connectionFailedError": "Conexión fallida: {error}",
   "@connectionFailedError": {
-    "description": "Translation for connectionFailedError",
     "placeholders": {
       "error": {
         "type": "String",
@@ -743,32 +418,19 @@
     }
   },
   "connectionInformation": "Información de conexión",
-  "@connectionInformation": {
-    "description": "Translation for connectionInformation"
-  },
+  "@connectionInformation": {},
   "connectionStatus": "Estado de conexión",
-  "@connectionStatus": {
-    "description": "Translation for connectionStatus"
-  },
+  "@connectionStatus": {},
   "connectionSuccessful": "Conexión Exitosa",
-  "@connectionSuccessful": {
-    "description": "Translation for connectionSuccessful"
-  },
+  "@connectionSuccessful": {},
   "connectionTestFailed": "Prueba de conexión fallida",
-  "@connectionTestFailed": {
-    "description": "Translation for connectionTestFailed"
-  },
+  "@connectionTestFailed": {},
   "connectionTestResults": "Resultados de prueba de conexión",
-  "@connectionTestResults": {
-    "description": "Translation for connectionTestResults"
-  },
+  "@connectionTestResults": {},
   "content": "Contenido",
-  "@content": {
-    "description": "Translation for content"
-  },
+  "@content": {},
   "copiedLogEntries": "Copiadas {count} {count, plural, =1{entrada} other{entradas}} de registro",
   "@copiedLogEntries": {
-    "description": "Translation for copiedLogEntries",
     "placeholders": {
       "count": {
         "type": "int",
@@ -777,121 +439,59 @@
     }
   },
   "copiedToClipboard": "Copiado al portapapeles",
-  "@copiedToClipboard": {
-    "description": "Translation for copiedToClipboard"
-  },
+  "@copiedToClipboard": {},
   "copy": "Copiar",
-  "@copy": {
-    "description": "Translation for copy"
-  },
+  "@copy": {},
   "copyAllDetails": "Copiar todos los detalles",
-  "@copyAllDetails": {
-    "description": "Translation for copyAllDetails"
-  },
+  "@copyAllDetails": {},
   "copyHost": "Copiar host",
-  "@copyHost": {
-    "description": "Translation for copyHost"
-  },
+  "@copyHost": {},
   "copyKey": "Copiar Clave",
-  "@copyKey": {
-    "description": "Translation for copyKey"
-  },
-  "copyKeyTooltip": "Copiar clave",
-  "@copyKeyTooltip": {
-    "description": "Translation for copyKeyTooltip"
-  },
+  "@copyKey": {},
   "copySelected": "Copiar seleccionados",
-  "@copySelected": {
-    "description": "Translation for copySelected"
-  },
-  "copyTooltip": "Copiar",
-  "@copyTooltip": {
-    "description": "Translation for copyTooltip"
-  },
+  "@copySelected": {},
   "cpuUsage": "Uso de CPU",
-  "@cpuUsage": {
-    "description": "Translation for cpuUsage"
-  },
+  "@cpuUsage": {},
   "createAliasComingSoon": "Crear alias (Próximamente)",
-  "@createAliasComingSoon": {
-    "description": "Translation for createAliasComingSoon"
-  },
+  "@createAliasComingSoon": {},
   "createFirstAutomationRule": "Cree su primera regla de automatización para comenzar",
-  "@createFirstAutomationRule": {
-    "description": "Translation for createFirstAutomationRule"
-  },
+  "@createFirstAutomationRule": {},
   "createFirstProfile": "Cree su primer perfil para comenzar",
-  "@createFirstProfile": {
-    "description": "Translation for createFirstProfile"
-  },
+  "@createFirstProfile": {},
   "createNewProfile": "Crear Nuevo Perfil",
-  "@createNewProfile": {
-    "description": "Translation for createNewProfile"
-  },
+  "@createNewProfile": {},
   "createOverride": "Crear Anulación",
-  "@createOverride": {
-    "description": "Translation for createOverride"
-  },
+  "@createOverride": {},
   "createPeer": "Crear peer",
-  "@createPeer": {
-    "description": "Translation for createPeer"
-  },
+  "@createPeer": {},
   "createRule": "Crear Regla",
-  "@createRule": {
-    "description": "Translation for createRule"
-  },
+  "@createRule": {},
   "createServer": "Crear servidor",
-  "@createServer": {
-    "description": "Translation for createServer"
-  },
+  "@createServer": {},
   "createStaticKey": "Crear Clave Estática",
-  "@createStaticKey": {
-    "description": "Translation for createStaticKey"
-  },
+  "@createStaticKey": {},
   "createYourFirstProfile": "Cree su primer perfil de OPNsense para comenzar",
-  "@createYourFirstProfile": {
-    "description": "Translation for createYourFirstProfile"
-  },
+  "@createYourFirstProfile": {},
   "created": "Creado",
-  "@created": {
-    "description": "Translation for created"
-  },
+  "@created": {},
   "critical": "Crítico",
-  "@critical": {
-    "description": "Translation for critical"
-  },
+  "@critical": {},
   "cryptTlsEncryption": "Crypt (Cifrado TLS)",
-  "@cryptTlsEncryption": {
-    "description": "Translation for cryptTlsEncryption"
-  },
+  "@cryptTlsEncryption": {},
   "cryptV2TlsEncryption": "Crypt V2 (Cifrado TLS)",
-  "@cryptV2TlsEncryption": {
-    "description": "Translation for cryptV2TlsEncryption"
-  },
+  "@cryptV2TlsEncryption": {},
   "currentPin": "PIN Actual",
-  "@currentPin": {
-    "description": "Translation for currentPin"
-  },
+  "@currentPin": {},
   "currentPinIncorrect": "El PIN actual es incorrecto",
-  "@currentPinIncorrect": {
-    "description": "Translation for currentPinIncorrect"
-  },
+  "@currentPinIncorrect": {},
   "darkMode": "Modo Oscuro",
-  "@darkMode": {
-    "description": "Translation for darkMode"
-  },
+  "@darkMode": {},
   "dashboard": "Panel de Control",
-  "@dashboard": {
-    "description": "Translation for dashboard"
-  },
+  "@dashboard": {},
   "day": "día",
-  "@day": {
-    "description": "Translation for day"
-  },
+  "@day": {},
   "days": "días",
-  "@days": {
-    "description": "Translation for days"
-  },
+  "@days": {},
   "daysAgo": "hace {days} días",
   "@daysAgo": {
     "placeholders": {
@@ -901,24 +501,15 @@
     }
   },
   "debug": "Depuración",
-  "@debug": {
-    "description": "Translation for debug"
-  },
+  "@debug": {},
   "debugDescription": "Habilitar registro de depuración",
-  "@debugDescription": {
-    "description": "Translation for debugDescription"
-  },
+  "@debugDescription": {},
   "defineRoleOfInstance": "Definir el rol de esta instancia",
-  "@defineRoleOfInstance": {
-    "description": "Translation for defineRoleOfInstance"
-  },
+  "@defineRoleOfInstance": {},
   "delete": "Eliminar",
-  "@delete": {
-    "description": "Translation for delete"
-  },
+  "@delete": {},
   "deleteAliasConfirmation": "¿Está seguro de que desea eliminar el alias \"{aliasName}\"?",
   "@deleteAliasConfirmation": {
-    "description": "Translation for deleteAliasConfirmation",
     "placeholders": {
       "aliasName": {
         "type": "String",
@@ -927,16 +518,11 @@
     }
   },
   "deleteConfirmation": "¿Está seguro de que desea eliminar este elemento?",
-  "@deleteConfirmation": {
-    "description": "Translation for deleteConfirmation"
-  },
+  "@deleteConfirmation": {},
   "deleteConnection": "Eliminar conexión",
-  "@deleteConnection": {
-    "description": "Translation for deleteConnection"
-  },
+  "@deleteConnection": {},
   "deleteConnectionConfirmation": "¿Está seguro de que desea eliminar la conexión \"{connectionName}\"?",
   "@deleteConnectionConfirmation": {
-    "description": "Translation for deleteConnectionConfirmation",
     "placeholders": {
       "connectionName": {
         "type": "String",
@@ -945,12 +531,9 @@
     }
   },
   "deleteHost": "Eliminar host",
-  "@deleteHost": {
-    "description": "Translation for deleteHost"
-  },
+  "@deleteHost": {},
   "deleteHostConfirmation": "¿Está seguro de que desea eliminar \"{host}\"?",
   "@deleteHostConfirmation": {
-    "description": "Translation for deleteHostConfirmation",
     "placeholders": {
       "host": {
         "type": "String",
@@ -959,20 +542,13 @@
     }
   },
   "deleteInstance": "Eliminar Instancia",
-  "@deleteInstance": {
-    "description": "Translation for deleteInstance"
-  },
+  "@deleteInstance": {},
   "deleteOverride": "Eliminar Anulación",
-  "@deleteOverride": {
-    "description": "Translation for deleteOverride"
-  },
+  "@deleteOverride": {},
   "deletePeer": "Eliminar Peer",
-  "@deletePeer": {
-    "description": "Translation for deletePeer"
-  },
+  "@deletePeer": {},
   "deletePeerConfirmation": "¿Está seguro de que desea eliminar el peer \"{name}\"?",
   "@deletePeerConfirmation": {
-    "description": "Translation for deletePeerConfirmation",
     "placeholders": {
       "name": {
         "type": "String",
@@ -981,12 +557,9 @@
     }
   },
   "deleteProfile": "Eliminar Perfil",
-  "@deleteProfile": {
-    "description": "Translation for deleteProfile"
-  },
+  "@deleteProfile": {},
   "deleteProfileConfirmation": "¿Está seguro de que desea eliminar \"{name}\"?",
   "@deleteProfileConfirmation": {
-    "description": "Translation for deleteProfileConfirmation",
     "placeholders": {
       "name": {
         "type": "String",
@@ -994,17 +567,10 @@
       }
     }
   },
-  "deleteProfileTitle": "Eliminar Perfil",
-  "@deleteProfileTitle": {
-    "description": "Translation for deleteProfileTitle"
-  },
   "deleteRule": "Eliminar Regla",
-  "@deleteRule": {
-    "description": "Translation for deleteRule"
-  },
+  "@deleteRule": {},
   "deleteRuleConfirmation": "¿Está seguro de que desea eliminar la regla \"{description}\"?",
   "@deleteRuleConfirmation": {
-    "description": "Translation for deleteRuleConfirmation",
     "placeholders": {
       "description": {
         "type": "String",
@@ -1014,7 +580,6 @@
   },
   "disableRuleConfirmation": "¿Está seguro de que desea deshabilitar la regla \"{description}\"?",
   "@disableRuleConfirmation": {
-    "description": "Translation for disableRuleConfirmation",
     "placeholders": {
       "description": {
         "type": "String",
@@ -1024,7 +589,6 @@
   },
   "enableRuleConfirmation": "¿Está seguro de que desea habilitar la regla \"{description}\"?",
   "@enableRuleConfirmation": {
-    "description": "Translation for enableRuleConfirmation",
     "placeholders": {
       "description": {
         "type": "String",
@@ -1034,7 +598,6 @@
   },
   "deleteServerConfirmation": "¿Está seguro de que desea eliminar el servidor \"{name}\"? Esta acción no se puede deshacer.",
   "@deleteServerConfirmation": {
-    "description": "Translation for deleteServerConfirmation",
     "placeholders": {
       "name": {
         "type": "String",
@@ -1043,16 +606,11 @@
     }
   },
   "deleteStaticKey": "Eliminar Clave Estática",
-  "@deleteStaticKey": {
-    "description": "Translation for deleteStaticKey"
-  },
+  "@deleteStaticKey": {},
   "deleteSubnet": "Eliminar Subred",
-  "@deleteSubnet": {
-    "description": "Translation for deleteSubnet"
-  },
+  "@deleteSubnet": {},
   "deleteSubnetConfirmation": "¿Está seguro de que desea eliminar la subred {subnet}?",
   "@deleteSubnetConfirmation": {
-    "description": "Translation for deleteSubnetConfirmation",
     "placeholders": {
       "subnet": {
         "type": "String",
@@ -1061,72 +619,37 @@
     }
   },
   "demo": "Demo",
-  "@demo": {
-    "description": "Translation for demo"
-  },
+  "@demo": {},
   "dependOnCarp": "Depender de (CARP)",
-  "@dependOnCarp": {
-    "description": "Translation for dependOnCarp"
-  },
+  "@dependOnCarp": {},
   "description": "Descripción",
-  "@description": {
-    "description": "Translation for description"
-  },
+  "@description": {},
   "descriptionHelperText": "Una breve descripción de esta instancia",
-  "@descriptionHelperText": {
-    "description": "Translation for descriptionHelperText"
-  },
+  "@descriptionHelperText": {},
   "descriptionHelperTextOverride": "Puede ingresar una descripción aquí para su referencia (no se analiza).",
-  "@descriptionHelperTextOverride": {
-    "description": "Translation for descriptionHelperTextOverride"
-  },
+  "@descriptionHelperTextOverride": {},
   "descriptionHint": "ej., PC de la sala de estar",
-  "@descriptionHint": {
-    "description": "Translation for descriptionHint"
-  },
+  "@descriptionHint": {},
   "descriptionOptional": "Descripción (opcional)",
-  "@descriptionOptional": {
-    "description": "Translation for descriptionOptional"
-  },
+  "@descriptionOptional": {},
   "descriptionRequired": "Se requiere descripción",
-  "@descriptionRequired": {
-    "description": "Translation for descriptionRequired"
-  },
-  "descriptiveNameForStaticKey": "Un nombre descriptivo para esta clave estática",
-  "@descriptiveNameForStaticKey": {
-    "description": "Translation for descriptiveNameForStaticKey"
-  },
+  "@descriptionRequired": {},
   "destination": "Destino",
-  "@destination": {
-    "description": "Translation for destination"
-  },
+  "@destination": {},
   "destinationAddress": "Dirección de destino",
-  "@destinationAddress": {
-    "description": "Translation for destinationAddress"
-  },
+  "@destinationAddress": {},
   "destinationIsRequired": "El destino es obligatorio",
-  "@destinationIsRequired": {
-    "description": "Translation for destinationIsRequired"
-  },
+  "@destinationIsRequired": {},
   "destinationPort": "Puerto de Destino",
-  "@destinationPort": {
-    "description": "Translation for destinationPort"
-  },
+  "@destinationPort": {},
   "destinationPortOptional": "Puerto de Destino (Opcional)",
-  "@destinationPortOptional": {
-    "description": "Translation for destinationPortOptional"
-  },
+  "@destinationPortOptional": {},
   "deviceType": "Tipo de Dispositivo",
-  "@deviceType": {
-    "description": "Translation for deviceType"
-  },
+  "@deviceType": {},
   "dhcpLeases": "Arrendamientos DHCP",
-  "@dhcpLeases": {
-    "description": "Translation for dhcpLeases"
-  },
+  "@dhcpLeases": {},
   "dhcpServerLabel": "Servidor {serverName}",
   "@dhcpServerLabel": {
-    "description": "Translation for dhcpServerLabel",
     "placeholders": {
       "serverName": {
         "type": "String",
@@ -1135,72 +658,39 @@
     }
   },
   "dhcpServerType": "Tipo de servidor DHCP",
-  "@dhcpServerType": {
-    "description": "Translation for dhcpServerType"
-  },
+  "@dhcpServerType": {},
   "direction": "Dirección",
-  "@direction": {
-    "description": "Translation for direction"
-  },
+  "@direction": {},
   "disable": "Deshabilitar",
-  "@disable": {
-    "description": "Translation for disable"
-  },
+  "@disable": {},
   "disableAutoScroll": "Desactivar desplazamiento automático",
-  "@disableAutoScroll": {
-    "description": "Translation for disableAutoScroll"
-  },
+  "@disableAutoScroll": {},
   "disableRoutes": "Deshabilitar Rutas",
-  "@disableRoutes": {
-    "description": "Translation for disableRoutes"
-  },
+  "@disableRoutes": {},
   "disableRoutesDescription": "Prevenir la instalación automática de rutas",
-  "@disableRoutesDescription": {
-    "description": "Translation for disableRoutesDescription"
-  },
+  "@disableRoutesDescription": {},
   "disableRule": "Desactivar regla",
-  "@disableRule": {
-    "description": "Translation for disableRule"
-  },
+  "@disableRule": {},
   "disableSnat": "Deshabilitar SNAT",
-  "@disableSnat": {
-    "description": "Translation for disableSnat"
-  },
+  "@disableSnat": {},
   "disableSnatDescription": "Deshabilitar NAT de origen para rutas de subred",
-  "@disableSnatDescription": {
-    "description": "Translation for disableSnatDescription"
-  },
+  "@disableSnatDescription": {},
   "disabled": "Deshabilitado",
-  "@disabled": {
-    "description": "Translation for disabled"
-  },
+  "@disabled": {},
   "disabledStatus": "deshabilitado",
-  "@disabledStatus": {
-    "description": "Translation for disabledStatus"
-  },
+  "@disabledStatus": {},
   "disablingRule": "Desactivando regla...",
-  "@disablingRule": {
-    "description": "Translation for disablingRule"
-  },
+  "@disablingRule": {},
   "discard": "Descartar",
-  "@discard": {
-    "description": "Translation for discard"
-  },
+  "@discard": {},
   "disconnect": "Desconectar",
-  "@disconnect": {
-    "description": "Translation for disconnect"
-  },
-  "disconnectVPN": "Desconectar VPN",
-  "@disconnectVPN": {
-    "description": "Translation for disconnectVPN"
-  },
+  "@disconnect": {},
+  "disconnectVpn": "Desconectar VPN",
+  "@disconnectVpn": {},
   "disconnected": "Desconectado",
-  "@disconnected": {
-    "description": "Translation for disconnected"
-  },
+  "@disconnected": {},
   "disconnectingVPN": "Desconectando {name}...",
   "@disconnectingVPN": {
-    "description": "Translation for disconnectingVPN",
     "placeholders": {
       "name": {
         "type": "String",
@@ -1209,253 +699,121 @@
     }
   },
   "diskUsage": "Uso del Disco",
-  "@diskUsage": {
-    "description": "Translation for diskUsage"
-  },
+  "@diskUsage": {},
   "dnsDomainList": "Lista de Dominios DNS",
-  "@dnsDomainList": {
-    "description": "Translation for dnsDomainList"
-  },
+  "@dnsDomainList": {},
   "dnsDomainListHelperText": "Establecer sufijos DNS específicos de la conexión.",
-  "@dnsDomainListHelperText": {
-    "description": "Translation for dnsDomainListHelperText"
-  },
+  "@dnsDomainListHelperText": {},
   "dnsDomainSearchList": "Lista de Búsqueda de Dominios DNS",
-  "@dnsDomainSearchList": {
-    "description": "Translation for dnsDomainSearchList"
-  },
+  "@dnsDomainSearchList": {},
   "dnsDomainSearchListHelperText": "Agregar nombre a la lista de búsqueda de dominios. Repita esta opción para agregar más entradas. Se admiten hasta 10 dominios.",
-  "@dnsDomainSearchListHelperText": {
-    "description": "Translation for dnsDomainSearchListHelperText"
-  },
+  "@dnsDomainSearchListHelperText": {},
   "dnsEnabled": "DNS Habilitado",
-  "@dnsEnabled": {
-    "description": "Translation for dnsEnabled"
-  },
+  "@dnsEnabled": {},
   "dnsServerIp": "IP del servidor DNS",
-  "@dnsServerIp": {
-    "description": "Translation for dnsServerIp"
-  },
+  "@dnsServerIp": {},
   "dnsServerIsRequired": "Se requiere servidor DNS",
-  "@dnsServerIsRequired": {
-    "description": "Translation for dnsServerIsRequired"
-  },
+  "@dnsServerIsRequired": {},
   "dnsServerOptional": "Servidor DNS (Opcional)",
-  "@dnsServerOptional": {
-    "description": "Translation for dnsServerOptional"
-  },
+  "@dnsServerOptional": {},
   "dnsServers": "Servidores DNS",
-  "@dnsServers": {
-    "description": "Translation for dnsServers"
-  },
+  "@dnsServers": {},
   "dnsServersHelperText": "Establecer dirección IPv4 o IPv6 del servidor de nombres de dominio principal. Repita esta opción para establecer direcciones de servidores DNS secundarios.",
-  "@dnsServersHelperText": {
-    "description": "Translation for dnsServersHelperText"
-  },
+  "@dnsServersHelperText": {},
   "dnsServersOptional": "Servidores DNS (Opcional)",
-  "@dnsServersOptional": {
-    "description": "Translation for dnsServersOptional"
-  },
+  "@dnsServersOptional": {},
   "dnsmasqDescription": "Servidor DNS y DHCP ligero",
-  "@dnsmasqDescription": {
-    "description": "Translation for dnsmasqDescription"
-  },
-  "dnsmasqServerName": "Dnsmasq",
-  "@dnsmasqServerName": {
-    "description": "Translation for dnsmasqServerName"
-  },
+  "@dnsmasqDescription": {},
   "done": "Hecho",
-  "@done": {
-    "description": "Translation for done"
-  },
-  "doneButton": "Hecho",
-  "@doneButton": {
-    "description": "Translation for doneButton"
-  },
+  "@done": {},
   "download": "Descarga",
-  "@download": {
-    "description": "Translation for download"
-  },
+  "@download": {},
   "dynamicLease": "Dinámico",
-  "@dynamicLease": {
-    "description": "Translation for dynamicLease"
-  },
+  "@dynamicLease": {},
   "edit": "Editar",
-  "@edit": {
-    "description": "Translation for edit"
-  },
+  "@edit": {},
   "editClientOverride": "Editar Anulación del Cliente",
-  "@editClientOverride": {
-    "description": "Translation for editClientOverride"
-  },
+  "@editClientOverride": {},
   "editConnection": "Editar conexión",
-  "@editConnection": {
-    "description": "Translation for editConnection"
-  },
+  "@editConnection": {},
   "editHost": "Editar host",
-  "@editHost": {
-    "description": "Translation for editHost"
-  },
+  "@editHost": {},
   "editProfile": "Editar Perfil",
-  "@editProfile": {
-    "description": "Translation for editProfile"
-  },
+  "@editProfile": {},
   "editRule": "Editar Regla",
-  "@editRule": {
-    "description": "Translation for editRule"
-  },
+  "@editRule": {},
   "editStaticKey": "Editar Clave Estática",
-  "@editStaticKey": {
-    "description": "Translation for editStaticKey"
-  },
+  "@editStaticKey": {},
   "editSubnet": "Editar Subred",
-  "@editSubnet": {
-    "description": "Translation for editSubnet"
-  },
+  "@editSubnet": {},
   "editWireguardPeer": "Editar peer WireGuard",
-  "@editWireguardPeer": {
-    "description": "Translation for editWireguardPeer"
-  },
+  "@editWireguardPeer": {},
   "editWireguardServer": "Editar servidor WireGuard",
-  "@editWireguardServer": {
-    "description": "Translation for editWireguardServer"
-  },
+  "@editWireguardServer": {},
   "emergency": "Emergencia",
-  "@emergency": {
-    "description": "Translation for emergency"
-  },
+  "@emergency": {},
   "enable": "Habilitar",
-  "@enable": {
-    "description": "Translation for enable"
-  },
+  "@enable": {},
   "enableAutoScroll": "Activar desplazamiento automático",
-  "@enableAutoScroll": {
-    "description": "Translation for enableAutoScroll"
-  },
+  "@enableAutoScroll": {},
   "enableClientSpecificOverride": "Habilitar esta anulación específica del cliente",
-  "@enableClientSpecificOverride": {
-    "description": "Translation for enableClientSpecificOverride"
-  },
+  "@enableClientSpecificOverride": {},
   "enableDebugLogging": "Habilitar registro de depuración",
-  "@enableDebugLogging": {
-    "description": "Translation for enableDebugLogging"
-  },
+  "@enableDebugLogging": {},
   "enablePinLockFirst": "Por favor habilite el bloqueo PIN primero antes de usar biométrico",
-  "@enablePinLockFirst": {
-    "description": "Translation for enablePinLockFirst"
-  },
+  "@enablePinLockFirst": {},
   "enablePinLockFirstBiometric": "Habilite el bloqueo PIN primero para usar biométrico",
-  "@enablePinLockFirstBiometric": {
-    "description": "Translation for enablePinLockFirstBiometric"
-  },
+  "@enablePinLockFirstBiometric": {},
   "enableRule": "Activar regla",
-  "@enableRule": {
-    "description": "Translation for enableRule"
-  },
+  "@enableRule": {},
   "enableSsh": "Habilitar SSH",
-  "@enableSsh": {
-    "description": "Translation for enableSsh"
-  },
+  "@enableSsh": {},
   "enableSshDescription": "Permitir acceso SSH a través de Tailscale",
-  "@enableSshDescription": {
-    "description": "Translation for enableSshDescription"
-  },
+  "@enableSshDescription": {},
   "enableTailscale": "Habilitar Tailscale",
-  "@enableTailscale": {
-    "description": "Translation for enableTailscale"
-  },
+  "@enableTailscale": {},
   "enableTailscaleDescription": "Habilitar o deshabilitar el servicio Tailscale",
-  "@enableTailscaleDescription": {
-    "description": "Translation for enableTailscaleDescription"
-  },
+  "@enableTailscaleDescription": {},
   "enableWireguard": "Habilitar WireGuard",
-  "@enableWireguard": {
-    "description": "Translation for enableWireguard"
-  },
+  "@enableWireguard": {},
   "enabled": "Habilitado",
-  "@enabled": {
-    "description": "Translation for enabled"
-  },
-  "enabledLabel": "Habilitado",
-  "@enabledLabel": {
-    "description": "Translation for enabledLabel"
-  },
+  "@enabled": {},
   "enabledStatus": "habilitado",
-  "@enabledStatus": {
-    "description": "Translation for enabledStatus"
-  },
+  "@enabledStatus": {},
   "enablingRule": "Activando regla...",
-  "@enablingRule": {
-    "description": "Translation for enablingRule"
-  },
+  "@enablingRule": {},
   "endTime": "Hora de finalización",
-  "@endTime": {
-    "description": "Translation for endTime"
-  },
+  "@endTime": {},
   "endpoint": "Punto final",
-  "@endpoint": {
-    "description": "Translation for endpoint"
-  },
+  "@endpoint": {},
   "endpointAddress": "Dirección del punto final",
-  "@endpointAddress": {
-    "description": "Translation for endpointAddress"
-  },
+  "@endpointAddress": {},
   "endpointPort": "Puerto del punto final",
-  "@endpointPort": {
-    "description": "Translation for endpointPort"
-  },
+  "@endpointPort": {},
   "enterBandwidthLimit": "Ingrese el límite de ancho de banda de su conexión en Mbps",
-  "@enterBandwidthLimit": {
-    "description": "Translation for enterBandwidthLimit"
-  },
+  "@enterBandwidthLimit": {},
   "enterClientCertificateCommonName": "Ingrese el nombre común del certificado del cliente",
-  "@enterClientCertificateCommonName": {
-    "description": "Translation for enterClientCertificateCommonName"
-  },
+  "@enterClientCertificateCommonName": {},
   "enterDescriptionForOverride": "Ingrese una descripción para esta anulación",
-  "@enterDescriptionForOverride": {
-    "description": "Translation for enterDescriptionForOverride"
-  },
+  "@enterDescriptionForOverride": {},
   "enterOrGeneratePresharedKey": "Ingrese o genere una clave precompartida",
-  "@enterOrGeneratePresharedKey": {
-    "description": "Translation for enterOrGeneratePresharedKey"
-  },
+  "@enterOrGeneratePresharedKey": {},
   "enterOrGeneratePrivateKey": "Ingrese o genere una clave privada",
-  "@enterOrGeneratePrivateKey": {
-    "description": "Translation for enterOrGeneratePrivateKey"
-  },
+  "@enterOrGeneratePrivateKey": {},
   "enterOrGeneratePublicKey": "Ingrese o genere una clave pública",
-  "@enterOrGeneratePublicKey": {
-    "description": "Translation for enterOrGeneratePublicKey"
-  },
-  "enterPIN": "Ingresar PIN",
-  "@enterPIN": {
-    "description": "Translation for enterPIN"
-  },
+  "@enterOrGeneratePublicKey": {},
   "enterPin": "Ingresar PIN",
-  "@enterPin": {
-    "description": "Translation for enterPin"
-  },
+  "@enterPin": {},
   "enterPinLabel": "Ingresar PIN (4-6 dígitos)",
-  "@enterPinLabel": {
-    "description": "Translation for enterPinLabel"
-  },
+  "@enterPinLabel": {},
   "enterRuleDescription": "Ingrese la descripción de la regla",
-  "@enterRuleDescription": {
-    "description": "Translation for enterRuleDescription"
-  },
+  "@enterRuleDescription": {},
   "enterYourApiKey": "Ingrese su clave API",
-  "@enterYourApiKey": {
-    "description": "Translation for enterYourApiKey"
-  },
+  "@enterYourApiKey": {},
   "enterYourApiSecret": "Ingrese su secreto API",
-  "@enterYourApiSecret": {
-    "description": "Translation for enterYourApiSecret"
-  },
+  "@enterYourApiSecret": {},
   "entries": "entradas",
-  "@entries": {
-    "description": "Translation for entries"
-  },
+  "@entries": {},
   "entriesCount": "{count} entradas",
   "@entriesCount": {
     "placeholders": {
@@ -1465,12 +823,9 @@
     }
   },
   "error": "Error",
-  "@error": {
-    "description": "Translation for error"
-  },
+  "@error": {},
   "errorAddingSubnet": "Error al agregar subred: {error}",
   "@errorAddingSubnet": {
-    "description": "Translation for errorAddingSubnet",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1480,7 +835,6 @@
   },
   "errorDeletingRule": "Error al eliminar regla: {error}",
   "@errorDeletingRule": {
-    "description": "Translation for errorDeletingRule",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1490,7 +844,6 @@
   },
   "errorDeletingSubnet": "Error al eliminar subred: {error}",
   "@errorDeletingSubnet": {
-    "description": "Translation for errorDeletingSubnet",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1499,44 +852,25 @@
     }
   },
   "errorLoadingData": "Error al cargar datos",
-  "@errorLoadingData": {
-    "description": "Translation for errorLoadingData"
-  },
+  "@errorLoadingData": {},
   "errorLoadingInstance": "Error al cargar la instancia",
-  "@errorLoadingInstance": {
-    "description": "Translation for errorLoadingInstance"
-  },
+  "@errorLoadingInstance": {},
   "errorLoadingLogs": "Error al cargar registros",
-  "@errorLoadingLogs": {
-    "description": "Translation for errorLoadingLogs"
-  },
+  "@errorLoadingLogs": {},
   "errorLoadingOverride": "Error al cargar la anulación",
-  "@errorLoadingOverride": {
-    "description": "Translation for errorLoadingOverride"
-  },
+  "@errorLoadingOverride": {},
   "errorLoadingRoutes": "Error al cargar rutas",
-  "@errorLoadingRoutes": {
-    "description": "Translation for errorLoadingRoutes"
-  },
+  "@errorLoadingRoutes": {},
   "errorLoadingRules": "Error al cargar reglas",
-  "@errorLoadingRules": {
-    "description": "Translation for errorLoadingRules"
-  },
+  "@errorLoadingRules": {},
   "errorLoadingSessions": "Error al cargar sesiones",
-  "@errorLoadingSessions": {
-    "description": "Translation for errorLoadingSessions"
-  },
+  "@errorLoadingSessions": {},
   "errorLoadingSystemInfo": "Error al cargar información del sistema",
-  "@errorLoadingSystemInfo": {
-    "description": "Translation for errorLoadingSystemInfo"
-  },
-  "errorLoadingVPNConnections": "Error al cargar conexiones VPN",
-  "@errorLoadingVPNConnections": {
-    "description": "Translation for errorLoadingVPNConnections"
-  },
+  "@errorLoadingSystemInfo": {},
+  "errorLoadingVpnConnections": "Error al cargar conexiones VPN",
+  "@errorLoadingVpnConnections": {},
   "errorPrefix": "Error: {message}",
   "@errorPrefix": {
-    "description": "Translation for errorPrefix",
     "placeholders": {
       "message": {
         "type": "String",
@@ -1546,7 +880,6 @@
   },
   "errorRestartingService": "Error al reiniciar el servicio: {error}",
   "@errorRestartingService": {
-    "description": "Translation for errorRestartingService",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1556,7 +889,6 @@
   },
   "errorSavingRule": "Error al guardar la regla: {error}",
   "@errorSavingRule": {
-    "description": "Translation for errorSavingRule",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1566,7 +898,6 @@
   },
   "errorStartingService": "Error al iniciar el servicio: {error}",
   "@errorStartingService": {
-    "description": "Translation for errorStartingService",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1576,7 +907,6 @@
   },
   "errorStoppingService": "Error al detener el servicio: {error}",
   "@errorStoppingService": {
-    "description": "Translation for errorStoppingService",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1586,7 +916,6 @@
   },
   "errorTogglingRule": "Error al cambiar regla: {error}",
   "@errorTogglingRule": {
-    "description": "Translation for errorTogglingRule",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1596,7 +925,6 @@
   },
   "errorUpdatingSubnet": "Error al actualizar subred: {error}",
   "@errorUpdatingSubnet": {
-    "description": "Translation for errorUpdatingSubnet",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1605,64 +933,35 @@
     }
   },
   "exampleCidr": "Ejemplo: 10.10.10.2/24 o fd00::2/64",
-  "@exampleCidr": {
-    "description": "Translation for exampleCidr"
-  },
+  "@exampleCidr": {},
   "exampleTunnelAddress": "Ejemplo: 10.10.10.1/24 o fd00::1/64",
-  "@exampleTunnelAddress": {
-    "description": "Translation for exampleTunnelAddress"
-  },
+  "@exampleTunnelAddress": {},
   "examplesAnyIpCidr": "Ejemplos: any, 192.168.1.0/24, 10.0.0.1",
-  "@examplesAnyIpCidr": {
-    "description": "Translation for examplesAnyIpCidr"
-  },
+  "@examplesAnyIpCidr": {},
   "examplesAnyPortRange": "Ejemplos: any, 80, 1024-65535",
-  "@examplesAnyPortRange": {
-    "description": "Translation for examplesAnyPortRange"
-  },
+  "@examplesAnyPortRange": {},
   "examplesAnyPortRangeHttp": "Ejemplos: any, 80, 80-443, http",
-  "@examplesAnyPortRangeHttp": {
-    "description": "Translation for examplesAnyPortRangeHttp"
-  },
+  "@examplesAnyPortRangeHttp": {},
   "exitNode": "Nodo de Salida",
-  "@exitNode": {
-    "description": "Translation for exitNode"
-  },
+  "@exitNode": {},
   "expired": "Expirado",
-  "@expired": {
-    "description": "Translation for expired"
-  },
+  "@expired": {},
   "expires": "Expira",
-  "@expires": {
-    "description": "Translation for expires"
-  },
+  "@expires": {},
   "expiryTime": "Tiempo de expiración",
-  "@expiryTime": {
-    "description": "Translation for expiryTime"
-  },
+  "@expiryTime": {},
   "export": "Exportar",
-  "@export": {
-    "description": "Translation for export"
-  },
+  "@export": {},
   "exportAllProfiles": "Exportar todos los perfiles",
-  "@exportAllProfiles": {
-    "description": "Translation for exportAllProfiles"
-  },
+  "@exportAllProfiles": {},
   "exportAllProfilesSubtitle": "Exportar todos los perfiles a un archivo JSON",
-  "@exportAllProfilesSubtitle": {
-    "description": "Translation for exportAllProfilesSubtitle"
-  },
+  "@exportAllProfilesSubtitle": {},
   "exportCredentialsWarning": "Exportar con credenciales guardará las claves API y secretos en texto plano. Solo haga esto si almacenará el archivo de forma segura.",
-  "@exportCredentialsWarning": {
-    "description": "Translation for exportCredentialsWarning"
-  },
+  "@exportCredentialsWarning": {},
   "exportFailed": "Exportación fallida",
-  "@exportFailed": {
-    "description": "Translation for exportFailed"
-  },
+  "@exportFailed": {},
   "exportFailedError": "Exportación fallida: {error}",
   "@exportFailedError": {
-    "description": "Translation for exportFailedError",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1671,36 +970,19 @@
     }
   },
   "exportLogs": "Exportar registros",
-  "@exportLogs": {
-    "description": "Translation for exportLogs"
-  },
+  "@exportLogs": {},
   "exportProfiles": "Exportar Perfiles",
-  "@exportProfiles": {
-    "description": "Translation for exportProfiles"
-  },
+  "@exportProfiles": {},
   "exportProfilesContent": "¿Desea incluir las credenciales API en la exportación?\n\nADVERTENCIA: Incluir credenciales almacenará las claves API y secretos en texto plano. Solo incluya credenciales si almacenará el archivo de forma segura.",
-  "@exportProfilesContent": {
-    "description": "Translation for exportProfilesContent"
-  },
-  "exportProfilesTitle": "Exportar Perfiles",
-  "@exportProfilesTitle": {
-    "description": "Translation for exportProfilesTitle"
-  },
+  "@exportProfilesContent": {},
   "exportSuccess": "Exportación exitosa",
-  "@exportSuccess": {
-    "description": "Translation for exportSuccess"
-  },
+  "@exportSuccess": {},
   "exportThisProfile": "Exportar este perfil",
-  "@exportThisProfile": {
-    "description": "Translation for exportThisProfile"
-  },
+  "@exportThisProfile": {},
   "failedDevices": "Dispositivos fallidos",
-  "@failedDevices": {
-    "description": "Translation for failedDevices"
-  },
+  "@failedDevices": {},
   "failedToActionTailscaleService": "Error al {action} el servicio Tailscale",
   "@failedToActionTailscaleService": {
-    "description": "Translation for failedToActionTailscaleService",
     "placeholders": {
       "action": {
         "type": "String",
@@ -1709,16 +991,11 @@
     }
   },
   "failedToApplyConfiguration": "Error al aplicar la configuración",
-  "@failedToApplyConfiguration": {
-    "description": "Translation for failedToApplyConfiguration"
-  },
+  "@failedToApplyConfiguration": {},
   "failedToBlockHost": "Error al bloquear el host",
-  "@failedToBlockHost": {
-    "description": "Translation for failedToBlockHost"
-  },
+  "@failedToBlockHost": {},
   "failedToConnect": "Error al conectar {name}",
   "@failedToConnect": {
-    "description": "Translation for failedToConnect",
     "placeholders": {
       "name": {
         "type": "String",
@@ -1728,7 +1005,6 @@
   },
   "failedToCopyHost": "Error al copiar host: {error}",
   "@failedToCopyHost": {
-    "description": "Translation for failedToCopyHost",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1738,7 +1014,6 @@
   },
   "failedToDeleteAlias": "Error al eliminar alias: {error}",
   "@failedToDeleteAlias": {
-    "description": "Translation for failedToDeleteAlias",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1748,7 +1023,6 @@
   },
   "failedToDeleteHost": "Error al eliminar host: {error}",
   "@failedToDeleteHost": {
-    "description": "Translation for failedToDeleteHost",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1758,7 +1032,6 @@
   },
   "failedToDeleteInstance": "Error al eliminar la instancia: {error}",
   "@failedToDeleteInstance": {
-    "description": "Translation for failedToDeleteInstance",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1768,7 +1041,6 @@
   },
   "failedToDeleteOverride": "Error al eliminar la anulación: {error}",
   "@failedToDeleteOverride": {
-    "description": "Translation for failedToDeleteOverride",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1778,7 +1050,6 @@
   },
   "failedToDeletePeer": "Error al eliminar el peer: {error}",
   "@failedToDeletePeer": {
-    "description": "Translation for failedToDeletePeer",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1787,12 +1058,9 @@
     }
   },
   "failedToDeleteProfile": "Error al eliminar el perfil",
-  "@failedToDeleteProfile": {
-    "description": "Translation for failedToDeleteProfile"
-  },
+  "@failedToDeleteProfile": {},
   "failedToDeleteServer": "Error al eliminar el servidor: {error}",
   "@failedToDeleteServer": {
-    "description": "Translation for failedToDeleteServer",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1802,7 +1070,6 @@
   },
   "failedToDeleteStaticKey": "Error al eliminar la clave estática: {error}",
   "@failedToDeleteStaticKey": {
-    "description": "Translation for failedToDeleteStaticKey",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1812,7 +1079,6 @@
   },
   "failedToDisconnect": "Error al desconectar {name}",
   "@failedToDisconnect": {
-    "description": "Translation for failedToDisconnect",
     "placeholders": {
       "name": {
         "type": "String",
@@ -1822,7 +1088,6 @@
   },
   "failedToExportLogs": "Error al exportar registros: {error}",
   "@failedToExportLogs": {
-    "description": "Translation for failedToExportLogs",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1832,7 +1097,6 @@
   },
   "failedToGenerateKey": "Error al generar la clave: {error}",
   "@failedToGenerateKey": {
-    "description": "Translation for failedToGenerateKey",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1842,7 +1106,6 @@
   },
   "failedToGenerateToken": "Error al generar el token: {error}",
   "@failedToGenerateToken": {
-    "description": "Translation for failedToGenerateToken",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1852,7 +1115,6 @@
   },
   "failedToLoadInterfaces": "Error al cargar interfaces: {error}",
   "@failedToLoadInterfaces": {
-    "description": "Translation for failedToLoadInterfaces",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1861,12 +1123,9 @@
     }
   },
   "failedToLoadOpenvpnLogs": "Error al cargar registros de OpenVPN",
-  "@failedToLoadOpenvpnLogs": {
-    "description": "Translation for failedToLoadOpenvpnLogs"
-  },
+  "@failedToLoadOpenvpnLogs": {},
   "failedToRestartService": "Error al reiniciar servicio {type}",
   "@failedToRestartService": {
-    "description": "Translation for failedToRestartService",
     "placeholders": {
       "type": {
         "type": "String",
@@ -1875,12 +1134,9 @@
     }
   },
   "failedToSaveAuthSettings": "Error al guardar la configuración de autenticación",
-  "@failedToSaveAuthSettings": {
-    "description": "Translation for failedToSaveAuthSettings"
-  },
+  "@failedToSaveAuthSettings": {},
   "failedToSaveHost": "Error al guardar host: {error}",
   "@failedToSaveHost": {
-    "description": "Translation for failedToSaveHost",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1890,7 +1146,6 @@
   },
   "failedToSaveInstance": "Error al guardar la instancia: {error}",
   "@failedToSaveInstance": {
-    "description": "Translation for failedToSaveInstance",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1900,7 +1155,6 @@
   },
   "failedToSaveOverride": "Error al guardar la anulación: {error}",
   "@failedToSaveOverride": {
-    "description": "Translation for failedToSaveOverride",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1909,24 +1163,15 @@
     }
   },
   "failedToSavePeer": "Error al guardar el peer",
-  "@failedToSavePeer": {
-    "description": "Translation for failedToSavePeer"
-  },
+  "@failedToSavePeer": {},
   "failedToSaveProfile": "Error al guardar el perfil",
-  "@failedToSaveProfile": {
-    "description": "Translation for failedToSaveProfile"
-  },
+  "@failedToSaveProfile": {},
   "failedToSaveServer": "Error al guardar el servidor",
-  "@failedToSaveServer": {
-    "description": "Translation for failedToSaveServer"
-  },
+  "@failedToSaveServer": {},
   "failedToSaveSettings": "Error al guardar configuraciones",
-  "@failedToSaveSettings": {
-    "description": "Translation for failedToSaveSettings"
-  },
+  "@failedToSaveSettings": {},
   "failedToSaveStaticKey": "Error al guardar la clave estática: {error}",
   "@failedToSaveStaticKey": {
-    "description": "Translation for failedToSaveStaticKey",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1935,16 +1180,11 @@
     }
   },
   "failedToStartService": "Error al iniciar el servicio",
-  "@failedToStartService": {
-    "description": "Translation for failedToStartService"
-  },
+  "@failedToStartService": {},
   "failedToStopService": "Error al detener el servicio",
-  "@failedToStopService": {
-    "description": "Translation for failedToStopService"
-  },
+  "@failedToStopService": {},
   "failedToToggleAlias": "Error al cambiar alias: {error}",
   "@failedToToggleAlias": {
-    "description": "Translation for failedToToggleAlias",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1954,7 +1194,6 @@
   },
   "failedToToggleInstance": "Error al cambiar la instancia: {error}",
   "@failedToToggleInstance": {
-    "description": "Translation for failedToToggleInstance",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1964,7 +1203,6 @@
   },
   "failedToToggleOverride": "Error al cambiar la anulación: {error}",
   "@failedToToggleOverride": {
-    "description": "Translation for failedToToggleOverride",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1974,7 +1212,6 @@
   },
   "failedToTogglePeer": "Error al cambiar el peer: {error}",
   "@failedToTogglePeer": {
-    "description": "Translation for failedToTogglePeer",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1984,7 +1221,6 @@
   },
   "failedToToggleServer": "Error al cambiar el servidor: {error}",
   "@failedToToggleServer": {
-    "description": "Translation for failedToToggleServer",
     "placeholders": {
       "error": {
         "type": "String",
@@ -1994,7 +1230,6 @@
   },
   "failedToWakeAllHosts": "Error al despertar todos los hosts: {error}",
   "@failedToWakeAllHosts": {
-    "description": "Translation for failedToWakeAllHosts",
     "placeholders": {
       "error": {
         "type": "String",
@@ -2004,7 +1239,6 @@
   },
   "failedToWakeHost": "Error al despertar host: {error}",
   "@failedToWakeHost": {
-    "description": "Translation for failedToWakeHost",
     "placeholders": {
       "error": {
         "type": "String",
@@ -2014,7 +1248,6 @@
   },
   "featureComingSoon": "{feature} - Próximamente",
   "@featureComingSoon": {
-    "description": "Translation for featureComingSoon",
     "placeholders": {
       "feature": {
         "type": "String",
@@ -2023,16 +1256,11 @@
     }
   },
   "featuresList": "• Monitoreo y gestión del sistema\n• Configuración de reglas de firewall\n• Control de servicios\n• Registros en tiempo real\n• Soporte multi-perfil\n• Autenticación segura",
-  "@featuresList": {
-    "description": "Translation for featuresList"
-  },
+  "@featuresList": {},
   "featuresTitle": "Características",
-  "@featuresTitle": {
-    "description": "Translation for featuresTitle"
-  },
+  "@featuresTitle": {},
   "fieldIsRequired": "{fieldName} es obligatorio",
   "@fieldIsRequired": {
-    "description": "Translation for fieldIsRequired",
     "placeholders": {
       "fieldName": {
         "type": "String",
@@ -2041,242 +1269,114 @@
     }
   },
   "fieldRequired": "Este campo es requerido",
-  "@fieldRequired": {
-    "description": "Translation for fieldRequired"
-  },
+  "@fieldRequired": {},
   "fifteenMin": "15 min",
-  "@fifteenMin": {
-    "description": "Translation for fifteenMin"
-  },
+  "@fifteenMin": {},
   "filterByAction": "Filtrar por Acción",
-  "@filterByAction": {
-    "description": "Translation for filterByAction"
-  },
+  "@filterByAction": {},
   "filterByType": "Filtrar por tipo",
-  "@filterByType": {
-    "description": "Translation for filterByType"
-  },
+  "@filterByType": {},
   "filterLabel": "Filtro: ",
-  "@filterLabel": {
-    "description": "Translation for filterLabel"
-  },
+  "@filterLabel": {},
   "filters": "Filtros",
-  "@filters": {
-    "description": "Translation for filters"
-  },
-  "filtersLabel": "Filtros",
-  "@filtersLabel": {
-    "description": "Translation for filtersLabel"
-  },
+  "@filters": {},
   "firewall": "Cortafuegos",
-  "@firewall": {
-    "description": "Translation for firewall"
-  },
+  "@firewall": {},
   "firewallAliases": "Alias del cortafuegos",
-  "@firewallAliases": {
-    "description": "Translation for firewallAliases"
-  },
+  "@firewallAliases": {},
   "firewallLogs": "Registros del Cortafuegos",
-  "@firewallLogs": {
-    "description": "Translation for firewallLogs"
-  },
+  "@firewallLogs": {},
   "firewallRuleDetails": "Detalles de la Regla del Cortafuegos",
-  "@firewallRuleDetails": {
-    "description": "Translation for firewallRuleDetails"
-  },
+  "@firewallRuleDetails": {},
   "firewallRules": "Reglas del Cortafuegos",
-  "@firewallRules": {
-    "description": "Translation for firewallRules"
-  },
+  "@firewallRules": {},
   "firmwareDetails": "Detalles del Firmware",
-  "@firmwareDetails": {
-    "description": "Translation for firmwareDetails"
-  },
+  "@firmwareDetails": {},
   "fiveMin": "5 min",
-  "@fiveMin": {
-    "description": "Translation for fiveMin"
-  },
+  "@fiveMin": {},
   "fixFormErrors": "Por favor corrija los errores en el formulario",
-  "@fixFormErrors": {
-    "description": "Translation for fixFormErrors"
-  },
+  "@fixFormErrors": {},
   "forbidden": "Acceso prohibido",
-  "@forbidden": {
-    "description": "Translation for forbidden"
-  },
+  "@forbidden": {},
   "gateway": "Puerta de enlace",
-  "@gateway": {
-    "description": "Translation for gateway"
-  },
+  "@gateway": {},
   "gatewayOptional": "Puerta de enlace (Opcional)",
-  "@gatewayOptional": {
-    "description": "Translation for gatewayOptional"
-  },
+  "@gatewayOptional": {},
   "gateways": "Puertas de Enlace",
-  "@gateways": {
-    "description": "Translation for gateways"
-  },
+  "@gateways": {},
   "general": "General",
-  "@general": {
-    "description": "Translation for general"
-  },
+  "@general": {},
   "generalSettings": "Configuración general",
-  "@generalSettings": {
-    "description": "Translation for generalSettings"
-  },
+  "@generalSettings": {},
   "generateKey": "Generar Clave",
-  "@generateKey": {
-    "description": "Translation for generateKey"
-  },
+  "@generateKey": {},
   "generateKeyPair": "Generar par de claves",
-  "@generateKeyPair": {
-    "description": "Translation for generateKeyPair"
-  },
+  "@generateKeyPair": {},
   "generateNewKeyPair": "Generar nuevo par de claves",
-  "@generateNewKeyPair": {
-    "description": "Translation for generateNewKeyPair"
-  },
+  "@generateNewKeyPair": {},
   "generateOrPasteKeyHere": "Generar o pegar clave aquí",
-  "@generateOrPasteKeyHere": {
-    "description": "Translation for generateOrPasteKeyHere"
-  },
+  "@generateOrPasteKeyHere": {},
   "generatePresharedKey": "Generar clave precompartida",
-  "@generatePresharedKey": {
-    "description": "Translation for generatePresharedKey"
-  },
+  "@generatePresharedKey": {},
   "generated": "Generado",
-  "@generated": {
-    "description": "Translation for generated"
-  },
+  "@generated": {},
   "generating": "Generando...",
-  "@generating": {
-    "description": "Translation for generating"
-  },
+  "@generating": {},
   "gitCommit": "Commit de Git",
-  "@gitCommit": {
-    "description": "Translation for gitCommit"
-  },
-  "gnuLicenseText": "Este programa es software libre: puede redistribuirlo y/o modificarlo bajo los términos de la Licencia Pública General de GNU publicada por la Free Software Foundation, ya sea la versión 3 de la Licencia, o (a su elección) cualquier versión posterior.\n\nEste programa se distribuye con la esperanza de que sea útil, pero SIN NINGUNA GARANTÍA; sin siquiera la garantía implícita de COMERCIABILIDAD o IDONEIDAD PARA UN PROPÓSITO PARTICULAR. Consulte la Licencia Pública General de GNU para más detalles.\n\nDebería haber recibido una copia de la Licencia Pública General de GNU junto con este programa. Si no es así, consulte <https://www.gnu.org/licenses/>.\n\n¿Por qué GPLv3?\n\n• Garantiza que el software permanezca libre y de código abierto\n• Cualquier modificación o derivado también debe ser de código abierto\n• Los usuarios tienen la libertad de usar, estudiar, compartir y modificar el software\n• La comunidad se beneficia de las mejoras y contribuciones",
-  "@gnuLicenseText": {
-    "description": "Translation for gnuLicenseText"
-  },
-  "gnuLicenseTitle": "Licencia Pública General de GNU v3.0",
-  "@gnuLicenseTitle": {
-    "description": "Translation for gnuLicenseTitle"
-  },
+  "@gitCommit": {},
   "healthStatus": "Estado de Salud",
-  "@healthStatus": {
-    "description": "Translation for healthStatus"
-  },
+  "@healthStatus": {},
   "hideControls": "Ocultar Controles",
-  "@hideControls": {
-    "description": "Translation for hideControls"
-  },
+  "@hideControls": {},
   "hideKey": "Ocultar clave",
-  "@hideKey": {
-    "description": "Translation for hideKey"
-  },
+  "@hideKey": {},
   "historySize": "Tamaño del historial",
-  "@historySize": {
-    "description": "Translation for historySize"
-  },
+  "@historySize": {},
   "host": "Host",
-  "@host": {
-    "description": "Translation for host"
-  },
+  "@host": {},
   "hostAddedSuccessfully": "Host agregado exitosamente",
-  "@hostAddedSuccessfully": {
-    "description": "Translation for hostAddedSuccessfully"
-  },
+  "@hostAddedSuccessfully": {},
   "hostBlocked": "Host bloqueado exitosamente",
-  "@hostBlocked": {
-    "description": "Translation for hostBlocked"
-  },
+  "@hostBlocked": {},
   "hostDeletedSuccessfully": "Host eliminado exitosamente",
-  "@hostDeletedSuccessfully": {
-    "description": "Translation for hostDeletedSuccessfully"
-  },
+  "@hostDeletedSuccessfully": {},
   "hostHint": "ej., 192.168.1.1 o firewall.example.com",
-  "@hostHint": {
-    "description": "Translation for hostHint"
-  },
+  "@hostHint": {},
   "hostIpAddress": "Host / Dirección IP",
-  "@hostIpAddress": {
-    "description": "Translation for hostIpAddress"
-  },
+  "@hostIpAddress": {},
   "hostIpAddressLabel": "Host/Dirección IP",
-  "@hostIpAddressLabel": {
-    "description": "Translation for hostIpAddressLabel"
-  },
+  "@hostIpAddressLabel": {},
   "hostIsRequired": "El host es obligatorio",
-  "@hostIsRequired": {
-    "description": "Translation for hostIsRequired"
-  },
+  "@hostIsRequired": {},
   "hostPlaceholder": "192.168.1.1 o firewall.example.com",
-  "@hostPlaceholder": {
-    "description": "Translation for hostPlaceholder"
-  },
+  "@hostPlaceholder": {},
   "hostUpdatedSuccessfully": "Host actualizado exitosamente",
-  "@hostUpdatedSuccessfully": {
-    "description": "Translation for hostUpdatedSuccessfully"
-  },
+  "@hostUpdatedSuccessfully": {},
   "hostname": "Nombre del Host",
-  "@hostname": {
-    "description": "Translation for hostname"
-  },
+  "@hostname": {},
   "hour": "hora",
-  "@hour": {
-    "description": "Translation for hour"
-  },
-  "hourAbbrev": "h",
-  "@hourAbbrev": {
-    "description": "Translation for hourAbbrev"
-  },
+  "@hour": {},
   "hours": "horas",
-  "@hours": {
-    "description": "Translation for hours"
-  },
+  "@hours": {},
   "hoursAgo": "Hace {hours}h",
   "@hoursAgo": {
-    "description": "Translation for hoursAgo",
     "placeholders": {
       "hours": {
-        "type": "String",
+        "type": "int",
         "example": "2"
       }
     }
   },
-  "http": "http",
-  "@http": {
-    "description": "Translation for http"
-  },
-  "https": "https",
-  "@https": {
-    "description": "Translation for https"
-  },
   "id": "ID",
-  "@id": {
-    "description": "Translation for id"
-  },
+  "@id": {},
   "import": "Importar",
-  "@import": {
-    "description": "Translation for import"
-  },
+  "@import": {},
   "importAndExport": "Importar y exportar",
-  "@importAndExport": {
-    "description": "Translation for importAndExport"
-  },
-  "importExport": "Importar y exportar",
-  "@importExport": {
-    "description": "Translation for importExport"
-  },
+  "@importAndExport": {},
   "importExportDescription": "Exporte sus perfiles para hacer una copia de seguridad o transferirlos a otro dispositivo. Importe perfiles desde un archivo exportado previamente.\n\nLos perfiles se guardan en formato JSON y pueden incluir puntos de conexión y configuraciones.",
-  "@importExportDescription": {
-    "description": "Translation for importExportDescription"
-  },
+  "@importExportDescription": {},
   "importFailed": "Importación fallida: {error}",
   "@importFailed": {
-    "description": "Translation for importFailed",
     "placeholders": {
       "error": {
         "type": "String",
@@ -2286,7 +1386,6 @@
   },
   "importFailedWithErrors": "Importación fallida: {errors}",
   "@importFailedWithErrors": {
-    "description": "Translation for importFailedWithErrors",
     "placeholders": {
       "errors": {
         "type": "String",
@@ -2295,28 +1394,15 @@
     }
   },
   "importProfiles": "Importar Perfiles",
-  "@importProfiles": {
-    "description": "Translation for importProfiles"
-  },
+  "@importProfiles": {},
   "importProfilesDialog": "¿Cómo deben manejarse los perfiles existentes?\n\n• Mantener Ambos: Importar con nuevos IDs\n• Sobrescribir: Reemplazar perfiles existentes",
-  "@importProfilesDialog": {
-    "description": "Translation for importProfilesDialog"
-  },
+  "@importProfilesDialog": {},
   "importProfilesSubtitle": "Importar perfiles desde un archivo JSON",
-  "@importProfilesSubtitle": {
-    "description": "Translation for importProfilesSubtitle"
-  },
-  "importProfilesTitle": "Importar Perfiles",
-  "@importProfilesTitle": {
-    "description": "Translation for importProfilesTitle"
-  },
+  "@importProfilesSubtitle": {},
   "importSuccess": "Importación exitosa",
-  "@importSuccess": {
-    "description": "Translation for importSuccess"
-  },
+  "@importSuccess": {},
   "importedProfiles": "Se importaron {count} perfil(es)",
   "@importedProfiles": {
-    "description": "Translation for importedProfiles",
     "placeholders": {
       "count": {
         "type": "int",
@@ -2326,7 +1412,6 @@
   },
   "importedWithFailures": "Se importaron {success} {success, plural, =1{perfil} other{perfiles}}, {failed} fallaron",
   "@importedWithFailures": {
-    "description": "Translation for importedWithFailures",
     "placeholders": {
       "failed": {
         "type": "int",
@@ -2340,66 +1425,47 @@
   },
   "inDays": "en {days}d",
   "@inDays": {
-    "description": "Translation for inDays",
     "placeholders": {
       "days": {
-        "type": "String",
+        "type": "int",
         "example": "7"
       }
     }
   },
   "inHours": "en {hours}h",
   "@inHours": {
-    "description": "Translation for inHours",
     "placeholders": {
       "hours": {
-        "type": "String",
+        "type": "int",
         "example": "2"
       }
     }
   },
   "inMinutes": "en {minutes}m",
   "@inMinutes": {
-    "description": "Translation for inMinutes",
     "placeholders": {
       "minutes": {
-        "type": "String",
+        "type": "int",
         "example": "30"
       }
     }
   },
   "inbound": "Entrante",
-  "@inbound": {
-    "description": "Translation for inbound"
-  },
+  "@inbound": {},
   "includeCredentials": "Incluir Credenciales",
-  "@includeCredentials": {
-    "description": "Translation for includeCredentials"
-  },
+  "@includeCredentials": {},
   "incorrectPin": "PIN incorrecto",
-  "@incorrectPin": {
-    "description": "Translation for incorrectPin"
-  },
+  "@incorrectPin": {},
   "info": "Información",
-  "@info": {
-    "description": "Translation for info"
-  },
+  "@info": {},
   "instance": "Instancia",
-  "@instance": {
-    "description": "Translation for instance"
-  },
+  "@instance": {},
   "instanceCreatedSuccessfully": "Instancia creada exitosamente",
-  "@instanceCreatedSuccessfully": {
-    "description": "Translation for instanceCreatedSuccessfully"
-  },
+  "@instanceCreatedSuccessfully": {},
   "instanceDeletedSuccessfully": "Instancia eliminada exitosamente",
-  "@instanceDeletedSuccessfully": {
-    "description": "Translation for instanceDeletedSuccessfully"
-  },
+  "@instanceDeletedSuccessfully": {},
   "instanceDetails": "Detalles de la Instancia",
-  "@instanceDetails": {
-    "description": "Translation for instanceDetails"
-  },
+  "@instanceDetails": {},
   "instanceToggledSuccessfully": "Instancia {status} exitosamente",
   "@instanceToggledSuccessfully": {
     "placeholders": {
@@ -2409,24 +1475,15 @@
     }
   },
   "instanceUpdatedSuccessfully": "Instancia actualizada exitosamente",
-  "@instanceUpdatedSuccessfully": {
-    "description": "Translation for instanceUpdatedSuccessfully"
-  },
+  "@instanceUpdatedSuccessfully": {},
   "instanceWillBeActiveWhenEnabled": "La instancia estará activa cuando esté habilitada",
-  "@instanceWillBeActiveWhenEnabled": {
-    "description": "Translation for instanceWillBeActiveWhenEnabled"
-  },
+  "@instanceWillBeActiveWhenEnabled": {},
   "instances": "Instancias",
-  "@instances": {
-    "description": "Translation for instances"
-  },
+  "@instances": {},
   "interface": "Interfaz",
-  "@interface": {
-    "description": "Translation for interface"
-  },
+  "@interface": {},
   "interfaceLabel": "{interface}",
   "@interfaceLabel": {
-    "description": "Translation for interfaceLabel",
     "placeholders": {
       "interface": {
         "type": "String",
@@ -2435,32 +1492,17 @@
     }
   },
   "invalidApiKeyFormat": "Formato de clave API no válido",
-  "@invalidApiKeyFormat": {
-    "description": "Translation for invalidApiKeyFormat"
-  },
+  "@invalidApiKeyFormat": {},
   "invalidApiSecretFormat": "Formato de secreto API no válido",
-  "@invalidApiSecretFormat": {
-    "description": "Translation for invalidApiSecretFormat"
-  },
+  "@invalidApiSecretFormat": {},
   "invalidBase64Format": "Formato Base64 no válido",
-  "@invalidBase64Format": {
-    "description": "Translation for invalidBase64Format"
-  },
-  "invalidCidrFormat": "Notación CIDR no válida (use el formato: IP/prefijo)",
-  "@invalidCidrFormat": {
-    "description": "Translation for invalidCidrFormat"
-  },
+  "@invalidBase64Format": {},
   "invalidCidrNotation": "Notación CIDR inválida",
-  "@invalidCidrNotation": {
-    "description": "Translation for invalidCidrNotation"
-  },
+  "@invalidCidrNotation": {},
   "invalidDestinationFormat": "Formato de destino inválido",
-  "@invalidDestinationFormat": {
-    "description": "Translation for invalidDestinationFormat"
-  },
+  "@invalidDestinationFormat": {},
   "invalidFileError": "Archivo inválido: {error}",
   "@invalidFileError": {
-    "description": "Translation for invalidFileError",
     "placeholders": {
       "error": {
         "type": "String",
@@ -2470,7 +1512,6 @@
   },
   "invalidFileFormat": "Archivo inválido: {error}",
   "@invalidFileFormat": {
-    "description": "Translation for invalidFileFormat",
     "placeholders": {
       "error": {
         "type": "String",
@@ -2479,108 +1520,45 @@
     }
   },
   "invalidHostnameOrIp": "Nombre de host o dirección IP no válidos",
-  "@invalidHostnameOrIp": {
-    "description": "Translation for invalidHostnameOrIp"
-  },
+  "@invalidHostnameOrIp": {},
   "invalidInput": "Entrada inválida",
-  "@invalidInput": {
-    "description": "Translation for invalidInput"
-  },
+  "@invalidInput": {},
   "invalidIpAddress": "Dirección IP no válida",
-  "@invalidIpAddress": {
-    "description": "Translation for invalidIpAddress"
-  },
+  "@invalidIpAddress": {},
   "invalidIpAddressFormat": "Formato de dirección IP no válido (debe ser IPv4 o IPv6)",
-  "@invalidIpAddressFormat": {
-    "description": "Translation for invalidIpAddressFormat"
-  },
+  "@invalidIpAddressFormat": {},
   "invalidIpv4Address": "Dirección IPv4 no válida",
-  "@invalidIpv4Address": {
-    "description": "Translation for invalidIpv4Address"
-  },
+  "@invalidIpv4Address": {},
   "invalidIpv4CidrNotation": "Notación CIDR IPv4 no válida",
-  "@invalidIpv4CidrNotation": {
-    "description": "Translation for invalidIpv4CidrNotation"
-  },
+  "@invalidIpv4CidrNotation": {},
   "invalidIpv4Prefix": "Prefijo IPv4 no válido (debe ser 0-32)",
-  "@invalidIpv4Prefix": {
-    "description": "Translation for invalidIpv4Prefix"
-  },
+  "@invalidIpv4Prefix": {},
   "invalidIpv6Address": "Dirección IPv6 no válida",
-  "@invalidIpv6Address": {
-    "description": "Translation for invalidIpv6Address"
-  },
+  "@invalidIpv6Address": {},
   "invalidIpv6CidrNotation": "Notación CIDR IPv6 no válida",
-  "@invalidIpv6CidrNotation": {
-    "description": "Translation for invalidIpv6CidrNotation"
-  },
+  "@invalidIpv6CidrNotation": {},
   "invalidIpv6Prefix": "Prefijo IPv6 no válido (debe ser 0-128)",
-  "@invalidIpv6Prefix": {
-    "description": "Translation for invalidIpv6Prefix"
-  },
-  "invalidPIN": "PIN inválido",
-  "@invalidPIN": {
-    "description": "Translation for invalidPIN"
-  },
+  "@invalidIpv6Prefix": {},
+  "invalidPin": "PIN inválido",
+  "@invalidPin": {},
   "invalidPortFormat": "Formato de puerto inválido",
-  "@invalidPortFormat": {
-    "description": "Translation for invalidPortFormat"
-  },
+  "@invalidPortFormat": {},
   "invalidPrefixLength": "Longitud de prefijo no válida",
-  "@invalidPrefixLength": {
-    "description": "Translation for invalidPrefixLength"
-  },
+  "@invalidPrefixLength": {},
   "invalidSourceFormat": "Formato de origen inválido",
-  "@invalidSourceFormat": {
-    "description": "Translation for invalidSourceFormat"
-  },
+  "@invalidSourceFormat": {},
   "ipAddress": "Dirección IP",
-  "@ipAddress": {
-    "description": "Translation for ipAddress"
-  },
+  "@ipAddress": {},
   "ipAddresses": "Direcciones IP",
-  "@ipAddresses": {
-    "description": "Translation for ipAddresses"
-  },
-  "ipv4CidrHint": "10.8.0.0/24",
-  "@ipv4CidrHint": {
-    "description": "Translation for ipv4CidrHint"
-  },
-  "ipv4OrIpv6CidrHint": "10.8.0.0/24 o fd00::/64",
-  "@ipv4OrIpv6CidrHint": {
-    "description": "Translation for ipv4OrIpv6CidrHint"
-  },
+  "@ipAddresses": {},
   "ipv4TunnelNetwork": "Red del Túnel IPv4",
-  "@ipv4TunnelNetwork": {
-    "description": "Translation for ipv4TunnelNetwork"
-  },
-  "ipv4TunnelNetworkHint": "10.8.0.0/24",
-  "@ipv4TunnelNetworkHint": {
-    "description": "Translation for ipv4TunnelNetworkHint"
-  },
-  "ipv6CidrHint": "fd00::/64",
-  "@ipv6CidrHint": {
-    "description": "Translation for ipv6CidrHint"
-  },
+  "@ipv4TunnelNetwork": {},
   "ipv6TunnelNetwork": "Red del Túnel IPv6",
-  "@ipv6TunnelNetwork": {
-    "description": "Translation for ipv6TunnelNetwork"
-  },
-  "ipv6TunnelNetworkHint": "fd00::/64",
-  "@ipv6TunnelNetworkHint": {
-    "description": "Translation for ipv6TunnelNetworkHint"
-  },
+  "@ipv6TunnelNetwork": {},
   "iscDhcpDescription": "Servidor DHCP de Internet Systems Consortium",
-  "@iscDhcpDescription": {
-    "description": "Translation for iscDhcpDescription"
-  },
-  "iscDhcpServerName": "ISC DHCP",
-  "@iscDhcpServerName": {
-    "description": "Translation for iscDhcpServerName"
-  },
+  "@iscDhcpDescription": {},
   "itemsCount": "{count} elemento(s)",
   "@itemsCount": {
-    "description": "Translation for itemsCount",
     "placeholders": {
       "count": {
         "type": "int",
@@ -2589,49 +1567,23 @@
     }
   },
   "justNow": "Justo ahora",
-  "@justNow": {
-    "description": "Translation for justNow"
-  },
+  "@justNow": {},
   "keaDhcpDescription": "Servidor DHCP moderno y de alto rendimiento",
-  "@keaDhcpDescription": {
-    "description": "Translation for keaDhcpDescription"
-  },
-  "keaDhcpServerName": "Kea DHCP",
-  "@keaDhcpServerName": {
-    "description": "Translation for keaDhcpServerName"
-  },
+  "@keaDhcpDescription": {},
   "keepAliveIntervalOptional": "Intervalo de mantener vivo (Opcional)",
-  "@keepAliveIntervalOptional": {
-    "description": "Translation for keepAliveIntervalOptional"
-  },
+  "@keepAliveIntervalOptional": {},
   "keepBoth": "Mantener Ambos",
-  "@keepBoth": {
-    "description": "Translation for keepBoth"
-  },
+  "@keepBoth": {},
   "keepalive": "Mantener vivo",
-  "@keepalive": {
-    "description": "Translation for keepalive"
-  },
+  "@keepalive": {},
   "keepaliveOptional": "Mantener vivo (Opcional)",
-  "@keepaliveOptional": {
-    "description": "Translation for keepaliveOptional"
-  },
+  "@keepaliveOptional": {},
   "key": "Clave",
-  "@key": {
-    "description": "Translation for key"
-  },
+  "@key": {},
   "keyCopiedToClipboard": "Clave copiada al portapapeles",
-  "@keyCopiedToClipboard": {
-    "description": "Translation for keyCopiedToClipboard"
-  },
+  "@keyCopiedToClipboard": {},
   "keyGeneratedSuccessfully": "Clave generada exitosamente",
-  "@keyGeneratedSuccessfully": {
-    "description": "Translation for keyGeneratedSuccessfully"
-  },
-  "keyLabel": "Clave:",
-  "@keyLabel": {
-    "description": "Translation for keyLabel"
-  },
+  "@keyGeneratedSuccessfully": {},
   "keyWithId": "Clave {id}",
   "@keyWithId": {
     "placeholders": {
@@ -2641,52 +1593,29 @@
     }
   },
   "keysGeneratedSuccessfully": "Claves generadas exitosamente",
-  "@keysGeneratedSuccessfully": {
-    "description": "Translation for keysGeneratedSuccessfully"
-  },
+  "@keysGeneratedSuccessfully": {},
   "keysRequired": "Se requieren claves privadas y públicas",
-  "@keysRequired": {
-    "description": "Translation for keysRequired"
-  },
+  "@keysRequired": {},
   "label": "Etiqueta",
-  "@label": {
-    "description": "Translation for label"
-  },
+  "@label": {},
   "labelHint": "ej., Red doméstica, VPN de oficina",
-  "@labelHint": {
-    "description": "Translation for labelHint"
-  },
+  "@labelHint": {},
   "labelOptional": "Etiqueta (Opcional)",
-  "@labelOptional": {
-    "description": "Translation for labelOptional"
-  },
+  "@labelOptional": {},
   "language": "Idioma",
-  "@language": {
-    "description": "Translation for language"
-  },
+  "@language": {},
   "lastDay": "Último Día",
-  "@lastDay": {
-    "description": "Translation for lastDay"
-  },
+  "@lastDay": {},
   "lastDayShort": "1 día",
-  "@lastDayShort": {
-    "description": "Translation for lastDayShort"
-  },
+  "@lastDayShort": {},
   "lastMonth": "Último Mes",
-  "@lastMonth": {
-    "description": "Translation for lastMonth"
-  },
+  "@lastMonth": {},
   "lastMonthShort": "1 mes",
-  "@lastMonthShort": {
-    "description": "Translation for lastMonthShort"
-  },
+  "@lastMonthShort": {},
   "lastUpdate": "Última Actualización",
-  "@lastUpdate": {
-    "description": "Translation for lastUpdate"
-  },
+  "@lastUpdate": {},
   "lastUsed": "Último uso: {date}",
   "@lastUsed": {
-    "description": "Translation for lastUsed",
     "placeholders": {
       "date": {
         "type": "String",
@@ -2695,16 +1624,11 @@
     }
   },
   "lastWeek": "Última Semana",
-  "@lastWeek": {
-    "description": "Translation for lastWeek"
-  },
+  "@lastWeek": {},
   "lastWeekShort": "1 semana",
-  "@lastWeekShort": {
-    "description": "Translation for lastWeekShort"
-  },
+  "@lastWeekShort": {},
   "leasesCount": "{filtered} de {total} arrendamiento(s)",
   "@leasesCount": {
-    "description": "Translation for leasesCount",
     "placeholders": {
       "filtered": {
         "type": "int",
@@ -2717,60 +1641,33 @@
     }
   },
   "leaveEmptyOrGenerate": "Dejar vacío o generar",
-  "@leaveEmptyOrGenerate": {
-    "description": "Translation for leaveEmptyOrGenerate"
-  },
+  "@leaveEmptyOrGenerate": {},
   "licenses": "Licencias",
-  "@licenses": {
-    "description": "Translation for licenses"
-  },
+  "@licenses": {},
   "lightMode": "Modo Claro",
-  "@lightMode": {
-    "description": "Translation for lightMode"
-  },
+  "@lightMode": {},
   "limit": "Límite",
-  "@limit": {
-    "description": "Translation for limit"
-  },
+  "@limit": {},
   "live": "En vivo",
-  "@live": {
-    "description": "Translation for live"
-  },
+  "@live": {},
   "liveNetworkMonitor": "Monitor de Red en Vivo",
-  "@liveNetworkMonitor": {
-    "description": "Translation for liveNetworkMonitor"
-  },
+  "@liveNetworkMonitor": {},
   "neighborDiscovery": "Descubrimiento de Vecinos",
-  "@neighborDiscovery": {
-    "description": "Translation for neighborDiscovery"
-  },
+  "@neighborDiscovery": {},
   "loading": "Cargando...",
-  "@loading": {
-    "description": "Translation for loading"
-  },
+  "@loading": {},
   "loadingHostData": "Cargando datos del host...",
-  "@loadingHostData": {
-    "description": "Translation for loadingHostData"
-  },
+  "@loadingHostData": {},
   "loadingSettings": "Cargando configuraciones...",
-  "@loadingSettings": {
-    "description": "Translation for loadingSettings"
-  },
+  "@loadingSettings": {},
   "localAddress": "Dirección Local",
-  "@localAddress": {
-    "description": "Translation for localAddress"
-  },
+  "@localAddress": {},
   "localNetwork": "Red Local",
-  "@localNetwork": {
-    "description": "Translation for localNetwork"
-  },
+  "@localNetwork": {},
   "localNetworkHelperText": "Estas son las redes accesibles por el cliente, se envían a través de cláusulas route(-ipv6) en OpenVPN al cliente.",
-  "@localNetworkHelperText": {
-    "description": "Translation for localNetworkHelperText"
-  },
+  "@localNetworkHelperText": {},
   "lockAfterMinutes": "Bloquear después de {minutes} {minutes, plural, =1{minuto} other{minutos}} de inactividad",
   "@lockAfterMinutes": {
-    "description": "Translation for lockAfterMinutes",
     "placeholders": {
       "minutes": {
         "type": "int",
@@ -2779,16 +1676,11 @@
     }
   },
   "lockApp": "Bloquear Aplicación",
-  "@lockApp": {
-    "description": "Translation for lockApp"
-  },
+  "@lockApp": {},
   "lockTimeoutLabel": "Tiempo de Espera de Bloqueo",
-  "@lockTimeoutLabel": {
-    "description": "Translation for lockTimeoutLabel"
-  },
+  "@lockTimeoutLabel": {},
   "lockTimeoutSet": "Tiempo de espera de bloqueo establecido en {value} {value, plural, =1{minuto} other{minutos}}",
   "@lockTimeoutSet": {
-    "description": "Translation for lockTimeoutSet",
     "placeholders": {
       "value": {
         "type": "int",
@@ -2797,9 +1689,7 @@
     }
   },
   "logDetails": "Detalles del registro",
-  "@logDetails": {
-    "description": "Translation for logDetails"
-  },
+  "@logDetails": {},
   "logEntriesCopied": "{count} {entries} de registro copiadas",
   "@logEntriesCopied": {
     "placeholders": {
@@ -2812,65 +1702,35 @@
     }
   },
   "logEntryCopied": "Entrada de registro copiada",
-  "@logEntryCopied": {
-    "description": "Translation for logEntryCopied"
-  },
+  "@logEntryCopied": {},
   "logEntryDetails": "Detalles de la Entrada de Registro",
-  "@logEntryDetails": {
-    "description": "Translation for logEntryDetails"
-  },
+  "@logEntryDetails": {},
   "logFile": "Archivo de registro",
-  "@logFile": {
-    "description": "Translation for logFile"
-  },
+  "@logFile": {},
   "logLimit": "Límite de Registros",
-  "@logLimit": {
-    "description": "Translation for logLimit"
-  },
+  "@logLimit": {},
   "login": "Iniciar Sesión",
-  "@login": {
-    "description": "Translation for login"
-  },
+  "@login": {},
   "loginServer": "Servidor de Inicio de Sesión",
-  "@loginServer": {
-    "description": "Translation for loginServer"
-  },
+  "@loginServer": {},
   "loginServerHelperText": "La URL del servidor de inicio de sesión de Tailscale",
-  "@loginServerHelperText": {
-    "description": "Translation for loginServerHelperText"
-  },
+  "@loginServerHelperText": {},
   "loginServerRequired": "El servidor de inicio de sesión es obligatorio",
-  "@loginServerRequired": {
-    "description": "Translation for loginServerRequired"
-  },
+  "@loginServerRequired": {},
   "logout": "Cerrar Sesión",
-  "@logout": {
-    "description": "Translation for logout"
-  },
+  "@logout": {},
   "logs": "Registros",
-  "@logs": {
-    "description": "Translation for logs"
-  },
+  "@logs": {},
   "logsExportedSuccessfully": "Registros exportados exitosamente",
-  "@logsExportedSuccessfully": {
-    "description": "Translation for logsExportedSuccessfully"
-  },
+  "@logsExportedSuccessfully": {},
   "logsMatchingFiltersWillAppearHere": "Los registros que coincidan con los filtros aparecerán aquí",
-  "@logsMatchingFiltersWillAppearHere": {
-    "description": "Translation for logsMatchingFiltersWillAppearHere"
-  },
+  "@logsMatchingFiltersWillAppearHere": {},
   "logsWillAppear": "Los registros aparecerán aquí a medida que se generen",
-  "@logsWillAppear": {
-    "description": "Translation for logsWillAppear"
-  },
+  "@logsWillAppear": {},
   "macAddress": "Dirección MAC",
-  "@macAddress": {
-    "description": "Translation for macAddress"
-  },
+  "@macAddress": {},
   "macAddressHint": "ej., 00:11:22:33:44:55",
-  "@macAddressHint": {
-    "description": "Translation for macAddressHint"
-  },
+  "@macAddressHint": {},
   "macAddressIsRequired": "Se requiere la dirección MAC",
   "@macAddressIsRequired": {
     "description": "Validation error when MAC address field is empty"
@@ -2879,179 +1739,91 @@
   "@invalidMacAddressFormat": {
     "description": "Validation error for an invalid MAC address"
   },
-  "magicDns": "Magic DNS",
-  "@magicDns": {
-    "description": "Translation for magicDns"
-  },
   "manageProfiles": "Administrar perfiles",
-  "@manageProfiles": {
-    "description": "Translation for manageProfiles"
-  },
+  "@manageProfiles": {},
   "manageSubnets": "Administrar Subredes",
-  "@manageSubnets": {
-    "description": "Translation for manageSubnets"
-  },
+  "@manageSubnets": {},
   "manageWireguard": "Administrar WireGuard",
-  "@manageWireguard": {
-    "description": "Translation for manageWireguard"
-  },
+  "@manageWireguard": {},
   "manufacturer": "Fabricante",
-  "@manufacturer": {
-    "description": "Translation for manufacturer"
-  },
+  "@manufacturer": {},
   "maximumTransmissionUnit": "Unidad de transmisión máxima (576-9000)",
-  "@maximumTransmissionUnit": {
-    "description": "Translation for maximumTransmissionUnit"
-  },
+  "@maximumTransmissionUnit": {},
   "memoryUsage": "Uso de Memoria",
-  "@memoryUsage": {
-    "description": "Translation for memoryUsage"
-  },
+  "@memoryUsage": {},
   "minute": "minuto",
-  "@minute": {
-    "description": "Translation for minute"
-  },
-  "minuteAbbrev": "m",
-  "@minuteAbbrev": {
-    "description": "Translation for minuteAbbrev"
-  },
+  "@minute": {},
   "minutes": "minutos",
-  "@minutes": {
-    "description": "Translation for minutes"
-  },
+  "@minutes": {},
   "minutesAgo": "Hace {minutes}m",
   "@minutesAgo": {
-    "description": "Translation for minutesAgo",
     "placeholders": {
       "minutes": {
-        "type": "String",
+        "type": "int",
         "example": "30"
       }
     }
   },
   "mode": "Modo",
-  "@mode": {
-    "description": "Translation for mode"
-  },
+  "@mode": {},
   "modified": "Modificado",
-  "@modified": {
-    "description": "Translation for modified"
-  },
+  "@modified": {},
   "monitorInterface": "Interfaz de Monitoreo",
-  "@monitorInterface": {
-    "description": "Translation for monitorInterface"
-  },
+  "@monitorInterface": {},
   "mssFix": "Corrección MSS",
-  "@mssFix": {
-    "description": "Translation for mssFix"
-  },
+  "@mssFix": {},
   "mssFixDescription": "Habilitar corrección MSS para esta conexión",
-  "@mssFixDescription": {
-    "description": "Translation for mssFixDescription"
-  },
+  "@mssFixDescription": {},
   "mtuOptional": "MTU (Opcional)",
-  "@mtuOptional": {
-    "description": "Translation for mtuOptional"
-  },
+  "@mtuOptional": {},
   "mustBeValidUrl": "Debe ser una URL válida que comience con http:// o https://",
-  "@mustBeValidUrl": {
-    "description": "Translation for mustBeValidUrl"
-  },
+  "@mustBeValidUrl": {},
   "myOPNsenseRouter": "Mi Router OPNsense",
-  "@myOPNsenseRouter": {
-    "description": "Translation for myOPNsenseRouter"
-  },
+  "@myOPNsenseRouter": {},
   "myOpenvpnInstance": "Mi instancia OpenVPN",
-  "@myOpenvpnInstance": {
-    "description": "Translation for myOpenvpnInstance"
-  },
+  "@myOpenvpnInstance": {},
   "myStaticKey": "Mi Clave Estática",
-  "@myStaticKey": {
-    "description": "Translation for myStaticKey"
-  },
+  "@myStaticKey": {},
   "myWireguardPeer": "Mi peer WireGuard",
-  "@myWireguardPeer": {
-    "description": "Translation for myWireguardPeer"
-  },
+  "@myWireguardPeer": {},
   "myWireguardServer": "Mi servidor WireGuard",
-  "@myWireguardServer": {
-    "description": "Translation for myWireguardServer"
-  },
+  "@myWireguardServer": {},
   "name": "Nombre",
-  "@name": {
-    "description": "Translation for name"
-  },
+  "@name": {},
   "needHelpCheckDocumentation": "¿Necesita ayuda? Consulte la documentación de OPNsense para la generación de claves API.",
-  "@needHelpCheckDocumentation": {
-    "description": "Translation for needHelpCheckDocumentation"
-  },
+  "@needHelpCheckDocumentation": {},
   "networkConfiguration": "Configuración de Red",
-  "@networkConfiguration": {
-    "description": "Translation for networkConfiguration"
-  },
+  "@networkConfiguration": {},
   "networkError": "Ocurrió un error de red",
-  "@networkError": {
-    "description": "Translation for networkError"
-  },
+  "@networkError": {},
   "networkInformation": "Información de red",
-  "@networkInformation": {
-    "description": "Translation for networkInformation"
-  },
+  "@networkInformation": {},
   "networkTotals": "Totales de Red",
-  "@networkTotals": {
-    "description": "Translation for networkTotals"
-  },
+  "@networkTotals": {},
   "newPin": "Nuevo PIN (4-6 dígitos)",
-  "@newPin": {
-    "description": "Translation for newPin"
-  },
+  "@newPin": {},
   "newPinMustBeDifferent": "El nuevo PIN debe ser diferente del actual",
-  "@newPinMustBeDifferent": {
-    "description": "Translation for newPinMustBeDifferent"
-  },
+  "@newPinMustBeDifferent": {},
   "newRule": "Nueva Regla",
-  "@newRule": {
-    "description": "Translation for newRule"
-  },
+  "@newRule": {},
   "newWireguardPeer": "Nuevo peer WireGuard",
-  "@newWireguardPeer": {
-    "description": "Translation for newWireguardPeer"
-  },
+  "@newWireguardPeer": {},
   "newWireguardServer": "Nuevo servidor WireGuard",
-  "@newWireguardServer": {
-    "description": "Translation for newWireguardServer"
-  },
+  "@newWireguardServer": {},
   "next": "Siguiente",
-  "@next": {
-    "description": "Translation for next"
-  },
-  "nextButton": "Siguiente",
-  "@nextButton": {
-    "description": "Translation for nextButton"
-  },
+  "@next": {},
   "no": "No",
-  "@no": {
-    "description": "Translation for no"
-  },
+  "@no": {},
   "noAliasesConfigured": "No hay alias configurados",
-  "@noAliasesConfigured": {
-    "description": "Translation for noAliasesConfigured"
-  },
+  "@noAliasesConfigured": {},
   "noAliasesMatchFilters": "Ningún alias coincide con los filtros actuales",
-  "@noAliasesMatchFilters": {
-    "description": "Translation for noAliasesMatchFilters"
-  },
+  "@noAliasesMatchFilters": {},
   "noAutomationRulesFound": "No se encontraron reglas de automatización",
-  "@noAutomationRulesFound": {
-    "description": "Translation for noAutomationRulesFound"
-  },
+  "@noAutomationRulesFound": {},
   "noClientSpecificOverridesConfigured": "No hay anulaciones específicas del cliente configuradas",
-  "@noClientSpecificOverridesConfigured": {
-    "description": "Translation for noClientSpecificOverridesConfigured"
-  },
+  "@noClientSpecificOverridesConfigured": {},
   "noConnectionsFound": "No se encontraron conexiones {type}",
   "@noConnectionsFound": {
-    "description": "Translation for noConnectionsFound",
     "placeholders": {
       "type": {
         "type": "String",
@@ -3059,129 +1831,66 @@
       }
     }
   },
-  "noData": "No hay datos disponibles",
-  "@noData": {
-    "description": "Translation for noData"
-  },
   "noDataAvailable": "No hay datos disponibles",
-  "@noDataAvailable": {
-    "description": "Translation for noDataAvailable"
-  },
+  "@noDataAvailable": {},
   "noDescription": "Sin Descripción",
-  "@noDescription": {
-    "description": "Translation for noDescription"
-  },
+  "@noDescription": {},
   "noDnsDomainSearchEntriesConfigured": "No hay entradas de búsqueda de dominios DNS configuradas",
-  "@noDnsDomainSearchEntriesConfigured": {
-    "description": "Translation for noDnsDomainSearchEntriesConfigured"
-  },
+  "@noDnsDomainSearchEntriesConfigured": {},
   "noDnsDomainsConfigured": "No hay dominios DNS configurados",
-  "@noDnsDomainsConfigured": {
-    "description": "Translation for noDnsDomainsConfigured"
-  },
+  "@noDnsDomainsConfigured": {},
   "noDnsServersConfigured": "No hay servidores DNS configurados",
-  "@noDnsServersConfigured": {
-    "description": "Translation for noDnsServersConfigured"
-  },
+  "@noDnsServersConfigured": {},
   "noHostsFound": "No se encontraron hosts",
-  "@noHostsFound": {
-    "description": "Translation for noHostsFound"
-  },
+  "@noHostsFound": {},
   "noInstancesMatchFilters": "Ninguna instancia coincide con los filtros",
-  "@noInstancesMatchFilters": {
-    "description": "Translation for noInstancesMatchFilters"
-  },
+  "@noInstancesMatchFilters": {},
   "noInterfacesWithAutomationRules": "No hay interfaces con reglas de automatización",
-  "@noInterfacesWithAutomationRules": {
-    "description": "Translation for noInterfacesWithAutomationRules"
-  },
+  "@noInterfacesWithAutomationRules": {},
   "noItemsConfigured": "No hay elementos configurados",
-  "@noItemsConfigured": {
-    "description": "Translation for noItemsConfigured"
-  },
+  "@noItemsConfigured": {},
   "noLeasesFound": "No se encontraron arrendamientos",
-  "@noLeasesFound": {
-    "description": "Translation for noLeasesFound"
-  },
+  "@noLeasesFound": {},
   "noLimit": "Sin Límite",
-  "@noLimit": {
-    "description": "Translation for noLimit"
-  },
+  "@noLimit": {},
   "noLimitShort": "Todos",
-  "@noLimitShort": {
-    "description": "Translation for noLimitShort"
-  },
+  "@noLimitShort": {},
   "noLocalNetworksConfigured": "No hay redes locales configuradas",
-  "@noLocalNetworksConfigured": {
-    "description": "Translation for noLocalNetworksConfigured"
-  },
+  "@noLocalNetworksConfigured": {},
   "noLogEntriesFound": "No se encontraron entradas de registro",
-  "@noLogEntriesFound": {
-    "description": "Translation for noLogEntriesFound"
-  },
+  "@noLogEntriesFound": {},
   "noLogsAvailable": "No hay registros disponibles",
-  "@noLogsAvailable": {
-    "description": "Translation for noLogsAvailable"
-  },
+  "@noLogsAvailable": {},
   "noLogsToExport": "No hay registros para exportar",
-  "@noLogsToExport": {
-    "description": "Translation for noLogsToExport"
-  },
+  "@noLogsToExport": {},
   "noNtpServersConfigured": "No hay servidores NTP configurados",
-  "@noNtpServersConfigured": {
-    "description": "Translation for noNtpServersConfigured"
-  },
+  "@noNtpServersConfigured": {},
   "noOpenvpnInstancesConfigured": "No hay instancias OpenVPN configuradas",
-  "@noOpenvpnInstancesConfigured": {
-    "description": "Translation for noOpenvpnInstancesConfigured"
-  },
+  "@noOpenvpnInstancesConfigured": {},
   "noOpenvpnRoutesConfigured": "No hay rutas OpenVPN configuradas",
-  "@noOpenvpnRoutesConfigured": {
-    "description": "Translation for noOpenvpnRoutesConfigured"
-  },
+  "@noOpenvpnRoutesConfigured": {},
   "noOpenvpnSessionsConfigured": "No hay sesiones OpenVPN configuradas",
-  "@noOpenvpnSessionsConfigured": {
-    "description": "Translation for noOpenvpnSessionsConfigured"
-  },
+  "@noOpenvpnSessionsConfigured": {},
   "noOptionsAvailable": "No hay opciones disponibles",
-  "@noOptionsAvailable": {
-    "description": "Translation for noOptionsAvailable"
-  },
+  "@noOptionsAvailable": {},
   "noOverridesMatchFilter": "Ninguna anulación coincide con el filtro",
-  "@noOverridesMatchFilter": {
-    "description": "Translation for noOverridesMatchFilter"
-  },
+  "@noOverridesMatchFilter": {},
   "noPeersAvailable": "No hay peers disponibles",
-  "@noPeersAvailable": {
-    "description": "Translation for noPeersAvailable"
-  },
+  "@noPeersAvailable": {},
   "noPeersMatchSearch": "Ningún peer coincide con su búsqueda",
-  "@noPeersMatchSearch": {
-    "description": "Translation for noPeersMatchSearch"
-  },
+  "@noPeersMatchSearch": {},
   "noProfiles": "Sin Perfiles",
-  "@noProfiles": {
-    "description": "Translation for noProfiles"
-  },
+  "@noProfiles": {},
   "noProfilesFound": "No se encontraron perfiles",
-  "@noProfilesFound": {
-    "description": "Translation for noProfilesFound"
-  },
+  "@noProfilesFound": {},
   "noProfilesYet": "Aún No Hay Perfiles",
-  "@noProfilesYet": {
-    "description": "Translation for noProfilesYet"
-  },
+  "@noProfilesYet": {},
   "noRemoteNetworksConfigured": "No hay redes remotas configuradas",
-  "@noRemoteNetworksConfigured": {
-    "description": "Translation for noRemoteNetworksConfigured"
-  },
+  "@noRemoteNetworksConfigured": {},
   "noRoutesConfigured": "No hay rutas configuradas",
-  "@noRoutesConfigured": {
-    "description": "Translation for noRoutesConfigured"
-  },
+  "@noRoutesConfigured": {},
   "noRulesForInterface": "No hay reglas para {interface}",
   "@noRulesForInterface": {
-    "description": "Translation for noRulesForInterface",
     "placeholders": {
       "interface": {
         "type": "String",
@@ -3190,149 +1899,73 @@
     }
   },
   "noServersAvailable": "No hay servidores disponibles",
-  "@noServersAvailable": {
-    "description": "Translation for noServersAvailable"
-  },
+  "@noServersAvailable": {},
   "noServersMatchSearch": "Ningún servidor coincide con su búsqueda",
-  "@noServersMatchSearch": {
-    "description": "Translation for noServersMatchSearch"
-  },
+  "@noServersMatchSearch": {},
   "noServersSelected": "No hay servidores seleccionados",
-  "@noServersSelected": {
-    "description": "Translation for noServersSelected"
-  },
+  "@noServersSelected": {},
   "noSessionsFound": "No se encontraron sesiones",
-  "@noSessionsFound": {
-    "description": "Translation for noSessionsFound"
-  },
+  "@noSessionsFound": {},
   "noSettingsAvailable": "No hay configuraciones disponibles",
-  "@noSettingsAvailable": {
-    "description": "Translation for noSettingsAvailable"
-  },
+  "@noSettingsAvailable": {},
   "noStaticKeysConfigured": "No hay claves estáticas configuradas",
-  "@noStaticKeysConfigured": {
-    "description": "Translation for noStaticKeysConfigured"
-  },
+  "@noStaticKeysConfigured": {},
   "noSubnetsConfigured": "No hay subredes configuradas",
-  "@noSubnetsConfigured": {
-    "description": "Translation for noSubnetsConfigured"
-  },
+  "@noSubnetsConfigured": {},
   "noTunnelAddressesConfigured": "No hay direcciones de túnel configuradas",
-  "@noTunnelAddressesConfigured": {
-    "description": "Translation for noTunnelAddressesConfigured"
-  },
-  "noVPNConnectionsFound": "No se encontraron conexiones VPN",
-  "@noVPNConnectionsFound": {
-    "description": "Translation for noVPNConnectionsFound"
-  },
+  "@noTunnelAddressesConfigured": {},
+  "noVpnConnectionsFound": "No se encontraron conexiones VPN",
+  "@noVpnConnectionsFound": {},
   "noWinsServersConfigured": "No hay servidores WINS configurados",
-  "@noWinsServersConfigured": {
-    "description": "Translation for noWinsServersConfigured"
-  },
+  "@noWinsServersConfigured": {},
   "noWireguardPeersConfigured": "No hay peers WireGuard configurados",
-  "@noWireguardPeersConfigured": {
-    "description": "Translation for noWireguardPeersConfigured"
-  },
+  "@noWireguardPeersConfigured": {},
   "noWireguardServersConfigured": "No hay servidores WireGuard configurados",
-  "@noWireguardServersConfigured": {
-    "description": "Translation for noWireguardServersConfigured"
-  },
+  "@noWireguardServersConfigured": {},
   "noWireguardStatusDataAvailable": "No hay datos de estado de WireGuard disponibles",
-  "@noWireguardStatusDataAvailable": {
-    "description": "Translation for noWireguardStatusDataAvailable"
-  },
+  "@noWireguardStatusDataAvailable": {},
   "noWolHostsConfigured": "No hay hosts Wake on LAN configurados",
-  "@noWolHostsConfigured": {
-    "description": "Translation for noWolHostsConfigured"
-  },
+  "@noWolHostsConfigured": {},
   "none": "Ninguno",
-  "@none": {
-    "description": "Translation for none"
-  },
+  "@none": {},
   "notAvailable": "N/D",
-  "@notAvailable": {
-    "description": "Translation for notAvailable"
-  },
+  "@notAvailable": {},
   "notFound": "Recurso no encontrado",
-  "@notFound": {
-    "description": "Translation for notFound"
-  },
+  "@notFound": {},
   "notice": "Aviso",
-  "@notice": {
-    "description": "Translation for notice"
-  },
+  "@notice": {},
   "ntpServers": "Servidores NTP",
-  "@ntpServers": {
-    "description": "Translation for ntpServers"
-  },
+  "@ntpServers": {},
   "ntpServersHelperText": "Establecer dirección del servidor NTP principal (Protocolo de Tiempo de Red). Repita esta opción para establecer direcciones de servidores NTP secundarios.",
-  "@ntpServersHelperText": {
-    "description": "Translation for ntpServersHelperText"
-  },
-  "of1Gbps": "de 1 Gbps",
-  "@of1Gbps": {
-    "description": "Translation for of1Gbps"
-  },
+  "@ntpServersHelperText": {},
   "offline": "Fuera de Línea",
-  "@offline": {
-    "description": "Translation for offline"
-  },
+  "@offline": {},
   "ok": "Aceptar",
-  "@ok": {
-    "description": "Translation for ok"
-  },
+  "@ok": {},
   "oneHour": "1 hora",
-  "@oneHour": {
-    "description": "Translation for oneHour"
-  },
+  "@oneHour": {},
   "oneMin": "1 min",
-  "@oneMin": {
-    "description": "Translation for oneMin"
-  },
+  "@oneMin": {},
   "online": "En Línea",
-  "@online": {
-    "description": "Translation for online"
-  },
-  "openvpn": "OpenVPN",
-  "@openvpn": {
-    "description": "Translation for openvpn"
-  },
+  "@online": {},
   "openvpnConnectionStatus": "Estado de conexión OpenVPN",
-  "@openvpnConnectionStatus": {
-    "description": "Translation for openvpnConnectionStatus"
-  },
+  "@openvpnConnectionStatus": {},
   "openvpnInstances": "Instancias de OpenVPN",
-  "@openvpnInstances": {
-    "description": "Translation for openvpnInstances"
-  },
+  "@openvpnInstances": {},
   "openvpnLogFile": "Archivo de Registro OpenVPN",
-  "@openvpnLogFile": {
-    "description": "Translation for openvpnLogFile"
-  },
+  "@openvpnLogFile": {},
   "optional": "Opcional",
-  "@optional": {
-    "description": "Translation for optional"
-  },
+  "@optional": {},
   "optionalBase64EncodedPresharedKey": "Clave precompartida codificada en Base64 opcional",
-  "@optionalBase64EncodedPresharedKey": {
-    "description": "Translation for optionalBase64EncodedPresharedKey"
-  },
+  "@optionalBase64EncodedPresharedKey": {},
   "outbound": "Saliente",
-  "@outbound": {
-    "description": "Translation for outbound"
-  },
+  "@outbound": {},
   "overrideCreatedSuccessfully": "Anulación creada exitosamente",
-  "@overrideCreatedSuccessfully": {
-    "description": "Translation for overrideCreatedSuccessfully"
-  },
+  "@overrideCreatedSuccessfully": {},
   "overrideDeletedSuccessfully": "Anulación eliminada exitosamente",
-  "@overrideDeletedSuccessfully": {
-    "description": "Translation for overrideDeletedSuccessfully"
-  },
+  "@overrideDeletedSuccessfully": {},
   "overrideDetails": "Detalles de la Anulación",
-  "@overrideDetails": {
-    "description": "Translation for overrideDetails"
-  },
+  "@overrideDetails": {},
   "overrideToggledSuccessfully": "Anulación {status} exitosamente",
   "@overrideToggledSuccessfully": {
     "placeholders": {
@@ -3342,91 +1975,41 @@
     }
   },
   "overrideUpdatedSuccessfully": "Anulación actualizada exitosamente",
-  "@overrideUpdatedSuccessfully": {
-    "description": "Translation for overrideUpdatedSuccessfully"
-  },
+  "@overrideUpdatedSuccessfully": {},
   "overwrite": "Sobrescribir",
-  "@overwrite": {
-    "description": "Translation for overwrite"
-  },
+  "@overwrite": {},
   "packageMirror": "Espejo de Paquetes",
-  "@packageMirror": {
-    "description": "Translation for packageMirror"
-  },
+  "@packageMirror": {},
   "packetLength": "Longitud del paquete",
-  "@packetLength": {
-    "description": "Translation for packetLength"
-  },
-  "pageOfPages": "Página {current} de {total}",
-  "@pageOfPages": {
-    "placeholders": {
-      "current": {
-        "type": "String"
-      },
-      "total": {
-        "type": "String"
-      }
-    }
-  },
+  "@packetLength": {},
   "pass": "Permitir",
-  "@pass": {
-    "description": "Translation for pass"
-  },
+  "@pass": {},
   "pause": "Pausar",
-  "@pause": {
-    "description": "Translation for pause"
-  },
+  "@pause": {},
   "pauseLiveViewToSelect": "Pausa la vista en vivo para seleccionar entradas de registro",
-  "@pauseLiveViewToSelect": {
-    "description": "Translation for pauseLiveViewToSelect"
-  },
+  "@pauseLiveViewToSelect": {},
   "paused": "Pausado",
-  "@paused": {
-    "description": "Translation for paused"
-  },
-  "peerActiveWhenEnabled": "El peer estará activo cuando se habilite",
-  "@peerActiveWhenEnabled": {
-    "description": "Translation for peerActiveWhenEnabled"
-  },
+  "@paused": {},
   "peerCreatedReadyForNext": "Peer creado exitosamente. Listo para el siguiente peer.",
-  "@peerCreatedReadyForNext": {
-    "description": "Translation for peerCreatedReadyForNext"
-  },
+  "@peerCreatedReadyForNext": {},
   "peerCreatedSuccessfully": "Peer creado exitosamente",
-  "@peerCreatedSuccessfully": {
-    "description": "Translation for peerCreatedSuccessfully"
-  },
+  "@peerCreatedSuccessfully": {},
   "peerDeletedSuccessfully": "Peer eliminado exitosamente",
-  "@peerDeletedSuccessfully": {
-    "description": "Translation for peerDeletedSuccessfully"
-  },
+  "@peerDeletedSuccessfully": {},
   "peerDisabledSuccessfully": "Peer deshabilitado exitosamente",
-  "@peerDisabledSuccessfully": {
-    "description": "Translation for peerDisabledSuccessfully"
-  },
+  "@peerDisabledSuccessfully": {},
   "peerEnabledSuccessfully": "Peer habilitado exitosamente",
-  "@peerEnabledSuccessfully": {
-    "description": "Translation for peerEnabledSuccessfully"
-  },
+  "@peerEnabledSuccessfully": {},
   "peerGenerator": "Generador de peers",
-  "@peerGenerator": {
-    "description": "Translation for peerGenerator"
-  },
+  "@peerGenerator": {},
   "peerUpdatedSuccessfully": "Peer actualizado exitosamente",
-  "@peerUpdatedSuccessfully": {
-    "description": "Translation for peerUpdatedSuccessfully"
-  },
+  "@peerUpdatedSuccessfully": {},
   "peerWillBeActiveWhenEnabled": "El peer estará activo cuando esté habilitado",
-  "@peerWillBeActiveWhenEnabled": {
-    "description": "Translation for peerWillBeActiveWhenEnabled"
-  },
+  "@peerWillBeActiveWhenEnabled": {},
   "peers": "Pares",
-  "@peers": {
-    "description": "Translation for peers"
-  },
+  "@peers": {},
   "peersConfigured": "{count} peer(s) configurado(s)",
   "@peersConfigured": {
-    "description": "Translation for peersConfigured",
     "placeholders": {
       "count": {
         "type": "int",
@@ -3435,9 +2018,7 @@
     }
   },
   "peersCount": "Cantidad de Pares",
-  "@peersCount": {
-    "description": "Translation for peersCount"
-  },
+  "@peersCount": {},
   "peersSelected": "{count} par(es) seleccionado(s)",
   "@peersSelected": {
     "placeholders": {
@@ -3447,88 +2028,43 @@
     }
   },
   "persistentKeepaliveSeconds": "Mantener vivo persistente en segundos (recomendado: 25)",
-  "@persistentKeepaliveSeconds": {
-    "description": "Translation for persistentKeepaliveSeconds"
-  },
+  "@persistentKeepaliveSeconds": {},
   "pinChangedSuccessfully": "PIN cambiado exitosamente",
-  "@pinChangedSuccessfully": {
-    "description": "Translation for pinChangedSuccessfully"
-  },
+  "@pinChangedSuccessfully": {},
   "pinLock": "Bloqueo PIN",
-  "@pinLock": {
-    "description": "Translation for pinLock"
-  },
+  "@pinLock": {},
   "pinLockDisabled": "Bloqueo PIN deshabilitado. Bloqueo biométrico también deshabilitado.",
-  "@pinLockDisabled": {
-    "description": "Translation for pinLockDisabled"
-  },
+  "@pinLockDisabled": {},
   "pinLockEnabled": "Bloqueo PIN habilitado",
-  "@pinLockEnabled": {
-    "description": "Translation for pinLockEnabled"
-  },
-  "pinLockTitle": "Bloqueo PIN",
-  "@pinLockTitle": {
-    "description": "Translation for pinLockTitle"
-  },
+  "@pinLockEnabled": {},
   "pinMismatch": "Los PIN no coinciden",
-  "@pinMismatch": {
-    "description": "Translation for pinMismatch"
-  },
+  "@pinMismatch": {},
   "pinMustContainOnlyNumbers": "El PIN debe contener solo números",
-  "@pinMustContainOnlyNumbers": {
-    "description": "Translation for pinMustContainOnlyNumbers"
-  },
+  "@pinMustContainOnlyNumbers": {},
   "pinTooShort": "El PIN debe tener al menos 4 dígitos",
-  "@pinTooShort": {
-    "description": "Translation for pinTooShort"
-  },
+  "@pinTooShort": {},
   "platform": "Plataforma",
-  "@platform": {
-    "description": "Translation for platform"
-  },
-  "pleaseAddConnectionEndpoint": "Por favor agregue al menos un punto de conexión",
-  "@pleaseAddConnectionEndpoint": {
-    "description": "Translation for pleaseAddConnectionEndpoint"
-  },
+  "@platform": {},
   "pleaseEnterCurrentPin": "Por favor ingrese su PIN actual",
-  "@pleaseEnterCurrentPin": {
-    "description": "Translation for pleaseEnterCurrentPin"
-  },
+  "@pleaseEnterCurrentPin": {},
   "pleaseEnterNewPin": "Por favor ingrese un nuevo PIN",
-  "@pleaseEnterNewPin": {
-    "description": "Translation for pleaseEnterNewPin"
-  },
+  "@pleaseEnterNewPin": {},
   "pleaseEnterSubnet": "Por favor ingrese una subred",
-  "@pleaseEnterSubnet": {
-    "description": "Translation for pleaseEnterSubnet"
-  },
+  "@pleaseEnterSubnet": {},
   "pleaseEnterYourPin": "Por favor ingrese su PIN",
-  "@pleaseEnterYourPin": {
-    "description": "Translation for pleaseEnterYourPin"
-  },
+  "@pleaseEnterYourPin": {},
   "pleaseSelectAnInstance": "Por favor seleccione una instancia",
-  "@pleaseSelectAnInstance": {
-    "description": "Translation for pleaseSelectAnInstance"
-  },
+  "@pleaseSelectAnInstance": {},
   "pleaseSelectInterface": "Por favor seleccione una interfaz",
-  "@pleaseSelectInterface": {
-    "description": "Translation for pleaseSelectInterface"
-  },
+  "@pleaseSelectInterface": {},
   "port": "Puerto",
-  "@port": {
-    "description": "Translation for port"
-  },
+  "@port": {},
   "portHint": "ej., 443",
-  "@portHint": {
-    "description": "Translation for portHint"
-  },
+  "@portHint": {},
   "portIsRequired": "El puerto es obligatorio",
-  "@portIsRequired": {
-    "description": "Translation for portIsRequired"
-  },
+  "@portIsRequired": {},
   "portLabel": "Puerto: {port}",
   "@portLabel": {
-    "description": "Translation for portLabel",
     "placeholders": {
       "port": {
         "type": "String",
@@ -3537,92 +2073,43 @@
     }
   },
   "portMustBeBetween": "El puerto debe estar entre 1 y 65535",
-  "@portMustBeBetween": {
-    "description": "Translation for portMustBeBetween"
-  },
-  "portPlaceholder": "443",
-  "@portPlaceholder": {
-    "description": "Translation for portPlaceholder"
-  },
+  "@portMustBeBetween": {},
   "preAuthKey": "Clave de Pre-Autenticación",
-  "@preAuthKey": {
-    "description": "Translation for preAuthKey"
-  },
+  "@preAuthKey": {},
   "preAuthKeyHelperText": "Opcional: Clave de pre-autenticación para registro automático de dispositivos",
-  "@preAuthKeyHelperText": {
-    "description": "Translation for preAuthKeyHelperText"
-  },
+  "@preAuthKeyHelperText": {},
   "presharedKeyGeneratedSuccessfully": "Clave precompartida generada exitosamente",
-  "@presharedKeyGeneratedSuccessfully": {
-    "description": "Translation for presharedKeyGeneratedSuccessfully"
-  },
+  "@presharedKeyGeneratedSuccessfully": {},
   "presharedKeyOptional": "Clave precompartida (Opcional)",
-  "@presharedKeyOptional": {
-    "description": "Translation for presharedKeyOptional"
-  },
+  "@presharedKeyOptional": {},
   "preventAutomaticRouteInstallation": "Prevenir la instalación automática de rutas",
-  "@preventAutomaticRouteInstallation": {
-    "description": "Translation for preventAutomaticRouteInstallation"
-  },
+  "@preventAutomaticRouteInstallation": {},
   "previous": "Anterior",
-  "@previous": {
-    "description": "Translation for previous"
-  },
-  "previousButton": "Anterior",
-  "@previousButton": {
-    "description": "Translation for previousButton"
-  },
+  "@previous": {},
   "privateKey": "Clave privada",
-  "@privateKey": {
-    "description": "Translation for privateKey"
-  },
+  "@privateKey": {},
   "profileActivated": "Perfil activado exitosamente",
-  "@profileActivated": {
-    "description": "Translation for profileActivated"
-  },
+  "@profileActivated": {},
   "profileAdded": "Perfil agregado",
-  "@profileAdded": {
-    "description": "Translation for profileAdded"
-  },
+  "@profileAdded": {},
   "profileDeleted": "Perfil eliminado exitosamente",
-  "@profileDeleted": {
-    "description": "Translation for profileDeleted"
-  },
+  "@profileDeleted": {},
   "profileHasNoEndpoints": "El perfil no tiene puntos de conexión configurados",
-  "@profileHasNoEndpoints": {
-    "description": "Translation for profileHasNoEndpoints"
-  },
+  "@profileHasNoEndpoints": {},
   "profileName": "Nombre del Perfil",
-  "@profileName": {
-    "description": "Translation for profileName"
-  },
-  "profileNameLabel": "Nombre del Perfil",
-  "@profileNameLabel": {
-    "description": "Translation for profileNameLabel"
-  },
+  "@profileName": {},
   "profileNameOptional": "Nombre del Perfil (Opcional)",
-  "@profileNameOptional": {
-    "description": "Translation for profileNameOptional"
-  },
+  "@profileNameOptional": {},
   "profileNameRequired": "El nombre del perfil es obligatorio",
-  "@profileNameRequired": {
-    "description": "Translation for profileNameRequired"
-  },
+  "@profileNameRequired": {},
   "profileSaved": "Perfil guardado exitosamente",
-  "@profileSaved": {
-    "description": "Translation for profileSaved"
-  },
+  "@profileSaved": {},
   "profileUpdated": "Perfil actualizado",
-  "@profileUpdated": {
-    "description": "Translation for profileUpdated"
-  },
+  "@profileUpdated": {},
   "profiles": "Perfiles",
-  "@profiles": {
-    "description": "Translation for profiles"
-  },
+  "@profiles": {},
   "profilesExportedSuccessfully": "¡Perfiles exportados exitosamente!\n{path}",
   "@profilesExportedSuccessfully": {
-    "description": "Translation for profilesExportedSuccessfully",
     "placeholders": {
       "path": {
         "type": "String",
@@ -3631,72 +2118,15 @@
     }
   },
   "protocol": "Protocolo",
-  "@protocol": {
-    "description": "Translation for protocol"
-  },
-  "protocolAh": "AH",
-  "@protocolAh": {
-    "description": "Translation for protocolAh"
-  },
-  "protocolEsp": "ESP",
-  "@protocolEsp": {
-    "description": "Translation for protocolEsp"
-  },
-  "protocolGre": "GRE",
-  "@protocolGre": {
-    "description": "Translation for protocolGre"
-  },
-  "protocolIcmp": "ICMP",
-  "@protocolIcmp": {
-    "description": "Translation for protocolIcmp"
-  },
-  "protocolIcmpv6": "ICMPv6",
-  "@protocolIcmpv6": {
-    "description": "Translation for protocolIcmpv6"
-  },
-  "protocolIgmp": "IGMP",
-  "@protocolIgmp": {
-    "description": "Translation for protocolIgmp"
-  },
-  "protocolIpv6": "IPv6",
-  "@protocolIpv6": {
-    "description": "Translation for protocolIpv6"
-  },
-  "protocolOspf": "OSPF",
-  "@protocolOspf": {
-    "description": "Translation for protocolOspf"
-  },
-  "protocolPim": "PIM",
-  "@protocolPim": {
-    "description": "Translation for protocolPim"
-  },
-  "protocolTcp": "TCP",
-  "@protocolTcp": {
-    "description": "Translation for protocolTcp"
-  },
-  "protocolTcpUdp": "TCP/UDP",
-  "@protocolTcpUdp": {
-    "description": "Translation for protocolTcpUdp"
-  },
-  "protocolUdp": "UDP",
-  "@protocolUdp": {
-    "description": "Translation for protocolUdp"
-  },
+  "@protocol": {},
   "publicKey": "Clave pública",
-  "@publicKey": {
-    "description": "Translation for publicKey"
-  },
+  "@publicKey": {},
   "publicKeyColon": "Clave pública:",
-  "@publicKeyColon": {
-    "description": "Translation for publicKeyColon"
-  },
+  "@publicKeyColon": {},
   "publicKeyRequired": "Se requiere clave pública",
-  "@publicKeyRequired": {
-    "description": "Translation for publicKeyRequired"
-  },
+  "@publicKeyRequired": {},
   "publicKeyShort": "{key}...",
   "@publicKeyShort": {
-    "description": "Translation for publicKeyShort",
     "placeholders": {
       "key": {
         "type": "String",
@@ -3705,36 +2135,19 @@
     }
   },
   "pushReset": "Restablecer push",
-  "@pushReset": {
-    "description": "Translation for pushReset"
-  },
-  "pushResetSubtitle": "No heredar la lista de push global para una instancia de cliente específica. NOTA: --push-reset es muy exhaustivo: eliminará casi todas las opciones de la lista de opciones a enviar. En muchos casos, algunas de estas opciones deberán reconfigurarse después, específicamente, --topology subnet y --route-gateway se perderán y esto romperá las configuraciones del cliente en muchos casos.",
-  "@pushResetSubtitle": {
-    "description": "Translation for pushResetSubtitle"
-  },
+  "@pushReset": {},
   "pushVirtualIpEndpoints": "Enviar puntos finales de IP virtual para el túnel del cliente, anulando la asignación dinámica.",
-  "@pushVirtualIpEndpoints": {
-    "description": "Translation for pushVirtualIpEndpoints"
-  },
+  "@pushVirtualIpEndpoints": {},
   "qrCode": "Código QR",
-  "@qrCode": {
-    "description": "Translation for qrCode"
-  },
+  "@qrCode": {},
   "reason": "Razón",
-  "@reason": {
-    "description": "Translation for reason"
-  },
+  "@reason": {},
   "rebootConfirmation": "¿Está seguro de que desea reiniciar el sistema?",
-  "@rebootConfirmation": {
-    "description": "Translation for rebootConfirmation"
-  },
+  "@rebootConfirmation": {},
   "rebootFailed": "Error al reiniciar el sistema",
-  "@rebootFailed": {
-    "description": "Translation for rebootFailed"
-  },
+  "@rebootFailed": {},
   "rebootFailedWithError": "{message}: {error}",
   "@rebootFailedWithError": {
-    "description": "Translation for rebootFailedWithError",
     "placeholders": {
       "error": {
         "type": "String",
@@ -3747,88 +2160,39 @@
     }
   },
   "rebootSuccess": "Reinicio del sistema iniciado",
-  "@rebootSuccess": {
-    "description": "Translation for rebootSuccess"
-  },
+  "@rebootSuccess": {},
   "rebootSystem": "Reiniciar Sistema",
-  "@rebootSystem": {
-    "description": "Translation for rebootSystem"
-  },
+  "@rebootSystem": {},
   "received": "Recibido",
-  "@received": {
-    "description": "Translation for received"
-  },
+  "@received": {},
   "recommendedForSecureConnections": "Recomendado para conexiones seguras",
-  "@recommendedForSecureConnections": {
-    "description": "Translation for recommendedForSecureConnections"
-  },
+  "@recommendedForSecureConnections": {},
   "redirectGateway": "Redirigir puerta de enlace",
-  "@redirectGateway": {
-    "description": "Translation for redirectGateway"
-  },
-  "redirectGatewayHelperText": "Ejecutar automáticamente comandos de enrutamiento para hacer que todo el tráfico IP saliente se redirija a través de la VPN.",
-  "@redirectGatewayHelperText": {
-    "description": "Translation for redirectGatewayHelperText"
-  },
+  "@redirectGateway": {},
   "refresh": "Actualizar",
-  "@refresh": {
-    "description": "Translation for refresh"
-  },
-  "refreshTooltip": "Actualizar",
-  "@refreshTooltip": {
-    "description": "Translation for refreshTooltip"
-  },
+  "@refresh": {},
   "registerDns": "Registrar DNS",
-  "@registerDns": {
-    "description": "Translation for registerDns"
-  },
-  "registerDnsSubtitle": "Ejecutar ipconfig /flushdns e ipconfig /registerdns al iniciar la conexión. Se sabe que esto hace que Windows reconozca los servidores DNS enviados.",
-  "@registerDnsSubtitle": {
-    "description": "Translation for registerDnsSubtitle"
-  },
+  "@registerDns": {},
   "reject": "Rechazar",
-  "@reject": {
-    "description": "Translation for reject"
-  },
+  "@reject": {},
   "remoteAddress": "Dirección Remota",
-  "@remoteAddress": {
-    "description": "Translation for remoteAddress"
-  },
+  "@remoteAddress": {},
   "remoteNetwork": "Red Remota",
-  "@remoteNetwork": {
-    "description": "Translation for remoteNetwork"
-  },
+  "@remoteNetwork": {},
   "remoteNetworkHelperText": "Redes remotas para el servidor, se configuran a través de cláusulas iroute(-ipv6) en OpenVPN e informan al servidor que envíe estas redes a este cliente específico.",
-  "@remoteNetworkHelperText": {
-    "description": "Translation for remoteNetworkHelperText"
-  },
+  "@remoteNetworkHelperText": {},
   "repository": "Repositorio",
-  "@repository": {
-    "description": "Translation for repository"
-  },
+  "@repository": {},
   "requirePinToUnlock": "Requiere PIN para desbloquear la aplicación",
-  "@requirePinToUnlock": {
-    "description": "Translation for requirePinToUnlock"
-  },
+  "@requirePinToUnlock": {},
   "required": "Requerido",
-  "@required": {
-    "description": "Translation for required"
-  },
+  "@required": {},
   "restart": "Reiniciar",
-  "@restart": {
-    "description": "Translation for restart"
-  },
-  "restartButton": "Reiniciar",
-  "@restartButton": {
-    "description": "Translation for restartButton"
-  },
+  "@restart": {},
   "restartService": "Reiniciar Servicio",
-  "@restartService": {
-    "description": "Translation for restartService"
-  },
+  "@restartService": {},
   "restartServiceConfirmation": "¿Está seguro de que desea reiniciar el servicio {type}?\n\nEsto desconectará temporalmente todas las conexiones activas.",
   "@restartServiceConfirmation": {
-    "description": "Translation for restartServiceConfirmation",
     "placeholders": {
       "type": {
         "type": "String",
@@ -3836,13 +2200,10 @@
       }
     }
   },
-  "restartVPNService": "Reiniciar servicio VPN",
-  "@restartVPNService": {
-    "description": "Translation for restartVPNService"
-  },
+  "restartVpnService": "Reiniciar servicio VPN",
+  "@restartVpnService": {},
   "restartingService": "Reiniciando servicio {type}...",
   "@restartingService": {
-    "description": "Translation for restartingService",
     "placeholders": {
       "type": {
         "type": "String",
@@ -3851,217 +2212,99 @@
     }
   },
   "resume": "Reanudar",
-  "@resume": {
-    "description": "Translation for resume"
-  },
+  "@resume": {},
   "retry": "Reintentar",
-  "@retry": {
-    "description": "Translation for retry"
-  },
-  "retryButton": "Reintentar",
-  "@retryButton": {
-    "description": "Translation for retryButton"
-  },
+  "@retry": {},
   "role": "Rol",
-  "@role": {
-    "description": "Translation for role"
-  },
+  "@role": {},
   "routeGateway": "Puerta de enlace de ruta",
-  "@routeGateway": {
-    "description": "Translation for routeGateway"
-  },
+  "@routeGateway": {},
   "routeGatewayHelperText": "Especifique una puerta de enlace predeterminada para usar para el cliente conectado. Sin una configurada, se ofrece la primera dirección en el bloque de red. Al segmentar la red del túnel (servidor), es posible que esta no sea accesible desde el cliente.",
-  "@routeGatewayHelperText": {
-    "description": "Translation for routeGatewayHelperText"
-  },
-  "routeGatewayHint": "10.8.0.1",
-  "@routeGatewayHint": {
-    "description": "Translation for routeGatewayHint"
-  },
+  "@routeGatewayHelperText": {},
   "routes": "Rutas",
-  "@routes": {
-    "description": "Translation for routes"
-  },
+  "@routes": {},
   "routing": "Enrutamiento",
-  "@routing": {
-    "description": "Translation for routing"
-  },
+  "@routing": {},
   "rowsPerPage": "Filas por página",
-  "@rowsPerPage": {
-    "description": "Translation for rowsPerPage"
-  },
-  "rowsPerPageDropdown": "Filas por página",
-  "@rowsPerPageDropdown": {
-    "description": "Translation for rowsPerPageDropdown"
-  },
+  "@rowsPerPage": {},
   "rowsPerPageLabel": "Filas por página: ",
-  "@rowsPerPageLabel": {
-    "description": "Translation for rowsPerPageLabel"
-  },
+  "@rowsPerPageLabel": {},
   "ruleActionFailed": "Acción de regla fallida",
-  "@ruleActionFailed": {
-    "description": "Translation for ruleActionFailed"
-  },
+  "@ruleActionFailed": {},
   "ruleCreated": "Regla creada exitosamente",
-  "@ruleCreated": {
-    "description": "Translation for ruleCreated"
-  },
+  "@ruleCreated": {},
   "ruleDeleted": "Regla eliminada exitosamente",
-  "@ruleDeleted": {
-    "description": "Translation for ruleDeleted"
-  },
+  "@ruleDeleted": {},
   "ruleDescription": "Descripción de la regla",
-  "@ruleDescription": {
-    "description": "Translation for ruleDescription"
-  },
+  "@ruleDescription": {},
   "ruleDetails": "Detalles de la regla",
-  "@ruleDetails": {
-    "description": "Translation for ruleDetails"
-  },
+  "@ruleDetails": {},
   "ruleDisabledSuccessfully": "Regla desactivada correctamente",
-  "@ruleDisabledSuccessfully": {
-    "description": "Translation for ruleDisabledSuccessfully"
-  },
+  "@ruleDisabledSuccessfully": {},
   "ruleEnabledSuccessfully": "Regla activada correctamente",
-  "@ruleEnabledSuccessfully": {
-    "description": "Translation for ruleEnabledSuccessfully"
-  },
+  "@ruleEnabledSuccessfully": {},
   "ruleGuidelines": "Directrices de Reglas",
-  "@ruleGuidelines": {
-    "description": "Translation for ruleGuidelines"
-  },
+  "@ruleGuidelines": {},
   "ruleGuidelinesText": "• Use \"any\" para coincidir con todas las direcciones o puertos\n• Notación CIDR: 192.168.1.0/24\n• Rangos de puertos: 80-443\n• Las reglas se procesan en orden secuencial\n• Los cambios se aplican inmediatamente",
-  "@ruleGuidelinesText": {
-    "description": "Translation for ruleGuidelinesText"
-  },
+  "@ruleGuidelinesText": {},
   "ruleId": "ID de regla",
-  "@ruleId": {
-    "description": "Translation for ruleId"
-  },
+  "@ruleId": {},
   "ruleInformation": "Información de la regla",
-  "@ruleInformation": {
-    "description": "Translation for ruleInformation"
-  },
+  "@ruleInformation": {},
   "ruleUpdated": "Regla actualizada exitosamente",
-  "@ruleUpdated": {
-    "description": "Translation for ruleUpdated"
-  },
+  "@ruleUpdated": {},
   "ruleWillBeActiveWhenEnabled": "La regla estará activa cuando esté habilitada",
-  "@ruleWillBeActiveWhenEnabled": {
-    "description": "Translation for ruleWillBeActiveWhenEnabled"
-  },
+  "@ruleWillBeActiveWhenEnabled": {},
   "running": "En Ejecución",
-  "@running": {
-    "description": "Translation for running"
-  },
+  "@running": {},
   "runningStatus": "En Ejecución",
-  "@runningStatus": {
-    "description": "Translation for runningStatus"
-  },
+  "@runningStatus": {},
   "save": "Guardar",
-  "@save": {
-    "description": "Translation for save"
-  },
+  "@save": {},
   "saveAndConnect": "Guardar y conectar",
-  "@saveAndConnect": {
-    "description": "Translation for saveAndConnect"
-  },
+  "@saveAndConnect": {},
   "saveSettings": "Guardar Configuración",
-  "@saveSettings": {
-    "description": "Translation for saveSettings"
-  },
-  "saveTooltip": "Guardar",
-  "@saveTooltip": {
-    "description": "Translation for saveTooltip"
-  },
+  "@saveSettings": {},
   "saveWithoutTesting": "Guardar sin probar",
-  "@saveWithoutTesting": {
-    "description": "Translation for saveWithoutTesting"
-  },
+  "@saveWithoutTesting": {},
   "saving": "Guardando...",
-  "@saving": {
-    "description": "Translation for saving"
-  },
+  "@saving": {},
   "savingOverride": "Guardando anulación...",
-  "@savingOverride": {
-    "description": "Translation for savingOverride"
-  },
+  "@savingOverride": {},
   "savingProfile": "Guardando perfil...",
-  "@savingProfile": {
-    "description": "Translation for savingProfile"
-  },
+  "@savingProfile": {},
   "searchAliases": "Buscar alias...",
-  "@searchAliases": {
-    "description": "Translation for searchAliases"
-  },
+  "@searchAliases": {},
   "searchHostnameIpOrMac": "Buscar nombre de host, IP o MAC...",
-  "@searchHostnameIpOrMac": {
-    "description": "Translation for searchHostnameIpOrMac"
-  },
+  "@searchHostnameIpOrMac": {},
   "searchHostnameOrIp": "Buscar nombre de host o dirección IP...",
-  "@searchHostnameOrIp": {
-    "description": "Translation for searchHostnameOrIp"
-  },
+  "@searchHostnameOrIp": {},
   "searchInstances": "Buscar instancias...",
-  "@searchInstances": {
-    "description": "Translation for searchInstances"
-  },
+  "@searchInstances": {},
   "searchOverrides": "Buscar anulaciones...",
-  "@searchOverrides": {
-    "description": "Translation for searchOverrides"
-  },
+  "@searchOverrides": {},
   "searchPeers": "Buscar peers...",
-  "@searchPeers": {
-    "description": "Translation for searchPeers"
-  },
+  "@searchPeers": {},
   "searchServers": "Buscar servidores...",
-  "@searchServers": {
-    "description": "Translation for searchServers"
-  },
+  "@searchServers": {},
   "second": "segundo",
-  "@second": {
-    "description": "Translation for second"
-  },
-  "secondAbbrev": "s",
-  "@secondAbbrev": {
-    "description": "Translation for secondAbbrev"
-  },
+  "@second": {},
   "seconds": "Segundos",
-  "@seconds": {
-    "description": "Translation for seconds"
-  },
+  "@seconds": {},
   "security": "Seguridad",
-  "@security": {
-    "description": "Translation for security"
-  },
+  "@security": {},
   "securityWarning": "Advertencia de seguridad",
-  "@securityWarning": {
-    "description": "Translation for securityWarning"
-  },
+  "@securityWarning": {},
   "selectAProfileOrCreateNewOne": "Seleccione un perfil o cree uno nuevo",
-  "@selectAProfileOrCreateNewOne": {
-    "description": "Translation for selectAProfileOrCreateNewOne"
-  },
+  "@selectAProfileOrCreateNewOne": {},
   "selectAll": "Seleccionar todo",
-  "@selectAll": {
-    "description": "Translation for selectAll"
-  },
+  "@selectAll": {},
   "selectExitNode": "Seleccionar nodo de salida",
-  "@selectExitNode": {
-    "description": "Translation for selectExitNode"
-  },
+  "@selectExitNode": {},
   "selectInterface": "Seleccionar interfaz",
-  "@selectInterface": {
-    "description": "Translation for selectInterface"
-  },
+  "@selectInterface": {},
   "selectInterfaceToViewRules": "Seleccione una interfaz para ver las reglas",
-  "@selectInterfaceToViewRules": {
-    "description": "Translation for selectInterfaceToViewRules"
-  },
-  "selectKeyModeForAuthOrEncryption": "Seleccione el modo de clave para autenticación o cifrado",
-  "@selectKeyModeForAuthOrEncryption": {
-    "description": "Translation for selectKeyModeForAuthOrEncryption"
-  },
+  "@selectInterfaceToViewRules": {},
   "selectLabel": "Seleccionar {label}",
   "@selectLabel": {
     "placeholders": {
@@ -4071,136 +2314,67 @@
     }
   },
   "selectMultipleInterfaces": "Seleccione una o más interfaces para monitorear",
-  "@selectMultipleInterfaces": {
-    "description": "Translation for selectMultipleInterfaces"
-  },
+  "@selectMultipleInterfaces": {},
   "selectNumberOfEntries": "Seleccione el número de entradas de registro para mostrar:",
-  "@selectNumberOfEntries": {
-    "description": "Translation for selectNumberOfEntries"
-  },
+  "@selectNumberOfEntries": {},
   "selectPeers": "Seleccionar Peers",
-  "@selectPeers": {
-    "description": "Translation for selectPeers"
-  },
+  "@selectPeers": {},
   "selectServerAndGenerateKeys": "# Seleccione un servidor y genere claves para previsualizar la configuración",
-  "@selectServerAndGenerateKeys": {
-    "description": "Translation for selectServerAndGenerateKeys"
-  },
+  "@selectServerAndGenerateKeys": {},
   "selectServerForQrCode": "Seleccionar servidor para generar código QR",
-  "@selectServerForQrCode": {
-    "description": "Translation for selectServerForQrCode"
-  },
+  "@selectServerForQrCode": {},
   "selectServerInstance": "Por favor seleccione una instancia de servidor",
-  "@selectServerInstance": {
-    "description": "Translation for selectServerInstance"
-  },
+  "@selectServerInstance": {},
   "selectServerToGenerateQrCode": "Seleccione el servidor para generar el código QR",
-  "@selectServerToGenerateQrCode": {
-    "description": "Translation for selectServerToGenerateQrCode"
-  },
+  "@selectServerToGenerateQrCode": {},
   "selectServers": "Seleccionar Servidores",
-  "@selectServers": {
-    "description": "Translation for selectServers"
-  },
+  "@selectServers": {},
   "selectServersHelperText": "Seleccione los servidores OpenVPN donde se aplica esta anulación, déjelo vacío para todos",
-  "@selectServersHelperText": {
-    "description": "Translation for selectServersHelperText"
-  },
-  "selectServersTitle": "Seleccionar servidores",
-  "@selectServersTitle": {
-    "description": "Translation for selectServersTitle"
-  },
+  "@selectServersHelperText": {},
   "selectVhid": "Seleccionar VHID",
-  "@selectVhid": {
-    "description": "Translation for selectVhid"
-  },
+  "@selectVhid": {},
   "selected": "seleccionado",
-  "@selected": {
-    "description": "Translation for selected"
-  },
+  "@selected": {},
   "selfSignedCertWarning": "Advertencia: Los certificados autofirmados son menos seguros. Solo habilite esto si confía en el servidor.",
-  "@selfSignedCertWarning": {
-    "description": "Translation for selfSignedCertWarning"
-  },
+  "@selfSignedCertWarning": {},
   "selfSignedCertificatesWarning": "Solo habilite esto si confía en el servidor",
-  "@selfSignedCertificatesWarning": {
-    "description": "Translation for selfSignedCertificatesWarning"
-  },
+  "@selfSignedCertificatesWarning": {},
   "sent": "Enviado",
-  "@sent": {
-    "description": "Translation for sent"
-  },
+  "@sent": {},
   "sequence": "Secuencia",
-  "@sequence": {
-    "description": "Translation for sequence"
-  },
+  "@sequence": {},
   "server": "Servidor",
-  "@server": {
-    "description": "Translation for server"
-  },
+  "@server": {},
   "serverActiveWhenEnabled": "El servidor estará activo cuando se habilite",
-  "@serverActiveWhenEnabled": {
-    "description": "Translation for serverActiveWhenEnabled"
-  },
+  "@serverActiveWhenEnabled": {},
   "serverAddress": "Dirección del servidor",
-  "@serverAddress": {
-    "description": "Translation for serverAddress"
-  },
+  "@serverAddress": {},
   "serverCreatedSuccessfully": "Servidor creado exitosamente",
-  "@serverCreatedSuccessfully": {
-    "description": "Translation for serverCreatedSuccessfully"
-  },
+  "@serverCreatedSuccessfully": {},
   "serverDeletedSuccessfully": "Servidor eliminado exitosamente",
-  "@serverDeletedSuccessfully": {
-    "description": "Translation for serverDeletedSuccessfully"
-  },
+  "@serverDeletedSuccessfully": {},
   "serverDisabledSuccessfully": "Servidor deshabilitado exitosamente",
-  "@serverDisabledSuccessfully": {
-    "description": "Translation for serverDisabledSuccessfully"
-  },
+  "@serverDisabledSuccessfully": {},
   "serverEnabledSuccessfully": "Servidor habilitado exitosamente",
-  "@serverEnabledSuccessfully": {
-    "description": "Translation for serverEnabledSuccessfully"
-  },
+  "@serverEnabledSuccessfully": {},
   "serverError": "Ocurrió un error del servidor",
-  "@serverError": {
-    "description": "Translation for serverError"
-  },
+  "@serverError": {},
   "serverInfoNotLoaded": "Información del servidor no cargada",
-  "@serverInfoNotLoaded": {
-    "description": "Translation for serverInfoNotLoaded"
-  },
+  "@serverInfoNotLoaded": {},
   "serverNetwork": "Red del Servidor",
-  "@serverNetwork": {
-    "description": "Translation for serverNetwork"
-  },
+  "@serverNetwork": {},
   "serverPort": "Puerto del servidor",
-  "@serverPort": {
-    "description": "Translation for serverPort"
-  },
+  "@serverPort": {},
   "serverSelectionRequired": "Se debe seleccionar al menos un servidor",
-  "@serverSelectionRequired": {
-    "description": "Translation for serverSelectionRequired"
-  },
+  "@serverSelectionRequired": {},
   "serverUpdatedSuccessfully": "Servidor actualizado exitosamente",
-  "@serverUpdatedSuccessfully": {
-    "description": "Translation for serverUpdatedSuccessfully"
-  },
+  "@serverUpdatedSuccessfully": {},
   "serverWillBeActiveWhenEnabled": "El servidor estará activo cuando esté habilitado",
-  "@serverWillBeActiveWhenEnabled": {
-    "description": "Translation for serverWillBeActiveWhenEnabled"
-  },
+  "@serverWillBeActiveWhenEnabled": {},
   "servers": "Servidores",
-  "@servers": {
-    "description": "Translation for servers"
-  },
-  "serversLabel": "Servidores",
-  "@serversLabel": {
-    "description": "Translation for serversLabel"
-  },
+  "@servers": {},
   "serversSelected": "{count} servidor(es) seleccionado(s)",
   "@serversSelected": {
-    "description": "Translation for serversSelected",
     "placeholders": {
       "count": {
         "type": "int",
@@ -4209,69 +2383,31 @@
     }
   },
   "serviceActionFailed": "Acción del servicio fallida",
-  "@serviceActionFailed": {
-    "description": "Translation for serviceActionFailed"
-  },
+  "@serviceActionFailed": {},
   "serviceControls": "Controles de Servicio",
-  "@serviceControls": {
-    "description": "Translation for serviceControls"
-  },
-  "serviceRestarted": "Servicio reiniciado exitosamente",
-  "@serviceRestarted": {
-    "description": "Translation for serviceRestarted"
-  },
+  "@serviceControls": {},
   "serviceRestartedSuccessfully": "Servicio reiniciado exitosamente",
-  "@serviceRestartedSuccessfully": {
-    "description": "Translation for serviceRestartedSuccessfully"
-  },
+  "@serviceRestartedSuccessfully": {},
   "serviceRunning": "Servicio en Ejecución",
-  "@serviceRunning": {
-    "description": "Translation for serviceRunning"
-  },
-  "serviceStarted": "Servicio iniciado exitosamente",
-  "@serviceStarted": {
-    "description": "Translation for serviceStarted"
-  },
+  "@serviceRunning": {},
   "serviceStartedSuccessfully": "Servicio iniciado exitosamente",
-  "@serviceStartedSuccessfully": {
-    "description": "Translation for serviceStartedSuccessfully"
-  },
+  "@serviceStartedSuccessfully": {},
   "serviceStatus": "Estado del Servicio",
-  "@serviceStatus": {
-    "description": "Translation for serviceStatus"
-  },
-  "serviceStopped": "Servicio detenido exitosamente",
-  "@serviceStopped": {
-    "description": "Translation for serviceStopped"
-  },
+  "@serviceStatus": {},
   "serviceStoppedSuccessfully": "Servicio detenido exitosamente",
-  "@serviceStoppedSuccessfully": {
-    "description": "Translation for serviceStoppedSuccessfully"
-  },
+  "@serviceStoppedSuccessfully": {},
   "services": "Servicios",
-  "@services": {
-    "description": "Translation for services"
-  },
+  "@services": {},
   "sessionTimeout": "Tiempo de Espera de Sesión",
-  "@sessionTimeout": {
-    "description": "Translation for sessionTimeout"
-  },
+  "@sessionTimeout": {},
   "sessions": "Sesiones",
-  "@sessions": {
-    "description": "Translation for sessions"
-  },
+  "@sessions": {},
   "setAsActive": "Establecer como activo",
-  "@setAsActive": {
-    "description": "Translation for setAsActive"
-  },
+  "@setAsActive": {},
   "setPin": "Establecer PIN",
-  "@setPin": {
-    "description": "Translation for setPin"
-  },
+  "@setPin": {},
   "settings": "Configuración",
-  "@settings": {
-    "description": "Translation for settings"
-  },
+  "@settings": {},
   "severitiesAndTimeFilter": "{count} severidades • {timeFilter}",
   "@severitiesAndTimeFilter": {
     "placeholders": {
@@ -4284,72 +2420,33 @@
     }
   },
   "severity": "Gravedad",
-  "@severity": {
-    "description": "Translation for severity"
-  },
+  "@severity": {},
   "severityAlert": "Alerta",
-  "@severityAlert": {
-    "description": "Translation for severityAlert"
-  },
+  "@severityAlert": {},
   "severityCritical": "Crítico",
-  "@severityCritical": {
-    "description": "Translation for severityCritical"
-  },
+  "@severityCritical": {},
   "severityDebug": "Depuración",
-  "@severityDebug": {
-    "description": "Translation for severityDebug"
-  },
+  "@severityDebug": {},
   "severityEmergency": "Emergencia",
-  "@severityEmergency": {
-    "description": "Translation for severityEmergency"
-  },
+  "@severityEmergency": {},
   "severityEmergencyShort": "Emerg",
-  "@severityEmergencyShort": {
-    "description": "Translation for severityEmergencyShort"
-  },
+  "@severityEmergencyShort": {},
   "severityError": "Error",
-  "@severityError": {
-    "description": "Translation for severityError"
-  },
+  "@severityError": {},
   "severityInformational": "Informativo",
-  "@severityInformational": {
-    "description": "Translation for severityInformational"
-  },
+  "@severityInformational": {},
   "severityInformationalShort": "Info",
-  "@severityInformationalShort": {
-    "description": "Translation for severityInformationalShort"
-  },
+  "@severityInformationalShort": {},
   "severityNotice": "Aviso",
-  "@severityNotice": {
-    "description": "Translation for severityNotice"
-  },
+  "@severityNotice": {},
   "severityWarning": "Advertencia",
-  "@severityWarning": {
-    "description": "Translation for severityWarning"
-  },
+  "@severityWarning": {},
   "showAdvancedSettings": "Mostrar Configuración Avanzada",
-  "@showAdvancedSettings": {
-    "description": "Translation for showAdvancedSettings"
-  },
+  "@showAdvancedSettings": {},
   "showAll": "Mostrar Todo",
-  "@showAll": {
-    "description": "Translation for showAll"
-  },
+  "@showAll": {},
   "showKey": "Mostrar clave",
-  "@showKey": {
-    "description": "Translation for showKey"
-  },
-  "showingEntriesCount": "Mostrando {start} a {end}",
-  "@showingEntriesCount": {
-    "placeholders": {
-      "start": {
-        "type": "String"
-      },
-      "end": {
-        "type": "String"
-      }
-    }
-  },
+  "@showKey": {},
   "showingInstancesCount": "Mostrando {count} de {total}",
   "@showingInstancesCount": {
     "placeholders": {
@@ -4362,168 +2459,81 @@
     }
   },
   "showingZeroEntries": "Mostrando 0 entradas",
-  "@showingZeroEntries": {
-    "description": "Translation for showingZeroEntries"
-  },
+  "@showingZeroEntries": {},
   "someConnectionsFailed": "Algunas conexiones fallaron",
-  "@someConnectionsFailed": {
-    "description": "Translation for someConnectionsFailed"
-  },
+  "@someConnectionsFailed": {},
   "soon": "pronto",
-  "@soon": {
-    "description": "Translation for soon"
-  },
+  "@soon": {},
   "sortBy": "Ordenar por",
-  "@sortBy": {
-    "description": "Translation for sortBy"
-  },
+  "@sortBy": {},
   "sortByBandwidth": "Ancho de Banda",
-  "@sortByBandwidth": {
-    "description": "Translation for sortByBandwidth"
-  },
+  "@sortByBandwidth": {},
   "sortByHostname": "Nombre de Host",
-  "@sortByHostname": {
-    "description": "Translation for sortByHostname"
-  },
+  "@sortByHostname": {},
   "sortByIP": "Dirección IP",
-  "@sortByIP": {
-    "description": "Translation for sortByIP"
-  },
+  "@sortByIP": {},
   "sortByManufacturer": "Fabricante",
-  "@sortByManufacturer": {
-    "description": "Translation for sortByManufacturer"
-  },
+  "@sortByManufacturer": {},
   "source": "Origen",
-  "@source": {
-    "description": "Translation for source"
-  },
+  "@source": {},
   "sourceAddress": "Dirección de origen",
-  "@sourceAddress": {
-    "description": "Translation for sourceAddress"
-  },
+  "@sourceAddress": {},
   "sourceIsRequired": "El origen es obligatorio",
-  "@sourceIsRequired": {
-    "description": "Translation for sourceIsRequired"
-  },
+  "@sourceIsRequired": {},
   "sourcePort": "Puerto de Origen",
-  "@sourcePort": {
-    "description": "Translation for sourcePort"
-  },
+  "@sourcePort": {},
   "sourcePortOptional": "Puerto de Origen (Opcional)",
-  "@sourcePortOptional": {
-    "description": "Translation for sourcePortOptional"
-  },
+  "@sourcePortOptional": {},
   "sshEnabled": "SSH Habilitado",
-  "@sshEnabled": {
-    "description": "Translation for sshEnabled"
-  },
+  "@sshEnabled": {},
   "start": "Iniciar",
-  "@start": {
-    "description": "Translation for start"
-  },
-  "startButton": "Iniciar",
-  "@startButton": {
-    "description": "Translation for startButton"
-  },
+  "@start": {},
   "startService": "Iniciar Servicio",
-  "@startService": {
-    "description": "Translation for startService"
-  },
+  "@startService": {},
   "startTime": "Hora de inicio",
-  "@startTime": {
-    "description": "Translation for startTime"
-  },
+  "@startTime": {},
   "startWireguardService": "Iniciar servicio WireGuard",
-  "@startWireguardService": {
-    "description": "Translation for startWireguardService"
-  },
+  "@startWireguardService": {},
   "staticKeyContentPemFormat": "Contenido de clave estática en formato PEM",
-  "@staticKeyContentPemFormat": {
-    "description": "Translation for staticKeyContentPemFormat"
-  },
+  "@staticKeyContentPemFormat": {},
   "staticKeyCreatedSuccessfully": "Clave estática creada exitosamente",
-  "@staticKeyCreatedSuccessfully": {
-    "description": "Translation for staticKeyCreatedSuccessfully"
-  },
+  "@staticKeyCreatedSuccessfully": {},
   "staticKeyDeletedSuccessfully": "Clave estática eliminada exitosamente",
-  "@staticKeyDeletedSuccessfully": {
-    "description": "Translation for staticKeyDeletedSuccessfully"
-  },
+  "@staticKeyDeletedSuccessfully": {},
   "staticKeyDetails": "Detalles de la Clave Estática",
-  "@staticKeyDetails": {
-    "description": "Translation for staticKeyDetails"
-  },
-  "staticKeyInfoHelp": "• Auth: Agrega autenticación HMAC al canal de control\n• Crypt: Cifra y autentica todos los paquetes del canal de control\n• Crypt V2: Cifrado mejorado con seguridad mejorada\n\nPuede generar una nueva clave o pegar una existente.",
-  "@staticKeyInfoHelp": {
-    "description": "Translation for staticKeyInfoHelp"
-  },
+  "@staticKeyDetails": {},
   "staticKeyInformation": "Información de la Clave Estática",
-  "@staticKeyInformation": {
-    "description": "Translation for staticKeyInformation"
-  },
+  "@staticKeyInformation": {},
   "staticKeyUpdatedSuccessfully": "Clave estática actualizada exitosamente",
-  "@staticKeyUpdatedSuccessfully": {
-    "description": "Translation for staticKeyUpdatedSuccessfully"
-  },
+  "@staticKeyUpdatedSuccessfully": {},
   "staticKeys": "Claves Estáticas",
-  "@staticKeys": {
-    "description": "Translation for staticKeys"
-  },
+  "@staticKeys": {},
   "staticLease": "Estático",
-  "@staticLease": {
-    "description": "Translation for staticLease"
-  },
+  "@staticLease": {},
   "status": "Estado",
-  "@status": {
-    "description": "Translation for status"
-  },
+  "@status": {},
   "stop": "Detener",
-  "@stop": {
-    "description": "Translation for stop"
-  },
-  "stopButton": "Detener",
-  "@stopButton": {
-    "description": "Translation for stopButton"
-  },
+  "@stop": {},
   "stopService": "Detener Servicio",
-  "@stopService": {
-    "description": "Translation for stopService"
-  },
+  "@stopService": {},
   "stopped": "Detenido",
-  "@stopped": {
-    "description": "Translation for stopped"
-  },
+  "@stopped": {},
   "stoppedStatus": "Detenido",
-  "@stoppedStatus": {
-    "description": "Translation for stoppedStatus"
-  },
+  "@stoppedStatus": {},
   "storeAndGenerateNext": "Guardar y generar siguiente",
-  "@storeAndGenerateNext": {
-    "description": "Translation for storeAndGenerateNext"
-  },
+  "@storeAndGenerateNext": {},
   "subnetAddedSuccessfully": "Subred agregada exitosamente",
-  "@subnetAddedSuccessfully": {
-    "description": "Translation for subnetAddedSuccessfully"
-  },
+  "@subnetAddedSuccessfully": {},
   "subnetCidr": "Subred (CIDR)",
-  "@subnetCidr": {
-    "description": "Translation for subnetCidr"
-  },
+  "@subnetCidr": {},
   "subnetDeletedSuccessfully": "Subred eliminada exitosamente",
-  "@subnetDeletedSuccessfully": {
-    "description": "Translation for subnetDeletedSuccessfully"
-  },
+  "@subnetDeletedSuccessfully": {},
   "subnetUpdatedSuccessfully": "Subred actualizada exitosamente",
-  "@subnetUpdatedSuccessfully": {
-    "description": "Translation for subnetUpdatedSuccessfully"
-  },
+  "@subnetUpdatedSuccessfully": {},
   "success": "Éxito",
-  "@success": {
-    "description": "Translation for success"
-  },
+  "@success": {},
   "successfullyConnected": "Conectado exitosamente a {name}",
   "@successfullyConnected": {
-    "description": "Translation for successfullyConnected",
     "placeholders": {
       "name": {
         "type": "String",
@@ -4533,7 +2543,6 @@
   },
   "successfullyDisconnected": "Desconectado exitosamente de {name}",
   "@successfullyDisconnected": {
-    "description": "Translation for successfullyDisconnected",
     "placeholders": {
       "name": {
         "type": "String",
@@ -4543,7 +2552,6 @@
   },
   "successfullyImportedProfiles": "Se importaron exitosamente {count} {count, plural, =1{perfil} other{perfiles}}",
   "@successfullyImportedProfiles": {
-    "description": "Translation for successfullyImportedProfiles",
     "placeholders": {
       "count": {
         "type": "int",
@@ -4553,7 +2561,6 @@
   },
   "successfullyRestartedService": "Servicio {type} reiniciado exitosamente",
   "@successfullyRestartedService": {
-    "description": "Translation for successfullyRestartedService",
     "placeholders": {
       "type": {
         "type": "String",
@@ -4563,7 +2570,6 @@
   },
   "successfullyWokenDevices": "Se despertaron exitosamente {successCount} de {totalCount} dispositivo(s)",
   "@successfullyWokenDevices": {
-    "description": "Translation for successfullyWokenDevices",
     "placeholders": {
       "successCount": {
         "type": "int",
@@ -4576,56 +2582,29 @@
     }
   },
   "switchProfile": "Cambiar Perfil",
-  "@switchProfile": {
-    "description": "Translation for switchProfile"
-  },
+  "@switchProfile": {},
   "switchProfileConfirmation": "¿Está seguro de que desea cambiar de perfil? Será devuelto a la pantalla de selección de perfil.",
-  "@switchProfileConfirmation": {
-    "description": "Translation for switchProfileConfirmation"
-  },
+  "@switchProfileConfirmation": {},
   "systemDefault": "Predeterminado del Sistema",
-  "@systemDefault": {
-    "description": "Translation for systemDefault"
-  },
+  "@systemDefault": {},
   "systemGeneratedRule": "Esta es una regla generada por el sistema y no se puede modificar ni eliminar.",
-  "@systemGeneratedRule": {
-    "description": "Translation for systemGeneratedRule"
-  },
+  "@systemGeneratedRule": {},
   "systemGeneratedRulesCannotBeDeleted": "Las reglas generadas por el sistema no se pueden eliminar",
-  "@systemGeneratedRulesCannotBeDeleted": {
-    "description": "Translation for systemGeneratedRulesCannotBeDeleted"
-  },
+  "@systemGeneratedRulesCannotBeDeleted": {},
   "systemGeneratedRulesCannotBeModified": "Las reglas generadas por el sistema no se pueden modificar",
-  "@systemGeneratedRulesCannotBeModified": {
-    "description": "Translation for systemGeneratedRulesCannotBeModified"
-  },
+  "@systemGeneratedRulesCannotBeModified": {},
   "systemInfo": "Información del Sistema",
-  "@systemInfo": {
-    "description": "Translation for systemInfo"
-  },
+  "@systemInfo": {},
   "systemInformation": "Información del Sistema",
-  "@systemInformation": {
-    "description": "Translation for systemInformation"
-  },
+  "@systemInformation": {},
   "systemType": "Tipo de Sistema",
-  "@systemType": {
-    "description": "Translation for systemType"
-  },
+  "@systemType": {},
   "tags": "Etiquetas",
-  "@tags": {
-    "description": "Translation for tags"
-  },
-  "tailscale": "Tailscale",
-  "@tailscale": {
-    "description": "Translation for tailscale"
-  },
+  "@tags": {},
   "tailscaleAuthentication": "Autenticación de Tailscale",
-  "@tailscaleAuthentication": {
-    "description": "Translation for tailscaleAuthentication"
-  },
+  "@tailscaleAuthentication": {},
   "tailscaleServiceAction": "{action} Servicio Tailscale",
   "@tailscaleServiceAction": {
-    "description": "Translation for tailscaleServiceAction",
     "placeholders": {
       "action": {
         "type": "String",
@@ -4643,7 +2622,6 @@
   },
   "tailscaleServiceActionSuccess": "Servicio Tailscale {action}ado exitosamente",
   "@tailscaleServiceActionSuccess": {
-    "description": "Translation for tailscaleServiceActionSuccess",
     "placeholders": {
       "action": {
         "type": "String",
@@ -4653,7 +2631,6 @@
   },
   "tailscaleServiceActioning": "{action}ando servicio Tailscale...",
   "@tailscaleServiceActioning": {
-    "description": "Translation for tailscaleServiceActioning",
     "placeholders": {
       "action": {
         "type": "String",
@@ -4662,60 +2639,35 @@
     }
   },
   "tailscaleSettings": "Configuración de Tailscale",
-  "@tailscaleSettings": {
-    "description": "Translation for tailscaleSettings"
-  },
+  "@tailscaleSettings": {},
   "tailscaleStatus": "Estado de Tailscale",
-  "@tailscaleStatus": {
-    "description": "Translation for tailscaleStatus"
-  },
+  "@tailscaleStatus": {},
   "tailscaleSubnets": "Subredes de Tailscale",
-  "@tailscaleSubnets": {
-    "description": "Translation for tailscaleSubnets"
-  },
+  "@tailscaleSubnets": {},
   "tailscaleVersion": "Versión",
   "@tailscaleVersion": {
     "description": "Label for Tailscale version information"
   },
   "tapPlusButtonToCreateFirstInstance": "Toque el botón + para crear su primera instancia",
-  "@tapPlusButtonToCreateFirstInstance": {
-    "description": "Translation for tapPlusButtonToCreateFirstInstance"
-  },
+  "@tapPlusButtonToCreateFirstInstance": {},
   "tapPlusButtonToCreateFirstOverride": "Toque el botón + para crear su primera anulación",
-  "@tapPlusButtonToCreateFirstOverride": {
-    "description": "Translation for tapPlusButtonToCreateFirstOverride"
-  },
+  "@tapPlusButtonToCreateFirstOverride": {},
   "tapPlusButtonToCreateFirstStaticKey": "Toque el botón + para crear su primera clave estática",
-  "@tapPlusButtonToCreateFirstStaticKey": {
-    "description": "Translation for tapPlusButtonToCreateFirstStaticKey"
-  },
+  "@tapPlusButtonToCreateFirstStaticKey": {},
   "tcpFlags": "Banderas TCP",
-  "@tcpFlags": {
-    "description": "Translation for tcpFlags"
-  },
+  "@tcpFlags": {},
   "tenMin": "10 min",
-  "@tenMin": {
-    "description": "Translation for tenMin"
-  },
+  "@tenMin": {},
   "testConnection": "Probar Conexión",
-  "@testConnection": {
-    "description": "Translation for testConnection"
-  },
+  "@testConnection": {},
   "testConnections": "Probar conexiones",
-  "@testConnections": {
-    "description": "Translation for testConnections"
-  },
+  "@testConnections": {},
   "testProfile": "Probar perfil",
-  "@testProfile": {
-    "description": "Translation for testProfile"
-  },
+  "@testProfile": {},
   "testingAllConnections": "Probando todos los puntos de conexión...",
-  "@testingAllConnections": {
-    "description": "Translation for testingAllConnections"
-  },
+  "@testingAllConnections": {},
   "testingConnection": "Probando conexión {current} de {total}: {endpoint}",
   "@testingConnection": {
-    "description": "Translation for testingConnection",
     "placeholders": {
       "current": {
         "type": "String",
@@ -4732,88 +2684,45 @@
     }
   },
   "theme": "Tema",
-  "@theme": {
-    "description": "Translation for theme"
-  },
+  "@theme": {},
   "thirtyMin": "30 min",
-  "@thirtyMin": {
-    "description": "Translation for thirtyMin"
-  },
+  "@thirtyMin": {},
   "time": "Tiempo",
-  "@time": {
-    "description": "Translation for time"
-  },
+  "@time": {},
   "timeRange": "Rango de tiempo",
-  "@timeRange": {
-    "description": "Translation for timeRange"
-  },
-  "timeRangeLabel": "Rango de tiempo",
-  "@timeRangeLabel": {
-    "description": "Translation for timeRangeLabel"
-  },
+  "@timeRange": {},
   "timeout": "Tiempo de espera agotado",
-  "@timeout": {
-    "description": "Translation for timeout"
-  },
+  "@timeout": {},
   "timestamp": "Marca de tiempo",
-  "@timestamp": {
-    "description": "Translation for timestamp"
-  },
+  "@timestamp": {},
   "today": "Hoy",
-  "@today": {
-    "description": "Translation for today"
-  },
+  "@today": {},
   "totalBandwidth": "Ancho de Banda Total",
-  "@totalBandwidth": {
-    "description": "Translation for totalBandwidth"
-  },
+  "@totalBandwidth": {},
   "totalDownload": "Descarga Total",
-  "@totalDownload": {
-    "description": "Translation for totalDownload"
-  },
+  "@totalDownload": {},
   "totalEntries": "Entradas totales",
-  "@totalEntries": {
-    "description": "Translation for totalEntries"
-  },
+  "@totalEntries": {},
   "totalUpload": "Carga Total",
-  "@totalUpload": {
-    "description": "Translation for totalUpload"
-  },
-  "totalVPNs": "Total de VPN",
-  "@totalVPNs": {
-    "description": "Translation for totalVPNs"
-  },
+  "@totalUpload": {},
+  "totalVpns": "Total de VPN",
+  "@totalVpns": {},
   "tryAdjustingFilters": "Intente ajustar los filtros de severidad o fecha seleccionados.",
-  "@tryAdjustingFilters": {
-    "description": "Translation for tryAdjustingFilters"
-  },
+  "@tryAdjustingFilters": {},
   "tryDemoMode": "Probar modo de demostración",
-  "@tryDemoMode": {
-    "description": "Translation for tryDemoMode"
-  },
+  "@tryDemoMode": {},
   "tryDifferentSearch": "Intente con un término de búsqueda diferente",
-  "@tryDifferentSearch": {
-    "description": "Translation for tryDifferentSearch"
-  },
+  "@tryDifferentSearch": {},
   "tunnelAddress": "Dirección del túnel",
-  "@tunnelAddress": {
-    "description": "Translation for tunnelAddress"
-  },
+  "@tunnelAddress": {},
   "tunnelAddressCidr": "Dirección del túnel (CIDR)",
-  "@tunnelAddressCidr": {
-    "description": "Translation for tunnelAddressCidr"
-  },
+  "@tunnelAddressCidr": {},
   "tunnelAddressRequired": "Se requiere al menos una dirección de túnel",
-  "@tunnelAddressRequired": {
-    "description": "Translation for tunnelAddressRequired"
-  },
+  "@tunnelAddressRequired": {},
   "tunnelAddresses": "Direcciones del túnel",
-  "@tunnelAddresses": {
-    "description": "Translation for tunnelAddresses"
-  },
+  "@tunnelAddresses": {},
   "tunnelLabel": "Túnel: {network}",
   "@tunnelLabel": {
-    "description": "Translation for tunnelLabel",
     "placeholders": {
       "network": {
         "type": "String",
@@ -4822,13 +2731,9 @@
     }
   },
   "tunnelNetwork": "Red del Túnel",
-  "@tunnelNetwork": {
-    "description": "Translation for tunnelNetwork"
-  },
+  "@tunnelNetwork": {},
   "tunnelSettings": "Configuración del Túnel",
-  "@tunnelSettings": {
-    "description": "Translation for tunnelSettings"
-  },
+  "@tunnelSettings": {},
   "tunnelWithValue": "Túnel: {value}",
   "@tunnelWithValue": {
     "placeholders": {
@@ -4838,13 +2743,9 @@
     }
   },
   "twoMin": "2 min",
-  "@twoMin": {
-    "description": "Translation for twoMin"
-  },
+  "@twoMin": {},
   "type": "Tipo",
-  "@type": {
-    "description": "Translation for type"
-  },
+  "@type": {},
   "typeWithValue": "Tipo: {value}",
   "@typeWithValue": {
     "placeholders": {
@@ -4854,128 +2755,53 @@
     }
   },
   "udpPortDefault51820": "Puerto UDP (predeterminado: 51820)",
-  "@udpPortDefault51820": {
-    "description": "Translation for udpPortDefault51820"
-  },
+  "@udpPortDefault51820": {},
   "unableToAccessFilePath": "No se puede acceder a la ruta del archivo",
-  "@unableToAccessFilePath": {
-    "description": "Translation for unableToAccessFilePath"
-  },
+  "@unableToAccessFilePath": {},
   "unableToConnectToAnyEndpoint": "No se pudo conectar a ninguno de los puntos finales configurados. Por favor, verifique su configuración de red e intente nuevamente.",
-  "@unableToConnectToAnyEndpoint": {
-    "description": "Translation for unableToConnectToAnyEndpoint"
-  },
+  "@unableToConnectToAnyEndpoint": {},
   "unauthorized": "Acceso no autorizado",
-  "@unauthorized": {
-    "description": "Translation for unauthorized"
-  },
-  "unitBytes": "B",
-  "@unitBytes": {
-    "description": "Translation for unitBytes"
-  },
-  "unitGigabytes": "GB",
-  "@unitGigabytes": {
-    "description": "Translation for unitGigabytes"
-  },
-  "unitKilobytes": "KB",
-  "@unitKilobytes": {
-    "description": "Translation for unitKilobytes"
-  },
-  "unitMegabytes": "MB",
-  "@unitMegabytes": {
-    "description": "Translation for unitMegabytes"
-  },
-  "unitPerSecond": "/s",
-  "@unitPerSecond": {
-    "description": "Translation for unitPerSecond"
-  },
-  "unitPetabytes": "PB",
-  "@unitPetabytes": {
-    "description": "Translation for unitPetabytes"
-  },
-  "unitTerabytes": "TB",
-  "@unitTerabytes": {
-    "description": "Translation for unitTerabytes"
-  },
+  "@unauthorized": {},
   "unknown": "Desconocido",
-  "@unknown": {
-    "description": "Translation for unknown"
-  },
+  "@unknown": {},
   "unknownStatus": "Desconocido",
-  "@unknownStatus": {
-    "description": "Translation for unknownStatus"
-  },
+  "@unknownStatus": {},
   "unlock": "Desbloquear",
-  "@unlock": {
-    "description": "Translation for unlock"
-  },
-  "unlockOPNsenseManager": "Desbloquear OPNsense Manager",
-  "@unlockOPNsenseManager": {
-    "description": "Translation for unlockOPNsenseManager"
-  },
+  "@unlock": {},
+  "unlockOpnsenseManager": "Desbloquear OPNsense Manager",
+  "@unlockOpnsenseManager": {},
   "unnamedHost": "Host sin nombre",
-  "@unnamedHost": {
-    "description": "Translation for unnamedHost"
-  },
+  "@unnamedHost": {},
   "unnamedInstance": "Instancia sin Nombre",
-  "@unnamedInstance": {
-    "description": "Translation for unnamedInstance"
-  },
+  "@unnamedInstance": {},
   "unnamedRule": "Regla sin nombre",
-  "@unnamedRule": {
-    "description": "Translation for unnamedRule"
-  },
+  "@unnamedRule": {},
   "unsavedChanges": "Cambios No Guardados",
-  "@unsavedChanges": {
-    "description": "Translation for unsavedChanges"
-  },
+  "@unsavedChanges": {},
   "unsavedChangesConfirmation": "Tiene cambios no guardados. ¿Desea descartarlos y continuar?",
-  "@unsavedChangesConfirmation": {
-    "description": "Translation for unsavedChangesConfirmation"
-  },
+  "@unsavedChangesConfirmation": {},
   "update": "Actualizar",
-  "@update": {
-    "description": "Translation for update"
-  },
+  "@update": {},
   "updateOverride": "Actualizar Anulación",
-  "@updateOverride": {
-    "description": "Translation for updateOverride"
-  },
+  "@updateOverride": {},
   "updatePeer": "Actualizar peer",
-  "@updatePeer": {
-    "description": "Translation for updatePeer"
-  },
+  "@updatePeer": {},
   "updatePinCode": "Actualizar su código PIN",
-  "@updatePinCode": {
-    "description": "Translation for updatePinCode"
-  },
+  "@updatePinCode": {},
   "updateRule": "Actualizar Regla",
-  "@updateRule": {
-    "description": "Translation for updateRule"
-  },
+  "@updateRule": {},
   "updateServer": "Actualizar servidor",
-  "@updateServer": {
-    "description": "Translation for updateServer"
-  },
+  "@updateServer": {},
   "updateStaticKey": "Actualizar Clave Estática",
-  "@updateStaticKey": {
-    "description": "Translation for updateStaticKey"
-  },
+  "@updateStaticKey": {},
   "upload": "Carga",
-  "@upload": {
-    "description": "Translation for upload"
-  },
+  "@upload": {},
   "uptime": "Tiempo de Actividad",
-  "@uptime": {
-    "description": "Translation for uptime"
-  },
+  "@uptime": {},
   "useBiometric": "Usar Biométrico",
-  "@useBiometric": {
-    "description": "Translation for useBiometric"
-  },
+  "@useBiometric": {},
   "useBiometricToUnlock": "Usar {biometricType} para desbloquear la aplicación",
   "@useBiometricToUnlock": {
-    "description": "Translation for useBiometricToUnlock",
     "placeholders": {
       "biometricType": {
         "type": "String",
@@ -4984,36 +2810,19 @@
     }
   },
   "useExitNode": "Usar Nodo de Salida",
-  "@useExitNode": {
-    "description": "Translation for useExitNode"
-  },
+  "@useExitNode": {},
   "useHttps": "Usar HTTPS",
-  "@useHttps": {
-    "description": "Translation for useHttps"
-  },
+  "@useHttps": {},
   "useHttpsDescription": "Usar conexión HTTPS segura",
-  "@useHttpsDescription": {
-    "description": "Translation for useHttpsDescription"
-  },
-  "useHttpsLabel": "Usar HTTPS",
-  "@useHttpsLabel": {
-    "description": "Translation for useHttpsLabel"
-  },
+  "@useHttpsDescription": {},
   "useProtocolForCommunicating": "Usar este protocolo para comunicarse",
-  "@useProtocolForCommunicating": {
-    "description": "Translation for useProtocolForCommunicating"
-  },
+  "@useProtocolForCommunicating": {},
   "valid": "Válido",
-  "@valid": {
-    "description": "Translation for valid"
-  },
+  "@valid": {},
   "validFrom": "Válido desde",
-  "@validFrom": {
-    "description": "Translation for validFrom"
-  },
+  "@validFrom": {},
   "verifyingConnection": "Verificando conexión a {endpoint}...",
   "@verifyingConnection": {
-    "description": "Translation for verifyingConnection",
     "placeholders": {
       "endpoint": {
         "type": "String",
@@ -5023,7 +2832,6 @@
   },
   "version": "Versión {version}",
   "@version": {
-    "description": "Translation for version",
     "placeholders": {
       "version": {
         "type": "String",
@@ -5032,93 +2840,47 @@
     }
   },
   "versionLabel": "Versión",
-  "@versionLabel": {
-    "description": "Translation for versionLabel"
-  },
+  "@versionLabel": {},
   "viewDetails": "Ver detalles",
-  "@viewDetails": {
-    "description": "Translation for viewDetails"
-  },
+  "@viewDetails": {},
   "viewFullLicense": "Ver Licencia Completa",
-  "@viewFullLicense": {
-    "description": "Translation for viewFullLicense"
-  },
+  "@viewFullLicense": {},
   "virtualAddress": "Dirección Virtual",
-  "@virtualAddress": {
-    "description": "Translation for virtualAddress"
-  },
+  "@virtualAddress": {},
   "vpn": "VPN",
-  "@vpn": {
-    "description": "Translation for vpn"
-  },
+  "@vpn": {},
   "vpnConnections": "Conexiones VPN",
-  "@vpnConnections": {
-    "description": "Translation for vpnConnections"
-  },
+  "@vpnConnections": {},
   "vpnConnectionsWillAppear": "Las conexiones VPN aparecerán aquí cuando se configuren",
-  "@vpnConnectionsWillAppear": {
-    "description": "Translation for vpnConnectionsWillAppear"
-  },
+  "@vpnConnectionsWillAppear": {},
   "vpnStatus": "Estado VPN",
-  "@vpnStatus": {
-    "description": "Translation for vpnStatus"
-  },
+  "@vpnStatus": {},
   "vpnType": "Tipo de VPN",
-  "@vpnType": {
-    "description": "Translation for vpnType"
-  },
+  "@vpnType": {},
   "wakeAll": "Despertar todos",
-  "@wakeAll": {
-    "description": "Translation for wakeAll"
-  },
+  "@wakeAll": {},
   "wakeAllDevices": "Despertar todos los dispositivos",
-  "@wakeAllDevices": {
-    "description": "Translation for wakeAllDevices"
-  },
+  "@wakeAllDevices": {},
   "wakeAllDevicesConfirmation": "¿Está seguro de que desea enviar paquetes de activación a todos los dispositivos configurados?",
-  "@wakeAllDevicesConfirmation": {
-    "description": "Translation for wakeAllDevicesConfirmation"
-  },
+  "@wakeAllDevicesConfirmation": {},
   "wakeAllResults": "Resultados de despertar todos",
-  "@wakeAllResults": {
-    "description": "Translation for wakeAllResults"
-  },
+  "@wakeAllResults": {},
   "wakeHost": "Despertar host",
-  "@wakeHost": {
-    "description": "Translation for wakeHost"
-  },
+  "@wakeHost": {},
   "wakeOnLan": "Wake on LAN",
-  "@wakeOnLan": {
-    "description": "Translation for wakeOnLan"
-  },
+  "@wakeOnLan": {},
   "wakingAllDevices": "Despertando todos los dispositivos...",
-  "@wakingAllDevices": {
-    "description": "Translation for wakingAllDevices"
-  },
+  "@wakingAllDevices": {},
   "warning": "Advertencia",
-  "@warning": {
-    "description": "Translation for warning"
-  },
+  "@warning": {},
   "winsServers": "Servidores WINS",
-  "@winsServers": {
-    "description": "Translation for winsServers"
-  },
+  "@winsServers": {},
   "winsServersHelperText": "Establecer dirección del servidor WINS principal (Servidor de Nombres NetBIOS sobre TCP/IP). Repita esta opción para establecer direcciones de servidores WINS secundarios.",
-  "@winsServersHelperText": {
-    "description": "Translation for winsServersHelperText"
-  },
-  "wireguard": "WireGuard",
-  "@wireguard": {
-    "description": "Translation for wireguard"
-  },
+  "@winsServersHelperText": {},
   "wireguardLogs": "Registros de WireGuard",
-  "@wireguardLogs": {
-    "description": "Translation for wireguardLogs"
-  },
+  "@wireguardLogs": {},
   "wireguardLogsExport": "Exportar registros de WireGuard",
-  "@wireguardLogsExport": {
-    "description": "Translation for wireguardLogsExport"
-  },
+  "@wireguardLogsExport": {},
   "wireguardLogsExportedOn": "Registros de WireGuard exportados el {date}",
   "@wireguardLogsExportedOn": {
     "placeholders": {
@@ -5128,32 +2890,19 @@
     }
   },
   "wireguardPeers": "Peers de WireGuard",
-  "@wireguardPeers": {
-    "description": "Translation for wireguardPeers"
-  },
+  "@wireguardPeers": {},
   "wireguardServers": "Servidores WireGuard",
-  "@wireguardServers": {
-    "description": "Translation for wireguardServers"
-  },
+  "@wireguardServers": {},
   "wireguardServiceStarted": "Servicio WireGuard iniciado",
-  "@wireguardServiceStarted": {
-    "description": "Translation for wireguardServiceStarted"
-  },
+  "@wireguardServiceStarted": {},
   "wireguardServiceStopped": "Servicio WireGuard detenido",
-  "@wireguardServiceStopped": {
-    "description": "Translation for wireguardServiceStopped"
-  },
+  "@wireguardServiceStopped": {},
   "wireguardStatus": "Estado de WireGuard",
-  "@wireguardStatus": {
-    "description": "Translation for wireguardStatus"
-  },
+  "@wireguardStatus": {},
   "withoutCredentials": "Sin Credenciales",
-  "@withoutCredentials": {
-    "description": "Translation for withoutCredentials"
-  },
+  "@withoutCredentials": {},
   "wolPacketSentTo": "Paquete WOL enviado a {host}",
   "@wolPacketSentTo": {
-    "description": "Translation for wolPacketSentTo",
     "placeholders": {
       "host": {
         "type": "String",
@@ -5162,70 +2911,33 @@
     }
   },
   "yes": "Sí",
-  "@yes": {
-    "description": "Translation for yes"
-  },
+  "@yes": {},
   "yesterday": "Ayer",
-  "@yesterday": {
-    "description": "Translation for yesterday"
-  },
+  "@yesterday": {},
   "zeroSeconds": "0 segundos",
-  "@zeroSeconds": {
-    "description": "Translation for zeroSeconds"
-  },
-  "addToList": "Add",
-  "@addToList": {
-    "description": "Translation for addToList - button to add item to a list"
-  },
-  "allFilterOption": "All",
-  "@allFilterOption": {
-    "description": "Translation for allFilterOption - filter option to show all items"
-  },
-  "commonNameLabel": "Common Name",
-  "@commonNameLabel": {
-    "description": "Translation for commonNameLabel"
-  },
+  "@zeroSeconds": {},
   "connectionBlockingDescription": "Block this client connection based on its common name. Don't use this option to permanently disable a client due to a compromised key or password. Use a CRL (certificate revocation list) instead.",
-  "@connectionBlockingDescription": {
-    "description": "Translation for connectionBlockingDescription"
-  },
+  "@connectionBlockingDescription": {},
   "deviceLabel": "Device: {type}",
   "@deviceLabel": {
-    "description": "Translation for deviceLabel",
     "placeholders": {
       "type": {
         "type": "String"
       }
     }
   },
-  "enableThisClientOverride": "Enable this client specific override",
-  "@enableThisClientOverride": {
-    "description": "Translation for enableThisClientOverride"
-  },
-  "enterClientX509CommonName": "Enter the client's X.509 common name here.",
-  "@enterClientX509CommonName": {
-    "description": "Translation for enterClientX509CommonName"
-  },
   "facility": "Facility",
-  "@facility": {
-    "description": "Translation for facility"
-  },
+  "@facility": {},
   "gatewayLabel": "Gateway: {gateway}",
   "@gatewayLabel": {
-    "description": "Translation for gatewayLabel",
     "placeholders": {
       "gateway": {
         "type": "String"
       }
     }
   },
-  "invalidIpAddressMustBeIpv4OrIpv6": "Invalid IP address (must be IPv4 or IPv6)",
-  "@invalidIpAddressMustBeIpv4OrIpv6": {
-    "description": "Translation for invalidIpAddressMustBeIpv4OrIpv6"
-  },
   "localLabel": "Local: {address}",
   "@localLabel": {
-    "description": "Translation for localLabel",
     "placeholders": {
       "address": {
         "type": "String"
@@ -5233,12 +2945,9 @@
     }
   },
   "messageLabel": "Message:",
-  "@messageLabel": {
-    "description": "Translation for messageLabel"
-  },
+  "@messageLabel": {},
   "pageOfTotal": "Page {current} of {total}",
   "@pageOfTotal": {
-    "description": "Translation for pageOfTotal",
     "placeholders": {
       "current": {
         "type": "int"
@@ -5249,12 +2958,9 @@
     }
   },
   "parser": "Parser",
-  "@parser": {
-    "description": "Translation for parser"
-  },
+  "@parser": {},
   "pidLabel": "PID: {pid}",
   "@pidLabel": {
-    "description": "Translation for pidLabel",
     "placeholders": {
       "pid": {
         "type": "String"
@@ -5263,7 +2969,6 @@
   },
   "processLabel": "Process: {process}",
   "@processLabel": {
-    "description": "Translation for processLabel",
     "placeholders": {
       "process": {
         "type": "String"
@@ -5271,24 +2976,15 @@
     }
   },
   "pushResetDescription": "Don't inherit the global push list for a specific client instance. NOTE: --push-reset is very thorough: it will remove almost all options from the list of to-be-pushed options. In many cases, some of these options will need to be re-configured afterwards - specifically, --topology subnet and --route-gateway will get lost and this will break client configs in many cases.",
-  "@pushResetDescription": {
-    "description": "Translation for pushResetDescription"
-  },
+  "@pushResetDescription": {},
   "record": "Record",
-  "@record": {
-    "description": "Translation for record"
-  },
+  "@record": {},
   "redirectGatewayDescription": "Automatically execute routing commands to cause all outgoing IP traffic to be redirected over the VPN.",
-  "@redirectGatewayDescription": {
-    "description": "Translation for redirectGatewayDescription"
-  },
+  "@redirectGatewayDescription": {},
   "registerDnsDescription": "Run ipconfig /flushdns and ipconfig /registerdns on connection initiation. This is known to kick Windows into recognizing pushed DNS servers.",
-  "@registerDnsDescription": {
-    "description": "Translation for registerDnsDescription"
-  },
+  "@registerDnsDescription": {},
   "remoteLabel": "Remote: {info}",
   "@remoteLabel": {
-    "description": "Translation for remoteLabel",
     "placeholders": {
       "info": {
         "type": "String"
@@ -5297,7 +2993,6 @@
   },
   "selectedCount": "{count} selected",
   "@selectedCount": {
-    "description": "Translation for selectedCount",
     "placeholders": {
       "count": {
         "type": "int"
@@ -5306,7 +3001,6 @@
   },
   "serverLabel": "Server: {info}",
   "@serverLabel": {
-    "description": "Translation for serverLabel",
     "placeholders": {
       "info": {
         "type": "String"
@@ -5315,7 +3009,6 @@
   },
   "severityLabel": "Severity: {severity}",
   "@severityLabel": {
-    "description": "Translation for severityLabel",
     "placeholders": {
       "severity": {
         "type": "String"
@@ -5324,7 +3017,6 @@
   },
   "showingEntries": "Showing {start} to {end}",
   "@showingEntries": {
-    "description": "Translation for showingEntries",
     "placeholders": {
       "start": {
         "type": "int"
@@ -5334,13 +3026,8 @@
       }
     }
   },
-  "statusLabel": "Status",
-  "@statusLabel": {
-    "description": "Translation for statusLabel"
-  },
   "timestampLabel": "Timestamp: {timestamp}",
   "@timestampLabel": {
-    "description": "Translation for timestampLabel",
     "placeholders": {
       "timestamp": {
         "type": "String"
@@ -5349,25 +3036,14 @@
   },
   "typeLabel": "Type: {type}",
   "@typeLabel": {
-    "description": "Translation for typeLabel",
     "placeholders": {
       "type": {
         "type": "String"
       }
     }
   },
-  "udp": "UDP",
-  "@udp": {
-    "description": "Translation for udp"
-  },
   "unknownNetwork": "Unknown Network",
-  "@unknownNetwork": {
-    "description": "Translation for unknownNetwork"
-  },
-  "youMayEnterDescriptionForReference": "You may enter a description here for your reference (not parsed).",
-  "@youMayEnterDescriptionForReference": {
-    "description": "Translation for youMayEnterDescriptionForReference"
-  },
+  "@unknownNetwork": {},
   "actualUsed": "Uso real",
   "@actualUsed": {
     "description": "Memory label for actual used amount"

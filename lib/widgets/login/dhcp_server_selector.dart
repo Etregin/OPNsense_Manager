@@ -45,13 +45,13 @@ class DhcpServerSelector extends StatelessWidget {
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.dns),
           title: Text(l10n.dhcpServerType),
-          subtitle: Text(selectedType.getDisplayName(context)),
+          subtitle: Text(selectedType.displayName),
           trailing: DropdownButton<DhcpServerType>(
             value: selectedType,
             items: DhcpServerType.values.map((type) {
               return DropdownMenuItem(
                 value: type,
-                child: Text(type.getDisplayName(context)),
+                child: Text(type.displayName),
               );
             }).toList(),
             onChanged: isLoading

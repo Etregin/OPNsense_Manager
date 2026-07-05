@@ -46,7 +46,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
     final includeCredentials = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.exportProfilesTitle),
+        title: Text(l10n.exportProfiles),
         content: Text(l10n.exportProfilesContent),
         actions: [
           TextButton(
@@ -91,7 +91,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
     final overwrite = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(l10n.importProfilesTitle),
+        title: Text(l10n.importProfiles),
         content: Text(l10n.importProfilesDialog),
         actions: [
           TextButton(

@@ -84,7 +84,7 @@ class VPNSummaryCards extends StatelessWidget {
                         color: AppColors.info,
                       ),
                     ),
-                    Text(l10n.totalVPNs),
+                    Text(l10n.totalVpns),
                   ],
                 ),
               ),

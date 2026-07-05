@@ -79,9 +79,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get add => 'Add';
 
   @override
-  String get addButton => 'Add';
-
-  @override
   String get addClientOverride => 'Add Client Override';
 
   @override
@@ -184,7 +181,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get allTypes => 'All Types';
 
   @override
-  String get allVPNs => 'All VPNs';
+  String get allVpns => 'All VPNs';
 
   @override
   String get allowSelfSigned => 'Allow Self-Signed Certificate';
@@ -198,9 +195,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get allowedIps => 'Allowed IPs';
-
-  @override
-  String get allowedIpsLabel => 'Allowed IPs';
 
   @override
   String get any => 'Any';
@@ -223,26 +217,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get apiKeyIsRequired => 'API Key is required';
 
   @override
-  String get apiKeyLabel => 'API Key';
-
-  @override
   String get apiSecret => 'API Secret';
 
   @override
   String get apiSecretIsRequired => 'API Secret is required';
 
   @override
-  String get apiSecretLabel => 'API Secret';
-
-  @override
-  String get appName => 'OPNsense Manager';
-
-  @override
   String get appearance => 'Appearance';
-
-  @override
-  String get applicationLegalese =>
-      '© 2026 OPNsense Manager\n\nLicensed under GNU General Public License v3.0\n\nThis program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.';
 
   @override
   String get apply => 'Apply';
@@ -369,9 +350,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
-  String get cancelButton => 'Cancel';
-
-  @override
   String get cannotBeUndone => 'This action cannot be undone.';
 
   @override
@@ -389,10 +367,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get categories => 'Categories';
 
   @override
-  String get changePIN => 'Change PIN';
-
-  @override
-  String get changePinTitle => 'Change PIN';
+  String get changePin => 'Change PIN';
 
   @override
   String get changesDiscarded => 'Changes discarded';
@@ -484,9 +459,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmNewPin => 'Confirm New PIN';
 
   @override
-  String get confirmPIN => 'Confirm PIN';
-
-  @override
   String get confirmPin => 'Confirm PIN';
 
   @override
@@ -498,11 +470,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connect => 'Connect';
 
   @override
-  String get connectToYourOPNsenseFirewall =>
+  String get connectToYourOpnsenseFirewall =>
       'Connect to your OPNsense firewall';
 
   @override
-  String get connectVPN => 'Connect VPN';
+  String get connectVpn => 'Connect VPN';
 
   @override
   String get connected => 'Connected';
@@ -522,10 +494,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get connectionBlocking => 'Connection blocking';
-
-  @override
-  String get connectionBlockingSubtitle =>
-      'Block this client connection based on its common name. Don\'t use this option to permanently disable a client due to a compromised key or password. Use a CRL (certificate revocation list) instead.';
 
   @override
   String get connectionDetails => 'Connection Details';
@@ -591,13 +559,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copyKey => 'Copy key';
 
   @override
-  String get copyKeyTooltip => 'Copy key';
-
-  @override
   String get copySelected => 'Copy selected';
-
-  @override
-  String get copyTooltip => 'Copy';
 
   @override
   String get cpuUsage => 'CPU Usage';
@@ -728,9 +690,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get deleteProfileTitle => 'Delete Profile';
-
-  @override
   String get deleteRule => 'Delete Rule';
 
   @override
@@ -788,10 +747,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get descriptionRequired => 'Description is required';
-
-  @override
-  String get descriptiveNameForStaticKey =>
-      'A descriptive name for this static key';
 
   @override
   String get destination => 'Destination';
@@ -862,7 +817,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get disconnect => 'Disconnect';
 
   @override
-  String get disconnectVPN => 'Disconnect VPN';
+  String get disconnectVpn => 'Disconnect VPN';
 
   @override
   String get disconnected => 'Disconnected';
@@ -914,13 +869,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dnsmasqDescription => 'Lightweight DNS and DHCP server';
 
   @override
-  String get dnsmasqServerName => 'Dnsmasq';
-
-  @override
   String get done => 'Done';
-
-  @override
-  String get doneButton => 'Done';
 
   @override
   String get download => 'Download';
@@ -1005,9 +954,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enabled => 'Enabled';
 
   @override
-  String get enabledLabel => 'Enabled';
-
-  @override
   String get enabledStatus => 'enabled';
 
   @override
@@ -1045,9 +991,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enterOrGeneratePublicKey => 'Enter or generate public key';
-
-  @override
-  String get enterPIN => 'Enter PIN';
 
   @override
   String get enterPin => 'Enter PIN';
@@ -1115,7 +1058,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorLoadingSystemInfo => 'Error loading system information';
 
   @override
-  String get errorLoadingVPNConnections => 'Error loading VPN connections';
+  String get errorLoadingVpnConnections => 'Error loading VPN connections';
 
   @override
   String errorPrefix(String message) {
@@ -1209,9 +1152,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get exportProfilesContent =>
       'Do you want to include API credentials in the export?\n\nWARNING: Including credentials will store API keys and secrets in plain text. Only include credentials if you will store the file securely.';
-
-  @override
-  String get exportProfilesTitle => 'Export Profiles';
 
   @override
   String get exportSuccess => 'Export successful';
@@ -1427,9 +1367,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filters => 'Filters';
 
   @override
-  String get filtersLabel => 'Filters';
-
-  @override
   String get firewall => 'Firewall';
 
   @override
@@ -1496,13 +1433,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gitCommit => 'Git Commit';
 
   @override
-  String get gnuLicenseText =>
-      'This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.\n\nWhy GPLv3?\n\n• Ensures the software remains free and open source\n• Any modifications or derivatives must also be open source\n• Users have the freedom to use, study, share, and modify the software\n• The community benefits from improvements and contributions';
-
-  @override
-  String get gnuLicenseTitle => 'GNU General Public License v3.0';
-
-  @override
   String get healthStatus => 'Health Status';
 
   @override
@@ -1551,21 +1481,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hour => 'hour';
 
   @override
-  String get hourAbbrev => 'h';
-
-  @override
   String get hours => 'hours';
 
   @override
-  String hoursAgo(String hours) {
+  String hoursAgo(int hours) {
     return '${hours}h ago';
   }
-
-  @override
-  String get http => 'http';
-
-  @override
-  String get https => 'https';
 
   @override
   String get id => 'ID';
@@ -1575,9 +1496,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get importAndExport => 'Import & Export';
-
-  @override
-  String get importExport => 'Import & Export';
 
   @override
   String get importExportDescription =>
@@ -1604,9 +1522,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importProfilesSubtitle => 'Import profiles from a JSON file';
 
   @override
-  String get importProfilesTitle => 'Import Profiles';
-
-  @override
   String get importSuccess => 'Import successful';
 
   @override
@@ -1626,17 +1541,17 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String inDays(String days) {
+  String inDays(int days) {
     return 'in ${days}d';
   }
 
   @override
-  String inHours(String hours) {
+  String inHours(int hours) {
     return 'in ${hours}h';
   }
 
   @override
-  String inMinutes(String minutes) {
+  String inMinutes(int minutes) {
     return 'in ${minutes}m';
   }
 
@@ -1697,10 +1612,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalidBase64Format => 'Invalid Base64 format';
 
   @override
-  String get invalidCidrFormat =>
-      'Invalid CIDR notation (use format: IP/prefix)';
-
-  @override
   String get invalidCidrNotation =>
       'Invalid CIDR notation (use format: IP/prefix)';
 
@@ -1749,7 +1660,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalidIpv6Prefix => 'Invalid IPv6 prefix (must be 0-128)';
 
   @override
-  String get invalidPIN => 'Invalid PIN';
+  String get invalidPin => 'Invalid PIN';
 
   @override
   String get invalidPortFormat => 'Invalid port format';
@@ -1767,31 +1678,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ipAddresses => 'IP Addresses';
 
   @override
-  String get ipv4CidrHint => '10.8.0.0/24';
-
-  @override
-  String get ipv4OrIpv6CidrHint => '10.8.0.0/24 or fd00::/64';
-
-  @override
   String get ipv4TunnelNetwork => 'IPv4 Tunnel Network';
-
-  @override
-  String get ipv4TunnelNetworkHint => '10.8.0.0/24';
-
-  @override
-  String get ipv6CidrHint => 'fd00::/64';
 
   @override
   String get ipv6TunnelNetwork => 'IPv6 Tunnel Network';
 
   @override
-  String get ipv6TunnelNetworkHint => 'fd00::/64';
-
-  @override
   String get iscDhcpDescription => 'Internet Systems Consortium DHCP server';
-
-  @override
-  String get iscDhcpServerName => 'ISC DHCP';
 
   @override
   String itemsCount(int count) {
@@ -1803,9 +1696,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get keaDhcpDescription => 'Modern, high-performance DHCP server';
-
-  @override
-  String get keaDhcpServerName => 'Kea DHCP';
 
   @override
   String get keepAliveIntervalOptional => 'Keep Alive Interval (Optional)';
@@ -1827,11 +1717,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get keyGeneratedSuccessfully => 'Key generated successfully';
-
-  @override
-  String keyLabel(String id) {
-    return 'Key $id';
-  }
 
   @override
   String keyWithId(String id) {
@@ -2017,9 +1902,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Invalid MAC address format (e.g., AA:BB:CC:DD:EE:FF)';
 
   @override
-  String get magicDns => 'Magic DNS';
-
-  @override
   String get manageProfiles => 'Manage Profiles';
 
   @override
@@ -2041,13 +1923,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get minute => 'minute';
 
   @override
-  String get minuteAbbrev => 'm';
-
-  @override
   String get minutes => 'minutes';
 
   @override
-  String minutesAgo(String minutes) {
+  String minutesAgo(int minutes) {
     return '${minutes}m ago';
   }
 
@@ -2127,9 +2006,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get next => 'Next';
 
   @override
-  String get nextButton => 'Next';
-
-  @override
   String get no => 'No';
 
   @override
@@ -2149,9 +2025,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String noConnectionsFound(String type) {
     return 'No $type connections found';
   }
-
-  @override
-  String get noData => 'No data available';
 
   @override
   String get noDataAvailable => 'No data available';
@@ -2273,7 +2146,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noTunnelAddressesConfigured => 'No tunnel addresses configured';
 
   @override
-  String get noVPNConnectionsFound => 'No VPN connections found';
+  String get noVpnConnectionsFound => 'No VPN connections found';
 
   @override
   String get noWinsServersConfigured => 'No WINS servers configured';
@@ -2311,9 +2184,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Set primary NTP server address (Network Time Protocol). Repeat this option to set secondary NTP server addresses.';
 
   @override
-  String get of1Gbps => 'of 1 Gbps';
-
-  @override
   String get offline => 'Offline';
 
   @override
@@ -2327,9 +2197,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get online => 'Online';
-
-  @override
-  String get openvpn => 'OpenVPN';
 
   @override
   String get openvpnConnectionStatus => 'OpenVPN Connection Status';
@@ -2377,11 +2244,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get packetLength => 'Packet Length';
 
   @override
-  String pageOfPages(String current, String total) {
-    return 'Page $current of $total';
-  }
-
-  @override
   String get pass => 'Pass';
 
   @override
@@ -2392,9 +2254,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get paused => 'Paused';
-
-  @override
-  String get peerActiveWhenEnabled => 'Peer will be active when enabled';
 
   @override
   String get peerCreatedReadyForNext =>
@@ -2455,9 +2314,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pinLockEnabled => 'PIN lock enabled';
 
   @override
-  String get pinLockTitle => 'PIN Lock';
-
-  @override
   String get pinMismatch => 'PINs do not match';
 
   @override
@@ -2468,10 +2324,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get platform => 'Platform';
-
-  @override
-  String get pleaseAddConnectionEndpoint =>
-      'Please add at least one connection endpoint';
 
   @override
   String get pleaseEnterCurrentPin => 'Please enter your current PIN';
@@ -2509,9 +2361,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get portMustBeBetween => 'Port must be between 1 and 65535';
 
   @override
-  String get portPlaceholder => '443';
-
-  @override
   String get preAuthKey => 'Pre-Auth Key';
 
   @override
@@ -2533,9 +2382,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get previous => 'Previous';
 
   @override
-  String get previousButton => 'Previous';
-
-  @override
   String get privateKey => 'Private Key';
 
   @override
@@ -2553,9 +2399,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileName => 'Profile Name';
-
-  @override
-  String get profileNameLabel => 'Profile Name';
 
   @override
   String get profileNameOptional => 'Profile Name (Optional)';
@@ -2581,42 +2424,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get protocol => 'Protocol';
 
   @override
-  String get protocolAh => 'AH';
-
-  @override
-  String get protocolEsp => 'ESP';
-
-  @override
-  String get protocolGre => 'GRE';
-
-  @override
-  String get protocolIcmp => 'ICMP';
-
-  @override
-  String get protocolIcmpv6 => 'ICMPv6';
-
-  @override
-  String get protocolIgmp => 'IGMP';
-
-  @override
-  String get protocolIpv6 => 'IPv6';
-
-  @override
-  String get protocolOspf => 'OSPF';
-
-  @override
-  String get protocolPim => 'PIM';
-
-  @override
-  String get protocolTcp => 'TCP';
-
-  @override
-  String get protocolTcpUdp => 'TCP/UDP';
-
-  @override
-  String get protocolUdp => 'UDP';
-
-  @override
   String get publicKey => 'Public Key';
 
   @override
@@ -2632,10 +2439,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pushReset => 'Push reset';
-
-  @override
-  String get pushResetSubtitle =>
-      'Don\'t inherit the global push list for a specific client instance. NOTE: --push-reset is very thorough: it will remove almost all options from the list of to-be-pushed options. In many cases, some of these options will need to be re-configured afterwards - specifically, --topology subnet and --route-gateway will get lost and this will break client configs in many cases.';
 
   @override
   String get pushVirtualIpEndpoints =>
@@ -2676,21 +2479,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get redirectGateway => 'Redirect gateway';
 
   @override
-  String get redirectGatewayHelperText =>
-      'Automatically execute routing commands to cause all outgoing IP traffic to be redirected over the VPN.';
-
-  @override
   String get refresh => 'Refresh';
 
   @override
-  String get refreshTooltip => 'Refresh';
-
-  @override
   String get registerDns => 'Register DNS';
-
-  @override
-  String get registerDnsSubtitle =>
-      'Run ipconfig /flushdns and ipconfig /registerdns on connection initiation. This is known to kick Windows into recognizing pushed DNS servers.';
 
   @override
   String get reject => 'Reject';
@@ -2718,9 +2510,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get restart => 'Restart';
 
   @override
-  String get restartButton => 'Restart';
-
-  @override
   String get restartService => 'Restart Service';
 
   @override
@@ -2729,7 +2518,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get restartVPNService => 'Restart VPN Service';
+  String get restartVpnService => 'Restart VPN Service';
 
   @override
   String restartingService(String type) {
@@ -2743,9 +2532,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get retry => 'Retry';
 
   @override
-  String get retryButton => 'Retry';
-
-  @override
   String get role => 'Role';
 
   @override
@@ -2756,9 +2542,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Specify a default gateway to use for the connected client. Without one set the first address in the netblock is being offered. When segmenting the tunnel (server) network, this one might not be accessible from the client.';
 
   @override
-  String get routeGatewayHint => '10.8.0.1';
-
-  @override
   String get routes => 'Routes';
 
   @override
@@ -2766,9 +2549,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rowsPerPage => 'Rows per page';
-
-  @override
-  String get rowsPerPageDropdown => 'Rows per page';
 
   @override
   String get rowsPerPageLabel => 'Rows per page: ';
@@ -2829,9 +2609,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get saveSettings => 'Save Settings';
 
   @override
-  String get saveTooltip => 'Save';
-
-  @override
   String get saveWithoutTesting => 'Save without testing';
 
   @override
@@ -2868,9 +2645,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get second => 'second';
 
   @override
-  String get secondAbbrev => 's';
-
-  @override
   String get seconds => 'Seconds';
 
   @override
@@ -2894,10 +2668,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectInterfaceToViewRules => 'Select an interface to view rules';
-
-  @override
-  String get selectKeyModeForAuthOrEncryption =>
-      'Select the key mode for authentication or encryption';
 
   @override
   String selectLabel(String label) {
@@ -2935,9 +2705,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get selectServersHelperText =>
       'Select the OpenVPN servers where this override applies to, leave empty for all';
-
-  @override
-  String get selectServersTitle => 'Select Servers';
 
   @override
   String get selectVhid => 'Select VHID';
@@ -3006,9 +2773,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get servers => 'Servers';
 
   @override
-  String get serversLabel => 'Servers';
-
-  @override
   String serversSelected(int count) {
     return '$count server(s) selected';
   }
@@ -3020,25 +2784,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get serviceControls => 'Service Controls';
 
   @override
-  String get serviceRestarted => 'Service restarted successfully';
-
-  @override
   String get serviceRestartedSuccessfully => 'Service restarted successfully';
 
   @override
   String get serviceRunning => 'Service Running';
 
   @override
-  String get serviceStarted => 'Service started successfully';
-
-  @override
   String get serviceStartedSuccessfully => 'Service started successfully';
 
   @override
   String get serviceStatus => 'Service Status';
-
-  @override
-  String get serviceStopped => 'Service stopped successfully';
 
   @override
   String get serviceStoppedSuccessfully => 'Service stopped successfully';
@@ -3109,11 +2864,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get showKey => 'Show key';
 
   @override
-  String showingEntriesCount(String start, String end) {
-    return 'Showing $start to $end';
-  }
-
-  @override
   String showingInstancesCount(String count, String total) {
     return 'Showing $count of $total';
   }
@@ -3164,9 +2914,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get start => 'Start';
 
   @override
-  String get startButton => 'Start';
-
-  @override
   String get startService => 'Start Service';
 
   @override
@@ -3188,10 +2935,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get staticKeyDetails => 'Static Key Details';
 
   @override
-  String get staticKeyInfoHelp =>
-      '• Auth: Adds HMAC authentication to control channel\n• Crypt: Encrypts and authenticates all control channel packets\n• Crypt V2: Enhanced encryption with improved security\n\nYou can generate a new key or paste an existing one.';
-
-  @override
   String get staticKeyInformation => 'Static Key Information';
 
   @override
@@ -3208,9 +2951,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get stop => 'Stop';
-
-  @override
-  String get stopButton => 'Stop';
 
   @override
   String get stopService => 'Stop Service';
@@ -3309,9 +3049,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tags => 'Tags';
 
   @override
-  String get tailscale => 'Tailscale';
-
-  @override
   String get tailscaleAuthentication => 'Tailscale Authentication';
 
   @override
@@ -3394,9 +3131,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get timeRange => 'Time range';
 
   @override
-  String get timeRangeLabel => 'Time range';
-
-  @override
   String get timeout => 'Request timeout';
 
   @override
@@ -3418,7 +3152,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get totalUpload => 'Total Upload';
 
   @override
-  String get totalVPNs => 'Total VPNs';
+  String get totalVpns => 'Total VPNs';
 
   @override
   String get tryAdjustingFilters =>
@@ -3483,27 +3217,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unauthorized => 'Unauthorized access';
 
   @override
-  String get unitBytes => 'B';
-
-  @override
-  String get unitGigabytes => 'GB';
-
-  @override
-  String get unitKilobytes => 'KB';
-
-  @override
-  String get unitMegabytes => 'MB';
-
-  @override
-  String get unitPerSecond => '/s';
-
-  @override
-  String get unitPetabytes => 'PB';
-
-  @override
-  String get unitTerabytes => 'TB';
-
-  @override
   String get unknown => 'Unknown';
 
   @override
@@ -3513,7 +3226,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unlock => 'Unlock';
 
   @override
-  String get unlockOPNsenseManager => 'Unlock OPNsense Manager';
+  String get unlockOpnsenseManager => 'Unlock OPNsense Manager';
 
   @override
   String get unnamedHost => 'Unnamed Host';
@@ -3574,9 +3287,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get useHttpsDescription => 'Use secure HTTPS connection';
-
-  @override
-  String get useHttpsLabel => 'Use HTTPS';
 
   @override
   String get useProtocolForCommunicating =>
@@ -3659,9 +3369,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Set primary WINS server address (NetBIOS over TCP/IP Name Server). Repeat this option to set secondary WINS server addresses.';
 
   @override
-  String get wireguard => 'WireGuard';
-
-  @override
   String get wireguardLogs => 'WireGuard Logs';
 
   @override
@@ -3705,15 +3412,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get zeroSeconds => '0 seconds';
 
   @override
-  String get addToList => 'Add';
-
-  @override
-  String get allFilterOption => 'All';
-
-  @override
-  String get commonNameLabel => 'Common Name';
-
-  @override
   String get connectionBlockingDescription =>
       'Block this client connection based on its common name. Don\'t use this option to permanently disable a client due to a compromised key or password. Use a CRL (certificate revocation list) instead.';
 
@@ -3723,23 +3421,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get enableThisClientOverride => 'Enable this client specific override';
-
-  @override
-  String get enterClientX509CommonName =>
-      'Enter the client\'s X.509 common name here.';
-
-  @override
   String get facility => 'Facility';
 
   @override
   String gatewayLabel(String gateway) {
     return 'Gateway: $gateway';
   }
-
-  @override
-  String get invalidIpAddressMustBeIpv4OrIpv6 =>
-      'Invalid IP address (must be IPv4 or IPv6)';
 
   @override
   String localLabel(String address) {
@@ -3808,9 +3495,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get statusLabel => 'Status';
-
-  @override
   String timestampLabel(String timestamp) {
     return 'Timestamp: $timestamp';
   }
@@ -3821,14 +3505,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get udp => 'UDP';
-
-  @override
   String get unknownNetwork => 'Unknown Network';
-
-  @override
-  String get youMayEnterDescriptionForReference =>
-      'You may enter a description here for your reference (not parsed).';
 
   @override
   String get actualUsed => 'Actual Used';

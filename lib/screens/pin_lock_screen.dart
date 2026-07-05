@@ -175,7 +175,7 @@ class _PinLockScreenState extends State<PinLockScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    l10n.unlockOPNsenseManager,
+                    l10n.unlockOpnsenseManager,
                     style: TextStyle(
                       fontSize: 16,
                       color: textColor.withValues(alpha: 0.7),

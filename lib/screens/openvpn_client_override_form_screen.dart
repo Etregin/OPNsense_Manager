@@ -382,7 +382,7 @@ class _OpenvpnClientOverrideFormScreenState
       children: [
         OpenvpnToggleField(
           title: l10n.enabled,
-          subtitle: l10n.enableThisClientOverride,
+          subtitle: l10n.enableClientSpecificOverride,
           value: _enabled,
           onChanged: (value) => setState(() => _enabled = value),
         ),

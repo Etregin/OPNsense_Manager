@@ -291,7 +291,7 @@ class _LoginScreenState extends State<LoginScreen> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(l10n.importProfilesTitle),
+            title: Text(l10n.importProfiles),
             content: Text(l10n.importProfilesDialog),
             actions: [
               TextButton(
@@ -382,7 +382,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(
                     widget.profile != null
                         ? 'Update your connection settings'
-                        : l10n.connectToYourOPNsenseFirewall,
+                        : l10n.connectToYourOpnsenseFirewall,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: Theme.of(context).textTheme.bodySmall?.color,

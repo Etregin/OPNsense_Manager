@@ -520,7 +520,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
               children: [
                 const SizedBox(height: 4),
                 Text(
-                  '${profile.useHttps ? l10n.https : l10n.http}://${profile.host}:${profile.port}',
+                  '${profile.useHttps ? StringConstants.https : StringConstants.http}://${profile.host}:${profile.port}',
                   style: const TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 14,
@@ -582,9 +582,9 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
     if (difference.inMinutes < 1) {
       return l10n.justNow;
     } else if (difference.inHours < 1) {
-      return l10n.minutesAgo(difference.inMinutes.toString());
+      return l10n.minutesAgo(difference.inMinutes);
     } else if (difference.inDays < 1) {
-      return l10n.hoursAgo(difference.inHours.toString());
+      return l10n.hoursAgo(difference.inHours);
     } else {
       return l10n.daysAgo(difference.inDays);
     }

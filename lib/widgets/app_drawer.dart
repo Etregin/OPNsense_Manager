@@ -333,7 +333,7 @@ class _AppDrawerState extends State<AppDrawer> {
       applicationName: AppConstants.appName,
       applicationVersion: context.read<AppVersionService>().version,
       applicationIcon: const Icon(Icons.router, size: 48),
-      applicationLegalese: l10n.applicationLegalese,
+      applicationLegalese: '© 2026 OPNsense Manager\n\nLicensed under GNU General Public License v3.0\n\nThis program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.',
       children: [
         const SizedBox(height: 16),
         Text(
@@ -360,11 +360,11 @@ class _AppDrawerState extends State<AppDrawer> {
                   builder: (dialogContext) {
                     final l10n = AppLocalizations.of(dialogContext)!;
                     return AlertDialog(
-                      title: Text(l10n.gnuLicenseTitle),
-                      content: SingleChildScrollView(
+                      title: const Text(StringConstants.gnuLicenseTitle),
+                      content: const SingleChildScrollView(
                         child: Text(
-                          l10n.gnuLicenseText,
-                          style: const TextStyle(fontSize: 13),
+                          'This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.\n\nWhy GPLv3?\n\n• Ensures the software remains free and open source\n• Any modifications or derivatives must also be open source\n• Users have the freedom to use, study, share, and modify the software\n• The community benefits from improvements and contributions',
+                          style: TextStyle(fontSize: 13),
                         ),
                       ),
                       actions: [

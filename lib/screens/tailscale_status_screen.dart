@@ -288,7 +288,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
             _buildInfoRow(
                 l10n.dnsEnabled, status.dnsEnabled ? l10n.enabled : l10n.disabled),
             _buildInfoRow(
-                l10n.magicDns, status.magicDns ? l10n.enabled : l10n.disabled),
+                StringConstants.magicDns, status.magicDns ? l10n.enabled : l10n.disabled),
             _buildInfoRow(
                 l10n.sshEnabled, status.sshEnabled ? l10n.enabled : l10n.disabled),
             if (status.tags.isNotEmpty)

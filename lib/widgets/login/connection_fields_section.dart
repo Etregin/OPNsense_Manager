@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/constants.dart';
 import '../../utils/validators.dart';
 
 /// Widget for connection fields (host, port, HTTPS)
@@ -67,7 +68,7 @@ class ConnectionFieldsSection extends StatelessWidget {
           controller: portController,
           decoration: InputDecoration(
             labelText: l10n.port,
-            hintText: l10n.portPlaceholder,
+            hintText: StringConstants.defaultPortHint,
             prefixIcon: const Icon(Icons.settings_ethernet),
           ),
           keyboardType: TextInputType.number,

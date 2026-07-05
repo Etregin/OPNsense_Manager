@@ -132,7 +132,7 @@ class _ProfilesTab extends StatelessWidget {
             unselectedLabelColor: AppColors.disabled,
             tabs: [
               Tab(text: l10n.manageProfiles),
-              Tab(text: l10n.importExport),
+              Tab(text: l10n.importAndExport),
             ],
           ),
           Expanded(

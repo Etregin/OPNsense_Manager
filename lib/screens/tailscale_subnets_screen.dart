@@ -293,7 +293,7 @@ class _SubnetDialogState extends State<_SubnetDialog> {
                   r'^(\d{1,3}\.){3}\d{1,3}/\d{1,2}$',
                 );
                 if (!cidrRegex.hasMatch(value)) {
-                  return l10n.invalidCidrFormat;
+                  return l10n.invalidCidrNotation;
                 }
                 return null;
               },

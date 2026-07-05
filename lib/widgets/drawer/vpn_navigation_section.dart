@@ -172,7 +172,7 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
     final l10n = AppLocalizations.of(context)!;
     return ExpansionNavigationTile(
       icon: Icons.vpn_key,
-      title: Text(l10n.wireguard),
+      title: const Text(StringConstants.wireguard),
       initiallyExpanded: _wireguardExpanded,
       tilePadding: const EdgeInsets.only(left: 56, right: 16),
       onExpansionChanged: (expanded) {
@@ -224,7 +224,7 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
     final l10n = AppLocalizations.of(context)!;
     return ExpansionNavigationTile(
       icon: Icons.vpn_lock_outlined,
-      title: Text(l10n.openvpn),
+      title: const Text(StringConstants.openvpn),
       initiallyExpanded: _openvpnExpanded,
       tilePadding: const EdgeInsets.only(left: 56, right: 16),
       onExpansionChanged: (expanded) {
@@ -283,9 +283,9 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
       icon: Icons.cloud,
       title: Row(
         children: [
-          Expanded(
+          const Expanded(
             child: Text(
-              l10n.tailscale,
+              StringConstants.tailscale,
               overflow: TextOverflow.ellipsis,
             ),
           ),

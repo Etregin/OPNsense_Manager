@@ -150,7 +150,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                   TextFormField(
                     controller: nameController,
                     decoration: InputDecoration(
-                      labelText: l10n.profileNameLabel,
+                      labelText: l10n.profileName,
                       prefixIcon: const Icon(Icons.label),
                     ),
                     validator: (value) {
@@ -172,7 +172,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                   ),
                   const SizedBox(height: 16),
                   SwitchListTile(
-                    title: Text(l10n.useHttpsLabel),
+                    title: Text(l10n.useHttps),
                     value: useHttps,
                     onChanged: (value) {
                       setDialogState(() {
@@ -199,13 +199,13 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                   ListTile(
                     leading: const Icon(Icons.dns),
                     title: Text(l10n.dhcpServerType),
-                    subtitle: Text(dhcpServerType.getDisplayName(context)),
+                    subtitle: Text(dhcpServerType.displayName),
                     trailing: DropdownButton<DhcpServerType>(
                       value: dhcpServerType,
                       items: DhcpServerType.values.map((type) {
                         return DropdownMenuItem(
                           value: type,
-                          child: Text(type.getDisplayName(context)),
+                          child: Text(type.displayName),
                         );
                       }).toList(),
                       onChanged: (value) {
@@ -232,7 +232,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                   TextFormField(
                     controller: apiKeyController,
                     decoration: InputDecoration(
-                      labelText: l10n.apiKeyLabel,
+                      labelText: l10n.apiKey,
                       prefixIcon: const Icon(Icons.vpn_key),
                     ),
                     validator: (v) => Validators.validateApiKey(v, context),
@@ -241,7 +241,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                   TextFormField(
                     controller: apiSecretController,
                     decoration: InputDecoration(
-                      labelText: l10n.apiSecretLabel,
+                      labelText: l10n.apiSecret,
                       prefixIcon: const Icon(Icons.password),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -274,7 +274,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                 if (formKey.currentState!.validate()) {
                   // Validate connections
                   if (connections.isEmpty || connections.every((c) => c.host.trim().isEmpty)) {
-                    SnackBarHelper.showError(context, l10n.pleaseAddConnectionEndpoint);
+                    SnackBarHelper.showError(context, l10n.addConnectionEndpoint);
                     return;
                   }
                   
@@ -353,7 +353,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
     final includeCredentials = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.exportProfilesTitle),
+        title: Text(l10n.exportProfiles),
         content: Text(l10n.exportProfilesContent),
         actions: [
           TextButton(

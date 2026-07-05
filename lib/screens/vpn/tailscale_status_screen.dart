@@ -228,7 +228,7 @@ class _TailscaleStatusPanelState extends State<TailscaleStatusPanel> {
                 ),
                 const SizedBox(height: 8),
                 _buildDetailRow(
-                  l10n.magicDns,
+                  StringConstants.magicDns,
                   status.magicDns ? l10n.enabled : l10n.disabled,
                 ),
                 const SizedBox(height: 8),
