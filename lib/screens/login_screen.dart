@@ -458,9 +458,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: AppColors.infoBackground,
+                          color: Theme.of(context).colorScheme.primaryContainer,
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: AppColors.infoText.withValues(alpha: AppColors.opacityDivider)),
+                          border: Border.all(color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: AppColors.opacityDivider)),
                         ),
                         child: Row(
                           children: [
@@ -473,7 +473,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Expanded(
                               child: Text(
                                 _viewModel.statusMessage!,
-                                style: const TextStyle(color: AppColors.infoText),
+                                style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
                               ),
                             ),
                           ],

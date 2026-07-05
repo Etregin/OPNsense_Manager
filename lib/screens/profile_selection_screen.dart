@@ -502,13 +502,13 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
-                      color: AppColors.warningLight,
+                      color: AppColors.warning.withValues(alpha: AppColors.opacityDisabled),
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
                       l10n.demo,
-                      style: const TextStyle(
-                        color: AppColors.warningDark,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onErrorContainer,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                       ),

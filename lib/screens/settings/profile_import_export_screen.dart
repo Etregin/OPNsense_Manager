@@ -185,7 +185,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.info_outline, color: AppColors.infoIcon),
+                    Icon(Icons.info_outline, color: Theme.of(context).colorScheme.onPrimaryContainer),
                     const SizedBox(width: 8),
                     Text(
                       l10n.aboutImportExport,
@@ -206,7 +206,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
         ),
         const SizedBox(height: 16),
         Card(
-          color: AppColors.warningBackground,
+          color: Theme.of(context).colorScheme.errorContainer,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -220,7 +220,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
                       l10n.securityWarning,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: AppColors.warningDark,
+                            color: Theme.of(context).colorScheme.onErrorContainer,
                           ),
                     ),
                   ],
@@ -229,7 +229,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
                 Text(
                   l10n.exportCredentialsWarning,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.warningDark,
+                        color: Theme.of(context).colorScheme.onErrorContainer,
                       ),
                 ),
               ],

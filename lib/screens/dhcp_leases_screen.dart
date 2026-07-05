@@ -452,7 +452,7 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: lease.isStatic ? AppColors.infoText : AppColors.warning,
+                        color: lease.isStatic ? Theme.of(context).colorScheme.primary : AppColors.warning,
                       ),
                     ),
                   ),

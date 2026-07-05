@@ -21,13 +21,22 @@ import 'package:flutter/material.dart';
 /// Centralised colour palette for OPNsense Manager.
 ///
 /// Groups:
-///   • Brand       — primary, secondary
-///   • Status      — success, warning, error, disabled
-///   • Text/Surface — textSecondary, iconMuted, surfaceMid, surfaceLight
-///   • Info         — info, infoBackground, infoText, infoIcon
-///   • Warning tones — warningBackground, warningLight, warningIcon, warningDark
-///   • On-color/Surface tokens — onPrimary, transparent
-///   • Shadow/Overlay tokens   — shadow, shadowLight, overlay, onSurface
+///   • Brand            — primary, secondary
+///   • Status           — success, warning, error, disabled
+///   • Info             — info, infoBackground*, infoText*, infoIcon*
+///   • Warning tones    — warningBackground*, warningLight*, warningIcon, warningDark*
+///   • On-color tokens  — onPrimary, transparent
+///   • Shadow/Overlay   — shadow, shadowLight, overlay
+///   • Opacity constants
+///   • Chart/Misc       — bandwidth
+///
+/// Tokens marked * are light-mode only (fixed hex values). At call-sites that
+/// render in both light and dark mode, use the equivalent colorScheme token:
+///   infoBackground    → colorScheme.primaryContainer
+///   infoText          → colorScheme.onPrimaryContainer
+///   infoIcon          → colorScheme.onPrimaryContainer
+///   warningBackground → colorScheme.errorContainer
+///   warningDark       → colorScheme.onErrorContainer
 ///
 /// MIGRATION REFERENCE (old → new):
 ///   AppConstants.primaryColorValue   → AppColors.primary
@@ -70,20 +79,17 @@ class AppColors {
   static const Color disabled = Color(0xFF9E9E9E); // Colors.grey
 
   // Informational
+  // Light-mode only — in adaptive UI use colorScheme.primaryContainer / onPrimaryContainer instead.
   static const Color info            = Color(0xFF2196F3); // Colors.blue
-  /// Light-blue background for informational banners — **light mode only**.
-  ///
-  /// This is a fixed hex value and does not adapt to dark mode. Use
-  /// `Theme.of(ctx).colorScheme.primaryContainer` for a fully adaptive
-  /// equivalent when building theme-agnostic UI.
   static const Color infoBackground  = Color(0xFFE3F2FD); // Colors.blue[50]
   static const Color infoText        = Color(0xFF1565C0); // Colors.blue[900]
   static const Color infoIcon        = Color(0xFF1976D2); // Colors.blue[700]
 
   // Warning tones (orange scale)
+  // Background/text tokens are light-mode only — use colorScheme.errorContainer / onErrorContainer in adaptive UI.
   static const Color warningBackground = Color(0xFFFFF3E0); // Colors.orange[50]
   static const Color warningLight      = Color(0xFFFFE0B2); // Colors.orange[100]  (shade100)
-  static const Color warningIcon       = Color(0xFFF57C00); // Colors.orange[700]
+  static const Color warningIcon       = Color(0xFFF57C00); // Colors.orange[700] — readable in both modes
   static const Color warningDark       = Color(0xFFE65100); // Colors.orange[900]
 
   // On-color & surface tokens
@@ -111,8 +117,7 @@ class AppColors {
   static const double opacitySubdued  = 0.60; // secondary text in low-contrast contexts
   static const double opacityStrong   = 0.70; // gradient stops, chart area fill
   static const double opacityHeavy    = 0.80; // near-opaque subtitles (splash, dashboard)
-  static const double opacityAlmost   = 0.90; // near-opaque text (profile subtitle)
 
   // Chart / Miscellaneous
-  static const Color bandwidth = Color(0xFF9C27B0); // Purple — total-bandwidth stat chip
+  static const Color bandwidth = Color(0xFF9C27B0); // Purple — total-bandwidth stat chip; kept centrally for reuse in future bandwidth charts.
 }
