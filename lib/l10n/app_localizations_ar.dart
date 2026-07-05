@@ -621,9 +621,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get debug => 'التصحيح';
 
   @override
-  String get debugDescription => 'تفعيل تسجيل التصحيح';
-
-  @override
   String get defineRoleOfInstance => 'حدد دور هذا المثيل';
 
   @override
@@ -905,10 +902,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get enableDebugLogging => 'تمكين تسجيل التصحيح';
-
-  @override
-  String get enablePinLockFirst =>
-      'يرجى تفعيل قفل PIN أولاً قبل استخدام البيومترية';
 
   @override
   String get enablePinLockFirstBiometric =>
@@ -1501,11 +1494,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get importSuccess => 'نجح الاستيراد';
 
   @override
-  String importedProfiles(int count) {
-    return 'تم استيراد $count ملف شخصي';
-  }
-
-  @override
   String importedWithFailures(int failed, int success) {
     String _temp0 = intl.Intl.pluralLogic(
       success,
@@ -1574,11 +1562,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get interface => 'الواجهة';
 
   @override
-  String interfaceLabel(String interface) {
-    return '$interface';
-  }
-
-  @override
   String get invalidApiKeyFormat => 'تنسيق مفتاح API غير صالح';
 
   @override
@@ -1593,11 +1576,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get invalidDestinationFormat => 'تنسيق الوجهة غير صالح';
-
-  @override
-  String invalidFileError(String error) {
-    return 'ملف غير صالح: $error';
-  }
 
   @override
   String invalidFileFormat(String error) {
@@ -3116,11 +3094,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tunnelSettings => 'إعدادات النفق';
-
-  @override
-  String tunnelWithValue(String value) {
-    return 'النفق: $value';
-  }
 
   @override
   String get twoMin => '2 دقيقة';

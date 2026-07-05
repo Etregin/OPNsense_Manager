@@ -498,8 +498,6 @@
   },
   "debug": "Depuración",
   "@debug": {},
-  "debugDescription": "Habilitar registro de depuración",
-  "@debugDescription": {},
   "defineRoleOfInstance": "Definir el rol de esta instancia",
   "@defineRoleOfInstance": {},
   "delete": "Eliminar",
@@ -754,8 +752,6 @@
   "@enableClientSpecificOverride": {},
   "enableDebugLogging": "Habilitar registro de depuración",
   "@enableDebugLogging": {},
-  "enablePinLockFirst": "Por favor habilite el bloqueo PIN primero antes de usar biométrico",
-  "@enablePinLockFirst": {},
   "enablePinLockFirstBiometric": "Habilite el bloqueo PIN primero para usar biométrico",
   "@enablePinLockFirstBiometric": {},
   "enableRule": "Activar regla",
@@ -1391,15 +1387,6 @@
   "@importProfilesSubtitle": {},
   "importSuccess": "Importación exitosa",
   "@importSuccess": {},
-  "importedProfiles": "Se importaron {count} perfil(es)",
-  "@importedProfiles": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "5"
-      }
-    }
-  },
   "importedWithFailures": "Se importaron {success} {success, plural, =1{perfil} other{perfiles}}, {failed} fallaron",
   "@importedWithFailures": {
     "placeholders": {
@@ -1472,15 +1459,6 @@
   "@instances": {},
   "interface": "Interfaz",
   "@interface": {},
-  "interfaceLabel": "{interface}",
-  "@interfaceLabel": {
-    "placeholders": {
-      "interface": {
-        "type": "String",
-        "example": "eth0"
-      }
-    }
-  },
   "invalidApiKeyFormat": "Formato de clave API no válido",
   "@invalidApiKeyFormat": {},
   "invalidApiSecretFormat": "Formato de secreto API no válido",
@@ -1491,15 +1469,6 @@
   "@invalidCidrNotation": {},
   "invalidDestinationFormat": "Formato de destino inválido",
   "@invalidDestinationFormat": {},
-  "invalidFileError": "Archivo inválido: {error}",
-  "@invalidFileError": {
-    "placeholders": {
-      "error": {
-        "type": "String",
-        "example": "Error message"
-      }
-    }
-  },
   "invalidFileFormat": "Archivo inválido: {error}",
   "@invalidFileFormat": {
     "placeholders": {
@@ -2691,14 +2660,6 @@
   "@tunnelNetwork": {},
   "tunnelSettings": "Configuración del Túnel",
   "@tunnelSettings": {},
-  "tunnelWithValue": "Túnel: {value}",
-  "@tunnelWithValue": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
   "twoMin": "2 min",
   "@twoMin": {},
   "type": "Tipo",

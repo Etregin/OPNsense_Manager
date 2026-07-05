@@ -498,8 +498,6 @@
   },
   "debug": "Débogage",
   "@debug": {},
-  "debugDescription": "Activer la journalisation de débogage",
-  "@debugDescription": {},
   "defineRoleOfInstance": "Définir le rôle de cette instance",
   "@defineRoleOfInstance": {},
   "delete": "Supprimer",
@@ -754,8 +752,6 @@
   "@enableClientSpecificOverride": {},
   "enableDebugLogging": "Activer la journalisation de débogage",
   "@enableDebugLogging": {},
-  "enablePinLockFirst": "Veuillez activer le verrouillage PIN d'abord avant d'utiliser la biométrie",
-  "@enablePinLockFirst": {},
   "enablePinLockFirstBiometric": "Activez le verrouillage PIN d'abord pour utiliser la biométrie",
   "@enablePinLockFirstBiometric": {},
   "enableRule": "Activer la règle",
@@ -1391,15 +1387,6 @@
   "@importProfilesSubtitle": {},
   "importSuccess": "Importation réussie",
   "@importSuccess": {},
-  "importedProfiles": "{count} profil(s) importé(s)",
-  "@importedProfiles": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "5"
-      }
-    }
-  },
   "importedWithFailures": "{success} {success, plural, =1{profil importé} other{profils importés}}, {failed} échoué(s)",
   "@importedWithFailures": {
     "placeholders": {
@@ -1472,15 +1459,6 @@
   "@instances": {},
   "interface": "Interface",
   "@interface": {},
-  "interfaceLabel": "{interface}",
-  "@interfaceLabel": {
-    "placeholders": {
-      "interface": {
-        "type": "String",
-        "example": "eth0"
-      }
-    }
-  },
   "invalidApiKeyFormat": "Format de clé API non valide",
   "@invalidApiKeyFormat": {},
   "invalidApiSecretFormat": "Format de secret API non valide",
@@ -1491,15 +1469,6 @@
   "@invalidCidrNotation": {},
   "invalidDestinationFormat": "Format de destination invalide",
   "@invalidDestinationFormat": {},
-  "invalidFileError": "Fichier invalide : {error}",
-  "@invalidFileError": {
-    "placeholders": {
-      "error": {
-        "type": "String",
-        "example": "Error message"
-      }
-    }
-  },
   "invalidFileFormat": "Fichier invalide : {error}",
   "@invalidFileFormat": {
     "placeholders": {
@@ -2691,14 +2660,6 @@
   "@tunnelNetwork": {},
   "tunnelSettings": "Paramètres du Tunnel",
   "@tunnelSettings": {},
-  "tunnelWithValue": "Tunnel : {value}",
-  "@tunnelWithValue": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
   "twoMin": "2 min",
   "@twoMin": {},
   "type": "Type",

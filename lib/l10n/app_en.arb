@@ -488,8 +488,6 @@
   },
   "debug": "Debug",
   "@debug": {},
-  "debugDescription": "Enable debug logging",
-  "@debugDescription": {},
   "defineRoleOfInstance": "Define the role of this instance",
   "@defineRoleOfInstance": {},
   "delete": "Delete",
@@ -740,8 +738,6 @@
   "@enableClientSpecificOverride": {},
   "enableDebugLogging": "Enable debug logging",
   "@enableDebugLogging": {},
-  "enablePinLockFirst": "Please enable PIN lock first before using biometric",
-  "@enablePinLockFirst": {},
   "enablePinLockFirstBiometric": "Enable PIN lock first to use biometric",
   "@enablePinLockFirstBiometric": {},
   "enableRule": "Enable Rule",
@@ -1354,14 +1350,6 @@
   "@importProfilesSubtitle": {},
   "importSuccess": "Import successful",
   "@importSuccess": {},
-  "importedProfiles": "Imported {count} profile(s)",
-  "@importedProfiles": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "importedWithFailures": "Imported {success} profile{success, plural, =1{} other{s}}, {failed} failed",
   "@importedWithFailures": {
     "placeholders": {
@@ -1437,16 +1425,6 @@
   "@instances": {},
   "interface": "Interface",
   "@interface": {},
-  "interfaceLabel": "{interface}",
-  "@interfaceLabel": {
-    "description": "Label for network interface",
-    "placeholders": {
-      "interface": {
-        "type": "String",
-        "example": "eth0"
-      }
-    }
-  },
   "invalidApiKeyFormat": "Invalid API Key format",
   "@invalidApiKeyFormat": {},
   "invalidApiSecretFormat": "Invalid API Secret format",
@@ -1457,14 +1435,6 @@
   "@invalidCidrNotation": {},
   "invalidDestinationFormat": "Invalid destination format",
   "@invalidDestinationFormat": {},
-  "invalidFileError": "Invalid file: {error}",
-  "@invalidFileError": {
-    "placeholders": {
-      "error": {
-        "type": "String"
-      }
-    }
-  },
   "invalidFileFormat": "Invalid file: {error}",
   "@invalidFileFormat": {
     "placeholders": {
@@ -2639,14 +2609,6 @@
   "@tunnelNetwork": {},
   "tunnelSettings": "Tunnel Settings",
   "@tunnelSettings": {},
-  "tunnelWithValue": "Tunnel: {value}",
-  "@tunnelWithValue": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
   "twoMin": "2 min",
   "@twoMin": {},
   "type": "Type",

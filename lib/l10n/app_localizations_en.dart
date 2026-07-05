@@ -628,9 +628,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get debug => 'Debug';
 
   @override
-  String get debugDescription => 'Enable debug logging';
-
-  @override
   String get defineRoleOfInstance => 'Define the role of this instance';
 
   @override
@@ -912,10 +909,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enableDebugLogging => 'Enable debug logging';
-
-  @override
-  String get enablePinLockFirst =>
-      'Please enable PIN lock first before using biometric';
 
   @override
   String get enablePinLockFirstBiometric =>
@@ -1509,11 +1502,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importSuccess => 'Import successful';
 
   @override
-  String importedProfiles(int count) {
-    return 'Imported $count profile(s)';
-  }
-
-  @override
   String importedWithFailures(int failed, int success) {
     String _temp0 = intl.Intl.pluralLogic(
       success,
@@ -1582,11 +1570,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get interface => 'Interface';
 
   @override
-  String interfaceLabel(String interface) {
-    return '$interface';
-  }
-
-  @override
   String get invalidApiKeyFormat => 'Invalid API Key format';
 
   @override
@@ -1601,11 +1584,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get invalidDestinationFormat => 'Invalid destination format';
-
-  @override
-  String invalidFileError(String error) {
-    return 'Invalid file: $error';
-  }
 
   @override
   String invalidFileFormat(String error) {
@@ -3131,11 +3109,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tunnelSettings => 'Tunnel Settings';
-
-  @override
-  String tunnelWithValue(String value) {
-    return 'Tunnel: $value';
-  }
 
   @override
   String get twoMin => '2 min';

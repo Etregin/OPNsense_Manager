@@ -498,8 +498,6 @@
   },
   "debug": "التصحيح",
   "@debug": {},
-  "debugDescription": "تفعيل تسجيل التصحيح",
-  "@debugDescription": {},
   "defineRoleOfInstance": "حدد دور هذا المثيل",
   "@defineRoleOfInstance": {},
   "delete": "حذف",
@@ -754,8 +752,6 @@
   "@enableClientSpecificOverride": {},
   "enableDebugLogging": "تمكين تسجيل التصحيح",
   "@enableDebugLogging": {},
-  "enablePinLockFirst": "يرجى تفعيل قفل PIN أولاً قبل استخدام البيومترية",
-  "@enablePinLockFirst": {},
   "enablePinLockFirstBiometric": "قم بتفعيل قفل PIN أولاً لاستخدام البيومترية",
   "@enablePinLockFirstBiometric": {},
   "enableRule": "تفعيل القاعدة",
@@ -1384,15 +1380,6 @@
   "@importProfilesSubtitle": {},
   "importSuccess": "نجح الاستيراد",
   "@importSuccess": {},
-  "importedProfiles": "تم استيراد {count} ملف شخصي",
-  "@importedProfiles": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "5"
-      }
-    }
-  },
   "importedWithFailures": "تم استيراد {success} {success, plural, =1{ملف شخصي} other{ملفات شخصية}}، فشل {failed}",
   "@importedWithFailures": {
     "placeholders": {
@@ -1465,15 +1452,6 @@
   "@instances": {},
   "interface": "الواجهة",
   "@interface": {},
-  "interfaceLabel": "{interface}",
-  "@interfaceLabel": {
-    "placeholders": {
-      "interface": {
-        "type": "String",
-        "example": "eth0"
-      }
-    }
-  },
   "invalidApiKeyFormat": "تنسيق مفتاح API غير صالح",
   "@invalidApiKeyFormat": {},
   "invalidApiSecretFormat": "تنسيق سر API غير صالح",
@@ -1484,15 +1462,6 @@
   "@invalidCidrNotation": {},
   "invalidDestinationFormat": "تنسيق الوجهة غير صالح",
   "@invalidDestinationFormat": {},
-  "invalidFileError": "ملف غير صالح: {error}",
-  "@invalidFileError": {
-    "placeholders": {
-      "error": {
-        "type": "String",
-        "example": "Error message"
-      }
-    }
-  },
   "invalidFileFormat": "ملف غير صالح: {error}",
   "@invalidFileFormat": {
     "placeholders": {
@@ -2682,14 +2651,6 @@
   "@tunnelNetwork": {},
   "tunnelSettings": "إعدادات النفق",
   "@tunnelSettings": {},
-  "tunnelWithValue": "النفق: {value}",
-  "@tunnelWithValue": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
   "twoMin": "2 دقيقة",
   "@twoMin": {},
   "type": "النوع",

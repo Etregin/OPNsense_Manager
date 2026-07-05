@@ -302,7 +302,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
     if (!_pinEnabled) {
       if (mounted) {
         final l10n2 = AppLocalizations.of(context)!;
-        SnackBarHelper.showWarning(context, l10n2.enablePinLockFirst);
+        SnackBarHelper.showWarning(context, l10n2.enablePinLockFirstBiometric);
       }
       return;
     }

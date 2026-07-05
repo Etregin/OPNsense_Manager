@@ -1220,12 +1220,6 @@ abstract class AppLocalizations {
   /// **'Debug'**
   String get debug;
 
-  /// No description provided for @debugDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Enable debug logging'**
-  String get debugDescription;
-
   /// No description provided for @defineRoleOfInstance.
   ///
   /// In en, this message translates to:
@@ -1735,12 +1729,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enable debug logging'**
   String get enableDebugLogging;
-
-  /// No description provided for @enablePinLockFirst.
-  ///
-  /// In en, this message translates to:
-  /// **'Please enable PIN lock first before using biometric'**
-  String get enablePinLockFirst;
 
   /// No description provided for @enablePinLockFirstBiometric.
   ///
@@ -2726,12 +2714,6 @@ abstract class AppLocalizations {
   /// **'Import successful'**
   String get importSuccess;
 
-  /// No description provided for @importedProfiles.
-  ///
-  /// In en, this message translates to:
-  /// **'Imported {count} profile(s)'**
-  String importedProfiles(int count);
-
   /// No description provided for @importedWithFailures.
   ///
   /// In en, this message translates to:
@@ -2834,12 +2816,6 @@ abstract class AppLocalizations {
   /// **'Interface'**
   String get interface;
 
-  /// Label for network interface
-  ///
-  /// In en, this message translates to:
-  /// **'{interface}'**
-  String interfaceLabel(String interface);
-
   /// No description provided for @invalidApiKeyFormat.
   ///
   /// In en, this message translates to:
@@ -2869,12 +2845,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invalid destination format'**
   String get invalidDestinationFormat;
-
-  /// No description provided for @invalidFileError.
-  ///
-  /// In en, this message translates to:
-  /// **'Invalid file: {error}'**
-  String invalidFileError(String error);
 
   /// No description provided for @invalidFileFormat.
   ///
@@ -5663,12 +5633,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tunnel Settings'**
   String get tunnelSettings;
-
-  /// No description provided for @tunnelWithValue.
-  ///
-  /// In en, this message translates to:
-  /// **'Tunnel: {value}'**
-  String tunnelWithValue(String value);
 
   /// No description provided for @twoMin.
   ///
