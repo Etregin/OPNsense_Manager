@@ -105,5 +105,12 @@ class AppColors {
   static const Color info            = Color(0xFF2196F3); // Colors.blue
   static const Color infoBackground  = Color(0xFFE3F2FD); // Colors.blue[50]
   static const Color infoText        = Color(0xFF1565C0); // Colors.blue[900]
+  static const Color infoIcon        = Color(0xFF1976D2); // Colors.blue[700]
+
+  // Warning tones (orange scale)
+  static const Color warningBackground = Color(0xFFFFF3E0); // Colors.orange[50]
+  static const Color warningLight      = Color(0xFFFFE0B2); // Colors.orange[100]  (shade100)
+  static const Color warningIcon       = Color(0xFFF57C00); // Colors.orange[700]
+  static const Color warningDark       = Color(0xFFE65100); // Colors.orange[900]
 }
 

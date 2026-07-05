@@ -56,7 +56,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
             style: TextButton.styleFrom(
-              foregroundColor: Colors.orange,
+              foregroundColor: AppColors.warning,
             ),
             child: Text(l10n.includeCredentials),
           ),
@@ -184,7 +184,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.info_outline, color: Colors.blue[700]),
+                    const Icon(Icons.info_outline, color: AppColors.infoIcon),
                     const SizedBox(width: 8),
                     Text(
                       l10n.aboutImportExport,
@@ -205,7 +205,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
         ),
         const SizedBox(height: 16),
         Card(
-          color: Colors.orange[50],
+          color: AppColors.warningBackground,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -213,13 +213,13 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.warning_amber, color: Colors.orange[700]),
+                    const Icon(Icons.warning_amber, color: AppColors.warningIcon),
                     const SizedBox(width: 8),
                     Text(
                       l10n.securityWarning,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: Colors.orange[900],
+                            color: AppColors.warningDark,
                           ),
                     ),
                   ],
@@ -228,7 +228,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
                 Text(
                   l10n.exportCredentialsWarning,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.orange[900],
+                        color: AppColors.warningDark,
                       ),
                 ),
               ],

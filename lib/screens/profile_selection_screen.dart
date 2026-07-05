@@ -500,13 +500,13 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
-                      color: Colors.orange.shade100,
+                      color: AppColors.warningLight,
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
                       l10n.demo,
-                      style: TextStyle(
-                        color: Colors.orange.shade900,
+                      style: const TextStyle(
+                        color: AppColors.warningDark,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                       ),
@@ -521,8 +521,8 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                 const SizedBox(height: 4),
                 Text(
                   '${profile.useHttps ? l10n.https : l10n.http}://${profile.host}:${profile.port}',
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
                     fontSize: 14,
                   ),
                 ),
@@ -530,8 +530,8 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                   const SizedBox(height: 4),
                   Text(
                     l10n.lastUsed(_formatDate(profile.lastUsed!, l10n)),
-                    style: TextStyle(
-                      color: Colors.grey.shade500,
+                    style: const TextStyle(
+                      color: AppColors.iconMuted,
                       fontSize: 12,
                     ),
                   ),

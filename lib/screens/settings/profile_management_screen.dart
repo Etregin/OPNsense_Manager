@@ -223,7 +223,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                     child: Text(
                       dhcpServerType.getDescription(context),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.grey[600],
+                            color: AppColors.textSecondary,
                             fontStyle: FontStyle.italic,
                           ),
                     ),

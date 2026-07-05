@@ -211,10 +211,10 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.error_outline,
               size: 64,
-              color: Colors.red[300],
+              color: AppColors.danger,
             ),
             const SizedBox(height: 16),
             Text(
@@ -227,7 +227,7 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
               child: Text(
                 _errorMessage!,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey[600]),
+                style: const TextStyle(color: AppColors.textSecondary),
               ),
             ),
             const SizedBox(height: 24),
@@ -248,10 +248,10 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.vpn_lock_outlined,
               size: 64,
-              color: Colors.grey[400],
+              color: AppColors.iconMuted,
             ),
             const SizedBox(height: 16),
             Text(
@@ -263,7 +263,7 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
             const SizedBox(height: 8),
             Text(
               l10n.vpnConnectionsWillAppear,
-              style: TextStyle(color: Colors.grey[600]),
+              style: const TextStyle(color: AppColors.textSecondary),
             ),
           ],
         ),

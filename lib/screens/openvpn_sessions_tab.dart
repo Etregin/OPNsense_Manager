@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../models/openvpn_session.dart';
 import '../services/demo_api_service.dart';
+import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
 
 /// Tab widget for displaying OpenVPN sessions
@@ -321,7 +322,7 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
                               : const Icon(Icons.stop, size: 18),
                           label: const Text('Stop'),
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.red,
+                            foregroundColor: AppColors.danger,
                           ),
                         ),
                       ] else if (session.canStart) ...[
@@ -336,7 +337,7 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
                               : const Icon(Icons.play_arrow, size: 18),
                           label: const Text('Start'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
+                            backgroundColor: AppColors.success,
                             foregroundColor: Colors.white,
                           ),
                         ),
@@ -358,15 +359,15 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
     final IconData icon;
 
     if (session.status == 'ok') {
-      color = Colors.green;
+      color = AppColors.success;
       label = 'Running';
       icon = Icons.check_circle;
     } else if (session.status == null) {
-      color = Colors.grey;
+      color = AppColors.disabled;
       label = 'Stopped';
       icon = Icons.stop_circle;
     } else {
-      color = Colors.orange;
+      color = AppColors.warning;
       label = session.status ?? 'Unknown';
       icon = Icons.warning;
     }
