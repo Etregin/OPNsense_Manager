@@ -75,9 +75,9 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
   Future<void> _loadSettings() async {
     final storageService = context.read<StorageService>();
     final limit =
-        await storageService.loadInt('network_monitor_bandwidth_limit');
+        await storageService.loadInt(AppConstants.keyNetworkMonitorBandwidthLimit);
     final interfacesJson =
-        await storageService.loadString('network_monitor_interfaces');
+        await storageService.loadString(AppConstants.keyNetworkMonitorInterfaces);
 
     if (mounted) {
       List<String> interfaces = _viewModel.selectedInterfaces;
@@ -113,7 +113,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
 
   Future<void> _saveBandwidthLimit(int limitMbps) async {
     final storageService = context.read<StorageService>();
-    await storageService.saveInt('network_monitor_bandwidth_limit', limitMbps);
+    await storageService.saveInt(AppConstants.keyNetworkMonitorBandwidthLimit, limitMbps);
     setState(() {
       _bandwidthLimitMbps = limitMbps;
     });
@@ -791,11 +791,11 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildDetailRow('IP Address', host.address),
+              _buildDetailRow(l10n.ipAddress, host.address),
               if (host.macAddress != null)
                 _buildDetailRow(l10n.macAddress, host.macAddress!),
               if (host.manufacturer != null)
-                _buildDetailRow('Manufacturer', host.manufacturer!),
+                _buildDetailRow(l10n.manufacturer, host.manufacturer!),
               const Divider(height: 24),
               _buildDetailRow(
                 l10n.download,
@@ -812,7 +812,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
               if (history.isNotEmpty) ...[
                 const Divider(height: 24),
                 Text(
-                  'Bandwidth History',
+                  l10n.bandwidthHistory,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.onSurface,
@@ -1030,7 +1030,7 @@ class _LiveNetworkMonitorScreenState extends State<LiveNetworkMonitorScreen> {
   Future<void> _saveInterfaces(List<String> interfaces) async {
     final storageService = context.read<StorageService>();
     await storageService.saveString(
-        'network_monitor_interfaces', jsonEncode(interfaces));
+        AppConstants.keyNetworkMonitorInterfaces, jsonEncode(interfaces));
     _viewModel.setSelectedInterfaces(interfaces);
   }
 

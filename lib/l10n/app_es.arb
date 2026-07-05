@@ -215,6 +215,8 @@
   "@bandwidthLimit": {},
   "bandwidthLimitMbps": "Límite de Ancho de Banda (Mbps)",
   "@bandwidthLimitMbps": {},
+  "bandwidthHistory": "Historial de Ancho de Banda",
+  "@bandwidthHistory": {},
   "base64EncodedPrivateKeyKeepSecret": "Clave privada codificada en Base64 (¡mantener en secreto!)",
   "@base64EncodedPrivateKeyKeepSecret": {},
   "base64EncodedPublicKey": "Clave pública codificada en Base64",
@@ -978,6 +980,12 @@
   },
   "failedToApplyConfiguration": "Error al aplicar la configuración",
   "@failedToApplyConfiguration": {},
+  "failedToSwitchProfile": "Error al cambiar de perfil: {error}",
+  "@failedToSwitchProfile": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
   "failedToBlockHost": "Error al bloquear el host",
   "@failedToBlockHost": {},
   "failedToConnect": "Error al conectar {name}",

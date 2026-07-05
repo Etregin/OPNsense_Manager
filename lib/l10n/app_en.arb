@@ -211,6 +211,8 @@
   "@bandwidthLimit": {},
   "bandwidthLimitMbps": "Bandwidth Limit (Mbps)",
   "@bandwidthLimitMbps": {},
+  "bandwidthHistory": "Bandwidth History",
+  "@bandwidthHistory": {},
   "base64EncodedPrivateKeyKeepSecret": "Base64-encoded private key (keep secret!)",
   "@base64EncodedPrivateKeyKeepSecret": {},
   "base64EncodedPublicKey": "Base64-encoded public key",
@@ -956,6 +958,12 @@
   },
   "failedToApplyConfiguration": "Failed to apply configuration",
   "@failedToApplyConfiguration": {},
+  "failedToSwitchProfile": "Failed to switch profile: {error}",
+  "@failedToSwitchProfile": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
   "failedToBlockHost": "Failed to block host",
   "@failedToBlockHost": {},
   "failedToConnect": "Failed to connect {name}",

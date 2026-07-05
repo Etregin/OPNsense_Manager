@@ -259,7 +259,7 @@ class _AppDrawerState extends State<AppDrawer> {
       } catch (e) {
         // Try to show error message if context is still valid
         if (context.mounted) {
-          SnackBarHelper.showError(context, 'Failed to switch profile: ${e.toString()}', duration: const Duration(seconds: 5));
+          SnackBarHelper.showError(context, l10n.failedToSwitchProfile(e.toString()), duration: const Duration(seconds: 5));
         }
       }
     }

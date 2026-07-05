@@ -289,6 +289,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get bandwidthLimitMbps => 'حد النطاق الترددي (ميجابت في الثانية)';
 
   @override
+  String get bandwidthHistory => 'سجل عرض النطاق الترددي';
+
+  @override
   String get base64EncodedPrivateKeyKeepSecret =>
       'مفتاح خاص مشفر بـ Base64 (احتفظ به سرياً!)';
 
@@ -1139,6 +1142,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get failedToApplyConfiguration => 'فشل تطبيق التكوين';
+
+  @override
+  String failedToSwitchProfile(String error) {
+    return 'فشل تبديل الملف الشخصي: $error';
+  }
 
   @override
   String get failedToBlockHost => 'فشل حظر المضيف';

@@ -123,7 +123,7 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen>
           SnackBarHelper.showSuccess(context, connection.isConnected
               ? l10n.successfullyDisconnected(connection.name)
               : l10n.successfullyConnected(connection.name));
-          await Future.delayed(const Duration(seconds: 1));
+          await Future.delayed(AppConstants.postActionRefreshDelay);
           if (mounted) {
             unawaited(_loadData());
           }

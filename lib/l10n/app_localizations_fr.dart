@@ -299,6 +299,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get bandwidthLimitMbps => 'Limite de Bande Passante (Mbps)';
 
   @override
+  String get bandwidthHistory => 'Historique de Bande Passante';
+
+  @override
   String get base64EncodedPrivateKeyKeepSecret =>
       'Clé privée encodée en Base64 (garder secrète !)';
 
@@ -1164,6 +1167,11 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get failedToApplyConfiguration =>
       'Échec de l\'application de la configuration';
+
+  @override
+  String failedToSwitchProfile(String error) {
+    return 'Échec du changement de profil : $error';
+  }
 
   @override
   String get failedToBlockHost => 'Échec du blocage de l\'hôte';

@@ -215,6 +215,8 @@
   "@bandwidthLimit": {},
   "bandwidthLimitMbps": "حد النطاق الترددي (ميجابت في الثانية)",
   "@bandwidthLimitMbps": {},
+  "bandwidthHistory": "سجل عرض النطاق الترددي",
+  "@bandwidthHistory": {},
   "base64EncodedPrivateKeyKeepSecret": "مفتاح خاص مشفر بـ Base64 (احتفظ به سرياً!)",
   "@base64EncodedPrivateKeyKeepSecret": {},
   "base64EncodedPublicKey": "مفتاح عام مشفر بـ Base64",
@@ -978,6 +980,12 @@
   },
   "failedToApplyConfiguration": "فشل تطبيق التكوين",
   "@failedToApplyConfiguration": {},
+  "failedToSwitchProfile": "فشل تبديل الملف الشخصي: {error}",
+  "@failedToSwitchProfile": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
   "failedToBlockHost": "فشل حظر المضيف",
   "@failedToBlockHost": {},
   "failedToConnect": "فشل الاتصال بـ {name}",

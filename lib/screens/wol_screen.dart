@@ -381,7 +381,7 @@ class _WolHostCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        host.descr.isNotEmpty ? host.descr : 'Unnamed Host',
+                        host.descr.isNotEmpty ? host.descr : AppLocalizations.of(context)!.unnamedHost,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),

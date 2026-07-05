@@ -90,7 +90,7 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
   }
 
   Future<void> _loadThemeMode() async {
-    final themeModeString = await StorageService().loadString('theme_mode') ?? 'system';
+    final themeModeString = await StorageService().loadString(AppConstants.keyThemeMode) ?? 'system';
     if (mounted) {
       setState(() {
         _themeMode = _getThemeModeFromString(themeModeString);
@@ -99,7 +99,7 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
   }
 
   Future<void> _loadLocale() async {
-    final localeString = await StorageService().loadString('locale');
+    final localeString = await StorageService().loadString(AppConstants.keyLocale);
     if (mounted && localeString != null) {
       // Validate locale against supported languages
       final supportedLanguages = AppConstants.supportedLanguages.keys.toList();
@@ -133,7 +133,7 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
       setState(() {
         _themeMode = _getThemeModeFromString(mode);
       });
-      await StorageService().saveString('theme_mode', mode);
+      await StorageService().saveString(AppConstants.keyThemeMode, mode);
     } finally {
       if (mounted) {
         _isUpdatingThemeMode = false;
@@ -151,9 +151,9 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
         _locale = localeCode != null ? Locale(localeCode) : null;
       });
       if (localeCode != null) {
-        await StorageService().saveString('locale', localeCode);
+        await StorageService().saveString(AppConstants.keyLocale, localeCode);
       } else {
-        await StorageService().remove('locale');
+        await StorageService().remove(AppConstants.keyLocale);
       }
     } finally {
       if (mounted) {

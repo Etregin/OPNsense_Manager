@@ -632,6 +632,12 @@ abstract class AppLocalizations {
   /// **'Bandwidth Limit (Mbps)'**
   String get bandwidthLimitMbps;
 
+  /// No description provided for @bandwidthHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Bandwidth History'**
+  String get bandwidthHistory;
+
   /// No description provided for @base64EncodedPrivateKeyKeepSecret.
   ///
   /// In en, this message translates to:
@@ -2137,6 +2143,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to apply configuration'**
   String get failedToApplyConfiguration;
+
+  /// No description provided for @failedToSwitchProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to switch profile: {error}'**
+  String failedToSwitchProfile(String error);
 
   /// No description provided for @failedToBlockHost.
   ///

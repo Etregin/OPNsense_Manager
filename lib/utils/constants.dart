@@ -33,12 +33,16 @@ class AppConstants {
   static const Duration minRefreshInterval = Duration(seconds: 5);
   
   // Storage Keys
-  static const String keyHost = 'host';
-  static const String keyPort = 'port';
-  static const String keyApiKey = 'api_key';
-  static const String keyApiSecret = 'api_secret';
-  static const String keyUseHttps = 'use_https';
-  
+  static const String keyHost                         = 'host';
+  static const String keyPort                         = 'port';
+  static const String keyApiKey                       = 'api_key';
+  static const String keyApiSecret                    = 'api_secret';
+  static const String keyUseHttps                     = 'use_https';
+  static const String keyThemeMode                    = 'theme_mode';
+  static const String keyLocale                       = 'locale';
+  static const String keyNetworkMonitorBandwidthLimit = 'network_monitor_bandwidth_limit';
+  static const String keyNetworkMonitorInterfaces     = 'network_monitor_interfaces';
+
   // UI Constants
   static const double standardPadding = 16.0;
   static const double compactPadding = 8.0;
@@ -53,8 +57,9 @@ class AppConstants {
   static const int allRowsSentinel = 9999;  // sentinel value meaning "fetch all rows"
 
   // UI timing delays
-  static const Duration toggleDebounceDelay = Duration(milliseconds: 1500); // post-toggle feedback delay
-  static const Duration drawerCloseDelay    = Duration(milliseconds: 150);  // grace period for drawer close animation
+  static const Duration toggleDebounceDelay  = Duration(milliseconds: 1500); // post-toggle feedback delay
+  static const Duration drawerCloseDelay     = Duration(milliseconds: 150);  // grace period for drawer close animation
+  static const Duration postActionRefreshDelay = Duration(seconds: 1);       // grace period after service start/stop before reloading state
 
   // Domain Constants
   static const int defaultWireGuardPort = 51820;

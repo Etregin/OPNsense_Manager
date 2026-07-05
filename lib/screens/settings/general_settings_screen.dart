@@ -42,8 +42,8 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
   }
 
   Future<void> _loadSettings() async {
-    final themeMode = await StorageService().loadString('theme_mode') ?? 'system';
-    final locale = await StorageService().loadString('locale');
+    final themeMode = await StorageService().loadString(AppConstants.keyThemeMode) ?? 'system';
+    final locale = await StorageService().loadString(AppConstants.keyLocale);
     
     if (mounted) {
       setState(() {

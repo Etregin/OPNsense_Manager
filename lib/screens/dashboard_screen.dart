@@ -115,7 +115,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   ? l10n.serviceStoppedSuccessfully
                   : l10n.serviceRestartedSuccessfully;
           SnackBarHelper.showSuccess(context, successMsg);
-          await Future.delayed(const Duration(seconds: 1));
+          await Future.delayed(AppConstants.postActionRefreshDelay);
           if (mounted) {
             unawaited(_viewModel.loadDashboardData());
           }
