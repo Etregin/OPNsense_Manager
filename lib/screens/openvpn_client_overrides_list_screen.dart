@@ -23,12 +23,13 @@ import '../utils/constants.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/openvpn_client_overrides_view_model.dart';
-import '../widgets/openvpn/openvpn_client_override_card.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/common/confirmation_dialog.dart';
+import '../widgets/common/detail_row.dart';
 import '../widgets/common/error_display.dart';
 import '../widgets/common/empty_state_widget.dart';
+import '../widgets/openvpn/openvpn_client_override_card.dart';
 import '../l10n/app_localizations.dart';
-import '../widgets/common/confirmation_dialog.dart';
 
 
 /// Screen for displaying OpenVPN client specific overrides list
@@ -161,24 +162,8 @@ class _OpenvpnClientOverridesListScreenState
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              '$label:',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          Expanded(child: Text(value)),
-        ],
-      ),
-    );
-  }
+  Widget _buildDetailRow(String label, String value) =>
+      DetailRow(label: label, value: value);
 
   Future<void> _onEditOverride(OpenvpnClientOverrideListItem clientOverride) async {
     final result = await Navigator.of(context).pushNamed(

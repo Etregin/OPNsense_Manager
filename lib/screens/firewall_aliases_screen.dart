@@ -22,12 +22,15 @@ import '../constants/firewall_constants.dart';
 import '../utils/app_colors.dart';
 import '../models/firewall_alias.dart';
 import '../services/demo_api_service.dart';
+import '../utils/single_init_mixin.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/firewall_aliases_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/confirmation_dialog.dart';
+import '../widgets/common/detail_row.dart';
 import '../widgets/common/error_display.dart';
 import '../widgets/common/empty_state_widget.dart';
+import '../widgets/common/search_bar_field.dart';
 import '../l10n/app_localizations.dart';
 
 /// Firewall aliases management screen
@@ -38,33 +41,22 @@ class FirewallAliasesScreen extends StatefulWidget {
   State<FirewallAliasesScreen> createState() => _FirewallAliasesScreenState();
 }
 
-class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
+class _FirewallAliasesScreenState extends State<FirewallAliasesScreen>
+    with SingleInitMixin {
   late FirewallAliasesViewModel _viewModel;
-  bool _isInitialized = false;
   String _searchQuery = '';
   Set<String> _selectedTypes = {};
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInitialized) {
-      final apiService = context.read<DemoApiService>();
-      _viewModel = FirewallAliasesViewModel(apiService);
-      _isInitialized = true;
-      _loadData();
-    }
+  void onFirstDependency() {
+    _viewModel = FirewallAliasesViewModel(context.read<DemoApiService>());
+    _viewModel.loadItems();
   }
 
   @override
   void dispose() {
     _viewModel.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadData() async {
-    await Future.wait([
-      _viewModel.loadItems(),
-    ]);
   }
 
   List<FirewallAlias> _getFilteredAliases(List<FirewallAlias> allItems) {
@@ -239,24 +231,8 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              '$label:',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          Expanded(child: Text(value)),
-        ],
-      ),
-    );
-  }
+  Widget _buildDetailRow(String label, String value) =>
+      DetailRow(label: label, value: value);
 
   IconData _getIconForType(String type) {
     switch (type.toLowerCase()) {
@@ -324,16 +300,8 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: l10n.searchAliases,
-                          prefixIcon: const Icon(Icons.search),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 12),
-                        ),
+                      child: SearchBarField(
+                        hintText: l10n.searchAliases,
                         onChanged: (value) {
                           setState(() {
                             _searchQuery = value;

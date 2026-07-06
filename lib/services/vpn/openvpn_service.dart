@@ -992,7 +992,7 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        ApiEndpoints.openvpnServiceRestart2(id),
+        ApiEndpoints.openvpnServiceRestart(id),
         data: {},
       );
 

@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../services/demo_api_service.dart';
+import '../utils/single_init_mixin.dart';
 import '../utils/app_colors.dart';
 import '../utils/color_helpers.dart';
 import '../utils/constants.dart';
@@ -39,9 +40,9 @@ class FirewallLogsScreen extends StatefulWidget {
   State<FirewallLogsScreen> createState() => _FirewallLogsScreenState();
 }
 
-class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
+class _FirewallLogsScreenState extends State<FirewallLogsScreen>
+    with SingleInitMixin {
   late FirewallLogsViewModel _viewModel;
-  bool _isInitialized = false;
 
   bool _isPaused = false;
   Timer? _refreshTimer;
@@ -52,16 +53,12 @@ class _FirewallLogsScreenState extends State<FirewallLogsScreen> {
   bool _isSelectionMode = false;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInitialized) {
-      final apiService = context.read<DemoApiService>();
-      _viewModel = FirewallLogsViewModel(apiService, historySize: _historySize);
-      _isInitialized = true;
-      _viewModel.loadItems();
-      _startAutoRefresh();
-      _scrollController.addListener(_onScroll);
-    }
+  void onFirstDependency() {
+    final apiService = context.read<DemoApiService>();
+    _viewModel = FirewallLogsViewModel(apiService, historySize: _historySize);
+    _viewModel.loadItems();
+    _startAutoRefresh();
+    _scrollController.addListener(_onScroll);
   }
 
   @override

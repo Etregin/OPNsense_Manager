@@ -27,6 +27,7 @@ import '../../utils/constants.dart';
 import '../../utils/formatters.dart';
 import '../../l10n/app_localizations.dart';
 import '../../viewmodels/tailscale_status_view_model.dart';
+import '../../widgets/common/detail_row.dart';
 import '../../widgets/common/error_display.dart';
 
 /// Panel widget displaying Tailscale status — embedded inside VPNConnectionsScreen.
@@ -317,27 +318,6 @@ class _TailscaleStatusPanelState extends State<TailscaleStatusPanel>
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 120,
-          child: Text(
-            '$label:',
-            style: const TextStyle(
-              fontWeight: FontWeight.w500,
-              color: AppColors.disabled,
-            ),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(fontWeight: FontWeight.w500),
-          ),
-        ),
-      ],
-    );
-  }
+  Widget _buildDetailRow(String label, String value) =>
+      DetailRow(label: label, value: value, labelWeight: FontWeight.w500);
 }

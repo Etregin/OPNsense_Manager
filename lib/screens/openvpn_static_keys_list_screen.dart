@@ -24,6 +24,7 @@ import '../utils/snackbar_helper.dart';
 import '../viewmodels/openvpn_static_keys_view_model.dart';
 import '../widgets/openvpn/openvpn_static_key_card.dart';
 import '../screens/openvpn_static_key_form_screen.dart';
+import '../widgets/common/detail_row.dart';
 import '../widgets/common/error_display.dart';
 import '../widgets/common/empty_state_widget.dart';
 import '../l10n/app_localizations.dart';
@@ -174,24 +175,8 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              '$label:',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          Expanded(child: Text(value)),
-        ],
-      ),
-    );
-  }
+  Widget _buildDetailRow(String label, String value) =>
+      DetailRow(label: label, value: value, labelWidth: 100);
 
   Future<void> _onEditStaticKey(OpenvpnStaticKey key) async {
     final result = await Navigator.of(context).push<bool>(

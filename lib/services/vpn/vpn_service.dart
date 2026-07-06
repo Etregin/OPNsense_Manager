@@ -426,9 +426,6 @@ class VPNService extends BaseOPNsenseService {
       String endpoint;
 
       switch (type.toLowerCase()) {
-        case 'openvpn':
-          endpoint = ApiEndpoints.openvpnServiceRestart;
-          break;
         case 'tailscale':
           endpoint = ApiEndpoints.tailscaleServiceRestart;
           break;

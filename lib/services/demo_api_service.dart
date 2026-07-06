@@ -121,7 +121,7 @@ class DemoApiService {
       );
 
   /// Toggle firewall rule
-  Future<void> toggleFirewallRule(String uuid) => DemoApiDecorator.executeVoid(
+  Future<void> toggleFirewallRule(String uuid) => DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async => _demoDataService.toggleFirewallRuleState(uuid),
         realAction: () => _realApiService.toggleFirewallRule(uuid),
@@ -139,7 +139,7 @@ class DemoApiService {
 
   /// Update an existing firewall rule
   Future<void> updateFirewallRule(String uuid, FirewallRuleRequest request) =>
-      DemoApiDecorator.executeVoid(
+      DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.updateFirewallRule(uuid, request),
@@ -147,14 +147,14 @@ class DemoApiService {
       );
 
   /// Delete firewall rule
-  Future<void> deleteFirewallRule(String uuid) => DemoApiDecorator.executeVoid(
+  Future<void> deleteFirewallRule(String uuid) => DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.deleteFirewallRule(uuid),
       );
 
   /// Apply firewall changes
-  Future<void> applyFirewallChanges() => DemoApiDecorator.executeVoid(
+  Future<void> applyFirewallChanges() => DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.applyFirewallChanges(),
@@ -352,7 +352,7 @@ class DemoApiService {
 
   /// Toggle WireGuard server
   Future<void> toggleWireGuardServer(String uuid, bool enabled) =>
-      DemoApiDecorator.executeVoid(
+      DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.toggleWireGuardServer(uuid, enabled),
@@ -361,7 +361,7 @@ class DemoApiService {
 
   /// Delete WireGuard server
   Future<void> deleteWireGuardServer(String uuid) =>
-      DemoApiDecorator.executeVoid(
+      DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.deleteWireGuardServer(uuid),
@@ -380,7 +380,7 @@ class DemoApiService {
 
   /// Update WireGuard server
   Future<void> updateWireGuardServer(String uuid, WireGuardServerRequest request) =>
-      DemoApiDecorator.executeVoid(
+      DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.updateWireGuardServer(uuid, request),
@@ -389,7 +389,7 @@ class DemoApiService {
 
   /// Toggle WireGuard peer
   Future<void> toggleWireGuardPeer(String uuid, bool enabled) =>
-      DemoApiDecorator.executeVoid(
+      DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.toggleWireGuardPeer(uuid, enabled),
@@ -398,7 +398,7 @@ class DemoApiService {
 
   /// Delete WireGuard peer
   Future<void> deleteWireGuardPeer(String uuid) =>
-      DemoApiDecorator.executeVoid(
+      DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.deleteWireGuardPeer(uuid),
@@ -417,7 +417,7 @@ class DemoApiService {
 
   /// Update WireGuard peer
   Future<void> updateWireGuardPeer(String uuid, WireGuardPeerRequest request) =>
-      DemoApiDecorator.executeVoid(
+      DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.updateWireGuardPeer(uuid, request),
@@ -490,7 +490,7 @@ class DemoApiService {
 
   /// Add WireGuard client via builder
   Future<void> addClientBuilder(WireGuardClientBuilderRequest request) =>
-      DemoApiDecorator.executeVoid(
+      DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.addClientBuilder(request),
@@ -792,14 +792,14 @@ class DemoApiService {
       );
 
   /// Toggle firewall alias
-  Future<void> toggleFirewallAlias(String uuid) => DemoApiDecorator.executeVoid(
+  Future<void> toggleFirewallAlias(String uuid) => DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async => _demoDataService.toggleFirewallAliasState(uuid),
         realAction: () => _realApiService.toggleFirewallAlias(uuid),
       );
 
   /// Delete firewall alias
-  Future<void> deleteFirewallAlias(String uuid) => DemoApiDecorator.executeVoid(
+  Future<void> deleteFirewallAlias(String uuid) => DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async => _demoDataService.deleteFirewallAlias(uuid),
         realAction: () => _realApiService.deleteFirewallAlias(uuid),
@@ -829,7 +829,7 @@ class DemoApiService {
       );
 
   /// Reboot system
-  Future<void> rebootSystem() => DemoApiDecorator.executeVoid(
+  Future<void> rebootSystem() => DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async =>
             throw const ApiException('Cannot reboot in demo mode', 403, ApiErrorType.unknown),

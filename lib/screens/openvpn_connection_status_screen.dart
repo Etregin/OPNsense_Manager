@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../services/demo_api_service.dart';
+import '../utils/single_init_mixin.dart';
 import '../widgets/app_drawer.dart';
 import 'openvpn_sessions_tab.dart';
 import 'openvpn_routes_tab.dart';
@@ -33,10 +34,9 @@ class OpenvpnConnectionStatusScreen extends StatefulWidget {
 }
 
 class _OpenvpnConnectionStatusScreenState extends State<OpenvpnConnectionStatusScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, SingleInitMixin {
   late TabController _tabController;
   late DemoApiService _apiService;
-  bool _isInitialized = false;
   
   // Callbacks to refresh child tabs
   VoidCallback? _refreshSessionsTab;
@@ -50,12 +50,8 @@ class _OpenvpnConnectionStatusScreenState extends State<OpenvpnConnectionStatusS
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInitialized) {
-      _apiService = context.read<DemoApiService>();
-      _isInitialized = true;
-    }
+  void onFirstDependency() {
+    _apiService = context.read<DemoApiService>();
   }
 
   @override

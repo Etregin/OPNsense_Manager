@@ -22,11 +22,13 @@ import '../models/openvpn_instance_list_item.dart';
 import '../services/demo_api_service.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/openvpn_instances_view_model.dart';
-import '../widgets/openvpn/openvpn_instance_card.dart';
+import '../widgets/common/confirmation_dialog.dart';
+import '../widgets/common/detail_row.dart';
 import '../widgets/common/error_display.dart';
 import '../widgets/common/empty_state_widget.dart';
+import '../widgets/common/search_bar_field.dart';
+import '../widgets/openvpn/openvpn_instance_card.dart';
 import '../l10n/app_localizations.dart';
-import '../widgets/common/confirmation_dialog.dart';
 
 import 'openvpn_instance_form_screen.dart';
 
@@ -184,24 +186,8 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              '$label:',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          Expanded(child: Text(value)),
-        ],
-      ),
-    );
-  }
+  Widget _buildDetailRow(String label, String value) =>
+      DetailRow(label: label, value: value);
 
   Future<void> _onEditInstance(OpenvpnInstanceListItem instance) async {
     final result = await Navigator.of(context).push<bool>(
@@ -234,19 +220,8 @@ class _OpenvpnInstancesListScreenState extends State<OpenvpnInstancesListScreen>
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  // Search bar
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: l10n.searchInstances,
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                    ),
+                  SearchBarField(
+                    hintText: l10n.searchInstances,
                     onChanged: (value) {
                       setState(() {
                         _searchQuery = value;

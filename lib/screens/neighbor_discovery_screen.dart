@@ -22,6 +22,7 @@ import '../models/neighbor.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../services/demo_api_service.dart';
+import '../utils/single_init_mixin.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/neighbor_discovery_view_model.dart';
 import '../widgets/app_drawer.dart';
@@ -37,21 +38,16 @@ class NeighborDiscoveryScreen extends StatefulWidget {
       _NeighborDiscoveryScreenState();
 }
 
-class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
+class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen>
+    with SingleInitMixin {
   late NeighborDiscoveryViewModel _viewModel;
-  bool _isInitialized = false;
   final TextEditingController _searchController = TextEditingController();
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInitialized) {
-      final apiService = context.read<DemoApiService>();
-      _viewModel = NeighborDiscoveryViewModel(apiService);
-      _isInitialized = true;
-      _viewModel.checkServiceStatus();
-      _viewModel.loadItems();
-    }
+  void onFirstDependency() {
+    _viewModel = NeighborDiscoveryViewModel(context.read<DemoApiService>());
+    _viewModel.checkServiceStatus();
+    _viewModel.loadItems();
   }
 
   @override

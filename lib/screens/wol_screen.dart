@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../models/wol_host.dart';
 import '../services/demo_api_service.dart';
+import '../utils/single_init_mixin.dart';
 import '../utils/snackbar_helper.dart';
 import '../utils/validators.dart';
 import '../utils/app_colors.dart';
@@ -40,19 +41,14 @@ class WolScreen extends StatefulWidget {
   State<WolScreen> createState() => _WolScreenState();
 }
 
-class _WolScreenState extends State<WolScreen> {
+class _WolScreenState extends State<WolScreen>
+    with SingleInitMixin {
   late WolViewModel _viewModel;
-  bool _isInitialized = false;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInitialized) {
-      final apiService = context.read<DemoApiService>();
-      _viewModel = WolViewModel(apiService);
-      _isInitialized = true;
-      _viewModel.loadItems();
-    }
+  void onFirstDependency() {
+    _viewModel = WolViewModel(context.read<DemoApiService>());
+    _viewModel.loadItems();
   }
 
   @override

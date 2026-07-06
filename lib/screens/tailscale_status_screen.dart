@@ -25,6 +25,7 @@ import '../services/demo_api_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/auto_refresh_mixin.dart';
 import '../utils/constants.dart';
+import '../utils/single_init_mixin.dart';
 import '../utils/snackbar_helper.dart';
 import '../utils/formatters.dart';
 import '../viewmodels/tailscale_status_view_model.dart';
@@ -41,20 +42,14 @@ class TailscaleStatusScreen extends StatefulWidget {
 }
 
 class _TailscaleStatusScreenState extends State<TailscaleStatusScreen>
-    with AutoRefreshMixin {
+    with AutoRefreshMixin, SingleInitMixin {
   late TailscaleStatusViewModel _viewModel;
-  bool _isInitialized = false;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInitialized) {
-      final apiService = context.read<DemoApiService>();
-      _viewModel = TailscaleStatusViewModel(apiService);
-      _isInitialized = true;
-      _viewModel.loadData();
-      startAutoRefresh(AppConstants.dashboardRefreshInterval, _viewModel.loadData);
-    }
+  void onFirstDependency() {
+    _viewModel = TailscaleStatusViewModel(context.read<DemoApiService>());
+    _viewModel.loadData();
+    startAutoRefresh(AppConstants.dashboardRefreshInterval, _viewModel.loadData);
   }
 
   @override

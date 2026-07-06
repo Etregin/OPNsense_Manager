@@ -21,6 +21,7 @@ import '../../models/firewall_rule.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
 import '../../l10n/app_localizations.dart';
+import '../common/detail_row.dart';
 
 /// Bottom sheet widget for displaying firewall rule details
 class RuleDetailSheet extends StatelessWidget {
@@ -85,32 +86,39 @@ class RuleDetailSheet extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 16),
-              _buildDetailRow(context, l10n.description, rule.description),
-              _buildDetailRow(context, l10n.type, rule.typeDisplayName),
-              _buildDetailRow(context, l10n.interface, rule.interfaceName),
-              _buildDetailRow(context, l10n.protocol, rule.protocolDisplayName),
-              _buildDetailRow(
-                context,
-                l10n.source,
-                '${rule.source}${rule.sourcePort != 'any' && rule.sourcePort.isNotEmpty ? ':${rule.sourcePort}' : ''}',
+              DetailRow(label: l10n.description, value: rule.description, labelWidth: 140, topPadding: 8, appendColon: false, labelColor: AppColors.disabled),
+              DetailRow(label: l10n.type, value: rule.typeDisplayName, labelWidth: 140, topPadding: 8, appendColon: false, labelColor: AppColors.disabled),
+              DetailRow(label: l10n.interface, value: rule.interfaceName, labelWidth: 140, topPadding: 8, appendColon: false, labelColor: AppColors.disabled),
+              DetailRow(label: l10n.protocol, value: rule.protocolDisplayName, labelWidth: 140, topPadding: 8, appendColon: false, labelColor: AppColors.disabled),
+              DetailRow(
+                label: l10n.source,
+                value: '${rule.source}${rule.sourcePort != 'any' && rule.sourcePort.isNotEmpty ? ':${rule.sourcePort}' : ''}',
+                labelWidth: 140,
+                topPadding: 8,
+                appendColon: false,
+                labelColor: AppColors.disabled,
               ),
-              _buildDetailRow(
-                context,
-                l10n.destination,
-                '${rule.destination}${rule.destinationPort != 'any' && rule.destinationPort.isNotEmpty ? ':${rule.destinationPort}' : ''}',
+              DetailRow(
+                label: l10n.destination,
+                value: '${rule.destination}${rule.destinationPort != 'any' && rule.destinationPort.isNotEmpty ? ':${rule.destinationPort}' : ''}',
+                labelWidth: 140,
+                topPadding: 8,
+                appendColon: false,
+                labelColor: AppColors.disabled,
               ),
               if (rule.sourcePort != 'any' && rule.sourcePort.isNotEmpty)
-                _buildDetailRow(context, l10n.sourcePort, rule.sourcePort),
-              if (rule.destinationPort != 'any' &&
-                  rule.destinationPort.isNotEmpty)
-                _buildDetailRow(
-                    context, l10n.destinationPort, rule.destinationPort),
-              _buildDetailRow(
-                context,
-                l10n.status,
-                rule.isEnabled ? l10n.enabled : l10n.disabled,
+                DetailRow(label: l10n.sourcePort, value: rule.sourcePort, labelWidth: 140, topPadding: 8, appendColon: false, labelColor: AppColors.disabled),
+              if (rule.destinationPort != 'any' && rule.destinationPort.isNotEmpty)
+                DetailRow(label: l10n.destinationPort, value: rule.destinationPort, labelWidth: 140, topPadding: 8, appendColon: false, labelColor: AppColors.disabled),
+              DetailRow(
+                label: l10n.status,
+                value: rule.isEnabled ? l10n.enabled : l10n.disabled,
+                labelWidth: 140,
+                topPadding: 8,
+                appendColon: false,
+                labelColor: AppColors.disabled,
               ),
-              _buildDetailRow(context, l10n.sequence, rule.sequence.toString()),
+              DetailRow(label: l10n.sequence, value: rule.sequence.toString(), labelWidth: 140, topPadding: 8, appendColon: false, labelColor: AppColors.disabled),
               const SizedBox(height: 24),
               if (rule.isSystemGenerated)
                 _buildSystemGeneratedWarning(context)
@@ -120,30 +128,6 @@ class RuleDetailSheet extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildDetailRow(BuildContext context, String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 140,
-            child: Text(
-              label,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: AppColors.disabled,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Text(value),
-          ),
-        ],
-      ),
     );
   }
 

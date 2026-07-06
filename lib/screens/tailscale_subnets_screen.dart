@@ -23,6 +23,7 @@ import '../models/tailscale_settings.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../utils/app_colors.dart';
+import '../utils/single_init_mixin.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/tailscale_subnets_view_model.dart';
 import '../widgets/common/confirmation_dialog.dart';
@@ -34,21 +35,17 @@ class TailscaleSubnetsScreen extends StatefulWidget {
   State<TailscaleSubnetsScreen> createState() => _TailscaleSubnetsScreenState();
 }
 
-class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
+class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen>
+    with SingleInitMixin {
   late TailscaleSubnetsViewModel _viewModel;
-  bool _isInitialized = false;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInitialized) {
-      final demoApiService = context.read<DemoApiService>();
-      final opnsenseApiService =
-          demoApiService.isDemoMode ? null : context.read<OPNsenseApiService>();
-      _viewModel = TailscaleSubnetsViewModel(demoApiService, opnsenseApiService);
-      _isInitialized = true;
-      _viewModel.loadItems();
-    }
+  void onFirstDependency() {
+    final demoApiService = context.read<DemoApiService>();
+    final opnsenseApiService =
+        demoApiService.isDemoMode ? null : context.read<OPNsenseApiService>();
+    _viewModel = TailscaleSubnetsViewModel(demoApiService, opnsenseApiService);
+    _viewModel.loadItems();
   }
 
   @override

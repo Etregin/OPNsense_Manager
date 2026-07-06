@@ -22,7 +22,6 @@ import '../demo_api_service.dart';
 import '../opnsense_api_service.dart';
 import '../../models/profile.dart';
 import '../../models/connection_endpoint.dart';
-import '../../models/opnsense_config.dart';
 import '../../models/dhcp_server_type.dart';
 
 /// Result of a profile activation operation
@@ -168,7 +167,9 @@ class ProfileManagerService {
         );
       }
 
-      // Create or update profile
+      // Preserve the original createdAt when updating an existing profile.
+      final existing = id != null ? await _profileService.getProfile(id) : null;
+
       final profile = Profile(
         id: id ?? _profileService.generateProfileId(),
         name: name,
@@ -178,7 +179,7 @@ class ProfileManagerService {
         useHttps: useHttps,
         allowSelfSignedCerts: allowSelfSignedCerts,
         dhcpServerType: dhcpServerType,
-        createdAt: id == null ? DateTime.now() : DateTime.now(),
+        createdAt: existing?.createdAt ?? DateTime.now(),
         lastUsed: DateTime.now(),
       );
 
@@ -249,20 +250,3 @@ class ProfileManagerService {
     return await _profileService.profileNameExists(name, excludeId: excludeId);
   }
 }
-
-/// Extension to convert Profile to OPNsenseConfig
-extension ProfileExtension on Profile {
-  OPNsenseConfig toOPNsenseConfig() {
-    return OPNsenseConfig(
-      host: host,
-      port: port,
-      apiKey: apiKey,
-      apiSecret: apiSecret,
-      useHttps: useHttps,
-      allowSelfSignedCerts: allowSelfSignedCerts,
-      dhcpServerType: dhcpServerType,
-    );
-  }
-}
-
-

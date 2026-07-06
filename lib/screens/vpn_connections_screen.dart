@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/demo_api_service.dart';
 import '../utils/auto_refresh_mixin.dart';
+import '../utils/single_init_mixin.dart';
 import '../utils/constants.dart';
 import '../viewmodels/vpn_connections_view_model.dart';
 import '../widgets/app_drawer.dart';
@@ -38,27 +39,21 @@ class VPNConnectionsScreen extends StatefulWidget {
 }
 
 class _VPNConnectionsScreenState extends State<VPNConnectionsScreen>
-    with AutoRefreshMixin {
+    with AutoRefreshMixin, SingleInitMixin {
   late VpnConnectionsViewModel _viewModel;
-  bool _isInitialized = false;
   String _filterType = 'all';
 
   /// Check if we're in Tailscale-specific mode
   bool get _isTailscaleMode => widget.vpnType == 'tailscale';
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInitialized) {
-      if (widget.vpnType != null) {
-        _filterType = widget.vpnType!;
-      }
-      final apiService = context.read<DemoApiService>();
-      _viewModel = VpnConnectionsViewModel(apiService);
-      _isInitialized = true;
-      _viewModel.loadItems();
-      startAutoRefresh(AppConstants.dashboardRefreshInterval, _viewModel.loadItems);
+  void onFirstDependency() {
+    if (widget.vpnType != null) {
+      _filterType = widget.vpnType!;
     }
+    _viewModel = VpnConnectionsViewModel(context.read<DemoApiService>());
+    _viewModel.loadItems();
+    startAutoRefresh(AppConstants.dashboardRefreshInterval, _viewModel.loadItems);
   }
 
   @override

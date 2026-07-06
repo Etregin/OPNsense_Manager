@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../services/demo_api_service.dart';
+import '../utils/single_init_mixin.dart';
 import '../utils/app_colors.dart';
 import '../utils/color_helpers.dart';
 import '../utils/snackbar_helper.dart';
@@ -69,7 +70,8 @@ class WireGuardLogFileScreen extends StatefulWidget {
   State<WireGuardLogFileScreen> createState() => _WireGuardLogFileScreenState();
 }
 
-class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
+class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen>
+    with SingleInitMixin {
   List<String> _severityOptions = <String>[];
 
   static const List<int> _rowCountOptions = <int>[50, 100, 200];
@@ -78,45 +80,39 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
   final Set<int> _selectedLogIndexes = <int>{};
 
   late WireGuardLogViewModel _viewModel;
-  bool _isInitialized = false;
   bool _isRefreshing = false;
   int _currentPage = 1;
   int _rowCount = 50;
   String _selectedTimeFilter = 'Last Day';
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    if (!_isInitialized) {
-      final l10n = AppLocalizations.of(context)!;
-      _severityOptions = <String>[
-        l10n.emergency,
-        l10n.alert,
-        l10n.critical,
-        l10n.error,
-        l10n.warning,
-        l10n.notice,
-        l10n.info,
-        l10n.debug,
-      ];
-      _selectedSeverities.addAll([
-        l10n.emergency,
-        l10n.alert,
-        l10n.critical,
-        l10n.error,
-        l10n.warning,
-      ]);
-      final apiService = context.read<DemoApiService>();
-      _viewModel = WireGuardLogViewModel(
-        apiService,
-        rowCount: _rowCount,
-        severities: _getSeverityLevelsForApi(),
-        validFrom: _getValidFromForTimeFilter(),
-      );
-      _isInitialized = true;
-      _viewModel.loadItems();
-    }
+  void onFirstDependency() {
+    final l10n = AppLocalizations.of(context)!;
+    _severityOptions = <String>[
+      l10n.emergency,
+      l10n.alert,
+      l10n.critical,
+      l10n.error,
+      l10n.warning,
+      l10n.notice,
+      l10n.info,
+      l10n.debug,
+    ];
+    _selectedSeverities.addAll([
+      l10n.emergency,
+      l10n.alert,
+      l10n.critical,
+      l10n.error,
+      l10n.warning,
+    ]);
+    final apiService = context.read<DemoApiService>();
+    _viewModel = WireGuardLogViewModel(
+      apiService,
+      rowCount: _rowCount,
+      severities: _getSeverityLevelsForApi(),
+      validFrom: _getValidFromForTimeFilter(),
+    );
+    _viewModel.loadItems();
   }
 
   @override

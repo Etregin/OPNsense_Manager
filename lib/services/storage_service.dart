@@ -57,7 +57,11 @@ class StorageService {
 
   // ==================== Secure Storage (Credentials) ====================
 
-  /// Save OPNsense configuration securely
+  /// Save OPNsense configuration securely.
+  ///
+  /// Deprecated: credential storage is now handled exclusively by
+  /// [ProfileManagerService]. This method will be removed in a future release.
+  @Deprecated('Use ProfileManagerService to save credentials.')
   Future<void> saveConfig(OPNsenseConfig config) async {
     await _secureStorage.write(key: AppConstants.keyHost, value: config.host);
     await _secureStorage.write(
@@ -70,7 +74,11 @@ class StorageService {
         key: AppConstants.keyUseHttps, value: config.useHttps.toString());
   }
 
-  /// Load OPNsense configuration
+  /// Load OPNsense configuration.
+  ///
+  /// Deprecated: credential loading is now handled exclusively by
+  /// [ProfileManagerService]. This method will be removed in a future release.
+  @Deprecated('Use ProfileManagerService to load credentials.')
   Future<OPNsenseConfig?> loadConfig() async {
     try {
       final host = await _secureStorage.read(key: AppConstants.keyHost);
@@ -103,13 +111,20 @@ class StorageService {
     }
   }
 
-  /// Check if configuration exists
+  /// Check if a saved configuration exists.
+  ///
+  /// Deprecated: use [ProfileManagerService] to check for stored profiles.
+  @Deprecated('Use ProfileManagerService to check for saved profiles.')
   Future<bool> hasConfig() async {
     final host = await _secureStorage.read(key: AppConstants.keyHost);
     return host != null;
   }
 
-  /// Clear all stored credentials
+  /// Clear all stored credentials.
+  ///
+  /// Deprecated: credential removal is now handled exclusively by
+  /// [ProfileManagerService]. This method will be removed in a future release.
+  @Deprecated('Use ProfileManagerService to delete credentials.')
   Future<void> clearConfig() async {
     await _secureStorage.delete(key: AppConstants.keyHost);
     await _secureStorage.delete(key: AppConstants.keyPort);

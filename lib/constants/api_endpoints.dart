@@ -72,7 +72,6 @@ class ApiEndpoints {
   static const String openvpnInstancesGetNew = '/openvpn/instances/get/';
   static const String openvpnServiceReconfigure = '/openvpn/service/reconfigure';
   static const String openvpnServiceSearchSessions = '/openvpn/service/searchSessions';
-  static const String openvpnServiceRestart = '/api/openvpn/service/restart';
   static const String openvpnInstancesSearchSessions = '/openvpn/service/search_sessions';
   static const String openvpnInstancesSearchRoutes = '/openvpn/service/search_routes';
   static const String openvpnStaticKeySearch = '/openvpn/instances/search_static_key/';
@@ -110,7 +109,7 @@ class ApiEndpoints {
       '/openvpn/service/start_service/$id';
   static String openvpnServiceStop(String id) =>
       '/openvpn/service/stop_service/$id';
-  static String openvpnServiceRestart2(String id) =>
+  static String openvpnServiceRestart(String id) =>
       '/openvpn/service/restart_service/$id';
 
   // ── WireGuard ────────────────────────────────────────────────────────────────

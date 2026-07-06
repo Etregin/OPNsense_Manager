@@ -28,6 +28,21 @@ import '../utils/constants.dart';
 class ThemeConfig {
   ThemeConfig._();
 
+  /// Converts a stored string value to a [ThemeMode].
+  ///
+  /// Recognises `'light'` and `'dark'`; falls back to [ThemeMode.system] for
+  /// any other value (including `'system'` and null-derived empty strings).
+  static ThemeMode themeModeFromString(String mode) {
+    switch (mode) {
+      case 'light':
+        return ThemeMode.light;
+      case 'dark':
+        return ThemeMode.dark;
+      default:
+        return ThemeMode.system;
+    }
+  }
+
   /// Builds a [ThemeData] appropriate for [brightness].
   ///
   /// Uses [ColorScheme.fromSeed] seeded from [AppColors.primary] so that all

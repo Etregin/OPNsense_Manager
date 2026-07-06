@@ -18,18 +18,20 @@
 
 
 import 'dart:async';
+import '../utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../utils/auto_refresh_mixin.dart';
+import '../utils/single_init_mixin.dart';
 import '../services/profile_service.dart';
-import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/dashboard_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/confirmation_dialog.dart';
+import '../widgets/common/demo_mode_banner.dart';
 import '../widgets/dashboard/resource_usage_section.dart';
 import '../widgets/dashboard/services_section.dart';
 import '../widgets/dashboard/gateways_section.dart';
@@ -45,20 +47,14 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen>
-    with AutoRefreshMixin {
+    with AutoRefreshMixin, SingleInitMixin {
   late DashboardViewModel _viewModel;
-  bool _isInitialized = false;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInitialized) {
-      final apiService = context.read<DemoApiService>();
-      _viewModel = DashboardViewModel(apiService);
-      _isInitialized = true;
-      _initializeAndLoad();
-      startAutoRefresh(AppConstants.dashboardRefreshInterval, _viewModel.loadDashboardData);
-    }
+  void onFirstDependency() {
+    _viewModel = DashboardViewModel(context.read<DemoApiService>());
+    _initializeAndLoad();
+    startAutoRefresh(AppConstants.dashboardRefreshInterval, _viewModel.loadDashboardData);
   }
 
   Future<void> _initializeAndLoad() async {
@@ -82,11 +78,12 @@ class _DashboardScreenState extends State<DashboardScreen>
   Future<void> _controlService(
       String serviceId, String action, String serviceName) async {
     final l10n = AppLocalizations.of(context)!;
-    final actionText = action == 'start'
-        ? l10n.start
-        : action == 'stop'
-            ? l10n.stop
-            : l10n.restart;
+
+    final actionText = switch (action) {
+      'start' => l10n.start,
+      'stop'  => l10n.stop,
+      _       => l10n.restart,
+    };
 
     final confirmed = await ConfirmationDialog.show(
       context: context,
@@ -102,18 +99,17 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     try {
       final demoApiService = context.read<DemoApiService>();
-      SnackBarHelper.showInfo(
-          context, l10n.actioningService(actionText, serviceName));
+      SnackBarHelper.showInfo(context, l10n.actioningService(actionText, serviceName));
 
       final success = await demoApiService.controlService(serviceId, action);
 
       if (mounted) {
         if (success) {
-          final successMsg = action == 'start'
-              ? l10n.serviceStartedSuccessfully
-              : action == 'stop'
-                  ? l10n.serviceStoppedSuccessfully
-                  : l10n.serviceRestartedSuccessfully;
+          final successMsg = switch (action) {
+            'start' => l10n.serviceStartedSuccessfully,
+            'stop'  => l10n.serviceStoppedSuccessfully,
+            _       => l10n.serviceRestartedSuccessfully,
+          };
           SnackBarHelper.showSuccess(context, successMsg);
           await Future.delayed(AppConstants.postActionRefreshDelay);
           if (mounted) {
@@ -125,8 +121,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       }
     } catch (e) {
       if (mounted) {
-        SnackBarHelper.showError(
-            context, '${l10n.error}: ${e.toString()}');
+        SnackBarHelper.showError(context, '${l10n.error}: ${e.toString()}');
       }
     }
   }
@@ -159,45 +154,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           ),
           body: Column(
             children: [
-              // Demo mode banner
-              if (isDemoMode)
-                Builder(
-                  builder: (context) {
-                    final l10n = AppLocalizations.of(context)!;
-                    return Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            AppColors.warning,
-                            AppColors.warning,
-                          ],
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.play_circle_outline,
-                              color: AppColors.onPrimary),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              l10n.demoModeIndicator,
-                              style: const TextStyle(
-                                color: AppColors.onPrimary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Icon(Icons.info_outline,
-                              color: AppColors.onPrimary.withValues(alpha: AppColors.opacityHeavy),
-                              size: 20),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+              if (isDemoMode) const DemoModeBanner(),
               // Main content
               Expanded(
                 child: RefreshIndicator(

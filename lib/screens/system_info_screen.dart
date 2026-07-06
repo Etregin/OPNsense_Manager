@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 import '../services/demo_api_service.dart';
 import '../utils/constants.dart';
 import '../utils/formatters.dart';
+import '../utils/single_init_mixin.dart';
 import '../viewmodels/system_info_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/error_display.dart';
@@ -35,19 +36,14 @@ class SystemInfoScreen extends StatefulWidget {
   State<SystemInfoScreen> createState() => _SystemInfoScreenState();
 }
 
-class _SystemInfoScreenState extends State<SystemInfoScreen> {
+class _SystemInfoScreenState extends State<SystemInfoScreen>
+    with SingleInitMixin {
   late SystemInfoViewModel _viewModel;
-  bool _isInitialized = false;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInitialized) {
-      final apiService = context.read<DemoApiService>();
-      _viewModel = SystemInfoViewModel(apiService);
-      _isInitialized = true;
-      _viewModel.loadSystemInfo();
-    }
+  void onFirstDependency() {
+    _viewModel = SystemInfoViewModel(context.read<DemoApiService>());
+    _viewModel.loadSystemInfo();
   }
 
   @override

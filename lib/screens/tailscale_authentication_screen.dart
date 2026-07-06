@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../services/demo_api_service.dart';
 import '../utils/app_colors.dart';
+import '../utils/single_init_mixin.dart';
 import '../utils/snackbar_helper.dart';
 import '../viewmodels/tailscale_auth_view_model.dart';
 import '../widgets/app_drawer.dart';
@@ -36,9 +37,9 @@ class TailscaleAuthenticationScreen extends StatefulWidget {
 }
 
 class _TailscaleAuthenticationScreenState
-    extends State<TailscaleAuthenticationScreen> {
+    extends State<TailscaleAuthenticationScreen>
+    with SingleInitMixin {
   late TailscaleAuthViewModel _viewModel;
-  bool _isInitialized = false;
 
   // Form controllers and key live here because they are widget-layer concerns
   final _loginServerController = TextEditingController();
@@ -47,15 +48,10 @@ class _TailscaleAuthenticationScreenState
   bool _obscurePreAuthKey = true;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInitialized) {
-      final apiService = context.read<DemoApiService>();
-      _viewModel = TailscaleAuthViewModel(apiService);
-      _isInitialized = true;
-      _viewModel.addListener(_syncControllersFromViewModel);
-      _viewModel.loadData();
-    }
+  void onFirstDependency() {
+    _viewModel = TailscaleAuthViewModel(context.read<DemoApiService>());
+    _viewModel.addListener(_syncControllersFromViewModel);
+    _viewModel.loadData();
   }
 
   @override

@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import '../utils/single_init_mixin.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../models/wireguard_client_builder.dart';
 import '../services/demo_api_service.dart';
@@ -40,10 +41,10 @@ class WireGuardPeerGeneratorScreen extends StatefulWidget {
 }
 
 class _WireGuardPeerGeneratorScreenState
-    extends State<WireGuardPeerGeneratorScreen> {
+    extends State<WireGuardPeerGeneratorScreen>
+    with SingleInitMixin {
   late WireGuardPeerGeneratorViewModel _viewModel;
   final _formKey = GlobalKey<FormState>();
-  bool _isInitialized = false;
 
   // Controllers
   final _nameController = TextEditingController();
@@ -59,17 +60,11 @@ class _WireGuardPeerGeneratorScreenState
   String? _selectedServerUuid;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInitialized) {
-      final apiService = context.read<DemoApiService>();
-      _viewModel = WireGuardPeerGeneratorViewModel(
-        apiService: apiService,
-      );
-      _viewModel.addListener(_onViewModelChanged);
-      _isInitialized = true;
-      _loadData();
-    }
+  void onFirstDependency() {
+    final apiService = context.read<DemoApiService>();
+    _viewModel = WireGuardPeerGeneratorViewModel(apiService: apiService);
+    _viewModel.addListener(_onViewModelChanged);
+    _loadData();
   }
 
   Future<void> _loadData() async {

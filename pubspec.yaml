@@ -29,9 +29,6 @@ dependencies:
   # JSON Serialization
   json_annotation: ^4.8.1
   
-  # UI Components
-  cupertino_icons: ^1.0.8
-  
   # Utilities
   intl: ^0.20.2
   uuid: ^4.5.1

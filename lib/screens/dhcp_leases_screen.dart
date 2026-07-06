@@ -18,18 +18,19 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+import '../l10n/app_localizations.dart';
 import '../models/dhcp_lease.dart';
 import '../models/dhcp_server_type.dart';
 import '../services/demo_api_service.dart';
 import '../services/profile_service.dart';
+import '../utils/app_colors.dart';
+import '../utils/constants.dart';
+import '../utils/single_init_mixin.dart';
 import '../viewmodels/dhcp_leases_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/error_display.dart';
 import '../widgets/common/empty_state_widget.dart';
-import '../l10n/app_localizations.dart';
-import '../utils/app_colors.dart';
-import '../utils/constants.dart';
-import 'package:intl/intl.dart';
 
 /// Screen displaying DHCP leases from OPNsense
 class DhcpLeasesScreen extends StatefulWidget {
@@ -39,9 +40,9 @@ class DhcpLeasesScreen extends StatefulWidget {
   State<DhcpLeasesScreen> createState() => _DhcpLeasesScreenState();
 }
 
-class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
+class _DhcpLeasesScreenState extends State<DhcpLeasesScreen>
+    with SingleInitMixin {
   late DhcpLeasesViewModel _viewModel;
-  bool _isInitialized = false;
 
   // Local UI state: filter/sort live in the screen
   final TextEditingController _searchController = TextEditingController();
@@ -51,16 +52,11 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen> {
   DhcpServerType? _dhcpServerType;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInitialized) {
-      final apiService = context.read<DemoApiService>();
-      _viewModel = DhcpLeasesViewModel(apiService);
-      _isInitialized = true;
-      _loadDhcpServerType();
-      _viewModel.loadItems();
-      _searchController.addListener(_onSearchChanged);
-    }
+  void onFirstDependency() {
+    _viewModel = DhcpLeasesViewModel(context.read<DemoApiService>());
+    _loadDhcpServerType();
+    _viewModel.loadItems();
+    _searchController.addListener(_onSearchChanged);
   }
 
   @override

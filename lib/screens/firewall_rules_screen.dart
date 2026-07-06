@@ -23,6 +23,7 @@ import 'package:provider/provider.dart';
 import '../models/firewall_rule.dart';
 import '../services/demo_api_service.dart';
 import '../services/firewall/firewall_rule_filter.dart';
+import '../utils/single_init_mixin.dart';
 import '../utils/snackbar_helper.dart';
 import '../utils/constants.dart';
 import '../viewmodels/firewall_rules_view_model.dart';
@@ -44,31 +45,20 @@ class FirewallRulesScreen extends StatefulWidget {
   State<FirewallRulesScreen> createState() => _FirewallRulesScreenState();
 }
 
-class _FirewallRulesScreenState extends State<FirewallRulesScreen> {
+class _FirewallRulesScreenState extends State<FirewallRulesScreen>
+    with SingleInitMixin {
   late FirewallRulesViewModel _viewModel;
-  bool _isInitialized = false;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInitialized) {
-      final apiService = context.read<DemoApiService>();
-      _viewModel = FirewallRulesViewModel(apiService);
-      _isInitialized = true;
-      _loadData();
-    }
+  void onFirstDependency() {
+    _viewModel = FirewallRulesViewModel(context.read<DemoApiService>());
+    _viewModel.loadItems();
   }
 
   @override
   void dispose() {
     _viewModel.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadData() async {
-    await Future.wait([
-      _viewModel.loadItems(),
-    ]);
   }
 
   Future<void> _toggleRule(FirewallRule rule) async {
