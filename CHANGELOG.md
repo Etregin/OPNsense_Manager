@@ -14,6 +14,7 @@ All notable changes to OPNsense Manager will be documented in this file.
 ### Fixed
 
 - Removed the incorrectly placed floating refresh button from the neighbor discovery screen.
+- Resolved an issue with Wiregaurd status field to make string fields nullable
 
 ## [1.7.2] -
 
