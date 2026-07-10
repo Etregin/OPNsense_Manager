@@ -76,7 +76,7 @@ WireGuardStatus _$WireGuardStatusFromJson(Map<String, dynamic> json) =>
                 (e) => WireGuardPeerStatus.fromJson(e as Map<String, dynamic>),
               )
               .toList() ??
-          [],
+          const [],
     );
 
 Map<String, dynamic> _$WireGuardStatusToJson(WireGuardStatus instance) =>

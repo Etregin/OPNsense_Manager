@@ -206,7 +206,6 @@ class WireGuardStatus {
   final String? lastHandshake;
   
   /// Connected peers status (for servers, optional)
-  @JsonKey(defaultValue: [])
   final List<WireGuardPeerStatus> peers;
 
   WireGuardStatus({
