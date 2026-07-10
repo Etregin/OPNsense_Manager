@@ -107,19 +107,20 @@ class WolService extends BaseOPNsenseService {
           final wolResponse = WolHostResponse.fromJson(data);
           return wolResponse.rows;
         } else {
-          throw ApiException('Invalid response format', response.statusCode);
+          throw ApiException('Invalid response format', response.statusCode, ApiErrorType.unknown);
         }
       } else {
         throw ApiException(
           'Failed to get WOL hosts: HTTP ${response.statusCode}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException('Failed to get WOL hosts: ${e.toString()}', null);
+      throw ApiException('Failed to get WOL hosts: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -151,18 +152,19 @@ class WolService extends BaseOPNsenseService {
           }
         }
         
-        throw ApiException('Invalid response format', response.statusCode);
+        throw ApiException('Invalid response format', response.statusCode, ApiErrorType.unknown);
       } else {
         throw ApiException(
           'Failed to get interface options: HTTP ${response.statusCode}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException('Failed to get interface options: ${e.toString()}', null);
+      throw ApiException('Failed to get interface options: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -198,22 +200,24 @@ class WolService extends BaseOPNsenseService {
             throw ApiException(
               'Failed to add host: ${operationResponse.result}',
               response.statusCode,
+          ApiErrorType.unknown,
             );
           }
         } else {
-          throw ApiException('Invalid response format', response.statusCode);
+          throw ApiException('Invalid response format', response.statusCode, ApiErrorType.unknown);
         }
       } else {
         throw ApiException(
           'Failed to add WOL host: HTTP ${response.statusCode}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException('Failed to add WOL host: ${e.toString()}', null);
+      throw ApiException('Failed to add WOL host: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -248,22 +252,24 @@ class WolService extends BaseOPNsenseService {
             throw ApiException(
               'Failed to update host: ${operationResponse.result}',
               response.statusCode,
+          ApiErrorType.unknown,
             );
           }
         } else {
-          throw ApiException('Invalid response format', response.statusCode);
+          throw ApiException('Invalid response format', response.statusCode, ApiErrorType.unknown);
         }
       } else {
         throw ApiException(
           'Failed to update WOL host: HTTP ${response.statusCode}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException('Failed to update WOL host: ${e.toString()}', null);
+      throw ApiException('Failed to update WOL host: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -289,13 +295,14 @@ class WolService extends BaseOPNsenseService {
         throw ApiException(
           'Failed to delete WOL host: HTTP ${response.statusCode}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException('Failed to delete WOL host: ${e.toString()}', null);
+      throw ApiException('Failed to delete WOL host: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -328,22 +335,24 @@ class WolService extends BaseOPNsenseService {
             throw ApiException(
               'Failed to wake host: status=$status',
               response.statusCode,
+          ApiErrorType.unknown,
             );
           }
         } else {
-          throw ApiException('Invalid response format', response.statusCode);
+          throw ApiException('Invalid response format', response.statusCode, ApiErrorType.unknown);
         }
       } else {
         throw ApiException(
           'Failed to wake host: HTTP ${response.statusCode}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException('Failed to wake host: ${e.toString()}', null);
+      throw ApiException('Failed to wake host: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -363,19 +372,20 @@ class WolService extends BaseOPNsenseService {
           final wakeAllResponse = WolWakeAllResponse.fromJson(data);
           return wakeAllResponse.results;
         } else {
-          throw ApiException('Invalid response format', response.statusCode);
+          throw ApiException('Invalid response format', response.statusCode, ApiErrorType.unknown);
         }
       } else {
         throw ApiException(
           'Failed to wake all hosts: HTTP ${response.statusCode}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException('Failed to wake all hosts: ${e.toString()}', null);
+      throw ApiException('Failed to wake all hosts: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -397,19 +407,20 @@ class WolService extends BaseOPNsenseService {
         if (data is Map<String, dynamic> && data.containsKey('host')) {
           return data['host'] as Map<String, dynamic>;
         } else {
-          throw ApiException('Invalid response format', response.statusCode);
+          throw ApiException('Invalid response format', response.statusCode, ApiErrorType.unknown);
         }
       } else {
         throw ApiException(
           'Failed to copy WOL host: HTTP ${response.statusCode}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException('Failed to copy WOL host: ${e.toString()}', null);
+      throw ApiException('Failed to copy WOL host: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 

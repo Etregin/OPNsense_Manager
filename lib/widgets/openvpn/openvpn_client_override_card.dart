@@ -17,7 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/openvpn_client_override_list_item.dart';
+import '../../utils/app_colors.dart';
 
 /// Card widget for displaying OpenVPN client specific override information
 class OpenvpnClientOverrideCard extends StatelessWidget {
@@ -40,16 +42,17 @@ class OpenvpnClientOverrideCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: clientOverride.enabled ? Colors.green : Colors.grey,
+          backgroundColor: clientOverride.enabled ? AppColors.success : Theme.of(context).colorScheme.onSurface.withValues(alpha: AppColors.opacityDisabled),
           child: Icon(
             clientOverride.enabled ? Icons.check_circle : Icons.cancel,
-            color: Colors.white,
+            color: AppColors.onPrimary,
             size: 20,
           ),
         ),
@@ -92,14 +95,14 @@ class OpenvpnClientOverrideCard extends StatelessWidget {
                     Icon(
                       Icons.vpn_lock,
                       size: 14,
-                      color: Colors.grey[600],
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: AppColors.opacityMuted),
                     ),
                     const SizedBox(width: 4),
                     Text(
                       'Tunnel: ${clientOverride.tunnelNetwork}',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.grey[600],
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: AppColors.opacityMuted),
                       ),
                     ),
                   ],
@@ -120,7 +123,7 @@ class OpenvpnClientOverrideCard extends StatelessWidget {
               Switch(
                 value: clientOverride.enabled,
                 onChanged: onToggle,
-                activeTrackColor: Colors.green,
+                activeTrackColor: AppColors.success,
               ),
             const SizedBox(width: 8),
             PopupMenuButton<String>(
@@ -135,23 +138,23 @@ class OpenvpnClientOverrideCard extends StatelessWidget {
                 }
               },
               itemBuilder: (context) => [
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'edit',
                   child: Row(
                     children: [
-                      Icon(Icons.edit),
-                      SizedBox(width: 8),
-                      Text('Edit'),
+                      const Icon(Icons.edit),
+                      const SizedBox(width: 8),
+                      Text(l10n.edit),
                     ],
                   ),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'delete',
                   child: Row(
                     children: [
-                      Icon(Icons.delete, color: Colors.red),
-                      SizedBox(width: 8),
-                      Text('Delete', style: TextStyle(color: Colors.red)),
+                      Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
+                      const SizedBox(width: 8),
+                      Text(l10n.delete, style: TextStyle(color: Theme.of(context).colorScheme.error)),
                     ],
                   ),
                 ),
@@ -165,13 +168,13 @@ class OpenvpnClientOverrideCard extends StatelessWidget {
   }
 
   Widget _buildStatusBadge(ThemeData theme) {
-    final color = clientOverride.enabled ? Colors.green : Colors.grey;
+    final color = clientOverride.enabled ? AppColors.success : theme.disabledColor;
     final label = clientOverride.enabled ? 'Enabled' : 'Disabled';
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withValues(alpha: AppColors.opacitySubtle),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: color, width: 1),
       ),

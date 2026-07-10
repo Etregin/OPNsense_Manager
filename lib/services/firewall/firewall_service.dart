@@ -16,10 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import '../base/base_opnsense_service.dart';
 import '../base/api_exception.dart';
 import '../../models/firewall_rule.dart';
+import '../../constants/api_endpoints.dart';
 
 /// Service for firewall rule operations
 class FirewallService extends BaseOPNsenseService {
@@ -30,7 +32,7 @@ class FirewallService extends BaseOPNsenseService {
       final List<FirewallRule> allRules = [];
       
       // Fetch automation rules using /firewall/filter/get endpoint only
-      final automationResponse = await dio.get('/firewall/filter/get');
+      final automationResponse = await dio.get(ApiEndpoints.firewallRulesGet);
       
       if (automationResponse.statusCode == 200) {
         final data = automationResponse.data as Map<String, dynamic>;
@@ -48,8 +50,11 @@ class FirewallService extends BaseOPNsenseService {
                   if (rule is Map<String, dynamic>) {
                     try {
                       allRules.add(_parseFirewallRule(rule));
-                    } catch (_) {
-                      // Silently handle error
+                    } catch (e) {
+                      assert(() {
+                        debugPrint('FirewallService: failed to parse rule: $e');
+                        return true;
+                      }());
                     }
                   }
                 }
@@ -61,8 +66,11 @@ class FirewallService extends BaseOPNsenseService {
                       final ruleData = Map<String, dynamic>.from(entry.value as Map);
                       ruleData['uuid'] = entry.key; // Add UUID from key
                       allRules.add(_parseFirewallRule(ruleData));
-                    } catch (_) {
-                      // Silently handle error
+                    } catch (e) {
+                      assert(() {
+                        debugPrint('FirewallService: failed to parse rule: $e');
+                        return true;
+                      }());
                     }
                   }
                 }
@@ -83,7 +91,7 @@ class FirewallService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/firewall/filter/get');
+      final response = await dio.get(ApiEndpoints.firewallRulesGet);
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -149,7 +157,7 @@ class FirewallService extends BaseOPNsenseService {
       
       // According to OPNsense API docs, we need to wrap the rule in a 'rule' object
       final response = await dio.post(
-        '/firewall/filter/addRule',
+        ApiEndpoints.firewallRuleAdd,
         data: payload,
       );
       
@@ -162,12 +170,12 @@ class FirewallService extends BaseOPNsenseService {
         if (result == 'failed') {
           final validations = data['validations'] as Map<String, dynamic>?;
           final errorMessage = validations?.values.join(', ') ?? 'Unknown validation error';
-          throw ApiException('Failed to create rule: $errorMessage', 400);
+          throw ApiException('Failed to create rule: $errorMessage', 400, ApiErrorType.unknown);
         }
         
         final uuid = data['uuid'] as String?;
         if (uuid == null || uuid.isEmpty) {
-          throw ApiException('No UUID returned from addRule', 500);
+          throw const ApiException('No UUID returned from addRule', 500, ApiErrorType.unknown);
         }
         
         
@@ -182,7 +190,7 @@ class FirewallService extends BaseOPNsenseService {
         
         return uuid;
       } else {
-        throw ApiException('Failed to create firewall rule', response.statusCode);
+        throw ApiException('Failed to create firewall rule', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -267,7 +275,7 @@ class FirewallService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/firewall/filter/getRule/$uuid');
+      final response = await dio.get(ApiEndpoints.firewallRuleGetOne(uuid));
       
       
       if (response.statusCode == 200) {
@@ -329,7 +337,7 @@ class FirewallService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/firewall/filter/setRule/$uuid',
+        ApiEndpoints.firewallRuleSet(uuid),
         data: {'rule': request.toJson()},
       );
       
@@ -337,7 +345,7 @@ class FirewallService extends BaseOPNsenseService {
         // Apply changes
         await applyFirewallChanges();
       } else {
-        throw ApiException('Failed to update firewall rule', response.statusCode);
+        throw ApiException('Failed to update firewall rule', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -350,13 +358,13 @@ class FirewallService extends BaseOPNsenseService {
 
     try {
       // Use the toggle endpoint
-      final response = await dio.post('/firewall/filter/toggleRule/$uuid');
+      final response = await dio.post(ApiEndpoints.firewallRuleToggle(uuid));
       
       if (response.statusCode == 200) {
         // Apply changes to make the toggle take effect
         await applyFirewallChanges();
       } else {
-        throw ApiException('Failed to toggle firewall rule', response.statusCode);
+        throw ApiException('Failed to toggle firewall rule', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -368,13 +376,13 @@ class FirewallService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/firewall/filter/delRule/$uuid');
+      final response = await dio.post(ApiEndpoints.firewallRuleDelete(uuid));
       
       if (response.statusCode == 200) {
         // Apply changes
         await applyFirewallChanges();
       } else {
-        throw ApiException('Failed to delete firewall rule', response.statusCode);
+        throw ApiException('Failed to delete firewall rule', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -386,7 +394,7 @@ class FirewallService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      await dio.post('/firewall/filter/apply');
+      await dio.post(ApiEndpoints.firewallRulesApply);
     } on DioException catch (e) {
       throw handleDioError(e);
     }
@@ -401,7 +409,7 @@ class FirewallService extends BaseOPNsenseService {
       // Use the same endpoint as the web UI live view
       // Endpoint: /api/diagnostics/firewall/log
       final response = await dio.get(
-        '/diagnostics/firewall/log',
+        ApiEndpoints.diagnosticsFirewallLog,
         queryParameters: {
           'limit': limit, // Number of entries to fetch
         },
@@ -427,7 +435,7 @@ class FirewallService extends BaseOPNsenseService {
         
         return [];
       } else {
-        throw ApiException('Failed to get firewall logs', response.statusCode);
+        throw ApiException('Failed to get firewall logs', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       if (e.response != null) {

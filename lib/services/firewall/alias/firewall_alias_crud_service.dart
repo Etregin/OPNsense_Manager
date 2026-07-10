@@ -55,13 +55,14 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
         throw ApiException(
           'Failed to get firewall aliases: ${response.statusMessage}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
       throw ApiException(
-          'Failed to get firewall aliases: ${e.toString()}', null);
+          'Failed to get firewall aliases: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -97,17 +98,18 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
           );
         }
 
-        throw ApiException('Invalid alias data received', response.statusCode);
+        throw ApiException('Invalid alias data received', response.statusCode, ApiErrorType.unknown);
       } else {
         throw ApiException(
           'Failed to get firewall alias: ${response.statusMessage}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to get firewall alias: ${e.toString()}', null);
+      throw ApiException('Failed to get firewall alias: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -130,7 +132,7 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to get alias UUID: ${e.toString()}', null);
+      throw ApiException('Failed to get alias UUID: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -153,18 +155,19 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
           }
           return data as Map<String, dynamic>;
         }
-        throw ApiException('Invalid response format', response.statusCode);
+        throw ApiException('Invalid response format', response.statusCode, ApiErrorType.unknown);
       } else {
         throw ApiException(
           'Failed to create firewall alias: ${response.statusMessage}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
       throw ApiException(
-          'Failed to create firewall alias: ${e.toString()}', null);
+          'Failed to create firewall alias: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -189,18 +192,19 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
           }
           return data as Map<String, dynamic>;
         }
-        throw ApiException('Invalid response format', response.statusCode);
+        throw ApiException('Invalid response format', response.statusCode, ApiErrorType.unknown);
       } else {
         throw ApiException(
           'Failed to update firewall alias: ${response.statusMessage}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
       throw ApiException(
-          'Failed to update firewall alias: ${e.toString()}', null);
+          'Failed to update firewall alias: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -217,6 +221,7 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
         throw ApiException(
           'Failed to toggle firewall alias: ${response.statusMessage}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
@@ -237,6 +242,7 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
         throw ApiException(
           'Failed to delete firewall alias: ${response.statusMessage}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {

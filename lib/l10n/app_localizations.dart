@@ -104,55 +104,55 @@ abstract class AppLocalizations {
     Locale('fr'),
   ];
 
-  /// Translation for about
+  /// No description provided for @about.
   ///
   /// In en, this message translates to:
   /// **'About'**
   String get about;
 
-  /// Translation for aboutDescription
+  /// No description provided for @aboutDescription.
   ///
   /// In en, this message translates to:
   /// **'A professional Flutter mobile application for managing OPNsense firewall routers.'**
   String get aboutDescription;
 
-  /// Translation for aboutImportExport
+  /// No description provided for @aboutImportExport.
   ///
   /// In en, this message translates to:
   /// **'About Import & Export'**
   String get aboutImportExport;
 
-  /// Translation for acceptDns
+  /// No description provided for @acceptDns.
   ///
   /// In en, this message translates to:
   /// **'Accept DNS'**
   String get acceptDns;
 
-  /// Translation for acceptDnsDescription
+  /// No description provided for @acceptDnsDescription.
   ///
   /// In en, this message translates to:
   /// **'Use DNS servers provided by Tailscale'**
   String get acceptDnsDescription;
 
-  /// Translation for acceptRoutes
+  /// No description provided for @acceptRoutes.
   ///
   /// In en, this message translates to:
   /// **'Accept Routes'**
   String get acceptRoutes;
 
-  /// Translation for acceptSubnetRoutes
+  /// No description provided for @acceptSubnetRoutes.
   ///
   /// In en, this message translates to:
   /// **'Accept Subnet Routes'**
   String get acceptSubnetRoutes;
 
-  /// Translation for acceptSubnetRoutesDescription
+  /// No description provided for @acceptSubnetRoutesDescription.
   ///
   /// In en, this message translates to:
   /// **'Accept routes advertised by other nodes'**
   String get acceptSubnetRoutesDescription;
 
-  /// Translation for action
+  /// No description provided for @action.
   ///
   /// In en, this message translates to:
   /// **'Action'**
@@ -170,7 +170,7 @@ abstract class AppLocalizations {
   /// **'{action} {name}...'**
   String actioningService(String action, String name);
 
-  /// Translation for activate
+  /// No description provided for @activate.
   ///
   /// In en, this message translates to:
   /// **'Activate'**
@@ -182,25 +182,25 @@ abstract class AppLocalizations {
   /// **'Activated profile: {name}'**
   String activatedProfile(String name);
 
-  /// Translation for activatingProfile
+  /// No description provided for @activatingProfile.
   ///
   /// In en, this message translates to:
   /// **'Activating profile...'**
   String get activatingProfile;
 
-  /// Translation for activationFailed
+  /// No description provided for @activationFailed.
   ///
   /// In en, this message translates to:
   /// **'Activation failed'**
   String get activationFailed;
 
-  /// Translation for active
+  /// No description provided for @active.
   ///
   /// In en, this message translates to:
   /// **'Active'**
   String get active;
 
-  /// Translation for activeDevices
+  /// No description provided for @activeDevices.
   ///
   /// In en, this message translates to:
   /// **'Active Devices'**
@@ -212,271 +212,247 @@ abstract class AppLocalizations {
   /// **'{count} active host(s)'**
   String activeHosts(int count);
 
-  /// Translation for activeProfile
+  /// No description provided for @activeProfile.
   ///
   /// In en, this message translates to:
   /// **'Active Profile'**
   String get activeProfile;
 
-  /// Translation for add
+  /// No description provided for @add.
   ///
   /// In en, this message translates to:
   /// **'Add'**
   String get add;
 
-  /// Translation for addButton
-  ///
-  /// In en, this message translates to:
-  /// **'Add'**
-  String get addButton;
-
-  /// Translation for addClientOverride
+  /// No description provided for @addClientOverride.
   ///
   /// In en, this message translates to:
   /// **'Add Client Override'**
   String get addClientOverride;
 
-  /// Translation for addConnection
+  /// No description provided for @addConnection.
   ///
   /// In en, this message translates to:
   /// **'Add Connection'**
   String get addConnection;
 
-  /// Translation for addConnectionEndpoint
+  /// No description provided for @addConnectionEndpoint.
   ///
   /// In en, this message translates to:
   /// **'Please add at least one connection endpoint'**
   String get addConnectionEndpoint;
 
-  /// Translation for addDnsServer
+  /// No description provided for @addDnsServer.
   ///
   /// In en, this message translates to:
   /// **'Add DNS Server'**
   String get addDnsServer;
 
-  /// Translation for addHost
+  /// No description provided for @addHost.
   ///
   /// In en, this message translates to:
   /// **'Add Host'**
   String get addHost;
 
-  /// Translation for addHostToGetStarted
+  /// No description provided for @addHostToGetStarted.
   ///
   /// In en, this message translates to:
   /// **'Add a host to get started'**
   String get addHostToGetStarted;
 
-  /// Translation for addInstance
+  /// No description provided for @addInstance.
   ///
   /// In en, this message translates to:
   /// **'Add Instance'**
   String get addInstance;
 
-  /// Translation for addOpenVpnInstance
+  /// No description provided for @addOpenVpnInstance.
   ///
   /// In en, this message translates to:
   /// **'Add OpenVPN Instance'**
   String get addOpenVpnInstance;
 
-  /// Translation for addOverride
+  /// No description provided for @addOverride.
   ///
   /// In en, this message translates to:
   /// **'Add Override'**
   String get addOverride;
 
-  /// Translation for addProfile
+  /// No description provided for @addProfile.
   ///
   /// In en, this message translates to:
   /// **'Add Profile'**
   String get addProfile;
 
-  /// Translation for addProfileToManageInstances
+  /// No description provided for @addProfileToManageInstances.
   ///
   /// In en, this message translates to:
   /// **'Add a profile to manage OPNsense instances'**
   String get addProfileToManageInstances;
 
-  /// Translation for addStaticKey
+  /// No description provided for @addStaticKey.
   ///
   /// In en, this message translates to:
   /// **'Add Static Key'**
   String get addStaticKey;
 
-  /// Translation for addStaticKeyTooltip
-  ///
-  /// In en, this message translates to:
-  /// **'Add Static Key'**
-  String get addStaticKeyTooltip;
-
-  /// Translation for addSubnet
+  /// No description provided for @addSubnet.
   ///
   /// In en, this message translates to:
   /// **'Add Subnet'**
   String get addSubnet;
 
-  /// Translation for addTunnelAddress
+  /// No description provided for @addTunnelAddress.
   ///
   /// In en, this message translates to:
   /// **'Add Tunnel Address'**
   String get addTunnelAddress;
 
-  /// Translation for additionalInformation
+  /// No description provided for @additionalInformation.
   ///
   /// In en, this message translates to:
   /// **'Additional Information'**
   String get additionalInformation;
 
-  /// Translation for address
+  /// No description provided for @address.
   ///
   /// In en, this message translates to:
   /// **'Address'**
   String get address;
 
-  /// Translation for addressIsRequired
+  /// No description provided for @addressIsRequired.
   ///
   /// In en, this message translates to:
   /// **'Address is required'**
   String get addressIsRequired;
 
-  /// Translation for advertiseExitNode
+  /// No description provided for @advertiseExitNode.
   ///
   /// In en, this message translates to:
   /// **'Advertise Exit Node'**
   String get advertiseExitNode;
 
-  /// Translation for advertiseExitNodeDescription
+  /// No description provided for @advertiseExitNodeDescription.
   ///
   /// In en, this message translates to:
   /// **'Allow other devices to route through this node'**
   String get advertiseExitNodeDescription;
 
-  /// Translation for advertiseRoutes
+  /// No description provided for @advertiseRoutes.
   ///
   /// In en, this message translates to:
   /// **'Advertise Routes'**
   String get advertiseRoutes;
 
-  /// Translation for alert
+  /// No description provided for @alert.
   ///
   /// In en, this message translates to:
   /// **'Alert'**
   String get alert;
 
-  /// Translation for aliasDeletedSuccessfully
+  /// No description provided for @aliasDeletedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Alias deleted successfully'**
   String get aliasDeletedSuccessfully;
 
-  /// Translation for aliasDisabledSuccessfully
+  /// No description provided for @aliasDisabledSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Alias disabled successfully'**
   String get aliasDisabledSuccessfully;
 
-  /// Translation for aliasEnabledSuccessfully
+  /// No description provided for @aliasEnabledSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Alias enabled successfully'**
   String get aliasEnabledSuccessfully;
 
-  /// Translation for aliases
+  /// No description provided for @aliases.
   ///
   /// In en, this message translates to:
   /// **'Aliases'**
   String get aliases;
 
-  /// Translation for all
+  /// No description provided for @all.
   ///
   /// In en, this message translates to:
   /// **'All'**
   String get all;
 
-  /// Translation for allConnectionsSuccessful
+  /// No description provided for @allConnectionsSuccessful.
   ///
   /// In en, this message translates to:
   /// **'All connections tested successfully'**
   String get allConnectionsSuccessful;
 
-  /// Translation for allDetailsCopiedToClipboard
+  /// No description provided for @allDetailsCopiedToClipboard.
   ///
   /// In en, this message translates to:
   /// **'All details copied to clipboard'**
   String get allDetailsCopiedToClipboard;
 
-  /// Translation for allRoles
+  /// No description provided for @allRoles.
   ///
   /// In en, this message translates to:
   /// **'All Roles'**
   String get allRoles;
 
-  /// Translation for allSettingsSavedSuccessfully
+  /// No description provided for @allSettingsSavedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'All settings saved successfully'**
   String get allSettingsSavedSuccessfully;
 
-  /// Translation for allStatus
+  /// No description provided for @allStatus.
   ///
   /// In en, this message translates to:
   /// **'All Status'**
   String get allStatus;
 
-  /// Translation for allTypes
+  /// No description provided for @allTypes.
   ///
   /// In en, this message translates to:
   /// **'All Types'**
   String get allTypes;
 
-  /// Translation for allVPNs
+  /// No description provided for @allVpns.
   ///
   /// In en, this message translates to:
   /// **'All VPNs'**
-  String get allVPNs;
+  String get allVpns;
 
-  /// Translation for allowSelfSigned
-  ///
-  /// In en, this message translates to:
-  /// **'Allow Self-Signed Certificate'**
-  String get allowSelfSigned;
-
-  /// Translation for allowSelfSignedCertificates
+  /// No description provided for @allowSelfSignedCertificates.
   ///
   /// In en, this message translates to:
   /// **'Allow Self-Signed Certificates'**
   String get allowSelfSignedCertificates;
 
-  /// Translation for allowSelfSignedCertificatesDescription
+  /// No description provided for @allowSelfSignedCertificatesDescription.
   ///
   /// In en, this message translates to:
   /// **'Accept self-signed SSL certificates'**
   String get allowSelfSignedCertificatesDescription;
 
-  /// Translation for allowedIps
+  /// No description provided for @allowedIps.
   ///
   /// In en, this message translates to:
   /// **'Allowed IPs'**
   String get allowedIps;
 
-  /// Translation for allowedIpsLabel
-  ///
-  /// In en, this message translates to:
-  /// **'Allowed IPs'**
-  String get allowedIpsLabel;
-
-  /// Translation for any
+  /// No description provided for @any.
   ///
   /// In en, this message translates to:
   /// **'Any'**
   String get any;
 
-  /// Translation for anyIpAddressCidrOrAlias
+  /// No description provided for @anyIpAddressCidrOrAlias.
   ///
   /// In en, this message translates to:
   /// **'any, IP address, CIDR, or alias'**
   String get anyIpAddressCidrOrAlias;
 
-  /// Translation for anyPortNumberRangeOrAlias
+  /// No description provided for @anyPortNumberRangeOrAlias.
   ///
   /// In en, this message translates to:
   /// **'any, port number, range, or alias'**
@@ -488,193 +464,211 @@ abstract class AppLocalizations {
   /// **'API Error: {message}'**
   String apiError(String message);
 
-  /// Translation for apiKey
+  /// No description provided for @apiKey.
   ///
   /// In en, this message translates to:
   /// **'API Key'**
   String get apiKey;
 
-  /// Translation for apiKeyIsRequired
+  /// No description provided for @apiKeyIsRequired.
   ///
   /// In en, this message translates to:
   /// **'API Key is required'**
   String get apiKeyIsRequired;
 
-  /// Translation for apiKeyLabel
-  ///
-  /// In en, this message translates to:
-  /// **'API Key'**
-  String get apiKeyLabel;
-
-  /// Translation for apiSecret
+  /// No description provided for @apiSecret.
   ///
   /// In en, this message translates to:
   /// **'API Secret'**
   String get apiSecret;
 
-  /// Translation for apiSecretIsRequired
+  /// No description provided for @apiSecretIsRequired.
   ///
   /// In en, this message translates to:
   /// **'API Secret is required'**
   String get apiSecretIsRequired;
 
-  /// Translation for apiSecretLabel
-  ///
-  /// In en, this message translates to:
-  /// **'API Secret'**
-  String get apiSecretLabel;
-
-  /// The application name
-  ///
-  /// In en, this message translates to:
-  /// **'OPNsense Manager'**
-  String get appName;
-
-  /// Translation for appearance
+  /// No description provided for @appearance.
   ///
   /// In en, this message translates to:
   /// **'Appearance'**
   String get appearance;
 
-  /// Translation for applicationLegalese
-  ///
-  /// In en, this message translates to:
-  /// **'© 2026 OPNsense Manager\n\nLicensed under GNU General Public License v3.0\n\nThis program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.'**
-  String get applicationLegalese;
-
-  /// Translation for apply
+  /// No description provided for @apply.
   ///
   /// In en, this message translates to:
   /// **'Apply'**
   String get apply;
 
-  /// Translation for architecture
+  /// No description provided for @architecture.
   ///
   /// In en, this message translates to:
   /// **'Architecture'**
   String get architecture;
 
-  /// Translation for atLeastOneTunnelAddressRequired
+  /// No description provided for @atLeastOneTunnelAddressRequired.
   ///
   /// In en, this message translates to:
   /// **'At least one tunnel address is required'**
   String get atLeastOneTunnelAddressRequired;
 
-  /// Translation for authSettingsSavedSuccessfully
+  /// No description provided for @authSettingsSavedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Authentication settings saved successfully'**
   String get authSettingsSavedSuccessfully;
 
-  /// Translation for authTlsAuthentication
+  /// No description provided for @authTlsAuthentication.
   ///
   /// In en, this message translates to:
   /// **'Auth (TLS Authentication)'**
   String get authTlsAuthentication;
 
-  /// Translation for authTokenGeneratedSuccessfully
+  /// No description provided for @authTokenGeneratedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Auth token generated successfully'**
   String get authTokenGeneratedSuccessfully;
 
-  /// Translation for authenticate
+  /// No description provided for @authenticate.
   ///
   /// In en, this message translates to:
   /// **'Authenticate'**
   String get authenticate;
 
-  /// Translation for authenticateToUnlock
+  /// No description provided for @authenticateToUnlock.
   ///
   /// In en, this message translates to:
   /// **'Authenticate to unlock the app'**
   String get authenticateToUnlock;
 
-  /// Translation for authentication
+  /// No description provided for @authentication.
   ///
   /// In en, this message translates to:
   /// **'Authentication'**
   String get authentication;
 
-  /// Translation for authenticationFailed
+  /// No description provided for @authenticationFailed.
   ///
   /// In en, this message translates to:
   /// **'Authentication failed'**
   String get authenticationFailed;
 
-  /// Translation for authenticationRequired
+  /// No description provided for @authenticationRequired.
   ///
   /// In en, this message translates to:
   /// **'Authentication Required'**
   String get authenticationRequired;
 
-  /// Translation for authenticationSettings
+  /// No description provided for @authenticationSettings.
   ///
   /// In en, this message translates to:
   /// **'Authentication Settings'**
   String get authenticationSettings;
 
-  /// Translation for authorizedPeers
+  /// No description provided for @authenticated.
+  ///
+  /// In en, this message translates to:
+  /// **'Authenticated'**
+  String get authenticated;
+
+  /// No description provided for @notAuthenticated.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Authenticated'**
+  String get notAuthenticated;
+
+  /// No description provided for @tailnet.
+  ///
+  /// In en, this message translates to:
+  /// **'Tailnet'**
+  String get tailnet;
+
+  /// No description provided for @deviceName.
+  ///
+  /// In en, this message translates to:
+  /// **'Device Name'**
+  String get deviceName;
+
+  /// No description provided for @authUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Auth URL'**
+  String get authUrl;
+
+  /// No description provided for @user.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get user;
+
+  /// No description provided for @authorizedPeers.
   ///
   /// In en, this message translates to:
   /// **'Authorized Peers'**
   String get authorizedPeers;
 
-  /// Translation for autoRefresh
+  /// No description provided for @autoRefresh.
   ///
   /// In en, this message translates to:
   /// **'Auto Refresh'**
   String get autoRefresh;
 
-  /// Translation for backendState
+  /// No description provided for @backendState.
   ///
   /// In en, this message translates to:
   /// **'Backend State'**
   String get backendState;
 
-  /// Translation for bandwidthLimit
+  /// No description provided for @bandwidthLimit.
   ///
   /// In en, this message translates to:
   /// **'Bandwidth Limit'**
   String get bandwidthLimit;
 
-  /// Translation for bandwidthLimitMbps
+  /// No description provided for @bandwidthLimitMbps.
   ///
   /// In en, this message translates to:
   /// **'Bandwidth Limit (Mbps)'**
   String get bandwidthLimitMbps;
 
-  /// Translation for base64EncodedPrivateKeyKeepSecret
+  /// No description provided for @bandwidthHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Bandwidth History'**
+  String get bandwidthHistory;
+
+  /// No description provided for @base64EncodedPrivateKeyKeepSecret.
   ///
   /// In en, this message translates to:
   /// **'Base64-encoded private key (keep secret!)'**
   String get base64EncodedPrivateKeyKeepSecret;
 
-  /// Translation for base64EncodedPublicKey
+  /// No description provided for @base64EncodedPublicKey.
   ///
   /// In en, this message translates to:
   /// **'Base64-encoded public key'**
   String get base64EncodedPublicKey;
 
-  /// Translation for biometricAuth
+  /// No description provided for @biometricAuth.
   ///
   /// In en, this message translates to:
   /// **'Biometric Authentication'**
   String get biometricAuth;
 
-  /// Translation for biometricAuthFailed
+  /// No description provided for @biometricAuthFailed.
   ///
   /// In en, this message translates to:
   /// **'Biometric authentication failed or was cancelled'**
   String get biometricAuthFailed;
 
-  /// Translation for biometricLockDisabled
+  /// No description provided for @biometricLockDisabled.
   ///
   /// In en, this message translates to:
   /// **'Biometric lock disabled'**
   String get biometricLockDisabled;
 
-  /// Translation for biometricLockEnabled
+  /// No description provided for @biometricLockEnabled.
   ///
   /// In en, this message translates to:
   /// **'Biometric lock enabled'**
@@ -686,19 +680,19 @@ abstract class AppLocalizations {
   /// **'{biometricType} Lock'**
   String biometricLockTitle(String biometricType);
 
-  /// Translation for biometricNotAvailable
+  /// No description provided for @biometricNotAvailable.
   ///
   /// In en, this message translates to:
   /// **'Biometric authentication is not available on this device'**
   String get biometricNotAvailable;
 
-  /// Translation for block
+  /// No description provided for @block.
   ///
   /// In en, this message translates to:
   /// **'Block'**
   String get block;
 
-  /// Translation for blockHost
+  /// No description provided for @blockHost.
   ///
   /// In en, this message translates to:
   /// **'Block Host'**
@@ -710,169 +704,151 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to block {hostname} ({ip})?\n\nThis will create a firewall rule to block all traffic from this host.'**
   String blockHostConfirmation(String hostname, String ip);
 
-  /// Translation for blockingHost
+  /// No description provided for @blockingHost.
   ///
   /// In en, this message translates to:
   /// **'Blocking host...'**
   String get blockingHost;
 
-  /// Translation for bytesReceived
+  /// No description provided for @bytesReceived.
   ///
   /// In en, this message translates to:
   /// **'Bytes Received'**
   String get bytesReceived;
 
-  /// Translation for bytesSent
+  /// No description provided for @bytesSent.
   ///
   /// In en, this message translates to:
   /// **'Bytes Sent'**
   String get bytesSent;
 
-  /// Translation for cancel
+  /// No description provided for @cancel.
   ///
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancel;
 
-  /// Translation for cancelButton
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
-  String get cancelButton;
-
-  /// Translation for cannotBeUndone
+  /// No description provided for @cannotBeUndone.
   ///
   /// In en, this message translates to:
   /// **'This action cannot be undone.'**
   String get cannotBeUndone;
 
-  /// Translation for cannotDeleteLastConnection
+  /// No description provided for @cannotDeleteLastConnection.
   ///
   /// In en, this message translates to:
   /// **'Cannot delete the last connection endpoint'**
   String get cannotDeleteLastConnection;
 
-  /// Translation for cannotDeleteLastConnectionTooltip
-  ///
-  /// In en, this message translates to:
-  /// **'Cannot delete the last connection endpoint'**
-  String get cannotDeleteLastConnectionTooltip;
-
-  /// Translation for carpVhidToDepend
+  /// No description provided for @carpVhidToDepend.
   ///
   /// In en, this message translates to:
   /// **'CARP VHID to depend on'**
   String get carpVhidToDepend;
 
-  /// Translation for categories
+  /// No description provided for @categories.
   ///
   /// In en, this message translates to:
   /// **'Categories'**
   String get categories;
 
-  /// Translation for changePIN
+  /// No description provided for @changePin.
   ///
   /// In en, this message translates to:
   /// **'Change PIN'**
-  String get changePIN;
+  String get changePin;
 
-  /// Translation for changePinTitle
-  ///
-  /// In en, this message translates to:
-  /// **'Change PIN'**
-  String get changePinTitle;
-
-  /// Translation for changesDiscarded
+  /// No description provided for @changesDiscarded.
   ///
   /// In en, this message translates to:
   /// **'Changes discarded'**
   String get changesDiscarded;
 
-  /// Translation for checkIfWireguardIsConfiguredAndRunning
+  /// No description provided for @checkIfWireguardIsConfiguredAndRunning.
   ///
   /// In en, this message translates to:
   /// **'Check if WireGuard is configured and running'**
   String get checkIfWireguardIsConfiguredAndRunning;
 
-  /// Translation for chooseExportLocation
+  /// No description provided for @chooseExportLocation.
   ///
   /// In en, this message translates to:
   /// **'Choose Export Location'**
   String get chooseExportLocation;
 
-  /// Translation for cidrNotationRequired
+  /// No description provided for @cidrNotationRequired.
   ///
   /// In en, this message translates to:
   /// **'CIDR notation is required'**
   String get cidrNotationRequired;
 
-  /// Translation for clearLogs
+  /// No description provided for @clearLogs.
   ///
   /// In en, this message translates to:
   /// **'Clear Logs'**
   String get clearLogs;
 
-  /// Translation for clearSelection
+  /// No description provided for @clearSelection.
   ///
   /// In en, this message translates to:
   /// **'Clear selection'**
   String get clearSelection;
 
-  /// Translation for client
+  /// No description provided for @client.
   ///
   /// In en, this message translates to:
   /// **'Client'**
   String get client;
 
-  /// Translation for clientAddress
+  /// No description provided for @clientAddress.
   ///
   /// In en, this message translates to:
   /// **'Client Address'**
   String get clientAddress;
 
-  /// Translation for clientName
+  /// No description provided for @clientName.
   ///
   /// In en, this message translates to:
   /// **'Client name'**
   String get clientName;
 
-  /// Translation for clientOverrides
+  /// No description provided for @clientOverrides.
   ///
   /// In en, this message translates to:
   /// **'Client Overrides'**
   String get clientOverrides;
 
-  /// Translation for clientSettings
+  /// No description provided for @clientSettings.
   ///
   /// In en, this message translates to:
   /// **'Client Settings'**
   String get clientSettings;
 
-  /// Translation for clientSpecificOverrides
+  /// No description provided for @clientSpecificOverrides.
   ///
   /// In en, this message translates to:
   /// **'Client Specific Overrides'**
   String get clientSpecificOverrides;
 
-  /// Translation for clientX509CommonNameHelper
+  /// No description provided for @clientX509CommonNameHelper.
   ///
   /// In en, this message translates to:
   /// **'Enter the client\'s X.509 common name here.'**
   String get clientX509CommonNameHelper;
 
-  /// Translation for close
+  /// No description provided for @close.
   ///
   /// In en, this message translates to:
   /// **'Close'**
   String get close;
 
-  /// Translation for commonName
+  /// No description provided for @commonName.
   ///
   /// In en, this message translates to:
   /// **'Common name'**
   String get commonName;
 
-  /// Translation for commonNameRequired
+  /// No description provided for @commonNameRequired.
   ///
   /// In en, this message translates to:
   /// **'Common name is required'**
@@ -884,31 +860,31 @@ abstract class AppLocalizations {
   /// **'Common Name: {value}'**
   String commonNameWithValue(String value);
 
-  /// Translation for configurationAppliedSuccessfully
+  /// No description provided for @configurationAppliedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Configuration applied successfully'**
   String get configurationAppliedSuccessfully;
 
-  /// Translation for configurationPreview
+  /// No description provided for @configurationPreview.
   ///
   /// In en, this message translates to:
   /// **'Configuration Preview'**
   String get configurationPreview;
 
-  /// Translation for configureAdvertisedSubnets
+  /// No description provided for @configureAdvertisedSubnets.
   ///
   /// In en, this message translates to:
   /// **'Configure advertised subnets'**
   String get configureAdvertisedSubnets;
 
-  /// Translation for configured
+  /// No description provided for @configured.
   ///
   /// In en, this message translates to:
   /// **'Configured'**
   String get configured;
 
-  /// Translation for confirmDelete
+  /// No description provided for @confirmDelete.
   ///
   /// In en, this message translates to:
   /// **'Confirm Delete'**
@@ -920,7 +896,7 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete instance \"{name}\"? This action cannot be undone.'**
   String confirmDeleteInstance(String name);
 
-  /// Translation for confirmDeleteOverride
+  /// No description provided for @confirmDeleteOverride.
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to delete override for \"{name}\"? This action cannot be undone.'**
@@ -932,19 +908,13 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete static key \"{name}\"? This action cannot be undone.'**
   String confirmDeleteStaticKey(String name);
 
-  /// Translation for confirmNewPin
+  /// No description provided for @confirmNewPin.
   ///
   /// In en, this message translates to:
   /// **'Confirm New PIN'**
   String get confirmNewPin;
 
-  /// Translation for confirmPIN
-  ///
-  /// In en, this message translates to:
-  /// **'Confirm PIN'**
-  String get confirmPIN;
-
-  /// Translation for confirmPin
+  /// No description provided for @confirmPin.
   ///
   /// In en, this message translates to:
   /// **'Confirm PIN'**
@@ -956,31 +926,31 @@ abstract class AppLocalizations {
   /// **'{action} \"{name}\"?'**
   String confirmServiceAction(String action, String name);
 
-  /// Translation for connect
+  /// No description provided for @connect.
   ///
   /// In en, this message translates to:
   /// **'Connect'**
   String get connect;
 
-  /// Translation for connectToYourOPNsenseFirewall
+  /// No description provided for @connectToYourOpnsenseFirewall.
   ///
   /// In en, this message translates to:
   /// **'Connect to your OPNsense firewall'**
-  String get connectToYourOPNsenseFirewall;
+  String get connectToYourOpnsenseFirewall;
 
-  /// Translation for connectVPN
+  /// No description provided for @connectVpn.
   ///
   /// In en, this message translates to:
   /// **'Connect VPN'**
-  String get connectVPN;
+  String get connectVpn;
 
-  /// Translation for connected
+  /// No description provided for @connected.
   ///
   /// In en, this message translates to:
   /// **'Connected'**
   String get connected;
 
-  /// Translation for connectedSince
+  /// No description provided for @connectedSince.
   ///
   /// In en, this message translates to:
   /// **'Connected Since'**
@@ -998,37 +968,31 @@ abstract class AppLocalizations {
   /// **'Connecting {name}...'**
   String connectingVPN(String name);
 
-  /// Translation for connectionBlocking
+  /// No description provided for @connectionBlocking.
   ///
   /// In en, this message translates to:
   /// **'Connection blocking'**
   String get connectionBlocking;
 
-  /// Translation for connectionBlockingSubtitle
-  ///
-  /// In en, this message translates to:
-  /// **'Block this client connection based on its common name. Don\'t use this option to permanently disable a client due to a compromised key or password. Use a CRL (certificate revocation list) instead.'**
-  String get connectionBlockingSubtitle;
-
-  /// Translation for connectionDetails
+  /// No description provided for @connectionDetails.
   ///
   /// In en, this message translates to:
   /// **'Connection Details'**
   String get connectionDetails;
 
-  /// Translation for connectionEndpoints
+  /// No description provided for @connectionEndpoints.
   ///
   /// In en, this message translates to:
   /// **'Connection Endpoints'**
   String get connectionEndpoints;
 
-  /// Translation for connectionEndpointsHelp
+  /// No description provided for @connectionEndpointsHelp.
   ///
   /// In en, this message translates to:
   /// **'Manage multiple connection endpoints for this profile. The app will try each endpoint in order until a successful connection is established.'**
   String get connectionEndpointsHelp;
 
-  /// Translation for connectionFailed
+  /// No description provided for @connectionFailed.
   ///
   /// In en, this message translates to:
   /// **'Connection failed. Check console logs for details.\n\nCommon issues:\n• Device not on same network as OPNsense\n• Wrong IP address or port\n• Firewall blocking connection\n• Invalid API credentials'**
@@ -1040,37 +1004,37 @@ abstract class AppLocalizations {
   /// **'Connection failed: {error}'**
   String connectionFailedError(String error);
 
-  /// Translation for connectionInformation
+  /// No description provided for @connectionInformation.
   ///
   /// In en, this message translates to:
   /// **'Connection Information'**
   String get connectionInformation;
 
-  /// Translation for connectionStatus
+  /// No description provided for @connectionStatus.
   ///
   /// In en, this message translates to:
   /// **'Connection Status'**
   String get connectionStatus;
 
-  /// Translation for connectionSuccessful
+  /// No description provided for @connectionSuccessful.
   ///
   /// In en, this message translates to:
   /// **'Connection Successful'**
   String get connectionSuccessful;
 
-  /// Translation for connectionTestFailed
+  /// No description provided for @connectionTestFailed.
   ///
   /// In en, this message translates to:
   /// **'Connection test failed'**
   String get connectionTestFailed;
 
-  /// Translation for connectionTestResults
+  /// No description provided for @connectionTestResults.
   ///
   /// In en, this message translates to:
   /// **'Connection Test Results'**
   String get connectionTestResults;
 
-  /// Translation for content
+  /// No description provided for @content.
   ///
   /// In en, this message translates to:
   /// **'Content'**
@@ -1082,175 +1046,163 @@ abstract class AppLocalizations {
   /// **'Copied {count} log {count, plural, =1{entry} other{entries}}'**
   String copiedLogEntries(int count);
 
-  /// Translation for copiedToClipboard
+  /// No description provided for @copiedToClipboard.
   ///
   /// In en, this message translates to:
   /// **'Copied to clipboard'**
   String get copiedToClipboard;
 
-  /// Translation for copy
+  /// No description provided for @copy.
   ///
   /// In en, this message translates to:
   /// **'Copy'**
   String get copy;
 
-  /// Translation for copyAllDetails
+  /// No description provided for @copyAllDetails.
   ///
   /// In en, this message translates to:
   /// **'Copy All Details'**
   String get copyAllDetails;
 
-  /// Translation for copyHost
+  /// No description provided for @copyHost.
   ///
   /// In en, this message translates to:
   /// **'Copy Host'**
   String get copyHost;
 
-  /// Translation for copyKey
+  /// No description provided for @copyKey.
   ///
   /// In en, this message translates to:
   /// **'Copy key'**
   String get copyKey;
 
-  /// Translation for copyKeyTooltip
-  ///
-  /// In en, this message translates to:
-  /// **'Copy key'**
-  String get copyKeyTooltip;
-
-  /// Translation for copySelected
+  /// No description provided for @copySelected.
   ///
   /// In en, this message translates to:
   /// **'Copy selected'**
   String get copySelected;
 
-  /// Translation for copyTooltip
-  ///
-  /// In en, this message translates to:
-  /// **'Copy'**
-  String get copyTooltip;
-
-  /// Translation for cpuUsage
+  /// No description provided for @cpuUsage.
   ///
   /// In en, this message translates to:
   /// **'CPU Usage'**
   String get cpuUsage;
 
-  /// Translation for createAliasComingSoon
+  /// No description provided for @createAliasComingSoon.
   ///
   /// In en, this message translates to:
   /// **'Create Alias (Coming Soon)'**
   String get createAliasComingSoon;
 
-  /// Translation for createFirstAutomationRule
+  /// No description provided for @createFirstAutomationRule.
   ///
   /// In en, this message translates to:
   /// **'Create your first automation rule to get started'**
   String get createFirstAutomationRule;
 
-  /// Translation for createFirstProfile
+  /// No description provided for @createFirstProfile.
   ///
   /// In en, this message translates to:
   /// **'Create your first profile to get started'**
   String get createFirstProfile;
 
-  /// Translation for createNewProfile
+  /// No description provided for @createNewProfile.
   ///
   /// In en, this message translates to:
   /// **'Create New Profile'**
   String get createNewProfile;
 
-  /// Translation for createOverride
+  /// No description provided for @createOverride.
   ///
   /// In en, this message translates to:
   /// **'Create Override'**
   String get createOverride;
 
-  /// Translation for createPeer
+  /// No description provided for @createPeer.
   ///
   /// In en, this message translates to:
   /// **'Create Peer'**
   String get createPeer;
 
-  /// Translation for createRule
+  /// No description provided for @createRule.
   ///
   /// In en, this message translates to:
   /// **'Create Rule'**
   String get createRule;
 
-  /// Translation for createServer
+  /// No description provided for @createServer.
   ///
   /// In en, this message translates to:
   /// **'Create Server'**
   String get createServer;
 
-  /// Translation for createStaticKey
+  /// No description provided for @createStaticKey.
   ///
   /// In en, this message translates to:
   /// **'Create Static Key'**
   String get createStaticKey;
 
-  /// Translation for createYourFirstProfile
+  /// No description provided for @createYourFirstProfile.
   ///
   /// In en, this message translates to:
   /// **'Create your first OPNsense profile to get started'**
   String get createYourFirstProfile;
 
-  /// Translation for created
+  /// No description provided for @created.
   ///
   /// In en, this message translates to:
   /// **'Created'**
   String get created;
 
-  /// Translation for critical
+  /// No description provided for @critical.
   ///
   /// In en, this message translates to:
   /// **'Critical'**
   String get critical;
 
-  /// Translation for cryptTlsEncryption
+  /// No description provided for @cryptTlsEncryption.
   ///
   /// In en, this message translates to:
   /// **'Crypt (TLS Encryption)'**
   String get cryptTlsEncryption;
 
-  /// Translation for cryptV2TlsEncryption
+  /// No description provided for @cryptV2TlsEncryption.
   ///
   /// In en, this message translates to:
   /// **'Crypt V2 (TLS Encryption)'**
   String get cryptV2TlsEncryption;
 
-  /// Translation for currentPin
+  /// No description provided for @currentPin.
   ///
   /// In en, this message translates to:
   /// **'Current PIN'**
   String get currentPin;
 
-  /// Translation for currentPinIncorrect
+  /// No description provided for @currentPinIncorrect.
   ///
   /// In en, this message translates to:
   /// **'Current PIN is incorrect'**
   String get currentPinIncorrect;
 
-  /// Translation for darkMode
+  /// No description provided for @darkMode.
   ///
   /// In en, this message translates to:
   /// **'Dark Mode'**
   String get darkMode;
 
-  /// Translation for dashboard
+  /// No description provided for @dashboard.
   ///
   /// In en, this message translates to:
   /// **'Dashboard'**
   String get dashboard;
 
-  /// Translation for day
+  /// No description provided for @day.
   ///
   /// In en, this message translates to:
   /// **'day'**
   String get day;
 
-  /// Translation for days
+  /// No description provided for @days.
   ///
   /// In en, this message translates to:
   /// **'days'**
@@ -1262,25 +1214,19 @@ abstract class AppLocalizations {
   /// **'{days}d ago'**
   String daysAgo(int days);
 
-  /// Translation for debug
+  /// No description provided for @debug.
   ///
   /// In en, this message translates to:
   /// **'Debug'**
   String get debug;
 
-  /// Translation for debugDescription
-  ///
-  /// In en, this message translates to:
-  /// **'Enable debug logging'**
-  String get debugDescription;
-
-  /// Translation for defineRoleOfInstance
+  /// No description provided for @defineRoleOfInstance.
   ///
   /// In en, this message translates to:
   /// **'Define the role of this instance'**
   String get defineRoleOfInstance;
 
-  /// Translation for delete
+  /// No description provided for @delete.
   ///
   /// In en, this message translates to:
   /// **'Delete'**
@@ -1292,13 +1238,13 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete the alias \"{aliasName}\"?'**
   String deleteAliasConfirmation(String aliasName);
 
-  /// Translation for deleteConfirmation
+  /// No description provided for @deleteConfirmation.
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to delete this item?'**
   String get deleteConfirmation;
 
-  /// Translation for deleteConnection
+  /// No description provided for @deleteConnection.
   ///
   /// In en, this message translates to:
   /// **'Delete Connection'**
@@ -1310,7 +1256,7 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete the connection \"{connectionName}\"?'**
   String deleteConnectionConfirmation(String connectionName);
 
-  /// Translation for deleteHost
+  /// No description provided for @deleteHost.
   ///
   /// In en, this message translates to:
   /// **'Delete Host'**
@@ -1322,19 +1268,19 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete \"{host}\"?'**
   String deleteHostConfirmation(String host);
 
-  /// Translation for deleteInstance
+  /// No description provided for @deleteInstance.
   ///
   /// In en, this message translates to:
   /// **'Delete Instance'**
   String get deleteInstance;
 
-  /// Translation for deleteOverride
+  /// No description provided for @deleteOverride.
   ///
   /// In en, this message translates to:
   /// **'Delete Override'**
   String get deleteOverride;
 
-  /// Translation for deletePeer
+  /// No description provided for @deletePeer.
   ///
   /// In en, this message translates to:
   /// **'Delete Peer'**
@@ -1346,7 +1292,7 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete peer \"{name}\"?'**
   String deletePeerConfirmation(String name);
 
-  /// Translation for deleteProfile
+  /// No description provided for @deleteProfile.
   ///
   /// In en, this message translates to:
   /// **'Delete Profile'**
@@ -1358,13 +1304,7 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete \"{name}\"?'**
   String deleteProfileConfirmation(String name);
 
-  /// Translation for deleteProfileTitle
-  ///
-  /// In en, this message translates to:
-  /// **'Delete Profile'**
-  String get deleteProfileTitle;
-
-  /// Translation for deleteRule
+  /// No description provided for @deleteRule.
   ///
   /// In en, this message translates to:
   /// **'Delete Rule'**
@@ -1394,13 +1334,13 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete server \"{name}\"? This action cannot be undone.'**
   String deleteServerConfirmation(String name);
 
-  /// Translation for deleteStaticKey
+  /// No description provided for @deleteStaticKey.
   ///
   /// In en, this message translates to:
   /// **'Delete Static Key'**
   String get deleteStaticKey;
 
-  /// Translation for deleteSubnet
+  /// No description provided for @deleteSubnet.
   ///
   /// In en, this message translates to:
   /// **'Delete Subnet'**
@@ -1412,97 +1352,91 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete subnet {subnet}?'**
   String deleteSubnetConfirmation(String subnet);
 
-  /// Translation for demo
+  /// No description provided for @demo.
   ///
   /// In en, this message translates to:
   /// **'Demo'**
   String get demo;
 
-  /// Translation for dependOnCarp
+  /// No description provided for @dependOnCarp.
   ///
   /// In en, this message translates to:
   /// **'Depend on (CARP)'**
   String get dependOnCarp;
 
-  /// Translation for description
+  /// No description provided for @description.
   ///
   /// In en, this message translates to:
   /// **'Description'**
   String get description;
 
-  /// Translation for descriptionHelperText
+  /// No description provided for @descriptionHelperText.
   ///
   /// In en, this message translates to:
   /// **'A brief description of this instance'**
   String get descriptionHelperText;
 
-  /// Translation for descriptionHelperTextOverride
+  /// No description provided for @descriptionHelperTextOverride.
   ///
   /// In en, this message translates to:
   /// **'You may enter a description here for your reference (not parsed).'**
   String get descriptionHelperTextOverride;
 
-  /// Translation for descriptionHint
+  /// No description provided for @descriptionHint.
   ///
   /// In en, this message translates to:
   /// **'e.g., Living Room PC'**
   String get descriptionHint;
 
-  /// Translation for descriptionOptional
+  /// No description provided for @descriptionOptional.
   ///
   /// In en, this message translates to:
   /// **'Description (optional)'**
   String get descriptionOptional;
 
-  /// Translation for descriptionRequired
+  /// No description provided for @descriptionRequired.
   ///
   /// In en, this message translates to:
   /// **'Description is required'**
   String get descriptionRequired;
 
-  /// Translation for descriptiveNameForStaticKey
-  ///
-  /// In en, this message translates to:
-  /// **'A descriptive name for this static key'**
-  String get descriptiveNameForStaticKey;
-
-  /// Translation for destination
+  /// No description provided for @destination.
   ///
   /// In en, this message translates to:
   /// **'Destination'**
   String get destination;
 
-  /// Translation for destinationAddress
+  /// No description provided for @destinationAddress.
   ///
   /// In en, this message translates to:
   /// **'Destination Address'**
   String get destinationAddress;
 
-  /// Translation for destinationIsRequired
+  /// No description provided for @destinationIsRequired.
   ///
   /// In en, this message translates to:
   /// **'Destination is required'**
   String get destinationIsRequired;
 
-  /// Translation for destinationPort
+  /// No description provided for @destinationPort.
   ///
   /// In en, this message translates to:
   /// **'Destination Port'**
   String get destinationPort;
 
-  /// Translation for destinationPortOptional
+  /// No description provided for @destinationPortOptional.
   ///
   /// In en, this message translates to:
   /// **'Destination Port (Optional)'**
   String get destinationPortOptional;
 
-  /// Translation for deviceType
+  /// No description provided for @deviceType.
   ///
   /// In en, this message translates to:
   /// **'Device Type'**
   String get deviceType;
 
-  /// Translation for dhcpLeases
+  /// No description provided for @dhcpLeases.
   ///
   /// In en, this message translates to:
   /// **'DHCP Leases'**
@@ -1514,97 +1448,91 @@ abstract class AppLocalizations {
   /// **'{serverName} Server'**
   String dhcpServerLabel(String serverName);
 
-  /// Translation for dhcpServerType
+  /// No description provided for @dhcpServerType.
   ///
   /// In en, this message translates to:
   /// **'DHCP Server Type'**
   String get dhcpServerType;
 
-  /// Translation for direction
+  /// No description provided for @direction.
   ///
   /// In en, this message translates to:
   /// **'Direction'**
   String get direction;
 
-  /// Translation for disable
+  /// No description provided for @disable.
   ///
   /// In en, this message translates to:
   /// **'Disable'**
   String get disable;
 
-  /// Translation for disableAutoScroll
+  /// No description provided for @disableAutoScroll.
   ///
   /// In en, this message translates to:
   /// **'Disable Auto-scroll'**
   String get disableAutoScroll;
 
-  /// Translation for disableRoutes
+  /// No description provided for @disableRoutes.
   ///
   /// In en, this message translates to:
   /// **'Disable Routes'**
   String get disableRoutes;
 
-  /// Translation for disableRoutesDescription
+  /// No description provided for @disableRoutesDescription.
   ///
   /// In en, this message translates to:
   /// **'Prevent automatic route installation'**
   String get disableRoutesDescription;
 
-  /// Translation for disableRule
+  /// No description provided for @disableRule.
   ///
   /// In en, this message translates to:
   /// **'Disable Rule'**
   String get disableRule;
 
-  /// Translation for disableSnat
+  /// No description provided for @disableSnat.
   ///
   /// In en, this message translates to:
   /// **'Disable SNAT'**
   String get disableSnat;
 
-  /// Translation for disableSnatDescription
+  /// No description provided for @disableSnatDescription.
   ///
   /// In en, this message translates to:
   /// **'Disable source NAT for subnet routes'**
   String get disableSnatDescription;
 
-  /// Translation for disabled
+  /// No description provided for @disabled.
   ///
   /// In en, this message translates to:
   /// **'Disabled'**
   String get disabled;
 
-  /// Translation for disabledStatus
-  ///
-  /// In en, this message translates to:
-  /// **'disabled'**
-  String get disabledStatus;
-
-  /// Translation for disablingRule
+  /// No description provided for @disablingRule.
   ///
   /// In en, this message translates to:
   /// **'Disabling rule...'**
   String get disablingRule;
 
-  /// Translation for discard
+  /// No description provided for @discard.
   ///
   /// In en, this message translates to:
   /// **'Discard'**
   String get discard;
 
-  /// Translation for disconnect
+  /// No description provided for @disconnect.
   ///
   /// In en, this message translates to:
   /// **'Disconnect'**
   String get disconnect;
 
-  /// Translation for disconnectVPN
+  /// No description provided for @disconnectVpn.
   ///
   /// In en, this message translates to:
   /// **'Disconnect VPN'**
-  String get disconnectVPN;
+  String get disconnectVpn;
 
-  /// Translation for disconnected
+  /// No description provided for @disconnected.
   ///
   /// In en, this message translates to:
   /// **'Disconnected'**
@@ -1616,373 +1544,337 @@ abstract class AppLocalizations {
   /// **'Disconnecting {name}...'**
   String disconnectingVPN(String name);
 
-  /// Translation for diskUsage
+  /// No description provided for @diskUsage.
   ///
   /// In en, this message translates to:
   /// **'Disk Usage'**
   String get diskUsage;
 
-  /// Translation for dnsDomainList
+  /// No description provided for @dnsDomainList.
   ///
   /// In en, this message translates to:
   /// **'DNS Domain List'**
   String get dnsDomainList;
 
-  /// Translation for dnsDomainListHelperText
+  /// No description provided for @dnsDomainListHelperText.
   ///
   /// In en, this message translates to:
   /// **'Set Connection-specific DNS Suffixes.'**
   String get dnsDomainListHelperText;
 
-  /// Translation for dnsDomainSearchList
+  /// No description provided for @dnsDomainSearchList.
   ///
   /// In en, this message translates to:
   /// **'DNS Domain Search List'**
   String get dnsDomainSearchList;
 
-  /// Translation for dnsDomainSearchListHelperText
+  /// No description provided for @dnsDomainSearchListHelperText.
   ///
   /// In en, this message translates to:
   /// **'Add name to the domain search list. Repeat this option to add more entries. Up to 10 domains are supported.'**
   String get dnsDomainSearchListHelperText;
 
-  /// Translation for dnsEnabled
+  /// No description provided for @dnsEnabled.
   ///
   /// In en, this message translates to:
   /// **'DNS Enabled'**
   String get dnsEnabled;
 
-  /// Translation for dnsServerIp
+  /// No description provided for @dnsServerIp.
   ///
   /// In en, this message translates to:
   /// **'DNS Server IP'**
   String get dnsServerIp;
 
-  /// Translation for dnsServerIsRequired
+  /// No description provided for @dnsServerIsRequired.
   ///
   /// In en, this message translates to:
   /// **'DNS server is required'**
   String get dnsServerIsRequired;
 
-  /// Translation for dnsServerOptional
+  /// No description provided for @dnsServerOptional.
   ///
   /// In en, this message translates to:
   /// **'DNS Server (Optional)'**
   String get dnsServerOptional;
 
-  /// Translation for dnsServers
+  /// No description provided for @dnsServers.
   ///
   /// In en, this message translates to:
   /// **'DNS Servers'**
   String get dnsServers;
 
-  /// Translation for dnsServersHelperText
+  /// No description provided for @dnsServersHelperText.
   ///
   /// In en, this message translates to:
   /// **'Set primary domain name server IPv4 or IPv6 address. Repeat this option to set secondary DNS server addresses.'**
   String get dnsServersHelperText;
 
-  /// Translation for dnsServersOptional
+  /// No description provided for @dnsServersOptional.
   ///
   /// In en, this message translates to:
   /// **'DNS Servers (Optional)'**
   String get dnsServersOptional;
 
-  /// Translation for dnsmasqDescription
+  /// No description provided for @dnsmasqDescription.
   ///
   /// In en, this message translates to:
   /// **'Lightweight DNS and DHCP server'**
   String get dnsmasqDescription;
 
-  /// Translation for dnsmasqServerName
-  ///
-  /// In en, this message translates to:
-  /// **'Dnsmasq'**
-  String get dnsmasqServerName;
-
-  /// Translation for done
+  /// No description provided for @done.
   ///
   /// In en, this message translates to:
   /// **'Done'**
   String get done;
 
-  /// Translation for doneButton
-  ///
-  /// In en, this message translates to:
-  /// **'Done'**
-  String get doneButton;
-
-  /// Translation for download
+  /// No description provided for @download.
   ///
   /// In en, this message translates to:
   /// **'Download'**
   String get download;
 
-  /// Translation for dynamicLease
+  /// No description provided for @dynamicLease.
   ///
   /// In en, this message translates to:
   /// **'Dynamic'**
   String get dynamicLease;
 
-  /// Translation for edit
+  /// No description provided for @edit.
   ///
   /// In en, this message translates to:
   /// **'Edit'**
   String get edit;
 
-  /// Translation for editClientOverride
+  /// No description provided for @editClientOverride.
   ///
   /// In en, this message translates to:
   /// **'Edit Client Override'**
   String get editClientOverride;
 
-  /// Translation for editConnection
+  /// No description provided for @editConnection.
   ///
   /// In en, this message translates to:
   /// **'Edit Connection'**
   String get editConnection;
 
-  /// Translation for editHost
+  /// No description provided for @editHost.
   ///
   /// In en, this message translates to:
   /// **'Edit Host'**
   String get editHost;
 
-  /// Translation for editProfile
+  /// No description provided for @editProfile.
   ///
   /// In en, this message translates to:
   /// **'Edit Profile'**
   String get editProfile;
 
-  /// Translation for editRule
+  /// No description provided for @editRule.
   ///
   /// In en, this message translates to:
   /// **'Edit Rule'**
   String get editRule;
 
-  /// Translation for editStaticKey
+  /// No description provided for @editStaticKey.
   ///
   /// In en, this message translates to:
   /// **'Edit Static Key'**
   String get editStaticKey;
 
-  /// Translation for editSubnet
+  /// No description provided for @editSubnet.
   ///
   /// In en, this message translates to:
   /// **'Edit Subnet'**
   String get editSubnet;
 
-  /// Translation for editWireguardPeer
+  /// No description provided for @editWireguardPeer.
   ///
   /// In en, this message translates to:
   /// **'Edit WireGuard Peer'**
   String get editWireguardPeer;
 
-  /// Translation for editWireguardServer
+  /// No description provided for @editWireguardServer.
   ///
   /// In en, this message translates to:
   /// **'Edit WireGuard Server'**
   String get editWireguardServer;
 
-  /// Translation for emergency
+  /// No description provided for @emergency.
   ///
   /// In en, this message translates to:
   /// **'Emergency'**
   String get emergency;
 
-  /// Translation for enable
+  /// No description provided for @enable.
   ///
   /// In en, this message translates to:
   /// **'Enable'**
   String get enable;
 
-  /// Translation for enableAutoScroll
+  /// No description provided for @enableAutoScroll.
   ///
   /// In en, this message translates to:
   /// **'Enable Auto-scroll'**
   String get enableAutoScroll;
 
-  /// Translation for enableClientSpecificOverride
+  /// No description provided for @enableClientSpecificOverride.
   ///
   /// In en, this message translates to:
   /// **'Enable this client specific override'**
   String get enableClientSpecificOverride;
 
-  /// Translation for enableDebugLogging
+  /// No description provided for @enableDebugLogging.
   ///
   /// In en, this message translates to:
   /// **'Enable debug logging'**
   String get enableDebugLogging;
 
-  /// Translation for enablePinLockFirst
-  ///
-  /// In en, this message translates to:
-  /// **'Please enable PIN lock first before using biometric'**
-  String get enablePinLockFirst;
-
-  /// Translation for enablePinLockFirstBiometric
+  /// No description provided for @enablePinLockFirstBiometric.
   ///
   /// In en, this message translates to:
   /// **'Enable PIN lock first to use biometric'**
   String get enablePinLockFirstBiometric;
 
-  /// Translation for enableRule
+  /// No description provided for @enableRule.
   ///
   /// In en, this message translates to:
   /// **'Enable Rule'**
   String get enableRule;
 
-  /// Translation for enableSsh
+  /// No description provided for @enableSsh.
   ///
   /// In en, this message translates to:
   /// **'Enable SSH'**
   String get enableSsh;
 
-  /// Translation for enableSshDescription
+  /// No description provided for @enableSshDescription.
   ///
   /// In en, this message translates to:
   /// **'Allow SSH access through Tailscale'**
   String get enableSshDescription;
 
-  /// Translation for enableTailscale
+  /// No description provided for @enableTailscale.
   ///
   /// In en, this message translates to:
   /// **'Enable Tailscale'**
   String get enableTailscale;
 
-  /// Translation for enableTailscaleDescription
+  /// No description provided for @enableTailscaleDescription.
   ///
   /// In en, this message translates to:
   /// **'Enable or disable the Tailscale service'**
   String get enableTailscaleDescription;
 
-  /// Translation for enableWireguard
+  /// No description provided for @enableWireguard.
   ///
   /// In en, this message translates to:
   /// **'Enable WireGuard'**
   String get enableWireguard;
 
-  /// Translation for enabled
+  /// No description provided for @enabled.
   ///
   /// In en, this message translates to:
   /// **'Enabled'**
   String get enabled;
 
-  /// Translation for enabledLabel
-  ///
-  /// In en, this message translates to:
-  /// **'Enabled'**
-  String get enabledLabel;
-
-  /// Translation for enabledStatus
-  ///
-  /// In en, this message translates to:
-  /// **'enabled'**
-  String get enabledStatus;
-
-  /// Translation for enablingRule
+  /// No description provided for @enablingRule.
   ///
   /// In en, this message translates to:
   /// **'Enabling rule...'**
   String get enablingRule;
 
-  /// Translation for endTime
+  /// No description provided for @endTime.
   ///
   /// In en, this message translates to:
   /// **'End Time'**
   String get endTime;
 
-  /// Translation for endpoint
+  /// No description provided for @endpoint.
   ///
   /// In en, this message translates to:
   /// **'Endpoint'**
   String get endpoint;
 
-  /// Translation for endpointAddress
+  /// No description provided for @endpointAddress.
   ///
   /// In en, this message translates to:
   /// **'Endpoint Address'**
   String get endpointAddress;
 
-  /// Translation for endpointPort
+  /// No description provided for @endpointPort.
   ///
   /// In en, this message translates to:
   /// **'Endpoint Port'**
   String get endpointPort;
 
-  /// Translation for enterBandwidthLimit
+  /// No description provided for @enterBandwidthLimit.
   ///
   /// In en, this message translates to:
   /// **'Enter your connection bandwidth limit in Mbps'**
   String get enterBandwidthLimit;
 
-  /// Translation for enterClientCertificateCommonName
+  /// No description provided for @enterClientCertificateCommonName.
   ///
   /// In en, this message translates to:
   /// **'Enter client certificate common name'**
   String get enterClientCertificateCommonName;
 
-  /// Translation for enterDescriptionForOverride
+  /// No description provided for @enterDescriptionForOverride.
   ///
   /// In en, this message translates to:
   /// **'Enter a description for this override'**
   String get enterDescriptionForOverride;
 
-  /// Translation for enterOrGeneratePresharedKey
+  /// No description provided for @enterOrGeneratePresharedKey.
   ///
   /// In en, this message translates to:
   /// **'Enter or generate pre-shared key'**
   String get enterOrGeneratePresharedKey;
 
-  /// Translation for enterOrGeneratePrivateKey
+  /// No description provided for @enterOrGeneratePrivateKey.
   ///
   /// In en, this message translates to:
   /// **'Enter or generate private key'**
   String get enterOrGeneratePrivateKey;
 
-  /// Translation for enterOrGeneratePublicKey
+  /// No description provided for @enterOrGeneratePublicKey.
   ///
   /// In en, this message translates to:
   /// **'Enter or generate public key'**
   String get enterOrGeneratePublicKey;
 
-  /// Translation for enterPIN
-  ///
-  /// In en, this message translates to:
-  /// **'Enter PIN'**
-  String get enterPIN;
-
-  /// Translation for enterPin
+  /// No description provided for @enterPin.
   ///
   /// In en, this message translates to:
   /// **'Enter PIN'**
   String get enterPin;
 
-  /// Translation for enterPinLabel
+  /// No description provided for @enterPinLabel.
   ///
   /// In en, this message translates to:
   /// **'Enter PIN (4-6 digits)'**
   String get enterPinLabel;
 
-  /// Translation for enterRuleDescription
+  /// No description provided for @enterRuleDescription.
   ///
   /// In en, this message translates to:
   /// **'Enter rule description'**
   String get enterRuleDescription;
 
-  /// Translation for enterYourApiKey
+  /// No description provided for @enterYourApiKey.
   ///
   /// In en, this message translates to:
   /// **'Enter your API key'**
   String get enterYourApiKey;
 
-  /// Translation for enterYourApiSecret
+  /// No description provided for @enterYourApiSecret.
   ///
   /// In en, this message translates to:
   /// **'Enter your API secret'**
   String get enterYourApiSecret;
 
-  /// Translation for entries
+  /// No description provided for @entries.
   ///
   /// In en, this message translates to:
   /// **'entries'**
@@ -1994,7 +1886,7 @@ abstract class AppLocalizations {
   /// **'{count} entries'**
   String entriesCount(int count);
 
-  /// Translation for error
+  /// No description provided for @error.
   ///
   /// In en, this message translates to:
   /// **'Error'**
@@ -2018,59 +1910,59 @@ abstract class AppLocalizations {
   /// **'Error deleting subnet: {error}'**
   String errorDeletingSubnet(String error);
 
-  /// Translation for errorLoadingData
+  /// No description provided for @errorLoadingData.
   ///
   /// In en, this message translates to:
   /// **'Error loading data'**
   String get errorLoadingData;
 
-  /// Translation for errorLoadingInstance
+  /// No description provided for @errorLoadingInstance.
   ///
   /// In en, this message translates to:
   /// **'Error loading instance'**
   String get errorLoadingInstance;
 
-  /// Translation for errorLoadingLogs
+  /// No description provided for @errorLoadingLogs.
   ///
   /// In en, this message translates to:
   /// **'Error loading logs'**
   String get errorLoadingLogs;
 
-  /// Translation for errorLoadingOverride
+  /// No description provided for @errorLoadingOverride.
   ///
   /// In en, this message translates to:
   /// **'Error loading override'**
   String get errorLoadingOverride;
 
-  /// Translation for errorLoadingRoutes
+  /// No description provided for @errorLoadingRoutes.
   ///
   /// In en, this message translates to:
   /// **'Error loading routes'**
   String get errorLoadingRoutes;
 
-  /// Translation for errorLoadingRules
+  /// No description provided for @errorLoadingRules.
   ///
   /// In en, this message translates to:
   /// **'Error loading rules'**
   String get errorLoadingRules;
 
-  /// Translation for errorLoadingSessions
+  /// No description provided for @errorLoadingSessions.
   ///
   /// In en, this message translates to:
   /// **'Error loading sessions'**
   String get errorLoadingSessions;
 
-  /// Translation for errorLoadingSystemInfo
+  /// No description provided for @errorLoadingSystemInfo.
   ///
   /// In en, this message translates to:
   /// **'Error loading system information'**
   String get errorLoadingSystemInfo;
 
-  /// Translation for errorLoadingVPNConnections
+  /// No description provided for @errorLoadingVpnConnections.
   ///
   /// In en, this message translates to:
   /// **'Error loading VPN connections'**
-  String get errorLoadingVPNConnections;
+  String get errorLoadingVpnConnections;
 
   /// No description provided for @errorPrefix.
   ///
@@ -2114,85 +2006,85 @@ abstract class AppLocalizations {
   /// **'Error updating subnet: {error}'**
   String errorUpdatingSubnet(String error);
 
-  /// Translation for exampleCidr
+  /// No description provided for @exampleCidr.
   ///
   /// In en, this message translates to:
   /// **'Example: 10.10.10.2/24 or fd00::2/64'**
   String get exampleCidr;
 
-  /// Translation for exampleTunnelAddress
+  /// No description provided for @exampleTunnelAddress.
   ///
   /// In en, this message translates to:
   /// **'Example: 10.10.10.1/24 or fd00::1/64'**
   String get exampleTunnelAddress;
 
-  /// Translation for examplesAnyIpCidr
+  /// No description provided for @examplesAnyIpCidr.
   ///
   /// In en, this message translates to:
   /// **'Examples: any, 192.168.1.0/24, 10.0.0.1'**
   String get examplesAnyIpCidr;
 
-  /// Translation for examplesAnyPortRange
+  /// No description provided for @examplesAnyPortRange.
   ///
   /// In en, this message translates to:
   /// **'Examples: any, 80, 1024-65535'**
   String get examplesAnyPortRange;
 
-  /// Translation for examplesAnyPortRangeHttp
+  /// No description provided for @examplesAnyPortRangeHttp.
   ///
   /// In en, this message translates to:
   /// **'Examples: any, 80, 80-443, http'**
   String get examplesAnyPortRangeHttp;
 
-  /// Translation for exitNode
+  /// No description provided for @exitNode.
   ///
   /// In en, this message translates to:
   /// **'Exit Node'**
   String get exitNode;
 
-  /// Translation for expired
+  /// No description provided for @expired.
   ///
   /// In en, this message translates to:
   /// **'Expired'**
   String get expired;
 
-  /// Translation for expires
+  /// No description provided for @expires.
   ///
   /// In en, this message translates to:
   /// **'Expires'**
   String get expires;
 
-  /// Translation for expiryTime
+  /// No description provided for @expiryTime.
   ///
   /// In en, this message translates to:
   /// **'Expiry Time'**
   String get expiryTime;
 
-  /// Translation for export
+  /// No description provided for @export.
   ///
   /// In en, this message translates to:
   /// **'Export'**
   String get export;
 
-  /// Translation for exportAllProfiles
+  /// No description provided for @exportAllProfiles.
   ///
   /// In en, this message translates to:
   /// **'Export All Profiles'**
   String get exportAllProfiles;
 
-  /// Translation for exportAllProfilesSubtitle
+  /// No description provided for @exportAllProfilesSubtitle.
   ///
   /// In en, this message translates to:
   /// **'Export all profiles to a JSON file'**
   String get exportAllProfilesSubtitle;
 
-  /// Translation for exportCredentialsWarning
+  /// No description provided for @exportCredentialsWarning.
   ///
   /// In en, this message translates to:
   /// **'Exporting with credentials will save API keys and secrets in plain text. Only do this if you will store the file securely.'**
   String get exportCredentialsWarning;
 
-  /// Translation for exportFailed
+  /// No description provided for @exportFailed.
   ///
   /// In en, this message translates to:
   /// **'Export failed'**
@@ -2204,43 +2096,37 @@ abstract class AppLocalizations {
   /// **'Export failed: {error}'**
   String exportFailedError(String error);
 
-  /// Translation for exportLogs
+  /// No description provided for @exportLogs.
   ///
   /// In en, this message translates to:
   /// **'Export Logs'**
   String get exportLogs;
 
-  /// Translation for exportProfiles
+  /// No description provided for @exportProfiles.
   ///
   /// In en, this message translates to:
   /// **'Export Profiles'**
   String get exportProfiles;
 
-  /// Translation for exportProfilesContent
+  /// No description provided for @exportProfilesContent.
   ///
   /// In en, this message translates to:
   /// **'Do you want to include API credentials in the export?\n\nWARNING: Including credentials will store API keys and secrets in plain text. Only include credentials if you will store the file securely.'**
   String get exportProfilesContent;
 
-  /// Translation for exportProfilesTitle
-  ///
-  /// In en, this message translates to:
-  /// **'Export Profiles'**
-  String get exportProfilesTitle;
-
-  /// Translation for exportSuccess
+  /// No description provided for @exportSuccess.
   ///
   /// In en, this message translates to:
   /// **'Export successful'**
   String get exportSuccess;
 
-  /// Translation for exportThisProfile
+  /// No description provided for @exportThisProfile.
   ///
   /// In en, this message translates to:
   /// **'Export This Profile'**
   String get exportThisProfile;
 
-  /// Translation for failedDevices
+  /// No description provided for @failedDevices.
   ///
   /// In en, this message translates to:
   /// **'Failed Devices'**
@@ -2252,13 +2138,19 @@ abstract class AppLocalizations {
   /// **'Failed to {action} Tailscale service'**
   String failedToActionTailscaleService(String action);
 
-  /// Translation for failedToApplyConfiguration
+  /// No description provided for @failedToApplyConfiguration.
   ///
   /// In en, this message translates to:
   /// **'Failed to apply configuration'**
   String get failedToApplyConfiguration;
 
-  /// Translation for failedToBlockHost
+  /// No description provided for @failedToSwitchProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to switch profile: {error}'**
+  String failedToSwitchProfile(String error);
+
+  /// No description provided for @failedToBlockHost.
   ///
   /// In en, this message translates to:
   /// **'Failed to block host'**
@@ -2306,7 +2198,7 @@ abstract class AppLocalizations {
   /// **'Failed to delete peer: {error}'**
   String failedToDeletePeer(String error);
 
-  /// Translation for failedToDeleteProfile
+  /// No description provided for @failedToDeleteProfile.
   ///
   /// In en, this message translates to:
   /// **'Failed to delete profile'**
@@ -2354,7 +2246,7 @@ abstract class AppLocalizations {
   /// **'Failed to load interfaces: {error}'**
   String failedToLoadInterfaces(String error);
 
-  /// Translation for failedToLoadOpenvpnLogs
+  /// No description provided for @failedToLoadOpenvpnLogs.
   ///
   /// In en, this message translates to:
   /// **'Failed to load OpenVPN logs'**
@@ -2366,7 +2258,7 @@ abstract class AppLocalizations {
   /// **'Failed to restart {type} service'**
   String failedToRestartService(String type);
 
-  /// Translation for failedToSaveAuthSettings
+  /// No description provided for @failedToSaveAuthSettings.
   ///
   /// In en, this message translates to:
   /// **'Failed to save authentication settings'**
@@ -2390,25 +2282,25 @@ abstract class AppLocalizations {
   /// **'Failed to save override: {error}'**
   String failedToSaveOverride(String error);
 
-  /// Translation for failedToSavePeer
+  /// No description provided for @failedToSavePeer.
   ///
   /// In en, this message translates to:
   /// **'Failed to save peer'**
   String get failedToSavePeer;
 
-  /// Translation for failedToSaveProfile
+  /// No description provided for @failedToSaveProfile.
   ///
   /// In en, this message translates to:
   /// **'Failed to save profile'**
   String get failedToSaveProfile;
 
-  /// Translation for failedToSaveServer
+  /// No description provided for @failedToSaveServer.
   ///
   /// In en, this message translates to:
   /// **'Failed to save server'**
   String get failedToSaveServer;
 
-  /// Translation for failedToSaveSettings
+  /// No description provided for @failedToSaveSettings.
   ///
   /// In en, this message translates to:
   /// **'Failed to save settings'**
@@ -2420,13 +2312,13 @@ abstract class AppLocalizations {
   /// **'Failed to save static key: {error}'**
   String failedToSaveStaticKey(String error);
 
-  /// Translation for failedToStartService
+  /// No description provided for @failedToStartService.
   ///
   /// In en, this message translates to:
   /// **'Failed to start service'**
   String get failedToStartService;
 
-  /// Translation for failedToStopService
+  /// No description provided for @failedToStopService.
   ///
   /// In en, this message translates to:
   /// **'Failed to stop service'**
@@ -2480,13 +2372,13 @@ abstract class AppLocalizations {
   /// **'{feature} - Coming soon'**
   String featureComingSoon(String feature);
 
-  /// Translation for featuresList
+  /// No description provided for @featuresList.
   ///
   /// In en, this message translates to:
   /// **'• System monitoring and management\n• Firewall rule configuration\n• Service control\n• Real-time logs\n• Multi-profile support\n• Secure authentication'**
   String get featuresList;
 
-  /// Translation for featuresTitle
+  /// No description provided for @featuresTitle.
   ///
   /// In en, this message translates to:
   /// **'Features'**
@@ -2498,295 +2390,265 @@ abstract class AppLocalizations {
   /// **'{fieldName} is required'**
   String fieldIsRequired(String fieldName);
 
-  /// Translation for fieldRequired
+  /// No description provided for @fieldRequired.
   ///
   /// In en, this message translates to:
   /// **'This field is required'**
   String get fieldRequired;
 
-  /// Translation for fifteenMin
+  /// No description provided for @fifteenMin.
   ///
   /// In en, this message translates to:
   /// **'15 min'**
   String get fifteenMin;
 
-  /// Translation for filterByAction
+  /// No description provided for @filterByAction.
   ///
   /// In en, this message translates to:
   /// **'Filter by Action'**
   String get filterByAction;
 
-  /// Translation for filterByType
+  /// No description provided for @filterByType.
   ///
   /// In en, this message translates to:
   /// **'Filter by type'**
   String get filterByType;
 
-  /// Translation for filterLabel
+  /// No description provided for @filterLabel.
   ///
   /// In en, this message translates to:
   /// **'Filter: '**
   String get filterLabel;
 
-  /// Translation for filters
+  /// No description provided for @filters.
   ///
   /// In en, this message translates to:
   /// **'Filters'**
   String get filters;
 
-  /// Translation for filtersLabel
-  ///
-  /// In en, this message translates to:
-  /// **'Filters'**
-  String get filtersLabel;
-
-  /// Translation for firewall
+  /// No description provided for @firewall.
   ///
   /// In en, this message translates to:
   /// **'Firewall'**
   String get firewall;
 
-  /// Translation for firewallAliases
+  /// No description provided for @firewallAliases.
   ///
   /// In en, this message translates to:
   /// **'Firewall Aliases'**
   String get firewallAliases;
 
-  /// Translation for firewallLogs
+  /// No description provided for @firewallLogs.
   ///
   /// In en, this message translates to:
   /// **'Firewall Logs'**
   String get firewallLogs;
 
-  /// Translation for firewallRuleDetails
+  /// No description provided for @firewallRuleDetails.
   ///
   /// In en, this message translates to:
   /// **'Firewall Rule Details'**
   String get firewallRuleDetails;
 
-  /// Translation for firewallRules
+  /// No description provided for @firewallRules.
   ///
   /// In en, this message translates to:
   /// **'Firewall Rules'**
   String get firewallRules;
 
-  /// Translation for firmwareDetails
+  /// No description provided for @firmwareDetails.
   ///
   /// In en, this message translates to:
   /// **'Firmware Details'**
   String get firmwareDetails;
 
-  /// Translation for fiveMin
+  /// No description provided for @fiveMin.
   ///
   /// In en, this message translates to:
   /// **'5 min'**
   String get fiveMin;
 
-  /// Translation for fixFormErrors
+  /// No description provided for @fixFormErrors.
   ///
   /// In en, this message translates to:
   /// **'Please fix the errors in the form'**
   String get fixFormErrors;
 
-  /// Translation for forbidden
+  /// No description provided for @forbidden.
   ///
   /// In en, this message translates to:
   /// **'Access forbidden'**
   String get forbidden;
 
-  /// Translation for gateway
+  /// No description provided for @gateway.
   ///
   /// In en, this message translates to:
   /// **'Gateway'**
   String get gateway;
 
-  /// Translation for gatewayOptional
+  /// No description provided for @gatewayOptional.
   ///
   /// In en, this message translates to:
   /// **'Gateway (Optional)'**
   String get gatewayOptional;
 
-  /// Translation for gateways
+  /// No description provided for @gateways.
   ///
   /// In en, this message translates to:
   /// **'Gateways'**
   String get gateways;
 
-  /// Translation for general
+  /// No description provided for @general.
   ///
   /// In en, this message translates to:
   /// **'General'**
   String get general;
 
-  /// Translation for generalSettings
+  /// No description provided for @generalSettings.
   ///
   /// In en, this message translates to:
   /// **'General Settings'**
   String get generalSettings;
 
-  /// Translation for generateKey
+  /// No description provided for @generateKey.
   ///
   /// In en, this message translates to:
   /// **'Generate Key'**
   String get generateKey;
 
-  /// Translation for generateKeyPair
+  /// No description provided for @generateKeyPair.
   ///
   /// In en, this message translates to:
   /// **'Generate Key Pair'**
   String get generateKeyPair;
 
-  /// Translation for generateNewKeyPair
+  /// No description provided for @generateNewKeyPair.
   ///
   /// In en, this message translates to:
   /// **'Generate New Key Pair'**
   String get generateNewKeyPair;
 
-  /// Translation for generateOrPasteKeyHere
+  /// No description provided for @generateOrPasteKeyHere.
   ///
   /// In en, this message translates to:
   /// **'Generate or paste key here'**
   String get generateOrPasteKeyHere;
 
-  /// Translation for generatePresharedKey
+  /// No description provided for @generatePresharedKey.
   ///
   /// In en, this message translates to:
   /// **'Generate pre-shared key'**
   String get generatePresharedKey;
 
-  /// Translation for generated
+  /// No description provided for @generated.
   ///
   /// In en, this message translates to:
   /// **'Generated'**
   String get generated;
 
-  /// Translation for generating
+  /// No description provided for @generating.
   ///
   /// In en, this message translates to:
   /// **'Generating...'**
   String get generating;
 
-  /// Translation for gitCommit
+  /// No description provided for @gitCommit.
   ///
   /// In en, this message translates to:
   /// **'Git Commit'**
   String get gitCommit;
 
-  /// Translation for gnuLicenseText
-  ///
-  /// In en, this message translates to:
-  /// **'This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.\n\nWhy GPLv3?\n\n• Ensures the software remains free and open source\n• Any modifications or derivatives must also be open source\n• Users have the freedom to use, study, share, and modify the software\n• The community benefits from improvements and contributions'**
-  String get gnuLicenseText;
-
-  /// Translation for gnuLicenseTitle
-  ///
-  /// In en, this message translates to:
-  /// **'GNU General Public License v3.0'**
-  String get gnuLicenseTitle;
-
-  /// Translation for healthStatus
+  /// No description provided for @healthStatus.
   ///
   /// In en, this message translates to:
   /// **'Health Status'**
   String get healthStatus;
 
-  /// Translation for hideControls
+  /// No description provided for @hideControls.
   ///
   /// In en, this message translates to:
   /// **'Hide Controls'**
   String get hideControls;
 
-  /// Translation for hideKey
+  /// No description provided for @hideKey.
   ///
   /// In en, this message translates to:
   /// **'Hide key'**
   String get hideKey;
 
-  /// Translation for historySize
+  /// No description provided for @historySize.
   ///
   /// In en, this message translates to:
   /// **'History Size'**
   String get historySize;
 
-  /// Translation for host
+  /// No description provided for @host.
   ///
   /// In en, this message translates to:
   /// **'Host'**
   String get host;
 
-  /// Translation for hostAddedSuccessfully
+  /// No description provided for @hostAddedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Host added successfully'**
   String get hostAddedSuccessfully;
 
-  /// Translation for hostBlocked
+  /// No description provided for @hostBlocked.
   ///
   /// In en, this message translates to:
   /// **'Host blocked successfully'**
   String get hostBlocked;
 
-  /// Translation for hostDeletedSuccessfully
+  /// No description provided for @hostDeletedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Host deleted successfully'**
   String get hostDeletedSuccessfully;
 
-  /// Translation for hostHint
+  /// No description provided for @hostHint.
   ///
   /// In en, this message translates to:
   /// **'e.g., 192.168.1.1 or firewall.example.com'**
   String get hostHint;
 
-  /// Translation for hostIpAddress
+  /// No description provided for @hostIpAddress.
   ///
   /// In en, this message translates to:
   /// **'Host / IP Address'**
   String get hostIpAddress;
 
-  /// Translation for hostIpAddressLabel
-  ///
-  /// In en, this message translates to:
-  /// **'Host/IP Address'**
-  String get hostIpAddressLabel;
-
-  /// Translation for hostIsRequired
+  /// No description provided for @hostIsRequired.
   ///
   /// In en, this message translates to:
   /// **'Host is required'**
   String get hostIsRequired;
 
-  /// Translation for hostPlaceholder
+  /// No description provided for @hostPlaceholder.
   ///
   /// In en, this message translates to:
   /// **'192.168.1.1 or firewall.example.com'**
   String get hostPlaceholder;
 
-  /// Translation for hostUpdatedSuccessfully
+  /// No description provided for @hostUpdatedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Host updated successfully'**
   String get hostUpdatedSuccessfully;
 
-  /// Translation for hostname
+  /// No description provided for @hostname.
   ///
   /// In en, this message translates to:
   /// **'Hostname'**
   String get hostname;
 
-  /// Translation for hour
+  /// No description provided for @hour.
   ///
   /// In en, this message translates to:
   /// **'hour'**
   String get hour;
 
-  /// Translation for hourAbbrev
-  ///
-  /// In en, this message translates to:
-  /// **'h'**
-  String get hourAbbrev;
-
-  /// Translation for hours
+  /// No description provided for @hours.
   ///
   /// In en, this message translates to:
   /// **'hours'**
@@ -2796,45 +2658,27 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{hours}h ago'**
-  String hoursAgo(String hours);
+  String hoursAgo(int hours);
 
-  /// Translation for http
-  ///
-  /// In en, this message translates to:
-  /// **'http'**
-  String get http;
-
-  /// Translation for https
-  ///
-  /// In en, this message translates to:
-  /// **'https'**
-  String get https;
-
-  /// Translation for id
+  /// No description provided for @id.
   ///
   /// In en, this message translates to:
   /// **'ID'**
   String get id;
 
-  /// Translation for import
+  /// No description provided for @import.
   ///
   /// In en, this message translates to:
   /// **'Import'**
   String get import;
 
-  /// Translation for importAndExport
+  /// No description provided for @importAndExport.
   ///
   /// In en, this message translates to:
   /// **'Import & Export'**
   String get importAndExport;
 
-  /// Translation for importExport
-  ///
-  /// In en, this message translates to:
-  /// **'Import & Export'**
-  String get importExport;
-
-  /// Translation for importExportDescription
+  /// No description provided for @importExportDescription.
   ///
   /// In en, this message translates to:
   /// **'Export your profiles to back them up or transfer them to another device. Import profiles from a previously exported file.\n\nProfiles are saved in JSON format and can include connection endpoints and settings.'**
@@ -2846,47 +2690,29 @@ abstract class AppLocalizations {
   /// **'Import failed: {error}'**
   String importFailed(String error);
 
-  /// No description provided for @importFailedWithErrors.
-  ///
-  /// In en, this message translates to:
-  /// **'Import failed: {errors}'**
-  String importFailedWithErrors(String errors);
-
-  /// Translation for importProfiles
+  /// No description provided for @importProfiles.
   ///
   /// In en, this message translates to:
   /// **'Import Profiles'**
   String get importProfiles;
 
-  /// Translation for importProfilesDialog
+  /// No description provided for @importProfilesDialog.
   ///
   /// In en, this message translates to:
   /// **'How should existing profiles be handled?\n\n• Keep Both: Import with new IDs\n• Overwrite: Replace existing profiles'**
   String get importProfilesDialog;
 
-  /// Translation for importProfilesSubtitle
+  /// No description provided for @importProfilesSubtitle.
   ///
   /// In en, this message translates to:
   /// **'Import profiles from a JSON file'**
   String get importProfilesSubtitle;
 
-  /// Translation for importProfilesTitle
-  ///
-  /// In en, this message translates to:
-  /// **'Import Profiles'**
-  String get importProfilesTitle;
-
-  /// Translation for importSuccess
+  /// No description provided for @importSuccess.
   ///
   /// In en, this message translates to:
   /// **'Import successful'**
   String get importSuccess;
-
-  /// No description provided for @importedProfiles.
-  ///
-  /// In en, this message translates to:
-  /// **'Imported {count} profile(s)'**
-  String importedProfiles(int count);
 
   /// No description provided for @importedWithFailures.
   ///
@@ -2898,63 +2724,63 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'in {days}d'**
-  String inDays(String days);
+  String inDays(int days);
 
   /// Time remaining in hours
   ///
   /// In en, this message translates to:
   /// **'in {hours}h'**
-  String inHours(String hours);
+  String inHours(int hours);
 
   /// Time remaining in minutes
   ///
   /// In en, this message translates to:
   /// **'in {minutes}m'**
-  String inMinutes(String minutes);
+  String inMinutes(int minutes);
 
-  /// Translation for inbound
+  /// No description provided for @inbound.
   ///
   /// In en, this message translates to:
   /// **'Inbound'**
   String get inbound;
 
-  /// Translation for includeCredentials
+  /// No description provided for @includeCredentials.
   ///
   /// In en, this message translates to:
   /// **'Include Credentials'**
   String get includeCredentials;
 
-  /// Translation for incorrectPin
+  /// No description provided for @incorrectPin.
   ///
   /// In en, this message translates to:
   /// **'Incorrect PIN'**
   String get incorrectPin;
 
-  /// Translation for info
+  /// No description provided for @info.
   ///
   /// In en, this message translates to:
   /// **'Information'**
   String get info;
 
-  /// Translation for instance
+  /// No description provided for @instance.
   ///
   /// In en, this message translates to:
   /// **'Instance'**
   String get instance;
 
-  /// Translation for instanceCreatedSuccessfully
+  /// No description provided for @instanceCreatedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Instance created successfully'**
   String get instanceCreatedSuccessfully;
 
-  /// Translation for instanceDeletedSuccessfully
+  /// No description provided for @instanceDeletedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Instance deleted successfully'**
   String get instanceDeletedSuccessfully;
 
-  /// Translation for instanceDetails
+  /// No description provided for @instanceDetails.
   ///
   /// In en, this message translates to:
   /// **'Instance Details'**
@@ -2966,77 +2792,59 @@ abstract class AppLocalizations {
   /// **'Instance {status} successfully'**
   String instanceToggledSuccessfully(String status);
 
-  /// Translation for instanceUpdatedSuccessfully
+  /// No description provided for @instanceUpdatedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Instance updated successfully'**
   String get instanceUpdatedSuccessfully;
 
-  /// Translation for instanceWillBeActiveWhenEnabled
+  /// No description provided for @instanceWillBeActiveWhenEnabled.
   ///
   /// In en, this message translates to:
   /// **'Instance will be active when enabled'**
   String get instanceWillBeActiveWhenEnabled;
 
-  /// Translation for instances
+  /// No description provided for @instances.
   ///
   /// In en, this message translates to:
   /// **'Instances'**
   String get instances;
 
-  /// Translation for interface
+  /// No description provided for @interface.
   ///
   /// In en, this message translates to:
   /// **'Interface'**
   String get interface;
 
-  /// Label for network interface
-  ///
-  /// In en, this message translates to:
-  /// **'{interface}'**
-  String interfaceLabel(String interface);
-
-  /// Translation for invalidApiKeyFormat
+  /// No description provided for @invalidApiKeyFormat.
   ///
   /// In en, this message translates to:
   /// **'Invalid API Key format'**
   String get invalidApiKeyFormat;
 
-  /// Translation for invalidApiSecretFormat
+  /// No description provided for @invalidApiSecretFormat.
   ///
   /// In en, this message translates to:
   /// **'Invalid API Secret format'**
   String get invalidApiSecretFormat;
 
-  /// Translation for invalidBase64Format
+  /// No description provided for @invalidBase64Format.
   ///
   /// In en, this message translates to:
   /// **'Invalid Base64 format'**
   String get invalidBase64Format;
 
-  /// Translation for invalidCidrFormat
-  ///
-  /// In en, this message translates to:
-  /// **'Invalid CIDR notation (use format: IP/prefix)'**
-  String get invalidCidrFormat;
-
-  /// Translation for invalidCidrNotation
+  /// No description provided for @invalidCidrNotation.
   ///
   /// In en, this message translates to:
   /// **'Invalid CIDR notation (use format: IP/prefix)'**
   String get invalidCidrNotation;
 
-  /// Translation for invalidDestinationFormat
+  /// No description provided for @invalidDestinationFormat.
   ///
   /// In en, this message translates to:
   /// **'Invalid destination format'**
   String get invalidDestinationFormat;
-
-  /// No description provided for @invalidFileError.
-  ///
-  /// In en, this message translates to:
-  /// **'Invalid file: {error}'**
-  String invalidFileError(String error);
 
   /// No description provided for @invalidFileFormat.
   ///
@@ -3044,155 +2852,119 @@ abstract class AppLocalizations {
   /// **'Invalid file: {error}'**
   String invalidFileFormat(String error);
 
-  /// Translation for invalidHostnameOrIp
+  /// No description provided for @invalidHostnameOrIp.
   ///
   /// In en, this message translates to:
   /// **'Invalid hostname or IP address'**
   String get invalidHostnameOrIp;
 
-  /// Translation for invalidInput
+  /// No description provided for @invalidInput.
   ///
   /// In en, this message translates to:
   /// **'Invalid input'**
   String get invalidInput;
 
-  /// Translation for invalidIpAddress
+  /// No description provided for @invalidIpAddress.
   ///
   /// In en, this message translates to:
   /// **'Invalid IP address'**
   String get invalidIpAddress;
 
-  /// Translation for invalidIpAddressFormat
+  /// No description provided for @invalidIpAddressFormat.
   ///
   /// In en, this message translates to:
   /// **'Invalid IP address (must be IPv4 or IPv6)'**
   String get invalidIpAddressFormat;
 
-  /// Translation for invalidIpv4Address
+  /// No description provided for @invalidIpv4Address.
   ///
   /// In en, this message translates to:
   /// **'Invalid IPv4 address'**
   String get invalidIpv4Address;
 
-  /// Translation for invalidIpv4CidrNotation
+  /// No description provided for @invalidIpv4CidrNotation.
   ///
   /// In en, this message translates to:
   /// **'Invalid IPv4 CIDR notation'**
   String get invalidIpv4CidrNotation;
 
-  /// Translation for invalidIpv4Prefix
+  /// No description provided for @invalidIpv4Prefix.
   ///
   /// In en, this message translates to:
   /// **'Invalid IPv4 prefix (must be 0-32)'**
   String get invalidIpv4Prefix;
 
-  /// Translation for invalidIpv6Address
+  /// No description provided for @invalidIpv6Address.
   ///
   /// In en, this message translates to:
   /// **'Invalid IPv6 address'**
   String get invalidIpv6Address;
 
-  /// Translation for invalidIpv6CidrNotation
+  /// No description provided for @invalidIpv6CidrNotation.
   ///
   /// In en, this message translates to:
   /// **'Invalid IPv6 CIDR notation'**
   String get invalidIpv6CidrNotation;
 
-  /// Translation for invalidIpv6Prefix
+  /// No description provided for @invalidIpv6Prefix.
   ///
   /// In en, this message translates to:
   /// **'Invalid IPv6 prefix (must be 0-128)'**
   String get invalidIpv6Prefix;
 
-  /// Translation for invalidPIN
+  /// No description provided for @invalidPin.
   ///
   /// In en, this message translates to:
   /// **'Invalid PIN'**
-  String get invalidPIN;
+  String get invalidPin;
 
-  /// Translation for invalidPortFormat
+  /// No description provided for @invalidPortFormat.
   ///
   /// In en, this message translates to:
   /// **'Invalid port format'**
   String get invalidPortFormat;
 
-  /// Translation for invalidPrefixLength
+  /// No description provided for @invalidPrefixLength.
   ///
   /// In en, this message translates to:
   /// **'Invalid prefix length'**
   String get invalidPrefixLength;
 
-  /// Translation for invalidSourceFormat
+  /// No description provided for @invalidSourceFormat.
   ///
   /// In en, this message translates to:
   /// **'Invalid source format'**
   String get invalidSourceFormat;
 
-  /// Translation for ipAddress
+  /// No description provided for @ipAddress.
   ///
   /// In en, this message translates to:
   /// **'IP Address'**
   String get ipAddress;
 
-  /// Translation for ipAddresses
+  /// No description provided for @ipAddresses.
   ///
   /// In en, this message translates to:
   /// **'IP Addresses'**
   String get ipAddresses;
 
-  /// Translation for ipv4CidrHint
-  ///
-  /// In en, this message translates to:
-  /// **'10.8.0.0/24'**
-  String get ipv4CidrHint;
-
-  /// Translation for ipv4OrIpv6CidrHint
-  ///
-  /// In en, this message translates to:
-  /// **'10.8.0.0/24 or fd00::/64'**
-  String get ipv4OrIpv6CidrHint;
-
-  /// Translation for ipv4TunnelNetwork
+  /// No description provided for @ipv4TunnelNetwork.
   ///
   /// In en, this message translates to:
   /// **'IPv4 Tunnel Network'**
   String get ipv4TunnelNetwork;
 
-  /// Translation for ipv4TunnelNetworkHint
-  ///
-  /// In en, this message translates to:
-  /// **'10.8.0.0/24'**
-  String get ipv4TunnelNetworkHint;
-
-  /// Translation for ipv6CidrHint
-  ///
-  /// In en, this message translates to:
-  /// **'fd00::/64'**
-  String get ipv6CidrHint;
-
-  /// Translation for ipv6TunnelNetwork
+  /// No description provided for @ipv6TunnelNetwork.
   ///
   /// In en, this message translates to:
   /// **'IPv6 Tunnel Network'**
   String get ipv6TunnelNetwork;
 
-  /// Translation for ipv6TunnelNetworkHint
-  ///
-  /// In en, this message translates to:
-  /// **'fd00::/64'**
-  String get ipv6TunnelNetworkHint;
-
-  /// Translation for iscDhcpDescription
+  /// No description provided for @iscDhcpDescription.
   ///
   /// In en, this message translates to:
   /// **'Internet Systems Consortium DHCP server'**
   String get iscDhcpDescription;
-
-  /// Translation for iscDhcpServerName
-  ///
-  /// In en, this message translates to:
-  /// **'ISC DHCP'**
-  String get iscDhcpServerName;
 
   /// Count of items in a list
   ///
@@ -3200,71 +2972,59 @@ abstract class AppLocalizations {
   /// **'{count} item(s)'**
   String itemsCount(int count);
 
-  /// Translation for justNow
+  /// No description provided for @justNow.
   ///
   /// In en, this message translates to:
   /// **'Just now'**
   String get justNow;
 
-  /// Translation for keaDhcpDescription
+  /// No description provided for @keaDhcpDescription.
   ///
   /// In en, this message translates to:
   /// **'Modern, high-performance DHCP server'**
   String get keaDhcpDescription;
 
-  /// Translation for keaDhcpServerName
-  ///
-  /// In en, this message translates to:
-  /// **'Kea DHCP'**
-  String get keaDhcpServerName;
-
-  /// Translation for keepAliveIntervalOptional
+  /// No description provided for @keepAliveIntervalOptional.
   ///
   /// In en, this message translates to:
   /// **'Keep Alive Interval (Optional)'**
   String get keepAliveIntervalOptional;
 
-  /// Translation for keepBoth
+  /// No description provided for @keepBoth.
   ///
   /// In en, this message translates to:
   /// **'Keep Both'**
   String get keepBoth;
 
-  /// Translation for keepalive
+  /// No description provided for @keepalive.
   ///
   /// In en, this message translates to:
   /// **'Keepalive'**
   String get keepalive;
 
-  /// Translation for keepaliveOptional
+  /// No description provided for @keepaliveOptional.
   ///
   /// In en, this message translates to:
   /// **'Keepalive (Optional)'**
   String get keepaliveOptional;
 
-  /// Translation for key
+  /// No description provided for @key.
   ///
   /// In en, this message translates to:
   /// **'Key'**
   String get key;
 
-  /// Translation for keyCopiedToClipboard
+  /// No description provided for @keyCopiedToClipboard.
   ///
   /// In en, this message translates to:
   /// **'Key copied to clipboard'**
   String get keyCopiedToClipboard;
 
-  /// Translation for keyGeneratedSuccessfully
+  /// No description provided for @keyGeneratedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Key generated successfully'**
   String get keyGeneratedSuccessfully;
-
-  /// Translation for keyLabel
-  ///
-  /// In en, this message translates to:
-  /// **'Key {id}'**
-  String keyLabel(String id);
 
   /// No description provided for @keyWithId.
   ///
@@ -3272,67 +3032,67 @@ abstract class AppLocalizations {
   /// **'Key {id}'**
   String keyWithId(String id);
 
-  /// Translation for keysGeneratedSuccessfully
+  /// No description provided for @keysGeneratedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Keys generated successfully'**
   String get keysGeneratedSuccessfully;
 
-  /// Translation for keysRequired
+  /// No description provided for @keysRequired.
   ///
   /// In en, this message translates to:
   /// **'Private and public keys are required'**
   String get keysRequired;
 
-  /// Translation for label
+  /// No description provided for @label.
   ///
   /// In en, this message translates to:
   /// **'Label'**
   String get label;
 
-  /// Translation for labelHint
+  /// No description provided for @labelHint.
   ///
   /// In en, this message translates to:
   /// **'e.g., Home Network, Office VPN'**
   String get labelHint;
 
-  /// Translation for labelOptional
+  /// No description provided for @labelOptional.
   ///
   /// In en, this message translates to:
   /// **'Label (Optional)'**
   String get labelOptional;
 
-  /// Translation for language
+  /// No description provided for @language.
   ///
   /// In en, this message translates to:
   /// **'Language'**
   String get language;
 
-  /// Translation for lastDay
+  /// No description provided for @lastDay.
   ///
   /// In en, this message translates to:
   /// **'Last Day'**
   String get lastDay;
 
-  /// Translation for lastDayShort
+  /// No description provided for @lastDayShort.
   ///
   /// In en, this message translates to:
   /// **'1 Day'**
   String get lastDayShort;
 
-  /// Translation for lastMonth
+  /// No description provided for @lastMonth.
   ///
   /// In en, this message translates to:
   /// **'Last Month'**
   String get lastMonth;
 
-  /// Translation for lastMonthShort
+  /// No description provided for @lastMonthShort.
   ///
   /// In en, this message translates to:
   /// **'1 Month'**
   String get lastMonthShort;
 
-  /// Translation for lastUpdate
+  /// No description provided for @lastUpdate.
   ///
   /// In en, this message translates to:
   /// **'Last Update'**
@@ -3344,13 +3104,13 @@ abstract class AppLocalizations {
   /// **'Last used: {date}'**
   String lastUsed(String date);
 
-  /// Translation for lastWeek
+  /// No description provided for @lastWeek.
   ///
   /// In en, this message translates to:
   /// **'Last Week'**
   String get lastWeek;
 
-  /// Translation for lastWeekShort
+  /// No description provided for @lastWeekShort.
   ///
   /// In en, this message translates to:
   /// **'1 Week'**
@@ -3362,79 +3122,79 @@ abstract class AppLocalizations {
   /// **'{filtered} of {total} lease(s)'**
   String leasesCount(int filtered, int total);
 
-  /// Translation for leaveEmptyOrGenerate
+  /// No description provided for @leaveEmptyOrGenerate.
   ///
   /// In en, this message translates to:
   /// **'Leave empty or generate'**
   String get leaveEmptyOrGenerate;
 
-  /// Translation for licenses
+  /// No description provided for @licenses.
   ///
   /// In en, this message translates to:
   /// **'Licenses'**
   String get licenses;
 
-  /// Translation for lightMode
+  /// No description provided for @lightMode.
   ///
   /// In en, this message translates to:
   /// **'Light Mode'**
   String get lightMode;
 
-  /// Translation for limit
+  /// No description provided for @limit.
   ///
   /// In en, this message translates to:
   /// **'Limit'**
   String get limit;
 
-  /// Translation for live
+  /// No description provided for @live.
   ///
   /// In en, this message translates to:
   /// **'LIVE'**
   String get live;
 
-  /// Translation for liveNetworkMonitor
+  /// No description provided for @liveNetworkMonitor.
   ///
   /// In en, this message translates to:
   /// **'Live Network Monitor'**
   String get liveNetworkMonitor;
 
-  /// Translation for neighborDiscovery
+  /// No description provided for @neighborDiscovery.
   ///
   /// In en, this message translates to:
   /// **'Neighbor Discovery'**
   String get neighborDiscovery;
 
-  /// Translation for loading
+  /// No description provided for @loading.
   ///
   /// In en, this message translates to:
   /// **'Loading...'**
   String get loading;
 
-  /// Translation for loadingHostData
+  /// No description provided for @loadingHostData.
   ///
   /// In en, this message translates to:
   /// **'Loading host data...'**
   String get loadingHostData;
 
-  /// Translation for loadingSettings
+  /// No description provided for @loadingSettings.
   ///
   /// In en, this message translates to:
   /// **'Loading settings...'**
   String get loadingSettings;
 
-  /// Translation for localAddress
+  /// No description provided for @localAddress.
   ///
   /// In en, this message translates to:
   /// **'Local Address'**
   String get localAddress;
 
-  /// Translation for localNetwork
+  /// No description provided for @localNetwork.
   ///
   /// In en, this message translates to:
   /// **'Local Network'**
   String get localNetwork;
 
-  /// Translation for localNetworkHelperText
+  /// No description provided for @localNetworkHelperText.
   ///
   /// In en, this message translates to:
   /// **'These are the networks accessible by the client, these are pushed via route(-ipv6) clauses in OpenVPN to the client.'**
@@ -3446,13 +3206,13 @@ abstract class AppLocalizations {
   /// **'Lock after {minutes} {minutes, plural, =1{minute} other{minutes}} of inactivity'**
   String lockAfterMinutes(int minutes);
 
-  /// Translation for lockApp
+  /// No description provided for @lockApp.
   ///
   /// In en, this message translates to:
   /// **'Lock App'**
   String get lockApp;
 
-  /// Translation for lockTimeoutLabel
+  /// No description provided for @lockTimeoutLabel.
   ///
   /// In en, this message translates to:
   /// **'Lock Timeout'**
@@ -3464,163 +3224,157 @@ abstract class AppLocalizations {
   /// **'Lock timeout set to {value} {value, plural, =1{minute} other{minutes}}'**
   String lockTimeoutSet(int value);
 
-  /// Translation for logDetails
+  /// No description provided for @logDetails.
   ///
   /// In en, this message translates to:
   /// **'Log Details'**
   String get logDetails;
 
-  /// Translation for logEntriesCopied
-  ///
-  /// In en, this message translates to:
-  /// **'{count} log {entries} copied'**
-  String logEntriesCopied(int count, String entries);
-
-  /// Translation for logEntryCopied
+  /// No description provided for @logEntryCopied.
   ///
   /// In en, this message translates to:
   /// **'Log entry copied'**
   String get logEntryCopied;
 
-  /// Translation for logEntryDetails
+  /// No description provided for @logEntryDetails.
   ///
   /// In en, this message translates to:
   /// **'Log Entry Details'**
   String get logEntryDetails;
 
-  /// Translation for logFile
+  /// No description provided for @logFile.
   ///
   /// In en, this message translates to:
   /// **'Log File'**
   String get logFile;
 
-  /// Translation for logLimit
+  /// No description provided for @logLimit.
   ///
   /// In en, this message translates to:
   /// **'Log Limit'**
   String get logLimit;
 
-  /// Translation for login
+  /// No description provided for @login.
   ///
   /// In en, this message translates to:
   /// **'Login'**
   String get login;
 
-  /// Translation for loginServer
+  /// No description provided for @loginServer.
   ///
   /// In en, this message translates to:
   /// **'Login Server'**
   String get loginServer;
 
-  /// Translation for loginServerHelperText
+  /// No description provided for @loginServerHelperText.
   ///
   /// In en, this message translates to:
   /// **'The Tailscale login server URL'**
   String get loginServerHelperText;
 
-  /// Translation for loginServerRequired
+  /// No description provided for @loginServerRequired.
   ///
   /// In en, this message translates to:
   /// **'Login server is required'**
   String get loginServerRequired;
 
-  /// Translation for logout
+  /// No description provided for @logout.
   ///
   /// In en, this message translates to:
   /// **'Logout'**
   String get logout;
 
-  /// Translation for logs
+  /// No description provided for @logs.
   ///
   /// In en, this message translates to:
   /// **'Logs'**
   String get logs;
 
-  /// Translation for logsExportedSuccessfully
+  /// No description provided for @logsExportedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Logs exported successfully'**
   String get logsExportedSuccessfully;
 
-  /// Translation for logsMatchingFiltersWillAppearHere
+  /// No description provided for @logsMatchingFiltersWillAppearHere.
   ///
   /// In en, this message translates to:
   /// **'Logs matching your filters will appear here'**
   String get logsMatchingFiltersWillAppearHere;
 
-  /// Translation for logsWillAppear
+  /// No description provided for @logsWillAppear.
   ///
   /// In en, this message translates to:
   /// **'Logs will appear here as they are generated'**
   String get logsWillAppear;
 
-  /// Translation for macAddress
+  /// No description provided for @macAddress.
   ///
   /// In en, this message translates to:
   /// **'MAC Address'**
   String get macAddress;
 
-  /// Translation for macAddressHint
+  /// No description provided for @macAddressHint.
   ///
   /// In en, this message translates to:
   /// **'e.g., 00:11:22:33:44:55'**
   String get macAddressHint;
 
-  /// Translation for magicDns
+  /// Validation error when MAC address field is empty
   ///
   /// In en, this message translates to:
-  /// **'Magic DNS'**
-  String get magicDns;
+  /// **'MAC address is required'**
+  String get macAddressIsRequired;
 
-  /// Translation for manageProfiles
+  /// Validation error for an invalid MAC address
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid MAC address format (e.g., AA:BB:CC:DD:EE:FF)'**
+  String get invalidMacAddressFormat;
+
+  /// No description provided for @manageProfiles.
   ///
   /// In en, this message translates to:
   /// **'Manage Profiles'**
   String get manageProfiles;
 
-  /// Translation for manageSubnets
+  /// No description provided for @manageSubnets.
   ///
   /// In en, this message translates to:
   /// **'Manage Subnets'**
   String get manageSubnets;
 
-  /// Translation for manageWireguard
+  /// No description provided for @manageWireguard.
   ///
   /// In en, this message translates to:
   /// **'Manage WireGuard'**
   String get manageWireguard;
 
-  /// Translation for manufacturer
+  /// No description provided for @manufacturer.
   ///
   /// In en, this message translates to:
   /// **'Manufacturer'**
   String get manufacturer;
 
-  /// Translation for maximumTransmissionUnit
+  /// No description provided for @maximumTransmissionUnit.
   ///
   /// In en, this message translates to:
   /// **'Maximum Transmission Unit (576-9000)'**
   String get maximumTransmissionUnit;
 
-  /// Translation for memoryUsage
+  /// No description provided for @memoryUsage.
   ///
   /// In en, this message translates to:
   /// **'Memory Usage'**
   String get memoryUsage;
 
-  /// Translation for minute
+  /// No description provided for @minute.
   ///
   /// In en, this message translates to:
   /// **'minute'**
   String get minute;
 
-  /// Translation for minuteAbbrev
-  ///
-  /// In en, this message translates to:
-  /// **'m'**
-  String get minuteAbbrev;
-
-  /// Translation for minutes
+  /// No description provided for @minutes.
   ///
   /// In en, this message translates to:
   /// **'minutes'**
@@ -3630,183 +3384,177 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{minutes}m ago'**
-  String minutesAgo(String minutes);
+  String minutesAgo(int minutes);
 
-  /// Translation for mode
+  /// No description provided for @mode.
   ///
   /// In en, this message translates to:
   /// **'Mode'**
   String get mode;
 
-  /// Translation for modified
+  /// No description provided for @modified.
   ///
   /// In en, this message translates to:
   /// **'Modified'**
   String get modified;
 
-  /// Translation for monitorInterface
+  /// No description provided for @monitorInterface.
   ///
   /// In en, this message translates to:
   /// **'Monitor Interface'**
   String get monitorInterface;
 
-  /// Translation for mssFix
+  /// No description provided for @mssFix.
   ///
   /// In en, this message translates to:
   /// **'MSS Fix'**
   String get mssFix;
 
-  /// Translation for mssFixDescription
+  /// No description provided for @mssFixDescription.
   ///
   /// In en, this message translates to:
   /// **'Enable MSS fix for this connection'**
   String get mssFixDescription;
 
-  /// Translation for mtuOptional
+  /// No description provided for @mtuOptional.
   ///
   /// In en, this message translates to:
   /// **'MTU (Optional)'**
   String get mtuOptional;
 
-  /// Translation for mustBeValidUrl
+  /// No description provided for @mustBeValidUrl.
   ///
   /// In en, this message translates to:
   /// **'Must be a valid URL starting with http:// or https://'**
   String get mustBeValidUrl;
 
-  /// Translation for myOPNsenseRouter
+  /// No description provided for @myOPNsenseRouter.
   ///
   /// In en, this message translates to:
   /// **'My OPNsense Router'**
   String get myOPNsenseRouter;
 
-  /// Translation for myOpenvpnInstance
+  /// No description provided for @myOpenvpnInstance.
   ///
   /// In en, this message translates to:
   /// **'My OpenVPN Instance'**
   String get myOpenvpnInstance;
 
-  /// Translation for myStaticKey
+  /// No description provided for @myStaticKey.
   ///
   /// In en, this message translates to:
   /// **'My Static Key'**
   String get myStaticKey;
 
-  /// Translation for myWireguardPeer
+  /// No description provided for @myWireguardPeer.
   ///
   /// In en, this message translates to:
   /// **'My WireGuard Peer'**
   String get myWireguardPeer;
 
-  /// Translation for myWireguardServer
+  /// No description provided for @myWireguardServer.
   ///
   /// In en, this message translates to:
   /// **'My WireGuard Server'**
   String get myWireguardServer;
 
-  /// Translation for name
+  /// No description provided for @name.
   ///
   /// In en, this message translates to:
   /// **'Name'**
   String get name;
 
-  /// Translation for needHelpCheckDocumentation
+  /// No description provided for @needHelpCheckDocumentation.
   ///
   /// In en, this message translates to:
   /// **'Need help? Check the OPNsense documentation for API key generation.'**
   String get needHelpCheckDocumentation;
 
-  /// Translation for networkConfiguration
+  /// No description provided for @networkConfiguration.
   ///
   /// In en, this message translates to:
   /// **'Network Configuration'**
   String get networkConfiguration;
 
-  /// Translation for networkError
+  /// No description provided for @networkError.
   ///
   /// In en, this message translates to:
   /// **'Network error occurred'**
   String get networkError;
 
-  /// Translation for networkInformation
+  /// No description provided for @networkInformation.
   ///
   /// In en, this message translates to:
   /// **'Network Information'**
   String get networkInformation;
 
-  /// Translation for networkTotals
+  /// No description provided for @networkTotals.
   ///
   /// In en, this message translates to:
   /// **'Network Totals'**
   String get networkTotals;
 
-  /// Translation for newPin
+  /// No description provided for @newPin.
   ///
   /// In en, this message translates to:
   /// **'New PIN (4-6 digits)'**
   String get newPin;
 
-  /// Translation for newPinMustBeDifferent
+  /// No description provided for @newPinMustBeDifferent.
   ///
   /// In en, this message translates to:
   /// **'New PIN must be different from current PIN'**
   String get newPinMustBeDifferent;
 
-  /// Translation for newRule
+  /// No description provided for @newRule.
   ///
   /// In en, this message translates to:
   /// **'New Rule'**
   String get newRule;
 
-  /// Translation for newWireguardPeer
+  /// No description provided for @newWireguardPeer.
   ///
   /// In en, this message translates to:
   /// **'New WireGuard Peer'**
   String get newWireguardPeer;
 
-  /// Translation for newWireguardServer
+  /// No description provided for @newWireguardServer.
   ///
   /// In en, this message translates to:
   /// **'New WireGuard Server'**
   String get newWireguardServer;
 
-  /// Translation for next
+  /// No description provided for @next.
   ///
   /// In en, this message translates to:
   /// **'Next'**
   String get next;
 
-  /// Translation for nextButton
-  ///
-  /// In en, this message translates to:
-  /// **'Next'**
-  String get nextButton;
-
-  /// Translation for no
+  /// No description provided for @no.
   ///
   /// In en, this message translates to:
   /// **'No'**
   String get no;
 
-  /// Translation for noAliasesConfigured
+  /// No description provided for @noAliasesConfigured.
   ///
   /// In en, this message translates to:
   /// **'No aliases configured'**
   String get noAliasesConfigured;
 
-  /// Translation for noAliasesMatchFilters
+  /// No description provided for @noAliasesMatchFilters.
   ///
   /// In en, this message translates to:
   /// **'No aliases match the current filters'**
   String get noAliasesMatchFilters;
 
-  /// Translation for noAutomationRulesFound
+  /// No description provided for @noAutomationRulesFound.
   ///
   /// In en, this message translates to:
   /// **'No automation rules found'**
   String get noAutomationRulesFound;
 
-  /// Translation for noClientSpecificOverridesConfigured
+  /// No description provided for @noClientSpecificOverridesConfigured.
   ///
   /// In en, this message translates to:
   /// **'No client specific overrides configured'**
@@ -3818,181 +3566,175 @@ abstract class AppLocalizations {
   /// **'No {type} connections found'**
   String noConnectionsFound(String type);
 
-  /// Translation for noData
-  ///
-  /// In en, this message translates to:
-  /// **'No data available'**
-  String get noData;
-
-  /// Translation for noDataAvailable
+  /// No description provided for @noDataAvailable.
   ///
   /// In en, this message translates to:
   /// **'No data available'**
   String get noDataAvailable;
 
-  /// Translation for noDescription
+  /// No description provided for @noDescription.
   ///
   /// In en, this message translates to:
   /// **'No Description'**
   String get noDescription;
 
-  /// Translation for noDnsDomainSearchEntriesConfigured
+  /// No description provided for @noDnsDomainSearchEntriesConfigured.
   ///
   /// In en, this message translates to:
   /// **'No DNS domain search entries configured'**
   String get noDnsDomainSearchEntriesConfigured;
 
-  /// Translation for noDnsDomainsConfigured
+  /// No description provided for @noDnsDomainsConfigured.
   ///
   /// In en, this message translates to:
   /// **'No DNS domains configured'**
   String get noDnsDomainsConfigured;
 
-  /// Translation for noDnsServersConfigured
+  /// No description provided for @noDnsServersConfigured.
   ///
   /// In en, this message translates to:
   /// **'No DNS servers configured'**
   String get noDnsServersConfigured;
 
-  /// Translation for noHostsFound
+  /// No description provided for @noHostsFound.
   ///
   /// In en, this message translates to:
   /// **'No hosts found'**
   String get noHostsFound;
 
-  /// Translation for noInstancesMatchFilters
+  /// No description provided for @noInstancesMatchFilters.
   ///
   /// In en, this message translates to:
   /// **'No instances match your filters'**
   String get noInstancesMatchFilters;
 
-  /// Translation for noInterfacesWithAutomationRules
+  /// No description provided for @noInterfacesWithAutomationRules.
   ///
   /// In en, this message translates to:
   /// **'No interfaces with automation rules'**
   String get noInterfacesWithAutomationRules;
 
-  /// Translation for noItemsConfigured
+  /// No description provided for @noItemsConfigured.
   ///
   /// In en, this message translates to:
   /// **'No items configured'**
   String get noItemsConfigured;
 
-  /// Translation for noLeasesFound
+  /// No description provided for @noLeasesFound.
   ///
   /// In en, this message translates to:
   /// **'No leases found'**
   String get noLeasesFound;
 
-  /// Translation for noLimit
+  /// No description provided for @noLimit.
   ///
   /// In en, this message translates to:
   /// **'No Limit'**
   String get noLimit;
 
-  /// Translation for noLimitShort
+  /// No description provided for @noLimitShort.
   ///
   /// In en, this message translates to:
   /// **'All'**
   String get noLimitShort;
 
-  /// Translation for noLocalNetworksConfigured
+  /// No description provided for @noLocalNetworksConfigured.
   ///
   /// In en, this message translates to:
   /// **'No local networks configured'**
   String get noLocalNetworksConfigured;
 
-  /// Translation for noLogEntriesFound
+  /// No description provided for @noLogEntriesFound.
   ///
   /// In en, this message translates to:
   /// **'No log entries found'**
   String get noLogEntriesFound;
 
-  /// Translation for noLogsAvailable
+  /// No description provided for @noLogsAvailable.
   ///
   /// In en, this message translates to:
   /// **'No logs available'**
   String get noLogsAvailable;
 
-  /// Translation for noLogsToExport
+  /// No description provided for @noLogsToExport.
   ///
   /// In en, this message translates to:
   /// **'No logs to export'**
   String get noLogsToExport;
 
-  /// Translation for noNtpServersConfigured
+  /// No description provided for @noNtpServersConfigured.
   ///
   /// In en, this message translates to:
   /// **'No NTP servers configured'**
   String get noNtpServersConfigured;
 
-  /// Translation for noOpenvpnInstancesConfigured
+  /// No description provided for @noOpenvpnInstancesConfigured.
   ///
   /// In en, this message translates to:
   /// **'No OpenVPN instances configured'**
   String get noOpenvpnInstancesConfigured;
 
-  /// Translation for noOpenvpnRoutesConfigured
+  /// No description provided for @noOpenvpnRoutesConfigured.
   ///
   /// In en, this message translates to:
   /// **'No OpenVPN routes configured'**
   String get noOpenvpnRoutesConfigured;
 
-  /// Translation for noOpenvpnSessionsConfigured
+  /// No description provided for @noOpenvpnSessionsConfigured.
   ///
   /// In en, this message translates to:
   /// **'There are no OpenVPN sessions configured'**
   String get noOpenvpnSessionsConfigured;
 
-  /// Translation for noOptionsAvailable
+  /// No description provided for @noOptionsAvailable.
   ///
   /// In en, this message translates to:
   /// **'No options available'**
   String get noOptionsAvailable;
 
-  /// Translation for noOverridesMatchFilter
+  /// No description provided for @noOverridesMatchFilter.
   ///
   /// In en, this message translates to:
   /// **'No overrides match your filter'**
   String get noOverridesMatchFilter;
 
-  /// Translation for noPeersAvailable
+  /// No description provided for @noPeersAvailable.
   ///
   /// In en, this message translates to:
   /// **'No peers available'**
   String get noPeersAvailable;
 
-  /// Translation for noPeersMatchSearch
+  /// No description provided for @noPeersMatchSearch.
   ///
   /// In en, this message translates to:
   /// **'No peers match your search'**
   String get noPeersMatchSearch;
 
-  /// Translation for noProfiles
+  /// No description provided for @noProfiles.
   ///
   /// In en, this message translates to:
   /// **'No Profiles'**
   String get noProfiles;
 
-  /// Translation for noProfilesFound
+  /// No description provided for @noProfilesFound.
   ///
   /// In en, this message translates to:
   /// **'No profiles found'**
   String get noProfilesFound;
 
-  /// Translation for noProfilesYet
+  /// No description provided for @noProfilesYet.
   ///
   /// In en, this message translates to:
   /// **'No Profiles Yet'**
   String get noProfilesYet;
 
-  /// Translation for noRemoteNetworksConfigured
+  /// No description provided for @noRemoteNetworksConfigured.
   ///
   /// In en, this message translates to:
   /// **'No remote networks configured'**
   String get noRemoteNetworksConfigured;
 
-  /// Translation for noRoutesConfigured
+  /// No description provided for @noRoutesConfigured.
   ///
   /// In en, this message translates to:
   /// **'No routes configured'**
@@ -4004,91 +3746,91 @@ abstract class AppLocalizations {
   /// **'No rules for {interface}'**
   String noRulesForInterface(String interface);
 
-  /// Translation for noServersAvailable
+  /// No description provided for @noServersAvailable.
   ///
   /// In en, this message translates to:
   /// **'No servers available'**
   String get noServersAvailable;
 
-  /// Translation for noServersMatchSearch
+  /// No description provided for @noServersMatchSearch.
   ///
   /// In en, this message translates to:
   /// **'No servers match your search'**
   String get noServersMatchSearch;
 
-  /// Translation for noServersSelected
+  /// No description provided for @noServersSelected.
   ///
   /// In en, this message translates to:
   /// **'No servers selected'**
   String get noServersSelected;
 
-  /// Translation for noSessionsFound
+  /// No description provided for @noSessionsFound.
   ///
   /// In en, this message translates to:
   /// **'No sessions found'**
   String get noSessionsFound;
 
-  /// Translation for noSettingsAvailable
+  /// No description provided for @noSettingsAvailable.
   ///
   /// In en, this message translates to:
   /// **'No settings available'**
   String get noSettingsAvailable;
 
-  /// Translation for noStaticKeysConfigured
+  /// No description provided for @noStaticKeysConfigured.
   ///
   /// In en, this message translates to:
   /// **'No static keys configured'**
   String get noStaticKeysConfigured;
 
-  /// Translation for noSubnetsConfigured
+  /// No description provided for @noSubnetsConfigured.
   ///
   /// In en, this message translates to:
   /// **'No subnets configured'**
   String get noSubnetsConfigured;
 
-  /// Translation for noTunnelAddressesConfigured
+  /// No description provided for @noTunnelAddressesConfigured.
   ///
   /// In en, this message translates to:
   /// **'No tunnel addresses configured'**
   String get noTunnelAddressesConfigured;
 
-  /// Translation for noVPNConnectionsFound
+  /// No description provided for @noVpnConnectionsFound.
   ///
   /// In en, this message translates to:
   /// **'No VPN connections found'**
-  String get noVPNConnectionsFound;
+  String get noVpnConnectionsFound;
 
-  /// Translation for noWinsServersConfigured
+  /// No description provided for @noWinsServersConfigured.
   ///
   /// In en, this message translates to:
   /// **'No WINS servers configured'**
   String get noWinsServersConfigured;
 
-  /// Translation for noWireguardPeersConfigured
+  /// No description provided for @noWireguardPeersConfigured.
   ///
   /// In en, this message translates to:
   /// **'No WireGuard peers configured'**
   String get noWireguardPeersConfigured;
 
-  /// Translation for noWireguardServersConfigured
+  /// No description provided for @noWireguardServersConfigured.
   ///
   /// In en, this message translates to:
   /// **'No WireGuard servers configured'**
   String get noWireguardServersConfigured;
 
-  /// Translation for noWireguardStatusDataAvailable
+  /// No description provided for @noWireguardStatusDataAvailable.
   ///
   /// In en, this message translates to:
   /// **'No WireGuard status data available'**
   String get noWireguardStatusDataAvailable;
 
-  /// Translation for noWolHostsConfigured
+  /// No description provided for @noWolHostsConfigured.
   ///
   /// In en, this message translates to:
   /// **'No Wake on LAN hosts configured'**
   String get noWolHostsConfigured;
 
-  /// Translation for none
+  /// No description provided for @none.
   ///
   /// In en, this message translates to:
   /// **'None'**
@@ -4100,121 +3842,109 @@ abstract class AppLocalizations {
   /// **'N/A'**
   String get notAvailable;
 
-  /// Translation for notFound
+  /// No description provided for @notFound.
   ///
   /// In en, this message translates to:
   /// **'Resource not found'**
   String get notFound;
 
-  /// Translation for notice
+  /// No description provided for @notice.
   ///
   /// In en, this message translates to:
   /// **'Notice'**
   String get notice;
 
-  /// Translation for ntpServers
+  /// No description provided for @ntpServers.
   ///
   /// In en, this message translates to:
   /// **'NTP Servers'**
   String get ntpServers;
 
-  /// Translation for ntpServersHelperText
+  /// No description provided for @ntpServersHelperText.
   ///
   /// In en, this message translates to:
   /// **'Set primary NTP server address (Network Time Protocol). Repeat this option to set secondary NTP server addresses.'**
   String get ntpServersHelperText;
 
-  /// Translation for of1Gbps
-  ///
-  /// In en, this message translates to:
-  /// **'of 1 Gbps'**
-  String get of1Gbps;
-
-  /// Translation for offline
+  /// No description provided for @offline.
   ///
   /// In en, this message translates to:
   /// **'Offline'**
   String get offline;
 
-  /// Translation for ok
+  /// No description provided for @ok.
   ///
   /// In en, this message translates to:
   /// **'OK'**
   String get ok;
 
-  /// Translation for oneHour
+  /// No description provided for @oneHour.
   ///
   /// In en, this message translates to:
   /// **'1 hour'**
   String get oneHour;
 
-  /// Translation for oneMin
+  /// No description provided for @oneMin.
   ///
   /// In en, this message translates to:
   /// **'1 min'**
   String get oneMin;
 
-  /// Translation for online
+  /// No description provided for @online.
   ///
   /// In en, this message translates to:
   /// **'Online'**
   String get online;
 
-  /// Translation for openvpn
-  ///
-  /// In en, this message translates to:
-  /// **'OpenVPN'**
-  String get openvpn;
-
-  /// Translation for openvpnConnectionStatus
+  /// No description provided for @openvpnConnectionStatus.
   ///
   /// In en, this message translates to:
   /// **'OpenVPN Connection Status'**
   String get openvpnConnectionStatus;
 
-  /// Translation for openvpnInstances
+  /// No description provided for @openvpnInstances.
   ///
   /// In en, this message translates to:
   /// **'OpenVPN Instances'**
   String get openvpnInstances;
 
-  /// Translation for openvpnLogFile
+  /// No description provided for @openvpnLogFile.
   ///
   /// In en, this message translates to:
   /// **'OpenVPN Log File'**
   String get openvpnLogFile;
 
-  /// Translation for optional
+  /// No description provided for @optional.
   ///
   /// In en, this message translates to:
   /// **'Optional'**
   String get optional;
 
-  /// Translation for optionalBase64EncodedPresharedKey
+  /// No description provided for @optionalBase64EncodedPresharedKey.
   ///
   /// In en, this message translates to:
   /// **'Optional Base64-encoded preshared key'**
   String get optionalBase64EncodedPresharedKey;
 
-  /// Translation for outbound
+  /// No description provided for @outbound.
   ///
   /// In en, this message translates to:
   /// **'Outbound'**
   String get outbound;
 
-  /// Translation for overrideCreatedSuccessfully
+  /// No description provided for @overrideCreatedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Override created successfully'**
   String get overrideCreatedSuccessfully;
 
-  /// Translation for overrideDeletedSuccessfully
+  /// No description provided for @overrideDeletedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Override deleted successfully'**
   String get overrideDeletedSuccessfully;
 
-  /// Translation for overrideDetails
+  /// No description provided for @overrideDetails.
   ///
   /// In en, this message translates to:
   /// **'Override Details'**
@@ -4226,115 +3956,103 @@ abstract class AppLocalizations {
   /// **'Override {status} successfully'**
   String overrideToggledSuccessfully(String status);
 
-  /// Translation for overrideUpdatedSuccessfully
+  /// No description provided for @overrideUpdatedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Override updated successfully'**
   String get overrideUpdatedSuccessfully;
 
-  /// Translation for overwrite
+  /// No description provided for @overwrite.
   ///
   /// In en, this message translates to:
   /// **'Overwrite'**
   String get overwrite;
 
-  /// Translation for packageMirror
+  /// No description provided for @packageMirror.
   ///
   /// In en, this message translates to:
   /// **'Package Mirror'**
   String get packageMirror;
 
-  /// Translation for packetLength
+  /// No description provided for @packetLength.
   ///
   /// In en, this message translates to:
   /// **'Packet Length'**
   String get packetLength;
 
-  /// No description provided for @pageOfPages.
-  ///
-  /// In en, this message translates to:
-  /// **'Page {current} of {total}'**
-  String pageOfPages(String current, String total);
-
-  /// Translation for pass
+  /// No description provided for @pass.
   ///
   /// In en, this message translates to:
   /// **'Pass'**
   String get pass;
 
-  /// Translation for pause
+  /// No description provided for @pause.
   ///
   /// In en, this message translates to:
   /// **'Pause'**
   String get pause;
 
-  /// Translation for pauseLiveViewToSelect
+  /// No description provided for @pauseLiveViewToSelect.
   ///
   /// In en, this message translates to:
   /// **'Pause live view to select log entries'**
   String get pauseLiveViewToSelect;
 
-  /// Translation for paused
+  /// No description provided for @paused.
   ///
   /// In en, this message translates to:
   /// **'Paused'**
   String get paused;
 
-  /// Translation for peerActiveWhenEnabled
-  ///
-  /// In en, this message translates to:
-  /// **'Peer will be active when enabled'**
-  String get peerActiveWhenEnabled;
-
-  /// Translation for peerCreatedReadyForNext
+  /// No description provided for @peerCreatedReadyForNext.
   ///
   /// In en, this message translates to:
   /// **'Peer created successfully. Ready for next peer.'**
   String get peerCreatedReadyForNext;
 
-  /// Translation for peerCreatedSuccessfully
+  /// No description provided for @peerCreatedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Peer created successfully'**
   String get peerCreatedSuccessfully;
 
-  /// Translation for peerDeletedSuccessfully
+  /// No description provided for @peerDeletedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Peer deleted successfully'**
   String get peerDeletedSuccessfully;
 
-  /// Translation for peerDisabledSuccessfully
+  /// No description provided for @peerDisabledSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Peer disabled successfully'**
   String get peerDisabledSuccessfully;
 
-  /// Translation for peerEnabledSuccessfully
+  /// No description provided for @peerEnabledSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Peer enabled successfully'**
   String get peerEnabledSuccessfully;
 
-  /// Translation for peerGenerator
+  /// No description provided for @peerGenerator.
   ///
   /// In en, this message translates to:
   /// **'Peer Generator'**
   String get peerGenerator;
 
-  /// Translation for peerUpdatedSuccessfully
+  /// No description provided for @peerUpdatedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Peer updated successfully'**
   String get peerUpdatedSuccessfully;
 
-  /// Translation for peerWillBeActiveWhenEnabled
+  /// No description provided for @peerWillBeActiveWhenEnabled.
   ///
   /// In en, this message translates to:
   /// **'Peer will be active when enabled'**
   String get peerWillBeActiveWhenEnabled;
 
-  /// Translation for peers
+  /// No description provided for @peers.
   ///
   /// In en, this message translates to:
   /// **'Peers'**
@@ -4346,7 +4064,7 @@ abstract class AppLocalizations {
   /// **'{count} peer(s) configured'**
   String peersConfigured(int count);
 
-  /// Translation for peersCount
+  /// No description provided for @peersCount.
   ///
   /// In en, this message translates to:
   /// **'Peers Count'**
@@ -4358,253 +4076,223 @@ abstract class AppLocalizations {
   /// **'{count} peer(s) selected'**
   String peersSelected(int count);
 
-  /// Translation for persistentKeepaliveSeconds
+  /// No description provided for @persistentKeepaliveSeconds.
   ///
   /// In en, this message translates to:
   /// **'Persistent keepalive in seconds (recommended: 25)'**
   String get persistentKeepaliveSeconds;
 
-  /// Translation for pinChangedSuccessfully
+  /// No description provided for @pinChangedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'PIN changed successfully'**
   String get pinChangedSuccessfully;
 
-  /// Translation for pinLock
+  /// No description provided for @pinLock.
   ///
   /// In en, this message translates to:
   /// **'PIN Lock'**
   String get pinLock;
 
-  /// Translation for pinLockDisabled
+  /// No description provided for @pinLockDisabled.
   ///
   /// In en, this message translates to:
   /// **'PIN lock disabled. Biometric lock also disabled.'**
   String get pinLockDisabled;
 
-  /// Translation for pinLockEnabled
+  /// No description provided for @pinLockEnabled.
   ///
   /// In en, this message translates to:
   /// **'PIN lock enabled'**
   String get pinLockEnabled;
 
-  /// Translation for pinLockTitle
-  ///
-  /// In en, this message translates to:
-  /// **'PIN Lock'**
-  String get pinLockTitle;
-
-  /// Translation for pinMismatch
+  /// No description provided for @pinMismatch.
   ///
   /// In en, this message translates to:
   /// **'PINs do not match'**
   String get pinMismatch;
 
-  /// Translation for pinMustContainOnlyNumbers
+  /// No description provided for @pinMustContainOnlyNumbers.
   ///
   /// In en, this message translates to:
   /// **'PIN must contain only numbers'**
   String get pinMustContainOnlyNumbers;
 
-  /// Translation for pinTooShort
+  /// No description provided for @pinTooShort.
   ///
   /// In en, this message translates to:
   /// **'PIN must be at least 4 digits'**
   String get pinTooShort;
 
-  /// Translation for platform
+  /// No description provided for @platform.
   ///
   /// In en, this message translates to:
   /// **'Platform'**
   String get platform;
 
-  /// Translation for pleaseAddConnectionEndpoint
-  ///
-  /// In en, this message translates to:
-  /// **'Please add at least one connection endpoint'**
-  String get pleaseAddConnectionEndpoint;
-
-  /// Translation for pleaseEnterCurrentPin
+  /// No description provided for @pleaseEnterCurrentPin.
   ///
   /// In en, this message translates to:
   /// **'Please enter your current PIN'**
   String get pleaseEnterCurrentPin;
 
-  /// Translation for pleaseEnterNewPin
+  /// No description provided for @pleaseEnterNewPin.
   ///
   /// In en, this message translates to:
   /// **'Please enter a new PIN'**
   String get pleaseEnterNewPin;
 
-  /// Translation for pleaseEnterSubnet
+  /// No description provided for @pleaseEnterSubnet.
   ///
   /// In en, this message translates to:
   /// **'Please enter a subnet'**
   String get pleaseEnterSubnet;
 
-  /// Translation for pleaseEnterYourPin
+  /// No description provided for @pleaseEnterYourPin.
   ///
   /// In en, this message translates to:
   /// **'Please enter your PIN'**
   String get pleaseEnterYourPin;
 
-  /// Translation for pleaseSelectAnInstance
+  /// No description provided for @pleaseSelectAnInstance.
   ///
   /// In en, this message translates to:
   /// **'Please select an instance'**
   String get pleaseSelectAnInstance;
 
-  /// Translation for pleaseSelectInterface
+  /// No description provided for @pleaseSelectInterface.
   ///
   /// In en, this message translates to:
   /// **'Please select an interface'**
   String get pleaseSelectInterface;
 
-  /// Translation for port
+  /// No description provided for @port.
   ///
   /// In en, this message translates to:
   /// **'Port'**
   String get port;
 
-  /// Translation for portHint
+  /// No description provided for @portHint.
   ///
   /// In en, this message translates to:
   /// **'e.g., 443'**
   String get portHint;
 
-  /// Translation for portIsRequired
+  /// No description provided for @portIsRequired.
   ///
   /// In en, this message translates to:
   /// **'Port is required'**
   String get portIsRequired;
 
-  /// Translation for portLabel
+  /// No description provided for @portLabel.
   ///
   /// In en, this message translates to:
   /// **'Port {port}'**
   String portLabel(String port);
 
-  /// Translation for portMustBeBetween
+  /// No description provided for @portMustBeBetween.
   ///
   /// In en, this message translates to:
   /// **'Port must be between 1 and 65535'**
   String get portMustBeBetween;
 
-  /// Translation for portPlaceholder
-  ///
-  /// In en, this message translates to:
-  /// **'443'**
-  String get portPlaceholder;
-
-  /// Translation for preAuthKey
+  /// No description provided for @preAuthKey.
   ///
   /// In en, this message translates to:
   /// **'Pre-Auth Key'**
   String get preAuthKey;
 
-  /// Translation for preAuthKeyHelperText
+  /// No description provided for @preAuthKeyHelperText.
   ///
   /// In en, this message translates to:
   /// **'Optional: Pre-authentication key for automatic device registration'**
   String get preAuthKeyHelperText;
 
-  /// Translation for presharedKeyGeneratedSuccessfully
+  /// No description provided for @presharedKeyGeneratedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Pre-shared key generated successfully'**
   String get presharedKeyGeneratedSuccessfully;
 
-  /// Translation for presharedKeyOptional
+  /// No description provided for @presharedKeyOptional.
   ///
   /// In en, this message translates to:
   /// **'Pre-shared Key (Optional)'**
   String get presharedKeyOptional;
 
-  /// Translation for preventAutomaticRouteInstallation
+  /// No description provided for @preventAutomaticRouteInstallation.
   ///
   /// In en, this message translates to:
   /// **'Prevent automatic route installation'**
   String get preventAutomaticRouteInstallation;
 
-  /// Translation for previous
+  /// No description provided for @previous.
   ///
   /// In en, this message translates to:
   /// **'Previous'**
   String get previous;
 
-  /// Translation for previousButton
-  ///
-  /// In en, this message translates to:
-  /// **'Previous'**
-  String get previousButton;
-
-  /// Translation for privateKey
+  /// No description provided for @privateKey.
   ///
   /// In en, this message translates to:
   /// **'Private Key'**
   String get privateKey;
 
-  /// Translation for profileActivated
+  /// No description provided for @profileActivated.
   ///
   /// In en, this message translates to:
   /// **'Profile activated successfully'**
   String get profileActivated;
 
-  /// Translation for profileAdded
+  /// No description provided for @profileAdded.
   ///
   /// In en, this message translates to:
   /// **'Profile added'**
   String get profileAdded;
 
-  /// Translation for profileDeleted
+  /// No description provided for @profileDeleted.
   ///
   /// In en, this message translates to:
   /// **'Profile deleted successfully'**
   String get profileDeleted;
 
-  /// Translation for profileHasNoEndpoints
+  /// No description provided for @profileHasNoEndpoints.
   ///
   /// In en, this message translates to:
   /// **'Profile has no connection endpoints configured'**
   String get profileHasNoEndpoints;
 
-  /// Translation for profileName
+  /// No description provided for @profileName.
   ///
   /// In en, this message translates to:
   /// **'Profile Name'**
   String get profileName;
 
-  /// Translation for profileNameLabel
-  ///
-  /// In en, this message translates to:
-  /// **'Profile Name'**
-  String get profileNameLabel;
-
-  /// Translation for profileNameOptional
+  /// No description provided for @profileNameOptional.
   ///
   /// In en, this message translates to:
   /// **'Profile Name (Optional)'**
   String get profileNameOptional;
 
-  /// Translation for profileNameRequired
+  /// No description provided for @profileNameRequired.
   ///
   /// In en, this message translates to:
   /// **'Profile name is required'**
   String get profileNameRequired;
 
-  /// Translation for profileSaved
+  /// No description provided for @profileSaved.
   ///
   /// In en, this message translates to:
   /// **'Profile saved successfully'**
   String get profileSaved;
 
-  /// Translation for profileUpdated
+  /// No description provided for @profileUpdated.
   ///
   /// In en, this message translates to:
   /// **'Profile updated'**
   String get profileUpdated;
 
-  /// Translation for profiles
+  /// No description provided for @profiles.
   ///
   /// In en, this message translates to:
   /// **'Profiles'**
@@ -4616,97 +4304,25 @@ abstract class AppLocalizations {
   /// **'Profiles exported successfully!\n{path}'**
   String profilesExportedSuccessfully(String path);
 
-  /// Translation for protocol
+  /// No description provided for @protocol.
   ///
   /// In en, this message translates to:
   /// **'Protocol'**
   String get protocol;
 
-  /// Translation for protocolAh
-  ///
-  /// In en, this message translates to:
-  /// **'AH'**
-  String get protocolAh;
-
-  /// Translation for protocolEsp
-  ///
-  /// In en, this message translates to:
-  /// **'ESP'**
-  String get protocolEsp;
-
-  /// Translation for protocolGre
-  ///
-  /// In en, this message translates to:
-  /// **'GRE'**
-  String get protocolGre;
-
-  /// Translation for protocolIcmp
-  ///
-  /// In en, this message translates to:
-  /// **'ICMP'**
-  String get protocolIcmp;
-
-  /// Translation for protocolIcmpv6
-  ///
-  /// In en, this message translates to:
-  /// **'ICMPv6'**
-  String get protocolIcmpv6;
-
-  /// Translation for protocolIgmp
-  ///
-  /// In en, this message translates to:
-  /// **'IGMP'**
-  String get protocolIgmp;
-
-  /// Translation for protocolIpv6
-  ///
-  /// In en, this message translates to:
-  /// **'IPv6'**
-  String get protocolIpv6;
-
-  /// Translation for protocolOspf
-  ///
-  /// In en, this message translates to:
-  /// **'OSPF'**
-  String get protocolOspf;
-
-  /// Translation for protocolPim
-  ///
-  /// In en, this message translates to:
-  /// **'PIM'**
-  String get protocolPim;
-
-  /// Translation for protocolTcp
-  ///
-  /// In en, this message translates to:
-  /// **'TCP'**
-  String get protocolTcp;
-
-  /// Translation for protocolTcpUdp
-  ///
-  /// In en, this message translates to:
-  /// **'TCP/UDP'**
-  String get protocolTcpUdp;
-
-  /// Translation for protocolUdp
-  ///
-  /// In en, this message translates to:
-  /// **'UDP'**
-  String get protocolUdp;
-
-  /// Translation for publicKey
+  /// No description provided for @publicKey.
   ///
   /// In en, this message translates to:
   /// **'Public Key'**
   String get publicKey;
 
-  /// Translation for publicKeyColon
+  /// No description provided for @publicKeyColon.
   ///
   /// In en, this message translates to:
   /// **'Public Key:'**
   String get publicKeyColon;
 
-  /// Translation for publicKeyRequired
+  /// No description provided for @publicKeyRequired.
   ///
   /// In en, this message translates to:
   /// **'Public key is required'**
@@ -4718,43 +4334,37 @@ abstract class AppLocalizations {
   /// **'{key}...'**
   String publicKeyShort(String key);
 
-  /// Translation for pushReset
+  /// No description provided for @pushReset.
   ///
   /// In en, this message translates to:
   /// **'Push reset'**
   String get pushReset;
 
-  /// Translation for pushResetSubtitle
-  ///
-  /// In en, this message translates to:
-  /// **'Don\'t inherit the global push list for a specific client instance. NOTE: --push-reset is very thorough: it will remove almost all options from the list of to-be-pushed options. In many cases, some of these options will need to be re-configured afterwards - specifically, --topology subnet and --route-gateway will get lost and this will break client configs in many cases.'**
-  String get pushResetSubtitle;
-
-  /// Translation for pushVirtualIpEndpoints
+  /// No description provided for @pushVirtualIpEndpoints.
   ///
   /// In en, this message translates to:
   /// **'Push virtual IP endpoints for client tunnel, overriding dynamic allocation.'**
   String get pushVirtualIpEndpoints;
 
-  /// Translation for qrCode
+  /// No description provided for @qrCode.
   ///
   /// In en, this message translates to:
   /// **'QR Code'**
   String get qrCode;
 
-  /// Translation for reason
+  /// No description provided for @reason.
   ///
   /// In en, this message translates to:
   /// **'Reason'**
   String get reason;
 
-  /// Translation for rebootConfirmation
+  /// No description provided for @rebootConfirmation.
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to reboot the system?'**
   String get rebootConfirmation;
 
-  /// Translation for rebootFailed
+  /// No description provided for @rebootFailed.
   ///
   /// In en, this message translates to:
   /// **'Failed to reboot system'**
@@ -4766,121 +4376,97 @@ abstract class AppLocalizations {
   /// **'{message}: {error}'**
   String rebootFailedWithError(String message, String error);
 
-  /// Translation for rebootSuccess
+  /// No description provided for @rebootSuccess.
   ///
   /// In en, this message translates to:
   /// **'System reboot initiated'**
   String get rebootSuccess;
 
-  /// Translation for rebootSystem
+  /// No description provided for @rebootSystem.
   ///
   /// In en, this message translates to:
   /// **'Reboot System'**
   String get rebootSystem;
 
-  /// Translation for received
+  /// No description provided for @received.
   ///
   /// In en, this message translates to:
   /// **'Received'**
   String get received;
 
-  /// Translation for recommendedForSecureConnections
+  /// No description provided for @recommendedForSecureConnections.
   ///
   /// In en, this message translates to:
   /// **'Recommended for secure connections'**
   String get recommendedForSecureConnections;
 
-  /// Translation for redirectGateway
+  /// No description provided for @redirectGateway.
   ///
   /// In en, this message translates to:
   /// **'Redirect gateway'**
   String get redirectGateway;
 
-  /// Translation for redirectGatewayHelperText
-  ///
-  /// In en, this message translates to:
-  /// **'Automatically execute routing commands to cause all outgoing IP traffic to be redirected over the VPN.'**
-  String get redirectGatewayHelperText;
-
-  /// Translation for refresh
+  /// No description provided for @refresh.
   ///
   /// In en, this message translates to:
   /// **'Refresh'**
   String get refresh;
 
-  /// Translation for refreshTooltip
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh'**
-  String get refreshTooltip;
-
-  /// Translation for registerDNS
+  /// No description provided for @registerDns.
   ///
   /// In en, this message translates to:
   /// **'Register DNS'**
   String get registerDns;
 
-  /// Translation for registerDnsSubtitle
-  ///
-  /// In en, this message translates to:
-  /// **'Run ipconfig /flushdns and ipconfig /registerdns on connection initiation. This is known to kick Windows into recognizing pushed DNS servers.'**
-  String get registerDnsSubtitle;
-
-  /// Translation for reject
+  /// No description provided for @reject.
   ///
   /// In en, this message translates to:
   /// **'Reject'**
   String get reject;
 
-  /// Translation for remoteAddress
+  /// No description provided for @remoteAddress.
   ///
   /// In en, this message translates to:
   /// **'Remote Address'**
   String get remoteAddress;
 
-  /// Translation for remoteNetwork
+  /// No description provided for @remoteNetwork.
   ///
   /// In en, this message translates to:
   /// **'Remote Network'**
   String get remoteNetwork;
 
-  /// Translation for remoteNetworkHelperText
+  /// No description provided for @remoteNetworkHelperText.
   ///
   /// In en, this message translates to:
   /// **'Remote networks for the server, these are configured via iroute(-ipv6) clauses in OpenVPN and inform the server to send these networks to this specific client.'**
   String get remoteNetworkHelperText;
 
-  /// Translation for repository
+  /// No description provided for @repository.
   ///
   /// In en, this message translates to:
   /// **'Repository'**
   String get repository;
 
-  /// Translation for requirePinToUnlock
+  /// No description provided for @requirePinToUnlock.
   ///
   /// In en, this message translates to:
   /// **'Require PIN to unlock app'**
   String get requirePinToUnlock;
 
-  /// Translation for required
+  /// No description provided for @required.
   ///
   /// In en, this message translates to:
   /// **'Required'**
   String get required;
 
-  /// Translation for restart
+  /// No description provided for @restart.
   ///
   /// In en, this message translates to:
   /// **'Restart'**
   String get restart;
 
-  /// Translation for restartButton
-  ///
-  /// In en, this message translates to:
-  /// **'Restart'**
-  String get restartButton;
-
-  /// Translation for restartService
+  /// No description provided for @restartService.
   ///
   /// In en, this message translates to:
   /// **'Restart Service'**
@@ -4892,11 +4478,11 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to restart the {type} service?\n\nThis will temporarily disconnect all active connections.'**
   String restartServiceConfirmation(String type);
 
-  /// Translation for restartVPNService
+  /// No description provided for @restartVpnService.
   ///
   /// In en, this message translates to:
   /// **'Restart VPN Service'**
-  String get restartVPNService;
+  String get restartVpnService;
 
   /// No description provided for @restartingService.
   ///
@@ -4904,521 +4490,449 @@ abstract class AppLocalizations {
   /// **'Restarting {type} service...'**
   String restartingService(String type);
 
-  /// Translation for resume
+  /// No description provided for @resume.
   ///
   /// In en, this message translates to:
   /// **'Resume'**
   String get resume;
 
-  /// Translation for retry
+  /// No description provided for @retry.
   ///
   /// In en, this message translates to:
   /// **'Retry'**
   String get retry;
 
-  /// Translation for retryButton
-  ///
-  /// In en, this message translates to:
-  /// **'Retry'**
-  String get retryButton;
-
-  /// Translation for role
+  /// No description provided for @role.
   ///
   /// In en, this message translates to:
   /// **'Role'**
   String get role;
 
-  /// Translation for routeGateway
+  /// No description provided for @routeGateway.
   ///
   /// In en, this message translates to:
   /// **'Route gateway'**
   String get routeGateway;
 
-  /// Translation for routeGatewayHelperText
+  /// No description provided for @routeGatewayHelperText.
   ///
   /// In en, this message translates to:
   /// **'Specify a default gateway to use for the connected client. Without one set the first address in the netblock is being offered. When segmenting the tunnel (server) network, this one might not be accessible from the client.'**
   String get routeGatewayHelperText;
 
-  /// Translation for routeGatewayHint
-  ///
-  /// In en, this message translates to:
-  /// **'10.8.0.1'**
-  String get routeGatewayHint;
-
-  /// Translation for routes
+  /// No description provided for @routes.
   ///
   /// In en, this message translates to:
   /// **'Routes'**
   String get routes;
 
-  /// Translation for routing
+  /// No description provided for @routing.
   ///
   /// In en, this message translates to:
   /// **'Routing'**
   String get routing;
 
-  /// Translation for rowsPerPage
-  ///
-  /// In en, this message translates to:
-  /// **'Rows per page'**
-  String get rowsPerPage;
-
-  /// Translation for rowsPerPageDropdown
-  ///
-  /// In en, this message translates to:
-  /// **'Rows per page'**
-  String get rowsPerPageDropdown;
-
-  /// Translation for rowsPerPageLabel
+  /// No description provided for @rowsPerPageLabel.
   ///
   /// In en, this message translates to:
   /// **'Rows per page: '**
   String get rowsPerPageLabel;
 
-  /// Translation for ruleActionFailed
+  /// No description provided for @ruleActionFailed.
   ///
   /// In en, this message translates to:
   /// **'Rule action failed'**
   String get ruleActionFailed;
 
-  /// Translation for ruleCreated
+  /// No description provided for @ruleCreated.
   ///
   /// In en, this message translates to:
   /// **'Rule created successfully'**
   String get ruleCreated;
 
-  /// Translation for ruleDeleted
+  /// No description provided for @ruleDeleted.
   ///
   /// In en, this message translates to:
   /// **'Rule deleted successfully'**
   String get ruleDeleted;
 
-  /// Translation for ruleDescription
+  /// No description provided for @ruleDescription.
   ///
   /// In en, this message translates to:
   /// **'Rule Description'**
   String get ruleDescription;
 
-  /// Translation for ruleDetails
+  /// No description provided for @ruleDetails.
   ///
   /// In en, this message translates to:
   /// **'Rule Details'**
   String get ruleDetails;
 
-  /// Translation for ruleDisabledSuccessfully
+  /// No description provided for @ruleDisabledSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Rule disabled successfully'**
   String get ruleDisabledSuccessfully;
 
-  /// Translation for ruleEnabledSuccessfully
+  /// No description provided for @ruleEnabledSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Rule enabled successfully'**
   String get ruleEnabledSuccessfully;
 
-  /// Translation for ruleGuidelines
+  /// No description provided for @ruleGuidelines.
   ///
   /// In en, this message translates to:
   /// **'Rule Guidelines'**
   String get ruleGuidelines;
 
-  /// Translation for ruleGuidelinesText
+  /// No description provided for @ruleGuidelinesText.
   ///
   /// In en, this message translates to:
   /// **'• Use \"any\" to match all addresses or ports\n• CIDR notation: 192.168.1.0/24\n• Port ranges: 80-443\n• Rules are processed in sequence order\n• Changes are applied immediately'**
   String get ruleGuidelinesText;
 
-  /// Translation for ruleId
+  /// No description provided for @ruleId.
   ///
   /// In en, this message translates to:
   /// **'Rule ID'**
   String get ruleId;
 
-  /// Translation for ruleInformation
+  /// No description provided for @ruleInformation.
   ///
   /// In en, this message translates to:
   /// **'Rule Information'**
   String get ruleInformation;
 
-  /// Translation for ruleUpdated
+  /// No description provided for @ruleUpdated.
   ///
   /// In en, this message translates to:
   /// **'Rule updated successfully'**
   String get ruleUpdated;
 
-  /// Translation for ruleWillBeActiveWhenEnabled
+  /// No description provided for @ruleWillBeActiveWhenEnabled.
   ///
   /// In en, this message translates to:
   /// **'Rule will be active when enabled'**
   String get ruleWillBeActiveWhenEnabled;
 
-  /// Translation for running
+  /// No description provided for @running.
   ///
   /// In en, this message translates to:
   /// **'Running'**
   String get running;
 
-  /// Translation for runningStatus
-  ///
-  /// In en, this message translates to:
-  /// **'Running'**
-  String get runningStatus;
-
-  /// Translation for save
+  /// No description provided for @save.
   ///
   /// In en, this message translates to:
   /// **'Save'**
   String get save;
 
-  /// Translation for saveAndConnect
+  /// No description provided for @saveAndConnect.
   ///
   /// In en, this message translates to:
   /// **'Save & Connect'**
   String get saveAndConnect;
 
-  /// Translation for saveSettings
+  /// No description provided for @saveSettings.
   ///
   /// In en, this message translates to:
   /// **'Save Settings'**
   String get saveSettings;
 
-  /// Translation for saveTooltip
-  ///
-  /// In en, this message translates to:
-  /// **'Save'**
-  String get saveTooltip;
-
-  /// Translation for saveWithoutTesting
+  /// No description provided for @saveWithoutTesting.
   ///
   /// In en, this message translates to:
   /// **'Save without testing'**
   String get saveWithoutTesting;
 
-  /// Translation for saving
+  /// No description provided for @saving.
   ///
   /// In en, this message translates to:
   /// **'Saving...'**
   String get saving;
 
-  /// Translation for savingOverride
+  /// No description provided for @savingOverride.
   ///
   /// In en, this message translates to:
   /// **'Saving override...'**
   String get savingOverride;
 
-  /// Translation for savingProfile
+  /// No description provided for @savingProfile.
   ///
   /// In en, this message translates to:
   /// **'Saving profile...'**
   String get savingProfile;
 
-  /// Translation for searchAliases
+  /// No description provided for @searchAliases.
   ///
   /// In en, this message translates to:
   /// **'Search aliases...'**
   String get searchAliases;
 
-  /// Translation for searchHostnameIpOrMac
+  /// No description provided for @searchHostnameIpOrMac.
   ///
   /// In en, this message translates to:
   /// **'Search hostname, IP, or MAC address...'**
   String get searchHostnameIpOrMac;
 
-  /// Translation for searchHostnameOrIp
+  /// No description provided for @searchHostnameOrIp.
   ///
   /// In en, this message translates to:
   /// **'Search hostname or IP address...'**
   String get searchHostnameOrIp;
 
-  /// Translation for searchInstances
+  /// No description provided for @searchInstances.
   ///
   /// In en, this message translates to:
   /// **'Search instances...'**
   String get searchInstances;
 
-  /// Translation for searchOverrides
+  /// No description provided for @searchOverrides.
   ///
   /// In en, this message translates to:
   /// **'Search overrides...'**
   String get searchOverrides;
 
-  /// Translation for searchPeers
+  /// No description provided for @searchPeers.
   ///
   /// In en, this message translates to:
   /// **'Search peers...'**
   String get searchPeers;
 
-  /// Translation for searchServers
+  /// No description provided for @searchServers.
   ///
   /// In en, this message translates to:
   /// **'Search servers...'**
   String get searchServers;
 
-  /// Translation for second
+  /// No description provided for @second.
   ///
   /// In en, this message translates to:
   /// **'second'**
   String get second;
 
-  /// Translation for secondAbbrev
-  ///
-  /// In en, this message translates to:
-  /// **'s'**
-  String get secondAbbrev;
-
-  /// Translation for seconds
+  /// No description provided for @seconds.
   ///
   /// In en, this message translates to:
   /// **'Seconds'**
   String get seconds;
 
-  /// Translation for security
+  /// No description provided for @security.
   ///
   /// In en, this message translates to:
   /// **'Security'**
   String get security;
 
-  /// Translation for securityWarning
+  /// No description provided for @securityWarning.
   ///
   /// In en, this message translates to:
   /// **'Security Warning'**
   String get securityWarning;
 
-  /// Translation for selectAProfileOrCreateNewOne
+  /// No description provided for @selectAProfileOrCreateNewOne.
   ///
   /// In en, this message translates to:
   /// **'Select a profile or create a new one'**
   String get selectAProfileOrCreateNewOne;
 
-  /// Translation for selectAll
+  /// No description provided for @selectAll.
   ///
   /// In en, this message translates to:
   /// **'Select All'**
   String get selectAll;
 
-  /// Translation for selectExitNode
+  /// No description provided for @selectExitNode.
   ///
   /// In en, this message translates to:
   /// **'Select exit node'**
   String get selectExitNode;
 
-  /// Translation for selectInterface
+  /// No description provided for @selectInterface.
   ///
   /// In en, this message translates to:
   /// **'Select Interface'**
   String get selectInterface;
 
-  /// Translation for selectInterfaceToViewRules
+  /// No description provided for @selectInterfaceToViewRules.
   ///
   /// In en, this message translates to:
   /// **'Select an interface to view rules'**
   String get selectInterfaceToViewRules;
 
-  /// Translation for selectKeyModeForAuthOrEncryption
-  ///
-  /// In en, this message translates to:
-  /// **'Select the key mode for authentication or encryption'**
-  String get selectKeyModeForAuthOrEncryption;
-
-  /// Translation for selectLabel
+  /// No description provided for @selectLabel.
   ///
   /// In en, this message translates to:
   /// **'Select {label}'**
   String selectLabel(String label);
 
-  /// Translation for selectMultipleInterfaces
+  /// No description provided for @selectMultipleInterfaces.
   ///
   /// In en, this message translates to:
   /// **'Select one or more interfaces to monitor'**
   String get selectMultipleInterfaces;
 
-  /// Translation for selectNumberOfEntries
+  /// No description provided for @selectNumberOfEntries.
   ///
   /// In en, this message translates to:
   /// **'Select the number of log entries to display:'**
   String get selectNumberOfEntries;
 
-  /// Translation for selectPeers
+  /// No description provided for @selectPeers.
   ///
   /// In en, this message translates to:
   /// **'Select Peers'**
   String get selectPeers;
 
-  /// Translation for selectServerAndGenerateKeys
+  /// No description provided for @selectServerAndGenerateKeys.
   ///
   /// In en, this message translates to:
-  /// **'# Select a server and generate keys to preview configuration'**
+  /// **'Select a server and generate keys to preview configuration'**
   String get selectServerAndGenerateKeys;
 
-  /// Translation for selectServerForQrCode
+  /// No description provided for @selectServerForQrCode.
   ///
   /// In en, this message translates to:
   /// **'Select server to generate QR code'**
   String get selectServerForQrCode;
 
-  /// Translation for selectServerInstance
+  /// No description provided for @selectServerInstance.
   ///
   /// In en, this message translates to:
   /// **'Please select a server instance'**
   String get selectServerInstance;
 
-  /// Translation for selectServerToGenerateQrCode
-  ///
-  /// In en, this message translates to:
-  /// **'Select server to generate QR code'**
-  String get selectServerToGenerateQrCode;
-
-  /// Translation for selectServers
+  /// No description provided for @selectServers.
   ///
   /// In en, this message translates to:
   /// **'Select Servers'**
   String get selectServers;
 
-  /// Translation for selectServersHelperText
+  /// No description provided for @selectServersHelperText.
   ///
   /// In en, this message translates to:
   /// **'Select the OpenVPN servers where this override applies to, leave empty for all'**
   String get selectServersHelperText;
 
-  /// Translation for selectServersTitle
-  ///
-  /// In en, this message translates to:
-  /// **'Select Servers'**
-  String get selectServersTitle;
-
-  /// Translation for selectVhid
+  /// No description provided for @selectVhid.
   ///
   /// In en, this message translates to:
   /// **'Select VHID'**
   String get selectVhid;
 
-  /// Translation for selected
+  /// No description provided for @selected.
   ///
   /// In en, this message translates to:
   /// **'selected'**
   String get selected;
 
-  /// Translation for selfSignedCertWarning
+  /// No description provided for @selfSignedCertWarning.
   ///
   /// In en, this message translates to:
   /// **'Warning: Self-signed certificates are less secure. Only enable this if you trust the server.'**
   String get selfSignedCertWarning;
 
-  /// Translation for selfSignedCertificatesWarning
+  /// No description provided for @selfSignedCertificatesWarning.
   ///
   /// In en, this message translates to:
   /// **'Only enable this if you trust the server'**
   String get selfSignedCertificatesWarning;
 
-  /// Translation for sent
+  /// No description provided for @sent.
   ///
   /// In en, this message translates to:
   /// **'Sent'**
   String get sent;
 
-  /// Translation for sequence
+  /// No description provided for @sequence.
   ///
   /// In en, this message translates to:
   /// **'Sequence'**
   String get sequence;
 
-  /// Translation for server
+  /// No description provided for @server.
   ///
   /// In en, this message translates to:
   /// **'Server'**
   String get server;
 
-  /// Translation for serverActiveWhenEnabled
-  ///
-  /// In en, this message translates to:
-  /// **'Server will be active when enabled'**
-  String get serverActiveWhenEnabled;
-
-  /// Translation for serverAddress
+  /// No description provided for @serverAddress.
   ///
   /// In en, this message translates to:
   /// **'Server Address'**
   String get serverAddress;
 
-  /// Translation for serverCreatedSuccessfully
+  /// No description provided for @serverCreatedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Server created successfully'**
   String get serverCreatedSuccessfully;
 
-  /// Translation for serverDeletedSuccessfully
+  /// No description provided for @serverDeletedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Server deleted successfully'**
   String get serverDeletedSuccessfully;
 
-  /// Translation for serverDisabledSuccessfully
+  /// No description provided for @serverDisabledSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Server disabled successfully'**
   String get serverDisabledSuccessfully;
 
-  /// Translation for serverEnabledSuccessfully
+  /// No description provided for @serverEnabledSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Server enabled successfully'**
   String get serverEnabledSuccessfully;
 
-  /// Translation for serverError
+  /// No description provided for @serverError.
   ///
   /// In en, this message translates to:
   /// **'Server error occurred'**
   String get serverError;
 
-  /// Translation for serverInfoNotLoaded
+  /// No description provided for @serverInfoNotLoaded.
   ///
   /// In en, this message translates to:
   /// **'Server information not loaded'**
   String get serverInfoNotLoaded;
 
-  /// Translation for serverNetwork
+  /// No description provided for @serverNetwork.
   ///
   /// In en, this message translates to:
   /// **'Server Network'**
   String get serverNetwork;
 
-  /// Translation for serverPort
+  /// No description provided for @serverPort.
   ///
   /// In en, this message translates to:
   /// **'Server Port'**
   String get serverPort;
 
-  /// Translation for serverSelectionRequired
+  /// No description provided for @serverSelectionRequired.
   ///
   /// In en, this message translates to:
   /// **'At least one server must be selected'**
   String get serverSelectionRequired;
 
-  /// Translation for serverUpdatedSuccessfully
+  /// No description provided for @serverUpdatedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Server updated successfully'**
   String get serverUpdatedSuccessfully;
 
-  /// Translation for serverWillBeActiveWhenEnabled
+  /// No description provided for @serverWillBeActiveWhenEnabled.
   ///
   /// In en, this message translates to:
   /// **'Server will be active when enabled'**
   String get serverWillBeActiveWhenEnabled;
 
-  /// Translation for servers
+  /// No description provided for @servers.
   ///
   /// In en, this message translates to:
   /// **'Servers'**
   String get servers;
-
-  /// Translation for serversLabel
-  ///
-  /// In en, this message translates to:
-  /// **'Servers'**
-  String get serversLabel;
 
   /// No description provided for @serversSelected.
   ///
@@ -5426,197 +4940,143 @@ abstract class AppLocalizations {
   /// **'{count} server(s) selected'**
   String serversSelected(int count);
 
-  /// Translation for serviceActionFailed
+  /// No description provided for @serviceActionFailed.
   ///
   /// In en, this message translates to:
   /// **'Service action failed'**
   String get serviceActionFailed;
 
-  /// Translation for serviceControls
+  /// No description provided for @serviceControls.
   ///
   /// In en, this message translates to:
   /// **'Service Controls'**
   String get serviceControls;
 
-  /// Translation for serviceRestarted
-  ///
-  /// In en, this message translates to:
-  /// **'Service restarted successfully'**
-  String get serviceRestarted;
-
-  /// Translation for serviceRestartedSuccessfully
+  /// No description provided for @serviceRestartedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Service restarted successfully'**
   String get serviceRestartedSuccessfully;
 
-  /// Translation for serviceRunning
+  /// No description provided for @serviceRunning.
   ///
   /// In en, this message translates to:
   /// **'Service Running'**
   String get serviceRunning;
 
-  /// Translation for serviceStarted
-  ///
-  /// In en, this message translates to:
-  /// **'Service started successfully'**
-  String get serviceStarted;
-
-  /// Translation for serviceStartedSuccessfully
+  /// No description provided for @serviceStartedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Service started successfully'**
   String get serviceStartedSuccessfully;
 
-  /// Translation for serviceStatus
+  /// No description provided for @serviceStatus.
   ///
   /// In en, this message translates to:
   /// **'Service Status'**
   String get serviceStatus;
 
-  /// Translation for serviceStopped
-  ///
-  /// In en, this message translates to:
-  /// **'Service stopped successfully'**
-  String get serviceStopped;
-
-  /// Translation for serviceStoppedSuccessfully
+  /// No description provided for @serviceStoppedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Service stopped successfully'**
   String get serviceStoppedSuccessfully;
 
-  /// Translation for services
+  /// No description provided for @services.
   ///
   /// In en, this message translates to:
   /// **'Services'**
   String get services;
 
-  /// Translation for sessionTimeout
+  /// No description provided for @sessionTimeout.
   ///
   /// In en, this message translates to:
   /// **'Session Timeout'**
   String get sessionTimeout;
 
-  /// Translation for sessions
+  /// No description provided for @sessions.
   ///
   /// In en, this message translates to:
   /// **'Sessions'**
   String get sessions;
 
-  /// Translation for setAsActive
+  /// No description provided for @setAsActive.
   ///
   /// In en, this message translates to:
   /// **'Set as Active'**
   String get setAsActive;
 
-  /// Translation for setPin
+  /// No description provided for @setPin.
   ///
   /// In en, this message translates to:
   /// **'Set PIN'**
   String get setPin;
 
-  /// Translation for settings
+  /// No description provided for @settings.
   ///
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
 
-  /// Translation for severitiesAndTimeFilter
+  /// No description provided for @severitiesAndTimeFilter.
   ///
   /// In en, this message translates to:
   /// **'{count} severities • {timeFilter}'**
   String severitiesAndTimeFilter(int count, String timeFilter);
 
-  /// Translation for severity
+  /// No description provided for @severity.
   ///
   /// In en, this message translates to:
   /// **'Severity'**
   String get severity;
 
-  /// Translation for severityAlert
-  ///
-  /// In en, this message translates to:
-  /// **'Alert'**
-  String get severityAlert;
-
-  /// Translation for severityCritical
-  ///
-  /// In en, this message translates to:
-  /// **'Critical'**
-  String get severityCritical;
-
-  /// Translation for severityDebug
-  ///
-  /// In en, this message translates to:
-  /// **'Debug'**
-  String get severityDebug;
-
-  /// Translation for severityEmergency
+  /// No description provided for @severityEmergency.
   ///
   /// In en, this message translates to:
   /// **'Emergency'**
   String get severityEmergency;
 
-  /// Translation for severityEmergencyShort
+  /// No description provided for @severityEmergencyShort.
   ///
   /// In en, this message translates to:
   /// **'Emerg'**
   String get severityEmergencyShort;
 
-  /// Translation for severityError
+  /// No description provided for @severityError.
   ///
   /// In en, this message translates to:
   /// **'Error'**
   String get severityError;
 
-  /// Translation for severityInformational
+  /// No description provided for @severityInformational.
   ///
   /// In en, this message translates to:
   /// **'Informational'**
   String get severityInformational;
 
-  /// Translation for severityInformationalShort
+  /// No description provided for @severityInformationalShort.
   ///
   /// In en, this message translates to:
   /// **'Info'**
   String get severityInformationalShort;
 
-  /// Translation for severityNotice
-  ///
-  /// In en, this message translates to:
-  /// **'Notice'**
-  String get severityNotice;
-
-  /// Translation for severityWarning
-  ///
-  /// In en, this message translates to:
-  /// **'Warning'**
-  String get severityWarning;
-
-  /// Translation for showAdvancedSettings
+  /// No description provided for @showAdvancedSettings.
   ///
   /// In en, this message translates to:
   /// **'Show Advanced Settings'**
   String get showAdvancedSettings;
 
-  /// Translation for showAll
+  /// No description provided for @showAll.
   ///
   /// In en, this message translates to:
   /// **'Show All'**
   String get showAll;
 
-  /// Translation for showKey
+  /// No description provided for @showKey.
   ///
   /// In en, this message translates to:
   /// **'Show key'**
   String get showKey;
-
-  /// No description provided for @showingEntriesCount.
-  ///
-  /// In en, this message translates to:
-  /// **'Showing {start} to {end}'**
-  String showingEntriesCount(String start, String end);
 
   /// No description provided for @showingInstancesCount.
   ///
@@ -5624,241 +5084,217 @@ abstract class AppLocalizations {
   /// **'Showing {count} of {total}'**
   String showingInstancesCount(String count, String total);
 
-  /// Translation for showingZeroEntries
+  /// No description provided for @showingZeroEntries.
   ///
   /// In en, this message translates to:
   /// **'Showing 0 entries'**
   String get showingZeroEntries;
 
-  /// Translation for someConnectionsFailed
+  /// No description provided for @someConnectionsFailed.
   ///
   /// In en, this message translates to:
   /// **'Some connections failed'**
   String get someConnectionsFailed;
 
-  /// Translation for soon
+  /// No description provided for @soon.
   ///
   /// In en, this message translates to:
   /// **'soon'**
   String get soon;
 
-  /// Translation for sortBy
+  /// No description provided for @sortBy.
   ///
   /// In en, this message translates to:
   /// **'Sort By'**
   String get sortBy;
 
-  /// Translation for sortByBandwidth
+  /// No description provided for @sortByBandwidth.
   ///
   /// In en, this message translates to:
   /// **'Bandwidth'**
   String get sortByBandwidth;
 
-  /// Translation for sortByHostname
+  /// No description provided for @sortByHostname.
   ///
   /// In en, this message translates to:
   /// **'Hostname'**
   String get sortByHostname;
 
-  /// Translation for sortByIP
+  /// No description provided for @sortByIP.
   ///
   /// In en, this message translates to:
   /// **'IP Address'**
   String get sortByIP;
 
-  /// Translation for sortByManufacturer
+  /// No description provided for @sortByManufacturer.
   ///
   /// In en, this message translates to:
   /// **'Manufacturer'**
   String get sortByManufacturer;
 
-  /// Translation for source
+  /// No description provided for @source.
   ///
   /// In en, this message translates to:
   /// **'Source'**
   String get source;
 
-  /// Translation for sourceAddress
+  /// No description provided for @sourceAddress.
   ///
   /// In en, this message translates to:
   /// **'Source Address'**
   String get sourceAddress;
 
-  /// Translation for sourceIsRequired
+  /// No description provided for @sourceIsRequired.
   ///
   /// In en, this message translates to:
   /// **'Source is required'**
   String get sourceIsRequired;
 
-  /// Translation for sourcePort
+  /// No description provided for @sourcePort.
   ///
   /// In en, this message translates to:
   /// **'Source Port'**
   String get sourcePort;
 
-  /// Translation for sourcePortOptional
+  /// No description provided for @sourcePortOptional.
   ///
   /// In en, this message translates to:
   /// **'Source Port (Optional)'**
   String get sourcePortOptional;
 
-  /// Translation for sshEnabled
+  /// No description provided for @sshEnabled.
   ///
   /// In en, this message translates to:
   /// **'SSH Enabled'**
   String get sshEnabled;
 
-  /// Translation for start
+  /// No description provided for @start.
   ///
   /// In en, this message translates to:
   /// **'Start'**
   String get start;
 
-  /// Translation for startButton
-  ///
-  /// In en, this message translates to:
-  /// **'Start'**
-  String get startButton;
-
-  /// Translation for startService
+  /// No description provided for @startService.
   ///
   /// In en, this message translates to:
   /// **'Start Service'**
   String get startService;
 
-  /// Translation for startTime
+  /// No description provided for @startTime.
   ///
   /// In en, this message translates to:
   /// **'Start Time'**
   String get startTime;
 
-  /// Translation for startWireguardService
+  /// No description provided for @startWireguardService.
   ///
   /// In en, this message translates to:
   /// **'Start WireGuard service'**
   String get startWireguardService;
 
-  /// Translation for staticKeyContentPemFormat
+  /// No description provided for @staticKeyContentPemFormat.
   ///
   /// In en, this message translates to:
   /// **'Static key content in PEM format'**
   String get staticKeyContentPemFormat;
 
-  /// Translation for staticKeyCreatedSuccessfully
+  /// No description provided for @staticKeyCreatedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Static key created successfully'**
   String get staticKeyCreatedSuccessfully;
 
-  /// Translation for staticKeyDeletedSuccessfully
+  /// No description provided for @staticKeyDeletedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Static key deleted successfully'**
   String get staticKeyDeletedSuccessfully;
 
-  /// Translation for staticKeyDetails
+  /// No description provided for @staticKeyDetails.
   ///
   /// In en, this message translates to:
   /// **'Static Key Details'**
   String get staticKeyDetails;
 
-  /// Translation for staticKeyInfoHelp
-  ///
-  /// In en, this message translates to:
-  /// **'• Auth: Adds HMAC authentication to control channel\n• Crypt: Encrypts and authenticates all control channel packets\n• Crypt V2: Enhanced encryption with improved security\n\nYou can generate a new key or paste an existing one.'**
-  String get staticKeyInfoHelp;
-
-  /// Translation for staticKeyInformation
+  /// No description provided for @staticKeyInformation.
   ///
   /// In en, this message translates to:
   /// **'Static Key Information'**
   String get staticKeyInformation;
 
-  /// Translation for staticKeyUpdatedSuccessfully
+  /// No description provided for @staticKeyUpdatedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Static key updated successfully'**
   String get staticKeyUpdatedSuccessfully;
 
-  /// Translation for staticKeys
+  /// No description provided for @staticKeys.
   ///
   /// In en, this message translates to:
   /// **'Static Keys'**
   String get staticKeys;
 
-  /// Translation for staticLease
+  /// No description provided for @staticLease.
   ///
   /// In en, this message translates to:
   /// **'Static'**
   String get staticLease;
 
-  /// Translation for status
+  /// No description provided for @status.
   ///
   /// In en, this message translates to:
   /// **'Status'**
   String get status;
 
-  /// Translation for stop
+  /// No description provided for @stop.
   ///
   /// In en, this message translates to:
   /// **'Stop'**
   String get stop;
 
-  /// Translation for stopButton
-  ///
-  /// In en, this message translates to:
-  /// **'Stop'**
-  String get stopButton;
-
-  /// Translation for stopService
+  /// No description provided for @stopService.
   ///
   /// In en, this message translates to:
   /// **'Stop Service'**
   String get stopService;
 
-  /// Translation for stopped
+  /// No description provided for @stopped.
   ///
   /// In en, this message translates to:
   /// **'Stopped'**
   String get stopped;
 
-  /// Translation for stoppedStatus
-  ///
-  /// In en, this message translates to:
-  /// **'Stopped'**
-  String get stoppedStatus;
-
-  /// Translation for storeAndGenerateNext
+  /// No description provided for @storeAndGenerateNext.
   ///
   /// In en, this message translates to:
   /// **'Store and Generate Next'**
   String get storeAndGenerateNext;
 
-  /// Translation for subnetAddedSuccessfully
+  /// No description provided for @subnetAddedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Subnet added successfully'**
   String get subnetAddedSuccessfully;
 
-  /// Translation for subnetCidr
+  /// No description provided for @subnetCidr.
   ///
   /// In en, this message translates to:
   /// **'Subnet (CIDR)'**
   String get subnetCidr;
 
-  /// Translation for subnetDeletedSuccessfully
+  /// No description provided for @subnetDeletedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Subnet deleted successfully'**
   String get subnetDeletedSuccessfully;
 
-  /// Translation for subnetUpdatedSuccessfully
+  /// No description provided for @subnetUpdatedSuccessfully.
   ///
   /// In en, this message translates to:
   /// **'Subnet updated successfully'**
   String get subnetUpdatedSuccessfully;
 
-  /// Translation for success
+  /// No description provided for @success.
   ///
   /// In en, this message translates to:
   /// **'Success'**
@@ -5891,80 +5327,64 @@ abstract class AppLocalizations {
   /// Success message showing how many devices were woken
   ///
   /// In en, this message translates to:
-  /// **'Successfully woken {successCount} of {totalCount} device{plural}'**
-  String successfullyWokenDevices(
-    int successCount,
-    int totalCount,
-    String plural,
-  );
+  /// **'Successfully woken {successCount} of {totalCount} {successCount, plural, =1{device} other{devices}}'**
+  String successfullyWokenDevices(int successCount, int totalCount);
 
-  /// Translation for switchProfile
+  /// No description provided for @switchProfile.
   ///
   /// In en, this message translates to:
   /// **'Switch Profile'**
   String get switchProfile;
 
-  /// Translation for switchProfileConfirmation
+  /// No description provided for @switchProfileConfirmation.
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to switch profiles? You will be returned to the profile selection screen.'**
   String get switchProfileConfirmation;
 
-  /// Translation for systemDefault
+  /// No description provided for @systemDefault.
   ///
   /// In en, this message translates to:
   /// **'System Default'**
   String get systemDefault;
 
-  /// Translation for systemGeneratedRule
+  /// No description provided for @systemGeneratedRule.
   ///
   /// In en, this message translates to:
   /// **'This is a system-generated rule and cannot be modified or deleted.'**
   String get systemGeneratedRule;
 
-  /// Translation for systemGeneratedRulesCannotBeDeleted
+  /// No description provided for @systemGeneratedRulesCannotBeDeleted.
   ///
   /// In en, this message translates to:
   /// **'System-generated rules cannot be deleted'**
   String get systemGeneratedRulesCannotBeDeleted;
 
-  /// Translation for systemGeneratedRulesCannotBeModified
+  /// No description provided for @systemGeneratedRulesCannotBeModified.
   ///
   /// In en, this message translates to:
   /// **'System-generated rules cannot be modified'**
   String get systemGeneratedRulesCannotBeModified;
 
-  /// Translation for systemInfo
-  ///
-  /// In en, this message translates to:
-  /// **'System Information'**
-  String get systemInfo;
-
-  /// Translation for systemInformation
+  /// No description provided for @systemInformation.
   ///
   /// In en, this message translates to:
   /// **'System Information'**
   String get systemInformation;
 
-  /// Translation for systemType
+  /// No description provided for @systemType.
   ///
   /// In en, this message translates to:
   /// **'System Type'**
   String get systemType;
 
-  /// Translation for tags
+  /// No description provided for @tags.
   ///
   /// In en, this message translates to:
   /// **'Tags'**
   String get tags;
 
-  /// Translation for tailscale
-  ///
-  /// In en, this message translates to:
-  /// **'Tailscale'**
-  String get tailscale;
-
-  /// Translation for tailscaleAuthentication
+  /// No description provided for @tailscaleAuthentication.
   ///
   /// In en, this message translates to:
   /// **'Tailscale Authentication'**
@@ -5994,19 +5414,19 @@ abstract class AppLocalizations {
   /// **'{action}ing Tailscale service...'**
   String tailscaleServiceActioning(String action);
 
-  /// Translation for tailscaleSettings
+  /// No description provided for @tailscaleSettings.
   ///
   /// In en, this message translates to:
   /// **'Tailscale Settings'**
   String get tailscaleSettings;
 
-  /// Translation for tailscaleStatus
+  /// No description provided for @tailscaleStatus.
   ///
   /// In en, this message translates to:
   /// **'Tailscale Status'**
   String get tailscaleStatus;
 
-  /// Translation for tailscaleSubnets
+  /// No description provided for @tailscaleSubnets.
   ///
   /// In en, this message translates to:
   /// **'Tailscale Subnets'**
@@ -6018,55 +5438,55 @@ abstract class AppLocalizations {
   /// **'Version'**
   String get tailscaleVersion;
 
-  /// Translation for tapPlusButtonToCreateFirstInstance
+  /// No description provided for @tapPlusButtonToCreateFirstInstance.
   ///
   /// In en, this message translates to:
   /// **'Tap the + button to create your first instance'**
   String get tapPlusButtonToCreateFirstInstance;
 
-  /// Translation for tapPlusButtonToCreateFirstOverride
+  /// No description provided for @tapPlusButtonToCreateFirstOverride.
   ///
   /// In en, this message translates to:
   /// **'Tap the + button to create your first override'**
   String get tapPlusButtonToCreateFirstOverride;
 
-  /// Translation for tapPlusButtonToCreateFirstStaticKey
+  /// No description provided for @tapPlusButtonToCreateFirstStaticKey.
   ///
   /// In en, this message translates to:
   /// **'Tap the + button to create your first static key'**
   String get tapPlusButtonToCreateFirstStaticKey;
 
-  /// Translation for tcpFlags
+  /// No description provided for @tcpFlags.
   ///
   /// In en, this message translates to:
   /// **'TCP Flags'**
   String get tcpFlags;
 
-  /// Translation for tenMin
+  /// No description provided for @tenMin.
   ///
   /// In en, this message translates to:
   /// **'10 min'**
   String get tenMin;
 
-  /// Translation for testConnection
+  /// No description provided for @testConnection.
   ///
   /// In en, this message translates to:
   /// **'Test Connection'**
   String get testConnection;
 
-  /// Translation for testConnections
+  /// No description provided for @testConnections.
   ///
   /// In en, this message translates to:
   /// **'Test Connections'**
   String get testConnections;
 
-  /// Translation for testProfile
+  /// No description provided for @testProfile.
   ///
   /// In en, this message translates to:
   /// **'Test Profile'**
   String get testProfile;
 
-  /// Translation for testingAllConnections
+  /// No description provided for @testingAllConnections.
   ///
   /// In en, this message translates to:
   /// **'Testing all connection points...'**
@@ -6078,121 +5498,109 @@ abstract class AppLocalizations {
   /// **'Testing connection {current} of {total}: {endpoint}'**
   String testingConnection(String current, String total, String endpoint);
 
-  /// Translation for theme
+  /// No description provided for @theme.
   ///
   /// In en, this message translates to:
   /// **'Theme'**
   String get theme;
 
-  /// Translation for thirtyMin
+  /// No description provided for @thirtyMin.
   ///
   /// In en, this message translates to:
   /// **'30 min'**
   String get thirtyMin;
 
-  /// Translation for time
+  /// No description provided for @time.
   ///
   /// In en, this message translates to:
   /// **'Time'**
   String get time;
 
-  /// Translation for timeRange
+  /// No description provided for @timeRange.
   ///
   /// In en, this message translates to:
   /// **'Time range'**
   String get timeRange;
 
-  /// Translation for timeRangeLabel
-  ///
-  /// In en, this message translates to:
-  /// **'Time range'**
-  String get timeRangeLabel;
-
-  /// Translation for timeout
+  /// No description provided for @timeout.
   ///
   /// In en, this message translates to:
   /// **'Request timeout'**
   String get timeout;
 
-  /// Translation for timestamp
+  /// No description provided for @timestamp.
   ///
   /// In en, this message translates to:
   /// **'Timestamp'**
   String get timestamp;
 
-  /// Translation for today
+  /// No description provided for @today.
   ///
   /// In en, this message translates to:
   /// **'Today'**
   String get today;
 
-  /// Translation for totalBandwidth
+  /// No description provided for @totalBandwidth.
   ///
   /// In en, this message translates to:
   /// **'Total Bandwidth'**
   String get totalBandwidth;
 
-  /// Translation for totalDownload
+  /// No description provided for @totalDownload.
   ///
   /// In en, this message translates to:
   /// **'Total Download'**
   String get totalDownload;
 
-  /// Translation for totalEntries
+  /// No description provided for @totalEntries.
   ///
   /// In en, this message translates to:
   /// **'Total Entries'**
   String get totalEntries;
 
-  /// Translation for totalUpload
+  /// No description provided for @totalUpload.
   ///
   /// In en, this message translates to:
   /// **'Total Upload'**
   String get totalUpload;
 
-  /// Translation for totalVPNs
+  /// No description provided for @totalVpns.
   ///
   /// In en, this message translates to:
   /// **'Total VPNs'**
-  String get totalVPNs;
+  String get totalVpns;
 
-  /// Translation for tryAdjustingFilters
+  /// No description provided for @tryAdjustingFilters.
   ///
   /// In en, this message translates to:
   /// **'Try adjusting the selected severity or date filters.'**
   String get tryAdjustingFilters;
 
-  /// Translation for tryDemoMode
+  /// No description provided for @tryDemoMode.
   ///
   /// In en, this message translates to:
   /// **'Try Demo Mode'**
   String get tryDemoMode;
 
-  /// Translation for tryDifferentSearch
+  /// No description provided for @tryDifferentSearch.
   ///
   /// In en, this message translates to:
   /// **'Try a different search term'**
   String get tryDifferentSearch;
 
-  /// Translation for tunnelAddress
+  /// No description provided for @tunnelAddress.
   ///
   /// In en, this message translates to:
   /// **'Tunnel Address'**
   String get tunnelAddress;
 
-  /// Translation for tunnelAddressCidr
+  /// No description provided for @tunnelAddressCidr.
   ///
   /// In en, this message translates to:
   /// **'Tunnel Address (CIDR)'**
   String get tunnelAddressCidr;
 
-  /// Translation for tunnelAddressRequired
-  ///
-  /// In en, this message translates to:
-  /// **'At least one tunnel address is required'**
-  String get tunnelAddressRequired;
-
-  /// Translation for tunnelAddresses
+  /// No description provided for @tunnelAddresses.
   ///
   /// In en, this message translates to:
   /// **'Tunnel Addresses'**
@@ -6204,31 +5612,25 @@ abstract class AppLocalizations {
   /// **'Tunnel: {network}'**
   String tunnelLabel(String network);
 
-  /// Translation for tunnelNetwork
+  /// No description provided for @tunnelNetwork.
   ///
   /// In en, this message translates to:
   /// **'Tunnel Network'**
   String get tunnelNetwork;
 
-  /// Translation for tunnelSettings
+  /// No description provided for @tunnelSettings.
   ///
   /// In en, this message translates to:
   /// **'Tunnel Settings'**
   String get tunnelSettings;
 
-  /// No description provided for @tunnelWithValue.
-  ///
-  /// In en, this message translates to:
-  /// **'Tunnel: {value}'**
-  String tunnelWithValue(String value);
-
-  /// Translation for twoMin
+  /// No description provided for @twoMin.
   ///
   /// In en, this message translates to:
   /// **'2 min'**
   String get twoMin;
 
-  /// Translation for type
+  /// No description provided for @type.
   ///
   /// In en, this message translates to:
   /// **'Type'**
@@ -6240,181 +5642,133 @@ abstract class AppLocalizations {
   /// **'Type: {value}'**
   String typeWithValue(String value);
 
-  /// Translation for udpPortDefault51820
+  /// No description provided for @udpPortDefault51820.
   ///
   /// In en, this message translates to:
   /// **'UDP port (default: 51820)'**
   String get udpPortDefault51820;
 
-  /// Translation for unableToAccessFilePath
+  /// No description provided for @unableToAccessFilePath.
   ///
   /// In en, this message translates to:
   /// **'Unable to access file path'**
   String get unableToAccessFilePath;
 
-  /// Translation for unableToConnectToAnyEndpoint
+  /// No description provided for @unableToConnectToAnyEndpoint.
   ///
   /// In en, this message translates to:
   /// **'Unable to connect to any configured endpoints. Please check your network settings and try again.'**
   String get unableToConnectToAnyEndpoint;
 
-  /// Translation for unauthorized
+  /// No description provided for @unauthorized.
   ///
   /// In en, this message translates to:
   /// **'Unauthorized access'**
   String get unauthorized;
 
-  /// Translation for unitBytes
-  ///
-  /// In en, this message translates to:
-  /// **'B'**
-  String get unitBytes;
-
-  /// Translation for unitGigabytes
-  ///
-  /// In en, this message translates to:
-  /// **'GB'**
-  String get unitGigabytes;
-
-  /// Translation for unitKilobytes
-  ///
-  /// In en, this message translates to:
-  /// **'KB'**
-  String get unitKilobytes;
-
-  /// Translation for unitMegabytes
-  ///
-  /// In en, this message translates to:
-  /// **'MB'**
-  String get unitMegabytes;
-
-  /// Per second suffix for data rates
-  ///
-  /// In en, this message translates to:
-  /// **'/s'**
-  String get unitPerSecond;
-
-  /// Translation for unitPetabytes
-  ///
-  /// In en, this message translates to:
-  /// **'PB'**
-  String get unitPetabytes;
-
-  /// Translation for unitTerabytes
-  ///
-  /// In en, this message translates to:
-  /// **'TB'**
-  String get unitTerabytes;
-
-  /// Translation for unknown
+  /// No description provided for @unknown.
   ///
   /// In en, this message translates to:
   /// **'Unknown'**
   String get unknown;
 
-  /// Translation for unknownStatus
-  ///
-  /// In en, this message translates to:
-  /// **'Unknown'**
-  String get unknownStatus;
-
-  /// Translation for unlock
+  /// No description provided for @unlock.
   ///
   /// In en, this message translates to:
   /// **'Unlock'**
   String get unlock;
 
-  /// Translation for unlockOPNsenseManager
+  /// No description provided for @unlockOpnsenseManager.
   ///
   /// In en, this message translates to:
   /// **'Unlock OPNsense Manager'**
-  String get unlockOPNsenseManager;
+  String get unlockOpnsenseManager;
 
-  /// Translation for unnamedHost
+  /// No description provided for @unnamedHost.
   ///
   /// In en, this message translates to:
   /// **'Unnamed Host'**
   String get unnamedHost;
 
-  /// Translation for unnamedInstance
+  /// No description provided for @unnamedInstance.
   ///
   /// In en, this message translates to:
   /// **'Unnamed Instance'**
   String get unnamedInstance;
 
-  /// Translation for unnamedRule
+  /// No description provided for @unnamedRule.
   ///
   /// In en, this message translates to:
   /// **'Unnamed Rule'**
   String get unnamedRule;
 
-  /// Translation for unsavedChanges
+  /// No description provided for @unsavedChanges.
   ///
   /// In en, this message translates to:
   /// **'Unsaved Changes'**
   String get unsavedChanges;
 
-  /// Translation for unsavedChangesConfirmation
+  /// No description provided for @unsavedChangesConfirmation.
   ///
   /// In en, this message translates to:
   /// **'You have unsaved changes. Do you want to discard them and continue?'**
   String get unsavedChangesConfirmation;
 
-  /// Translation for update
+  /// No description provided for @update.
   ///
   /// In en, this message translates to:
   /// **'Update'**
   String get update;
 
-  /// Translation for updateOverride
+  /// No description provided for @updateOverride.
   ///
   /// In en, this message translates to:
   /// **'Update Override'**
   String get updateOverride;
 
-  /// Translation for updatePeer
+  /// No description provided for @updatePeer.
   ///
   /// In en, this message translates to:
   /// **'Update Peer'**
   String get updatePeer;
 
-  /// Translation for updatePinCode
+  /// No description provided for @updatePinCode.
   ///
   /// In en, this message translates to:
   /// **'Update your PIN code'**
   String get updatePinCode;
 
-  /// Translation for updateRule
+  /// No description provided for @updateRule.
   ///
   /// In en, this message translates to:
   /// **'Update Rule'**
   String get updateRule;
 
-  /// Translation for updateServer
+  /// No description provided for @updateServer.
   ///
   /// In en, this message translates to:
   /// **'Update Server'**
   String get updateServer;
 
-  /// Translation for updateStaticKey
+  /// No description provided for @updateStaticKey.
   ///
   /// In en, this message translates to:
   /// **'Update Static Key'**
   String get updateStaticKey;
 
-  /// Translation for upload
+  /// No description provided for @upload.
   ///
   /// In en, this message translates to:
   /// **'Upload'**
   String get upload;
 
-  /// Translation for uptime
+  /// No description provided for @uptime.
   ///
   /// In en, this message translates to:
   /// **'Uptime'**
   String get uptime;
 
-  /// Translation for useBiometric
+  /// No description provided for @useBiometric.
   ///
   /// In en, this message translates to:
   /// **'Use Biometric'**
@@ -6426,43 +5780,37 @@ abstract class AppLocalizations {
   /// **'Use {biometricType} to unlock app'**
   String useBiometricToUnlock(String biometricType);
 
-  /// Translation for useExitNode
+  /// No description provided for @useExitNode.
   ///
   /// In en, this message translates to:
   /// **'Use Exit Node'**
   String get useExitNode;
 
-  /// Translation for useHttps
+  /// No description provided for @useHttps.
   ///
   /// In en, this message translates to:
   /// **'Use HTTPS'**
   String get useHttps;
 
-  /// Translation for useHttpsDescription
+  /// No description provided for @useHttpsDescription.
   ///
   /// In en, this message translates to:
   /// **'Use secure HTTPS connection'**
   String get useHttpsDescription;
 
-  /// Translation for useHttpsLabel
-  ///
-  /// In en, this message translates to:
-  /// **'Use HTTPS'**
-  String get useHttpsLabel;
-
-  /// Translation for useProtocolForCommunicating
+  /// No description provided for @useProtocolForCommunicating.
   ///
   /// In en, this message translates to:
   /// **'Use this protocol for communicating'**
   String get useProtocolForCommunicating;
 
-  /// Translation for valid
+  /// No description provided for @valid.
   ///
   /// In en, this message translates to:
   /// **'Valid'**
   String get valid;
 
-  /// Translation for validFrom
+  /// No description provided for @validFrom.
   ///
   /// In en, this message translates to:
   /// **'Valid From'**
@@ -6486,127 +5834,121 @@ abstract class AppLocalizations {
   /// **'Version'**
   String get versionLabel;
 
-  /// Translation for viewDetails
+  /// No description provided for @viewDetails.
   ///
   /// In en, this message translates to:
   /// **'View Details'**
   String get viewDetails;
 
-  /// Translation for viewFullLicense
+  /// No description provided for @viewFullLicense.
   ///
   /// In en, this message translates to:
   /// **'View Full License'**
   String get viewFullLicense;
 
-  /// Translation for virtualAddress
+  /// No description provided for @virtualAddress.
   ///
   /// In en, this message translates to:
   /// **'Virtual Address'**
   String get virtualAddress;
 
-  /// Translation for vpn
+  /// No description provided for @vpn.
   ///
   /// In en, this message translates to:
   /// **'VPN'**
   String get vpn;
 
-  /// Translation for vpnConnections
+  /// No description provided for @vpnConnections.
   ///
   /// In en, this message translates to:
   /// **'VPN Connections'**
   String get vpnConnections;
 
-  /// Translation for vpnConnectionsWillAppear
+  /// No description provided for @vpnConnectionsWillAppear.
   ///
   /// In en, this message translates to:
   /// **'VPN connections will appear here when configured'**
   String get vpnConnectionsWillAppear;
 
-  /// Translation for vpnStatus
+  /// No description provided for @vpnStatus.
   ///
   /// In en, this message translates to:
   /// **'VPN Status'**
   String get vpnStatus;
 
-  /// Translation for vpnType
+  /// No description provided for @vpnType.
   ///
   /// In en, this message translates to:
   /// **'VPN Type'**
   String get vpnType;
 
-  /// Translation for wakeAll
+  /// No description provided for @wakeAll.
   ///
   /// In en, this message translates to:
   /// **'Wake All'**
   String get wakeAll;
 
-  /// Translation for wakeAllDevices
+  /// No description provided for @wakeAllDevices.
   ///
   /// In en, this message translates to:
   /// **'Wake All Devices'**
   String get wakeAllDevices;
 
-  /// Translation for wakeAllDevicesConfirmation
+  /// No description provided for @wakeAllDevicesConfirmation.
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to send wake packets to all configured devices?'**
   String get wakeAllDevicesConfirmation;
 
-  /// Translation for wakeAllResults
+  /// No description provided for @wakeAllResults.
   ///
   /// In en, this message translates to:
   /// **'Wake All Results'**
   String get wakeAllResults;
 
-  /// Translation for wakeHost
+  /// No description provided for @wakeHost.
   ///
   /// In en, this message translates to:
   /// **'Wake Host'**
   String get wakeHost;
 
-  /// Translation for wakeOnLan
+  /// No description provided for @wakeOnLan.
   ///
   /// In en, this message translates to:
   /// **'Wake on LAN'**
   String get wakeOnLan;
 
-  /// Translation for wakingAllDevices
+  /// No description provided for @wakingAllDevices.
   ///
   /// In en, this message translates to:
   /// **'Waking all devices...'**
   String get wakingAllDevices;
 
-  /// Translation for warning
+  /// No description provided for @warning.
   ///
   /// In en, this message translates to:
   /// **'Warning'**
   String get warning;
 
-  /// Translation for winsServers
+  /// No description provided for @winsServers.
   ///
   /// In en, this message translates to:
   /// **'WINS Servers'**
   String get winsServers;
 
-  /// Translation for winsServersHelperText
+  /// No description provided for @winsServersHelperText.
   ///
   /// In en, this message translates to:
   /// **'Set primary WINS server address (NetBIOS over TCP/IP Name Server). Repeat this option to set secondary WINS server addresses.'**
   String get winsServersHelperText;
 
-  /// Translation for wireguard
-  ///
-  /// In en, this message translates to:
-  /// **'WireGuard'**
-  String get wireguard;
-
-  /// Translation for wireguardLogs
+  /// No description provided for @wireguardLogs.
   ///
   /// In en, this message translates to:
   /// **'WireGuard Logs'**
   String get wireguardLogs;
 
-  /// Translation for wireguardLogsExport
+  /// No description provided for @wireguardLogsExport.
   ///
   /// In en, this message translates to:
   /// **'WireGuard Logs Export'**
@@ -6618,37 +5960,37 @@ abstract class AppLocalizations {
   /// **'WireGuard logs exported on {date}'**
   String wireguardLogsExportedOn(String date);
 
-  /// Translation for wireguardPeers
+  /// No description provided for @wireguardPeers.
   ///
   /// In en, this message translates to:
   /// **'WireGuard Peers'**
   String get wireguardPeers;
 
-  /// Translation for wireguardServers
+  /// No description provided for @wireguardServers.
   ///
   /// In en, this message translates to:
   /// **'WireGuard Servers'**
   String get wireguardServers;
 
-  /// Translation for wireguardServiceStarted
+  /// No description provided for @wireguardServiceStarted.
   ///
   /// In en, this message translates to:
   /// **'WireGuard service started'**
   String get wireguardServiceStarted;
 
-  /// Translation for wireguardServiceStopped
+  /// No description provided for @wireguardServiceStopped.
   ///
   /// In en, this message translates to:
   /// **'WireGuard service stopped'**
   String get wireguardServiceStopped;
 
-  /// Translation for wireguardStatus
+  /// No description provided for @wireguardStatus.
   ///
   /// In en, this message translates to:
   /// **'WireGuard Status'**
   String get wireguardStatus;
 
-  /// Translation for withoutCredentials
+  /// No description provided for @withoutCredentials.
   ///
   /// In en, this message translates to:
   /// **'Without Credentials'**
@@ -6660,209 +6002,305 @@ abstract class AppLocalizations {
   /// **'WOL packet sent to {host}'**
   String wolPacketSentTo(String host);
 
-  /// Translation for yes
+  /// No description provided for @yes.
   ///
   /// In en, this message translates to:
   /// **'Yes'**
   String get yes;
 
-  /// Translation for yesterday
+  /// No description provided for @yesterday.
   ///
   /// In en, this message translates to:
   /// **'Yesterday'**
   String get yesterday;
 
-  /// Translation for zeroSeconds
+  /// No description provided for @zeroSeconds.
   ///
   /// In en, this message translates to:
   /// **'0 seconds'**
   String get zeroSeconds;
 
-  /// Translation for addToList - button to add item to a list
-  ///
-  /// In en, this message translates to:
-  /// **'Add'**
-  String get addToList;
-
-  /// Translation for allFilterOption - filter option to show all items
-  ///
-  /// In en, this message translates to:
-  /// **'All'**
-  String get allFilterOption;
-
-  /// Translation for commonNameLabel
-  ///
-  /// In en, this message translates to:
-  /// **'Common Name'**
-  String get commonNameLabel;
-
-  /// Translation for connectionBlockingDescription
+  /// No description provided for @connectionBlockingDescription.
   ///
   /// In en, this message translates to:
   /// **'Block this client connection based on its common name. Don\'t use this option to permanently disable a client due to a compromised key or password. Use a CRL (certificate revocation list) instead.'**
   String get connectionBlockingDescription;
 
-  /// Translation for deviceLabel
+  /// No description provided for @deviceLabel.
   ///
   /// In en, this message translates to:
   /// **'Device: {type}'**
   String deviceLabel(String type);
 
-  /// Translation for enableThisClientOverride
-  ///
-  /// In en, this message translates to:
-  /// **'Enable this client specific override'**
-  String get enableThisClientOverride;
-
-  /// Translation for enterClientX509CommonName
-  ///
-  /// In en, this message translates to:
-  /// **'Enter the client\'s X.509 common name here.'**
-  String get enterClientX509CommonName;
-
-  /// Translation for facility
+  /// No description provided for @facility.
   ///
   /// In en, this message translates to:
   /// **'Facility'**
   String get facility;
 
-  /// Translation for gatewayLabel
+  /// No description provided for @gatewayLabel.
   ///
   /// In en, this message translates to:
   /// **'Gateway: {gateway}'**
   String gatewayLabel(String gateway);
 
-  /// Translation for invalidIpAddressMustBeIpv4OrIpv6
-  ///
-  /// In en, this message translates to:
-  /// **'Invalid IP address (must be IPv4 or IPv6)'**
-  String get invalidIpAddressMustBeIpv4OrIpv6;
-
-  /// Translation for localLabel
+  /// No description provided for @localLabel.
   ///
   /// In en, this message translates to:
   /// **'Local: {address}'**
   String localLabel(String address);
 
-  /// Translation for messageLabel
+  /// No description provided for @messageLabel.
   ///
   /// In en, this message translates to:
   /// **'Message:'**
   String get messageLabel;
 
-  /// Translation for pageOfTotal
+  /// No description provided for @pageOfTotal.
   ///
   /// In en, this message translates to:
   /// **'Page {current} of {total}'**
   String pageOfTotal(int current, int total);
 
-  /// Translation for parser
+  /// No description provided for @parser.
   ///
   /// In en, this message translates to:
   /// **'Parser'**
   String get parser;
 
-  /// Translation for pidLabel
+  /// No description provided for @pidLabel.
   ///
   /// In en, this message translates to:
   /// **'PID: {pid}'**
   String pidLabel(String pid);
 
-  /// Translation for processLabel
+  /// No description provided for @processLabel.
   ///
   /// In en, this message translates to:
   /// **'Process: {process}'**
   String processLabel(String process);
 
-  /// Translation for pushResetDescription
+  /// No description provided for @pushResetDescription.
   ///
   /// In en, this message translates to:
   /// **'Don\'t inherit the global push list for a specific client instance. NOTE: --push-reset is very thorough: it will remove almost all options from the list of to-be-pushed options. In many cases, some of these options will need to be re-configured afterwards - specifically, --topology subnet and --route-gateway will get lost and this will break client configs in many cases.'**
   String get pushResetDescription;
 
-  /// Translation for record
+  /// No description provided for @record.
   ///
   /// In en, this message translates to:
   /// **'Record'**
   String get record;
 
-  /// Translation for redirectGatewayDescription
+  /// No description provided for @redirectGatewayDescription.
   ///
   /// In en, this message translates to:
   /// **'Automatically execute routing commands to cause all outgoing IP traffic to be redirected over the VPN.'**
   String get redirectGatewayDescription;
 
-  /// Translation for registerDnsDescription
+  /// No description provided for @registerDnsDescription.
   ///
   /// In en, this message translates to:
   /// **'Run ipconfig /flushdns and ipconfig /registerdns on connection initiation. This is known to kick Windows into recognizing pushed DNS servers.'**
   String get registerDnsDescription;
 
-  /// Translation for remoteLabel
+  /// No description provided for @remoteLabel.
   ///
   /// In en, this message translates to:
   /// **'Remote: {info}'**
   String remoteLabel(String info);
 
-  /// Translation for selectedCount
+  /// No description provided for @selectedCount.
   ///
   /// In en, this message translates to:
   /// **'{count} selected'**
   String selectedCount(int count);
 
-  /// Translation for serverLabel
+  /// No description provided for @serverLabel.
   ///
   /// In en, this message translates to:
   /// **'Server: {info}'**
   String serverLabel(String info);
 
-  /// Translation for severityLabel
+  /// No description provided for @severityLabel.
   ///
   /// In en, this message translates to:
   /// **'Severity: {severity}'**
   String severityLabel(String severity);
 
-  /// Translation for showingEntries
+  /// No description provided for @showingEntries.
   ///
   /// In en, this message translates to:
   /// **'Showing {start} to {end}'**
   String showingEntries(int start, int end);
 
-  /// Translation for statusLabel
-  ///
-  /// In en, this message translates to:
-  /// **'Status'**
-  String get statusLabel;
-
-  /// Translation for timestampLabel
+  /// No description provided for @timestampLabel.
   ///
   /// In en, this message translates to:
   /// **'Timestamp: {timestamp}'**
   String timestampLabel(String timestamp);
 
-  /// Translation for typeLabel
+  /// No description provided for @typeLabel.
   ///
   /// In en, this message translates to:
   /// **'Type: {type}'**
   String typeLabel(String type);
 
-  /// Translation for udp
-  ///
-  /// In en, this message translates to:
-  /// **'UDP'**
-  String get udp;
-
-  /// Translation for unknownNetwork
+  /// No description provided for @unknownNetwork.
   ///
   /// In en, this message translates to:
   /// **'Unknown Network'**
   String get unknownNetwork;
 
-  /// Translation for youMayEnterDescriptionForReference
+  /// Memory label for actual used amount
   ///
   /// In en, this message translates to:
-  /// **'You may enter a description here for your reference (not parsed).'**
-  String get youMayEnterDescriptionForReference;
+  /// **'Actual Used'**
+  String get actualUsed;
+
+  /// Memory label for ARC cache
+  ///
+  /// In en, this message translates to:
+  /// **'ARC Cache'**
+  String get arcCache;
+
+  /// Banner text shown when app is in demo mode
+  ///
+  /// In en, this message translates to:
+  /// **'Demo Mode - Showing sample data'**
+  String get demoModeIndicator;
+
+  /// Section title for thermal sensors
+  ///
+  /// In en, this message translates to:
+  /// **'Thermal Sensors'**
+  String get thermalSensors;
+
+  /// Shown when no thermal sensors are found
+  ///
+  /// In en, this message translates to:
+  /// **'No thermal sensors available'**
+  String get noThermalSensorsAvailable;
+
+  /// Tooltip to collapse all sections
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse All'**
+  String get collapseAll;
+
+  /// Tooltip to expand all sections
+  ///
+  /// In en, this message translates to:
+  /// **'Expand All'**
+  String get expandAll;
+
+  /// Loading message while saving an OpenVPN instance
+  ///
+  /// In en, this message translates to:
+  /// **'Saving instance...'**
+  String get savingInstance;
+
+  /// Helper text for the static key description field
+  ///
+  /// In en, this message translates to:
+  /// **'A descriptive name for this static key'**
+  String get staticKeyDescriptionHelper;
+
+  /// Helper text for the static key mode dropdown
+  ///
+  /// In en, this message translates to:
+  /// **'Select the key mode for authentication or encryption'**
+  String get selectKeyModeHelper;
+
+  /// Multi-line help text in the static key form info card
+  ///
+  /// In en, this message translates to:
+  /// **'• Auth: Adds HMAC authentication to control channel\n• Crypt: Encrypts and authenticates all control channel packets\n• Crypt V2: Enhanced encryption with improved security\n\nYou can generate a new key or paste an existing one.'**
+  String get staticKeyHelpText;
+
+  /// Label for device/interface row
+  ///
+  /// In en, this message translates to:
+  /// **'Device'**
+  String get device;
+
+  /// Label for listen port row in WireGuard status
+  ///
+  /// In en, this message translates to:
+  /// **'Listen Port'**
+  String get listenPort;
+
+  /// Label for firewall mark row in WireGuard status
+  ///
+  /// In en, this message translates to:
+  /// **'FW Mark'**
+  String get fwMark;
+
+  /// Label for peer status row in WireGuard status
+  ///
+  /// In en, this message translates to:
+  /// **'Peer Status'**
+  String get peerStatus;
+
+  /// Label for handshake age row in WireGuard status
+  ///
+  /// In en, this message translates to:
+  /// **'Handshake Age'**
+  String get handshakeAge;
+
+  /// Displays elapsed time in seconds
+  ///
+  /// In en, this message translates to:
+  /// **'{count} seconds ago'**
+  String secondsAgo(int count);
+
+  /// Label for handshake timestamp row in WireGuard status
+  ///
+  /// In en, this message translates to:
+  /// **'Handshake'**
+  String get handshake;
+
+  /// Section header for process information in log detail
+  ///
+  /// In en, this message translates to:
+  /// **'Process Information'**
+  String get processInformation;
+
+  /// Label for process name row in log detail
+  ///
+  /// In en, this message translates to:
+  /// **'Process Name'**
+  String get processName;
+
+  /// Label for process ID row in log detail
+  ///
+  /// In en, this message translates to:
+  /// **'Process ID'**
+  String get processId;
+
+  /// Section header for log message in log detail
+  ///
+  /// In en, this message translates to:
+  /// **'Log Message'**
+  String get logMessage;
+
+  /// Label for message row in log detail
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get message;
+
+  /// Section header for timestamp information in log detail
+  ///
+  /// In en, this message translates to:
+  /// **'Timestamp Information'**
+  String get timestampInformation;
+
+  /// Label for raw timestamp row in log detail
+  ///
+  /// In en, this message translates to:
+  /// **'Raw Timestamp'**
+  String get rawTimestamp;
 }
 
 class _AppLocalizationsDelegate

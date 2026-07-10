@@ -18,6 +18,8 @@
 
 
 import 'package:flutter/material.dart';
+import '../utils/app_colors.dart';
+import '../utils/color_helpers.dart';
 import '../utils/constants.dart';
 
 /// Reusable card widget for displaying statistics
@@ -57,13 +59,13 @@ class StatCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: (iconColor ?? Theme.of(context).primaryColor)
-                          .withValues(alpha: 0.1),
+                      color: (iconColor ?? Theme.of(context).colorScheme.primary)
+                          .withValues(alpha: AppColors.opacitySubtle),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
                       icon,
-                      color: iconColor ?? Theme.of(context).primaryColor,
+                      color: iconColor ?? Theme.of(context).colorScheme.primary,
                       size: 28,
                     ),
                   ),
@@ -75,7 +77,7 @@ class StatCard extends StatelessWidget {
               Text(
                 title,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey[600],
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
               ),
               const SizedBox(height: 4),
@@ -90,7 +92,7 @@ class StatCard extends StatelessWidget {
                 Text(
                   subtitle!,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey[500],
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                 ),
               ],
@@ -125,14 +127,7 @@ class ProgressStatCard extends StatelessWidget {
 
   Color _getProgressColor(BuildContext context) {
     if (progressColor != null) return progressColor!;
-    
-    if (progress >= 0.9) {
-      return const Color(AppConstants.errorColorValue);
-    } else if (progress >= 0.7) {
-      return const Color(AppConstants.warningColorValue);
-    } else {
-      return const Color(AppConstants.successColorValue);
-    }
+    return resourceUsageColor(progress);
   }
 
   @override
@@ -150,7 +145,7 @@ class ProgressStatCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.1),
+                    color: color.withValues(alpha: AppColors.opacitySubtle),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
@@ -173,7 +168,7 @@ class ProgressStatCard extends StatelessWidget {
             Text(
               title,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey[600],
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
             ),
             const SizedBox(height: 4),
@@ -188,7 +183,7 @@ class ProgressStatCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
               child: LinearProgressIndicator(
                 value: progress.clamp(0.0, 1.0),
-                backgroundColor: Colors.grey[200],
+                backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                 valueColor: AlwaysStoppedAnimation<Color>(color),
                 minHeight: 8,
               ),
@@ -198,7 +193,7 @@ class ProgressStatCard extends StatelessWidget {
               Text(
                 subtitle!,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.grey[500],
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
               ),
             ],
@@ -247,11 +242,11 @@ class StackedProgressStatCard extends StatelessWidget {
     
     // Color based on primary progress only (actual memory usage)
     if (primaryProgress >= 0.9) {
-      return const Color(AppConstants.errorColorValue);
+      return AppColors.error;
     } else if (primaryProgress >= 0.7) {
-      return const Color(AppConstants.warningColorValue);
+      return AppColors.warning;
     } else {
-      return const Color(AppConstants.successColorValue);
+      return AppColors.success;
     }
   }
 
@@ -260,7 +255,7 @@ class StackedProgressStatCard extends StatelessWidget {
     
     // Use a lighter shade of the primary color for ARC
     final primary = _getPrimaryColor(context);
-    return primary.withValues(alpha: 0.4);
+    return primary.withValues(alpha: AppColors.opacityMedium);
   }
 
   @override
@@ -281,7 +276,7 @@ class StackedProgressStatCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: primary.withValues(alpha: 0.1),
+                    color: primary.withValues(alpha: AppColors.opacitySubtle),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
@@ -304,7 +299,7 @@ class StackedProgressStatCard extends StatelessWidget {
             Text(
               title,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey[600],
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
             ),
             const SizedBox(height: 4),
@@ -325,7 +320,7 @@ class StackedProgressStatCard extends StatelessWidget {
                     // Background
                     Container(
                       width: double.infinity,
-                      color: Colors.grey[200],
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     ),
                     // Total progress (primary + secondary)
                     FractionallySizedBox(
@@ -371,7 +366,7 @@ class StackedProgressStatCard extends StatelessWidget {
                                 child: Text(
                                   primaryLabel!,
                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                        color: Colors.grey[700],
+                                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                                         fontWeight: FontWeight.w500,
                                       ),
                                   overflow: TextOverflow.ellipsis,
@@ -386,7 +381,7 @@ class StackedProgressStatCard extends StatelessWidget {
                               child: Text(
                                 primaryValue!,
                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Colors.grey[600],
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                                     ),
                               ),
                             ),
@@ -418,7 +413,7 @@ class StackedProgressStatCard extends StatelessWidget {
                                 child: Text(
                                   secondaryLabel!,
                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                        color: Colors.grey[700],
+                                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                                         fontWeight: FontWeight.w500,
                                       ),
                                   overflow: TextOverflow.ellipsis,
@@ -433,7 +428,7 @@ class StackedProgressStatCard extends StatelessWidget {
                               child: Text(
                                 secondaryValue!,
                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Colors.grey[600],
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                                     ),
                               ),
                             ),
@@ -449,7 +444,7 @@ class StackedProgressStatCard extends StatelessWidget {
               Text(
                 subtitle!,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.grey[500],
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
               ),
             ],
@@ -492,7 +487,7 @@ class QuickActionCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12), // Reduced from 16
                 decoration: BoxDecoration(
-                  color: iconColor.withValues(alpha: 0.1),
+                  color: iconColor.withValues(alpha: AppColors.opacitySubtle),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -518,7 +513,7 @@ class QuickActionCard extends StatelessWidget {
                 maxLines: 1, // Added to prevent overflow
                 overflow: TextOverflow.ellipsis, // Added
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.grey[600],
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
               ),
             ],

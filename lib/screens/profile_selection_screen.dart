@@ -17,6 +17,7 @@
  */
 
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/profile.dart';
@@ -26,6 +27,7 @@ import '../services/profile_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../services/demo_api_service.dart';
 import '../services/connection/connection_manager_service.dart';
+import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import 'dashboard_screen.dart';
 import 'login_screen.dart';
@@ -70,8 +72,10 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
         demoApiService.setDemoMode(true);
         await profileService.setActiveProfile(profile.id);
         if (mounted) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const DashboardScreen()),
+          unawaited(
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => const DashboardScreen()),
+            ),
           );
         }
         return;
@@ -162,8 +166,10 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
       await profileService.setActiveProfile(updatedProfile.id);
       
       if (mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const DashboardScreen()),
+        unawaited(
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const DashboardScreen()),
+          ),
         );
       }
       
@@ -236,7 +242,8 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
   Widget _buildContent(List<Profile> profiles) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDark ? Theme.of(context).textTheme.bodyLarge?.color ?? Colors.white : Colors.white;
+    final colorScheme = Theme.of(context).colorScheme;
+    final textColor = isDark ? colorScheme.onSurface : AppColors.onPrimary;
 
     return Scaffold(
       body: Container(
@@ -246,12 +253,12 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
             end: Alignment.bottomRight,
             colors: isDark
                 ? [
-                    Theme.of(context).scaffoldBackgroundColor,
-                    Theme.of(context).scaffoldBackgroundColor,
+                    Theme.of(context).colorScheme.surface,
+                    Theme.of(context).colorScheme.surface,
                   ]
                 : [
                     AppColors.primary,
-                    AppColors.primary.withValues(alpha: 0.7),
+                    AppColors.primary.withValues(alpha: AppColors.opacityStrong),
                   ],
           ),
         ),
@@ -280,7 +287,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                     Text(
                       l10n.selectAProfileOrCreateNewOne,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: textColor.withValues(alpha: 0.9),
+                            color: textColor.withValues(alpha: AppColors.opacityHeavy + AppColors.opacitySubtle),
                           ),
                     ),
                   ],
@@ -292,17 +299,17 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Card(
-                    color: Colors.red.shade100,
+                    color: AppColors.error.withValues(alpha: AppColors.opacitySubtle),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Row(
                         children: [
-                          Icon(Icons.error, color: Colors.red.shade700),
+                          const Icon(Icons.error, color: AppColors.error),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               _errorMessage!,
-                              style: TextStyle(color: Colors.red.shade700),
+                              style: const TextStyle(color: AppColors.error),
                             ),
                           ),
                         ],
@@ -316,18 +323,18 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Card(
-                    color: Colors.blue.shade50,
+                    color: AppColors.info.withValues(alpha: AppColors.opacitySubtle),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Row(
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             width: 20,
                             height: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.blue.shade700,
+                                AppColors.info,
                               ),
                             ),
                           ),
@@ -335,8 +342,8 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                           Expanded(
                             child: Text(
                               _connectionStatus!,
-                              style: TextStyle(
-                                color: Colors.blue.shade700,
+                              style: const TextStyle(
+                                color: AppColors.info,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -355,8 +362,8 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                   margin: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: isDark
-                        ? Theme.of(context).cardColor
-                        : Colors.white,
+                        ? Theme.of(context).colorScheme.surfaceContainerLow
+                        : AppColors.onPrimary,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: _isLoading
@@ -381,12 +388,12 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                         label: Text(l10n.tryDemoMode),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: isDark
-                              ? Theme.of(context).primaryColor
-                              : Colors.white,
+                              ? colorScheme.primary
+                              : AppColors.onPrimary,
                           side: BorderSide(
                             color: isDark
-                                ? Theme.of(context).primaryColor
-                                : Colors.white,
+                                ? colorScheme.primary
+                                : AppColors.onPrimary,
                             width: 2,
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -406,10 +413,10 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                         label: Text(l10n.createNewProfile),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: isDark
-                              ? Theme.of(context).primaryColor
-                              : Colors.white,
+                              ? colorScheme.primary
+                              : AppColors.onPrimary,
                           foregroundColor: isDark
-                              ? Colors.white
+                              ? AppColors.onPrimary
                               : AppColors.primary,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
@@ -438,13 +445,13 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
             Icon(
               Icons.folder_open,
               size: 80,
-              color: Colors.grey.shade400,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
             const SizedBox(height: 16),
             Text(
               l10n.noProfilesYet,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Colors.grey.shade700,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.bold,
                   ),
             ),
@@ -453,7 +460,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
               l10n.createYourFirstProfile,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
             ),
           ],
@@ -477,7 +484,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
           child: ListTile(
             contentPadding: const EdgeInsets.all(16),
             leading: CircleAvatar(
-              backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+              backgroundColor: AppColors.primary.withValues(alpha: AppColors.opacitySubtle),
               child: Icon(
                 profile.isDemo ? Icons.play_circle_outline : Icons.router,
                 color: AppColors.primary,
@@ -500,13 +507,13 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
-                      color: Colors.orange.shade100,
+                      color: AppColors.warning.withValues(alpha: AppColors.opacityDisabled),
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
                       l10n.demo,
                       style: TextStyle(
-                        color: Colors.orange.shade900,
+                        color: Theme.of(context).colorScheme.onErrorContainer,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                       ),
@@ -520,9 +527,9 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
               children: [
                 const SizedBox(height: 4),
                 Text(
-                  '${profile.useHttps ? l10n.https : l10n.http}://${profile.host}:${profile.port}',
+                  '${profile.useHttps ? StringConstants.https : StringConstants.http}://${profile.host}:${profile.port}',
                   style: TextStyle(
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 14,
                   ),
                 ),
@@ -531,7 +538,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                   Text(
                     l10n.lastUsed(_formatDate(profile.lastUsed!, l10n)),
                     style: TextStyle(
-                      color: Colors.grey.shade500,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       fontSize: 12,
                     ),
                   ),
@@ -549,7 +556,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
                     onPressed: () => _editProfile(profile),
                     tooltip: l10n.edit,
                   ),
-                Icon(
+                const Icon(
                   Icons.arrow_forward_ios,
                   color: AppColors.primary,
                   size: 20,
@@ -582,9 +589,9 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
     if (difference.inMinutes < 1) {
       return l10n.justNow;
     } else if (difference.inHours < 1) {
-      return l10n.minutesAgo(difference.inMinutes.toString());
+      return l10n.minutesAgo(difference.inMinutes);
     } else if (difference.inDays < 1) {
-      return l10n.hoursAgo(difference.inHours.toString());
+      return l10n.hoursAgo(difference.inHours);
     } else {
       return l10n.daysAgo(difference.inDays);
     }

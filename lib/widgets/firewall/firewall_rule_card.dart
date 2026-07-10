@@ -18,6 +18,8 @@
 
 import 'package:flutter/material.dart';
 import '../../models/firewall_rule.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/color_helpers.dart';
 import '../../utils/constants.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -33,19 +35,6 @@ class FirewallRuleCard extends StatelessWidget {
     required this.onTap,
     this.onToggle,
   });
-
-  Color _getTypeColor() {
-    switch (rule.type.toLowerCase()) {
-      case 'pass':
-        return Colors.green;
-      case 'block':
-        return Colors.red;
-      case 'reject':
-        return Colors.orange;
-      default:
-        return Colors.grey;
-    }
-  }
 
   IconData _getTypeIcon() {
     switch (rule.type.toLowerCase()) {
@@ -63,7 +52,7 @@ class FirewallRuleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
       child: InkWell(
@@ -79,12 +68,12 @@ class FirewallRuleCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: _getTypeColor().withValues(alpha: 0.1),
+                      color: firewallActionColor(rule.type).withValues(alpha: AppColors.opacitySubtle),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
                       _getTypeIcon(),
-                      color: _getTypeColor(),
+                      color: firewallActionColor(rule.type),
                       size: 20,
                     ),
                   ),
@@ -107,7 +96,7 @@ class FirewallRuleCard extends StatelessWidget {
                           '${rule.typeDisplayName} • ${rule.interfaceName} • ${rule.protocolDisplayName}',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey[600],
+                            color: colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -116,7 +105,7 @@ class FirewallRuleCard extends StatelessWidget {
                   Switch(
                     value: rule.isEnabled,
                     onChanged: rule.isSystemGenerated ? null : onToggle,
-                    activeTrackColor: Colors.green,
+                    activeTrackColor: AppColors.success,
                   ),
                 ],
               ),
@@ -124,7 +113,7 @@ class FirewallRuleCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: isDark ? Colors.grey[800] : Colors.grey[200],
+                  color: colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
@@ -140,7 +129,7 @@ class FirewallRuleCard extends StatelessWidget {
                     Icon(
                       Icons.arrow_forward,
                       size: 16,
-                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      color: colorScheme.onSurfaceVariant,
                     ),
                     Expanded(
                       child: _buildRuleInfo(
@@ -162,14 +151,14 @@ class FirewallRuleCard extends StatelessWidget {
 
   Widget _buildRuleInfo(
       BuildContext context, String label, String value, IconData icon) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Row(
       children: [
         Icon(
           icon,
           size: 14,
-          color: isDark ? Colors.grey[400] : Colors.grey[600],
+          color: colorScheme.onSurfaceVariant,
         ),
         const SizedBox(width: 6),
         Expanded(
@@ -180,7 +169,7 @@ class FirewallRuleCard extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontSize: 10,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
               Text(
@@ -188,7 +177,7 @@ class FirewallRuleCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: isDark ? Colors.grey[200] : Colors.black87,
+                  color: colorScheme.onSurface,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),

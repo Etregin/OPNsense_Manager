@@ -1,9 +1,32 @@
+/*
+ * OPNsense Manager - Flutter application for managing OPNsense firewalls
+ * Copyright (C) 2026 OPNsense Manager
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../models/tailscale_settings.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
+import '../utils/app_colors.dart';
+import '../utils/single_init_mixin.dart';
+import '../utils/snackbar_helper.dart';
+import '../viewmodels/tailscale_subnets_view_model.dart';
+import '../widgets/common/confirmation_dialog.dart';
 
 class TailscaleSubnetsScreen extends StatefulWidget {
   const TailscaleSubnetsScreen({super.key});
@@ -12,72 +35,39 @@ class TailscaleSubnetsScreen extends StatefulWidget {
   State<TailscaleSubnetsScreen> createState() => _TailscaleSubnetsScreenState();
 }
 
-class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
-  List<MapEntry<String, TailscaleSubnet>> _subnets = [];
-  bool _isLoading = true;
-  String? _error;
+class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen>
+    with SingleInitMixin {
+  late TailscaleSubnetsViewModel _viewModel;
 
   @override
-  void initState() {
-    super.initState();
-    _loadSubnets();
+  void onFirstDependency() {
+    final demoApiService = context.read<DemoApiService>();
+    final opnsenseApiService =
+        demoApiService.isDemoMode ? null : context.read<OPNsenseApiService>();
+    _viewModel = TailscaleSubnetsViewModel(demoApiService, opnsenseApiService);
+    _viewModel.loadItems();
   }
 
-  Future<void> _loadSubnets() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      final bool isDemoMode = demoApiService.isDemoMode;
-      final opnsenseApiService = isDemoMode ? null : context.read<OPNsenseApiService>();
-
-      final response = isDemoMode
-          ? await demoApiService.getTailscaleSettings()
-          : await opnsenseApiService!.getTailscaleSettings();
-
-      setState(() {
-        _subnets = response.settings.subnets?.entries.toList() ?? [];
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
-    }
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
   }
 
   Future<void> _addSubnet() async {
-    // Get services before async gap
-    final demoApiService = context.read<DemoApiService>();
-    final bool isDemoMode = demoApiService.isDemoMode;
-    final opnsenseApiService = isDemoMode ? null : context.read<OPNsenseApiService>();
-
     final result = await showDialog<TailscaleSubnet>(
       context: context,
       builder: (context) => const _SubnetDialog(),
     );
 
-    if (result != null) {
+    if (result != null && mounted) {
       try {
-
-        final response = isDemoMode
-            ? await demoApiService.addTailscaleSubnet(result)
-            : await opnsenseApiService!.addTailscaleSubnet(result);
-
+        final response = await _viewModel.addSubnet(result);
         if (response['result'] == 'saved') {
-          await _loadSubnets();
+          await _viewModel.loadItems();
           if (mounted) {
             final l10n = AppLocalizations.of(context)!;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.subnetAddedSuccessfully),
-                backgroundColor: Colors.green,
-              ),
-            );
+            SnackBarHelper.showSuccess(context, l10n.subnetAddedSuccessfully);
           }
         } else {
           throw Exception('Failed to add subnet: ${response['result']}');
@@ -85,45 +75,26 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
       } catch (e) {
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.errorAddingSubnet(e.toString())),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.errorAddingSubnet(e.toString()));
         }
       }
     }
   }
 
   Future<void> _editSubnet(String uuid, TailscaleSubnet subnet) async {
-    // Get services before async gap
-    final demoApiService = context.read<DemoApiService>();
-    final bool isDemoMode = demoApiService.isDemoMode;
-    final opnsenseApiService = isDemoMode ? null : context.read<OPNsenseApiService>();
-
     final result = await showDialog<TailscaleSubnet>(
       context: context,
       builder: (context) => _SubnetDialog(subnet: subnet),
     );
 
-    if (result != null) {
+    if (result != null && mounted) {
       try {
-
-        final response = isDemoMode
-            ? await demoApiService.setTailscaleSubnet(uuid, result)
-            : await opnsenseApiService!.setTailscaleSubnet(uuid, result);
-
+        final response = await _viewModel.updateSubnet(uuid, result);
         if (response['result'] == 'saved') {
-          await _loadSubnets();
+          await _viewModel.loadItems();
           if (mounted) {
             final l10n = AppLocalizations.of(context)!;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.subnetUpdatedSuccessfully),
-                backgroundColor: Colors.green,
-              ),
-            );
+            SnackBarHelper.showSuccess(context, l10n.subnetUpdatedSuccessfully);
           }
         } else {
           throw Exception('Failed to update subnet: ${response['result']}');
@@ -131,62 +102,32 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
       } catch (e) {
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.errorUpdatingSubnet(e.toString())),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(
+              context, l10n.errorUpdatingSubnet(e.toString()));
         }
       }
     }
   }
 
   Future<void> _deleteSubnet(String uuid, String subnet) async {
-    // Get services before async gap
-    final demoApiService = context.read<DemoApiService>();
-    final bool isDemoMode = demoApiService.isDemoMode;
-    final opnsenseApiService = isDemoMode ? null : context.read<OPNsenseApiService>();
-
-    final confirmed = await showDialog<bool>(
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) {
-        final l10n = AppLocalizations.of(context)!;
-        return AlertDialog(
-          title: Text(l10n.deleteSubnet),
-          content: Text(l10n.deleteSubnetConfirmation(subnet)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(l10n.cancel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              style: TextButton.styleFrom(foregroundColor: Colors.red),
-              child: Text(l10n.delete),
-            ),
-          ],
-        );
-      },
+      title: l10n.deleteSubnet,
+      message: l10n.deleteSubnetConfirmation(subnet),
+      confirmText: l10n.delete,
+      cancelText: l10n.cancel,
+      isDestructive: true,
     );
 
-    if (confirmed == true) {
+    if (confirmed == true && mounted) {
       try {
-
-        final response = isDemoMode
-            ? await demoApiService.deleteTailscaleSubnet(uuid)
-            : await opnsenseApiService!.deleteTailscaleSubnet(uuid);
-
+        final response = await _viewModel.deleteSubnet(uuid);
         if (response['result'] == 'saved' || response['result'] == 'deleted') {
-          await _loadSubnets();
+          await _viewModel.loadItems();
           if (mounted) {
             final l10n = AppLocalizations.of(context)!;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.subnetDeletedSuccessfully),
-                backgroundColor: Colors.green,
-              ),
-            );
+            SnackBarHelper.showSuccess(context, l10n.subnetDeletedSuccessfully);
           }
         } else {
           throw Exception('Failed to delete subnet: ${response['result']}');
@@ -194,12 +135,8 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
       } catch (e) {
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.errorDeletingSubnet(e.toString())),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(
+              context, l10n.errorDeletingSubnet(e.toString()));
         }
       }
     }
@@ -208,84 +145,93 @@ class _TailscaleSubnetsScreenState extends State<TailscaleSubnetsScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.tailscaleSubnets),
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _error != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('${l10n.error}: $_error'),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _loadSubnets,
-                        child: Text(l10n.retry),
-                      ),
-                    ],
-                  ),
-                )
-              : _subnets.isEmpty
+
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        final subnets = _viewModel.items;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(l10n.tailscaleSubnets),
+          ),
+          body: _viewModel.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _viewModel.errorMessage != null
                   ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(l10n.noSubnetsConfigured),
+                          Text('${l10n.error}: ${_viewModel.errorMessage}'),
                           const SizedBox(height: 16),
-                          ElevatedButton.icon(
-                            onPressed: _addSubnet,
-                            icon: const Icon(Icons.add),
-                            label: Text(l10n.addSubnet),
+                          ElevatedButton(
+                            onPressed: _viewModel.loadItems,
+                            child: Text(l10n.retry),
                           ),
                         ],
                       ),
                     )
-                  : ListView.builder(
-                      itemCount: _subnets.length,
-                      itemBuilder: (context, index) {
-                        final entry = _subnets[index];
-                        final uuid = entry.key;
-                        final subnet = entry.value;
+                  : subnets.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(l10n.noSubnetsConfigured),
+                              const SizedBox(height: 16),
+                              ElevatedButton.icon(
+                                onPressed: _addSubnet,
+                                icon: const Icon(Icons.add),
+                                label: Text(l10n.addSubnet),
+                              ),
+                            ],
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: subnets.length,
+                          itemBuilder: (context, index) {
+                            final entry = subnets[index];
+                            final uuid = entry.key;
+                            final subnet = entry.value;
 
-                        return Card(
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          child: ListTile(
-                            title: Text(subnet.subnet ?? ''),
-                            subtitle: subnet.description != null &&
-                                    subnet.description!.isNotEmpty
-                                ? Text(subnet.description!)
-                                : null,
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.edit),
-                                  onPressed: () => _editSubnet(uuid, subnet),
+                            return Card(
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              child: ListTile(
+                                title: Text(subnet.subnet ?? ''),
+                                subtitle: subnet.description != null &&
+                                        subnet.description!.isNotEmpty
+                                    ? Text(subnet.description!)
+                                    : null,
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.edit),
+                                      onPressed: () =>
+                                          _editSubnet(uuid, subnet),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.delete),
+                                      color: AppColors.error,
+                                      onPressed: () => _deleteSubnet(
+                                          uuid, subnet.subnet ?? ''),
+                                    ),
+                                  ],
                                 ),
-                                IconButton(
-                                  icon: const Icon(Icons.delete),
-                                  color: Colors.red,
-                                  onPressed: () =>
-                                      _deleteSubnet(uuid, subnet.subnet ?? ''),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-      floatingActionButton: _subnets.isNotEmpty
-          ? FloatingActionButton(
-              onPressed: _addSubnet,
-              child: const Icon(Icons.add),
-            )
-          : null,
+                              ),
+                            );
+                          },
+                        ),
+          floatingActionButton: subnets.isNotEmpty
+              ? FloatingActionButton(
+                  onPressed: _addSubnet,
+                  child: const Icon(Icons.add),
+                )
+              : null,
+        );
+      },
     );
   }
 }
@@ -307,7 +253,8 @@ class _SubnetDialogState extends State<_SubnetDialog> {
   @override
   void initState() {
     super.initState();
-    _subnetController = TextEditingController(text: widget.subnet?.subnet ?? '');
+    _subnetController =
+        TextEditingController(text: widget.subnet?.subnet ?? '');
     _descriptionController =
         TextEditingController(text: widget.subnet?.description ?? '');
   }
@@ -339,12 +286,11 @@ class _SubnetDialogState extends State<_SubnetDialog> {
                 if (value == null || value.isEmpty) {
                   return l10n.pleaseEnterSubnet;
                 }
-                // Basic CIDR validation
                 final cidrRegex = RegExp(
                   r'^(\d{1,3}\.){3}\d{1,3}/\d{1,2}$',
                 );
                 if (!cidrRegex.hasMatch(value)) {
-                  return l10n.invalidCidrFormat;
+                  return l10n.invalidCidrNotation;
                 }
                 return null;
               },
@@ -385,5 +331,3 @@ class _SubnetDialogState extends State<_SubnetDialog> {
     );
   }
 }
-
-

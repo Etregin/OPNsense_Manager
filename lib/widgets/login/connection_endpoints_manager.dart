@@ -20,7 +20,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/connection_endpoint.dart';
-import '../../utils/common_validators.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/validators.dart';
+import '../../utils/snackbar_helper.dart';
 
 /// Widget for managing multiple connection endpoints in a profile
 /// 
@@ -90,12 +92,7 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
     
     if (widget.connections.length <= 1) {
       // Show error - cannot delete last connection
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.cannotDeleteLastConnection),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.cannotDeleteLastConnection);
       return;
     }
 
@@ -115,7 +112,7 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: FilledButton.styleFrom(
-              backgroundColor: Colors.red,
+              backgroundColor: AppColors.error,
             ),
             child: Text(l10n.delete),
           ),
@@ -282,11 +279,11 @@ class _ConnectionEndpointsManagerState extends State<ConnectionEndpointsManager>
                             // Delete button
                             IconButton(
                               icon: const Icon(Icons.delete, size: 20),
-                              tooltip: isOnlyConnection ? l10n.cannotDeleteLastConnectionTooltip : l10n.delete,
+                              tooltip: isOnlyConnection ? l10n.cannotDeleteLastConnection : l10n.delete,
                               onPressed: widget.enabled && !isOnlyConnection
                                   ? () => _showDeleteConfirmation(index)
                                   : null,
-                              color: isOnlyConnection ? theme.disabledColor : Colors.red,
+                              color: isOnlyConnection ? theme.disabledColor : AppColors.error,
                               padding: EdgeInsets.zero,
                               constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
                             ),
@@ -377,8 +374,8 @@ class _ConnectionDialogState extends State<_ConnectionDialog> {
                   prefixIcon: const Icon(Icons.dns),
                 ),
                 keyboardType: TextInputType.url,
-                validator: (value) => CommonValidators.combine([
-                  (v) => CommonValidators.required(v, fieldName: 'Host'),
+                validator: (value) => Validators.combine([
+                  (v) => Validators.required(v, fieldName: 'Host'),
                 ], value),
                 enabled: widget.enabled,
               ),
@@ -394,9 +391,9 @@ class _ConnectionDialogState extends State<_ConnectionDialog> {
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                validator: (value) => CommonValidators.combine([
-                  (v) => CommonValidators.required(v, fieldName: 'Port'),
-                  CommonValidators.port,
+                validator: (value) => Validators.combine([
+                  (v) => Validators.required(v, fieldName: 'Port'),
+                  Validators.port,
                 ], value),
                 enabled: widget.enabled,
               ),
@@ -412,7 +409,7 @@ class _ConnectionDialogState extends State<_ConnectionDialog> {
                 ),
                 validator: (value) {
                   if (value != null && value.isNotEmpty) {
-                    return CommonValidators.maxLength(value, 50, fieldName: 'Label');
+                    return Validators.maxLength(value, 50, fieldName: 'Label');
                   }
                   return null;
                 },

@@ -95,11 +95,11 @@ class _PeerSelectorDialogState extends State<PeerSelectorDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         ElevatedButton(
           onPressed: () => Navigator.of(context).pop(_selectedUuids),
-          child: const Text('Done'),
+          child: Text(l10n.done),
         ),
       ],
     );

@@ -223,10 +223,10 @@ class WireGuardStatus {
   });
 
   /// Check if instance is enabled
-  bool get isEnabled => enabled == "1";
+  bool get isEnabled => enabled == '1';
   
   /// Check if instance is currently running
-  bool get isRunning => running == "1";
+  bool get isRunning => running == '1';
   
   /// Check if instance is a server
   bool get isServer => type.toLowerCase() == 'server';

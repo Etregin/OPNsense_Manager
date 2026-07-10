@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/app_colors.dart';
 
 /// Widget for displaying gateways status
 class GatewaysSection extends StatefulWidget {
@@ -118,7 +119,7 @@ class _GatewaysSectionState extends State<GatewaysSection> {
       dense: true,
       leading: Icon(
         isOnline ? Icons.check_circle : Icons.error,
-        color: isOnline ? Colors.green : Colors.red,
+        color: isOnline ? AppColors.success : AppColors.error,
         size: 20,
       ),
       title: Text(name),
@@ -131,14 +132,14 @@ class _GatewaysSectionState extends State<GatewaysSection> {
             delay.toString(),
             style: TextStyle(
               fontSize: 12,
-              color: isOnline ? Colors.green : Colors.red,
+              color: isOnline ? AppColors.success : AppColors.error,
             ),
           ),
           Text(
             loss.toString(),
             style: TextStyle(
               fontSize: 12,
-              color: isOnline ? Colors.green : Colors.red,
+              color: isOnline ? AppColors.success : AppColors.error,
             ),
           ),
         ],

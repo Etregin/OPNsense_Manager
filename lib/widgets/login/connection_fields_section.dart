@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/constants.dart';
 import '../../utils/validators.dart';
 
 /// Widget for connection fields (host, port, HTTPS)
@@ -57,7 +58,7 @@ class ConnectionFieldsSection extends StatelessWidget {
             prefixIcon: const Icon(Icons.dns),
           ),
           keyboardType: TextInputType.url,
-          validator: Validators.validateHost,
+          validator: (v) => Validators.validateHost(v, context),
           enabled: !isLoading,
         ),
         const SizedBox(height: 16),
@@ -67,11 +68,11 @@ class ConnectionFieldsSection extends StatelessWidget {
           controller: portController,
           decoration: InputDecoration(
             labelText: l10n.port,
-            hintText: l10n.portPlaceholder,
+            hintText: StringConstants.defaultPortHint,
             prefixIcon: const Icon(Icons.settings_ethernet),
           ),
           keyboardType: TextInputType.number,
-          validator: Validators.validatePort,
+          validator: (v) => Validators.validatePort(v, context),
           enabled: !isLoading,
         ),
         const SizedBox(height: 16),
@@ -87,7 +88,7 @@ class ConnectionFieldsSection extends StatelessWidget {
 
         // Self-Signed Certificate Toggle
         SwitchListTile(
-          title: Text(l10n.allowSelfSigned),
+          title: Text(l10n.allowSelfSignedCertificates),
           subtitle: Text(
             l10n.selfSignedCertWarning,
           ),

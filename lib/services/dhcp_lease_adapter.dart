@@ -22,7 +22,7 @@ import '../models/dhcp_server_type.dart';
 class DhcpLeaseAdapter {
   /// Parse DHCP leases based on server type
   static List<Map<String, dynamic>> parseLeases(
-    dynamic data,
+    Object? data,
     DhcpServerType serverType,
   ) {
     switch (serverType) {
@@ -37,7 +37,7 @@ class DhcpLeaseAdapter {
 
   /// Parse dnsmasq DHCP leases
   /// Format: Standard OPNsense dnsmasq format with 'rows' array
-  static List<Map<String, dynamic>> _parseDnsmasqLeases(dynamic data) {
+  static List<Map<String, dynamic>> _parseDnsmasqLeases(Object? data) {
     if (data is Map<String, dynamic>) {
       // Check for rows array (common OPNsense format)
       if (data.containsKey('rows') && data['rows'] is List) {
@@ -63,7 +63,7 @@ class DhcpLeaseAdapter {
 
   /// Parse ISC DHCP leases
   /// Format: ISC DHCP server format with different field names
-  static List<Map<String, dynamic>> _parseIscLeases(dynamic data) {
+  static List<Map<String, dynamic>> _parseIscLeases(Object? data) {
     List<Map<String, dynamic>> rawLeases = [];
     
     if (data is Map<String, dynamic>) {
@@ -98,7 +98,7 @@ class DhcpLeaseAdapter {
 
   /// Parse KEA DHCP leases
   /// Format: KEA DHCP server format (JSON-based, modern structure)
-  static List<Map<String, dynamic>> _parseKeaLeases(dynamic data) {
+  static List<Map<String, dynamic>> _parseKeaLeases(Object? data) {
     List<Map<String, dynamic>> rawLeases = [];
     
     if (data is Map<String, dynamic>) {
@@ -146,7 +146,7 @@ class DhcpLeaseAdapter {
 
   /// Parse ISC DHCP time format
   /// ISC DHCP uses various time formats, this handles common ones
-  static int? _parseIscTime(dynamic time) {
+  static int? _parseIscTime(Object? time) {
     if (time == null) return null;
     
     if (time is int) {
@@ -173,7 +173,7 @@ class DhcpLeaseAdapter {
 
   /// Parse KEA DHCP time format
   /// KEA uses cltt (client last transaction time) and valid-lft (valid lifetime)
-  static int? _parseKeaTime(dynamic time, [dynamic baseTime]) {
+  static int? _parseKeaTime(Object? time, [Object? baseTime]) {
     if (time == null) return null;
     
     if (time is int) {
@@ -202,7 +202,7 @@ class DhcpLeaseAdapter {
 
   /// Safely convert a value to String, handling both int and String types
   /// Returns null if the value is null or empty string
-  static String? _safeToString(dynamic value) {
+  static String? _safeToString(Object? value) {
     if (value == null) return null;
     if (value is String) {
       return value.isEmpty ? null : value;

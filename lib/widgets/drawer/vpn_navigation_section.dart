@@ -17,8 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
-import '../../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import '../../constants/routes.dart';
+import '../../l10n/app_localizations.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/constants.dart';
 import '../../models/vpn_connection.dart';
 import '../../screens/wireguard_servers_screen.dart';
 import '../../screens/wireguard_peers_screen.dart';
@@ -67,9 +70,9 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
   void initState() {
     super.initState();
     // Auto-expand sub-sections based on current route
-    _wireguardExpanded = NavigationService.isRouteInSection(widget.currentRoute, 'wireguard_');
-    _openvpnExpanded = NavigationService.isRouteInSection(widget.currentRoute, 'openvpn_');
-    _tailscaleExpanded = NavigationService.isRouteInSection(widget.currentRoute, 'tailscale_');
+    _wireguardExpanded = NavigationService.isRouteInSection(widget.currentRoute, Routes.wireguardPrefix);
+    _openvpnExpanded = NavigationService.isRouteInSection(widget.currentRoute, Routes.openvpnPrefix);
+    _tailscaleExpanded = NavigationService.isRouteInSection(widget.currentRoute, Routes.tailscalePrefix);
     
     // Check Tailscale plugin availability
     _checkTailscaleAvailability();
@@ -170,7 +173,7 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
     final l10n = AppLocalizations.of(context)!;
     return ExpansionNavigationTile(
       icon: Icons.vpn_key,
-      title: Text(l10n.wireguard),
+      title: const Text(StringConstants.wireguard),
       initiallyExpanded: _wireguardExpanded,
       tilePadding: const EdgeInsets.only(left: 56, right: 16),
       onExpansionChanged: (expanded) {
@@ -182,35 +185,35 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         NavigationTile(
           title: l10n.servers,
           currentRoute: widget.currentRoute,
-          targetRoute: 'wireguard_servers',
+          targetRoute: Routes.wireguardServers,
           destination: const WireGuardServersScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
           title: l10n.peers,
           currentRoute: widget.currentRoute,
-          targetRoute: 'wireguard_peers',
+          targetRoute: Routes.wireguardPeers,
           destination: const WireGuardPeersScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
           title: l10n.peerGenerator,
           currentRoute: widget.currentRoute,
-          targetRoute: 'wireguard_peer_generator',
+          targetRoute: Routes.wireguardPeerGenerator,
           destination: const WireGuardPeerGeneratorScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
           title: l10n.status,
           currentRoute: widget.currentRoute,
-          targetRoute: 'wireguard_status',
+          targetRoute: Routes.wireguardStatus,
           destination: const WireGuardStatusScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
           title: l10n.logs,
           currentRoute: widget.currentRoute,
-          targetRoute: 'wireguard_logs',
+          targetRoute: Routes.wireguardLogs,
           destination: const WireGuardLogFileScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
@@ -222,7 +225,7 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
     final l10n = AppLocalizations.of(context)!;
     return ExpansionNavigationTile(
       icon: Icons.vpn_lock_outlined,
-      title: Text(l10n.openvpn),
+      title: const Text(StringConstants.openvpn),
       initiallyExpanded: _openvpnExpanded,
       tilePadding: const EdgeInsets.only(left: 56, right: 16),
       onExpansionChanged: (expanded) {
@@ -234,16 +237,16 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         NavigationTile(
           title: l10n.instances,
           currentRoute: widget.currentRoute,
-          targetRoute: 'openvpn_instances',
+          targetRoute: Routes.openvpnInstances,
           destination: const OpenvpnInstancesScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
           title: l10n.clientOverrides,
           currentRoute: widget.currentRoute,
-          targetRoute: 'openvpn_client_overrides',
+          targetRoute: Routes.openvpnClientOverrides,
           onTap: () {
-            if (widget.currentRoute != 'openvpn_client_overrides') {
+            if (widget.currentRoute != Routes.openvpnClientOverrides) {
               Navigator.of(context).pushReplacementNamed('/openvpn/client-overrides');
             } else {
               Navigator.pop(context);
@@ -254,9 +257,9 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         NavigationTile(
           title: l10n.connectionStatus,
           currentRoute: widget.currentRoute,
-          targetRoute: 'openvpn_connection_status',
+          targetRoute: Routes.openvpnConnectionStatus,
           onTap: () {
-            if (widget.currentRoute != 'openvpn_connection_status') {
+            if (widget.currentRoute != Routes.openvpnConnectionStatus) {
               Navigator.of(context).pushReplacementNamed('/openvpn/connection-status');
             } else {
               Navigator.pop(context);
@@ -267,7 +270,7 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         NavigationTile(
           title: l10n.logFile,
           currentRoute: widget.currentRoute,
-          targetRoute: 'openvpn_logs',
+          targetRoute: Routes.openvpnLogs,
           destination: const OpenvpnLogFileScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
@@ -281,9 +284,9 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
       icon: Icons.cloud,
       title: Row(
         children: [
-          Expanded(
+          const Expanded(
             child: Text(
-              l10n.tailscale,
+              StringConstants.tailscale,
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -302,7 +305,7 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         NavigationTile(
           title: l10n.authentication,
           currentRoute: widget.currentRoute,
-          targetRoute: 'tailscale_authentication',
+          targetRoute: Routes.tailscaleAuthentication,
           destination: const TailscaleAuthenticationScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
           onBeforeNavigate: widget.onBeforeNavigate,
@@ -310,14 +313,14 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         NavigationTile(
           title: l10n.settings,
           currentRoute: widget.currentRoute,
-          targetRoute: 'tailscale_settings',
+          targetRoute: Routes.tailscaleSettings,
           destination: const TailscaleSettingsScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
         NavigationTile(
           title: l10n.status,
           currentRoute: widget.currentRoute,
-          targetRoute: 'tailscale_status',
+          targetRoute: Routes.tailscaleStatus,
           destination: const TailscaleStatusScreen(),
           contentPadding: const EdgeInsets.only(left: 96, right: 16),
         ),
@@ -340,13 +343,13 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(
           color: _tailscaleStatus!.isConnected
-              ? Colors.green.withValues(alpha: 0.2)
-              : Colors.grey.withValues(alpha: 0.2),
+              ? AppColors.success.withValues(alpha: AppColors.opacityLight)
+              : AppColors.disabled.withValues(alpha: AppColors.opacityLight),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: _tailscaleStatus!.isConnected
-                ? Colors.green
-                : Colors.grey,
+                ? AppColors.success
+                : AppColors.disabled,
             width: 1,
           ),
         ),
@@ -356,8 +359,8 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
             fontSize: 10,
             fontWeight: FontWeight.bold,
             color: _tailscaleStatus!.isConnected
-                ? Colors.green.shade700
-                : Colors.grey.shade700,
+                ? AppColors.success
+                : AppColors.disabled,
           ),
         ),
       );
@@ -366,19 +369,19 @@ class _VPNNavigationSectionState extends State<VPNNavigationSection> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: Colors.orange.withValues(alpha: 0.2),
+        color: AppColors.warning.withValues(alpha: AppColors.opacityLight),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: Colors.orange,
+          color: AppColors.warning,
           width: 1,
         ),
       ),
       child: Text(
         l10n.unknown,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.bold,
-          color: Colors.orange.shade700,
+          color: AppColors.warning,
         ),
       ),
     );

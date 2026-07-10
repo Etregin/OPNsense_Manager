@@ -41,22 +41,6 @@ class DemoApiDecorator {
     return realAction();
   }
 
-  /// Execute a void function with demo mode handling
-  /// 
-  /// Similar to [execute] but for functions that return void
-  static Future<void> executeVoid({
-    required bool isDemoMode,
-    required Future<void> Function() demoAction,
-    required Future<void> Function() realAction,
-    int delayMs = 300,
-  }) async {
-    if (isDemoMode) {
-      await Future.delayed(Duration(milliseconds: delayMs));
-      return demoAction();
-    }
-    return realAction();
-  }
-
   /// Execute a synchronous function with demo mode handling
   /// 
   /// For operations that don't require async execution

@@ -58,12 +58,13 @@ class DHCPService extends BaseOPNsenseService {
         throw ApiException(
           'Failed to get DHCP leases: HTTP ${response.statusCode}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to get DHCP leases: ${e.toString()}', null);
+      throw ApiException('Failed to get DHCP leases: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 }

@@ -20,11 +20,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import '../utils/single_init_mixin.dart';
 import '../models/openvpn_log_entry.dart';
-import '../models/system_info.dart';
+import '../utils/app_colors.dart';
+import '../utils/color_helpers.dart';
 import '../services/demo_api_service.dart';
 import '../utils/formatters.dart';
+import '../utils/snackbar_helper.dart';
+import '../viewmodels/openvpn_log_view_model.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/common/error_display.dart';
 
 /// Screen for viewing OpenVPN log entries with severity filters.
 class OpenvpnLogFileScreen extends StatefulWidget {
@@ -34,7 +39,8 @@ class OpenvpnLogFileScreen extends StatefulWidget {
   State<OpenvpnLogFileScreen> createState() => _OpenvpnLogFileScreenState();
 }
 
-class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
+class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen>
+    with SingleInitMixin {
   List<String> _severityOptions = <String>[];
 
   static const List<int> _rowCountOptions = <int>[50, 100, 200];
@@ -42,103 +48,70 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
   final Set<String> _selectedSeverities = <String>{};
   final Set<int> _selectedLogIndexes = <int>{};
 
-  late DemoApiService _apiService;
-  SystemInfo? _systemInfo;
-
-  List<OpenvpnLogEntry> _logs = <OpenvpnLogEntry>[];
-  bool _isInitialized = false;
-  bool _isLoading = true;
+  late OpenvpnLogViewModel _viewModel;
   bool _isRefreshing = false;
-  String? _errorMessage;
   int _currentPage = 1;
   int _rowCount = 50;
   String _selectedTimeFilter = 'Last Day';
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    if (!_isInitialized) {
-      final l10n = AppLocalizations.of(context)!;
-      _severityOptions = <String>[
-        l10n.emergency,
-        l10n.alert,
-        l10n.critical,
-        l10n.error,
-        l10n.warning,
-        l10n.notice,
-        l10n.info,
-        l10n.debug,
-      ];
-      _selectedSeverities.addAll([
-        l10n.emergency,
-        l10n.alert,
-        l10n.critical,
-        l10n.error,
-        l10n.warning,
-      ]);
-      _apiService = context.read<DemoApiService>();
-      _isInitialized = true;
-      _loadSystemInfo();
-      _loadLogs();
-    }
+  void onFirstDependency() {
+    final l10n = AppLocalizations.of(context)!;
+    _severityOptions = <String>[
+      l10n.emergency,
+      l10n.alert,
+      l10n.critical,
+      l10n.error,
+      l10n.warning,
+      l10n.notice,
+      l10n.info,
+      l10n.debug,
+    ];
+    _selectedSeverities.addAll([
+      l10n.emergency,
+      l10n.alert,
+      l10n.critical,
+      l10n.error,
+      l10n.warning,
+    ]);
+    final apiService = context.read<DemoApiService>();
+    _viewModel = OpenvpnLogViewModel(
+      apiService,
+      rowCount: _rowCount,
+      severities: _getSeverityLevelsForApi(),
+      validFrom: _getValidFromForTimeFilter(),
+      currentPage: _currentPage,
+    );
+    _viewModel.loadItems();
   }
 
-  Future<void> _loadSystemInfo() async {
-    try {
-      final systemInfo = await _apiService.getSystemInfo();
-
-      if (mounted) {
-        setState(() {
-          _systemInfo = systemInfo;
-        });
-      }
-    } catch (_) {
-      // System info is optional for the drawer.
-    }
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
   }
 
   Future<void> _loadLogs({bool isRefresh = false}) async {
-    if (!mounted) {
-      return;
+    if (!mounted) return;
+
+    if (isRefresh) {
+      setState(() {
+        _isRefreshing = true;
+      });
     }
 
-    final validFrom = _getValidFromForTimeFilter();
+    _viewModel.rowCount = _rowCount;
+    _viewModel.severities = _getSeverityLevelsForApi();
+    _viewModel.validFrom = _getValidFromForTimeFilter();
+    _viewModel.currentPage = _currentPage;
 
-    setState(() {
-      if (isRefresh) {
-        _isRefreshing = true;
-      } else {
-        _isLoading = true;
-      }
-      _errorMessage = null;
-    });
+    await _viewModel.loadItems();
 
-    try {
-      final response = await _apiService.searchOpenvpnLogs(
-        current: _currentPage,
-        rowCount: _rowCount,
-        sort: const <String, dynamic>{'timestamp': 'desc'},
-        severity: _selectedSeverities.toList(),
-        validFrom: validFrom,
-      );
-
-      if (mounted) {
-        setState(() {
-          _logs = response.rows;
-          _selectedLogIndexes.clear();
-          _isLoading = false;
-          _isRefreshing = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-          _isRefreshing = false;
-        });
-      }
+    if (mounted) {
+      setState(() {
+        _isRefreshing = false;
+        _selectedLogIndexes.clear();
+      });
     }
   }
 
@@ -163,10 +136,35 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
     }
   }
 
-  Future<void> _changeTimeFilter(String? value) async {
-    if (value == null || value == _selectedTimeFilter) {
-      return;
+  List<String> _getSeverityLevelsForApi() {
+    final l10n = AppLocalizations.of(context)!;
+    final List<String> apiSeverities = [];
+
+    for (final severity in _selectedSeverities) {
+      if (severity == l10n.emergency) {
+        apiSeverities.add('Emergency');
+      } else if (severity == l10n.alert) {
+        apiSeverities.add('Alert');
+      } else if (severity == l10n.critical) {
+        apiSeverities.add('Critical');
+      } else if (severity == l10n.error) {
+        apiSeverities.add('Error');
+      } else if (severity == l10n.warning) {
+        apiSeverities.add('Warning');
+      } else if (severity == l10n.notice) {
+        apiSeverities.add('Notice');
+      } else if (severity == l10n.info) {
+        apiSeverities.add('Informational');
+      } else if (severity == l10n.debug) {
+        apiSeverities.add('Debug');
+      }
     }
+
+    return apiSeverities;
+  }
+
+  Future<void> _changeTimeFilter(String? value) async {
+    if (value == null || value == _selectedTimeFilter) return;
 
     setState(() {
       _selectedTimeFilter = value;
@@ -190,9 +188,7 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
   }
 
   Future<void> _changeRowCount(int? value) async {
-    if (value == null || value == _rowCount) {
-      return;
-    }
+    if (value == null || value == _rowCount) return;
 
     setState(() {
       _rowCount = value;
@@ -203,9 +199,7 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
   }
 
   Future<void> _changePage(int nextPage) async {
-    if (nextPage < 1 || nextPage == _currentPage) {
-      return;
-    }
+    if (nextPage < 1 || nextPage == _currentPage) return;
 
     setState(() {
       _currentPage = nextPage;
@@ -214,64 +208,31 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
     await _loadLogs();
   }
 
-  Color _severityColor(BuildContext context, String severity) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    switch (severity) {
-      case 'Emergency':
-      case 'Alert':
-      case 'Critical':
-      case 'Error':
-        return colorScheme.error;
-      case 'Warning':
-        return Colors.orange;
-      case 'Notice':
-        return Colors.amber;
-      case 'Info':
-        return colorScheme.primary;
-      case 'Debug':
-      default:
-        return colorScheme.outline;
-    }
-  }
-
   String _formatTimestamp(String timestamp) {
     final parsed = DateTime.tryParse(timestamp);
-    if (parsed == null) {
-      return timestamp;
-    }
-
+    if (parsed == null) return timestamp;
     return Formatters.formatDateTime(parsed.toLocal());
   }
 
   String _timeFilterLabel() => _selectedTimeFilter;
 
   int get _displayStart {
-    if (_logs.isEmpty) {
-      return 0;
-    }
-
+    final logs = _viewModel.items;
+    if (logs.isEmpty) return 0;
     return ((_currentPage - 1) * _rowCount) + 1;
   }
 
   int get _displayEnd {
-    if (_logs.isEmpty) {
-      return 0;
-    }
-
-    return _displayStart + _logs.length - 1;
+    final logs = _viewModel.items;
+    if (logs.isEmpty) return 0;
+    return _displayStart + logs.length - 1;
   }
 
   int get _totalPages {
-    if (_rowCount <= 0) {
-      return 1;
-    }
-
-    final hasFullPage = _logs.length == _rowCount;
-    if (!hasFullPage && _currentPage == 1) {
-      return 1;
-    }
-
+    final logs = _viewModel.items;
+    if (_rowCount <= 0) return 1;
+    final hasFullPage = logs.length == _rowCount;
+    if (!hasFullPage && _currentPage == 1) return 1;
     return _currentPage + (hasFullPage ? 1 : 0);
   }
 
@@ -286,15 +247,12 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
     if (log.pid != null && log.pid!.isNotEmpty) {
       details.writeln('PID: ${log.pid}');
     }
-
     if (log.parser != null && log.parser!.isNotEmpty) {
       details.writeln('Parser: ${log.parser}');
     }
-
     if (log.facility != null) {
       details.writeln('Facility: ${log.facility}');
     }
-
     if (log.rnum != null) {
       details.writeln('Record: ${log.rnum}');
     }
@@ -308,20 +266,19 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
   }
 
   Future<void> _copySelectedLogs() async {
+    final logs = _viewModel.items;
     final selectedLogs = _selectedLogIndexes.toList()..sort();
     final content = selectedLogs
-        .map((index) => _buildLogDetails(_logs[index]))
+        .map((index) => _buildLogDetails(logs[index]))
         .join('\n${'-' * 40}\n');
 
     await Clipboard.setData(ClipboardData(text: content));
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${selectedLogs.length} log entr${selectedLogs.length == 1 ? 'y' : 'ies'} copied'),
-        ),
+      SnackBarHelper.showInfo(
+        context,
+        '${selectedLogs.length} log entr${selectedLogs.length == 1 ? 'y' : 'ies'} copied',
       );
-
       setState(() {
         _selectedLogIndexes.clear();
       });
@@ -346,50 +303,58 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _isSelectionMode
-              ? '${_selectedLogIndexes.length} selected'
-              : 'OpenVPN Log File',
-        ),
-        leading: _isSelectionMode
-            ? IconButton(
-                onPressed: _clearSelection,
-                icon: const Icon(Icons.close),
-                tooltip: 'Clear selection',
-              )
-            : null,
-        actions: [
-          if (_isSelectionMode)
-            IconButton(
-              onPressed: _copySelectedLogs,
-              icon: const Icon(Icons.copy),
-              tooltip: 'Copy selected',
-            )
-          else
-            IconButton(
-              onPressed: _isLoading ? null : _onRefresh,
-              icon: const Icon(Icons.refresh),
-              tooltip: 'Refresh',
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        final isLoading = _viewModel.isLoading;
+        final errorMessage = _viewModel.errorMessage;
+        final logs = _viewModel.items;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              _isSelectionMode
+                  ? '${_selectedLogIndexes.length} selected'
+                  : 'OpenVPN Log File',
             ),
-        ],
-      ),
-      drawer: AppDrawer(
-        currentRoute: 'openvpn_logs',
-        systemInfo: _systemInfo,
-      ),
-      body: Column(
-        children: [
-          _buildFilters(),
-          _buildSummaryBar(context),
-          Expanded(child: _buildBody(context)),
-        ],
-      ),
+            leading: _isSelectionMode
+                ? IconButton(
+                    onPressed: _clearSelection,
+                    icon: const Icon(Icons.close),
+                    tooltip: 'Clear selection',
+                  )
+                : null,
+            actions: [
+              if (_isSelectionMode)
+                IconButton(
+                  onPressed: _copySelectedLogs,
+                  icon: const Icon(Icons.copy),
+                  tooltip: 'Copy selected',
+                )
+              else
+                IconButton(
+                  onPressed: isLoading ? null : _onRefresh,
+                  icon: const Icon(Icons.refresh),
+                  tooltip: 'Refresh',
+                ),
+            ],
+          ),
+          drawer: const AppDrawer(
+            currentRoute: 'openvpn_logs'
+          ),
+          body: Column(
+            children: [
+              _buildFilters(isLoading),
+              _buildSummaryBar(context, logs),
+              Expanded(child: _buildBody(context, isLoading, errorMessage, logs)),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildFilters() {
+  Widget _buildFilters(bool isLoading) {
     return Card(
       margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: ExpansionTile(
@@ -408,13 +373,12 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
               runSpacing: 8,
               children: _severityOptions.map((severity) {
                 final isSelected = _selectedSeverities.contains(severity);
-
                 return FilterChip(
                   selected: isSelected,
                   label: Text(severity),
                   avatar: CircleAvatar(
                     radius: 6,
-                    backgroundColor: _severityColor(context, severity),
+                    backgroundColor: logFileSeverityColor(context, severity),
                   ),
                   onSelected: (selected) => _toggleSeverity(severity, selected),
                 );
@@ -446,7 +410,7 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
                     child: Text('No Limit'),
                   ),
                 ],
-                onChanged: _isLoading ? null : _changeTimeFilter,
+                onChanged: isLoading ? null : _changeTimeFilter,
               ),
             ],
           ),
@@ -465,7 +429,7 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
                       ),
                     )
                     .toList(),
-                onChanged: _isLoading ? null : _changeRowCount,
+                onChanged: isLoading ? null : _changeRowCount,
               ),
             ],
           ),
@@ -474,7 +438,7 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
     );
   }
 
-  Widget _buildSummaryBar(BuildContext context) {
+  Widget _buildSummaryBar(BuildContext context, List<OpenvpnLogEntry> logs) {
     final theme = Theme.of(context);
 
     return Container(
@@ -485,7 +449,7 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
         children: [
           Expanded(
             child: Text(
-              _logs.isEmpty
+              logs.isEmpty
                   ? 'Showing 0 entries'
                   : 'Showing $_displayStart to $_displayEnd',
               style: theme.textTheme.bodyMedium,
@@ -520,12 +484,10 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
             return SafeArea(
               child: Column(
                 children: [
-                  // Header with drag handle and close button
                   Container(
                     padding: const EdgeInsets.fromLTRB(20, 8, 8, 8),
                     child: Row(
                       children: [
-                        // Drag handle indicator
                         Expanded(
                           child: Center(
                             child: Container(
@@ -533,7 +495,10 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
                               height: 4,
                               margin: const EdgeInsets.only(bottom: 8),
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant
+                                    .withValues(alpha: AppColors.opacityMedium),
                                 borderRadius: BorderRadius.circular(2),
                               ),
                             ),
@@ -547,7 +512,6 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
                       ],
                     ),
                   ),
-                  // Title and copy button
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
                     child: Row(
@@ -563,14 +527,9 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
                             await Clipboard.setData(
                               ClipboardData(text: details),
                             );
-
                             if (context.mounted) {
                               final l10n = AppLocalizations.of(context)!;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(l10n.logEntryCopied),
-                                ),
-                              );
+                              SnackBarHelper.showInfo(context, l10n.logEntryCopied);
                             }
                           },
                           icon: const Icon(Icons.copy),
@@ -579,7 +538,6 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
                       ],
                     ),
                   ),
-                  // Scrollable content
                   Expanded(
                     child: SingleChildScrollView(
                       controller: scrollController,
@@ -599,49 +557,21 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
     );
   }
 
-  Widget _buildBody(BuildContext context) {
-    if (_isLoading && _logs.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+  Widget _buildBody(
+    BuildContext context,
+    bool isLoading,
+    String? errorMessage,
+    List<OpenvpnLogEntry> logs,
+  ) {
+    if (isLoading && logs.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
     }
 
-    if (_errorMessage != null && _logs.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.error_outline,
-                size: 64,
-                color: Theme.of(context).colorScheme.error,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Failed to load OpenVPN logs',
-                style: Theme.of(context).textTheme.titleLarge,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                _errorMessage!,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton.icon(
-                onPressed: _loadLogs,
-                icon: const Icon(Icons.refresh),
-                label: const Text('Retry'),
-              ),
-            ],
-          ),
-        ),
-      );
+    if (errorMessage != null && logs.isEmpty) {
+      return ErrorDisplay(message: errorMessage, onRetry: _loadLogs);
     }
 
-    if (_logs.isEmpty) {
+    if (logs.isEmpty) {
       return RefreshIndicator(
         onRefresh: _onRefresh,
         child: ListView(
@@ -681,14 +611,14 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
       onRefresh: _onRefresh,
       child: ListView.builder(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-        itemCount: _logs.length + 1,
+        itemCount: logs.length + 1,
         itemBuilder: (context, index) {
-          if (index == _logs.length) {
-            return _buildPaginationControls();
+          if (index == logs.length) {
+            return _buildPaginationControls(isLoading);
           }
 
-          final log = _logs[index];
-          final severityColor = _severityColor(context, log.severity);
+          final log = logs[index];
+          final severityColor = logFileSeverityColor(context, log.severity);
           final isSelected = _selectedLogIndexes.contains(index);
 
           return Card(
@@ -791,14 +721,14 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
     );
   }
 
-  Widget _buildPaginationControls() {
+  Widget _buildPaginationControls(bool isLoading) {
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: Row(
         children: [
           Expanded(
             child: OutlinedButton.icon(
-              onPressed: _isLoading || _currentPage <= 1
+              onPressed: isLoading || _currentPage <= 1
                   ? null
                   : () => _changePage(_currentPage - 1),
               icon: const Icon(Icons.chevron_left),
@@ -811,7 +741,7 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
           ),
           Expanded(
             child: OutlinedButton.icon(
-              onPressed: _isLoading || _currentPage >= _totalPages
+              onPressed: isLoading || _currentPage >= _totalPages
                   ? null
                   : () => _changePage(_currentPage + 1),
               icon: const Icon(Icons.chevron_right),
@@ -823,4 +753,3 @@ class _OpenvpnLogFileScreenState extends State<OpenvpnLogFileScreen> {
     );
   }
 }
-

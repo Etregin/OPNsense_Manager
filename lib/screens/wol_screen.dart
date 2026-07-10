@@ -16,15 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../models/wol_host.dart';
 import '../services/demo_api_service.dart';
+import '../utils/single_init_mixin.dart';
+import '../utils/snackbar_helper.dart';
 import '../utils/validators.dart';
+import '../utils/app_colors.dart';
 import '../utils/constants.dart';
+import '../viewmodels/wol_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/error_display.dart';
+import '../widgets/common/empty_state_widget.dart';
 import '../widgets/common/confirmation_dialog.dart';
 
 /// Wake-on-LAN screen for managing and waking network hosts
@@ -35,40 +41,20 @@ class WolScreen extends StatefulWidget {
   State<WolScreen> createState() => _WolScreenState();
 }
 
-class _WolScreenState extends State<WolScreen> {
-  List<WolHost> _hosts = [];
-  bool _isLoading = true;
-  String? _errorMessage;
+class _WolScreenState extends State<WolScreen>
+    with SingleInitMixin {
+  late WolViewModel _viewModel;
 
   @override
-  void initState() {
-    super.initState();
-    _loadHosts();
+  void onFirstDependency() {
+    _viewModel = WolViewModel(context.read<DemoApiService>());
+    _viewModel.loadItems();
   }
 
-  Future<void> _loadHosts() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      final hosts = await demoApiService.getWolHosts();
-      if (mounted) {
-        setState(() {
-          _hosts = hosts;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
-    }
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
   }
 
   Future<void> _wakeHost(WolHost host) async {
@@ -76,67 +62,52 @@ class _WolScreenState extends State<WolScreen> {
       final demoApiService = context.read<DemoApiService>();
       await demoApiService.wakeHost(host.uuid);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Wake-on-LAN packet sent to ${host.descr.isNotEmpty ? host.descr : host.mac}'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        SnackBarHelper.showSuccess(context, 'Wake-on-LAN packet sent to ${host.descr.isNotEmpty ? host.descr : host.mac}');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to wake host: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, 'Failed to wake host: ${e.toString()}');
       }
     }
   }
 
   Future<void> _wakeAllHosts() async {
+    final l10n = AppLocalizations.of(context)!;
     // Show confirmation dialog
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) {
-        final l10n = AppLocalizations.of(context)!;
-        return ConfirmationDialog(
-          title: l10n.wakeAllDevices,
-          message: l10n.wakeAllDevicesConfirmation,
-          confirmText: l10n.wakeAll,
-          cancelText: l10n.cancel,
-        );
-      },
+      title: l10n.wakeAllDevices,
+      message: l10n.wakeAllDevicesConfirmation,
+      confirmText: l10n.wakeAll,
+      cancelText: l10n.cancel,
     );
 
     if (confirmed != true) return;
 
     // Show loading indicator
     if (!mounted) return;
-    showDialog(
+    unawaited(showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => Center(
         child: Card(
           child: Padding(
-            padding: EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(24.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 16),
+                const CircularProgressIndicator(),
+                const SizedBox(height: 16),
                 Text(AppLocalizations.of(context)!.wakingAllDevices),
               ],
             ),
           ),
         ),
       ),
-    );
+    ));
 
     // Store context references before async operations
     final demoApiService = context.read<DemoApiService>();
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
 
     try {
@@ -150,7 +121,7 @@ class _WolScreenState extends State<WolScreen> {
       final failedResults = results.where((r) => !r.isSuccess).toList();
 
       // Show results dialog
-      showDialog(
+      unawaited(showDialog(
         context: navigator.context,
         builder: (context) => AlertDialog(
           title: Text(AppLocalizations.of(context)!.wakeAllResults),
@@ -159,14 +130,14 @@ class _WolScreenState extends State<WolScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                AppLocalizations.of(context)!.successfullyWokenDevices(successCount, results.length, results.length > 1 ? 's' : ''),
+                AppLocalizations.of(context)!.successfullyWokenDevices(successCount, results.length),
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               if (failedResults.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 Text(
                   AppLocalizations.of(context)!.failedDevices,
-                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+                  style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.error),
                 ),
                 const SizedBox(height: 8),
                 ...failedResults.map((result) => Text(
@@ -183,59 +154,42 @@ class _WolScreenState extends State<WolScreen> {
             ),
           ],
         ),
-      );
+      ));
     } catch (e) {
       if (!mounted) return;
       navigator.pop(); // Close loading dialog
       
-      scaffoldMessenger.showSnackBar(
-        SnackBar(
-          content: Text('${AppLocalizations.of(context)!.failedToWakeAllHosts}: ${e.toString()}'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, '${AppLocalizations.of(context)!.failedToWakeAllHosts}: ${e.toString()}');
     }
   }
 
   Future<void> _deleteHost(WolHost host) async {
     // Store context references before async operations
     final demoApiService = context.read<DemoApiService>();
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    
-    final confirmed = await showDialog<bool>(
+
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) {
-        final l10n = AppLocalizations.of(context)!;
-        return ConfirmationDialog(
-          title: l10n.deleteHost,
-          message: l10n.deleteHostConfirmation(host.descr.isNotEmpty ? host.descr : host.mac),
-          confirmText: l10n.delete,
-          cancelText: l10n.cancel,
-          isDestructive: true,
-        );
-      },
+      title: l10n.deleteHost,
+      message: l10n.deleteHostConfirmation(
+          host.descr.isNotEmpty ? host.descr : host.mac),
+      confirmText: l10n.delete,
+      cancelText: l10n.cancel,
+      isDestructive: true,
     );
 
     if (confirmed == true) {
       try {
         await demoApiService.deleteWolHost(host.uuid);
         if (mounted) {
-          scaffoldMessenger.showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.hostDeletedSuccessfully),
-              backgroundColor: Colors.green,
-            ),
-          );
-          await _loadHosts();
+          SnackBarHelper.showSuccess(
+              context, AppLocalizations.of(context)!.hostDeletedSuccessfully);
+          await _viewModel.loadItems();
         }
       } catch (e) {
         if (mounted) {
-          scaffoldMessenger.showSnackBar(
-            SnackBar(
-              content: Text('${AppLocalizations.of(context)!.failedToDeleteHost}: ${e.toString()}'),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context,
+              '${AppLocalizations.of(context)!.failedToDeleteHost}: ${e.toString()}');
         }
       }
     }
@@ -245,7 +199,7 @@ class _WolScreenState extends State<WolScreen> {
     showDialog(
       context: context,
       builder: (context) => _AddHostDialog(
-        onHostAdded: _loadHosts,
+        onHostAdded: _viewModel.loadItems,
       ),
     );
   }
@@ -254,137 +208,123 @@ class _WolScreenState extends State<WolScreen> {
     showDialog(
       context: context,
       builder: (context) => _AddHostDialog(
-        onHostAdded: _loadHosts,
+        onHostAdded: _viewModel.loadItems,
         existingHost: host,
       ),
     );
   }
 
   Future<void> _copyHost(WolHost host) async {
-    // Show loading indicator
-    showDialog(
+    unawaited(showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => Center(
         child: Card(
           child: Padding(
-            padding: EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(24.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 16),
+                const CircularProgressIndicator(),
+                const SizedBox(height: 16),
                 Text(AppLocalizations.of(context)!.loadingHostData),
               ],
             ),
           ),
         ),
       ),
-    );
+    ));
 
     try {
       final demoApiService = context.read<DemoApiService>();
       final hostData = await demoApiService.copyWolHost(host.uuid);
-      
-      if (!mounted) return;
-      Navigator.of(context).pop(); // Close loading dialog
 
-      // Show the add dialog with copied data
-      showDialog(
+      if (!mounted) return;
+      Navigator.of(context).pop();
+
+      unawaited(showDialog(
         context: context,
         builder: (context) => _AddHostDialog(
-          onHostAdded: _loadHosts,
+          onHostAdded: _viewModel.loadItems,
           copiedHostData: hostData,
         ),
-      );
+      ));
     } catch (e) {
       if (!mounted) return;
-      Navigator.of(context).pop(); // Close loading dialog
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${AppLocalizations.of(context)!.failedToCopyHost}: ${e.toString()}'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      Navigator.of(context).pop();
+
+      SnackBarHelper.showError(context,
+          '${AppLocalizations.of(context)!.failedToCopyHost}: ${e.toString()}');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.wakeOnLan),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.flash_on),
-            onPressed: (_isLoading || _hosts.isEmpty) ? null : _wakeAllHosts,
-            tooltip: l10n.wakeAll,
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        final theme = Theme.of(context);
+        final hosts = _viewModel.items;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(l10n.wakeOnLan),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.flash_on),
+                onPressed: (_viewModel.isLoading || hosts.isEmpty)
+                    ? null
+                    : _wakeAllHosts,
+                tooltip: l10n.wakeAll,
+              ),
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed:
+                    _viewModel.isLoading ? null : _viewModel.loadItems,
+                tooltip: l10n.refresh,
+              ),
+            ],
           ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _isLoading ? null : _loadHosts,
-            tooltip: l10n.refresh,
+          drawer: const AppDrawer(currentRoute: 'wol'),
+          body: _buildBody(theme, l10n, hosts),
+          floatingActionButton: FloatingActionButton(
+            onPressed: _showAddHostDialog,
+            tooltip: l10n.addHost,
+            child: const Icon(Icons.add),
           ),
-        ],
-      ),
-      drawer: const AppDrawer(currentRoute: 'wol'),
-      body: _buildBody(theme, l10n),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showAddHostDialog,
-        tooltip: l10n.addHost,
-        child: const Icon(Icons.add),
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildBody(ThemeData theme, AppLocalizations l10n) {
-    if (_isLoading) {
+  Widget _buildBody(
+      ThemeData theme, AppLocalizations l10n, List<WolHost> hosts) {
+    if (_viewModel.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (_errorMessage != null) {
+    if (_viewModel.errorMessage != null) {
       return ErrorDisplay(
-        message: _errorMessage!,
-        onRetry: _loadHosts,
+        message: _viewModel.errorMessage!,
+        onRetry: _viewModel.loadItems,
       );
     }
 
-    if (_hosts.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.devices_other,
-              size: 64,
-              color: theme.colorScheme.primary.withValues(alpha: 0.5),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.noWolHostsConfigured,
-              style: theme.textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.addHostToGetStarted,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-              ),
-            ),
-          ],
-        ),
+    if (hosts.isEmpty) {
+      return EmptyStateWidget(
+        icon: Icons.devices_other,
+        title: l10n.noWolHostsConfigured,
+        subtitle: l10n.addHostToGetStarted,
       );
     }
 
     return ListView.builder(
       padding: const EdgeInsets.all(AppConstants.standardPadding),
-      itemCount: _hosts.length,
+      itemCount: hosts.length,
       itemBuilder: (context, index) {
-        final host = _hosts[index];
+        final host = hosts[index];
         return _WolHostCard(
           host: host,
           onWake: () => _wakeHost(host),
@@ -437,7 +377,7 @@ class _WolHostCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        host.descr.isNotEmpty ? host.descr : 'Unnamed Host',
+                        host.descr.isNotEmpty ? host.descr : AppLocalizations.of(context)!.unnamedHost,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -447,7 +387,7 @@ class _WolHostCard extends StatelessWidget {
                         host.mac,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontFamily: 'monospace',
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                          color: theme.colorScheme.onSurface.withValues(alpha: AppColors.opacityStrong),
                         ),
                       ),
                     ],
@@ -492,9 +432,9 @@ class _WolHostCard extends StatelessWidget {
                       value: 'delete',
                       child: Row(
                         children: [
-                          const Icon(Icons.delete, size: 20, color: Colors.red),
+                          const Icon(Icons.delete, size: 20, color: AppColors.error),
                           const SizedBox(width: 8),
-                          Text(AppLocalizations.of(context)!.delete, style: const TextStyle(color: Colors.red)),
+                          Text(AppLocalizations.of(context)!.delete, style: const TextStyle(color: AppColors.error)),
                         ],
                       ),
                     ),
@@ -508,13 +448,13 @@ class _WolHostCard extends StatelessWidget {
                 Icon(
                   Icons.network_check,
                   size: 16,
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                  color: theme.colorScheme.onSurface.withValues(alpha: AppColors.opacitySubdued),
                 ),
                 const SizedBox(width: 8),
                 Text(
                   'Interface: ${host.interfaceDisplay}',
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                    color: theme.colorScheme.onSurface.withValues(alpha: AppColors.opacitySubdued),
                   ),
                 ),
               ],
@@ -618,12 +558,7 @@ class _AddHostDialogState extends State<_AddHostDialog> {
         setState(() {
           _isLoading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${AppLocalizations.of(context)!.failedToLoadInterfaces}: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, '${AppLocalizations.of(context)!.failedToLoadInterfaces}: ${e.toString()}');
       }
     }
   }
@@ -631,12 +566,7 @@ class _AddHostDialogState extends State<_AddHostDialog> {
   Future<void> _saveHost() async {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedInterface == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.pleaseSelectInterface),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, AppLocalizations.of(context)!.pleaseSelectInterface);
       return;
     }
 
@@ -664,12 +594,7 @@ class _AddHostDialogState extends State<_AddHostDialog> {
 
       if (mounted) {
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(widget.existingHost != null ? AppLocalizations.of(context)!.hostUpdatedSuccessfully : AppLocalizations.of(context)!.hostAddedSuccessfully),
-            backgroundColor: Colors.green,
-          ),
-        );
+        SnackBarHelper.showSuccess(context, widget.existingHost != null ? AppLocalizations.of(context)!.hostUpdatedSuccessfully : AppLocalizations.of(context)!.hostAddedSuccessfully);
         widget.onHostAdded();
       }
     } catch (e) {
@@ -677,12 +602,7 @@ class _AddHostDialogState extends State<_AddHostDialog> {
         setState(() {
           _isSaving = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${AppLocalizations.of(context)!.failedToSaveHost}: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, '${AppLocalizations.of(context)!.failedToSaveHost}: ${e.toString()}');
       }
     }
   }
@@ -717,7 +637,7 @@ class _AddHostDialogState extends State<_AddHostDialog> {
                       initialValue: _selectedInterface,
                       decoration: InputDecoration(
                         labelText: l10n.interface,
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                       ),
                       items: _interfaceOptions.entries.map((entry) {
                         return DropdownMenuItem(
@@ -743,9 +663,9 @@ class _AddHostDialogState extends State<_AddHostDialog> {
                       decoration: InputDecoration(
                         labelText: l10n.macAddress,
                         hintText: l10n.macAddressHint,
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                       ),
-                      validator: Validators.validateMacAddress,
+                      validator: (v) => Validators.validateMacAddress(v, context),
                       textCapitalization: TextCapitalization.characters,
                     ),
                     const SizedBox(height: 16),
@@ -754,7 +674,7 @@ class _AddHostDialogState extends State<_AddHostDialog> {
                       decoration: InputDecoration(
                         labelText: l10n.description,
                         hintText: l10n.descriptionHint,
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {

@@ -18,7 +18,9 @@
 
 import 'package:flutter/material.dart';
 import '../../services/settings/file_operations_service.dart';
+import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
+import '../../utils/snackbar_helper.dart';
 import '../../widgets/settings/settings_section.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -45,7 +47,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
     final includeCredentials = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.exportProfilesTitle),
+        title: Text(l10n.exportProfiles),
         content: Text(l10n.exportProfilesContent),
         actions: [
           TextButton(
@@ -55,7 +57,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
             style: TextButton.styleFrom(
-              foregroundColor: Colors.orange,
+              foregroundColor: AppColors.warning,
             ),
             child: Text(l10n.includeCredentials),
           ),
@@ -76,26 +78,9 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
     
     if (mounted) {
       if (result.success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${l10n.exportSuccess}\nSaved to: ${result.filePath}'),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 8),
-            action: SnackBarAction(
-              label: l10n.ok,
-              textColor: Colors.white,
-              onPressed: () {},
-            ),
-          ),
-        );
+        SnackBarHelper.showSuccess(context, '${l10n.exportSuccess}\nSaved to: ${result.filePath}', duration: const Duration(seconds: 8));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result.errorMessage ?? l10n.exportFailed),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 5),
-          ),
-        );
+        SnackBarHelper.showError(context, result.errorMessage ?? l10n.exportFailed, duration: const Duration(seconds: 5));
       }
     }
   }
@@ -107,7 +92,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
     final overwrite = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(l10n.importProfilesTitle),
+        title: Text(l10n.importProfiles),
         content: Text(l10n.importProfilesDialog),
         actions: [
           TextButton(
@@ -137,38 +122,22 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
         // Notify parent to reload profiles
         widget.onProfilesChanged();
         
-        String message;
-        Color backgroundColor;
-        
+        final String message;
         if (result.failedCount == 0) {
           message = l10n.successfullyImportedProfiles(result.successCount);
-          backgroundColor = Colors.green;
+          SnackBarHelper.showSuccess(context, message, duration: const Duration(seconds: 5));
         } else if (result.successCount == 0) {
-          message = l10n.importFailedWithErrors(result.errors.join(', '));
-          backgroundColor = Colors.red;
+          message = l10n.importFailed(result.errors.join(', '));
+          SnackBarHelper.showError(context, message, duration: const Duration(seconds: 5));
         } else {
           message = l10n.importedWithFailures(result.successCount, result.failedCount);
-          backgroundColor = Colors.orange;
+          SnackBarHelper.showWarning(context, message, duration: const Duration(seconds: 5));
         }
-        
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(message),
-            backgroundColor: backgroundColor,
-            duration: const Duration(seconds: 5),
-          ),
-        );
       } else {
         final errorMessage = result.errors.isNotEmpty
             ? l10n.importFailed(result.errors.first)
             : l10n.importFailed('Unknown error');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(errorMessage),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 5),
-          ),
-        );
+        SnackBarHelper.showError(context, errorMessage, duration: const Duration(seconds: 5));
       }
     }
   }
@@ -187,7 +156,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
             ListTile(
               leading: Icon(
                 Icons.upload_file,
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.primary,
               ),
               title: Text(l10n.import),
               subtitle: Text(l10n.importProfilesSubtitle),
@@ -198,7 +167,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
             ListTile(
               leading: Icon(
                 Icons.download,
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.primary,
               ),
               title: Text(l10n.exportAllProfiles),
               subtitle: Text(l10n.exportAllProfilesSubtitle),
@@ -216,7 +185,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.info_outline, color: Colors.blue[700]),
+                    Icon(Icons.info_outline, color: Theme.of(context).colorScheme.onPrimaryContainer),
                     const SizedBox(width: 8),
                     Text(
                       l10n.aboutImportExport,
@@ -237,7 +206,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
         ),
         const SizedBox(height: 16),
         Card(
-          color: Colors.orange[50],
+          color: Theme.of(context).colorScheme.errorContainer,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -245,13 +214,13 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.warning_amber, color: Colors.orange[700]),
+                    const Icon(Icons.warning_amber, color: AppColors.warningIcon),
                     const SizedBox(width: 8),
                     Text(
                       l10n.securityWarning,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: Colors.orange[900],
+                            color: Theme.of(context).colorScheme.onErrorContainer,
                           ),
                     ),
                   ],
@@ -260,7 +229,7 @@ class _ProfileImportExportScreenState extends State<ProfileImportExportScreen> {
                 Text(
                   l10n.exportCredentialsWarning,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.orange[900],
+                        color: Theme.of(context).colorScheme.onErrorContainer,
                       ),
                 ),
               ],

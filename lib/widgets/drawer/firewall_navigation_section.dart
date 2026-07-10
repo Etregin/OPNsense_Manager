@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../constants/routes.dart';
 import '../../l10n/app_localizations.dart';
 import '../../screens/firewall_rules_screen.dart';
 import '../../screens/firewall_aliases_screen.dart';
@@ -50,21 +51,21 @@ class FirewallNavigationSection extends StatelessWidget {
         NavigationTile(
           title: l10n.firewallRules,
           currentRoute: currentRoute,
-          targetRoute: 'firewall_rules',
+          targetRoute: Routes.firewallRules,
           destination: const FirewallRulesScreen(),
           contentPadding: const EdgeInsets.only(left: 72, right: 16),
         ),
         NavigationTile(
           title: l10n.aliases,
           currentRoute: currentRoute,
-          targetRoute: 'firewall_aliases',
+          targetRoute: Routes.firewallAliases,
           destination: const FirewallAliasesScreen(),
           contentPadding: const EdgeInsets.only(left: 72, right: 16),
         ),
         NavigationTile(
           title: l10n.firewallLogs,
           currentRoute: currentRoute,
-          targetRoute: 'firewall_logs',
+          targetRoute: Routes.firewallLogs,
           destination: const FirewallLogsScreen(),
           contentPadding: const EdgeInsets.only(left: 72, right: 16),
         ),

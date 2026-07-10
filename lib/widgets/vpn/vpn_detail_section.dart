@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import '../../models/vpn_connection.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/formatters.dart';
+import '../common/detail_row.dart';
 
 /// Widget for displaying detailed VPN connection information
 class VPNDetailSection extends StatelessWidget {
@@ -68,14 +69,14 @@ class VPNDetailSection extends StatelessWidget {
                 Expanded(
                   child: _buildDetailRow(
                     l10n.received,
-                    Formatters.formatBytes(connection.bytesReceived!, context),
+                    Formatters.formatBytes(connection.bytesReceived!),
                   ),
                 ),
               if (connection.bytesSent != null)
                 Expanded(
                   child: _buildDetailRow(
                     l10n.sent,
-                    Formatters.formatBytes(connection.bytesSent!, context),
+                    Formatters.formatBytes(connection.bytesSent!),
                   ),
                 ),
             ],
@@ -92,29 +93,8 @@ class VPNDetailSection extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 120,
-          child: Text(
-            '$label:',
-            style: const TextStyle(
-              fontWeight: FontWeight.w500,
-              color: Colors.grey,
-            ),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(fontWeight: FontWeight.w500),
-          ),
-        ),
-      ],
-    );
-  }
+  Widget _buildDetailRow(String label, String value) =>
+      DetailRow(label: label, value: value, labelWeight: FontWeight.w500);
 }
 
 

@@ -24,6 +24,7 @@ import '../../models/wireguard_peer.dart';
 import '../../models/wireguard_key_pair.dart';
 import '../../models/wireguard_client_builder.dart';
 import '../../models/wireguard_status.dart';
+import '../../constants/api_endpoints.dart';
 
 /// Service for WireGuard VPN operations
 class WireGuardService extends BaseOPNsenseService {
@@ -49,7 +50,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/wireguard/server/search_server');
+      final response = await dio.get(ApiEndpoints.wireguardServerSearch);
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -59,7 +60,7 @@ class WireGuardService extends BaseOPNsenseService {
         }
         return [];
       } else {
-        throw ApiException('Failed to get WireGuard servers', response.statusCode);
+        throw ApiException('Failed to get WireGuard servers', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -73,16 +74,16 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/wireguard/server/get_server/$uuid');
+      final response = await dio.get(ApiEndpoints.wireguardServerGet(uuid));
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
         if (data.containsKey('server')) {
           return WireGuardServer.fromJson(data['server'] as Map<String, dynamic>);
         }
-        throw ApiException('Server data not found in response', response.statusCode);
+        throw ApiException('Server data not found in response', response.statusCode, ApiErrorType.unknown);
       } else {
-        throw ApiException('Failed to get WireGuard server', response.statusCode);
+        throw ApiException('Failed to get WireGuard server', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -98,7 +99,7 @@ class WireGuardService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/wireguard/server/add_server',
+        ApiEndpoints.wireguardServerAdd,
         data: {'server': request.toJson()},
       );
       
@@ -107,9 +108,9 @@ class WireGuardService extends BaseOPNsenseService {
         if (data.containsKey('uuid')) {
           return data['uuid'] as String;
         }
-        throw ApiException('UUID not found in response', response.statusCode);
+        throw ApiException('UUID not found in response', response.statusCode, ApiErrorType.unknown);
       } else {
-        throw ApiException('Failed to create WireGuard server', response.statusCode);
+        throw ApiException('Failed to create WireGuard server', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -124,12 +125,12 @@ class WireGuardService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/wireguard/server/set_server/$uuid',
+        ApiEndpoints.wireguardServerSet(uuid),
         data: {'server': request.toJson()},
       );
       
       if (response.statusCode != 200) {
-        throw ApiException('Failed to update WireGuard server', response.statusCode);
+        throw ApiException('Failed to update WireGuard server', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -142,10 +143,10 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/wireguard/server/del_server/$uuid');
+      final response = await dio.post(ApiEndpoints.wireguardServerDelete(uuid));
       
       if (response.statusCode != 200) {
-        throw ApiException('Failed to delete WireGuard server', response.statusCode);
+        throw ApiException('Failed to delete WireGuard server', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -159,12 +160,12 @@ class WireGuardService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/wireguard/server/toggle_server/$uuid',
+        ApiEndpoints.wireguardServerToggle(uuid),
         data: {'enabled': enabled ? '1' : '0'},
       );
       
       if (response.statusCode != 200) {
-        throw ApiException('Failed to toggle WireGuard server', response.statusCode);
+        throw ApiException('Failed to toggle WireGuard server', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -189,7 +190,7 @@ class WireGuardService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/wireguard/client/search_client',
+        ApiEndpoints.wireguardClientSearch,
         data: {
           'current': current,
           'rowCount': rowCount,
@@ -200,7 +201,7 @@ class WireGuardService extends BaseOPNsenseService {
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       } else {
-        throw ApiException('Failed to search WireGuard peers', response.statusCode);
+        throw ApiException('Failed to search WireGuard peers', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -214,7 +215,7 @@ class WireGuardService extends BaseOPNsenseService {
 
     try {
       // Use peer endpoint
-      final response = await dio.get('/wireguard/server/search_peer');
+      final response = await dio.get(ApiEndpoints.wireguardServerPeerSearch);
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -224,7 +225,7 @@ class WireGuardService extends BaseOPNsenseService {
         }
         return [];
       } else {
-        throw ApiException('Failed to get WireGuard peers', response.statusCode);
+        throw ApiException('Failed to get WireGuard peers', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -239,16 +240,16 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/wireguard/client/get_client/$uuid');
+      final response = await dio.get(ApiEndpoints.wireguardClientGet(uuid));
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
         if (data.containsKey('client')) {
           return data['client'] as Map<String, dynamic>;
         }
-        throw ApiException('Peer data not found in response', response.statusCode);
+        throw ApiException('Peer data not found in response', response.statusCode, ApiErrorType.unknown);
       } else {
-        throw ApiException('Failed to get WireGuard peer', response.statusCode);
+        throw ApiException('Failed to get WireGuard peer', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -263,16 +264,16 @@ class WireGuardService extends BaseOPNsenseService {
 
     try {
       // Use peer endpoint
-      final response = await dio.get('/wireguard/server/get_peer/$uuid');
+      final response = await dio.get(ApiEndpoints.wireguardPeerGet(uuid));
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
         if (data.containsKey('peer')) {
           return WireGuardPeer.fromJson(data['peer'] as Map<String, dynamic>);
         }
-        throw ApiException('Peer data not found in response', response.statusCode);
+        throw ApiException('Peer data not found in response', response.statusCode, ApiErrorType.unknown);
       } else {
-        throw ApiException('Failed to get WireGuard peer', response.statusCode);
+        throw ApiException('Failed to get WireGuard peer', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -289,7 +290,7 @@ class WireGuardService extends BaseOPNsenseService {
       final peerPayload = request.toJson();
 
       final response = await dio.post(
-        '/wireguard/client/add_client',
+        ApiEndpoints.wireguardClientAdd,
         data: {'client': peerPayload},
       );
 
@@ -304,12 +305,13 @@ class WireGuardService extends BaseOPNsenseService {
             final errors = validations.entries
                 .map((e) => '${e.key}: ${e.value}')
                 .join(', ');
-            throw ApiException('Validation failed: $errors', response.statusCode);
+            throw ApiException('Validation failed: $errors', response.statusCode, ApiErrorType.unknown);
           }
 
           throw ApiException(
             'Failed to create peer: ${message ?? 'Unknown error'}',
             response.statusCode,
+          ApiErrorType.unknown,
           );
         }
 
@@ -321,9 +323,9 @@ class WireGuardService extends BaseOPNsenseService {
           return '';
         }
 
-        throw ApiException('Unexpected response format: ${data.toString()}', response.statusCode);
+        throw ApiException('Unexpected response format: ${data.toString()}', response.statusCode, ApiErrorType.unknown);
       } else {
-        throw ApiException('Failed to create WireGuard peer', response.statusCode);
+        throw ApiException('Failed to create WireGuard peer', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -339,7 +341,7 @@ class WireGuardService extends BaseOPNsenseService {
       final peerPayload = request.toJson();
 
       final response = await dio.post(
-        '/wireguard/client/set_client/$uuid',
+        ApiEndpoints.wireguardClientSet(uuid),
         data: {'client': peerPayload},
       );
 
@@ -355,18 +357,19 @@ class WireGuardService extends BaseOPNsenseService {
             final errors = validations.entries
                 .map((e) => '${e.key}: ${e.value}')
                 .join(', ');
-            throw ApiException('Validation failed: $errors', response.statusCode);
+            throw ApiException('Validation failed: $errors', response.statusCode, ApiErrorType.unknown);
           }
 
           throw ApiException(
             'Failed to update peer: ${message ?? 'Unknown error'}',
             response.statusCode,
+          ApiErrorType.unknown,
           );
         }
         return;
       }
 
-      throw ApiException('Failed to update WireGuard peer', response.statusCode);
+      throw ApiException('Failed to update WireGuard peer', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     }
@@ -379,10 +382,10 @@ class WireGuardService extends BaseOPNsenseService {
 
     try {
       // Use client endpoint
-      final response = await dio.post('/wireguard/client/del_client/$uuid');
+      final response = await dio.post(ApiEndpoints.wireguardClientDelete(uuid));
       
       if (response.statusCode != 200) {
-        throw ApiException('Failed to delete WireGuard peer', response.statusCode);
+        throw ApiException('Failed to delete WireGuard peer', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -397,12 +400,12 @@ class WireGuardService extends BaseOPNsenseService {
     try {
       // Use client endpoint
       final response = await dio.post(
-        '/wireguard/client/toggle_client/$uuid',
+        ApiEndpoints.wireguardClientToggle(uuid),
         data: {'enabled': enabled ? '1' : '0'},
       );
       
       if (response.statusCode != 200) {
-        throw ApiException('Failed to toggle WireGuard peer', response.statusCode);
+        throw ApiException('Failed to toggle WireGuard peer', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -416,12 +419,12 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/wireguard/service/show');
+      final response = await dio.get(ApiEndpoints.wireguardServiceShow);
       
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       } else {
-        throw ApiException('Failed to get WireGuard status', response.statusCode);
+        throw ApiException('Failed to get WireGuard status', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -434,12 +437,12 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/wireguard/service/start');
+      final response = await dio.post(ApiEndpoints.wireguardServiceStart);
       
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       } else {
-        throw ApiException('Failed to start WireGuard service', response.statusCode);
+        throw ApiException('Failed to start WireGuard service', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -452,12 +455,12 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/wireguard/service/stop');
+      final response = await dio.post(ApiEndpoints.wireguardServiceStop);
       
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       } else {
-        throw ApiException('Failed to stop WireGuard service', response.statusCode);
+        throw ApiException('Failed to stop WireGuard service', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -470,12 +473,12 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/wireguard/service/restart');
+      final response = await dio.post(ApiEndpoints.wireguardServiceRestart);
       
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       } else {
-        throw ApiException('Failed to restart WireGuard service', response.statusCode);
+        throw ApiException('Failed to restart WireGuard service', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -489,7 +492,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/wireguard/service/reconfigure');
+      final response = await dio.post(ApiEndpoints.wireguardServiceReconfigure);
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -497,12 +500,12 @@ class WireGuardService extends BaseOPNsenseService {
         // Check for explicit failure in response
         if (data.containsKey('status') && data['status'] == 'failed') {
           final message = data['message'] ?? 'Unknown error';
-          throw ApiException('Failed to reconfigure WireGuard: $message', response.statusCode);
+          throw ApiException('Failed to reconfigure WireGuard: $message', response.statusCode, ApiErrorType.unknown);
         }
         
         return data;
       } else {
-        throw ApiException('Failed to reconfigure WireGuard', response.statusCode);
+        throw ApiException('Failed to reconfigure WireGuard', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -518,7 +521,7 @@ class WireGuardService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/wireguard/service/show',
+        ApiEndpoints.wireguardServiceShow,
         data: {
           'current': 1,
           'rowCount': 50,
@@ -530,7 +533,7 @@ class WireGuardService extends BaseOPNsenseService {
         final data = response.data as Map<String, dynamic>;
         return WireGuardStatusResponse.fromJson(data);
       } else {
-        throw ApiException('Failed to get WireGuard status', response.statusCode);
+        throw ApiException('Failed to get WireGuard status', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -546,7 +549,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/wireguard/server/key_pair');
+      final response = await dio.get(ApiEndpoints.wireguardServerKeyPair);
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -556,9 +559,9 @@ class WireGuardService extends BaseOPNsenseService {
             publicKey: data['pubkey'] as String,
           );
         }
-        throw ApiException('Key pair data not found in response', response.statusCode);
+        throw ApiException('Key pair data not found in response', response.statusCode, ApiErrorType.unknown);
       } else {
-        throw ApiException('Failed to generate WireGuard key pair', response.statusCode);
+        throw ApiException('Failed to generate WireGuard key pair', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -571,7 +574,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/wireguard/client/psk');
+      final response = await dio.get(ApiEndpoints.wireguardClientPsk);
       
       if (response.statusCode == 200) {
         final data = response.data;
@@ -582,12 +585,12 @@ class WireGuardService extends BaseOPNsenseService {
           }
           
           final errorMsg = 'PSK not found in response. Keys found: ${data.keys.join(", ")}';
-          throw ApiException(errorMsg, response.statusCode);
+          throw ApiException(errorMsg, response.statusCode, ApiErrorType.unknown);
         }
         
-        throw ApiException('Invalid response format', response.statusCode);
+        throw ApiException('Invalid response format', response.statusCode, ApiErrorType.unknown);
       } else {
-        throw ApiException('Failed to generate WireGuard PSK', response.statusCode);
+        throw ApiException('Failed to generate WireGuard PSK', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -601,10 +604,10 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/wireguard/service/start/$uuid');
+      final response = await dio.post(ApiEndpoints.wireguardServiceInstanceStart(uuid));
       
       if (response.statusCode != 200) {
-        throw ApiException('Failed to start WireGuard instance', response.statusCode);
+        throw ApiException('Failed to start WireGuard instance', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -617,10 +620,10 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/wireguard/service/stop/$uuid');
+      final response = await dio.post(ApiEndpoints.wireguardServiceInstanceStop(uuid));
       
       if (response.statusCode != 200) {
-        throw ApiException('Failed to stop WireGuard instance', response.statusCode);
+        throw ApiException('Failed to stop WireGuard instance', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -633,10 +636,10 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/wireguard/service/restart/$uuid');
+      final response = await dio.post(ApiEndpoints.wireguardServiceInstanceRestart(uuid));
       
       if (response.statusCode != 200) {
-        throw ApiException('Failed to restart WireGuard instance', response.statusCode);
+        throw ApiException('Failed to restart WireGuard instance', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -652,7 +655,7 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/wireguard/client/get_client_builder');
+      final response = await dio.get(ApiEndpoints.wireguardClientBuilderGet);
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -661,9 +664,9 @@ class WireGuardService extends BaseOPNsenseService {
             data['configbuilder'] as Map<String, dynamic>,
           );
         }
-        throw ApiException('Config builder data not found in response', response.statusCode);
+        throw ApiException('Config builder data not found in response', response.statusCode, ApiErrorType.unknown);
       } else {
-        throw ApiException('Failed to get client builder', response.statusCode);
+        throw ApiException('Failed to get client builder', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -677,13 +680,13 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/wireguard/client/get_server_info/$uuid');
+      final response = await dio.get(ApiEndpoints.wireguardServerInfoGet(uuid));
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
         return WireGuardServerInfo.fromJson(data);
       } else {
-        throw ApiException('Failed to get server info', response.statusCode);
+        throw ApiException('Failed to get server info', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -715,7 +718,7 @@ class WireGuardService extends BaseOPNsenseService {
       final payload = {'configbuilder': innerPayload};
 
       final response = await dio.post(
-        '/wireguard/client/add_client_builder',
+        ApiEndpoints.wireguardClientBuilderAdd,
         data: payload,
       );
 
@@ -731,12 +734,13 @@ class WireGuardService extends BaseOPNsenseService {
             final errors = validations.entries
                 .map((e) => '${e.key}: ${e.value}')
                 .join(', ');
-            throw ApiException('Validation failed: $errors', response.statusCode);
+            throw ApiException('Validation failed: $errors', response.statusCode, ApiErrorType.unknown);
           }
 
           throw ApiException(
             'Failed to add client: ${message ?? 'Unknown error'}',
             response.statusCode,
+          ApiErrorType.unknown,
           );
         }
 
@@ -750,9 +754,9 @@ class WireGuardService extends BaseOPNsenseService {
           return;
         }
 
-        throw ApiException('Unexpected response format: ${data.toString()}', response.statusCode);
+        throw ApiException('Unexpected response format: ${data.toString()}', response.statusCode, ApiErrorType.unknown);
       } else {
-        throw ApiException('Failed to add client via builder', response.statusCode);
+        throw ApiException('Failed to add client via builder', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -809,7 +813,7 @@ class WireGuardService extends BaseOPNsenseService {
       }
 
       final response = await dio.post(
-        '/diagnostics/log/core/wireguard',
+        ApiEndpoints.diagnosticsLogWireguard,
         data: payload,
       );
 
@@ -818,12 +822,12 @@ class WireGuardService extends BaseOPNsenseService {
         
         // Validate response structure
         if (!data.containsKey('rows')) {
-          throw ApiException('Invalid response: missing rows field', response.statusCode);
+          throw ApiException('Invalid response: missing rows field', response.statusCode, ApiErrorType.unknown);
         }
 
         return data;
       } else {
-        throw ApiException('Failed to get WireGuard logs', response.statusCode);
+        throw ApiException('Failed to get WireGuard logs', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);

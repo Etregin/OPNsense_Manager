@@ -17,7 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/wireguard_peer.dart';
+import '../../utils/app_colors.dart';
 
 /// Card widget for displaying WireGuard peer information
 class PeerCard extends StatelessWidget {
@@ -40,16 +42,17 @@ class PeerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: peer.isEnabled ? Colors.green : Colors.grey,
+          backgroundColor: peer.isEnabled ? AppColors.success : Theme.of(context).colorScheme.onSurface.withValues(alpha: AppColors.opacityDisabled),
           child: Icon(
             peer.isEnabled ? Icons.vpn_key : Icons.vpn_key_off,
-            color: Colors.white,
+            color: AppColors.onPrimary,
             size: 20,
           ),
         ),
@@ -77,7 +80,7 @@ class PeerCard extends StatelessWidget {
                 'Keepalive: ${peer.keepaliveInterval}s',
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey[600],
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: AppColors.opacityMuted),
                 ),
               ),
           ],
@@ -95,7 +98,7 @@ class PeerCard extends StatelessWidget {
               Switch(
                 value: peer.isEnabled,
                 onChanged: onToggle,
-                activeTrackColor: Colors.green,
+                activeTrackColor: AppColors.success,
               ),
             const SizedBox(width: 8),
             PopupMenuButton<String>(
@@ -110,23 +113,23 @@ class PeerCard extends StatelessWidget {
                 }
               },
               itemBuilder: (context) => [
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'edit',
                   child: Row(
                     children: [
-                      Icon(Icons.edit),
-                      SizedBox(width: 8),
-                      Text('Edit'),
+                      const Icon(Icons.edit),
+                      const SizedBox(width: 8),
+                      Text(l10n.edit),
                     ],
                   ),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'delete',
                   child: Row(
                     children: [
-                      Icon(Icons.delete, color: Colors.red),
-                      SizedBox(width: 8),
-                      Text('Delete', style: TextStyle(color: Colors.red)),
+                      Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
+                      const SizedBox(width: 8),
+                      Text(l10n.delete, style: TextStyle(color: Theme.of(context).colorScheme.error)),
                     ],
                   ),
                 ),

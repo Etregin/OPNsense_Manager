@@ -29,7 +29,7 @@ abstract class BaseOPNsenseService {
   /// Get the Dio instance
   Dio get dio {
     if (_dio == null) {
-      throw ApiException('Service not initialized', null);
+      throw const ApiException('Service not initialized', null, ApiErrorType.unknown);
     }
     return _dio!;
   }
@@ -37,7 +37,7 @@ abstract class BaseOPNsenseService {
   /// Get the configuration
   OPNsenseConfig get config {
     if (_config == null) {
-      throw ApiException('Service not initialized', null);
+      throw const ApiException('Service not initialized', null, ApiErrorType.unknown);
     }
     return _config!;
   }
@@ -54,7 +54,7 @@ abstract class BaseOPNsenseService {
   /// Ensure service is initialized before making API calls
   void ensureInitialized() {
     if (!isInitialized) {
-      throw ApiException('Service not initialized', null);
+      throw const ApiException('Service not initialized', null, ApiErrorType.unknown);
     }
   }
 
@@ -64,57 +64,52 @@ abstract class BaseOPNsenseService {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        return ApiException('Connection timeout', null);
+      case DioExceptionType.transformTimeout:
+        return const ApiException('Connection timeout', null, ApiErrorType.timeout);
       case DioExceptionType.badResponse:
         final statusCode = e.response?.statusCode;
         if (statusCode == 401) {
-          return ApiException('Invalid credentials', statusCode);
+          return ApiException('Invalid credentials', statusCode, ApiErrorType.authFailure);
         } else if (statusCode == 403) {
-          return ApiException('Insufficient permissions', statusCode);
+          return ApiException('Insufficient permissions', statusCode, ApiErrorType.permissionDenied);
         } else if (statusCode == 404) {
-          return ApiException('Resource not found', statusCode);
+          return ApiException('Resource not found', statusCode, ApiErrorType.notFound);
         } else {
-          return ApiException('Server error', statusCode);
+          return ApiException('Server error', statusCode, ApiErrorType.serverError);
         }
       case DioExceptionType.cancel:
-        return ApiException('Request cancelled', null);
+        return const ApiException('Request cancelled', null, ApiErrorType.cancelled);
+      case DioExceptionType.badCertificate:
+        return const ApiException(
+          'Certificate validation failed. The server is using a self-signed certificate. '
+          'Please enable "Allow Self-Signed Certificates" in connection settings.',
+          null,
+          ApiErrorType.certificateError,
+        );
       case DioExceptionType.connectionError:
-        // Check for certificate validation errors
-        if (e.message?.contains('CERTIFICATE_VERIFY_FAILED') == true ||
-            e.message?.contains('certificate') == true ||
-            e.error is HandshakeException) {
-          return ApiException(
-            'Certificate validation failed. The server is using a self-signed certificate. '
-            'Please enable "Allow Self-Signed Certificates" in connection settings.',
-            null,
-          );
-        }
-        if (e.error is SocketException) {
-          return ApiException('Network error: Unable to connect', null);
-        }
-        return ApiException('Connection error: ${e.message}', null);
       case DioExceptionType.unknown:
-        // Check for certificate validation errors in unknown type as well
-        if (e.message?.contains('CERTIFICATE_VERIFY_FAILED') == true ||
-            e.message?.contains('certificate') == true ||
-            e.error is HandshakeException) {
-          return ApiException(
+        if (_isCertificateError(e)) {
+          return const ApiException(
             'Certificate validation failed. The server is using a self-signed certificate. '
             'Please enable "Allow Self-Signed Certificates" in connection settings.',
             null,
+            ApiErrorType.certificateError,
           );
         }
         if (e.error is SocketException) {
-          return ApiException('Network error: Unable to connect', null);
+          return const ApiException('Network error: Unable to connect', null, ApiErrorType.networkError);
         }
-        return ApiException('Unknown error: ${e.message}', null);
-      default:
-        return ApiException('Request failed: ${e.message}', null);
+        return ApiException('Connection error: ${e.message}', null, ApiErrorType.networkError);
     }
   }
 
+  bool _isCertificateError(DioException e) =>
+      e.message?.contains('CERTIFICATE_VERIFY_FAILED') == true ||
+      e.message?.contains('certificate') == true ||
+      e.error is HandshakeException;
+
   /// Extract selected value from OPNsense dropdown structure
-  String extractSelectedValue(dynamic field, {bool returnDisplayValue = false}) {
+  String extractSelectedValue(Object? field, {bool returnDisplayValue = false}) {
     if (field is String) {
       return field;
     }

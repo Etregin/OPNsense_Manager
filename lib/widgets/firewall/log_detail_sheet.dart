@@ -20,6 +20,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../screens/firewall_logs_screen.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/color_helpers.dart';
+import '../../utils/snackbar_helper.dart';
 
 /// Bottom sheet widget that displays detailed information about a firewall log entry
 class LogDetailSheet extends StatelessWidget {
@@ -34,7 +37,7 @@ class LogDetailSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final actionColor = _getActionColor(log.action);
+    final actionColor = firewallActionColor(log.action);
 
     return DraggableScrollableSheet(
       initialChildSize: 0.7,
@@ -55,7 +58,7 @@ class LogDetailSheet extends StatelessWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
+                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: AppColors.opacityDivider),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -84,7 +87,7 @@ class LogDetailSheet extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
-                              color: actionColor.withValues(alpha: 0.1),
+                              color: actionColor.withValues(alpha: AppColors.opacitySubtle),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
@@ -181,7 +184,7 @@ class LogDetailSheet extends StatelessWidget {
                       children: [
                         _buildDetailRow(
                           context,
-                          'Interface',
+                          l10n.interface,
                           log.interface.toUpperCase(),
                           icon: Icons.router,
                         ),
@@ -225,7 +228,7 @@ class LogDetailSheet extends StatelessWidget {
                         if (log.reason.isNotEmpty)
                           _buildDetailRow(
                             context,
-                            'Reason',
+                            l10n.reason,
                             log.reason,
                             icon: Icons.info,
                           ),
@@ -264,13 +267,13 @@ class LogDetailSheet extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: Theme.of(context).primaryColor),
+          Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
           const SizedBox(width: 8),
           Text(
             title,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
         ],
@@ -358,12 +361,7 @@ class LogDetailSheet extends StatelessWidget {
   void _copyToClipboard(BuildContext context, String text) {
     final l10n = AppLocalizations.of(context)!;
     Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.copiedToClipboard),
-        duration: const Duration(seconds: 1),
-      ),
-    );
+    SnackBarHelper.showInfo(context, l10n.copiedToClipboard, duration: const Duration(seconds: 1));
   }
 
   void _copyAllDetails(BuildContext context) {
@@ -391,7 +389,7 @@ class LogDetailSheet extends StatelessWidget {
     details.writeln();
     
     details.writeln('${l10n.networkInformation}:');
-    details.writeln('  Interface: ${log.interface.toUpperCase()}');
+    details.writeln('  ${l10n.interface}: ${log.interface.toUpperCase()}');
     details.writeln('  ${l10n.action}: ${log.action.toUpperCase()}');
     if (log.length.isNotEmpty) {
       details.writeln('  ${l10n.packetLength}: ${log.length} bytes');
@@ -404,32 +402,14 @@ class LogDetailSheet extends StatelessWidget {
     details.writeln('${l10n.additionalInformation}:');
     details.writeln('  ${l10n.timestamp}: ${_formatTimestamp(log.timestamp)}');
     if (log.reason.isNotEmpty) {
-      details.writeln('  Reason: ${log.reason}');
+      details.writeln('  ${l10n.reason}: ${log.reason}');
     }
     if (log.label.isNotEmpty && log.label != log.ruleDescription) {
       details.writeln('  ${l10n.label}: ${log.label}');
     }
     
     Clipboard.setData(ClipboardData(text: details.toString()));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.allDetailsCopiedToClipboard),
-        duration: const Duration(seconds: 2),
-      ),
-    );
-  }
-
-  Color _getActionColor(String action) {
-    switch (action.toLowerCase()) {
-      case 'pass':
-        return Colors.green;
-      case 'block':
-        return Colors.red;
-      case 'reject':
-        return Colors.orange;
-      default:
-        return Colors.grey;
-    }
+    SnackBarHelper.showInfo(context, l10n.allDetailsCopiedToClipboard);
   }
 
   IconData _getActionIcon(String action) {

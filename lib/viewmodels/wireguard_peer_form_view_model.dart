@@ -53,11 +53,12 @@ class WireGuardPeerFormViewModel extends BaseFormViewModel {
 
     try {
       _availableServers = await _apiService.getWireGuardServers();
+      clearError();
+    } catch (e) {
+      setError('Failed to load servers: $e');
+    } finally {
       _loadingServers = false;
       notifyListeners();
-    } catch (e) {
-      _loadingServers = false;
-      setError('Failed to load servers: $e');
     }
   }
 
@@ -68,14 +69,12 @@ class WireGuardPeerFormViewModel extends BaseFormViewModel {
 
     try {
       final peerData = await _apiService.getPeer(uuid);
-      
       _loadedPeerData = WireGuardPeerResponse.fromJson(peerData);
-      
+    } catch (e) {
+      setError('Failed to load peer: $e');
+    } finally {
       _loadingPeer = false;
       notifyListeners();
-    } catch (e) {
-      _loadingPeer = false;
-      setError('Failed to load peer: $e');
     }
   }
 
@@ -86,15 +85,14 @@ class WireGuardPeerFormViewModel extends BaseFormViewModel {
 
     try {
       final psk = await _apiService.generateWireGuardPSK();
-      _isGeneratingPsk = false;
       clearError();
-      notifyListeners();
       return psk;
     } catch (e) {
-      _isGeneratingPsk = false;
-      final errorMsg = 'Failed to generate PSK: $e';
-      setError(errorMsg);
+      setError('Failed to generate PSK: $e');
       return null;
+    } finally {
+      _isGeneratingPsk = false;
+      notifyListeners();
     }
   }
 

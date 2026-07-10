@@ -22,6 +22,7 @@ import '../base/api_exception.dart';
 import '../../models/vpn_connection.dart';
 import '../../models/tailscale_status.dart';
 import 'wireguard_service.dart';
+import '../../constants/api_endpoints.dart';
 
 /// Service for VPN operations
 class VPNService extends BaseOPNsenseService {
@@ -36,7 +37,7 @@ class VPNService extends BaseOPNsenseService {
 
       // Get VPN services from the service list (using correct endpoint without /api prefix)
       try {
-        final servicesResponse = await dio.get('/core/service/search');
+        final servicesResponse = await dio.get(ApiEndpoints.coreServiceSearch);
         
         if (servicesResponse.statusCode == 200 && servicesResponse.data != null) {
           final data = servicesResponse.data as Map<String, dynamic>;
@@ -84,7 +85,7 @@ class VPNService extends BaseOPNsenseService {
 
       return connections;
     } catch (e) {
-      throw ApiException('Failed to get VPN connections: ${e.toString()}', null);
+      throw ApiException('Failed to get VPN connections: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -94,7 +95,7 @@ class VPNService extends BaseOPNsenseService {
 
     try {
       // Get VPN services from the service list
-      final servicesResponse = await dio.get('/core/service/search');
+      final servicesResponse = await dio.get(ApiEndpoints.coreServiceSearch);
       
       if (servicesResponse.statusCode == 200 && servicesResponse.data != null) {
         final data = servicesResponse.data as Map<String, dynamic>;
@@ -134,7 +135,7 @@ class VPNService extends BaseOPNsenseService {
 
     try {
       // Get service status
-      final serviceStatusResponse = await dio.post('/tailscale/service/status');
+      final serviceStatusResponse = await dio.post(ApiEndpoints.tailscaleServiceStatus);
       
       bool serviceRunning = false;
       if (serviceStatusResponse.statusCode == 200 && serviceStatusResponse.data != null) {
@@ -144,17 +145,17 @@ class VPNService extends BaseOPNsenseService {
       }
 
       // Get comprehensive Tailscale status
-      final statusResponse = await dio.get('/tailscale/status/status');
+      final statusResponse = await dio.get(ApiEndpoints.tailscaleStatusGet);
       final statusData = statusResponse.data as Map<String, dynamic>? ?? {};
 
       // Get Tailscale settings
-      final settingsResponse = await dio.get('/tailscale/settings/get');
+      final settingsResponse = await dio.get(ApiEndpoints.tailscaleSettingsGet);
       final settingsData = settingsResponse.data as Map<String, dynamic>? ?? {};
       // Fix: API returns 'settings' not 'tailscale'
       final settings = settingsData['settings'] as Map<String, dynamic>? ?? {};
 
       // Get authentication configuration
-      final authResponse = await dio.get('/tailscale/authentication/get');
+      final authResponse = await dio.get(ApiEndpoints.tailscaleAuthGet);
       final authData = authResponse.data as Map<String, dynamic>? ?? {};
       final authentication = authData['authentication'] as Map<String, dynamic>? ?? {};
       final loginServer = authentication['loginServer']?.toString();
@@ -280,7 +281,7 @@ class VPNService extends BaseOPNsenseService {
         version: version,
       );
     } catch (e) {
-      throw ApiException('Failed to get Tailscale details: ${e.toString()}', null);
+      throw ApiException('Failed to get Tailscale details: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -291,7 +292,7 @@ class VPNService extends BaseOPNsenseService {
       
       // Get OpenVPN instances (servers and clients)
       try {
-        final response = await dio.get('/openvpn/service/searchSessions');
+        final response = await dio.get(ApiEndpoints.openvpnServiceSearchSessions);
         
         if (response.statusCode == 200 && response.data != null) {
           final data = response.data as Map<String, dynamic>;
@@ -402,7 +403,7 @@ class VPNService extends BaseOPNsenseService {
       String action = currentStatus ? 'stop' : 'start';
 
       // Use the core service control endpoint for all services
-      final response = await dio.post('/core/service/$action/$id');
+      final response = await dio.post(ApiEndpoints.coreServiceAction(action, id));
       
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>?;
@@ -413,7 +414,7 @@ class VPNService extends BaseOPNsenseService {
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to toggle VPN connection: ${e.toString()}', null);
+      throw ApiException('Failed to toggle VPN connection: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -425,14 +426,11 @@ class VPNService extends BaseOPNsenseService {
       String endpoint;
 
       switch (type.toLowerCase()) {
-        case 'openvpn':
-          endpoint = '/api/openvpn/service/restart';
-          break;
         case 'tailscale':
-          endpoint = '/tailscale/service/restart';
+          endpoint = ApiEndpoints.tailscaleServiceRestart;
           break;
         default:
-          throw ApiException('Unknown VPN type: $type', null);
+          throw ApiException('Unknown VPN type: $type', null, ApiErrorType.unknown);
       }
 
       final response = await dio.post(endpoint);
@@ -446,7 +444,7 @@ class VPNService extends BaseOPNsenseService {
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to restart VPN service: ${e.toString()}', null);
+      throw ApiException('Failed to restart VPN service: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -458,10 +456,10 @@ class VPNService extends BaseOPNsenseService {
       final connections = await getVPNConnections();
       return connections.firstWhere(
         (conn) => conn.id == id && conn.type.toLowerCase() == type.toLowerCase(),
-        orElse: () => throw ApiException('VPN connection not found', 404),
+        orElse: () => throw const ApiException('VPN connection not found', 404, ApiErrorType.unknown),
       );
     } catch (e) {
-      throw ApiException('Failed to get VPN connection details: ${e.toString()}', null);
+      throw ApiException('Failed to get VPN connection details: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 }

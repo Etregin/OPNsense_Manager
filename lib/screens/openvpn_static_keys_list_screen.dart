@@ -18,12 +18,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import '../models/openvpn_static_key.dart';
 import '../services/demo_api_service.dart';
+import '../utils/snackbar_helper.dart';
+import '../viewmodels/openvpn_static_keys_view_model.dart';
 import '../widgets/openvpn/openvpn_static_key_card.dart';
 import '../screens/openvpn_static_key_form_screen.dart';
+import '../widgets/common/detail_row.dart';
+import '../widgets/common/error_display.dart';
+import '../widgets/common/empty_state_widget.dart';
 import '../l10n/app_localizations.dart';
+import '../widgets/common/confirmation_dialog.dart';
+
 
 /// Screen for displaying OpenVPN static keys list with pagination
 class OpenvpnStaticKeysListScreen extends StatefulWidget {
@@ -43,9 +49,7 @@ class OpenvpnStaticKeysListScreen extends StatefulWidget {
 }
 
 class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScreen> {
-  List<OpenvpnStaticKey> _staticKeys = [];
-  bool _isLoading = false;
-  String? _errorMessage;
+  late OpenvpnStaticKeysViewModel _viewModel;
   int _currentPage = 1;
   int _rowCount = 50;
   int _totalCount = 0;
@@ -53,6 +57,11 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
   @override
   void initState() {
     super.initState();
+    _viewModel = OpenvpnStaticKeysViewModel(
+      widget.apiService,
+      currentPage: _currentPage,
+      rowCount: _rowCount,
+    );
     // Register the refresh callback with parent
     widget.onRegisterRefresh?.call(_loadStaticKeys);
     // Load static keys after the first frame to ensure context is available
@@ -63,85 +72,45 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
     });
   }
 
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
+  }
+
   Future<void> _loadStaticKeys() async {
-    if (_isLoading) return;
-
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final apiService = context.read<DemoApiService>();
-      final response = await apiService.searchOpenvpnStaticKeys(
-        current: _currentPage,
-        rowCount: _rowCount == -1 ? 9999 : _rowCount,
-      );
-
-      if (mounted) {
-        setState(() {
-          _staticKeys = response.rows;
-          _totalCount = response.total;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
+    _viewModel.currentPage = _currentPage;
+    _viewModel.rowCount = _rowCount;
+    await _viewModel.loadItems();
+    if (mounted) {
+      setState(() {
+        _totalCount = _viewModel.items.length;
+      });
     }
   }
 
   Future<void> _deleteStaticKey(OpenvpnStaticKey key) async {
     final l10n = AppLocalizations.of(context)!;
 
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.deleteStaticKey),
-        content: Text(
-          l10n.confirmDeleteStaticKey(key.description.isNotEmpty ? key.description : key.keyid ?? "N/A"),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
-            child: Text(l10n.delete),
-          ),
-        ],
-      ),
+      title: l10n.deleteStaticKey,
+      message: l10n.confirmDeleteStaticKey(
+          key.description.isNotEmpty ? key.description : key.keyid ?? 'N/A'),
+      confirmText: l10n.delete,
+      cancelText: l10n.cancel,
+      isDestructive: true,
     );
 
     if (confirmed == true && mounted && key.keyid != null) {
       try {
-        final apiService = context.read<DemoApiService>();
-        await apiService.deleteOpenvpnStaticKey(key.keyid!);
+        await _viewModel.deleteStaticKey(key.keyid!);
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.staticKeyDeletedSuccessfully),
-              backgroundColor: Colors.green,
-            ),
-          );
-          await _loadStaticKeys();
+          SnackBarHelper.showSuccess(context, l10n.staticKeyDeletedSuccessfully);
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.failedToDeleteStaticKey(e.toString())),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.failedToDeleteStaticKey(e.toString()));
         }
       }
     }
@@ -159,8 +128,7 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (key.keyid != null)
-                _buildDetailRow(l10n.id, key.keyid!),
+              if (key.keyid != null) _buildDetailRow(l10n.id, key.keyid!),
               _buildDetailRow(l10n.mode, key.modeDescription),
               _buildDetailRow(l10n.valid, key.isValid ? l10n.yes : l10n.no),
               if (key.createdAt != null)
@@ -176,15 +144,12 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.grey[100],
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: SelectableText(
                   key.key,
-                  style: const TextStyle(
-                    fontFamily: 'monospace',
-                    fontSize: 11,
-                  ),
+                  style: const TextStyle(fontFamily: 'monospace', fontSize: 11),
                 ),
               ),
               const SizedBox(height: 12),
@@ -192,13 +157,7 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
                 onPressed: () {
                   final l10n = AppLocalizations.of(context)!;
                   Clipboard.setData(ClipboardData(text: key.key));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(l10n.keyCopiedToClipboard),
-                      duration: const Duration(seconds: 2),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
+                  SnackBarHelper.showSuccess(context, l10n.keyCopiedToClipboard);
                 },
                 icon: const Icon(Icons.copy),
                 label: Text(l10n.copyKey),
@@ -216,26 +175,8 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              '$label:',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          Expanded(
-            child: Text(value),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _buildDetailRow(String label, String value) =>
+      DetailRow(label: label, value: value, labelWidth: 100);
 
   Future<void> _onEditStaticKey(OpenvpnStaticKey key) async {
     final result = await Navigator.of(context).push<bool>(
@@ -244,7 +185,6 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
       ),
     );
 
-    // Reload the list if the form returned true (indicating a successful save)
     if (result == true && mounted) {
       await _loadStaticKeys();
       widget.onRefresh?.call();
@@ -255,115 +195,82 @@ class _OpenvpnStaticKeysListScreenState extends State<OpenvpnStaticKeysListScree
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Column(
-      children: [
-        // Pagination controls
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              Text(l10n.rowsPerPage),
-              const SizedBox(width: 12),
-              DropdownButton<int>(
-                value: _rowCount,
-                items: [
-                  const DropdownMenuItem(value: 50, child: Text('50')),
-                  const DropdownMenuItem(value: 100, child: Text('100')),
-                  const DropdownMenuItem(value: 200, child: Text('200')),
-                  const DropdownMenuItem(value: 500, child: Text('500')),
-                  const DropdownMenuItem(value: 1000, child: Text('1000')),
-                  DropdownMenuItem(value: -1, child: Text(l10n.all)),
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        final isLoading = _viewModel.isLoading;
+        final errorMessage = _viewModel.errorMessage;
+        final staticKeys = _viewModel.items;
+
+        return Column(
+          children: [
+            // Pagination controls
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Text(l10n.rowsPerPageLabel),
+                  const SizedBox(width: 12),
+                  DropdownButton<int>(
+                    value: _rowCount,
+                    items: [
+                      const DropdownMenuItem(value: 50, child: Text('50')),
+                      const DropdownMenuItem(value: 100, child: Text('100')),
+                      const DropdownMenuItem(value: 200, child: Text('200')),
+                      const DropdownMenuItem(value: 500, child: Text('500')),
+                      const DropdownMenuItem(value: 1000, child: Text('1000')),
+                      DropdownMenuItem(value: -1, child: Text(l10n.all)),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          _rowCount = value;
+                          _currentPage = 1;
+                        });
+                        _loadStaticKeys();
+                      }
+                    },
+                  ),
+                  const Spacer(),
+                  Text('${staticKeys.length} / $_totalCount'),
                 ],
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      _rowCount = value;
-                      _currentPage = 1;
-                    });
-                    _loadStaticKeys();
-                  }
-                },
               ),
-              const Spacer(),
-              Text('${_staticKeys.length} / $_totalCount'),
-            ],
-          ),
-        ),
-        // Static keys list
-        Expanded(
-          child: _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : _errorMessage != null
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.error_outline,
-                            size: 48,
-                            color: Colors.red,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            l10n.error,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(_errorMessage!),
-                          const SizedBox(height: 16),
-                          ElevatedButton.icon(
-                            onPressed: _loadStaticKeys,
-                            icon: const Icon(Icons.refresh),
-                            label: Text(l10n.retry),
-                          ),
-                        ],
-                      ),
-                    )
-                  : _staticKeys.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.vpn_key,
-                                size: 48,
-                                color: Colors.grey,
+            ),
+            // Static keys list
+            Expanded(
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : errorMessage != null
+                      ? ErrorDisplay(
+                          message: errorMessage, onRetry: _loadStaticKeys)
+                      : staticKeys.isEmpty
+                          ? EmptyStateWidget(
+                              icon: Icons.vpn_key,
+                              title: l10n.noStaticKeysConfigured,
+                              subtitle: l10n.tapPlusButtonToCreateFirstStaticKey,
+                            )
+                          : RefreshIndicator(
+                              onRefresh: () async {
+                                await _loadStaticKeys();
+                                widget.onRefresh?.call();
+                              },
+                              child: ListView.builder(
+                                itemCount: staticKeys.length,
+                                itemBuilder: (context, index) {
+                                  final key = staticKeys[index];
+                                  return OpenvpnStaticKeyCard(
+                                    staticKey: key,
+                                    onTap: () => _showStaticKeyDetails(key),
+                                    onEdit: () => _onEditStaticKey(key),
+                                    onDelete: () => _deleteStaticKey(key),
+                                  );
+                                },
                               ),
-                              const SizedBox(height: 16),
-                              Text(
-                                l10n.noStaticKeysConfigured,
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                l10n.tapPlusButtonToCreateFirstStaticKey,
-                                style: const TextStyle(color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                        )
-                      : RefreshIndicator(
-                          onRefresh: () async {
-                            await _loadStaticKeys();
-                            widget.onRefresh?.call();
-                          },
-                          child: ListView.builder(
-                            itemCount: _staticKeys.length,
-                            itemBuilder: (context, index) {
-                              final key = _staticKeys[index];
-                              return OpenvpnStaticKeyCard(
-                                staticKey: key,
-                                onTap: () => _showStaticKeyDetails(key),
-                                onEdit: () => _onEditStaticKey(key),
-                                onDelete: () => _deleteStaticKey(key),
-                              );
-                            },
-                          ),
-                        ),
-        ),
-      ],
+                            ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
-
-

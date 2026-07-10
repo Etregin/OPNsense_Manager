@@ -46,7 +46,7 @@ FirewallRuleRequest _$FirewallRuleRequestFromJson(Map<String, dynamic> json) =>
       destination: json['destination_net'] as String,
       destinationPort: json['destination_port'] as String,
       description: json['description'] as String,
-      enabled: json['enabled'] as String? ?? "1",
+      enabled: json['enabled'] as String? ?? '1',
       sourceNot: json['source_not'] as String? ?? '0',
       destinationNot: json['destination_not'] as String? ?? '0',
       ipProtocol: json['ipprotocol'] as String? ?? 'inet',

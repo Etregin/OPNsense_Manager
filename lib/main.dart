@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -25,11 +26,14 @@ import 'screens/openvpn_client_overrides_list_screen.dart';
 import 'screens/openvpn_client_override_form_screen.dart';
 import 'screens/openvpn_connection_status_screen.dart';
 import 'screens/openvpn_log_file_screen.dart';
+import 'services/app_version_service.dart';
 import 'services/storage_service.dart';
 import 'services/opnsense_api_service.dart';
 import 'services/demo_api_service.dart';
 import 'services/auth_service.dart';
 import 'services/profile_service.dart';
+import 'config/theme_config.dart' show ThemeConfig;
+import 'utils/app_colors.dart';
 import 'utils/constants.dart';
 import 'l10n/app_localizations.dart';
 
@@ -38,17 +42,15 @@ void main() async {
   
   // Enable edge-to-edge display for proper Android 15+ support
   // This makes the app draw behind system bars (status bar and navigation bar)
-  SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.edgeToEdge,
-  );
+  unawaited(SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge));
   
   // Set system UI overlay style to be transparent
   // This removes the deprecated status bar and navigation bar colors
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarDividerColor: Colors.transparent,
+      statusBarColor: AppColors.transparent,
+      systemNavigationBarColor: AppColors.transparent,
+      systemNavigationBarDividerColor: AppColors.transparent,
     ),
   );
   
@@ -57,10 +59,11 @@ void main() async {
     StorageService().init(),
     AuthService().init(),
     ProfileService().init(),
+    AppVersionService().init(),
   ]);
   
   // Migrate from old storage to profile-based storage (non-blocking)
-  ProfileService().migrateFromOldStorage();
+  unawaited(ProfileService().migrateFromOldStorage());
   
   runApp(const OPNsenseManagerApp());
 }
@@ -75,87 +78,49 @@ class OPNsenseManagerApp extends StatefulWidget {
 class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
   ThemeMode _themeMode = ThemeMode.system;
   Locale? _locale;
-  bool _isUpdatingLocale = false;
-  bool _isUpdatingThemeMode = false;
 
   @override
   void initState() {
     super.initState();
-    // Load theme mode and locale asynchronously without blocking UI
     _loadThemeMode();
     _loadLocale();
   }
 
   Future<void> _loadThemeMode() async {
-    final themeModeString = await StorageService().loadString('theme_mode') ?? 'system';
+    final stored = await StorageService().loadString(AppConstants.keyThemeMode) ?? 'system';
     if (mounted) {
       setState(() {
-        _themeMode = _getThemeModeFromString(themeModeString);
+        _themeMode = ThemeConfig.themeModeFromString(stored);
       });
     }
   }
 
   Future<void> _loadLocale() async {
-    final localeString = await StorageService().loadString('locale');
+    final localeString = await StorageService().loadString(AppConstants.keyLocale);
     if (mounted && localeString != null) {
-      // Validate locale against supported languages
-      final supportedLanguages = AppConstants.supportedLanguages.keys.toList();
-      if (supportedLanguages.contains(localeString)) {
+      if (AppConstants.supportedLanguages.containsKey(localeString)) {
         setState(() {
           _locale = Locale(localeString);
         });
       }
-      // If invalid, fall back to null (system default)
-    }
-  }
-
-  ThemeMode _getThemeModeFromString(String mode) {
-    switch (mode) {
-      case 'light':
-        return ThemeMode.light;
-      case 'dark':
-        return ThemeMode.dark;
-      case 'system':
-      default:
-        return ThemeMode.system;
     }
   }
 
   Future<void> _updateThemeMode(String mode) async {
-    // Prevent race conditions from rapid theme changes
-    if (_isUpdatingThemeMode) return;
-    
-    _isUpdatingThemeMode = true;
-    try {
-      setState(() {
-        _themeMode = _getThemeModeFromString(mode);
-      });
-      await StorageService().saveString('theme_mode', mode);
-    } finally {
-      if (mounted) {
-        _isUpdatingThemeMode = false;
-      }
-    }
+    setState(() {
+      _themeMode = ThemeConfig.themeModeFromString(mode);
+    });
+    await StorageService().saveString(AppConstants.keyThemeMode, mode);
   }
 
   Future<void> _updateLocale(String? localeCode) async {
-    // Prevent race conditions from rapid locale changes
-    if (_isUpdatingLocale) return;
-    
-    _isUpdatingLocale = true;
-    try {
-      setState(() {
-        _locale = localeCode != null ? Locale(localeCode) : null;
-      });
-      if (localeCode != null) {
-        await StorageService().saveString('locale', localeCode);
-      } else {
-        await StorageService().remove('locale');
-      }
-    } finally {
-      if (mounted) {
-        _isUpdatingLocale = false;
-      }
+    setState(() {
+      _locale = localeCode != null ? Locale(localeCode) : null;
+    });
+    if (localeCode != null) {
+      await StorageService().saveString(AppConstants.keyLocale, localeCode);
+    } else {
+      await StorageService().remove(AppConstants.keyLocale);
     }
   }
 
@@ -177,6 +142,9 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
         ),
         Provider<ProfileService>(
           create: (_) => ProfileService(),
+        ),
+        Provider<AppVersionService>(
+          create: (_) => AppVersionService(),
         ),
         Provider<Function(String)>(
           create: (_) => _updateThemeMode,
@@ -212,76 +180,8 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
           Locale('fr'), // French
           Locale('de'), // German
         ],
-        theme: ThemeData(
-          primaryColor: const Color(AppConstants.primaryColorValue),
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(AppConstants.primaryColorValue),
-            secondary: const Color(AppConstants.secondaryColorValue),
-            brightness: Brightness.light,
-          ),
-          useMaterial3: true,
-          cardTheme: CardThemeData(
-            elevation: AppConstants.cardElevation,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
-            ),
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppConstants.buttonBorderRadius),
-              ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 12,
-              ),
-            ),
-          ),
-          inputDecorationTheme: InputDecorationTheme(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppConstants.buttonBorderRadius),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
-            ),
-          ),
-        ),
-        darkTheme: ThemeData(
-          primaryColor: const Color(AppConstants.primaryColorValue),
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(AppConstants.primaryColorValue),
-            secondary: const Color(AppConstants.secondaryColorValue),
-            brightness: Brightness.dark,
-          ),
-          useMaterial3: true,
-          cardTheme: CardThemeData(
-            elevation: AppConstants.cardElevation,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
-            ),
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppConstants.buttonBorderRadius),
-              ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 12,
-              ),
-            ),
-          ),
-          inputDecorationTheme: InputDecorationTheme(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppConstants.buttonBorderRadius),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
-            ),
-          ),
-        ),
+        theme: ThemeConfig.build(Brightness.light),
+        darkTheme: ThemeConfig.build(Brightness.dark),
         home: const SplashScreen(),
       ),
     );

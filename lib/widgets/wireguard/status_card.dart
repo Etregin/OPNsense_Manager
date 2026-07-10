@@ -18,7 +18,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/wireguard_status.dart';
+import '../../utils/app_colors.dart';
 
 /// Card widget for displaying WireGuard status information
 class StatusCard extends StatelessWidget {
@@ -31,6 +33,7 @@ class StatusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Padding(
@@ -47,7 +50,7 @@ class StatusCard extends StatelessWidget {
                   height: 12,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: item.isUp ? Colors.green : Colors.red,
+                    color: item.isUp ? AppColors.success : AppColors.error,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -65,13 +68,13 @@ class StatusCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: item.isInterface ? Colors.blue.withValues(alpha: 0.1) : Colors.orange.withValues(alpha: 0.1),
+                    color: item.isInterface ? AppColors.info.withValues(alpha: AppColors.opacitySubtle) : AppColors.warning.withValues(alpha: AppColors.opacitySubtle),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
                     item.type,
                     style: TextStyle(
-                      color: item.isInterface ? Colors.blue : Colors.orange,
+                      color: item.isInterface ? AppColors.info : AppColors.warning,
                       fontWeight: FontWeight.w500,
                       fontSize: 12,
                     ),
@@ -84,16 +87,16 @@ class StatusCard extends StatelessWidget {
             // Status (up/down)
             _buildInfoRow(
               context,
-              'Status',
+              l10n.status,
               item.status.toUpperCase(),
               icon: Icons.power_settings_new,
-              valueColor: item.isUp ? Colors.green : Colors.red,
+              valueColor: item.isUp ? AppColors.success : AppColors.error,
             ),
             
             // Device (interface name like wg0, wg1)
             _buildInfoRow(
               context,
-              'Device',
+              l10n.device,
               item.interfaceName,
               icon: Icons.router,
             ),
@@ -102,7 +105,7 @@ class StatusCard extends StatelessWidget {
             if (item.name != null && item.name!.isNotEmpty)
               _buildInfoRow(
                 context,
-                'Name',
+                l10n.name,
                 item.name!,
                 icon: Icons.label,
               ),
@@ -110,7 +113,7 @@ class StatusCard extends StatelessWidget {
             // Listen Port
             _buildInfoRow(
               context,
-              'Listen Port',
+              l10n.listenPort,
               item.listenPort,
               icon: Icons.settings_ethernet,
             ),
@@ -119,7 +122,7 @@ class StatusCard extends StatelessWidget {
             if (item.endpoint.isNotEmpty && item.endpoint != item.listenPort)
               _buildInfoRow(
                 context,
-                'Endpoint',
+                l10n.endpoint,
                 item.endpoint,
                 icon: Icons.location_on,
               ),
@@ -128,7 +131,7 @@ class StatusCard extends StatelessWidget {
             if (item.fwmark.isNotEmpty && item.fwmark != 'off' && item.fwmark != '0')
               _buildInfoRow(
                 context,
-                'FW Mark',
+                l10n.fwMark,
                 item.fwmark,
                 icon: Icons.security,
               ),
@@ -137,18 +140,18 @@ class StatusCard extends StatelessWidget {
             if (item.peerStatus.isNotEmpty)
               _buildInfoRow(
                 context,
-                'Peer Status',
+                l10n.peerStatus,
                 item.peerStatus,
                 icon: Icons.link,
-                valueColor: item.isOnline ? Colors.green : Colors.grey,
+                valueColor: item.isOnline ? AppColors.success : AppColors.disabled,
               ),
             
             // Handshake Age (only if not null)
             if (item.latestHandshakeAge != null)
               _buildInfoRow(
                 context,
-                'Handshake Age',
-                '${item.latestHandshakeAge!} seconds ago',
+                l10n.handshakeAge,
+                l10n.secondsAgo(item.latestHandshakeAge!),
                 icon: Icons.access_time,
               ),
             
@@ -156,7 +159,7 @@ class StatusCard extends StatelessWidget {
             if (item.hasPublicKey)
               _buildInfoRow(
                 context,
-                'Public Key',
+                l10n.publicKey,
                 item.publicKey,
                 icon: Icons.vpn_key,
                 monospace: true,
@@ -166,7 +169,7 @@ class StatusCard extends StatelessWidget {
             if (item.latestHandshakeDateTime != null)
               _buildInfoRow(
                 context,
-                'Handshake',
+                l10n.handshake,
                 DateFormat('yyyy-MM-dd HH:mm:ss').format(item.latestHandshakeDateTime!),
                 icon: Icons.schedule,
                 monospace: true,
@@ -194,7 +197,7 @@ class StatusCard extends StatelessWidget {
             Icon(
               icon,
               size: 16,
-              color: Colors.grey[600],
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
             const SizedBox(width: 8),
           ],
@@ -203,7 +206,7 @@ class StatusCard extends StatelessWidget {
             child: Text(
               '$label:',
               style: TextStyle(
-                color: Colors.grey[600],
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: 13,
               ),
             ),

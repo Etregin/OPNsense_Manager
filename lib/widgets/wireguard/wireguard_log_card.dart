@@ -17,6 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/color_helpers.dart';
 import '../../utils/formatters.dart';
 
 /// Model class for WireGuard log entries
@@ -68,25 +70,6 @@ class WireGuardLogCard extends StatelessWidget {
     required this.onTap,
   });
 
-  Color _getSeverityColor(String severity) {
-    switch (severity.toLowerCase()) {
-      case 'emergency':
-      case 'alert':
-      case 'critical':
-        return Colors.red;
-      case 'error':
-        return Colors.orange;
-      case 'warning':
-        return Colors.yellow[700]!;
-      case 'notice':
-      case 'informational':
-        return Colors.blue;
-      case 'debug':
-      default:
-        return Colors.grey;
-    }
-  }
-
   IconData _getSeverityIcon(String severity) {
     switch (severity.toLowerCase()) {
       case 'emergency':
@@ -110,7 +93,7 @@ class WireGuardLogCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final severityColor = _getSeverityColor(log.severity);
+    final severityColor = wireguardSeverityColor(log.severity, context: context);
     final severityIcon = _getSeverityIcon(log.severity);
 
     return Card(
@@ -127,7 +110,7 @@ class WireGuardLogCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: severityColor.withValues(alpha: 0.1),
+                  color: severityColor.withValues(alpha: AppColors.opacitySubtle),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -172,14 +155,14 @@ class WireGuardLogCard extends StatelessWidget {
                 _formatTimestamp(log.timestamp),
                 style: TextStyle(
                   fontSize: 10,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: AppColors.opacityStrong),
                 ),
               ),
               const SizedBox(height: 4),
               Icon(
                 Icons.info_outline,
                 size: 16,
-                color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: AppColors.opacityHalf),
               ),
             ],
           ),

@@ -17,8 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import '../../l10n/app_localizations.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/color_helpers.dart';
 import '../../utils/formatters.dart';
+import '../../utils/snackbar_helper.dart';
 import 'wireguard_log_card.dart';
 
 /// Bottom sheet widget that displays detailed information about a WireGuard log entry
@@ -32,8 +35,9 @@ class WireGuardLogDetailSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final severityColor = _getSeverityColor(log.severity);
+    final severityColor = wireguardSeverityColor(log.severity, context: context);
 
     return DraggableScrollableSheet(
       initialChildSize: 0.7,
@@ -54,7 +58,7 @@ class WireGuardLogDetailSheet extends StatelessWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
+                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: AppColors.opacityDivider),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -83,7 +87,7 @@ class WireGuardLogDetailSheet extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
-                              color: severityColor.withValues(alpha: 0.1),
+                              color: severityColor.withValues(alpha: AppColors.opacitySubtle),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
@@ -113,27 +117,27 @@ class WireGuardLogDetailSheet extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   children: [
                     // Process Information Section
-                    _buildSectionHeader(context, 'Process Information', Icons.settings),
+                    _buildSectionHeader(context, l10n.processInformation, Icons.settings),
                     _buildDetailCard(
                       context,
                       children: [
                         _buildDetailRow(
                           context,
-                          'Process Name',
+                          l10n.processName,
                           log.processName,
                           icon: Icons.app_settings_alt,
                           copyable: true,
                         ),
                         _buildDetailRow(
                           context,
-                          'Process ID',
+                          l10n.processId,
                           log.processPid.toString(),
                           icon: Icons.tag,
                           copyable: true,
                         ),
                         _buildDetailRow(
                           context,
-                          'Severity',
+                          l10n.severity,
                           log.severity,
                           icon: _getSeverityIcon(log.severity),
                           valueColor: severityColor,
@@ -141,7 +145,7 @@ class WireGuardLogDetailSheet extends StatelessWidget {
                         if (log.facility != null && log.facility!.isNotEmpty)
                           _buildDetailRow(
                             context,
-                            'Facility',
+                            l10n.facility,
                             log.facility!,
                             icon: Icons.category,
                           ),
@@ -150,13 +154,13 @@ class WireGuardLogDetailSheet extends StatelessWidget {
                     const SizedBox(height: 16),
                     
                     // Log Message Section
-                    _buildSectionHeader(context, 'Log Message', Icons.message),
+                    _buildSectionHeader(context, l10n.logMessage, Icons.message),
                     _buildDetailCard(
                       context,
                       children: [
                         _buildDetailRow(
                           context,
-                          'Message',
+                          l10n.message,
                           log.line,
                           icon: Icons.description,
                           copyable: true,
@@ -167,20 +171,20 @@ class WireGuardLogDetailSheet extends StatelessWidget {
                     const SizedBox(height: 16),
                     
                     // Timestamp Information Section
-                    _buildSectionHeader(context, 'Timestamp Information', Icons.access_time),
+                    _buildSectionHeader(context, l10n.timestampInformation, Icons.access_time),
                     _buildDetailCard(
                       context,
                       children: [
                         _buildDetailRow(
                           context,
-                          'Timestamp',
+                          l10n.timestamp,
                           _formatTimestamp(log.timestamp),
                           icon: Icons.schedule,
                           copyable: true,
                         ),
                         _buildDetailRow(
                           context,
-                          'Raw Timestamp',
+                          l10n.rawTimestamp,
                           log.timestamp,
                           icon: Icons.code,
                           copyable: true,
@@ -188,7 +192,7 @@ class WireGuardLogDetailSheet extends StatelessWidget {
                         if (log.host != null && log.host!.isNotEmpty)
                           _buildDetailRow(
                             context,
-                            'Host',
+                            l10n.host,
                             log.host!,
                             icon: Icons.computer,
                             copyable: true,
@@ -221,13 +225,13 @@ class WireGuardLogDetailSheet extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: Theme.of(context).primaryColor),
+          Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
           const SizedBox(width: 8),
           Text(
             title,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
         ],
@@ -316,16 +320,11 @@ class WireGuardLogDetailSheet extends StatelessWidget {
   }
 
   void _copyToClipboard(BuildContext context, String text) {
-    Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Copied to clipboard'),
-        duration: Duration(seconds: 1),
-      ),
-    );
+    SnackBarHelper.copyToClipboard(context, text);
   }
 
   void _copyAllDetails(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final details = StringBuffer();
     
     details.writeln('=== WireGuard Log Details ===\n');
@@ -350,32 +349,11 @@ class WireGuardLogDetailSheet extends StatelessWidget {
       details.writeln('  Host: ${log.host}');
     }
     
-    Clipboard.setData(ClipboardData(text: details.toString()));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('All details copied to clipboard'),
-        duration: Duration(seconds: 2),
-      ),
+    SnackBarHelper.copyToClipboard(
+      context,
+      details.toString(),
+      successMessage: l10n.allDetailsCopiedToClipboard,
     );
-  }
-
-  Color _getSeverityColor(String severity) {
-    switch (severity.toLowerCase()) {
-      case 'emergency':
-      case 'alert':
-      case 'critical':
-        return Colors.red;
-      case 'error':
-        return Colors.orange;
-      case 'warning':
-        return Colors.yellow[700]!;
-      case 'notice':
-      case 'informational':
-        return Colors.blue;
-      case 'debug':
-      default:
-        return Colors.grey;
-    }
   }
 
   IconData _getSeverityIcon(String severity) {

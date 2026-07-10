@@ -17,6 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../utils/app_colors.dart';
+import '../../l10n/app_localizations.dart';
+import '../../utils/snackbar_helper.dart';
 
 /// Reusable widget for managing lists of items (tunnel addresses, DNS servers, etc.)
 class ListManagerCard extends StatelessWidget {
@@ -50,14 +53,14 @@ class ListManagerCard extends StatelessWidget {
         if (items.isEmpty)
           Text(
             emptyMessage,
-            style: const TextStyle(color: Colors.grey),
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: AppColors.opacityMuted)),
           )
         else
           ...items.map((item) => Card(
                 child: ListTile(
                   title: Text(item),
                   trailing: IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
+                    icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
                     onPressed: isLoading ? null : () => onRemove(item),
                   ),
                 ),
@@ -112,6 +115,7 @@ class AddItemDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final controller = TextEditingController();
     
     return AlertDialog(
@@ -128,7 +132,7 @@ class AddItemDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         ElevatedButton(
           onPressed: () {
@@ -136,17 +140,12 @@ class AddItemDialog extends StatelessWidget {
             final error = validator(value);
             
             if (error != null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(error),
-                  backgroundColor: Colors.red,
-                ),
-              );
+              SnackBarHelper.showError(context, error);
             } else {
               Navigator.of(context).pop(value);
             }
           },
-          child: const Text('Add'),
+          child: Text(l10n.add),
         ),
       ],
     );

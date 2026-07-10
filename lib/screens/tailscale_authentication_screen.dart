@@ -16,11 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
-import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
+import '../utils/app_colors.dart';
+import '../utils/single_init_mixin.dart';
+import '../utils/snackbar_helper.dart';
+import '../viewmodels/tailscale_auth_view_model.dart';
 import '../widgets/app_drawer.dart';
 
 /// Screen for managing Tailscale authentication
@@ -33,169 +37,119 @@ class TailscaleAuthenticationScreen extends StatefulWidget {
 }
 
 class _TailscaleAuthenticationScreenState
-    extends State<TailscaleAuthenticationScreen> {
-  SystemInfo? _systemInfo;
-  bool _isLoading = true;
-  String? _errorMessage;
-  
-  // Form controllers for authentication settings
+    extends State<TailscaleAuthenticationScreen>
+    with SingleInitMixin {
+  late TailscaleAuthViewModel _viewModel;
+
+  // Form controllers and key live here because they are widget-layer concerns
   final _loginServerController = TextEditingController();
   final _preAuthKeyController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  bool _isSaving = false;
   bool _obscurePreAuthKey = true;
 
   @override
-  void initState() {
-    super.initState();
-    _loadData();
+  void onFirstDependency() {
+    _viewModel = TailscaleAuthViewModel(context.read<DemoApiService>());
+    _viewModel.addListener(_syncControllersFromViewModel);
+    _viewModel.loadData();
   }
 
   @override
   void dispose() {
+    _viewModel.removeListener(_syncControllersFromViewModel);
+    _viewModel.dispose();
     _loginServerController.dispose();
     _preAuthKeyController.dispose();
     super.dispose();
   }
 
-  Future<void> _loadData() async {
-    if (!mounted) return;
-
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      final results = await Future.wait([
-        demoApiService.getSystemInfo(),
-        demoApiService.getTailscaleAuthentication(),
-      ]);
-
-      if (mounted) {
-        final authSettings = results[1] as Map<String, String?>;
-        
-        setState(() {
-          _systemInfo = results[0] as SystemInfo;
-          
-          // Load authentication settings into form controllers
-          _loginServerController.text = authSettings['loginServer'] ?? 'https://login.tailscale.com';
-          _preAuthKeyController.text = authSettings['preAuthKey'] ?? '';
-          
-          _isLoading = false;
-        });
+  /// Keep text controllers in sync when the ViewModel loads fresh data
+  void _syncControllersFromViewModel() {
+    if (!_viewModel.isLoading && _viewModel.errorMessage == null) {
+      if (_loginServerController.text != _viewModel.loginServer) {
+        _loginServerController.text = _viewModel.loginServer;
       }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
+      if (_preAuthKeyController.text != _viewModel.preAuthKey) {
+        _preAuthKeyController.text = _viewModel.preAuthKey;
       }
     }
   }
 
   Future<void> _saveAuthenticationSettings() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
-    setState(() {
-      _isSaving = true;
-    });
+    if (!_formKey.currentState!.validate()) return;
 
     try {
-      final demoApiService = context.read<DemoApiService>();
-      final success = await demoApiService.setTailscaleAuthentication(
+      final success = await _viewModel.saveSettings(
         _loginServerController.text.trim(),
         _preAuthKeyController.text.trim(),
       );
-
       if (mounted) {
-        setState(() {
-          _isSaving = false;
-        });
-
         final l10n = AppLocalizations.of(context)!;
         if (success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.authSettingsSavedSuccessfully),
-              backgroundColor: Colors.green,
-            ),
-          );
-          // Reload data to reflect any changes
-          _loadData();
+          SnackBarHelper.showSuccess(
+              context, l10n.authSettingsSavedSuccessfully);
+          unawaited(_viewModel.loadData());
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.failedToSaveAuthSettings),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.failedToSaveAuthSettings);
         }
       }
     } catch (e) {
       if (mounted) {
-        setState(() {
-          _isSaving = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, 'Error: ${e.toString()}');
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.tailscaleAuthentication),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadData,
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(AppLocalizations.of(context)!.tailscaleAuthentication),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: _viewModel.loadData,
+              ),
+            ],
           ),
-        ],
-      ),
-      drawer: AppDrawer(
-        currentRoute: 'tailscale_authentication',
-        systemInfo: _systemInfo,
-      ),
-      body: RefreshIndicator(
-        onRefresh: _loadData,
-        child: _buildBody(),
-      ),
+          drawer: AppDrawer(
+            currentRoute: 'tailscale_authentication',
+            systemInfo: _viewModel.systemInfo,
+          ),
+          body: RefreshIndicator(
+            onRefresh: _viewModel.loadData,
+            child: _buildBody(),
+          ),
+        );
+      },
     );
   }
 
   Widget _buildBody() {
-    if (_isLoading) {
+    if (_viewModel.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (_errorMessage != null) {
+    if (_viewModel.errorMessage != null) {
       final l10n = AppLocalizations.of(context)!;
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 64, color: Colors.red),
+            const Icon(Icons.error_outline, size: 64, color: AppColors.error),
             const SizedBox(height: 16),
             Text(
               l10n.errorLoadingData,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
-            Text(_errorMessage!),
+            Text(_viewModel.errorMessage!),
             const SizedBox(height: 16),
             ElevatedButton.icon(
-              onPressed: _loadData,
+              onPressed: _viewModel.loadData,
               icon: const Icon(Icons.refresh),
               label: Text(l10n.retry),
             ),
@@ -238,14 +192,16 @@ class _TailscaleAuthenticationScreenState
                   labelText: AppLocalizations.of(context)!.loginServer,
                   hintText: 'https://login.tailscale.com',
                   border: const OutlineInputBorder(),
-                  helperText: AppLocalizations.of(context)!.loginServerHelperText,
+                  helperText:
+                      AppLocalizations.of(context)!.loginServerHelperText,
                 ),
                 validator: (value) {
                   final l10n = AppLocalizations.of(context)!;
                   if (value == null || value.trim().isEmpty) {
                     return l10n.loginServerRequired;
                   }
-                  if (!value.startsWith('http://') && !value.startsWith('https://')) {
+                  if (!value.startsWith('http://') &&
+                      !value.startsWith('https://')) {
                     return l10n.mustBeValidUrl;
                   }
                   return null;
@@ -259,10 +215,13 @@ class _TailscaleAuthenticationScreenState
                   labelText: AppLocalizations.of(context)!.preAuthKey,
                   hintText: 'tskey-auth-...',
                   border: const OutlineInputBorder(),
-                  helperText: AppLocalizations.of(context)!.preAuthKeyHelperText,
+                  helperText:
+                      AppLocalizations.of(context)!.preAuthKeyHelperText,
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscurePreAuthKey ? Icons.visibility : Icons.visibility_off,
+                      _obscurePreAuthKey
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                     ),
                     onPressed: () {
                       setState(() {
@@ -277,15 +236,19 @@ class _TailscaleAuthenticationScreenState
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: _isSaving ? null : _saveAuthenticationSettings,
-                  icon: _isSaving
+                  onPressed: _viewModel.isSaving
+                      ? null
+                      : _saveAuthenticationSettings,
+                  icon: _viewModel.isSaving
                       ? const SizedBox(
                           width: 16,
                           height: 16,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const Icon(Icons.save),
-                  label: Text(_isSaving ? AppLocalizations.of(context)!.saving : AppLocalizations.of(context)!.saveSettings),
+                  label: Text(_viewModel.isSaving
+                      ? AppLocalizations.of(context)!.saving
+                      : AppLocalizations.of(context)!.saveSettings),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.all(16),
                   ),
@@ -298,5 +261,3 @@ class _TailscaleAuthenticationScreenState
     );
   }
 }
-
-

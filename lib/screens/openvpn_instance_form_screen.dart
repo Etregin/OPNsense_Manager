@@ -21,11 +21,13 @@ import 'package:flutter/services.dart';
 import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/openvpn_instance.dart';
+import '../utils/app_colors.dart';
 import '../models/openvpn_dropdown_option.dart';
-import '../services/demo_api_service.dart';
+import '../utils/snackbar_helper.dart';
+import '../viewmodels/openvpn_instance_form_view_model.dart';
 import '../widgets/common/loading_overlay.dart';
 import '../widgets/openvpn/openvpn_form_field_widgets.dart';
-import '../utils/common_validators.dart';
+import '../utils/validators.dart';
 
 /// Form screen for adding/editing OpenVPN instances
 class OpenvpnInstanceFormScreen extends StatefulWidget {
@@ -38,11 +40,9 @@ class OpenvpnInstanceFormScreen extends StatefulWidget {
 }
 
 class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
+  late OpenvpnInstanceFormViewModel _viewModel;
   final _formKey = GlobalKey<FormState>();
-  
-  bool _isLoading = false;
-  bool _isSaving = false;
-  String? _errorMessage;
+
   bool _showAdvanced = false;
   
   // Store the loaded instance's vpnid (the numeric ID from API, not the UUID)
@@ -61,7 +61,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _renegSecController = TextEditingController();
-  final _authGenTokenController = TextEditingController(); // Changed from bool to TextEditingController
+  final _authGenTokenController = TextEditingController();
   final _authTokenRenewalController = TextEditingController();
   final _authTokenSecretController = TextEditingController();
   final _httpProxyController = TextEditingController();
@@ -74,7 +74,6 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
   final _maxclientsController = TextEditingController();
   final _keepaliveIntervalController = TextEditingController();
   final _keepaliveTimeoutController = TextEditingController();
-  // DNS Domain is now an array field, no longer needs a controller
   List<String> _dnsDomain = [];
   List<String> _pushExcludedRoutes = [];
   
@@ -161,6 +160,11 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
   @override
   void initState() {
     super.initState();
+    _viewModel = OpenvpnInstanceFormViewModel(
+      apiService: context.read(),
+      vpnid: widget.vpnid,
+    );
+    _viewModel.addListener(_onViewModelChanged);
     // Load instance after the first frame to ensure context is available
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
@@ -171,6 +175,8 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
 
   @override
   void dispose() {
+    _viewModel.removeListener(_onViewModelChanged);
+    _viewModel.dispose();
     _descriptionController.dispose();
     _portController.dispose();
     _localController.dispose();
@@ -196,31 +202,19 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
     super.dispose();
   }
 
+  void _onViewModelChanged() {
+    if (mounted) setState(() {});
+  }
+
   bool get _isEditMode => widget.vpnid != null;
 
   Future<void> _loadInstance() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
+    await _viewModel.loadInstance();
 
-    try {
-      final apiService = context.read<DemoApiService>();
-      final instance = await apiService.getOpenvpnInstance(widget.vpnid);
-      
-      if (mounted) {
-        setState(() {
-          _loadInstanceData(instance);
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
+    if (mounted && _viewModel.loadedInstance != null) {
+      setState(() {
+        _loadInstanceData(_viewModel.loadedInstance!);
+      });
     }
   }
 
@@ -444,52 +438,23 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
 
   Future<void> _saveInstance() async {
     final l10n = AppLocalizations.of(context)!;
-    
+
     if (!_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.fixFormErrors),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.fixFormErrors);
       return;
     }
 
-    setState(() => _isSaving = true);
+    final instance = _buildInstanceFromForm();
+    final success = await _viewModel.saveInstance(instance);
 
-    try {
-      final apiService = context.read<DemoApiService>();
-      final instance = _buildInstanceFromForm();
-      
-      if (_isEditMode) {
-        await apiService.updateOpenvpnInstance(widget.vpnid!, instance);
-      } else {
-        await apiService.addOpenvpnInstance(instance);
-      }
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              _isEditMode
-                  ? l10n.instanceUpdatedSuccessfully
-                  : l10n.instanceCreatedSuccessfully,
-            ),
-            backgroundColor: Colors.green,
-          ),
-        );
+    if (mounted) {
+      if (success) {
+        SnackBarHelper.showSuccess(context, _isEditMode
+            ? l10n.instanceUpdatedSuccessfully
+            : l10n.instanceCreatedSuccessfully);
         Navigator.of(context).pop(true);
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() => _isSaving = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.failedToSaveInstance(e.toString())),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 4),
-          ),
-        );
+      } else {
+        SnackBarHelper.showError(context, _viewModel.errorMessage ?? l10n.failedToSaveInstance(''), duration: const Duration(seconds: 4));
       }
     }
   }
@@ -582,35 +547,18 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
 
   Future<void> _generateAuthToken() async {
     final l10n = AppLocalizations.of(context)!;
-    setState(() => _isLoading = true);
-    
-    try {
-      final apiService = context.read<DemoApiService>();
-      final token = await apiService.generateOpenvpnAuthToken();
-      
-      if (!mounted) return;
-      
+
+    final token = await _viewModel.generateAuthToken();
+
+    if (!mounted) return;
+
+    if (token != null) {
       setState(() {
         _authTokenSecretController.text = token;
-        _isLoading = false;
       });
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.authTokenGeneratedSuccessfully),
-          backgroundColor: Colors.green,
-        ),
-      );
-    } catch (e) {
-      if (!mounted) return;
-      
-      setState(() => _isLoading = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.failedToGenerateToken(e.toString())),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showSuccess(context, l10n.authTokenGeneratedSuccessfully);
+    } else if (_viewModel.errorMessage != null) {
+      SnackBarHelper.showError(context, _viewModel.errorMessage!);
     }
   }
 
@@ -629,34 +577,32 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
                 _sectionExpanded.updateAll((key, value) => newState);
               });
             },
-            tooltip: _allExpanded ? 'Collapse All' : 'Expand All',
+            tooltip: _allExpanded ? l10n.collapseAll : l10n.expandAll,
           ),
           IconButton(
             icon: const Icon(Icons.save),
-            onPressed: _isSaving ? null : _saveInstance,
-            tooltip: 'Save',
+              onPressed: _viewModel.isLoading ? null : _saveInstance,
+            tooltip: l10n.save,
           ),
         ],
       ),
       body: LoadingOverlay(
-        isLoading: _isSaving,
-        message: 'Saving instance...',
-        child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : _errorMessage != null
+        isLoading: _viewModel.isLoading,
+        message: l10n.savingInstance,
+        child: _viewModel.errorMessage != null
                 ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                        const Icon(Icons.error_outline, size: 48, color: AppColors.error),
                         const SizedBox(height: 16),
-                        Text('Error loading instance'),
+                        Text(l10n.errorLoadingInstance),
                         const SizedBox(height: 8),
-                        Text(_errorMessage!),
+                        Text(_viewModel.errorMessage!),
                         const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: _loadInstance,
-                          child: const Text('Retry'),
+                          child: Text(l10n.retry),
                         ),
                       ],
                     ),
@@ -681,7 +627,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
                         if (_showAdvanced) _buildAdvancedSection(),
                         const SizedBox(height: 16),
                         ElevatedButton(
-                          onPressed: _isSaving ? null : _saveInstance,
+                          onPressed: _viewModel.isLoading ? null : _saveInstance,
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
                           ),
@@ -761,7 +707,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
           hintText: l10n.myOpenvpnInstance,
           prefixIcon: Icons.description,
           helperText: l10n.descriptionHelperText,
-          validator: (value) => CommonValidators.required(value, fieldName: l10n.description),
+          validator: (value) => Validators.required(value, fieldName: l10n.description),
         ),
         const SizedBox(height: 16),
         OpenvpnToggleField(
@@ -1342,7 +1288,7 @@ class _OpenvpnInstanceFormScreenState extends State<OpenvpnInstanceFormScreen> {
               suffixIcon: IconButton(
                 icon: const Icon(Icons.auto_fix_high),
                 tooltip: 'Generate key',
-                onPressed: _isLoading ? null : _generateAuthToken,
+                onPressed: _viewModel.isLoading ? null : _generateAuthToken,
               ),
             ),
           ),

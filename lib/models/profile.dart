@@ -61,7 +61,7 @@ class Profile {
   ConnectionEndpoint get activeConnection {
     try {
       return connections.firstWhere((conn) => conn.isActive);
-    } catch (_) {
+    } on StateError catch (_) {
       return connections.first;
     }
   }
@@ -122,7 +122,7 @@ class Profile {
   ConnectionEndpoint? getConnectionByLabel(String label) {
     try {
       return connections.firstWhere((conn) => conn.label == label);
-    } catch (_) {
+    } on StateError catch (_) {
       return null;
     }
   }

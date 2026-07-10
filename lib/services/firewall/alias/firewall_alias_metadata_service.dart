@@ -33,11 +33,11 @@ class FirewallAliasMetadataService extends BaseOPNsenseService {
       if (response.statusCode == 200 && response.data is Map) {
         return response.data as Map<String, dynamic>;
       }
-      throw ApiException('Failed to get GeoIP data', response.statusCode);
+      throw ApiException('Failed to get GeoIP data', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to get GeoIP data: ${e.toString()}', null);
+      throw ApiException('Failed to get GeoIP data: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -51,11 +51,11 @@ class FirewallAliasMetadataService extends BaseOPNsenseService {
       if (response.statusCode == 200 && response.data is Map) {
         return response.data as Map<String, dynamic>;
       }
-      throw ApiException('Failed to get table size', response.statusCode);
+      throw ApiException('Failed to get table size', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to get table size: ${e.toString()}', null);
+      throw ApiException('Failed to get table size: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -79,11 +79,11 @@ class FirewallAliasMetadataService extends BaseOPNsenseService {
         }
         return [];
       }
-      throw ApiException('Failed to list categories', response.statusCode);
+      throw ApiException('Failed to list categories', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to list categories: ${e.toString()}', null);
+      throw ApiException('Failed to list categories: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -107,11 +107,11 @@ class FirewallAliasMetadataService extends BaseOPNsenseService {
         }
         return [];
       }
-      throw ApiException('Failed to list countries', response.statusCode);
+      throw ApiException('Failed to list countries', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to list countries: ${e.toString()}', null);
+      throw ApiException('Failed to list countries: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -126,12 +126,12 @@ class FirewallAliasMetadataService extends BaseOPNsenseService {
         return response.data as Map<String, dynamic>;
       }
       throw ApiException(
-          'Failed to list network aliases', response.statusCode);
+          'Failed to list network aliases', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
       throw ApiException(
-          'Failed to list network aliases: ${e.toString()}', null);
+          'Failed to list network aliases: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -145,11 +145,11 @@ class FirewallAliasMetadataService extends BaseOPNsenseService {
       if (response.statusCode == 200 && response.data is Map) {
         return response.data as Map<String, dynamic>;
       }
-      throw ApiException('Failed to list user groups', response.statusCode);
+      throw ApiException('Failed to list user groups', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to list user groups: ${e.toString()}', null);
+      throw ApiException('Failed to list user groups: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 }

@@ -34,8 +34,19 @@ class LoginViewModel extends BaseFormViewModel {
   final OPNsenseApiService _opnsenseApiService;
   final Profile? _existingProfile;
 
+  String? _statusMessage;
+
   bool get isEditing => _existingProfile != null;
   Profile? get existingProfile => _existingProfile;
+
+  /// Informational status message (progress updates, success confirmations).
+  /// Distinct from [errorMessage] which is reserved for genuine error conditions.
+  String? get statusMessage => _statusMessage;
+
+  void setStatus(String? message) {
+    _statusMessage = message;
+    notifyListeners();
+  }
 
   LoginViewModel({
     required this._profileService,
@@ -85,7 +96,7 @@ class LoginViewModel extends BaseFormViewModel {
         final currentAttempt = i + 1;
         
         // Show progress message
-        setError('Testing connection $currentAttempt/$totalConnections: ${connection.displayName}');
+        setStatus('Testing connection $currentAttempt/$totalConnections: ${connection.displayName}');
         
         // Update config for this specific connection
         final testConfig = tempConfig.copyWith(
@@ -115,8 +126,8 @@ class LoginViewModel extends BaseFormViewModel {
         }
       }
 
-      // Clear error message
-      setError(null);
+      // Clear progress status
+      setStatus(null);
 
       return {
         'success': successCount > 0,
@@ -178,9 +189,6 @@ class LoginViewModel extends BaseFormViewModel {
 
       await _profileService.saveProfile(profile);
 
-      // Clear error and show success message
-      setError('Profile saved successfully');
-
       return true;
     });
     
@@ -231,7 +239,7 @@ class LoginViewModel extends BaseFormViewModel {
         final currentAttempt = i + 1;
         
         // Show progress message: "Testing connection 1/4: Home Network (192.168.1.1:443)"
-        setError('Testing connection $currentAttempt/$totalConnections: ${connection.displayName}');
+        setStatus('Testing connection $currentAttempt/$totalConnections: ${connection.displayName}');
         
         // Update config for this specific connection
         final testConfig = tempConfig.copyWith(
@@ -284,11 +292,12 @@ class LoginViewModel extends BaseFormViewModel {
       _opnsenseApiService.init(config);
 
       // Perform final connection test
-      setError('Verifying connection to ${bestConnection.displayName}...');
+      setStatus('Verifying connection to ${bestConnection.displayName}...');
       final isConnected = await _demoApiService.testConnection();
 
       if (!isConnected) {
         setError('Connection verification failed for ${bestConnection.displayName}');
+        setStatus(null);
         return false;
       }
 
@@ -320,8 +329,7 @@ class LoginViewModel extends BaseFormViewModel {
       await _profileService.saveProfile(profile);
       await _profileService.setActiveProfile(profile.id);
 
-      // Clear error and show success message
-      setError('Connected successfully via: ${bestConnection.displayName}');
+      setStatus(null);
 
       return true;
     });

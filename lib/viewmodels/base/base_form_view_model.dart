@@ -17,15 +17,23 @@
  */
 
 import 'package:flutter/foundation.dart';
+import '../../services/base/api_exception.dart';
 
 /// Base ViewModel for form screens with common state management
 abstract class BaseFormViewModel extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
+  ApiException? _apiError;
   bool _hasUnsavedChanges = false;
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
+
+  /// The last [ApiException] caught during [executeWithLoading], or [null] if
+  /// the last error was not an API error (or there was no error). Cleared on
+  /// the next [executeWithLoading] call.
+  ApiException? get apiError => _apiError;
+
   bool get hasUnsavedChanges => _hasUnsavedChanges;
 
   void setLoading(bool value) {
@@ -40,6 +48,7 @@ abstract class BaseFormViewModel extends ChangeNotifier {
 
   void clearError() {
     _errorMessage = null;
+    _apiError = null;
     notifyListeners();
   }
 
@@ -53,7 +62,12 @@ abstract class BaseFormViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Execute an action with loading state management
+  /// Execute an action with loading state management.
+  ///
+  /// On success returns the result. On failure calls [setError] with the
+  /// human-readable message. If the thrown exception is an [ApiException] it
+  /// is also stored in [apiError] so callers can inspect [ApiException.errorType]
+  /// for structured error handling.
   Future<T?> executeWithLoading<T>(Future<T> Function() action) async {
     setLoading(true);
     clearError();
@@ -61,6 +75,11 @@ abstract class BaseFormViewModel extends ChangeNotifier {
       final result = await action();
       setLoading(false);
       return result;
+    } on ApiException catch (e) {
+      setLoading(false);
+      _apiError = e;
+      setError(e.message);
+      return null;
     } catch (e) {
       setLoading(false);
       setError(e.toString());

@@ -19,187 +19,159 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/neighbor.dart';
+import '../utils/app_colors.dart';
+import '../utils/constants.dart';
 import '../services/demo_api_service.dart';
+import '../utils/single_init_mixin.dart';
+import '../utils/snackbar_helper.dart';
+import '../viewmodels/neighbor_discovery_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/error_display.dart';
+import '../widgets/common/empty_state_widget.dart';
 
 /// Screen displaying discovered neighbors from OPNsense
 class NeighborDiscoveryScreen extends StatefulWidget {
   const NeighborDiscoveryScreen({super.key});
 
   @override
-  State<NeighborDiscoveryScreen> createState() => _NeighborDiscoveryScreenState();
+  State<NeighborDiscoveryScreen> createState() =>
+      _NeighborDiscoveryScreenState();
 }
 
-class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
-  List<Neighbor> _neighbors = [];
-  bool _isLoading = true;
-  String? _errorMessage;
-  String? _serviceStatus;
-  ServiceWidget? _serviceWidget;
-  String _searchQuery = '';
+class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen>
+    with SingleInitMixin {
+  late NeighborDiscoveryViewModel _viewModel;
   final TextEditingController _searchController = TextEditingController();
-  int _rowCount = 50;
-  int _currentPage = 1;
-  int _totalResults = 0;
 
   @override
-  void initState() {
-    super.initState();
-    _checkServiceStatus();
-    _loadNeighbors();
+  void onFirstDependency() {
+    _viewModel = NeighborDiscoveryViewModel(context.read<DemoApiService>());
+    _viewModel.checkServiceStatus();
+    _viewModel.loadItems();
   }
 
-  /// Check if the host discovery service is running
-  Future<void> _checkServiceStatus() async {
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      final status = await demoApiService.checkNeighborDiscoveryStatus();
-      
-      if (mounted) {
-        setState(() {
-          _serviceStatus = status.status;
-          _serviceWidget = status.widget;
-        });
-      }
-    } catch (e) {
-      // Service status check failed, but don't block the UI
-      if (mounted) {
-        setState(() {
-          _serviceStatus = 'unknown';
-          _serviceWidget = null;
-        });
-      }
-    }
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _viewModel.dispose();
+    super.dispose();
   }
 
-  /// Load the neighbors list
-  Future<void> _loadNeighbors() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      final response = await demoApiService.getNeighbors(
-        current: _currentPage,
-        rowCount: _rowCount,
-        searchPhrase: _searchQuery.isNotEmpty ? _searchQuery : null,
-      );
-      
-      if (mounted) {
-        setState(() {
-          _neighbors = response.rows;
-          _totalResults = response.total;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  /// Start the neighbor discovery service
   Future<void> _startService() async {
+    SnackBarHelper.showInfo(context, 'Starting service...');
     try {
-      final demoApiService = context.read<DemoApiService>();
-      
-      // Show loading indicator
+      await _viewModel.startService();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Starting service...')),
-        );
-      }
-      
-      await demoApiService.startNeighborDiscoveryService();
-      
-      // Refresh status
-      await _checkServiceStatus();
-      
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Service started successfully')),
-        );
+        SnackBarHelper.showInfo(context, 'Service started successfully');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to start service: ${e.toString()}')),
-        );
+        SnackBarHelper.showInfo(context, 'Failed to start service: ${e.toString()}');
       }
     }
   }
 
-  /// Stop the neighbor discovery service
   Future<void> _stopService() async {
+    SnackBarHelper.showInfo(context, 'Stopping service...');
     try {
-      final demoApiService = context.read<DemoApiService>();
-      
-      // Show loading indicator
+      await _viewModel.stopService();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Stopping service...')),
-        );
-      }
-      
-      await demoApiService.stopNeighborDiscoveryService();
-      
-      // Refresh status
-      await _checkServiceStatus();
-      
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Service stopped successfully')),
-        );
+        SnackBarHelper.showInfo(context, 'Service stopped successfully');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to stop service: ${e.toString()}')),
-        );
+        SnackBarHelper.showInfo(context, 'Failed to stop service: ${e.toString()}');
       }
     }
   }
 
-  /// Restart the neighbor discovery service
   Future<void> _restartService() async {
+    SnackBarHelper.showInfo(context, 'Restarting service...');
     try {
-      final demoApiService = context.read<DemoApiService>();
-      
-      // Show loading indicator
+      await _viewModel.restartService();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Restarting service...')),
-        );
-      }
-      
-      await demoApiService.restartNeighborDiscoveryService();
-      
-      // Refresh status
-      await _checkServiceStatus();
-      
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Service restarted successfully')),
-        );
+        SnackBarHelper.showInfo(context, 'Service restarted successfully');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to restart service: ${e.toString()}')),
-        );
+        SnackBarHelper.showInfo(
+            context, 'Failed to restart service: ${e.toString()}');
       }
     }
   }
 
-  /// Build the main content
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        final serviceStatus = _viewModel.serviceStatus;
+        final serviceWidget = _viewModel.serviceWidget;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Neighbor Discovery'),
+            actions: [
+              if (serviceStatus == 'running') ...[
+                IconButton(
+                  icon: const Icon(Icons.stop),
+                  tooltip: serviceWidget?.captionStop ?? 'Stop',
+                  onPressed: _stopService,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  tooltip: serviceWidget?.captionRestart ?? 'Restart',
+                  onPressed: _restartService,
+                ),
+              ],
+              if (serviceStatus != 'running' && serviceStatus != null)
+                IconButton(
+                  icon: const Icon(Icons.play_arrow),
+                  tooltip: serviceWidget?.captionStart ?? 'Start',
+                  onPressed: _startService,
+                ),
+              if (serviceStatus != null)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Chip(
+                    label: Text(
+                      serviceStatus,
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                    backgroundColor: serviceStatus == 'running'
+                        ? AppColors.success.withValues(alpha: AppColors.opacityFaint)
+                        : serviceStatus == 'stopped'
+                            ? AppColors.warning.withValues(alpha: AppColors.opacityFaint)
+                            : Theme.of(context).colorScheme.surfaceContainerHighest,
+                    labelStyle: TextStyle(
+                      color: serviceStatus == 'running'
+                          ? AppColors.success
+                          : serviceStatus == 'stopped'
+                              ? AppColors.warning
+                              : Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          drawer: const AppDrawer(currentRoute: '/neighbor_discovery'),
+          body: _viewModel.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _viewModel.errorMessage != null
+                  ? ErrorDisplay(
+                      message: _viewModel.errorMessage!,
+                      onRetry: _viewModel.loadItems,
+                    )
+                  : _buildContent(),
+        );
+      },
+    );
+  }
+
   Widget _buildContent() {
+    final neighbors = _viewModel.items;
+
     return Column(
       children: [
         // Search field
@@ -210,16 +182,13 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
             decoration: InputDecoration(
               hintText: 'Search by IP, MAC, or organization...',
               prefixIcon: const Icon(Icons.search),
-              suffixIcon: _searchQuery.isNotEmpty
+              suffixIcon: _searchController.text.isNotEmpty
                   ? IconButton(
                       icon: const Icon(Icons.clear),
                       onPressed: () {
                         _searchController.clear();
-                        setState(() {
-                          _searchQuery = '';
-                          _currentPage = 1;
-                        });
-                        _loadNeighbors();
+                        _viewModel.setSearchQuery('');
+                        _viewModel.setPage(1);
                       },
                     )
                   : null,
@@ -228,15 +197,14 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
               ),
             ),
             onChanged: (value) {
-              setState(() => _searchQuery = value);
+              _viewModel.setSearchQuery(value);
             },
             onSubmitted: (_) {
-              setState(() => _currentPage = 1);
-              _loadNeighbors();
+              _viewModel.setPage(1);
             },
           ),
         ),
-        
+
         // Row count dropdown
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -248,66 +216,52 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
               ),
               const SizedBox(width: 8),
               DropdownButton<int>(
-                value: _rowCount,
+                value: _viewModel.rowCount,
                 items: const [
                   DropdownMenuItem(value: 50, child: Text('50')),
                   DropdownMenuItem(value: 100, child: Text('100')),
                   DropdownMenuItem(value: 200, child: Text('200')),
                   DropdownMenuItem(value: 500, child: Text('500')),
                   DropdownMenuItem(value: 1000, child: Text('1000')),
-                  DropdownMenuItem(value: 9999, child: Text('All')),
+                  DropdownMenuItem(value: AppConstants.allRowsSentinel, child: Text('All')),
                 ],
                 onChanged: (value) {
                   if (value != null) {
-                    setState(() {
-                      _rowCount = value;
-                      _currentPage = 1;
-                    });
-                    _loadNeighbors();
+                    _viewModel.setRowCount(value);
                   }
                 },
               ),
             ],
           ),
         ),
-        
+
         const SizedBox(height: 8),
-        
+
         // Results list
         Expanded(
-          child: _neighbors.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.devices_other, size: 64, color: Colors.grey[400]),
-                      const SizedBox(height: 16),
-                      Text(
-                        'No neighbors discovered',
-                        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                      ),
-                    ],
-                  ),
+          child: neighbors.isEmpty
+              ? const EmptyStateWidget(
+                  icon: Icons.devices_other,
+                  title: 'No neighbors discovered',
                 )
               : RefreshIndicator(
-                  onRefresh: _loadNeighbors,
+                  onRefresh: _viewModel.loadItems,
                   child: ListView.builder(
                     padding: const EdgeInsets.all(16),
-                    itemCount: _neighbors.length,
+                    itemCount: neighbors.length,
                     itemBuilder: (context, index) {
-                      return _buildNeighborCard(_neighbors[index]);
+                      return _buildNeighborCard(neighbors[index]);
                     },
                   ),
                 ),
         ),
-        
+
         // Pagination controls
         _buildPaginationControls(),
       ],
     );
   }
 
-  /// Build a card for each neighbor
   Widget _buildNeighborCard(Neighbor neighbor) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -316,7 +270,6 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // IP Address (prominent)
             Row(
               children: [
                 Icon(
@@ -336,10 +289,7 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
                 ),
               ],
             ),
-            
             const SizedBox(height: 12),
-            
-            // MAC Address
             Row(
               children: [
                 Icon(
@@ -352,15 +302,13 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
                   neighbor.etherAddress,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontFamily: 'monospace',
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        color:
+                            Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                 ),
               ],
             ),
-            
             const SizedBox(height: 8),
-            
-            // Interface name
             Row(
               children: [
                 Icon(
@@ -372,13 +320,12 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
                 Text(
                   neighbor.interfaceName,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        color:
+                            Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                 ),
               ],
             ),
-            
-            // Organization name (if available)
             if (neighbor.organizationName != null) ...[
               const SizedBox(height: 8),
               Row(
@@ -393,7 +340,9 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
                     child: Text(
                       neighbor.organizationName!,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant,
                           ),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -401,45 +350,31 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
                 ],
               ),
             ],
-            
             const SizedBox(height: 12),
             const Divider(height: 1),
             const SizedBox(height: 8),
-            
-            // First seen timestamp
             Row(
               children: [
-                Icon(
-                  Icons.schedule,
-                  size: 14,
-                  color: Colors.grey[600],
-                ),
+                Icon(Icons.schedule, size: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
                 const SizedBox(width: 6),
                 Text(
                   'First seen: ${_formatLastSeen(neighbor.firstSeen)}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey[600],
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontSize: 12,
                       ),
                 ),
               ],
             ),
-            
             const SizedBox(height: 4),
-            
-            // Last seen timestamp
             Row(
               children: [
-                Icon(
-                  Icons.access_time,
-                  size: 14,
-                  color: Colors.grey[600],
-                ),
+                Icon(Icons.access_time, size: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
                 const SizedBox(width: 6),
                 Text(
                   'Last seen: ${_formatLastSeen(neighbor.lastSeen)}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey[600],
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontSize: 12,
                       ),
                 ),
@@ -451,56 +386,43 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
     );
   }
 
-  /// Build pagination controls
   Widget _buildPaginationControls() {
-    final totalPages = (_totalResults / _rowCount).ceil();
-    
+    final totalResults = _viewModel.totalResults;
+    final rowCount = _viewModel.rowCount;
+    final currentPage = _viewModel.currentPage;
+    final totalPages = (totalResults / rowCount).ceil();
+
     if (totalPages <= 1) {
       return const SizedBox.shrink();
     }
-    
+
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         border: Border(
-          top: BorderSide(
-            color: theme.dividerColor,
-          ),
+          top: BorderSide(color: theme.dividerColor),
         ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Previous button
           IconButton(
             icon: const Icon(Icons.chevron_left),
-            onPressed: _currentPage > 1
-                ? () {
-                    setState(() => _currentPage--);
-                    _loadNeighbors();
-                  }
-                : null,
+            onPressed:
+                currentPage > 1 ? () => _viewModel.setPage(currentPage - 1) : null,
           ),
-          
-          // Page info
           Text(
-            'Page $_currentPage of $totalPages ($_totalResults total)',
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            'Page $currentPage of $totalPages ($totalResults total)',
+            style: theme.textTheme.bodyMedium
+                ?.copyWith(fontWeight: FontWeight.bold),
           ),
-          
-          // Next button
           IconButton(
             icon: const Icon(Icons.chevron_right),
-            onPressed: _currentPage < totalPages
-                ? () {
-                    setState(() => _currentPage++);
-                    _loadNeighbors();
-                  }
+            onPressed: currentPage < totalPages
+                ? () => _viewModel.setPage(currentPage + 1)
                 : null,
           ),
         ],
@@ -508,16 +430,8 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  /// Format the last seen timestamp to a human-readable format
   String _formatLastSeen(String timestamp) {
     try {
-      // Parse the timestamp (assuming Unix timestamp in seconds)
       final lastSeenTime = DateTime.fromMillisecondsSinceEpoch(
         int.parse(timestamp) * 1000,
       );
@@ -534,73 +448,7 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen> {
         return 'Just now';
       }
     } catch (e) {
-      // If parsing fails, return the raw timestamp
       return timestamp;
     }
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Neighbor Discovery'),
-        actions: [
-          // Service control buttons
-          if (_serviceStatus == 'running') ...[
-            IconButton(
-              icon: const Icon(Icons.stop),
-              tooltip: _serviceWidget?.captionStop ?? 'Stop',
-              onPressed: _stopService,
-            ),
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              tooltip: _serviceWidget?.captionRestart ?? 'Restart',
-              onPressed: _restartService,
-            ),
-          ],
-          if (_serviceStatus != 'running' && _serviceStatus != null)
-            IconButton(
-              icon: const Icon(Icons.play_arrow),
-              tooltip: _serviceWidget?.captionStart ?? 'Start',
-              onPressed: _startService,
-            ),
-          // Show service status indicator if available
-          if (_serviceStatus != null)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Chip(
-                label: Text(
-                  _serviceStatus!,
-                  style: const TextStyle(fontSize: 12),
-                ),
-                backgroundColor: _serviceStatus == 'running'
-                    ? Colors.green.shade100
-                    : _serviceStatus == 'stopped'
-                        ? Colors.orange.shade100
-                        : Colors.grey.shade200,
-                labelStyle: TextStyle(
-                  color: _serviceStatus == 'running'
-                      ? Colors.green.shade900
-                      : _serviceStatus == 'stopped'
-                          ? Colors.orange.shade900
-                          : Colors.grey.shade700,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-        ],
-      ),
-      drawer: const AppDrawer(currentRoute: '/neighbor_discovery'),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _errorMessage != null
-              ? ErrorDisplay(
-                  message: _errorMessage!,
-                  onRetry: _loadNeighbors,
-                )
-              : _buildContent(),
-    );
-  }
 }
-
-

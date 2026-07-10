@@ -16,12 +16,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../constants/routes.dart';
 import '../../l10n/app_localizations.dart';
 import '../../screens/system_info_screen.dart';
 import '../../services/opnsense_api_service.dart';
+import '../../services/app_version_service.dart';
+import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
+import '../../utils/snackbar_helper.dart';
 import 'navigation_tile.dart';
 
 /// System navigation section for the app drawer
@@ -45,15 +50,15 @@ class SystemNavigationSection extends StatelessWidget {
           icon: Icons.info_outline,
           title: l10n.systemInformation,
           currentRoute: currentRoute,
-          targetRoute: 'system_info',
+          targetRoute: Routes.systemInfo,
           destination: const SystemInfoScreen(),
           onBeforeNavigate: onBeforeNavigate,
         ),
         ListTile(
-          leading: const Icon(Icons.restart_alt, color: Colors.red),
+          leading: const Icon(Icons.restart_alt, color: AppColors.error),
           title: Text(
             l10n.rebootSystem,
-            style: const TextStyle(color: Colors.red),
+            style: const TextStyle(color: AppColors.error),
           ),
           onTap: () {
             Navigator.pop(context);
@@ -79,7 +84,7 @@ class SystemNavigationSection extends StatelessWidget {
       builder: (context) => AlertDialog(
         title: Row(
           children: [
-            const Icon(Icons.warning, color: Colors.orange),
+            const Icon(Icons.warning, color: AppColors.warning),
             const SizedBox(width: 8),
             Text(l10n.rebootSystem),
           ],
@@ -92,7 +97,7 @@ class SystemNavigationSection extends StatelessWidget {
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
             child: Text(l10n.restart),
           ),
         ],
@@ -102,7 +107,7 @@ class SystemNavigationSection extends StatelessWidget {
     if (confirmed == true && context.mounted) {
       try {
         // Show loading indicator
-        showDialog(
+        unawaited(showDialog(
           context: context,
           barrierDismissible: false,
           builder: (context) => AlertDialog(
@@ -115,7 +120,7 @@ class SystemNavigationSection extends StatelessWidget {
               ],
             ),
           ),
-        );
+        ));
 
         final apiService = context.read<OPNsenseApiService>();
         await apiService.rebootSystem();
@@ -123,24 +128,13 @@ class SystemNavigationSection extends StatelessWidget {
         if (context.mounted) {
           Navigator.of(context).pop(); // Close loading dialog
           
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.rebootSuccess),
-              duration: const Duration(seconds: 5),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.rebootSuccess, duration: const Duration(seconds: 5));
         }
       } catch (e) {
         if (context.mounted) {
           Navigator.of(context).pop(); // Close loading dialog
           
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.rebootFailedWithError(l10n.rebootFailed, e.toString())),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.rebootFailedWithError(l10n.rebootFailed, e.toString()));
         }
       }
     }
@@ -151,9 +145,9 @@ class SystemNavigationSection extends StatelessWidget {
     showAboutDialog(
       context: context,
       applicationName: AppConstants.appName,
-      applicationVersion: AppConstants.appVersion,
+      applicationVersion: context.read<AppVersionService>().version,
       applicationIcon: const Icon(Icons.router, size: 48),
-      applicationLegalese: l10n.applicationLegalese,
+      applicationLegalese: '© 2026 OPNsense Manager\n\nLicensed under GNU General Public License v3.0\n\nThis program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.',
       children: [
         const SizedBox(height: 16),
         Text(
@@ -180,11 +174,11 @@ class SystemNavigationSection extends StatelessWidget {
                   builder: (dialogContext) {
                     final l10n = AppLocalizations.of(dialogContext)!;
                     return AlertDialog(
-                      title: Text(l10n.gnuLicenseTitle),
-                      content: SingleChildScrollView(
+                      title: const Text(StringConstants.gnuLicenseTitle),
+                      content: const SingleChildScrollView(
                         child: Text(
-                          l10n.gnuLicenseText,
-                          style: const TextStyle(fontSize: 13),
+                          'This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.\n\nWhy GPLv3?\n\n• Ensures the software remains free and open source\n• Any modifications or derivatives must also be open source\n• Users have the freedom to use, study, share, and modify the software\n• The community benefits from improvements and contributions',
+                          style: TextStyle(fontSize: 13),
                         ),
                       ),
                       actions: [

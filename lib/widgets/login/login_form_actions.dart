@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/app_colors.dart';
 
 /// Widget for login form action buttons
 class LoginFormActions extends StatelessWidget {
@@ -69,7 +70,7 @@ class LoginFormActions extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
               side: BorderSide(
-                color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: AppColors.opacityHalf),
                 width: 1.5,
               ),
             ),
@@ -100,7 +101,7 @@ class LoginFormActions extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     side: BorderSide(
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).colorScheme.primary,
                       width: 2,
                     ),
                   ),
@@ -118,7 +119,7 @@ class LoginFormActions extends StatelessWidget {
                           width: 16,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor: AlwaysStoppedAnimation<Color>(AppColors.onPrimary),
                           ),
                         )
                       : const Icon(Icons.login, size: 20),
@@ -131,8 +132,8 @@ class LoginFormActions extends StatelessWidget {
                   ),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: Theme.of(context).primaryColor,
-                    foregroundColor: Colors.white,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: AppColors.onPrimary,
                   ),
                 ),
               ),
@@ -146,8 +147,8 @@ class LoginFormActions extends StatelessWidget {
             onPressed: isLoading ? null : onConnect,
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              backgroundColor: Theme.of(context).primaryColor,
-              foregroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: AppColors.onPrimary,
             ),
             child: isLoading
                 ? const SizedBox(
@@ -155,7 +156,7 @@ class LoginFormActions extends StatelessWidget {
                     width: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.onPrimary),
                     ),
                   )
                 : Text(
@@ -178,7 +179,7 @@ class LoginFormActions extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
               side: BorderSide(
-                color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: AppColors.opacityHalf),
                 width: 1,
               ),
             ),

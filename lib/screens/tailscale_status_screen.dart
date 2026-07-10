@@ -21,10 +21,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../models/tailscale_status.dart';
-import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
+import '../utils/app_colors.dart';
+import '../utils/auto_refresh_mixin.dart';
+import '../utils/constants.dart';
+import '../utils/single_init_mixin.dart';
+import '../utils/snackbar_helper.dart';
 import '../utils/formatters.dart';
+import '../viewmodels/tailscale_status_view_model.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/common/confirmation_dialog.dart';
+import '../widgets/common/error_display.dart';
 
 /// Screen for displaying Tailscale status information
 class TailscaleStatusScreen extends StatefulWidget {
@@ -34,67 +41,21 @@ class TailscaleStatusScreen extends StatefulWidget {
   State<TailscaleStatusScreen> createState() => _TailscaleStatusScreenState();
 }
 
-class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
-  TailscaleStatus? _status;
-  SystemInfo? _systemInfo;
-  bool _isLoading = true;
-  String? _errorMessage;
-  Timer? _refreshTimer;
+class _TailscaleStatusScreenState extends State<TailscaleStatusScreen>
+    with AutoRefreshMixin, SingleInitMixin {
+  late TailscaleStatusViewModel _viewModel;
 
   @override
-  void initState() {
-    super.initState();
-    _loadData();
-    _startAutoRefresh();
+  void onFirstDependency() {
+    _viewModel = TailscaleStatusViewModel(context.read<DemoApiService>());
+    _viewModel.loadData();
+    startAutoRefresh(AppConstants.dashboardRefreshInterval, _viewModel.loadData);
   }
 
   @override
   void dispose() {
-    _refreshTimer?.cancel();
+    _viewModel.dispose();
     super.dispose();
-  }
-
-  void _startAutoRefresh() {
-    _refreshTimer = Timer.periodic(
-      const Duration(seconds: 30),
-      (timer) {
-        if (mounted) {
-          _loadData();
-        }
-      },
-    );
-  }
-
-  Future<void> _loadData() async {
-    if (!mounted) return;
-
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final demoApiService = context.read<DemoApiService>();
-      final results = await Future.wait([
-        demoApiService.getTailscaleDetails(),
-        demoApiService.getSystemInfo(),
-      ]);
-
-      if (mounted) {
-        setState(() {
-          _status = results[0] as TailscaleStatus;
-          _systemInfo = results[1] as SystemInfo;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
-    }
   }
 
   Future<void> _controlService(String action) async {
@@ -105,73 +66,34 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
             ? l10n.stop
             : l10n.restart;
 
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) {
-        final l10n = AppLocalizations.of(context)!;
-        return AlertDialog(
-          title: Text(l10n.tailscaleServiceAction(actionTitle)),
-          content: Text(
-              l10n.tailscaleServiceActionConfirmation(action)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(l10n.cancel),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context, true),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: action == 'stop' ? Colors.red : null,
-              ),
-              child: Text(actionTitle),
-            ),
-          ],
-        );
-      },
+      title: l10n.tailscaleServiceAction(actionTitle),
+      message: l10n.tailscaleServiceActionConfirmation(action),
+      confirmText: actionTitle,
+      cancelText: l10n.cancel,
+      isDestructive: action == 'stop',
     );
 
     if (confirmed != true || !mounted) return;
 
-    // Show progress
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.tailscaleServiceActioning(actionTitle)),
-          duration: const Duration(seconds: 2),
-        ),
-      );
-    }
+    SnackBarHelper.showInfo(context, l10n.tailscaleServiceActioning(actionTitle));
 
     try {
-      final demoApiService = context.read<DemoApiService>();
-      final success = await demoApiService.controlTailscaleService(action);
-
+      final success = await _viewModel.controlService(action);
       if (mounted) {
         if (success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.tailscaleServiceActionSuccess(actionTitle)),
-              backgroundColor: Colors.green,
-            ),
-          );
-          _loadData();
+          SnackBarHelper.showSuccess(
+              context, l10n.tailscaleServiceActionSuccess(actionTitle));
+          unawaited(_viewModel.loadData());
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.failedToActionTailscaleService(action)),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(
+              context, l10n.failedToActionTailscaleService(action));
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${l10n.error}: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, '${l10n.error}: ${e.toString()}');
       }
     }
   }
@@ -179,98 +101,84 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.tailscaleStatus),
-        actions: [
-          // Service control buttons
-          if (_status != null) ...[
-            if (!_status!.serviceRunning)
+
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        final status = _viewModel.status;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(l10n.tailscaleStatus),
+            actions: [
+              if (status != null) ...[
+                if (!status.serviceRunning)
+                  IconButton(
+                    icon: const Icon(Icons.play_arrow, color: AppColors.success),
+                    tooltip: l10n.startService,
+                    onPressed: () => _controlService('start'),
+                  ),
+                if (status.serviceRunning) ...[
+                  IconButton(
+                    icon: const Icon(Icons.stop, color: AppColors.error),
+                    tooltip: l10n.stopService,
+                    onPressed: () => _controlService('stop'),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.restart_alt, color: AppColors.warning),
+                    tooltip: l10n.restartService,
+                    onPressed: () => _controlService('restart'),
+                  ),
+                ],
+              ],
               IconButton(
-                icon: const Icon(Icons.play_arrow, color: Colors.green),
-                tooltip: l10n.startService,
-                onPressed: () => _controlService('start'),
-              ),
-            if (_status!.serviceRunning) ...[
-              IconButton(
-                icon: const Icon(Icons.stop, color: Colors.red),
-                tooltip: l10n.stopService,
-                onPressed: () => _controlService('stop'),
-              ),
-              IconButton(
-                icon: const Icon(Icons.restart_alt, color: Colors.orange),
-                tooltip: l10n.restartService,
-                onPressed: () => _controlService('restart'),
+                icon: const Icon(Icons.refresh),
+                onPressed: _viewModel.loadData,
               ),
             ],
-          ],
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadData,
           ),
-        ],
-      ),
-      drawer: AppDrawer(
-        currentRoute: 'tailscale_status',
-        systemInfo: _systemInfo,
-      ),
-      body: RefreshIndicator(
-        onRefresh: _loadData,
-        child: _buildBody(),
-      ),
+          drawer: AppDrawer(
+            currentRoute: 'tailscale_status',
+            systemInfo: _viewModel.systemInfo,
+          ),
+          body: RefreshIndicator(
+            onRefresh: _viewModel.loadData,
+            child: _buildBody(l10n, status),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildBody() {
-    if (_isLoading) {
+  Widget _buildBody(AppLocalizations l10n, TailscaleStatus? status) {
+    if (_viewModel.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (_errorMessage != null) {
-      final l10n = AppLocalizations.of(context)!;
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 64, color: Colors.red),
-            const SizedBox(height: 16),
-            Text(
-              l10n.errorLoadingData,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            Text(_errorMessage!),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: _loadData,
-              icon: const Icon(Icons.refresh),
-              label: Text(l10n.retry),
-            ),
-          ],
-        ),
-      );
+    if (_viewModel.errorMessage != null) {
+      return ErrorDisplay(
+          message: _viewModel.errorMessage!, onRetry: _viewModel.loadData);
     }
 
-    if (_status == null) {
-      final l10n = AppLocalizations.of(context)!;
+    if (status == null) {
       return Center(child: Text(l10n.noDataAvailable));
     }
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        _buildStatusCard(),
+        _buildStatusCard(l10n, status),
         const SizedBox(height: 16),
-        _buildConnectionCard(),
+        _buildConnectionCard(l10n, status),
         const SizedBox(height: 16),
-        _buildNetworkCard(),
+        _buildNetworkCard(l10n, status),
         const SizedBox(height: 16),
-        _buildHealthCard(),
+        _buildHealthCard(l10n, status),
       ],
     );
   }
 
-  Widget _buildStatusCard() {
+  Widget _buildStatusCard(AppLocalizations l10n, TailscaleStatus status) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -281,30 +189,28 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
               children: [
                 const Icon(Icons.info_outline, size: 24),
                 const SizedBox(width: 8),
-                Text(
-                  AppLocalizations.of(context)!.serviceStatus,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text(l10n.serviceStatus,
+                    style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
             const Divider(height: 24),
-            _buildInfoRow(AppLocalizations.of(context)!.serviceRunning,
-                _status!.serviceRunning ? AppLocalizations.of(context)!.yes : AppLocalizations.of(context)!.no,
+            _buildInfoRow(l10n.serviceRunning,
+                status.serviceRunning ? l10n.yes : l10n.no,
                 valueColor:
-                    _status!.serviceRunning ? Colors.green : Colors.red),
-            _buildInfoRow(AppLocalizations.of(context)!.backendState, _status!.backendState,
-                valueColor: _status!.isConnected ? Colors.green : null),
-            _buildInfoRow(AppLocalizations.of(context)!.status, _status!.statusDisplay),
-            if (_status!.version != null)
-              _buildInfoRow(AppLocalizations.of(context)!.versionLabel, _status!.version!),
-            _buildInfoRow(AppLocalizations.of(context)!.peersCount, _status!.peersCount.toString()),
+                    status.serviceRunning ? AppColors.success : AppColors.error),
+            _buildInfoRow(l10n.backendState, status.backendState,
+                valueColor: status.isConnected ? AppColors.success : null),
+            _buildInfoRow(l10n.status, status.statusDisplay),
+            if (status.version != null)
+              _buildInfoRow(l10n.versionLabel, status.version!),
+            _buildInfoRow(l10n.peersCount, status.peersCount.toString()),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildConnectionCard() {
+  Widget _buildConnectionCard(AppLocalizations l10n, TailscaleStatus status) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -315,33 +221,31 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
               children: [
                 const Icon(Icons.cloud_outlined, size: 24),
                 const SizedBox(width: 8),
-                Text(
-                  AppLocalizations.of(context)!.connectionDetails,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text(l10n.connectionDetails,
+                    style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
             const Divider(height: 24),
-            if (_status!.ips.isNotEmpty) ...[
-              _buildInfoRow(AppLocalizations.of(context)!.ipAddresses, _status!.ips.join(', ')),
-            ] else
-              _buildInfoRow(AppLocalizations.of(context)!.ipAddresses, AppLocalizations.of(context)!.none),
-            if (_status!.connectedSince != null)
-              _buildInfoRow(AppLocalizations.of(context)!.connectedSince,
-                  Formatters.formatDateTime(_status!.connectedSince!)),
-            if (_status!.bytesReceived != null)
-              _buildInfoRow(AppLocalizations.of(context)!.bytesReceived,
-                  Formatters.formatBytes(_status!.bytesReceived!, context)),
-            if (_status!.bytesSent != null)
-              _buildInfoRow(
-                  AppLocalizations.of(context)!.bytesSent, Formatters.formatBytes(_status!.bytesSent!, context)),
+            if (status.ips.isNotEmpty)
+              _buildInfoRow(l10n.ipAddresses, status.ips.join(', '))
+            else
+              _buildInfoRow(l10n.ipAddresses, l10n.none),
+            if (status.connectedSince != null)
+              _buildInfoRow(l10n.connectedSince,
+                  Formatters.formatDateTime(status.connectedSince!)),
+            if (status.bytesReceived != null)
+              _buildInfoRow(l10n.bytesReceived,
+                  Formatters.formatBytes(status.bytesReceived!)),
+            if (status.bytesSent != null)
+              _buildInfoRow(l10n.bytesSent,
+                  Formatters.formatBytes(status.bytesSent!)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildNetworkCard() {
+  Widget _buildNetworkCard(AppLocalizations l10n, TailscaleStatus status) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -352,40 +256,38 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
               children: [
                 const Icon(Icons.network_check, size: 24),
                 const SizedBox(width: 8),
-                Text(
-                  AppLocalizations.of(context)!.networkConfiguration,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text(l10n.networkConfiguration,
+                    style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
             const Divider(height: 24),
-            _buildInfoRow(AppLocalizations.of(context)!.acceptRoutes,
-                _status!.acceptRoutes ? AppLocalizations.of(context)!.enabled : AppLocalizations.of(context)!.disabled),
-            if (_status!.advertiseRoutes != null &&
-                _status!.advertiseRoutes!.isNotEmpty)
-              _buildInfoRow(AppLocalizations.of(context)!.advertiseRoutes, _status!.advertiseRoutes!),
+            _buildInfoRow(l10n.acceptRoutes,
+                status.acceptRoutes ? l10n.enabled : l10n.disabled),
+            if (status.advertiseRoutes != null &&
+                status.advertiseRoutes!.isNotEmpty)
+              _buildInfoRow(l10n.advertiseRoutes, status.advertiseRoutes!),
+            _buildInfoRow(l10n.useExitNode,
+                status.useExitNode ? l10n.enabled : l10n.disabled),
+            if (status.exitNode != null && status.exitNode!.isNotEmpty)
+              _buildInfoRow(l10n.exitNode, status.exitNode!),
             _buildInfoRow(
-                AppLocalizations.of(context)!.useExitNode, _status!.useExitNode ? AppLocalizations.of(context)!.enabled : AppLocalizations.of(context)!.disabled),
-            if (_status!.exitNode != null && _status!.exitNode!.isNotEmpty)
-              _buildInfoRow(AppLocalizations.of(context)!.exitNode, _status!.exitNode!),
+                l10n.dnsEnabled, status.dnsEnabled ? l10n.enabled : l10n.disabled),
             _buildInfoRow(
-                AppLocalizations.of(context)!.dnsEnabled, _status!.dnsEnabled ? AppLocalizations.of(context)!.enabled : AppLocalizations.of(context)!.disabled),
+                StringConstants.magicDns, status.magicDns ? l10n.enabled : l10n.disabled),
             _buildInfoRow(
-                AppLocalizations.of(context)!.magicDns, _status!.magicDns ? AppLocalizations.of(context)!.enabled : AppLocalizations.of(context)!.disabled),
-            _buildInfoRow(
-                AppLocalizations.of(context)!.sshEnabled, _status!.sshEnabled ? AppLocalizations.of(context)!.enabled : AppLocalizations.of(context)!.disabled),
-            if (_status!.tags.isNotEmpty)
-              _buildInfoRow(AppLocalizations.of(context)!.tags, _status!.tags.join(', ')),
+                l10n.sshEnabled, status.sshEnabled ? l10n.enabled : l10n.disabled),
+            if (status.tags.isNotEmpty)
+              _buildInfoRow(l10n.tags, status.tags.join(', ')),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHealthCard() {
-    final isHealthy = _status!.isHealthy;
+  Widget _buildHealthCard(AppLocalizations l10n, TailscaleStatus status) {
+    final isHealthy = status.isHealthy;
     return Card(
-      color: isHealthy ? null : Colors.orange.withValues(alpha: 0.1),
+      color: isHealthy ? null : AppColors.warning.withValues(alpha: AppColors.opacitySubtle),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -396,13 +298,11 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
                 Icon(
                   isHealthy ? Icons.check_circle : Icons.warning,
                   size: 24,
-                  color: isHealthy ? Colors.green : Colors.orange,
+                  color: isHealthy ? AppColors.success : AppColors.warning,
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  AppLocalizations.of(context)!.healthStatus,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text(l10n.healthStatus,
+                    style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
             const Divider(height: 24),
@@ -410,17 +310,17 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
               children: [
                 Icon(
                   isHealthy ? Icons.check_circle : Icons.warning,
-                  color: isHealthy ? Colors.green : Colors.orange,
+                  color: isHealthy ? AppColors.success : AppColors.warning,
                   size: 20,
                 ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    _status!.healthDisplay,
+                    status.healthDisplay,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: isHealthy ? Colors.green : Colors.orange,
+                      color: isHealthy ? AppColors.success : AppColors.warning,
                     ),
                   ),
                 ),
@@ -444,7 +344,7 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
               label,
               style: TextStyle(
                 fontWeight: FontWeight.w500,
-                color: Colors.grey[600],
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: AppColors.opacityMuted),
               ),
             ),
           ),
@@ -462,5 +362,3 @@ class _TailscaleStatusScreenState extends State<TailscaleStatusScreen> {
     );
   }
 }
-
-

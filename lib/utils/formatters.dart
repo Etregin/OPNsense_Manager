@@ -20,21 +20,21 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
+import '../utils/constants.dart';
 
 /// Utility class for formatting data
 class Formatters {
   /// Format bytes to human-readable format (B, KB, MB, GB, TB)
-  static String formatBytes(int bytes, BuildContext context, {int decimals = 2}) {
-    final l10n = AppLocalizations.of(context)!;
-    if (bytes <= 0) return '0 ${l10n.unitBytes}';
+  static String formatBytes(int bytes, {int decimals = 2}) {
+    if (bytes <= 0) return '0 ${StringConstants.unitB}';
     
-    final suffixes = [
-      l10n.unitBytes,
-      l10n.unitKilobytes,
-      l10n.unitMegabytes,
-      l10n.unitGigabytes,
-      l10n.unitTerabytes,
-      l10n.unitPetabytes,
+    const suffixes = [
+      StringConstants.unitB,
+      StringConstants.unitKB,
+      StringConstants.unitMB,
+      StringConstants.unitGB,
+      StringConstants.unitTB,
+      StringConstants.unitPB,
     ];
     var i = 0;
     double size = bytes.toDouble();
@@ -48,9 +48,8 @@ class Formatters {
   }
   
   /// Format bytes per second to human-readable format
-  static String formatBytesPerSecond(int bytesPerSecond, BuildContext context, {int decimals = 2}) {
-    final l10n = AppLocalizations.of(context)!;
-    return '${formatBytes(bytesPerSecond, context, decimals: decimals)}${l10n.unitPerSecond}';
+  static String formatBytesPerSecond(int bytesPerSecond, {int decimals = 2}) {
+    return '${formatBytes(bytesPerSecond, decimals: decimals)}${StringConstants.unitPerSec}';
   }
   
   /// Format uptime in seconds to human-readable format
@@ -88,9 +87,8 @@ class Formatters {
   
   /// Format memory in bytes to GB
   static String formatMemoryGB(int bytes, BuildContext context, {int decimals = 2}) {
-    final l10n = AppLocalizations.of(context)!;
     final gb = bytes / (1024 * 1024 * 1024);
-    return '${gb.toStringAsFixed(decimals)} ${l10n.unitGigabytes}';
+    return '${gb.toStringAsFixed(decimals)} ${StringConstants.unitGB}';
   }
   
   /// Format date and time
@@ -115,17 +113,16 @@ class Formatters {
   
   /// Format duration
   static String formatDuration(Duration duration, BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final hours = duration.inHours;
     final minutes = duration.inMinutes.remainder(60);
     final seconds = duration.inSeconds.remainder(60);
     
     if (hours > 0) {
-      return '$hours${l10n.hourAbbrev} $minutes${l10n.minuteAbbrev} $seconds${l10n.secondAbbrev}';
+      return '$hours${StringConstants.hourAbbrev} $minutes${StringConstants.minuteAbbrev} $seconds${StringConstants.secondAbbrev}';
     } else if (minutes > 0) {
-      return '$minutes${l10n.minuteAbbrev} $seconds${l10n.secondAbbrev}';
+      return '$minutes${StringConstants.minuteAbbrev} $seconds${StringConstants.secondAbbrev}';
     } else {
-      return '$seconds${l10n.secondAbbrev}';
+      return '$seconds${StringConstants.secondAbbrev}';
     }
   }
   

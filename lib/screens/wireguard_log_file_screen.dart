@@ -20,9 +20,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../services/demo_api_service.dart';
-import '../widgets/app_drawer.dart';
+import '../utils/single_init_mixin.dart';
+import '../utils/app_colors.dart';
+import '../utils/color_helpers.dart';
+import '../utils/snackbar_helper.dart';
 import '../utils/formatters.dart';
-import 'package:opnsense_manager/l10n/app_localizations.dart';
+import '../viewmodels/wireguard_log_view_model.dart';
+import '../widgets/app_drawer.dart';
+import '../widgets/common/error_display.dart';
+import '../l10n/app_localizations.dart';
 
 /// Model class for WireGuard log entries
 class WireGuardLogEntry {
@@ -57,7 +63,6 @@ class WireGuardLogEntry {
   }
 }
 
-/// Screen for viewing WireGuard log entries with severity filters.
 class WireGuardLogFileScreen extends StatefulWidget {
   const WireGuardLogFileScreen({super.key});
 
@@ -65,7 +70,8 @@ class WireGuardLogFileScreen extends StatefulWidget {
   State<WireGuardLogFileScreen> createState() => _WireGuardLogFileScreenState();
 }
 
-class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
+class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen>
+    with SingleInitMixin {
   List<String> _severityOptions = <String>[];
 
   static const List<int> _rowCountOptions = <int>[50, 100, 200];
@@ -73,100 +79,76 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
   final Set<String> _selectedSeverities = <String>{};
   final Set<int> _selectedLogIndexes = <int>{};
 
-  late DemoApiService _apiService;
-
-  List<WireGuardLogEntry> _logs = <WireGuardLogEntry>[];
-  bool _isInitialized = false;
-  bool _isLoading = true;
+  late WireGuardLogViewModel _viewModel;
   bool _isRefreshing = false;
-  String? _errorMessage;
   int _currentPage = 1;
   int _rowCount = 50;
   String _selectedTimeFilter = 'Last Day';
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void onFirstDependency() {
+    final l10n = AppLocalizations.of(context)!;
+    _severityOptions = <String>[
+      l10n.emergency,
+      l10n.alert,
+      l10n.critical,
+      l10n.error,
+      l10n.warning,
+      l10n.notice,
+      l10n.info,
+      l10n.debug,
+    ];
+    _selectedSeverities.addAll([
+      l10n.emergency,
+      l10n.alert,
+      l10n.critical,
+      l10n.error,
+      l10n.warning,
+    ]);
+    final apiService = context.read<DemoApiService>();
+    _viewModel = WireGuardLogViewModel(
+      apiService,
+      rowCount: _rowCount,
+      severities: _getSeverityLevelsForApi(),
+      validFrom: _getValidFromForTimeFilter(),
+    );
+    _viewModel.loadItems();
+  }
 
-    if (!_isInitialized) {
-      final l10n = AppLocalizations.of(context)!;
-      _severityOptions = <String>[
-        l10n.emergency,
-        l10n.alert,
-        l10n.critical,
-        l10n.error,
-        l10n.warning,
-        l10n.notice,
-        l10n.info,
-        l10n.debug,
-      ];
-      _selectedSeverities.addAll([
-        l10n.emergency,
-        l10n.alert,
-        l10n.critical,
-        l10n.error,
-        l10n.warning,
-      ]);
-      _apiService = context.read<DemoApiService>();
-      _isInitialized = true;
-      _loadLogs();
-    }
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
   }
 
   Future<void> _loadLogs({bool isRefresh = false}) async {
-    if (!mounted) {
-      return;
+    if (!mounted) return;
+
+    if (isRefresh) {
+      setState(() {
+        _isRefreshing = true;
+      });
     }
 
-    final validFrom = _getValidFromForTimeFilter();
+    // Update ViewModel parameters before loading
+    _viewModel.rowCount = _rowCount;
+    _viewModel.severities = _getSeverityLevelsForApi();
+    _viewModel.validFrom = _getValidFromForTimeFilter();
 
-    setState(() {
-      if (isRefresh) {
-        _isRefreshing = true;
-      } else {
-        _isLoading = true;
-      }
-      _errorMessage = null;
-    });
+    await _viewModel.loadItems();
 
-    try {
-      // Get severity levels for API call
-      final severityLevels = _getSeverityLevelsForApi();
-
-      final logsData = await _apiService.getWireGuardLogs(
-        rowCount: _rowCount,
-        severity: severityLevels,
-        validFrom: validFrom,
-      );
-
-      if (mounted) {
-        final rows = logsData['rows'] as List? ?? [];
-        final parsedLogs = rows
-            .map((log) => WireGuardLogEntry.fromJson(log as Map<String, dynamic>))
-            .toList();
-
-        setState(() {
-          _logs = parsedLogs;
-          _selectedLogIndexes.clear();
-          _isLoading = false;
-          _isRefreshing = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-          _isRefreshing = false;
-        });
-      }
+    if (mounted) {
+      setState(() {
+        _isRefreshing = false;
+        _selectedLogIndexes.clear();
+      });
     }
   }
 
   List<String> _getSeverityLevelsForApi() {
     final l10n = AppLocalizations.of(context)!;
     final List<String> apiSeverities = [];
-    
+
     for (final severity in _selectedSeverities) {
       if (severity == l10n.emergency) {
         apiSeverities.add('Emergency');
@@ -186,7 +168,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
         apiSeverities.add('Debug');
       }
     }
-    
+
     return apiSeverities;
   }
 
@@ -212,9 +194,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
   }
 
   Future<void> _changeTimeFilter(String? value) async {
-    if (value == null || value == _selectedTimeFilter) {
-      return;
-    }
+    if (value == null || value == _selectedTimeFilter) return;
 
     setState(() {
       _selectedTimeFilter = value;
@@ -238,9 +218,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
   }
 
   Future<void> _changeRowCount(int? value) async {
-    if (value == null || value == _rowCount) {
-      return;
-    }
+    if (value == null || value == _rowCount) return;
 
     setState(() {
       _rowCount = value;
@@ -251,9 +229,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
   }
 
   Future<void> _changePage(int nextPage) async {
-    if (nextPage < 1 || nextPage == _currentPage) {
-      return;
-    }
+    if (nextPage < 1 || nextPage == _currentPage) return;
 
     setState(() {
       _currentPage = nextPage;
@@ -262,41 +238,22 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
     await _loadLogs();
   }
 
-  Color _severityColor(BuildContext context, String severity) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    switch (severity) {
-      case 'Emergency':
-      case 'Alert':
-      case 'Critical':
-      case 'Error':
-        return colorScheme.error;
-      case 'Warning':
-        return Colors.orange;
-      case 'Notice':
-        return Colors.amber;
-      case 'Info':
-      case 'Informational':
-        return colorScheme.primary;
-      case 'Debug':
-      default:
-        return colorScheme.outline;
-    }
-  }
-
   String _formatTimestamp(String timestamp) {
     try {
       final parsed = DateTime.parse(timestamp);
       return Formatters.formatDateTime(parsed.toLocal());
     } catch (e) {
-      // Try parsing as Unix timestamp
       try {
         final unixTimestamp = double.parse(timestamp);
         final dateTime = DateTime.fromMillisecondsSinceEpoch(
           (unixTimestamp * 1000).toInt(),
         );
         return Formatters.formatDateTime(dateTime.toLocal());
-      } catch (_) {
+      } catch (e) {
+        assert(() {
+          debugPrint('WireGuardLogFileScreen: failed to parse timestamp: $e');
+          return true;
+        }());
         return timestamp;
       }
     }
@@ -305,31 +262,22 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
   String _timeFilterLabel() => _selectedTimeFilter;
 
   int get _displayStart {
-    if (_logs.isEmpty) {
-      return 0;
-    }
-
+    final logs = _viewModel.items;
+    if (logs.isEmpty) return 0;
     return ((_currentPage - 1) * _rowCount) + 1;
   }
 
   int get _displayEnd {
-    if (_logs.isEmpty) {
-      return 0;
-    }
-
-    return _displayStart + _logs.length - 1;
+    final logs = _viewModel.items;
+    if (logs.isEmpty) return 0;
+    return _displayStart + logs.length - 1;
   }
 
   int get _totalPages {
-    if (_rowCount <= 0) {
-      return 1;
-    }
-
-    final hasFullPage = _logs.length == _rowCount;
-    if (!hasFullPage && _currentPage == 1) {
-      return 1;
-    }
-
+    final logs = _viewModel.items;
+    if (_rowCount <= 0) return 1;
+    final hasFullPage = logs.length == _rowCount;
+    if (!hasFullPage && _currentPage == 1) return 1;
     return _currentPage + (hasFullPage ? 1 : 0);
   }
 
@@ -358,20 +306,19 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
   }
 
   Future<void> _copySelectedLogs() async {
+    final logs = _viewModel.items;
     final selectedLogs = _selectedLogIndexes.toList()..sort();
     final content = selectedLogs
-        .map((index) => _buildLogDetails(_logs[index]))
+        .map((index) => _buildLogDetails(logs[index]))
         .join('\n${'-' * 40}\n');
 
     await Clipboard.setData(ClipboardData(text: content));
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${selectedLogs.length} log entr${selectedLogs.length == 1 ? 'y' : 'ies'} copied'),
-        ),
+      SnackBarHelper.showInfo(
+        context,
+        '${selectedLogs.length} log entr${selectedLogs.length == 1 ? 'y' : 'ies'} copied',
       );
-
       setState(() {
         _selectedLogIndexes.clear();
       });
@@ -396,47 +343,56 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _isSelectionMode
-              ? '${_selectedLogIndexes.length} selected'
-              : 'WireGuard Log File',
-        ),
-        leading: _isSelectionMode
-            ? IconButton(
-                onPressed: _clearSelection,
-                icon: const Icon(Icons.close),
-                tooltip: 'Clear selection',
-              )
-            : null,
-        actions: [
-          if (_isSelectionMode)
-            IconButton(
-              onPressed: _copySelectedLogs,
-              icon: const Icon(Icons.copy),
-              tooltip: 'Copy selected',
-            )
-          else
-            IconButton(
-              onPressed: _isLoading ? null : _onRefresh,
-              icon: const Icon(Icons.refresh),
-              tooltip: 'Refresh',
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        final isLoading = _viewModel.isLoading;
+        final errorMessage = _viewModel.errorMessage;
+        final logs = _viewModel.items;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              _isSelectionMode
+                  ? '${_selectedLogIndexes.length} selected'
+                  : 'WireGuard Log File',
             ),
-        ],
-      ),
-      drawer: const AppDrawer(currentRoute: 'wireguard_logs'),
-      body: Column(
-        children: [
-          _buildFilters(),
-          _buildSummaryBar(context),
-          Expanded(child: _buildBody(context)),
-        ],
-      ),
+            leading: _isSelectionMode
+                ? IconButton(
+                    onPressed: _clearSelection,
+                    icon: const Icon(Icons.close),
+                    tooltip: 'Clear selection',
+                  )
+                : null,
+            actions: [
+              if (_isSelectionMode)
+                IconButton(
+                  onPressed: _copySelectedLogs,
+                  icon: const Icon(Icons.copy),
+                  tooltip: 'Copy selected',
+                )
+              else
+                IconButton(
+                  onPressed: isLoading ? null : _onRefresh,
+                  icon: const Icon(Icons.refresh),
+                  tooltip: 'Refresh',
+                ),
+            ],
+          ),
+          drawer: const AppDrawer(currentRoute: 'wireguard_logs'),
+          body: Column(
+            children: [
+              _buildFilters(isLoading),
+              _buildSummaryBar(context, logs),
+              Expanded(child: _buildBody(context, isLoading, errorMessage, logs)),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildFilters() {
+  Widget _buildFilters(bool isLoading) {
     return Card(
       margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: ExpansionTile(
@@ -455,13 +411,12 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
               runSpacing: 8,
               children: _severityOptions.map((severity) {
                 final isSelected = _selectedSeverities.contains(severity);
-
                 return FilterChip(
                   selected: isSelected,
                   label: Text(severity),
                   avatar: CircleAvatar(
                     radius: 6,
-                    backgroundColor: _severityColor(context, severity),
+                    backgroundColor: logFileSeverityColor(context, severity),
                   ),
                   onSelected: (selected) => _toggleSeverity(severity, selected),
                 );
@@ -493,7 +448,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
                     child: Text('No Limit'),
                   ),
                 ],
-                onChanged: _isLoading ? null : _changeTimeFilter,
+                onChanged: isLoading ? null : _changeTimeFilter,
               ),
             ],
           ),
@@ -512,7 +467,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
                       ),
                     )
                     .toList(),
-                onChanged: _isLoading ? null : _changeRowCount,
+                onChanged: isLoading ? null : _changeRowCount,
               ),
             ],
           ),
@@ -521,7 +476,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
     );
   }
 
-  Widget _buildSummaryBar(BuildContext context) {
+  Widget _buildSummaryBar(BuildContext context, List<WireGuardLogEntry> logs) {
     final theme = Theme.of(context);
 
     return Container(
@@ -532,7 +487,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
         children: [
           Expanded(
             child: Text(
-              _logs.isEmpty
+              logs.isEmpty
                   ? 'Showing 0 entries'
                   : 'Showing $_displayStart to $_displayEnd',
               style: theme.textTheme.bodyMedium,
@@ -567,12 +522,10 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
             return SafeArea(
               child: Column(
                 children: [
-                  // Header with drag handle and close button
                   Container(
                     padding: const EdgeInsets.fromLTRB(20, 8, 8, 8),
                     child: Row(
                       children: [
-                        // Drag handle indicator
                         Expanded(
                           child: Center(
                             child: Container(
@@ -580,7 +533,10 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
                               height: 4,
                               margin: const EdgeInsets.only(bottom: 8),
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant
+                                    .withValues(alpha: AppColors.opacityMedium),
                                 borderRadius: BorderRadius.circular(2),
                               ),
                             ),
@@ -594,7 +550,6 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
                       ],
                     ),
                   ),
-                  // Title and copy button
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
                     child: Row(
@@ -610,14 +565,9 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
                             await Clipboard.setData(
                               ClipboardData(text: details),
                             );
-
                             if (context.mounted) {
                               final l10n = AppLocalizations.of(context)!;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(l10n.logEntryCopied),
-                                ),
-                              );
+                              SnackBarHelper.showInfo(context, l10n.logEntryCopied);
                             }
                           },
                           icon: const Icon(Icons.copy),
@@ -626,7 +576,6 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
                       ],
                     ),
                   ),
-                  // Scrollable content
                   Expanded(
                     child: SingleChildScrollView(
                       controller: scrollController,
@@ -646,49 +595,21 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
     );
   }
 
-  Widget _buildBody(BuildContext context) {
-    if (_isLoading && _logs.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+  Widget _buildBody(
+    BuildContext context,
+    bool isLoading,
+    String? errorMessage,
+    List<WireGuardLogEntry> logs,
+  ) {
+    if (isLoading && logs.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
     }
 
-    if (_errorMessage != null && _logs.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.error_outline,
-                size: 64,
-                color: Theme.of(context).colorScheme.error,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Failed to load WireGuard logs',
-                style: Theme.of(context).textTheme.titleLarge,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                _errorMessage!,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton.icon(
-                onPressed: _loadLogs,
-                icon: const Icon(Icons.refresh),
-                label: const Text('Retry'),
-              ),
-            ],
-          ),
-        ),
-      );
+    if (errorMessage != null && logs.isEmpty) {
+      return ErrorDisplay(message: errorMessage, onRetry: _loadLogs);
     }
 
-    if (_logs.isEmpty) {
+    if (logs.isEmpty) {
       return RefreshIndicator(
         onRefresh: _onRefresh,
         child: ListView(
@@ -728,14 +649,14 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
       onRefresh: _onRefresh,
       child: ListView.builder(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-        itemCount: _logs.length + 1,
+        itemCount: logs.length + 1,
         itemBuilder: (context, index) {
-          if (index == _logs.length) {
-            return _buildPaginationControls();
+          if (index == logs.length) {
+            return _buildPaginationControls(isLoading);
           }
 
-          final log = _logs[index];
-          final severityColor = _severityColor(context, log.severity);
+          final log = logs[index];
+          final severityColor = logFileSeverityColor(context, log.severity);
           final isSelected = _selectedLogIndexes.contains(index);
 
           return Card(
@@ -797,7 +718,8 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
                                 child: Text(
                                   _formatTimestamp(log.timestamp),
                                   textAlign: TextAlign.end,
-                                  style: Theme.of(context).textTheme.bodySmall,
+                                  style:
+                                      Theme.of(context).textTheme.bodySmall,
                                 ),
                               ),
                             ],
@@ -811,7 +733,8 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
                                 label: Text(log.severity),
                                 visualDensity: VisualDensity.compact,
                                 side: BorderSide(color: severityColor),
-                                labelStyle: TextStyle(color: severityColor),
+                                labelStyle:
+                                    TextStyle(color: severityColor),
                               ),
                             ],
                           ),
@@ -833,14 +756,14 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
     );
   }
 
-  Widget _buildPaginationControls() {
+  Widget _buildPaginationControls(bool isLoading) {
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: Row(
         children: [
           Expanded(
             child: OutlinedButton.icon(
-              onPressed: _isLoading || _currentPage <= 1
+              onPressed: isLoading || _currentPage <= 1
                   ? null
                   : () => _changePage(_currentPage - 1),
               icon: const Icon(Icons.chevron_left),
@@ -853,7 +776,7 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
           ),
           Expanded(
             child: OutlinedButton.icon(
-              onPressed: _isLoading || _currentPage >= _totalPages
+              onPressed: isLoading || _currentPage >= _totalPages
                   ? null
                   : () => _changePage(_currentPage + 1),
               icon: const Icon(Icons.chevron_right),
@@ -865,4 +788,3 @@ class _WireGuardLogFileScreenState extends State<WireGuardLogFileScreen> {
     );
   }
 }
-

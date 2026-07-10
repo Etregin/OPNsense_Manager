@@ -26,19 +26,13 @@ dependencies:
   # Local Storage
   shared_preferences: ^2.2.2
   
-  # Charts
-  fl_chart: ^1.1.1
-  
   # JSON Serialization
   json_annotation: ^4.8.1
-  
-  # UI Components
-  cupertino_icons: ^1.0.8
   
   # Utilities
   intl: ^0.20.2
   uuid: ^4.5.1
-  path: ^1.9.0
+  package_info_plus: ^10.2.0
   
   # Biometric Authentication
   local_auth: ^3.0.0
@@ -46,18 +40,9 @@ dependencies:
   # File Picker for import/export
   file_picker: ^12.0.0-beta.4
   
-  # Path Provider for file operations
-  path_provider: ^2.1.5
-  
   # QR Code generation for WireGuard configs
   qr_flutter: ^4.1.0
   
-  # Share files for WireGuard config export
-  share_plus: ^13.1.0
-  
-  # URL Launcher for opening authentication URLs
-  url_launcher: ^6.2.2
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -20,14 +20,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../models/wireguard_server.dart';
+import '../utils/constants.dart';
+import '../utils/snackbar_helper.dart';
 import '../viewmodels/wireguard_server_form_view_model.dart';
 import '../widgets/common/loading_overlay.dart';
 import '../widgets/wireguard/key_pair_section.dart';
 import '../widgets/wireguard/list_manager_card.dart';
 import '../widgets/wireguard/peer_selector_dialog.dart';
-import '../utils/common_validators.dart';
+import '../utils/validators.dart';
 import '../utils/wireguard_validators.dart';
-import 'package:opnsense_manager/l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 /// Refactored form screen for creating/editing WireGuard servers
 class WireGuardServerFormScreen extends StatefulWidget {
@@ -76,7 +78,7 @@ class _WireGuardServerFormScreenState
     if (_viewModel.isEditing) {
       _loadServerData();
     } else {
-      _portController.text = '51820';
+      _portController.text = '${AppConstants.defaultWireGuardPort}';
     }
   }
 
@@ -128,21 +130,9 @@ class _WireGuardServerFormScreenState
         _publicKeyController.text = keyPair.publicKey;
         _privateKeyController.text = keyPair.privateKey;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.keysGeneratedSuccessfully),
-          backgroundColor: Colors.green,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      SnackBarHelper.showSuccess(context, AppLocalizations.of(context)!.keysGeneratedSuccessfully);
     } else if (_viewModel.errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_viewModel.errorMessage!),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 4),
-        ),
-      );
+      SnackBarHelper.showError(context, _viewModel.errorMessage!, duration: const Duration(seconds: 4));
     }
   }
 
@@ -152,12 +142,7 @@ class _WireGuardServerFormScreenState
     if (!_formKey.currentState!.validate()) return;
 
     if (_tunnelAddresses.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.atLeastOneTunnelAddressRequired),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.atLeastOneTunnelAddressRequired);
       return;
     }
 
@@ -181,26 +166,12 @@ class _WireGuardServerFormScreenState
 
     if (mounted) {
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              _viewModel.isEditing
-                  ? l10n.serverUpdatedSuccessfully
-                  : l10n.serverCreatedSuccessfully,
-            ),
-            backgroundColor: Colors.green,
-          ),
-        );
+        SnackBarHelper.showSuccess(context, _viewModel.isEditing
+            ? l10n.serverUpdatedSuccessfully
+            : l10n.serverCreatedSuccessfully);
         Navigator.of(context).pop();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              _viewModel.errorMessage ?? l10n.failedToSaveServer,
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, _viewModel.errorMessage ?? l10n.failedToSaveServer);
       }
     }
   }
@@ -288,7 +259,7 @@ class _WireGuardServerFormScreenState
                   hintText: l10n.myWireguardServer,
                   prefixIcon: const Icon(Icons.label),
                 ),
-                validator: (value) => CommonValidators.required(value, fieldName: l10n.name),
+                validator: (value) => Validators.required(value, fieldName: l10n.name),
                 enabled: !_viewModel.isLoading,
               ),
               const SizedBox(height: 16),
@@ -298,13 +269,13 @@ class _WireGuardServerFormScreenState
                 controller: _portController,
                 decoration: InputDecoration(
                   labelText: l10n.port,
-                  hintText: '51820',
+                  hintText: '${AppConstants.defaultWireGuardPort}',
                   prefixIcon: const Icon(Icons.settings_ethernet),
                   helperText: l10n.udpPortDefault51820,
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                validator: CommonValidators.port,
+                validator: Validators.port,
                 enabled: !_viewModel.isLoading,
               ),
               const SizedBox(height: 16),
