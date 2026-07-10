@@ -57,7 +57,7 @@ class StatusCard extends StatelessWidget {
                 // Interface name (ifname)
                 Expanded(
                   child: Text(
-                    item.ifname,
+                    item.ifname ?? '',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -72,7 +72,7 @@ class StatusCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
-                    item.type,
+                    item.type ?? '',
                     style: TextStyle(
                       color: item.isInterface ? AppColors.info : AppColors.warning,
                       fontWeight: FontWeight.w500,
@@ -84,22 +84,24 @@ class StatusCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             
-            // Status (up/down)
-            _buildInfoRow(
-              context,
-              l10n.status,
-              item.status.toUpperCase(),
-              icon: Icons.power_settings_new,
-              valueColor: item.isUp ? AppColors.success : AppColors.error,
-            ),
+            // Status (up/down) — only present on interface rows
+            if (item.status != null)
+              _buildInfoRow(
+                context,
+                l10n.status,
+                item.status!.toUpperCase(),
+                icon: Icons.power_settings_new,
+                valueColor: item.isUp ? AppColors.success : AppColors.error,
+              ),
             
             // Device (interface name like wg0, wg1)
-            _buildInfoRow(
-              context,
-              l10n.device,
-              item.interfaceName,
-              icon: Icons.router,
-            ),
+            if (item.interfaceName != null)
+              _buildInfoRow(
+                context,
+                l10n.device,
+                item.interfaceName!,
+                icon: Icons.router,
+              ),
             
             // Name/Description (only if not null and not empty)
             if (item.name != null && item.name!.isNotEmpty)
@@ -110,38 +112,44 @@ class StatusCard extends StatelessWidget {
                 icon: Icons.label,
               ),
             
-            // Listen Port
-            _buildInfoRow(
-              context,
-              l10n.listenPort,
-              item.listenPort,
-              icon: Icons.settings_ethernet,
-            ),
-            
-            // Endpoint (only if different from listen port and not empty)
-            if (item.endpoint.isNotEmpty && item.endpoint != item.listenPort)
+            // Listen Port — only present on interface rows
+            if (item.listenPort != null)
+              _buildInfoRow(
+                context,
+                l10n.listenPort,
+                item.listenPort!,
+                icon: Icons.settings_ethernet,
+              ),
+
+            // Endpoint (only if not null, not empty, and different from listen port)
+            if (item.endpoint != null &&
+                item.endpoint!.isNotEmpty &&
+                item.endpoint != item.listenPort)
               _buildInfoRow(
                 context,
                 l10n.endpoint,
-                item.endpoint,
+                item.endpoint!,
                 icon: Icons.location_on,
               ),
-            
-            // Firewall Mark (only if not "off" or "0")
-            if (item.fwmark.isNotEmpty && item.fwmark != 'off' && item.fwmark != '0')
+
+            // Firewall Mark — only present on interface rows; hide if "off" or "0"
+            if (item.fwmark != null &&
+                item.fwmark!.isNotEmpty &&
+                item.fwmark != 'off' &&
+                item.fwmark != '0')
               _buildInfoRow(
                 context,
                 l10n.fwMark,
-                item.fwmark,
+                item.fwmark!,
                 icon: Icons.security,
               ),
             
             // Peer Status (only if not null and not empty)
-            if (item.peerStatus.isNotEmpty)
+            if (item.peerStatus != null && item.peerStatus!.isNotEmpty)
               _buildInfoRow(
                 context,
                 l10n.peerStatus,
-                item.peerStatus,
+                item.peerStatus!,
                 icon: Icons.link,
                 valueColor: item.isOnline ? AppColors.success : AppColors.disabled,
               ),
@@ -155,12 +163,12 @@ class StatusCard extends StatelessWidget {
                 icon: Icons.access_time,
               ),
             
-            // Public Key (only if value is not "(none)" and not empty)
+            // Public Key (only if not null, not "(none)", and not empty)
             if (item.hasPublicKey)
               _buildInfoRow(
                 context,
                 l10n.publicKey,
-                item.publicKey,
+                item.publicKey!,
                 icon: Icons.vpn_key,
                 monospace: true,
               ),

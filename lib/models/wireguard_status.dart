@@ -26,27 +26,27 @@ part 'wireguard_status.g.dart';
 class WireGuardStatusItem {
   /// Interface name (e.g., "wg0")
   @JsonKey(name: 'if')
-  final String interfaceName;
+  final String? interfaceName;
   
   /// Type: "interface" or "peer"
-  final String type;
+  final String? type;
   
   /// Public key (may be "(none)" for interfaces without keys)
   @JsonKey(name: 'public-key')
-  final String publicKey;
+  final String? publicKey;
   
-  /// Listen port for the interface
+  /// Listen port for the interface (only present on "interface" rows, not peers)
   @JsonKey(name: 'listen-port')
-  final String listenPort;
+  final String? listenPort;
   
-  /// Firewall mark setting
-  final String fwmark;
+  /// Firewall mark setting (only present on "interface" rows, not peers)
+  final String? fwmark;
   
   /// Endpoint (same as listen-port for interfaces)
-  final String endpoint;
+  final String? endpoint;
   
-  /// Status: "up" or "down"
-  final String status;
+  /// Status: "up" or "down" (only present on "interface" rows, not peers)
+  final String? status;
   
   /// Name/description (may be empty)
   final String? name;
@@ -61,40 +61,40 @@ class WireGuardStatusItem {
   
   /// Peer status: "online" or "offline"
   @JsonKey(name: 'peer-status')
-  final String peerStatus;
+  final String? peerStatus;
   
   /// Interface friendly name
-  final String ifname;
+  final String? ifname;
 
   WireGuardStatusItem({
-    required this.interfaceName,
-    required this.type,
-    required this.publicKey,
-    required this.listenPort,
-    required this.fwmark,
-    required this.endpoint,
-    required this.status,
+    this.interfaceName,
+    this.type,
+    this.publicKey,
+    this.listenPort,
+    this.fwmark,
+    this.endpoint,
+    this.status,
     this.name,
     this.latestHandshakeAge,
     this.latestHandshakeEpoch,
-    required this.peerStatus,
-    required this.ifname,
+    this.peerStatus,
+    this.ifname,
   });
 
   /// Check if the interface/peer is up
-  bool get isUp => status.toLowerCase() == 'up';
+  bool get isUp => status?.toLowerCase() == 'up';
   
   /// Check if this is an interface (not a peer)
-  bool get isInterface => type.toLowerCase() == 'interface';
+  bool get isInterface => type?.toLowerCase() == 'interface';
   
   /// Check if this is a peer
-  bool get isPeer => type.toLowerCase() == 'peer';
+  bool get isPeer => type?.toLowerCase() == 'peer';
   
   /// Check if peer is online
-  bool get isOnline => peerStatus.toLowerCase() == 'online';
+  bool get isOnline => peerStatus?.toLowerCase() == 'online';
   
   /// Get listen port as integer
-  int get listenPortNumber => int.tryParse(listenPort) ?? 0;
+  int get listenPortNumber => int.tryParse(listenPort ?? '') ?? 0;
   
   /// Get latest handshake as DateTime (null if not available)
   DateTime? get latestHandshakeDateTime {
@@ -108,7 +108,7 @@ class WireGuardStatusItem {
   }
   
   /// Check if public key is set (not "(none)")
-  bool get hasPublicKey => publicKey != '(none)' && publicKey.isNotEmpty;
+  bool get hasPublicKey => publicKey != null && publicKey != '(none)' && publicKey!.isNotEmpty;
 
   factory WireGuardStatusItem.fromJson(Map<String, dynamic> json) =>
       _$WireGuardStatusItemFromJson(json);
