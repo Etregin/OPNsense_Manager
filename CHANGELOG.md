@@ -9,6 +9,7 @@ All notable changes to OPNsense Manager will be documented in this file.
 
 ### Changed
 
+- Comprehensive refactor of the codebase covering color token migration, constants extraction, l10n cleanup, ViewModel pattern adoption, and shared utility/widget extraction.
 
 ### Fixed
 
