@@ -8,18 +8,18 @@ part of 'wireguard_status.dart';
 
 WireGuardStatusItem _$WireGuardStatusItemFromJson(Map<String, dynamic> json) =>
     WireGuardStatusItem(
-      interfaceName: json['if'] as String,
-      type: json['type'] as String,
-      publicKey: json['public-key'] as String,
-      listenPort: json['listen-port'] as String,
-      fwmark: json['fwmark'] as String,
-      endpoint: json['endpoint'] as String,
-      status: json['status'] as String,
+      interfaceName: json['if'] as String?,
+      type: json['type'] as String?,
+      publicKey: json['public-key'] as String?,
+      listenPort: json['listen-port'] as String?,
+      fwmark: json['fwmark'] as String?,
+      endpoint: json['endpoint'] as String?,
+      status: json['status'] as String?,
       name: json['name'] as String?,
       latestHandshakeAge: (json['latest-handshake-age'] as num?)?.toInt(),
       latestHandshakeEpoch: json['latest-handshake-epoch'] as String?,
-      peerStatus: json['peer-status'] as String,
-      ifname: json['ifname'] as String,
+      peerStatus: json['peer-status'] as String?,
+      ifname: json['ifname'] as String?,
     );
 
 Map<String, dynamic> _$WireGuardStatusItemToJson(
