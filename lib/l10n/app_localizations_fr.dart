@@ -1826,6 +1826,9 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get longPressToCopy => 'Long press to copy';
+
+  @override
   String get logDetails => 'Détails du journal';
 
   @override

@@ -26,6 +26,7 @@ import '../services/demo_api_service.dart';
 import '../services/profile_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
+import '../utils/snackbar_helper.dart';
 import '../utils/single_init_mixin.dart';
 import '../viewmodels/dhcp_leases_view_model.dart';
 import '../widgets/app_drawer.dart';
@@ -403,10 +404,16 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen>
     final l10n = AppLocalizations.of(context)!;
     final isExpired = lease.isExpired;
     
-    return Card(
+    return Tooltip(
+      message: l10n.longPressToCopy,
+      child: Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: InkWell(
         onTap: () => _showLeaseDetails(lease),
+        onLongPress: () {
+          final text = '${lease.hostname}, ${lease.address}, ${lease.macAddress}';
+          SnackBarHelper.copyToClipboard(context, text);
+        },
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(12),
@@ -571,6 +578,7 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen>
           ),
         ),
       ),
+    ),
     );
   }
 
@@ -627,38 +635,40 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen>
             ),
           ],
         ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildDetailRow(l10n.ipAddress, lease.address),
-              _buildDetailRow(l10n.macAddress, lease.macAddress),
-              if (lease.manufacturer != null)
-                _buildDetailRow(l10n.manufacturer, lease.manufacturer!),
-              if (lease.interface != null)
-                _buildDetailRow(l10n.interface, lease.interface!),
-              const Divider(height: 24),
-              _buildDetailRow(
-                l10n.status,
-                lease.isExpired ? l10n.expired : l10n.active,
-              ),
-              if (lease.startDateTime != null)
+        content: SelectionArea(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDetailRow(l10n.ipAddress, lease.address),
+                _buildDetailRow(l10n.macAddress, lease.macAddress),
+                if (lease.manufacturer != null)
+                  _buildDetailRow(l10n.manufacturer, lease.manufacturer!),
+                if (lease.interface != null)
+                  _buildDetailRow(l10n.interface, lease.interface!),
+                const Divider(height: 24),
                 _buildDetailRow(
-                  l10n.startTime,
-                  dateFormat.format(lease.startDateTime!),
+                  l10n.status,
+                  lease.isExpired ? l10n.expired : l10n.active,
                 ),
-              if (lease.expiryDateTime != null)
-                _buildDetailRow(
-                  l10n.expiryTime,
-                  dateFormat.format(lease.expiryDateTime!),
-                ),
-              if (lease.endDateTime != null)
-                _buildDetailRow(
-                  l10n.endTime,
-                  dateFormat.format(lease.endDateTime!),
-                ),
-            ],
+                if (lease.startDateTime != null)
+                  _buildDetailRow(
+                    l10n.startTime,
+                    dateFormat.format(lease.startDateTime!),
+                  ),
+                if (lease.expiryDateTime != null)
+                  _buildDetailRow(
+                    l10n.expiryTime,
+                    dateFormat.format(lease.expiryDateTime!),
+                  ),
+                if (lease.endDateTime != null)
+                  _buildDetailRow(
+                    l10n.endTime,
+                    dateFormat.format(lease.endDateTime!),
+                  ),
+              ],
+            ),
           ),
         ),
         actions: [

@@ -3224,6 +3224,12 @@ abstract class AppLocalizations {
   /// **'Lock timeout set to {value} {value, plural, =1{minute} other{minutes}}'**
   String lockTimeoutSet(int value);
 
+  /// No description provided for @longPressToCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Long press to copy'**
+  String get longPressToCopy;
+
   /// No description provided for @logDetails.
   ///
   /// In en, this message translates to:

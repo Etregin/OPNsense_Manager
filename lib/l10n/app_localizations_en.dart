@@ -1803,6 +1803,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get longPressToCopy => 'Long press to copy';
+
+  @override
   String get logDetails => 'Log Details';
 
   @override

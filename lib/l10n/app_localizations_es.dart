@@ -1823,6 +1823,9 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get longPressToCopy => 'Long press to copy';
+
+  @override
   String get logDetails => 'Detalles del registro';
 
   @override

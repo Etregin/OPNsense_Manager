@@ -1608,6 +1608,8 @@
       }
     }
   },
+  "longPressToCopy": "Long press to copy",
+  "@longPressToCopy": {},
   "logDetails": "Log Details",
   "@logDetails": {},
   "logEntryCopied": "Log entry copied",
