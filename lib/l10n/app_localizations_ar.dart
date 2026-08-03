@@ -1795,6 +1795,9 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get longPressToCopy => 'Long press to copy';
+
+  @override
   String get logDetails => 'تفاصيل السجل';
 
   @override

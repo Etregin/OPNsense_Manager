@@ -1644,6 +1644,8 @@
       }
     }
   },
+  "longPressToCopy": "Long press to copy",
+  "@longPressToCopy": {},
   "logDetails": "Détails du journal",
   "@logDetails": {},
   "logEntryCopied": "Entrée de journal copiée",

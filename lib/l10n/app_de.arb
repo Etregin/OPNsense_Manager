@@ -1644,6 +1644,8 @@
       }
     }
   },
+  "longPressToCopy": "Long press to copy",
+  "@longPressToCopy": {},
   "logDetails": "Protokolldetails",
   "@logDetails": {},
   "logEntryCopied": "Protokolleintrag kopiert",

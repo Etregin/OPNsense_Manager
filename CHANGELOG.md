@@ -10,6 +10,8 @@ All notable changes to OPNsense Manager will be documented in this file.
 ### Changed
 
 - Comprehensive refactor of the codebase covering color token migration, constants extraction, l10n cleanup, ViewModel pattern adoption, and shared utility/widget extraction.
+- Added the option to Long Press DHCP lease to copy the contents.
+- Adjusted the DHCP Card to be able to select text inside the widget 
 
 ### Fixed
 

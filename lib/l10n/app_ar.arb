@@ -1637,6 +1637,8 @@
       }
     }
   },
+  "longPressToCopy": "Long press to copy",
+  "@longPressToCopy": {},
   "logDetails": "تفاصيل السجل",
   "@logDetails": {},
   "logEntryCopied": "تم نسخ إدخال السجل",
