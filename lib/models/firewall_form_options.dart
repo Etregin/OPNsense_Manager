@@ -28,6 +28,8 @@ class FirewallFormOptions {
   final Map<String, String> prio;
   final Map<String, String> setPrio;
   final Map<String, String> tos;
+  /// Firewall rule categories: uuid/name → display name
+  final Map<String, String> categories;
 
   const FirewallFormOptions({
     required this.gateways,
@@ -39,18 +41,20 @@ class FirewallFormOptions {
     required this.prio,
     required this.setPrio,
     required this.tos,
+    required this.categories,
   });
 
   /// Empty / fallback options used before data loads or on error.
   factory FirewallFormOptions.defaults() => const FirewallFormOptions(
-        gateways:  {'': 'None'},
-        replyTo:   {'': 'None'},
-        divertTo:  {'': 'None'},
-        overload:  {'': 'None'},
-        schedules: {'': 'None'},
-        shapers:   {'': 'None'},
-        prio:      {'': 'Any priority'},
-        setPrio:   {'': 'Keep current priority'},
-        tos:       {'': 'Any'},
+        gateways:   {'': 'None'},
+        replyTo:    {'': 'None'},
+        divertTo:   {'': 'None'},
+        overload:   {'': 'None'},
+        schedules:  {'': 'None'},
+        shapers:    {'': 'None'},
+        prio:       {'': 'Any priority'},
+        setPrio:    {'': 'Keep current priority'},
+        tos:        {'': 'Any'},
+        categories: {},
       );
 }

@@ -186,16 +186,37 @@ class FirewallService extends BaseOPNsenseService {
       // fall through to return defaults
     }
 
+    // Fetch firewall categories from dedicated endpoint
+    Map<String, String> categoryMap = {};
+    try {
+      final catResponse = await dio.get('/api/firewall/category/searchItem');
+      if (catResponse.statusCode == 200) {
+        final catData = catResponse.data as Map<String, dynamic>;
+        final rows = catData['rows'];
+        if (rows is List) {
+          for (final row in rows) {
+            if (row is Map<String, dynamic>) {
+              final name = row['name']?.toString() ?? '';
+              if (name.isNotEmpty) categoryMap[name] = name;
+            }
+          }
+        }
+      }
+    } on DioException {
+      // leave empty — categories are optional
+    }
+
     return FirewallFormOptions(
-      gateways:  _extractOptions(ruleObj?['gateway'],   '', 'None'),
-      replyTo:   _extractOptions(ruleObj?['replyto'],   '', 'None'),
-      divertTo:  _extractOptions(ruleObj?['divert-to'], '', 'None'),
-      overload:  _extractOptions(ruleObj?['overload'],  '', 'None'),
-      schedules: _extractOptions(ruleObj?['sched'],     '', 'None'),
-      shapers:   _extractOptions(ruleObj?['shaper1'],   '', 'None'),
-      prio:      _extractOptions(ruleObj?['prio'],      '', 'Any priority'),
-      setPrio:   _extractOptions(ruleObj?['set-prio'],  '', 'Keep current priority'),
-      tos:       _extractOptions(ruleObj?['tos'],       '', 'Any'),
+      gateways:   _extractOptions(ruleObj?['gateway'],   '', 'None'),
+      replyTo:    _extractOptions(ruleObj?['replyto'],   '', 'None'),
+      divertTo:   _extractOptions(ruleObj?['divert-to'], '', 'None'),
+      overload:   _extractOptions(ruleObj?['overload'],  '', 'None'),
+      schedules:  _extractOptions(ruleObj?['sched'],     '', 'None'),
+      shapers:    _extractOptions(ruleObj?['shaper1'],   '', 'None'),
+      prio:       _extractOptions(ruleObj?['prio'],      '', 'Any priority'),
+      setPrio:    _extractOptions(ruleObj?['set-prio'],  '', 'Keep current priority'),
+      tos:        _extractOptions(ruleObj?['tos'],       '', 'Any'),
+      categories: categoryMap,
     );
   }
 

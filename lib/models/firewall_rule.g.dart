@@ -182,6 +182,11 @@ FirewallRuleRequest _$FirewallRuleRequestFromJson(Map<String, dynamic> json) =>
       tos: json['tos'] as String? ?? '',
       tag: json['tag'] as String? ?? '',
       tagged: json['tagged'] as String? ?? '',
+      categories:
+          (json['categories'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
     );
 
 Map<String, dynamic> _$FirewallRuleRequestToJson(
@@ -236,4 +241,5 @@ Map<String, dynamic> _$FirewallRuleRequestToJson(
   'tos': instance.tos,
   'tag': instance.tag,
   'tagged': instance.tagged,
+  'categories': instance.categories,
 };

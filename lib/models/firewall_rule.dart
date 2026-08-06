@@ -490,6 +490,10 @@ class FirewallRuleRequest {
   @JsonKey(name: 'tagged', defaultValue: '')
   final String tagged;
 
+  // Organisation
+  @JsonKey(name: 'categories', defaultValue: [])
+  final List<String> categories;
+
   FirewallRuleRequest({
     required this.type,
     required this.interfaceName,
@@ -540,6 +544,7 @@ class FirewallRuleRequest {
     this.tos = '',
     this.tag = '',
     this.tagged = '',
+    this.categories = const [],
   });
 
   /// Create from JSON

@@ -20,6 +20,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/firewall_rule.dart';
+import '../models/firewall_form_options.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
@@ -82,7 +83,6 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
   final _sourcePortController = TextEditingController();
   final _destinationController = TextEditingController();
   final _destinationPortController = TextEditingController();
-  final _categoriesController = TextEditingController();
   final _sequenceController = TextEditingController();
   final _statTimeoutController = TextEditingController();
   final _udpFirstController = TextEditingController();
@@ -101,6 +101,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
 
   // ── Organisation ─────────────────────────────────────────────────────────
   bool _enabled = true;
+  List<String> _selectedCategories = [];
 
   // ── Interface ────────────────────────────────────────────────────────────
   String _selectedInterface = 'lan';
@@ -186,7 +187,6 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
     _sourcePortController.dispose();
     _destinationController.dispose();
     _destinationPortController.dispose();
-    _categoriesController.dispose();
     _sequenceController.dispose();
     _statTimeoutController.dispose();
     _udpFirstController.dispose();
@@ -246,7 +246,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
       _destinationPortType = 'single';
       _destinationPortController.text = rule.destinationPort;
     }
-    _categoriesController.text = rule.categories.join(', ');
+    _selectedCategories = List<String>.from(rule.categories);
     _sequenceController.text = rule.sequence > 0 ? rule.sequence.toString() : '';
 
     _selectedType = rule.type;
@@ -374,6 +374,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
       tos: _selectedTos,
       tag: _tagController.text.trim(),
       tagged: _taggedController.text.trim(),
+      categories: _selectedCategories,
     );
 
     final success = await _viewModel.saveRule(request);
@@ -475,118 +476,25 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
     required List<String> selected,
     required ValueChanged<List<String>> onChanged,
   }) async {
-    final l10n = AppLocalizations.of(context)!;
     final opts = _buildNetOptions();
-    final working = List<String>.from(selected);
-    final searchCtrl = TextEditingController();
-
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (ctx) {
-        return StatefulBuilder(builder: (ctx, setModalState) {
-          final query = searchCtrl.text.toLowerCase();
-          final filtered = opts.entries
-              .where((e) =>
-                  e.key.toLowerCase().contains(query) ||
-                  e.value.toLowerCase().contains(query))
-              .toList();
-
-          return DraggableScrollableSheet(
-            initialChildSize: 0.7,
-            maxChildSize: 0.95,
-            minChildSize: 0.4,
-            expand: false,
-            builder: (_, scrollCtrl) => Column(
-              children: [
-                // Handle bar
-                const SizedBox(height: 8),
-                Container(
-                  width: 36, height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-                  child: Text(label,
-                      style: Theme.of(ctx).textTheme.titleMedium
-                          ?.copyWith(fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: TextField(
-                    controller: searchCtrl,
-                    decoration: InputDecoration(
-                      hintText: l10n.searchAliases,
-                      prefixIcon: const Icon(Icons.search),
-                      isDense: true,
-                      border: const OutlineInputBorder(),
-                    ),
-                    onChanged: (_) => setModalState(() {}),
-                  ),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    controller: scrollCtrl,
-                    itemCount: filtered.length,
-                    itemBuilder: (_, i) {
-                      final e = filtered[i];
-                      final checked = working.contains(e.key);
-                      return CheckboxListTile(
-                        dense: true,
-                        value: checked,
-                        title: Text(e.value),
-                        subtitle: e.key != e.value ? Text(e.key,
-                            style: Theme.of(ctx).textTheme.bodySmall) : null,
-                        onChanged: (v) {
-                          setModalState(() {
-                            if (v == true) {
-                              // Selecting 'any' clears all others
-                              if (e.key == 'any') {
-                                working
-                                  ..clear()
-                                  ..add('any');
-                              } else {
-                                working.remove('any');
-                                working.add(e.key);
-                              }
-                            } else {
-                              working.remove(e.key);
-                              if (working.isEmpty) working.add('any');
-                            }
-                          });
-                        },
-                      );
-                    },
-                  ),
-                ),
-                SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: FilledButton(
-                        onPressed: () {
-                          onChanged(List<String>.from(working));
-                          Navigator.of(ctx).pop();
-                        },
-                        child: Text(l10n.done),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        });
-      },
+      builder: (_) => _PickerSheet(
+        title: label,
+        options: opts,
+        initialSelected: selected,
+        isLoading: false,
+        searchHint: AppLocalizations.of(context)!.searchAliases,
+        doneLabel: AppLocalizations.of(context)!.done,
+        emptyLabel: AppLocalizations.of(context)!.noItemsConfigured,
+        showSubtitle: true,
+        onDone: onChanged,
+      ),
     );
-    searchCtrl.dispose();
   }
 
   /// Builds the tappable chip row + optional free-text field for a net picker.
@@ -651,6 +559,65 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
           ),
         ],
       ],
+    );
+  }
+
+  /// Tappable chip row for category multi-select, backed by opts.categories.
+  Widget _buildCategoryPickerField(FirewallFormOptions opts) {
+    final l10n = AppLocalizations.of(context)!;
+    final categoryOpts = opts.categories;
+
+    Future<void> openPicker() async {
+      await showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        builder: (_) => _PickerSheet(
+          title: l10n.categoriesLabel,
+          options: categoryOpts,
+          initialSelected: _selectedCategories,
+          isLoading: _viewModel.loadingOptions,
+          searchHint: l10n.searchAliases,
+          doneLabel: l10n.done,
+          emptyLabel: l10n.noItemsConfigured,
+          showSubtitle: false,
+          onDone: (result) => setState(() => _selectedCategories = result),
+        ),
+      );
+    }
+
+    return InkWell(
+      onTap: _isLoading ? null : openPicker,
+      borderRadius: BorderRadius.circular(8),
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: l10n.categoriesLabel,
+          prefixIcon: const Icon(Icons.label_outline),
+          suffixIcon: const Icon(Icons.arrow_drop_down),
+          helperText: l10n.categoriesHint,
+          helperMaxLines: 2,
+        ),
+        child: _selectedCategories.isEmpty
+            ? Text(l10n.categoriesHint,
+                style: TextStyle(color: Theme.of(context).hintColor))
+            : Wrap(
+                spacing: 6,
+                runSpacing: 4,
+                children: _selectedCategories.map((k) {
+                  final label = categoryOpts[k] ?? k;
+                  return Chip(
+                    label: Text(label, style: const TextStyle(fontSize: 12)),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                    onDeleted: _isLoading
+                        ? null
+                        : () => setState(() => _selectedCategories.remove(k)),
+                  );
+                }).toList(),
+              ),
+      ),
     );
   }
 
@@ -748,15 +715,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                     onChanged: _isLoading ? null : (v) => setState(() => _enabled = v),
                   ),
                   _gap(),
-                  TextFormField(
-                    controller: _categoriesController,
-                    decoration: InputDecoration(
-                      labelText: l10n.categoriesLabel,
-                      hintText: l10n.categoriesHint,
-                      prefixIcon: const Icon(Icons.label_outline),
-                    ),
-                    enabled: !_isLoading,
-                  ),
+                  _buildCategoryPickerField(opts),
                   _gap(),
                   TextFormField(
                     controller: _descriptionController,
@@ -1603,6 +1562,164 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Reusable picker bottom-sheet widget.
+// Owns its TextEditingController and working-list state so there is no
+// use-after-dispose issue when the sheet animates away.
+// ─────────────────────────────────────────────────────────────────────────────
+class _PickerSheet extends StatefulWidget {
+  final String title;
+  final Map<String, String> options;
+  final List<String> initialSelected;
+  final bool isLoading;
+  final String searchHint;
+  final String doneLabel;
+  final String emptyLabel;
+  /// When true, shows the option key as a subtitle (useful for net options).
+  final bool showSubtitle;
+  final ValueChanged<List<String>> onDone;
+
+  const _PickerSheet({
+    required this.title,
+    required this.options,
+    required this.initialSelected,
+    required this.isLoading,
+    required this.searchHint,
+    required this.doneLabel,
+    required this.emptyLabel,
+    required this.showSubtitle,
+    required this.onDone,
+  });
+
+  @override
+  State<_PickerSheet> createState() => _PickerSheetState();
+}
+
+class _PickerSheetState extends State<_PickerSheet> {
+  late final TextEditingController _searchCtrl;
+  late List<String> _working;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchCtrl = TextEditingController();
+    _working = List<String>.from(widget.initialSelected);
+  }
+
+  @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final query = _searchCtrl.text.toLowerCase();
+    final filtered = widget.options.entries
+        .where((e) =>
+            e.key.toLowerCase().contains(query) ||
+            e.value.toLowerCase().contains(query))
+        .toList();
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.65,
+      maxChildSize: 0.95,
+      minChildSize: 0.4,
+      expand: false,
+      builder: (_, scrollCtrl) => Column(
+        children: [
+          // Handle bar
+          const SizedBox(height: 8),
+          Container(
+            width: 36,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            child: Text(
+              widget.title,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: TextField(
+              controller: _searchCtrl,
+              decoration: InputDecoration(
+                hintText: widget.searchHint,
+                prefixIcon: const Icon(Icons.search),
+                isDense: true,
+                border: const OutlineInputBorder(),
+              ),
+              onChanged: (_) => setState(() {}),
+            ),
+          ),
+          Expanded(
+            child: widget.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : widget.options.isEmpty
+                    ? Center(child: Text(widget.emptyLabel))
+                    : ListView.builder(
+                        controller: scrollCtrl,
+                        itemCount: filtered.length,
+                        itemBuilder: (_, i) {
+                          final e = filtered[i];
+                          return CheckboxListTile(
+                            dense: true,
+                            value: _working.contains(e.key),
+                            title: Text(e.value),
+                            subtitle: widget.showSubtitle && e.key != e.value
+                                ? Text(e.key,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall)
+                                : null,
+                            onChanged: (v) => setState(() {
+                              if (v == true) {
+                                if (e.key == 'any') {
+                                  _working
+                                    ..clear()
+                                    ..add('any');
+                                } else {
+                                  _working.remove('any');
+                                  _working.add(e.key);
+                                }
+                              } else {
+                                _working.remove(e.key);
+                                if (_working.isEmpty) _working.add('any');
+                              }
+                            }),
+                          );
+                        },
+                      ),
+          ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+              child: SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: () {
+                    widget.onDone(List<String>.from(_working));
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(widget.doneLabel),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

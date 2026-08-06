@@ -109,7 +109,24 @@ class DemoApiService {
   Future<FirewallFormOptions> getFirewallRuleFormOptions() =>
       DemoApiDecorator.execute(
         isDemoMode: _isDemoMode,
-        demoAction: () async => FirewallFormOptions.defaults(),
+        demoAction: () async => const FirewallFormOptions(
+          gateways:  {'': 'None', 'WAN_DHCP': 'WAN_DHCP - 192.168.1.1', 'Null4': 'Null4 - 127.0.0.1'},
+          replyTo:   {'': 'None', 'WAN_DHCP': 'WAN_DHCP - 192.168.1.1'},
+          divertTo:  {'': 'None', '8000': 'Intrusion Detection'},
+          overload:  {'': 'None', 'virusprot': 'virusprot', 'sshlockout': 'sshlockout'},
+          schedules: {'': 'None'},
+          shapers:   {'': 'None'},
+          prio:      {'': 'Any priority', '1': 'Background (1, lowest)', '7': 'Network Control (7, highest)'},
+          setPrio:   {'': 'Keep current priority', '1': 'Background (1, lowest)', '7': 'Network Control (7, highest)'},
+          tos:       {'': 'Any', 'lowdelay': 'lowdelay', 'throughput': 'throughput'},
+          categories: {
+            'LAN Rules': 'LAN Rules',
+            'WAN Rules': 'WAN Rules',
+            'VPN': 'VPN',
+            'IoT': 'IoT',
+            'Management': 'Management',
+          },
+        ),
         realAction: () => _realApiService.getFirewallRuleFormOptions(),
         delayMs: 200,
       );
