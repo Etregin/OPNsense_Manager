@@ -128,6 +128,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get additionalInformation => 'Zusätzliche Informationen';
 
   @override
+  String get advancedOptions => 'Advanced Options';
+
+  @override
   String get address => 'Adresse';
 
   @override
@@ -782,6 +785,15 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get direction => 'Richtung';
+
+  @override
+  String get directionBoth => 'Both';
+
+  @override
+  String get directionIn => 'In';
+
+  @override
+  String get directionOut => 'Out';
 
   @override
   String get disable => 'Deaktivieren';
@@ -1659,10 +1671,29 @@ class AppLocalizationsDe extends AppLocalizations {
   String get invalidSourceFormat => 'Ungültiges Quellformat';
 
   @override
+  String get invertDestination => 'Invert destination (NOT)';
+
+  @override
+  String get invertDestinationTooltip =>
+      'Match any address EXCEPT the destination';
+
+  @override
+  String get invertSource => 'Invert source (NOT)';
+
+  @override
+  String get invertSourceTooltip => 'Match any address EXCEPT the source';
+
+  @override
   String get ipAddress => 'IP-Adresse';
 
   @override
   String get ipAddresses => 'IP-Adressen';
+
+  @override
+  String get ipAny => 'Any';
+
+  @override
+  String get ipProtocol => 'IP Version';
 
   @override
   String get ipv4TunnelNetwork => 'IPv4-Tunnel-Netzwerk';
@@ -1689,6 +1720,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get keepBoth => 'Beide Behalten';
+
+  @override
+  String get keepState => 'Keep State';
 
   @override
   String get keepalive => 'Keepalive';
@@ -1859,6 +1893,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get loginServerRequired => 'Anmeldeserver ist erforderlich';
 
   @override
+  String get logTraffic => 'Log Traffic';
+
+  @override
+  String get logTrafficSubtitle => 'Log packets matched by this rule';
+
+  @override
   String get logout => 'Abmelden';
 
   @override
@@ -1923,6 +1963,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get modified => 'Geändert';
+
+  @override
+  String get modulateState => 'Modulate State';
 
   @override
   String get monitorInterface => 'Überwachungsschnittstelle';
@@ -2133,6 +2176,9 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get noStaticKeysConfigured =>
       'Keine statischen Schlüssel konfiguriert';
+
+  @override
+  String get noState => 'No State';
 
   @override
   String get noSubnetsConfigured => 'Keine Subnetze konfiguriert';
@@ -2448,6 +2494,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get qrCode => 'QR-Code';
+
+  @override
+  String get quickRule => 'Quick Rule';
+
+  @override
+  String get quickRuleSubtitle => 'Stop processing rules after first match';
 
   @override
   String get reason => 'Grund';
@@ -2885,6 +2937,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get sourcePortOptional => 'Quellport (Optional)';
 
   @override
+  String get sloppyState => 'Sloppy State';
+
+  @override
   String get sshEnabled => 'SSH aktiviert';
 
   @override
@@ -2926,6 +2981,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get staticLease => 'Statisch';
+
+  @override
+  String get stateType => 'State Type';
 
   @override
   String get status => 'Status';
@@ -3021,6 +3079,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get systemType => 'Systemtyp';
+
+  @override
+  String get swapSourceDestination => 'Swap source and destination';
+
+  @override
+  String get synproxyState => 'Synproxy State';
 
   @override
   String get tags => 'Tags';
@@ -3553,4 +3617,241 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get rawTimestamp => 'Roh-Zeitstempel';
+
+  @override
+  String get organisationSection => 'Organisation';
+
+  @override
+  String get interfaceSection => 'Interface';
+
+  @override
+  String get filterSection => 'Filter';
+
+  @override
+  String get sourceRoutingSection => 'Source Routing';
+
+  @override
+  String get statefulFirewallSection => 'Stateful Firewall';
+
+  @override
+  String get trafficShapingSection => 'Traffic Shaping';
+
+  @override
+  String get prioritySection => 'Priority';
+
+  @override
+  String get internalTaggingSection => 'Internal Tagging';
+
+  @override
+  String get showAdvanced => 'Show Advanced';
+
+  @override
+  String get hideAdvanced => 'Hide Advanced';
+
+  @override
+  String get enableThisRule => 'Enable this rule';
+
+  @override
+  String get categoriesLabel => 'Categories';
+
+  @override
+  String get categoriesHint =>
+      'For grouping purposes you may select multiple groups here.';
+
+  @override
+  String get invertInterface => 'Invert Interface';
+
+  @override
+  String get invertInterfaceSubtitle => 'Use all but selected interfaces';
+
+  @override
+  String get quickRuleHelp =>
+      'If a packet matches a rule specifying quick, then that rule is considered the last matching rule and the specified action is taken.';
+
+  @override
+  String get actionHelp =>
+      'Choose what to do with packets that match the criteria specified below.';
+
+  @override
+  String get directionHelp =>
+      'Direction of the traffic. The default policy is to filter inbound traffic.';
+
+  @override
+  String get fwVersionLabel => 'Version';
+
+  @override
+  String get icmpTypeLabel => 'ICMP Type';
+
+  @override
+  String get sourcePortHelp =>
+      'Source port number or well known name (imap, imaps, http, https, ...), for ranges use a dash';
+
+  @override
+  String get destinationPortHelp =>
+      'Destination port number or well known name (imap, imaps, http, https, ...), for ranges use a dash';
+
+  @override
+  String get logHelp => 'Log packets that are handled by this rule';
+
+  @override
+  String get fwGatewayLabel => 'Gateway';
+
+  @override
+  String get gatewayHelp =>
+      'Leave as default to use the system routing table. Or choose a gateway to utilize policy based routing.';
+
+  @override
+  String get sequenceLabel => 'Sequence';
+
+  @override
+  String get sequenceHelp => 'The order in which rules are being processed.';
+
+  @override
+  String get noXmlrpcSync => 'No XMLRPC Sync';
+
+  @override
+  String get noXmlrpcSyncHelp =>
+      'Exclude this item from the HA synchronization process.';
+
+  @override
+  String get allowOptionsLabel => 'Allow Options';
+
+  @override
+  String get allowOptionsHelp => 'This allows packets with IP options to pass.';
+
+  @override
+  String get tcpFlagsLabel => 'TCP Flags';
+
+  @override
+  String get tcpFlagsOutLabel => 'TCP Flags [out of]';
+
+  @override
+  String get tcpFlagsAnyLabel => 'TCP Flags Any';
+
+  @override
+  String get scheduleLabel => 'Schedule';
+
+  @override
+  String get divertToLabel => 'Divert-to';
+
+  @override
+  String get divertToHelp =>
+      'Send packets matching this rule to the service specified.';
+
+  @override
+  String get statePolicyLabel => 'State Policy';
+
+  @override
+  String get noPfsyncLabel => 'No pfsync';
+
+  @override
+  String get noPfsyncHelp =>
+      'Prevents states created by this rule to be synced with pfsync.';
+
+  @override
+  String get tcpEstablishedLabel => 'TCP Established';
+
+  @override
+  String get udpFirstLabel => 'UDP First';
+
+  @override
+  String get udpSingleLabel => 'UDP Single';
+
+  @override
+  String get udpMultipleLabel => 'UDP Multiple';
+
+  @override
+  String get adaptiveStartLabel => 'Adaptive Start';
+
+  @override
+  String get adaptiveEndLabel => 'Adaptive End';
+
+  @override
+  String get maxStatesLabel => 'Max States';
+
+  @override
+  String get maxSrcNodesLabel => 'Max Source Nodes';
+
+  @override
+  String get maxSrcStatesLabel => 'Max Source States';
+
+  @override
+  String get maxSrcConnLabel => 'Max Source Connections';
+
+  @override
+  String get maxNewConnCLabel => 'Max New Connections [c]';
+
+  @override
+  String get maxNewConnSLabel => 'Max New Connections [s]';
+
+  @override
+  String get overloadTableLabel => 'Overload Table';
+
+  @override
+  String get overloadTableHelp =>
+      'Overload table used when max new connections per time interval has been reached.';
+
+  @override
+  String get shaperLabel => 'Traffic Shaper';
+
+  @override
+  String get shaperReverseLabel => 'Traffic Shaper [reverse]';
+
+  @override
+  String get disableReplyToLabel => 'Disable Reply-to';
+
+  @override
+  String get disableReplyToHelp => 'Explicit disable reply-to for this rule';
+
+  @override
+  String get replyToLabel => 'Reply-to';
+
+  @override
+  String get replyToHelp =>
+      'Determines how packets route back in the opposite direction.';
+
+  @override
+  String get matchPriorityLabel => 'Match Priority';
+
+  @override
+  String get setPriorityLabel => 'Set Priority';
+
+  @override
+  String get setPriorityLowLabel => 'Set Priority [low-delay]';
+
+  @override
+  String get matchTosLabel => 'Match TOS / DSCP';
+
+  @override
+  String get setLocalTagLabel => 'Set Local Tag';
+
+  @override
+  String get setLocalTagHelp =>
+      'Packets matching this rule will be tagged with the specified string.';
+
+  @override
+  String get matchLocalTagLabel => 'Match Local Tag';
+
+  @override
+  String get matchLocalTagHelp =>
+      'Packets must already be tagged with the given tag to match the rule.';
+
+  @override
+  String get singleHostOrNetwork => 'Single host or network';
+
+  @override
+  String get singlePortOrRange => 'Single port or range';
+
+  @override
+  String get thisFirwall => 'This Firewall';
+
+  @override
+  String interfaceNet(String name) {
+    return '$name net';
+  }
+
+  @override
+  String interfaceAddress(String name) {
+    return '$name address';
+  }
 }
