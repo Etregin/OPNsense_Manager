@@ -28,6 +28,38 @@ import '../l10n/app_localizations.dart';
 import '../viewmodels/firewall_rule_form_view_model.dart';
 import '../widgets/common/loading_overlay.dart';
 
+// ──────────────────────────────────────────────────────────────────────────────
+// ICMP type options (common subset matching OPNsense web UI)
+// ──────────────────────────────────────────────────────────────────────────────
+const _kIcmpTypes = {
+  '': 'any',
+  'echoreq': 'Echo Request',
+  'echorep': 'Echo Reply',
+  'unreach': 'Destination Unreachable',
+  'redir': 'Redirect',
+  'routeradv': 'Router Advertisement',
+  'routersol': 'Router Solicitation',
+  'timex': 'Time Exceeded',
+  'paramprob': 'Parameter Problem',
+};
+
+const _kIcmp6Types = {
+  '': 'any',
+  '128': 'Echo service request',
+  '129': 'Echo service reply',
+  '1': 'Destination unreachable',
+  '2': 'Packet too big',
+  '3': 'Time exceeded',
+  '133': 'Router solicitation',
+  '134': 'Router advertisement',
+  '135': 'Neighbor solicitation',
+  '136': 'Neighbor advertisement',
+};
+
+const _kTcpFlagNames = ['syn', 'ack', 'fin', 'rst', 'psh', 'urg', 'ece', 'cwr'];
+
+// ──────────────────────────────────────────────────────────────────────────────
+
 /// Form screen for creating or editing firewall rules
 class FirewallRuleFormScreen extends StatefulWidget {
   final FirewallRule? rule;
@@ -44,16 +76,89 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
   late FirewallRuleFormViewModel _viewModel;
   final _formKey = GlobalKey<FormState>();
 
+  // ── Text controllers ────────────────────────────────────────────────────────
   final _descriptionController = TextEditingController();
   final _sourceController = TextEditingController();
   final _sourcePortController = TextEditingController();
   final _destinationController = TextEditingController();
   final _destinationPortController = TextEditingController();
+  final _categoriesController = TextEditingController();
+  final _sequenceController = TextEditingController();
+  final _statTimeoutController = TextEditingController();
+  final _udpFirstController = TextEditingController();
+  final _udpSingleController = TextEditingController();
+  final _udpMultipleController = TextEditingController();
+  final _adaptiveStartController = TextEditingController();
+  final _adaptiveEndController = TextEditingController();
+  final _maxController = TextEditingController();
+  final _maxSrcNodesController = TextEditingController();
+  final _maxSrcStatesController = TextEditingController();
+  final _maxSrcConnController = TextEditingController();
+  final _maxSrcConnRateController = TextEditingController();
+  final _maxSrcConnRatesController = TextEditingController();
+  final _tagController = TextEditingController();
+  final _taggedController = TextEditingController();
 
-  String _selectedType = 'pass';
-  String _selectedInterface = 'lan';
-  String _selectedProtocol = 'any';
+  // ── Organisation ─────────────────────────────────────────────────────────
   bool _enabled = true;
+
+  // ── Interface ────────────────────────────────────────────────────────────
+  String _selectedInterface = 'lan';
+  bool _interfaceNot = false;
+
+  // ── Filter ───────────────────────────────────────────────────────────────
+  bool _quick = true;
+  String _selectedType = 'pass';
+  String _selectedDirection = 'in';
+  String _selectedIpProtocol = 'inet';
+  String _selectedProtocol = 'any';
+  String _selectedIcmpType = '';
+  bool _sourceNot = false;
+  List<String> _sourceSelected = ['any'];
+  String _sourcePortType = 'any';
+  bool _destinationNot = false;
+  List<String> _destinationSelected = ['any'];
+  String _destinationPortType = 'any';
+  bool _log = false;
+
+  // ── Source Routing ───────────────────────────────────────────────────────
+  String _selectedGateway = '';
+
+  // ── Advanced — Organisation ──────────────────────────────────────────────
+  bool _noSync = false;
+
+  // ── Advanced — Filter ────────────────────────────────────────────────────
+  bool _allowOpts = false;
+  List<String> _tcpFlags1 = [];
+  List<String> _tcpFlags2 = [];
+  bool _tcpFlagsAny = false;
+  String _selectedSchedule = '';
+  String _selectedDivertTo = '';
+
+  // ── Stateful Firewall ────────────────────────────────────────────────────
+  String _selectedStateType = 'keep';
+  String _selectedStatePolicy = '';
+  bool _noPfsync = false;
+  String _selectedOverload = '';
+
+  // ── Traffic Shaping ──────────────────────────────────────────────────────
+  String _selectedShaper1 = '';
+  String _selectedShaper2 = '';
+
+  // ── Advanced — Source Routing ────────────────────────────────────────────
+  bool _disableReplyTo = false;
+  String _selectedReplyTo = '';
+
+  // ── Priority ─────────────────────────────────────────────────────────────
+  String _selectedPrio = '';
+  String _selectedSetPrio = '';
+  String _selectedSetPrioLow = '';
+  String _selectedTos = '';
+
+  // ── UI state ─────────────────────────────────────────────────────────────
+  bool _showAdvanced = false;
+
+  // ──────────────────────────────────────────────────────────────────────────
 
   @override
   void initState() {
@@ -64,14 +169,11 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
     );
     _viewModel.addListener(_onViewModelChanged);
     _viewModel.loadInterfaces();
+    _viewModel.loadFormOptions();
+    _viewModel.loadAliases();
 
     if (widget.isEditing) {
       _loadRuleData();
-    } else {
-      _sourceController.text = 'any';
-      _sourcePortController.text = 'any';
-      _destinationController.text = 'any';
-      _destinationPortController.text = 'any';
     }
   }
 
@@ -84,6 +186,22 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
     _sourcePortController.dispose();
     _destinationController.dispose();
     _destinationPortController.dispose();
+    _categoriesController.dispose();
+    _sequenceController.dispose();
+    _statTimeoutController.dispose();
+    _udpFirstController.dispose();
+    _udpSingleController.dispose();
+    _udpMultipleController.dispose();
+    _adaptiveStartController.dispose();
+    _adaptiveEndController.dispose();
+    _maxController.dispose();
+    _maxSrcNodesController.dispose();
+    _maxSrcStatesController.dispose();
+    _maxSrcConnController.dispose();
+    _maxSrcConnRateController.dispose();
+    _maxSrcConnRatesController.dispose();
+    _tagController.dispose();
+    _taggedController.dispose();
     super.dispose();
   }
 
@@ -94,14 +212,112 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
   void _loadRuleData() {
     final rule = widget.rule!;
     _descriptionController.text = rule.description;
-    _sourceController.text = rule.source;
-    _sourcePortController.text = 'any';
-    _destinationController.text = rule.destination;
-    _destinationPortController.text = rule.destinationPort;
+
+    // Source net — split comma-separated value into list of selected keys.
+    _sourceSelected = _splitNetValue(rule.source);
+    if (_sourceSelected.contains('single')) {
+      _sourceController.text = rule.source
+          .split(',')
+          .where((v) => !_isFixedNetKey(v))
+          .join(',');
+    }
+
+    // Source port
+    if (rule.sourcePort.isEmpty || rule.sourcePort == 'any') {
+      _sourcePortType = 'any';
+    } else {
+      _sourcePortType = 'single';
+      _sourcePortController.text = rule.sourcePort;
+    }
+
+    // Destination net
+    _destinationSelected = _splitNetValue(rule.destination);
+    if (_destinationSelected.contains('single')) {
+      _destinationController.text = rule.destination
+          .split(',')
+          .where((v) => !_isFixedNetKey(v))
+          .join(',');
+    }
+
+    // Destination port
+    if (rule.destinationPort.isEmpty || rule.destinationPort == 'any') {
+      _destinationPortType = 'any';
+    } else {
+      _destinationPortType = 'single';
+      _destinationPortController.text = rule.destinationPort;
+    }
+    _categoriesController.text = rule.categories.join(', ');
+    _sequenceController.text = rule.sequence > 0 ? rule.sequence.toString() : '';
+
     _selectedType = rule.type;
     _selectedInterface = rule.interfaceName;
     _selectedProtocol = rule.protocol;
     _enabled = rule.isEnabled;
+    _selectedDirection = rule.direction;
+    _selectedIpProtocol = rule.ipProtocol;
+    _quick = rule.quick == '1';
+    _log = rule.log == '1';
+    _selectedStateType = rule.stateType;
+    _sourceNot = rule.sourceNot == '1';
+    _destinationNot = rule.destinationNot == '1';
+    _interfaceNot = rule.interfaceNot == '1';
+    _noSync = rule.noSync == '1';
+    _allowOpts = rule.allowOpts == '1';
+    _tcpFlags1 = List<String>.from(rule.tcpFlags1);
+    _tcpFlags2 = List<String>.from(rule.tcpFlags2);
+    _tcpFlagsAny = rule.tcpFlagsAny == '1';
+    _selectedSchedule = rule.schedule;
+    _selectedDivertTo = rule.divertTo;
+    _selectedGateway = rule.gateway;
+    _selectedReplyTo = rule.replyTo;
+    _disableReplyTo = rule.disableReplyTo == '1';
+    _selectedStatePolicy = rule.statePolicy;
+    _noPfsync = rule.noPfsync == '1';
+    _statTimeoutController.text = rule.statTimeout;
+    _udpFirstController.text = rule.udpFirst;
+    _udpSingleController.text = rule.udpSingle;
+    _udpMultipleController.text = rule.udpMultiple;
+    _adaptiveStartController.text = rule.adaptiveStart;
+    _adaptiveEndController.text = rule.adaptiveEnd;
+    _maxController.text = rule.max;
+    _maxSrcNodesController.text = rule.maxSrcNodes;
+    _maxSrcStatesController.text = rule.maxSrcStates;
+    _maxSrcConnController.text = rule.maxSrcConn;
+    _maxSrcConnRateController.text = rule.maxSrcConnRate;
+    _maxSrcConnRatesController.text = rule.maxSrcConnRates;
+    _selectedOverload = rule.overload;
+    _selectedShaper1 = rule.shaper1;
+    _selectedShaper2 = rule.shaper2;
+    _selectedPrio = rule.prio;
+    _selectedSetPrio = rule.setPrio;
+    _selectedSetPrioLow = rule.setPrioLow;
+    _selectedTos = rule.tos;
+    _tagController.text = rule.tag;
+    _taggedController.text = rule.tagged;
+  }
+
+  void _swapSourceDestination() {
+    setState(() {
+      final tempNet = _sourceController.text;
+      _sourceController.text = _destinationController.text;
+      _destinationController.text = tempNet;
+
+      final tempPort = _sourcePortController.text;
+      _sourcePortController.text = _destinationPortController.text;
+      _destinationPortController.text = tempPort;
+
+      final tempSelected = _sourceSelected;
+      _sourceSelected = _destinationSelected;
+      _destinationSelected = tempSelected;
+
+      final tempPortType = _sourcePortType;
+      _sourcePortType = _destinationPortType;
+      _destinationPortType = tempPortType;
+
+      final tempNot = _sourceNot;
+      _sourceNot = _destinationNot;
+      _destinationNot = tempNot;
+    });
   }
 
   Future<void> _saveRule() async {
@@ -112,12 +328,52 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
       type: _selectedType,
       interfaceName: _selectedInterface,
       protocol: _selectedProtocol,
-      source: _sourceController.text.trim(),
-      destination: _destinationController.text.trim(),
-      destinationPort: _destinationPortController.text.trim(),
+      source: _encodeNetValue(_sourceSelected, _sourceController.text.trim()),
+      destination: _encodeNetValue(_destinationSelected, _destinationController.text.trim()),
+      destinationPort: _destinationPortType == 'any' ? '' : _destinationPortController.text.trim(),
       description: _descriptionController.text.trim(),
       enabled: _enabled ? '1' : '0',
-      sourcePort: _sourcePortController.text.trim(),
+      sourcePort: _sourcePortType == 'any' ? '' : _sourcePortController.text.trim(),
+      direction: _selectedDirection,
+      ipProtocol: _selectedIpProtocol,
+      quick: _quick ? '1' : '0',
+      log: _log ? '1' : '0',
+      stateType: _selectedStateType,
+      sourceNot: _sourceNot ? '1' : '0',
+      destinationNot: _destinationNot ? '1' : '0',
+      interfaceNot: _interfaceNot ? '1' : '0',
+      noSync: _noSync ? '1' : '0',
+      sequence: _sequenceController.text.trim(),
+      allowOpts: _allowOpts ? '1' : '0',
+      tcpFlagsAny: _tcpFlagsAny ? '1' : '0',
+      schedule: _selectedSchedule,
+      divertTo: _selectedDivertTo,
+      gateway: _selectedGateway,
+      replyTo: _selectedReplyTo,
+      disableReplyTo: _disableReplyTo ? '1' : '0',
+      statePolicy: _selectedStatePolicy,
+      noPfsync: _noPfsync ? '1' : '0',
+      statTimeout: _statTimeoutController.text.trim(),
+      udpFirst: _udpFirstController.text.trim(),
+      udpSingle: _udpSingleController.text.trim(),
+      udpMultiple: _udpMultipleController.text.trim(),
+      adaptiveStart: _adaptiveStartController.text.trim(),
+      adaptiveEnd: _adaptiveEndController.text.trim(),
+      max: _maxController.text.trim(),
+      maxSrcNodes: _maxSrcNodesController.text.trim(),
+      maxSrcStates: _maxSrcStatesController.text.trim(),
+      maxSrcConn: _maxSrcConnController.text.trim(),
+      maxSrcConnRate: _maxSrcConnRateController.text.trim(),
+      maxSrcConnRates: _maxSrcConnRatesController.text.trim(),
+      overload: _selectedOverload,
+      shaper1: _selectedShaper1,
+      shaper2: _selectedShaper2,
+      prio: _selectedPrio,
+      setPrio: _selectedSetPrio,
+      setPrioLow: _selectedSetPrioLow,
+      tos: _selectedTos,
+      tag: _tagController.text.trim(),
+      tagged: _taggedController.text.trim(),
     );
 
     final success = await _viewModel.saveRule(request);
@@ -132,9 +388,331 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
     }
   }
 
+  // ──────────────────────────────────────────────────────────────────────────
+  // Helpers
+  // ──────────────────────────────────────────────────────────────────────────
+
+  bool get _isLoading => _viewModel.isLoading;
+  bool get _supportsPorts {
+    final p = _selectedProtocol.toLowerCase();
+    return p == 'tcp' || p == 'udp' || p == 'tcp/udp';
+  }
+
+  bool get _showIcmpType =>
+      _selectedProtocol.toLowerCase() == 'icmp' ||
+      _selectedProtocol.toLowerCase() == 'icmpv6';
+
+  /// True if [v] is a known fixed option (not a raw IP/CIDR).
+  bool _isFixedNetKey(String v) {
+    if (v.isEmpty || v == 'any' || v == '(self)') return true;
+    final ifaces = _viewModel.availableInterfaces;
+    if (ifaces.containsKey(v)) return true;
+    for (final k in ifaces.keys) {
+      if (v == '${k}ip') return true;
+    }
+    if (_viewModel.aliases.containsKey(v)) return true;
+    return false;
+  }
+
+  /// Splits a comma-separated API value into a list of selected option keys.
+  /// Any part that is not a fixed key is lumped under 'single'.
+  List<String> _splitNetValue(String raw) {
+    if (raw.isEmpty || raw == 'any') return ['any'];
+    final parts = raw.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty);
+    final result = <String>[];
+    for (final p in parts) {
+      if (_isFixedNetKey(p)) {
+        result.add(p);
+      } else {
+        if (!result.contains('single')) result.add('single');
+      }
+    }
+    return result.isEmpty ? ['any'] : result;
+  }
+
+  /// Joins the selected list back to a comma-separated API value.
+  /// 'single' entries are replaced by the free-text controller value.
+  String _encodeNetValue(List<String> selected, String freeText) {
+    final parts = <String>[];
+    for (final s in selected) {
+      if (s == 'single') {
+        final t = freeText.trim();
+        if (t.isNotEmpty) parts.add(t);
+      } else {
+        parts.add(s);
+      }
+    }
+    return parts.isEmpty ? 'any' : parts.join(',');
+  }
+
+  /// Builds the full Source/Destination option map.
+  /// Groups: Fixed (any/self), Interface nets, Interface addresses, Aliases, Custom
+  Map<String, String> _buildNetOptions() {
+    final l10n = AppLocalizations.of(context)!;
+    final opts = <String, String>{'any': l10n.any};
+    final ifaces = _viewModel.availableInterfaces;
+    for (final e in ifaces.entries) {
+      final key = e.key.toString();
+      final label = e.value.toString();
+      opts[key] = l10n.interfaceNet(label);
+    }
+    for (final e in ifaces.entries) {
+      final key = e.key.toString();
+      final label = e.value.toString();
+      opts['${key}ip'] = l10n.interfaceAddress(label);
+    }
+    opts['(self)'] = l10n.thisFirwall;
+    for (final a in _viewModel.aliases.keys) {
+      opts[a] = a;
+    }
+    opts['single'] = l10n.singleHostOrNetwork;
+    return opts;
+  }
+
+  /// Opens a searchable multi-select bottom sheet for source/destination.
+  Future<void> _openNetPicker({
+    required String label,
+    required List<String> selected,
+    required ValueChanged<List<String>> onChanged,
+  }) async {
+    final l10n = AppLocalizations.of(context)!;
+    final opts = _buildNetOptions();
+    final working = List<String>.from(selected);
+    final searchCtrl = TextEditingController();
+
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) {
+        return StatefulBuilder(builder: (ctx, setModalState) {
+          final query = searchCtrl.text.toLowerCase();
+          final filtered = opts.entries
+              .where((e) =>
+                  e.key.toLowerCase().contains(query) ||
+                  e.value.toLowerCase().contains(query))
+              .toList();
+
+          return DraggableScrollableSheet(
+            initialChildSize: 0.7,
+            maxChildSize: 0.95,
+            minChildSize: 0.4,
+            expand: false,
+            builder: (_, scrollCtrl) => Column(
+              children: [
+                // Handle bar
+                const SizedBox(height: 8),
+                Container(
+                  width: 36, height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                  child: Text(label,
+                      style: Theme.of(ctx).textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  child: TextField(
+                    controller: searchCtrl,
+                    decoration: InputDecoration(
+                      hintText: l10n.searchAliases,
+                      prefixIcon: const Icon(Icons.search),
+                      isDense: true,
+                      border: const OutlineInputBorder(),
+                    ),
+                    onChanged: (_) => setModalState(() {}),
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    controller: scrollCtrl,
+                    itemCount: filtered.length,
+                    itemBuilder: (_, i) {
+                      final e = filtered[i];
+                      final checked = working.contains(e.key);
+                      return CheckboxListTile(
+                        dense: true,
+                        value: checked,
+                        title: Text(e.value),
+                        subtitle: e.key != e.value ? Text(e.key,
+                            style: Theme.of(ctx).textTheme.bodySmall) : null,
+                        onChanged: (v) {
+                          setModalState(() {
+                            if (v == true) {
+                              // Selecting 'any' clears all others
+                              if (e.key == 'any') {
+                                working
+                                  ..clear()
+                                  ..add('any');
+                              } else {
+                                working.remove('any');
+                                working.add(e.key);
+                              }
+                            } else {
+                              working.remove(e.key);
+                              if (working.isEmpty) working.add('any');
+                            }
+                          });
+                        },
+                      );
+                    },
+                  ),
+                ),
+                SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: FilledButton(
+                        onPressed: () {
+                          onChanged(List<String>.from(working));
+                          Navigator.of(ctx).pop();
+                        },
+                        child: Text(l10n.done),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+      },
+    );
+    searchCtrl.dispose();
+  }
+
+  /// Builds the tappable chip row + optional free-text field for a net picker.
+  Widget _buildNetPickerField({
+    required String label,
+    required IconData icon,
+    required List<String> selected,
+    required ValueChanged<List<String>> onChanged,
+    required TextEditingController freeTextCtrl,
+    required String? Function(String?) freeTextValidator,
+  }) {
+    final l10n = AppLocalizations.of(context)!;
+    final opts = _buildNetOptions();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkWell(
+          onTap: _isLoading
+              ? null
+              : () => _openNetPicker(
+                    label: label,
+                    selected: selected,
+                    onChanged: (v) => setState(() => onChanged(v)),
+                  ),
+          borderRadius: BorderRadius.circular(8),
+          child: InputDecorator(
+            decoration: InputDecoration(
+              labelText: label,
+              prefixIcon: Icon(icon),
+              suffixIcon: const Icon(Icons.arrow_drop_down),
+            ),
+            child: Wrap(
+              spacing: 6,
+              runSpacing: 4,
+              children: selected.map((k) {
+                final display = k == 'single'
+                    ? l10n.singleHostOrNetwork
+                    : (opts[k] ?? k);
+                return Chip(
+                  label: Text(display,
+                      style: const TextStyle(fontSize: 12)),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  visualDensity: VisualDensity.compact,
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+        if (selected.contains('single')) ...[
+          const SizedBox(height: 8),
+          TextFormField(
+            controller: freeTextCtrl,
+            decoration: InputDecoration(
+              labelText: l10n.singleHostOrNetwork,
+              hintText: l10n.anyIpAddressCidrOrAlias,
+              prefixIcon: const Icon(Icons.edit_outlined),
+              helperText: l10n.examplesAnyIpCidr,
+            ),
+            validator: freeTextValidator,
+            enabled: !_isLoading,
+          ),
+        ],
+      ],
+    );
+  }
+
+  /// Build a dropdown from a String→String map (API-sourced options).
+  Widget _buildApiDropdown({
+    required String label,
+    required String value,
+    required Map<String, String> options,
+    required ValueChanged<String?> onChanged,
+    String? helperText,
+    bool isLoading = false,
+  }) {
+    // Ensure the current value is in options; fallback to first key
+    final effectiveValue =
+        options.containsKey(value) ? value : options.keys.first;
+
+    return DropdownButtonFormField<String>(
+      initialValue: effectiveValue,
+      decoration: InputDecoration(
+        labelText: label,
+        helperText: helperText,
+        helperMaxLines: 3,
+      ),
+      items: isLoading
+          ? [DropdownMenuItem(value: effectiveValue, child: Text(_viewModel.loadingOptions ? '...' : label))]
+          : options.entries
+              .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
+              .toList(),
+      onChanged: _isLoading || isLoading ? null : onChanged,
+    );
+  }
+
+  /// Section card wrapping an ExpansionTile.
+  Widget _section({
+    required String title,
+    required IconData icon,
+    required List<Widget> children,
+    bool initiallyExpanded = true,
+  }) {
+    return Card(
+      margin: EdgeInsets.zero,
+      child: ExpansionTile(
+        leading: Icon(icon),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+        initiallyExpanded: initiallyExpanded,
+        childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        children: [const SizedBox(height: 8), ...children],
+      ),
+    );
+  }
+
+  Widget _gap([double h = 16]) => SizedBox(height: h);
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Build
+  // ──────────────────────────────────────────────────────────────────────────
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final opts = _viewModel.formOptions;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.isEditing ? l10n.editRule : l10n.newRule),
@@ -146,254 +724,872 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
           child: ListView(
             padding: const EdgeInsets.all(AppConstants.standardPadding * 2),
             children: [
-              // Description
-              TextFormField(
-                controller: _descriptionController,
-                decoration: InputDecoration(
-                  labelText: l10n.description,
-                  hintText: l10n.enterRuleDescription,
-                  prefixIcon: const Icon(Icons.description),
+              // ── Advanced toggle ───────────────────────────────────────────
+              Align(
+                alignment: Alignment.centerRight,
+                child: OutlinedButton.icon(
+                  onPressed: () => setState(() => _showAdvanced = !_showAdvanced),
+                  icon: Icon(_showAdvanced ? Icons.visibility_off : Icons.tune),
+                  label: Text(_showAdvanced ? l10n.hideAdvanced : l10n.showAdvanced),
                 ),
-                validator: (value) =>
-                    Validators.validateRequired(value, l10n.description, context),
-                enabled: !_viewModel.isLoading,
               ),
-              const SizedBox(height: 16),
+              _gap(),
 
-              // Action Type
-              DropdownButtonFormField<String>(
-                initialValue: _selectedType,
-                decoration: InputDecoration(
-                  labelText: l10n.action,
-                  prefixIcon: const Icon(Icons.rule),
-                ),
-                items: [
-                  DropdownMenuItem(value: 'pass', child: Text(l10n.pass)),
-                  DropdownMenuItem(value: 'block', child: Text(l10n.block)),
-                  DropdownMenuItem(value: 'reject', child: Text(l10n.reject)),
-                ],
-                onChanged: _viewModel.isLoading
-                    ? null
-                    : (value) {
-                        if (value != null) {
-                          setState(() {
-                            _selectedType = value;
-                          });
-                        }
-                      },
-              ),
-              const SizedBox(height: 16),
-
-              // Interface
-              DropdownButtonFormField<String>(
-                initialValue: _viewModel.availableInterfaces.containsKey(_selectedInterface) ? _selectedInterface : null,
-                decoration: InputDecoration(
-                  labelText: l10n.interface,
-                  prefixIcon: const Icon(Icons.network_check),
-                ),
-                items: _viewModel.loadingInterfaces
-                    ? [DropdownMenuItem(value: 'loading', child: Text(l10n.loading))]
-                    : _viewModel.availableInterfaces.entries.map((entry) {
-                        return DropdownMenuItem(
-                          value: entry.key,
-                          child: Text(entry.value),
-                        );
-                      }).toList(),
-                onChanged: _viewModel.isLoading || _viewModel.loadingInterfaces
-                    ? null
-                    : (value) {
-                        if (value != null && value != 'loading') {
-                          setState(() {
-                            _selectedInterface = value;
-                          });
-                        }
-                      },
-              ),
-              const SizedBox(height: 16),
-
-              // Protocol
-              DropdownButtonFormField<String>(
-                initialValue: _selectedProtocol,
-                decoration: InputDecoration(
-                  labelText: l10n.protocol,
-                  prefixIcon: const Icon(Icons.settings_ethernet),
-                ),
-                items: [
-                  DropdownMenuItem(value: 'any', child: Text(l10n.any)),
-                  const DropdownMenuItem(value: 'tcp', child: Text(StringConstants.tcp)),
-                  const DropdownMenuItem(value: 'udp', child: Text(StringConstants.udp)),
-                  const DropdownMenuItem(value: 'tcp/udp', child: Text(StringConstants.tcpUdp)),
-                  const DropdownMenuItem(value: 'icmp', child: Text(StringConstants.icmp)),
-                  const DropdownMenuItem(value: 'icmpv6', child: Text(StringConstants.icmpv6)),
-                  const DropdownMenuItem(value: 'esp', child: Text(StringConstants.esp)),
-                  const DropdownMenuItem(value: 'ah', child: Text(StringConstants.ah)),
-                  const DropdownMenuItem(value: 'gre', child: Text(StringConstants.gre)),
-                  const DropdownMenuItem(value: 'ipv6', child: Text(StringConstants.ipv6Protocol)),
-                  const DropdownMenuItem(value: 'igmp', child: Text(StringConstants.igmp)),
-                  const DropdownMenuItem(value: 'pim', child: Text(StringConstants.pim)),
-                  const DropdownMenuItem(value: 'ospf', child: Text(StringConstants.ospf)),
-                ],
-                onChanged: _viewModel.isLoading
-                    ? null
-                    : (value) {
-                        if (value != null) {
-                          setState(() {
-                            _selectedProtocol = value;
-                          });
-                        }
-                      },
-              ),
-              const SizedBox(height: 16),
-
-              // Source
-              TextFormField(
-                controller: _sourceController,
-                decoration: InputDecoration(
-                  labelText: l10n.source,
-                  hintText: l10n.anyIpAddressCidrOrAlias,
-                  prefixIcon: const Icon(Icons.arrow_forward),
-                  helperText: l10n.examplesAnyIpCidr,
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return l10n.sourceIsRequired;
-                  }
-                  if (!Validators.isValidSourceDestination(value)) {
-                    return l10n.invalidSourceFormat;
-                  }
-                  return null;
-                },
-                enabled: !_viewModel.isLoading,
-              ),
-              const SizedBox(height: 16),
-
-              // Source Port (only for TCP/UDP/TCP/UDP)
-              if (_selectedProtocol.toLowerCase() == 'tcp' ||
-                  _selectedProtocol.toLowerCase() == 'udp' ||
-                  _selectedProtocol.toLowerCase() == 'tcp/udp') ...[
-                TextFormField(
-                  controller: _sourcePortController,
-                  decoration: InputDecoration(
-                    labelText: l10n.sourcePortOptional,
-                    hintText: l10n.anyPortNumberRangeOrAlias,
-                    prefixIcon: const Icon(Icons.input),
-                    helperText: l10n.examplesAnyPortRange,
+              // ── ORGANISATION ──────────────────────────────────────────────
+              _section(
+                title: l10n.organisationSection,
+                icon: Icons.folder_outlined,
+                children: [
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(l10n.enabled),
+                    subtitle: Text(l10n.enableThisRule),
+                    value: _enabled,
+                    onChanged: _isLoading ? null : (v) => setState(() => _enabled = v),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return null; // Optional field
-                    }
-                    if (!Validators.isValidDestinationPort(value)) {
-                      return l10n.invalidPortFormat;
-                    }
-                    return null;
-                  },
-                  enabled: !_viewModel.isLoading,
-                ),
-                const SizedBox(height: 16),
-              ],
-
-              // Destination
-              TextFormField(
-                controller: _destinationController,
-                decoration: InputDecoration(
-                  labelText: l10n.destination,
-                  hintText: l10n.anyIpAddressCidrOrAlias,
-                  prefixIcon: const Icon(Icons.location_on),
-                  helperText: l10n.examplesAnyIpCidr,
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return l10n.destinationIsRequired;
-                  }
-                  if (!Validators.isValidSourceDestination(value)) {
-                    return l10n.invalidDestinationFormat;
-                  }
-                  return null;
-                },
-                enabled: !_viewModel.isLoading,
-              ),
-              const SizedBox(height: 16),
-
-              // Destination Port (only for TCP/UDP/TCP/UDP)
-              if (_selectedProtocol.toLowerCase() == 'tcp' ||
-                  _selectedProtocol.toLowerCase() == 'udp' ||
-                  _selectedProtocol.toLowerCase() == 'tcp/udp') ...[
-                TextFormField(
-                  controller: _destinationPortController,
-                  decoration: InputDecoration(
-                    labelText: l10n.destinationPortOptional,
-                    hintText: l10n.anyPortNumberRangeOrAlias,
-                    prefixIcon: const Icon(Icons.settings_input_component),
-                    helperText: l10n.examplesAnyPortRangeHttp,
+                  _gap(),
+                  TextFormField(
+                    controller: _categoriesController,
+                    decoration: InputDecoration(
+                      labelText: l10n.categoriesLabel,
+                      hintText: l10n.categoriesHint,
+                      prefixIcon: const Icon(Icons.label_outline),
+                    ),
+                    enabled: !_isLoading,
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return null; // Optional field
-                    }
-                    if (!Validators.isValidDestinationPort(value)) {
-                      return l10n.invalidPortFormat;
-                    }
-                    return null;
-                  },
-                  enabled: !_viewModel.isLoading,
-                ),
-                const SizedBox(height: 16),
-              ],
-
-              // Enabled Switch
-              SwitchListTile(
-                title: Text(l10n.enabled),
-                subtitle: Text(l10n.ruleWillBeActiveWhenEnabled),
-                value: _enabled,
-                onChanged: _viewModel.isLoading
-                    ? null
-                    : (value) {
-                        setState(() {
-                          _enabled = value;
-                        });
-                      },
+                  _gap(),
+                  TextFormField(
+                    controller: _descriptionController,
+                    decoration: InputDecoration(
+                      labelText: l10n.description,
+                      hintText: l10n.enterRuleDescription,
+                      prefixIcon: const Icon(Icons.description),
+                      helperText: l10n.descriptionHelperTextOverride,
+                      helperMaxLines: 3,
+                    ),
+                    enabled: !_isLoading,
+                  ),
+                ],
               ),
-              const SizedBox(height: 32),
+              _gap(),
 
-              // Help Card
-              Card(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.info_outline, color: Theme.of(context).colorScheme.onPrimaryContainer),
-                          const SizedBox(width: 8),
-                          Text(
-                            l10n.ruleGuidelines,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.onPrimaryContainer,
-                            ),
-                          ),
-                        ],
+              // ── INTERFACE ─────────────────────────────────────────────────
+              _section(
+                title: l10n.interfaceSection,
+                icon: Icons.network_check,
+                children: [
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(l10n.invertInterface),
+                    subtitle: Text(l10n.invertInterfaceSubtitle),
+                    value: _interfaceNot,
+                    onChanged: _isLoading ? null : (v) => setState(() => _interfaceNot = v),
+                  ),
+                  _gap(),
+                  DropdownButtonFormField<String>(
+                    initialValue: _viewModel.availableInterfaces.containsKey(_selectedInterface)
+                        ? _selectedInterface
+                        : null,
+                    decoration: InputDecoration(
+                      labelText: l10n.interface,
+                      prefixIcon: const Icon(Icons.network_check),
+                    ),
+                    items: _viewModel.loadingInterfaces
+                        ? [DropdownMenuItem(value: 'loading', child: Text(l10n.loading))]
+                        : _viewModel.availableInterfaces.entries
+                            .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
+                            .toList(),
+                    onChanged: _isLoading || _viewModel.loadingInterfaces
+                        ? null
+                        : (v) {
+                            if (v != null && v != 'loading') {
+                              setState(() => _selectedInterface = v);
+                            }
+                          },
+                  ),
+                ],
+              ),
+              _gap(),
+
+              // ── FILTER ────────────────────────────────────────────────────
+              _section(
+                title: l10n.filterSection,
+                icon: Icons.filter_alt_outlined,
+                children: [
+                  // Quick
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(l10n.quickRule),
+                    subtitle: Text(l10n.quickRuleHelp),
+                    value: _quick,
+                    onChanged: _isLoading ? null : (v) => setState(() => _quick = v),
+                  ),
+                  _gap(),
+
+                  // Action
+                  DropdownButtonFormField<String>(
+                    initialValue: _selectedType,
+                    decoration: InputDecoration(
+                      labelText: l10n.action,
+                      prefixIcon: const Icon(Icons.rule),
+                      helperText: l10n.actionHelp,
+                      helperMaxLines: 4,
+                    ),
+                    items: [
+                      DropdownMenuItem(value: 'pass', child: Text(l10n.pass)),
+                      DropdownMenuItem(value: 'block', child: Text(l10n.block)),
+                      DropdownMenuItem(value: 'reject', child: Text(l10n.reject)),
+                    ],
+                    onChanged: _isLoading
+                        ? null
+                        : (v) { if (v != null) setState(() => _selectedType = v); },
+                  ),
+                  _gap(),
+
+                  // Direction
+                  DropdownButtonFormField<String>(
+                    initialValue: _selectedDirection,
+                    decoration: InputDecoration(
+                      labelText: l10n.direction,
+                      prefixIcon: const Icon(Icons.compare_arrows),
+                      helperText: l10n.directionHelp,
+                      helperMaxLines: 3,
+                    ),
+                    items: [
+                      DropdownMenuItem(value: 'in', child: Text(l10n.directionIn)),
+                      DropdownMenuItem(value: 'out', child: Text(l10n.directionOut)),
+                      DropdownMenuItem(value: 'any', child: Text(l10n.directionBoth)),
+                    ],
+                    onChanged: _isLoading
+                        ? null
+                        : (v) { if (v != null) setState(() => _selectedDirection = v); },
+                  ),
+                  _gap(),
+
+                  // IP Version
+                  DropdownButtonFormField<String>(
+                    initialValue: _selectedIpProtocol,
+                    decoration: InputDecoration(
+                      labelText: l10n.fwVersionLabel,
+                      prefixIcon: const Icon(Icons.lan),
+                    ),
+                    items: const [
+                      DropdownMenuItem(value: 'inet', child: Text('IPv4')),
+                      DropdownMenuItem(value: 'inet6', child: Text('IPv6')),
+                      DropdownMenuItem(value: 'inet46', child: Text('any')),
+                    ],
+                    onChanged: _isLoading
+                        ? null
+                        : (v) { if (v != null) setState(() => _selectedIpProtocol = v); },
+                  ),
+                  _gap(),
+
+                  // Protocol
+                  DropdownButtonFormField<String>(
+                    initialValue: _selectedProtocol,
+                    decoration: InputDecoration(
+                      labelText: l10n.protocol,
+                      prefixIcon: const Icon(Icons.settings_ethernet),
+                    ),
+                    items: [
+                      DropdownMenuItem(value: 'any', child: Text(l10n.any)),
+                      const DropdownMenuItem(value: 'tcp', child: Text(StringConstants.tcp)),
+                      const DropdownMenuItem(value: 'udp', child: Text(StringConstants.udp)),
+                      const DropdownMenuItem(value: 'tcp/udp', child: Text(StringConstants.tcpUdp)),
+                      const DropdownMenuItem(value: 'icmp', child: Text(StringConstants.icmp)),
+                      const DropdownMenuItem(value: 'icmpv6', child: Text(StringConstants.icmpv6)),
+                      const DropdownMenuItem(value: 'esp', child: Text(StringConstants.esp)),
+                      const DropdownMenuItem(value: 'ah', child: Text(StringConstants.ah)),
+                      const DropdownMenuItem(value: 'gre', child: Text(StringConstants.gre)),
+                      const DropdownMenuItem(value: 'ipv6', child: Text(StringConstants.ipv6Protocol)),
+                      const DropdownMenuItem(value: 'igmp', child: Text(StringConstants.igmp)),
+                      const DropdownMenuItem(value: 'pim', child: Text(StringConstants.pim)),
+                      const DropdownMenuItem(value: 'ospf', child: Text(StringConstants.ospf)),
+                    ],
+                    onChanged: _isLoading
+                        ? null
+                        : (v) { if (v != null) setState(() => _selectedProtocol = v); },
+                  ),
+
+                  // ICMP Type — only shown for icmp/icmpv6
+                  if (_showIcmpType) ...[
+                    _gap(),
+                    DropdownButtonFormField<String>(
+                      initialValue: _selectedIcmpType,
+                      decoration: InputDecoration(
+                        labelText: l10n.icmpTypeLabel,
+                        prefixIcon: const Icon(Icons.error_outline),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        l10n.ruleGuidelinesText,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      items: (_selectedIpProtocol == 'inet6' ? _kIcmp6Types : _kIcmpTypes)
+                          .entries
+                          .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
+                          .toList(),
+                      onChanged: _isLoading
+                          ? null
+                          : (v) { if (v != null) setState(() => _selectedIcmpType = v); },
+                    ),
+                  ],
+                  _gap(),
+
+                  // ── Source block ─────────────────────────────────────────
+                  // Invert Source
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Tooltip(
+                      message: l10n.invertSourceTooltip,
+                      child: TextButton.icon(
+                        onPressed: _isLoading
+                            ? null
+                            : () => setState(() => _sourceNot = !_sourceNot),
+                        icon: Icon(
+                          _sourceNot ? Icons.do_not_disturb_on : Icons.do_not_disturb_on_outlined,
+                          color: _sourceNot
+                              ? Theme.of(context).colorScheme.error
+                              : Theme.of(context).colorScheme.outline,
+                        ),
+                        label: Text(
+                          l10n.invertSource,
+                          style: TextStyle(
+                            color: _sourceNot
+                                ? Theme.of(context).colorScheme.error
+                                : Theme.of(context).colorScheme.outline,
+                            fontSize: 12,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              const SizedBox(height: 24),
+                  _gap(8),
+                  _buildNetPickerField(
+                    label: l10n.source,
+                    icon: Icons.arrow_forward,
+                    selected: _sourceSelected,
+                    onChanged: (v) => _sourceSelected = v,
+                    freeTextCtrl: _sourceController,
+                    freeTextValidator: (v) {
+                      if (!_sourceSelected.contains('single')) return null;
+                      if (v == null || v.isEmpty) return l10n.sourceIsRequired;
+                      if (!Validators.isValidSourceDestination(v)) return l10n.invalidSourceFormat;
+                      return null;
+                    },
+                  ),
 
-              // Save Button
+                  // Source Port (TCP/UDP only)
+                  if (_supportsPorts) ...[
+                    _gap(8),
+                    DropdownButtonFormField<String>(
+                      initialValue: _sourcePortType,
+                      decoration: InputDecoration(
+                        labelText: l10n.sourcePortOptional,
+                        prefixIcon: const Icon(Icons.input),
+                        helperText: l10n.sourcePortHelp,
+                        helperMaxLines: 3,
+                      ),
+                      items: [
+                        DropdownMenuItem(value: 'any', child: Text(l10n.any)),
+                        DropdownMenuItem(value: 'single', child: Text(l10n.singlePortOrRange)),
+                      ],
+                      onChanged: _isLoading
+                          ? null
+                          : (v) {
+                              if (v != null) setState(() => _sourcePortType = v);
+                            },
+                    ),
+                    if (_sourcePortType == 'single') ...[
+                      _gap(8),
+                      TextFormField(
+                        controller: _sourcePortController,
+                        decoration: InputDecoration(
+                          labelText: l10n.singlePortOrRange,
+                          hintText: l10n.anyPortNumberRangeOrAlias,
+                          prefixIcon: const Icon(Icons.input),
+                        ),
+                        validator: (v) {
+                          if (_sourcePortType != 'single') return null;
+                          if (v == null || v.isEmpty) return null;
+                          if (!Validators.isValidDestinationPort(v)) return l10n.invalidPortFormat;
+                          return null;
+                        },
+                        enabled: !_isLoading,
+                      ),
+                    ],
+                  ],
+                  _gap(8),
+
+                  // Swap button
+                  Center(
+                    child: TextButton.icon(
+                      onPressed: _isLoading ? null : _swapSourceDestination,
+                      icon: const Icon(Icons.swap_vert),
+                      label: Text(l10n.swapSourceDestination),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                  _gap(8),
+
+                  // ── Destination block ────────────────────────────────────
+                  // Invert Destination
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Tooltip(
+                      message: l10n.invertDestinationTooltip,
+                      child: TextButton.icon(
+                        onPressed: _isLoading
+                            ? null
+                            : () => setState(() => _destinationNot = !_destinationNot),
+                        icon: Icon(
+                          _destinationNot ? Icons.do_not_disturb_on : Icons.do_not_disturb_on_outlined,
+                          color: _destinationNot
+                              ? Theme.of(context).colorScheme.error
+                              : Theme.of(context).colorScheme.outline,
+                        ),
+                        label: Text(
+                          l10n.invertDestination,
+                          style: TextStyle(
+                            color: _destinationNot
+                                ? Theme.of(context).colorScheme.error
+                                : Theme.of(context).colorScheme.outline,
+                            fontSize: 12,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                      ),
+                    ),
+                  ),
+                  _gap(8),
+                  _buildNetPickerField(
+                    label: l10n.destination,
+                    icon: Icons.location_on,
+                    selected: _destinationSelected,
+                    onChanged: (v) => _destinationSelected = v,
+                    freeTextCtrl: _destinationController,
+                    freeTextValidator: (v) {
+                      if (!_destinationSelected.contains('single')) return null;
+                      if (v == null || v.isEmpty) return l10n.destinationIsRequired;
+                      if (!Validators.isValidSourceDestination(v)) return l10n.invalidDestinationFormat;
+                      return null;
+                    },
+                  ),
+
+                  // Destination Port (TCP/UDP only)
+                  if (_supportsPorts) ...[
+                    _gap(8),
+                    DropdownButtonFormField<String>(
+                      initialValue: _destinationPortType,
+                      decoration: InputDecoration(
+                        labelText: l10n.destinationPortOptional,
+                        prefixIcon: const Icon(Icons.settings_input_component),
+                        helperText: l10n.destinationPortHelp,
+                        helperMaxLines: 3,
+                      ),
+                      items: [
+                        DropdownMenuItem(value: 'any', child: Text(l10n.any)),
+                        DropdownMenuItem(value: 'single', child: Text(l10n.singlePortOrRange)),
+                      ],
+                      onChanged: _isLoading
+                          ? null
+                          : (v) {
+                              if (v != null) setState(() => _destinationPortType = v);
+                            },
+                    ),
+                    if (_destinationPortType == 'single') ...[
+                      _gap(8),
+                      TextFormField(
+                        controller: _destinationPortController,
+                        decoration: InputDecoration(
+                          labelText: l10n.singlePortOrRange,
+                          hintText: l10n.anyPortNumberRangeOrAlias,
+                          prefixIcon: const Icon(Icons.settings_input_component),
+                        ),
+                        validator: (v) {
+                          if (_destinationPortType != 'single') return null;
+                          if (v == null || v.isEmpty) return null;
+                          if (!Validators.isValidDestinationPort(v)) return l10n.invalidPortFormat;
+                          return null;
+                        },
+                        enabled: !_isLoading,
+                      ),
+                    ],
+                  ],
+                  _gap(),
+
+                  // Log
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(l10n.logTraffic),
+                    subtitle: Text(l10n.logHelp),
+                    value: _log,
+                    onChanged: _isLoading ? null : (v) => setState(() => _log = v),
+                  ),
+                ],
+              ),
+              _gap(),
+
+              // ── SOURCE ROUTING ────────────────────────────────────────────
+              _section(
+                title: l10n.sourceRoutingSection,
+                icon: Icons.route_outlined,
+                children: [
+                  _buildApiDropdown(
+                    label: l10n.fwGatewayLabel,
+                    value: _selectedGateway,
+                    options: opts.gateways,
+                    helperText: l10n.gatewayHelp,
+                    isLoading: _viewModel.loadingOptions,
+                    onChanged: (v) { if (v != null) setState(() => _selectedGateway = v); },
+                  ),
+                ],
+              ),
+              _gap(),
+
+              // ── ADVANCED SECTIONS (conditionally shown) ───────────────────
+              if (_showAdvanced) ...[
+
+                // ── ADVANCED ORGANISATION ─────────────────────────────────
+                _section(
+                  title: l10n.organisationSection,
+                  icon: Icons.manage_search,
+                  initiallyExpanded: false,
+                  children: [
+                    TextFormField(
+                      controller: _sequenceController,
+                      decoration: InputDecoration(
+                        labelText: l10n.sequenceLabel,
+                        prefixIcon: const Icon(Icons.format_list_numbered),
+                        helperText: l10n.sequenceHelp,
+                        helperMaxLines: 3,
+                      ),
+                      keyboardType: TextInputType.number,
+                      enabled: !_isLoading,
+                    ),
+                    _gap(),
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(l10n.noXmlrpcSync),
+                      subtitle: Text(l10n.noXmlrpcSyncHelp),
+                      value: _noSync,
+                      onChanged: _isLoading ? null : (v) => setState(() => _noSync = v),
+                    ),
+                  ],
+                ),
+                _gap(),
+
+                // ── ADVANCED FILTER ───────────────────────────────────────
+                _section(
+                  title: l10n.filterSection,
+                  icon: Icons.filter_list,
+                  initiallyExpanded: false,
+                  children: [
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(l10n.allowOptionsLabel),
+                      subtitle: Text(l10n.allowOptionsHelp),
+                      value: _allowOpts,
+                      onChanged: _isLoading ? null : (v) => setState(() => _allowOpts = v),
+                    ),
+                    _gap(),
+
+                    // TCP Flags (must be set)
+                    Text(l10n.tcpFlagsLabel,
+                        style: Theme.of(context).textTheme.bodySmall),
+                    _gap(4),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 4,
+                      children: _kTcpFlagNames.map((flag) => FilterChip(
+                        label: Text(flag),
+                        selected: _tcpFlags1.contains(flag),
+                        onSelected: _isLoading
+                            ? null
+                            : (sel) => setState(() {
+                                  if (sel) {
+                                    _tcpFlags1 = [..._tcpFlags1, flag];
+                                  } else {
+                                    _tcpFlags1 = _tcpFlags1.where((f) => f != flag).toList();
+                                  }
+                                }),
+                      )).toList(),
+                    ),
+                    _gap(),
+
+                    // TCP Flags [out of]
+                    Text(l10n.tcpFlagsOutLabel,
+                        style: Theme.of(context).textTheme.bodySmall),
+                    _gap(4),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 4,
+                      children: _kTcpFlagNames.map((flag) => FilterChip(
+                        label: Text(flag),
+                        selected: _tcpFlags2.contains(flag),
+                        onSelected: _isLoading
+                            ? null
+                            : (sel) => setState(() {
+                                  if (sel) {
+                                    _tcpFlags2 = [..._tcpFlags2, flag];
+                                  } else {
+                                    _tcpFlags2 = _tcpFlags2.where((f) => f != flag).toList();
+                                  }
+                                }),
+                      )).toList(),
+                    ),
+                    _gap(),
+
+                    // TCP Flags Any
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(l10n.tcpFlagsAnyLabel),
+                      value: _tcpFlagsAny,
+                      onChanged: _isLoading ? null : (v) => setState(() => _tcpFlagsAny = v),
+                    ),
+                    _gap(),
+
+                    // Schedule
+                    _buildApiDropdown(
+                      label: l10n.scheduleLabel,
+                      value: _selectedSchedule,
+                      options: opts.schedules,
+                      isLoading: _viewModel.loadingOptions,
+                      onChanged: (v) { if (v != null) setState(() => _selectedSchedule = v); },
+                    ),
+                    _gap(),
+
+                    // Divert-to
+                    _buildApiDropdown(
+                      label: l10n.divertToLabel,
+                      value: _selectedDivertTo,
+                      options: opts.divertTo,
+                      helperText: l10n.divertToHelp,
+                      isLoading: _viewModel.loadingOptions,
+                      onChanged: (v) { if (v != null) setState(() => _selectedDivertTo = v); },
+                    ),
+                  ],
+                ),
+                _gap(),
+
+                // ── STATEFUL FIREWALL ─────────────────────────────────────
+                _section(
+                  title: l10n.statefulFirewallSection,
+                  icon: Icons.account_tree_outlined,
+                  initiallyExpanded: false,
+                  children: [
+                    // State Type
+                    DropdownButtonFormField<String>(
+                      initialValue: _selectedStateType,
+                      decoration: InputDecoration(
+                        labelText: l10n.stateType,
+                        prefixIcon: const Icon(Icons.account_tree_outlined),
+                      ),
+                      items: [
+                        DropdownMenuItem(value: 'keep', child: Text(l10n.keepState)),
+                        DropdownMenuItem(value: 'sloppy', child: Text(l10n.sloppyState)),
+                        DropdownMenuItem(value: 'modulate', child: Text(l10n.modulateState)),
+                        DropdownMenuItem(value: 'synproxy', child: Text(l10n.synproxyState)),
+                        DropdownMenuItem(value: 'none', child: Text(l10n.noState)),
+                      ],
+                      onChanged: _isLoading
+                          ? null
+                          : (v) { if (v != null) setState(() => _selectedStateType = v); },
+                    ),
+                    _gap(),
+
+                    // State Policy
+                    DropdownButtonFormField<String>(
+                      initialValue: _selectedStatePolicy,
+                      decoration: InputDecoration(
+                        labelText: l10n.statePolicyLabel,
+                        prefixIcon: const Icon(Icons.policy_outlined),
+                      ),
+                      items: const [
+                        DropdownMenuItem(value: '', child: Text('default')),
+                        DropdownMenuItem(value: 'if-bound', child: Text('Bind states to interface')),
+                        DropdownMenuItem(value: 'floating', child: Text('Floating states')),
+                      ],
+                      onChanged: _isLoading
+                          ? null
+                          : (v) { if (v != null) setState(() => _selectedStatePolicy = v); },
+                    ),
+                    _gap(),
+
+                    // No pfsync
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(l10n.noPfsyncLabel),
+                      subtitle: Text(l10n.noPfsyncHelp),
+                      value: _noPfsync,
+                      onChanged: _isLoading ? null : (v) => setState(() => _noPfsync = v),
+                    ),
+                    _gap(),
+
+                    // Timeout fields
+                    TextFormField(
+                      controller: _statTimeoutController,
+                      decoration: InputDecoration(
+                        labelText: l10n.tcpEstablishedLabel,
+                        prefixIcon: const Icon(Icons.timer_outlined),
+                      ),
+                      keyboardType: TextInputType.number,
+                      enabled: !_isLoading,
+                    ),
+                    _gap(),
+                    TextFormField(
+                      controller: _udpFirstController,
+                      decoration: InputDecoration(
+                        labelText: l10n.udpFirstLabel,
+                        prefixIcon: const Icon(Icons.timer_outlined),
+                      ),
+                      keyboardType: TextInputType.number,
+                      enabled: !_isLoading,
+                    ),
+                    _gap(),
+                    TextFormField(
+                      controller: _udpSingleController,
+                      decoration: InputDecoration(
+                        labelText: l10n.udpSingleLabel,
+                        prefixIcon: const Icon(Icons.timer_outlined),
+                      ),
+                      keyboardType: TextInputType.number,
+                      enabled: !_isLoading,
+                    ),
+                    _gap(),
+                    TextFormField(
+                      controller: _udpMultipleController,
+                      decoration: InputDecoration(
+                        labelText: l10n.udpMultipleLabel,
+                        prefixIcon: const Icon(Icons.timer_outlined),
+                      ),
+                      keyboardType: TextInputType.number,
+                      enabled: !_isLoading,
+                    ),
+                    _gap(),
+                    TextFormField(
+                      controller: _adaptiveStartController,
+                      decoration: InputDecoration(
+                        labelText: l10n.adaptiveStartLabel,
+                        prefixIcon: const Icon(Icons.start),
+                      ),
+                      keyboardType: TextInputType.number,
+                      enabled: !_isLoading,
+                    ),
+                    _gap(),
+                    TextFormField(
+                      controller: _adaptiveEndController,
+                      decoration: InputDecoration(
+                        labelText: l10n.adaptiveEndLabel,
+                        prefixIcon: const Icon(Icons.stop),
+                      ),
+                      keyboardType: TextInputType.number,
+                      enabled: !_isLoading,
+                    ),
+                    _gap(),
+                    TextFormField(
+                      controller: _maxController,
+                      decoration: InputDecoration(
+                        labelText: l10n.maxStatesLabel,
+                        prefixIcon: const Icon(Icons.numbers),
+                      ),
+                      keyboardType: TextInputType.number,
+                      enabled: !_isLoading,
+                    ),
+                    _gap(),
+                    TextFormField(
+                      controller: _maxSrcNodesController,
+                      decoration: InputDecoration(
+                        labelText: l10n.maxSrcNodesLabel,
+                        prefixIcon: const Icon(Icons.numbers),
+                      ),
+                      keyboardType: TextInputType.number,
+                      enabled: !_isLoading,
+                    ),
+                    _gap(),
+                    TextFormField(
+                      controller: _maxSrcStatesController,
+                      decoration: InputDecoration(
+                        labelText: l10n.maxSrcStatesLabel,
+                        prefixIcon: const Icon(Icons.numbers),
+                      ),
+                      keyboardType: TextInputType.number,
+                      enabled: !_isLoading,
+                    ),
+                    _gap(),
+                    TextFormField(
+                      controller: _maxSrcConnController,
+                      decoration: InputDecoration(
+                        labelText: l10n.maxSrcConnLabel,
+                        prefixIcon: const Icon(Icons.numbers),
+                      ),
+                      keyboardType: TextInputType.number,
+                      enabled: !_isLoading,
+                    ),
+                    _gap(),
+                    TextFormField(
+                      controller: _maxSrcConnRateController,
+                      decoration: InputDecoration(
+                        labelText: l10n.maxNewConnCLabel,
+                        prefixIcon: const Icon(Icons.numbers),
+                      ),
+                      keyboardType: TextInputType.number,
+                      enabled: !_isLoading,
+                    ),
+                    _gap(),
+                    TextFormField(
+                      controller: _maxSrcConnRatesController,
+                      decoration: InputDecoration(
+                        labelText: l10n.maxNewConnSLabel,
+                        prefixIcon: const Icon(Icons.numbers),
+                      ),
+                      keyboardType: TextInputType.number,
+                      enabled: !_isLoading,
+                    ),
+                    _gap(),
+                    _buildApiDropdown(
+                      label: l10n.overloadTableLabel,
+                      value: _selectedOverload,
+                      options: opts.overload,
+                      helperText: l10n.overloadTableHelp,
+                      isLoading: _viewModel.loadingOptions,
+                      onChanged: (v) { if (v != null) setState(() => _selectedOverload = v); },
+                    ),
+                  ],
+                ),
+                _gap(),
+
+                // ── TRAFFIC SHAPING ───────────────────────────────────────
+                _section(
+                  title: l10n.trafficShapingSection,
+                  icon: Icons.speed_outlined,
+                  initiallyExpanded: false,
+                  children: [
+                    _buildApiDropdown(
+                      label: l10n.shaperLabel,
+                      value: _selectedShaper1,
+                      options: opts.shapers,
+                      isLoading: _viewModel.loadingOptions,
+                      onChanged: (v) { if (v != null) setState(() => _selectedShaper1 = v); },
+                    ),
+                    _gap(),
+                    _buildApiDropdown(
+                      label: l10n.shaperReverseLabel,
+                      value: _selectedShaper2,
+                      options: opts.shapers,
+                      isLoading: _viewModel.loadingOptions,
+                      onChanged: (v) { if (v != null) setState(() => _selectedShaper2 = v); },
+                    ),
+                  ],
+                ),
+                _gap(),
+
+                // ── ADVANCED SOURCE ROUTING ───────────────────────────────
+                _section(
+                  title: l10n.sourceRoutingSection,
+                  icon: Icons.reply_outlined,
+                  initiallyExpanded: false,
+                  children: [
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(l10n.disableReplyToLabel),
+                      subtitle: Text(l10n.disableReplyToHelp),
+                      value: _disableReplyTo,
+                      onChanged: _isLoading ? null : (v) => setState(() => _disableReplyTo = v),
+                    ),
+                    _gap(),
+                    _buildApiDropdown(
+                      label: l10n.replyToLabel,
+                      value: _selectedReplyTo,
+                      options: opts.replyTo,
+                      helperText: l10n.replyToHelp,
+                      isLoading: _viewModel.loadingOptions,
+                      onChanged: (v) { if (v != null) setState(() => _selectedReplyTo = v); },
+                    ),
+                  ],
+                ),
+                _gap(),
+
+                // ── PRIORITY ──────────────────────────────────────────────
+                _section(
+                  title: l10n.prioritySection,
+                  icon: Icons.low_priority_outlined,
+                  initiallyExpanded: false,
+                  children: [
+                    _buildApiDropdown(
+                      label: l10n.matchPriorityLabel,
+                      value: _selectedPrio,
+                      options: opts.prio,
+                      isLoading: _viewModel.loadingOptions,
+                      onChanged: (v) { if (v != null) setState(() => _selectedPrio = v); },
+                    ),
+                    _gap(),
+                    _buildApiDropdown(
+                      label: l10n.setPriorityLabel,
+                      value: _selectedSetPrio,
+                      options: opts.setPrio,
+                      isLoading: _viewModel.loadingOptions,
+                      onChanged: (v) { if (v != null) setState(() => _selectedSetPrio = v); },
+                    ),
+                    _gap(),
+                    _buildApiDropdown(
+                      label: l10n.setPriorityLowLabel,
+                      value: _selectedSetPrioLow,
+                      options: opts.setPrio,
+                      isLoading: _viewModel.loadingOptions,
+                      onChanged: (v) { if (v != null) setState(() => _selectedSetPrioLow = v); },
+                    ),
+                    _gap(),
+                    _buildApiDropdown(
+                      label: l10n.matchTosLabel,
+                      value: _selectedTos,
+                      options: opts.tos,
+                      isLoading: _viewModel.loadingOptions,
+                      onChanged: (v) { if (v != null) setState(() => _selectedTos = v); },
+                    ),
+                  ],
+                ),
+                _gap(),
+
+                // ── INTERNAL TAGGING ──────────────────────────────────────
+                _section(
+                  title: l10n.internalTaggingSection,
+                  icon: Icons.local_offer_outlined,
+                  initiallyExpanded: false,
+                  children: [
+                    TextFormField(
+                      controller: _tagController,
+                      decoration: InputDecoration(
+                        labelText: l10n.setLocalTagLabel,
+                        prefixIcon: const Icon(Icons.sell_outlined),
+                        helperText: l10n.setLocalTagHelp,
+                        helperMaxLines: 4,
+                      ),
+                      enabled: !_isLoading,
+                    ),
+                    _gap(),
+                    TextFormField(
+                      controller: _taggedController,
+                      decoration: InputDecoration(
+                        labelText: l10n.matchLocalTagLabel,
+                        prefixIcon: const Icon(Icons.label_important_outline),
+                        helperText: l10n.matchLocalTagHelp,
+                        helperMaxLines: 3,
+                      ),
+                      enabled: !_isLoading,
+                    ),
+                  ],
+                ),
+                _gap(),
+              ],
+
+              // ── SAVE BUTTON ───────────────────────────────────────────────
               ElevatedButton(
-                onPressed: _viewModel.isLoading ? null : _saveRule,
+                onPressed: _isLoading ? null : _saveRule,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: Theme.of(context).colorScheme.primary,
@@ -401,10 +1597,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                 ),
                 child: Text(
                   widget.isEditing ? l10n.updateRule : l10n.createRule,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             ],

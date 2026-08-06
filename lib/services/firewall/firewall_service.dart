@@ -21,6 +21,7 @@ import 'package:dio/dio.dart';
 import '../base/base_opnsense_service.dart';
 import '../base/api_exception.dart';
 import '../../models/firewall_rule.dart';
+import '../../models/firewall_form_options.dart';
 import '../../constants/api_endpoints.dart';
 
 /// Service for firewall rule operations
@@ -145,6 +146,60 @@ class FirewallService extends BaseOPNsenseService {
       };
     }
   }
+
+  /// Extract option map from a nested dropdown field in the API response.
+  Map<String, String> _extractOptions(dynamic field, String fallbackKey, String fallbackValue) {
+    if (field is Map<String, dynamic>) {
+      final result = <String, String>{};
+      for (final entry in field.entries) {
+        final val = entry.value;
+        if (val is Map<String, dynamic> && val.containsKey('value')) {
+          result[entry.key] = val['value'].toString();
+        }
+      }
+      if (result.isNotEmpty) return result;
+    }
+    return {fallbackKey: fallbackValue};
+  }
+
+  /// Fetch all dynamic dropdown option maps needed by the rule form in one
+  /// GET call to the existing /filter/get endpoint.
+  Future<FirewallFormOptions> getFirewallRuleFormOptions() async {
+    ensureInitialized();
+
+    Map<String, dynamic>? ruleObj;
+
+    try {
+      final response = await dio.get(ApiEndpoints.firewallRulesGet);
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        final filterData = data['filter'] as Map<String, dynamic>?;
+        final rulesContainer = filterData?['rules'] as Map<String, dynamic>?;
+        final rules = rulesContainer?['rule'];
+        if (rules is Map && rules.isNotEmpty) {
+          ruleObj = Map<String, dynamic>.from(rules.values.first as Map);
+        } else if (rules is List && rules.isNotEmpty) {
+          ruleObj = Map<String, dynamic>.from(rules.first as Map);
+        }
+      }
+    } on DioException {
+      // fall through to return defaults
+    }
+
+    return FirewallFormOptions(
+      gateways:  _extractOptions(ruleObj?['gateway'],   '', 'None'),
+      replyTo:   _extractOptions(ruleObj?['replyto'],   '', 'None'),
+      divertTo:  _extractOptions(ruleObj?['divert-to'], '', 'None'),
+      overload:  _extractOptions(ruleObj?['overload'],  '', 'None'),
+      schedules: _extractOptions(ruleObj?['sched'],     '', 'None'),
+      shapers:   _extractOptions(ruleObj?['shaper1'],   '', 'None'),
+      prio:      _extractOptions(ruleObj?['prio'],      '', 'Any priority'),
+      setPrio:   _extractOptions(ruleObj?['set-prio'],  '', 'Keep current priority'),
+      tos:       _extractOptions(ruleObj?['tos'],       '', 'Any'),
+    );
+  }
+
+
 
   /// Create a new firewall rule
   Future<String> createFirewallRule(FirewallRuleRequest request) async {

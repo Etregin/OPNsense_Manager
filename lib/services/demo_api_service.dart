@@ -21,6 +21,7 @@ export 'network/vip_service.dart' show CarpVipOption;
 import '../models/system_info.dart';
 import '../models/thermal_sensor.dart';
 import '../models/firewall_rule.dart';
+import '../models/firewall_form_options.dart';
 import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
 import '../models/network_host.dart';
@@ -101,6 +102,15 @@ class DemoApiService {
         isDemoMode: _isDemoMode,
         demoAction: () async => _demoDataService.generateAvailableInterfaces(),
         realAction: () => _realApiService.getAvailableInterfaces(),
+        delayMs: 200,
+      );
+
+  /// Get firewall rule form options (dynamic dropdowns)
+  Future<FirewallFormOptions> getFirewallRuleFormOptions() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => FirewallFormOptions.defaults(),
+        realAction: () => _realApiService.getFirewallRuleFormOptions(),
         delayMs: 200,
       );
 

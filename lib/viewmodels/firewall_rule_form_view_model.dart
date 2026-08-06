@@ -17,6 +17,7 @@
  */
 
 import '../models/firewall_rule.dart';
+import '../models/firewall_form_options.dart';
 import '../services/demo_api_service.dart';
 import 'base/base_form_view_model.dart';
 
@@ -28,15 +29,43 @@ class FirewallRuleFormViewModel extends BaseFormViewModel {
   Map<String, dynamic> _availableInterfaces = {};
   bool _loadingInterfaces = true;
 
+  FirewallFormOptions _formOptions = FirewallFormOptions.defaults();
+  bool _loadingOptions = true;
+
+  /// alias name → alias name (used to populate net/dest dropdowns)
+  Map<String, String> _aliases = {};
+  bool _loadingAliases = true;
+
   Map<String, dynamic> get availableInterfaces => _availableInterfaces;
   bool get loadingInterfaces => _loadingInterfaces;
   bool get isEditing => _existingRule != null;
   FirewallRule? get existingRule => _existingRule;
 
+  FirewallFormOptions get formOptions => _formOptions;
+  bool get loadingOptions => _loadingOptions;
+
+  Map<String, String> get aliases => _aliases;
+  bool get loadingAliases => _loadingAliases;
+
   FirewallRuleFormViewModel({
     required this._apiService,
     this._existingRule,
   });
+
+  /// Load firewall aliases (names only — used in source/dest pickers)
+  Future<void> loadAliases() async {
+    _loadingAliases = true;
+    notifyListeners();
+    try {
+      final list = await _apiService.getFirewallAliases();
+      _aliases = { for (final a in list) a.name: a.name };
+    } catch (_) {
+      _aliases = {};
+    } finally {
+      _loadingAliases = false;
+      notifyListeners();
+    }
+  }
 
   /// Load available interfaces from API
   Future<void> loadInterfaces() async {
@@ -45,8 +74,6 @@ class FirewallRuleFormViewModel extends BaseFormViewModel {
 
     try {
       _availableInterfaces = await _apiService.getAvailableInterfaces();
-      _loadingInterfaces = false;
-      notifyListeners();
     } catch (e) {
       _availableInterfaces = {
         'lan': 'LAN',
@@ -54,7 +81,23 @@ class FirewallRuleFormViewModel extends BaseFormViewModel {
         'opt1': 'OPT1',
         'opt2': 'OPT2',
       };
+    } finally {
       _loadingInterfaces = false;
+      notifyListeners();
+    }
+  }
+
+  /// Load all dynamic dropdown option maps (gateway, shaper, TOS, etc.)
+  Future<void> loadFormOptions() async {
+    _loadingOptions = true;
+    notifyListeners();
+
+    try {
+      _formOptions = await _apiService.getFirewallRuleFormOptions();
+    } catch (e) {
+      _formOptions = FirewallFormOptions.defaults();
+    } finally {
+      _loadingOptions = false;
       notifyListeners();
     }
   }
