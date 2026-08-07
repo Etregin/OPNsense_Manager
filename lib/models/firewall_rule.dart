@@ -421,6 +421,10 @@ class FirewallRuleRequest {
   // Filter (advanced)
   @JsonKey(name: 'allowopts', defaultValue: '0')
   final String allowOpts;
+  @JsonKey(name: 'tcpflags1', defaultValue: [])
+  final List<String> tcpFlags1;
+  @JsonKey(name: 'tcpflags2', defaultValue: [])
+  final List<String> tcpFlags2;
   @JsonKey(name: 'tcpflags_any', defaultValue: '0')
   final String tcpFlagsAny;
   @JsonKey(name: 'sched', defaultValue: '')
@@ -515,6 +519,8 @@ class FirewallRuleRequest {
     this.noSync = '0',
     this.sequence = '',
     this.allowOpts = '0',
+    this.tcpFlags1 = const [],
+    this.tcpFlags2 = const [],
     this.tcpFlagsAny = '0',
     this.schedule = '',
     this.divertTo = '',
@@ -551,71 +557,85 @@ class FirewallRuleRequest {
   factory FirewallRuleRequest.fromJson(Map<String, dynamic> json) =>
       _$FirewallRuleRequestFromJson(json);
 
-  /// Convert to JSON
+  /// Convert to JSON — builds the exact payload structure expected by
+  /// POST /api/firewall/filter/add_rule and setRule.
+  /// ALL fields must be present (the API rejects missing keys).
   Map<String, dynamic> toJson() {
-    final json = _$FirewallRuleRequestToJson(this);
+    // protocol: 'any' stays lowercase; everything else uppercase per OPNsense
+    final String protocolValue = protocol.toLowerCase() == 'any'
+        ? 'any'
+        : protocol.toUpperCase();
 
-    // Convert protocol to uppercase EXCEPT for "any" which must stay lowercase
-    if (json['protocol'] != null) {
-      final protocolStr = json['protocol'].toString();
-      if (protocolStr.toLowerCase() == 'any') {
-        json['protocol'] = 'any';
-      } else {
-        json['protocol'] = protocolStr.toUpperCase();
-      }
-    }
+    // categories: join list to comma-separated string (API expects string, not array)
+    final String categoriesValue = categories.join(',');
 
-    // Handle port fields based on protocol
-    final protocolLower = protocol.toLowerCase();
-    final supportsPorts = protocolLower == 'tcp' ||
-                          protocolLower == 'udp' ||
-                          protocolLower == 'tcp/udp';
+    // tcpflags: join list to comma-separated string
+    // (the request model stores them but they come from form state via tcpFlags1/2
+    //  which are passed separately — for now we send empty strings)
+    // Source/dest always present as-is; empty fallback to 'any'
+    final String src = source.isEmpty ? 'any' : source;
+    final String dst = destination.isEmpty ? 'any' : destination;
 
-    if (!supportsPorts) {
-      json.remove('source_port');
-      json.remove('destination_port');
-    } else {
-      if (json['source_port'] == null ||
-          json['source_port'].toString().isEmpty ||
-          json['source_port'] == 'any') {
-        json.remove('source_port');
-      }
-      if (json['destination_port'] == null ||
-          json['destination_port'].toString().isEmpty ||
-          json['destination_port'] == 'any') {
-        json.remove('destination_port');
-      }
-    }
+    // sequence: OPNsense rejects empty string — default to '1' for new rules
+    final String sequenceValue = sequence.isEmpty ? '1' : sequence;
 
-    // Ensure source and destination are not empty
-    if (json['source_net'] == null || json['source_net'].toString().isEmpty) {
-      json['source_net'] = 'any';
-    }
-    if (json['destination_net'] == null || json['destination_net'].toString().isEmpty) {
-      json['destination_net'] = 'any';
-    }
-
-    // Handle null or empty description
-    if (json['description'] == null || json['description'] == 'null') {
-      json['description'] = '';
-    }
-
-    // Remove empty optional fields (do not send blank strings for optional params)
-    const optionalEmptyFields = [
-      'sequence', 'sched', 'divert-to', 'gateway', 'replyto',
-      'state-policy', 'statetimeout', 'udp-first', 'udp-single', 'udp-multiple',
-      'adaptivestart', 'adaptiveend', 'max', 'max-src-nodes', 'max-src-states',
-      'max-src-conn', 'max-src-conn-rate', 'max-src-conn-rates', 'overload',
-      'shaper1', 'shaper2', 'prio', 'set-prio', 'set-prio-low', 'tos',
-      'tag', 'tagged',
-    ];
-    for (final field in optionalEmptyFields) {
-      if (json[field] != null && json[field].toString().isEmpty) {
-        json.remove(field);
-      }
-    }
-
-    return json;
+    return <String, dynamic>{
+      'enabled':          enabled,
+      'sequence':         sequenceValue,
+      'categories':       categoriesValue,
+      'nosync':           noSync,
+      'description':      description,
+      'interfacenot':     interfaceNot,
+      'interface':        interfaceName,
+      'quick':            quick,
+      'action':           type,
+      'allowopts':        allowOpts,
+      'direction':        direction,
+      'ipprotocol':       ipProtocol,
+      'protocol':         protocolValue,
+      // ICMP type fields — always send empty string (form doesn't yet send values)
+      'icmptype':         '',
+      'icmp6type':        '',
+      'source_not':       sourceNot,
+      'source_net':       src,
+      'source_port':      sourcePort,
+      'destination_not':  destinationNot,
+      'destination_net':  dst,
+      'destination_port': destinationPort,
+      'log':              log,
+      'tcpflags1':        tcpFlags1.join(','),
+      'tcpflags2':        tcpFlags2.join(','),
+      'tcpflags_any':     tcpFlagsAny,
+      'sched':            schedule,
+      'divert-to':        divertTo,
+      'statetype':        stateType,
+      'state-policy':     statePolicy,
+      'nopfsync':         noPfsync,
+      'statetimeout':     statTimeout,
+      'udp-first':        udpFirst,
+      'udp-single':       udpSingle,
+      'udp-multiple':     udpMultiple,
+      'adaptivestart':    adaptiveStart,
+      'adaptiveend':      adaptiveEnd,
+      'max':              max,
+      'max-src-nodes':    maxSrcNodes,
+      'max-src-states':   maxSrcStates,
+      'max-src-conn':     maxSrcConn,
+      'max-src-conn-rate':  maxSrcConnRate,
+      'max-src-conn-rates': maxSrcConnRates,
+      'overload':         overload,
+      'shaper1':          shaper1,
+      'shaper2':          shaper2,
+      'gateway':          gateway,
+      'disablereplyto':   disableReplyTo,
+      'replyto':          replyTo,
+      'prio':             prio,
+      'set-prio':         setPrio,
+      'set-prio-low':     setPrioLow,
+      'tos':              tos,
+      'tag':              tag,
+      'tagged':           tagged,
+    };
   }
 
   /// Create from FirewallRule
@@ -640,6 +660,8 @@ class FirewallRuleRequest {
       interfaceNot: rule.interfaceNot,
       noSync: rule.noSync,
       allowOpts: rule.allowOpts,
+      tcpFlags1: List<String>.from(rule.tcpFlags1),
+      tcpFlags2: List<String>.from(rule.tcpFlags2),
       tcpFlagsAny: rule.tcpFlagsAny,
       schedule: rule.schedule,
       divertTo: rule.divertTo,

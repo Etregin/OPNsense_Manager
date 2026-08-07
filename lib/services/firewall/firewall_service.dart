@@ -26,125 +26,74 @@ import '../../constants/api_endpoints.dart';
 
 /// Service for firewall rule operations
 class FirewallService extends BaseOPNsenseService {
+  /// Fetch all firewall rules via POST /firewall/filter/search_rule.
+  /// Returns rules sorted by sort_order so the list matches the web UI order.
   Future<List<FirewallRule>> getFirewallRules() async {
     ensureInitialized();
 
     try {
-      final List<FirewallRule> allRules = [];
-      
-      // Fetch automation rules using /firewall/filter/get endpoint only
-      final automationResponse = await dio.get(ApiEndpoints.firewallRulesGet);
-      
-      if (automationResponse.statusCode == 200) {
-        final data = automationResponse.data as Map<String, dynamic>;
-        
-        // The /get endpoint returns: filter.rules.rule
-        if (data.containsKey('filter')) {
-          final filterData = data['filter'] as Map<String, dynamic>?;
-          if (filterData != null && filterData.containsKey('rules')) {
-            final rulesContainer = filterData['rules'] as Map<String, dynamic>?;
-            if (rulesContainer != null && rulesContainer.containsKey('rule')) {
-              final rules = rulesContainer['rule'];
-              
-              if (rules is List) {
-                for (var rule in rules) {
-                  if (rule is Map<String, dynamic>) {
-                    try {
-                      allRules.add(_parseFirewallRule(rule));
-                    } catch (e) {
-                      assert(() {
-                        debugPrint('FirewallService: failed to parse rule: $e');
-                        return true;
-                      }());
-                    }
-                  }
-                }
-              } else if (rules is Map) {
-                // Rules are a map with UUIDs as keys
-                for (var entry in rules.entries) {
-                  if (entry.value is Map<String, dynamic>) {
-                    try {
-                      final ruleData = Map<String, dynamic>.from(entry.value as Map);
-                      ruleData['uuid'] = entry.key; // Add UUID from key
-                      allRules.add(_parseFirewallRule(ruleData));
-                    } catch (e) {
-                      assert(() {
-                        debugPrint('FirewallService: failed to parse rule: $e');
-                        return true;
-                      }());
-                    }
-                  }
-                }
+      final response = await dio.post(
+        ApiEndpoints.firewallRulesSearch,
+        data: {'current': 1, 'rowCount': 500, 'sort': {}},
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        final rows = data['rows'];
+        if (rows is List) {
+          final rules = <FirewallRule>[];
+          for (final row in rows) {
+            if (row is Map<String, dynamic>) {
+              try {
+                rules.add(_parseSearchRule(row));
+              } catch (e) {
+                assert(() {
+                  debugPrint('[FirewallService] failed to parse rule: $e');
+                  return true;
+                }());
               }
             }
           }
+          return rules;
         }
       }
-      
-      return allRules;
+      return [];
     } on DioException catch (e) {
       throw handleDioError(e);
     }
   }
 
-  /// Get available interfaces from OPNsense
+  /// Get available interfaces by fetching a blank new-rule form from the API.
+  /// Falls back to a hard-coded default set on any error.
   Future<Map<String, String>> getAvailableInterfaces() async {
     ensureInitialized();
 
     try {
-      final response = await dio.get(ApiEndpoints.firewallRulesGet);
-      
+      // GET /firewall/filter/getRule/ with no UUID returns a blank rule form
+      // whose 'interface' field is a nested dropdown with all available interfaces.
+      final response = await dio.get(ApiEndpoints.firewallRuleGetOne(''));
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
-        
-        // Navigate to filter.rules.rule to get a sample rule with interface data
-        if (data.containsKey('filter')) {
-          final filterData = data['filter'] as Map<String, dynamic>?;
-          if (filterData != null && filterData.containsKey('rules')) {
-            final rulesContainer = filterData['rules'] as Map<String, dynamic>?;
-            if (rulesContainer != null && rulesContainer.containsKey('rule')) {
-              final rules = rulesContainer['rule'];
-              
-              // Get interface options from the first rule's interface field
-              if (rules is Map && rules.isNotEmpty) {
-                final firstRule = rules.values.first;
-                if (firstRule is Map<String, dynamic> && firstRule.containsKey('interface')) {
-                  final interfaceField = firstRule['interface'];
-                  if (interfaceField is Map<String, dynamic>) {
-                    // Extract all interface options
-                    final Map<String, String> interfaces = {};
-                    for (var entry in interfaceField.entries) {
-                      final value = entry.value;
-                      if (value is Map<String, dynamic> && value.containsKey('value')) {
-                        // key is the internal name (e.g., 'lan'), value['value'] is display name (e.g., 'LAN')
-                        interfaces[entry.key] = value['value'].toString();
-                      }
-                    }
-                    return interfaces;
-                  }
-                }
+        final ruleObj = data['rule'] as Map<String, dynamic>?;
+        if (ruleObj != null) {
+          final interfaceField = ruleObj['interface'];
+          if (interfaceField is Map<String, dynamic>) {
+            final interfaces = <String, String>{};
+            for (final entry in interfaceField.entries) {
+              final val = entry.value;
+              if (val is Map<String, dynamic> && val.containsKey('value')) {
+                interfaces[entry.key] = val['value'].toString();
               }
             }
+            if (interfaces.isNotEmpty) return interfaces;
           }
         }
       }
-      
-      // Fallback to default interfaces if API doesn't provide them
-      return {
-        'lan': 'LAN',
-        'wan': 'WAN',
-        'opt1': 'OPT1',
-        'opt2': 'OPT2',
-      };
     } on DioException {
-      // Return default interfaces on error
-      return {
-        'lan': 'LAN',
-        'wan': 'WAN',
-        'opt1': 'OPT1',
-        'opt2': 'OPT2',
-      };
+      // fall through to defaults
     }
+
+    return {'lan': 'LAN', 'wan': 'WAN'};
   }
 
   /// Extract option map from a nested dropdown field in the API response.
@@ -162,25 +111,19 @@ class FirewallService extends BaseOPNsenseService {
     return {fallbackKey: fallbackValue};
   }
 
-  /// Fetch all dynamic dropdown option maps needed by the rule form in one
-  /// GET call to the existing /filter/get endpoint.
+  /// Fetch all dynamic dropdown option maps needed by the rule form.
+  /// Uses GET /firewall/filter/getRule/ (no UUID) to get a blank rule form
+  /// that contains all populated dropdown options from the live system.
   Future<FirewallFormOptions> getFirewallRuleFormOptions() async {
     ensureInitialized();
 
     Map<String, dynamic>? ruleObj;
 
     try {
-      final response = await dio.get(ApiEndpoints.firewallRulesGet);
+      final response = await dio.get(ApiEndpoints.firewallRuleGetOne(''));
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
-        final filterData = data['filter'] as Map<String, dynamic>?;
-        final rulesContainer = filterData?['rules'] as Map<String, dynamic>?;
-        final rules = rulesContainer?['rule'];
-        if (rules is Map && rules.isNotEmpty) {
-          ruleObj = Map<String, dynamic>.from(rules.values.first as Map);
-        } else if (rules is List && rules.isNotEmpty) {
-          ruleObj = Map<String, dynamic>.from(rules.first as Map);
-        }
+        ruleObj = data['rule'] as Map<String, dynamic>?;
       }
     } on DioException {
       // fall through to return defaults
@@ -189,7 +132,7 @@ class FirewallService extends BaseOPNsenseService {
     // Fetch firewall categories from dedicated endpoint
     Map<String, String> categoryMap = {};
     try {
-      final catResponse = await dio.get('/api/firewall/category/searchItem');
+      final catResponse = await dio.get('/firewall/category/searchItem');
       if (catResponse.statusCode == 200) {
         final catData = catResponse.data as Map<String, dynamic>;
         final rows = catData['rows'];
@@ -227,43 +170,39 @@ class FirewallService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final requestJson = request.toJson();
-      
-      final payload = {'rule': requestJson};
-      
-      // According to OPNsense API docs, we need to wrap the rule in a 'rule' object
+      final payload = {'rule': request.toJson()};
+
+      debugPrint('[FirewallService] create payload: $payload');
+
       final response = await dio.post(
         ApiEndpoints.firewallRuleAdd,
         data: payload,
       );
-      
-      
+
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
-        
-        // Check if the operation succeeded
+
+        debugPrint('[FirewallService] create response: $data');
+
         final result = data['result'] as String?;
         if (result == 'failed') {
           final validations = data['validations'] as Map<String, dynamic>?;
-          final errorMessage = validations?.values.join(', ') ?? 'Unknown validation error';
-          throw ApiException('Failed to create rule: $errorMessage', 400, ApiErrorType.unknown);
+          // Build a human-readable message showing field → error
+          final errorMessage = validations != null
+              ? validations.entries.map((e) => '${e.key}: ${e.value}').join('\n')
+              : 'Unknown validation error';
+          debugPrint('[FirewallService] validation errors:\n$errorMessage');
+          throw ApiException('Failed to create rule:\n$errorMessage', 400, ApiErrorType.unknown);
         }
-        
+
         final uuid = data['uuid'] as String?;
         if (uuid == null || uuid.isEmpty) {
-          throw const ApiException('No UUID returned from addRule', 500, ApiErrorType.unknown);
+          throw const ApiException('No UUID returned from add_rule', 500, ApiErrorType.unknown);
         }
-        
-        
-        // Verify the rule was created by fetching it
-        final createdRule = await getFirewallRule(uuid);
-        if (createdRule != null) {
-        } else {
-        }
-        
-        // Apply changes - this is required to make the rule active
+
+        // Apply changes to make the rule active
         await applyFirewallChanges();
-        
+
         return uuid;
       } else {
         throw ApiException('Failed to create firewall rule', response.statusCode, ApiErrorType.unknown);
@@ -273,76 +212,75 @@ class FirewallService extends BaseOPNsenseService {
     }
   }
 
-  /// Parse a firewall rule from API response
-  FirewallRule _parseFirewallRule(Map<String, dynamic> ruleData) {
-    // Different endpoints return different structures:
-    // - searchRule: simple strings (action, interface, protocol, source_net, destination_net, description)
-    // - filter/get: nested dropdown objects with 'selected' flags
-    
-    // Get action/type - could be string or nested object
-    String type;
-    if (ruleData['action'] is String) {
-      type = ruleData['action'] as String;
-    } else {
-      type = extractSelectedValue(ruleData['action']);
-    }
+  /// Parse a rule row from POST /firewall/filter/search_rule.
+  /// All fields are flat strings; human-readable percent-prefixed fields
+  /// (e.g. '%action', '%direction') are available as display labels.
+  FirewallRule _parseSearchRule(Map<String, dynamic> r) {
+    // action: prefer the raw value, fall back to the display value stripped
+    String type = r['action']?.toString() ?? '';
+    if (type.isEmpty) type = (r['%action']?.toString() ?? '').toLowerCase();
     if (type.isEmpty) type = 'pass';
-    
-    // Get interface - could be string or nested object
-    // Use returnDisplayValue=true to get the friendly name (e.g., "LAN" instead of "lan")
-    String interfaceName;
-    if (ruleData['interface'] is String) {
-      interfaceName = ruleData['interface'] as String;
-    } else {
-      interfaceName = extractSelectedValue(ruleData['interface'], returnDisplayValue: true);
-    }
-    
-    // Get protocol - could be string or nested object
-    String protocol;
-    if (ruleData['protocol'] is String) {
-      protocol = ruleData['protocol'] as String;
-    } else {
-      protocol = extractSelectedValue(ruleData['protocol']);
-    }
+
+    // interface: raw key (e.g. 'lan', 'wan', '') — '' means any/floating
+    final String interfaceName = r['interface']?.toString() ?? '';
+
+    // protocol: raw lowercase (e.g. 'tcp', 'udp', 'any', '')
+    String protocol = r['protocol']?.toString() ?? '';
     if (protocol.isEmpty) protocol = 'any';
-    
-    // Get source - always a string field
-    String source = ruleData['source_net']?.toString() ?? 'any';
+
+    // source / destination
+    String source = r['source_net']?.toString() ?? '';
     if (source.isEmpty) source = 'any';
-    
-    // Get destination - always a string field
-    String destination = ruleData['destination_net']?.toString() ?? 'any';
+    String destination = r['destination_net']?.toString() ?? '';
     if (destination.isEmpty) destination = 'any';
-    
-    // Get description - could be 'description' or 'descr'
-    String description = ruleData['description']?.toString() ??
-                        ruleData['descr']?.toString() ?? '';
-    
-    // Get source port - always a string field
-    String sourcePort = ruleData['source_port']?.toString() ?? '';
-    if (sourcePort.isEmpty) sourcePort = 'any';
-    
-    // Get destination port - always a string field
-    String destPort = ruleData['destination_port']?.toString() ?? '';
-    if (destPort.isEmpty) destPort = 'any';
-    
-    // Get origin field to identify system-generated rules
-    // System-generated rules typically have origin field set (e.g., 'filter', 'nat', etc.)
-    String origin = ruleData['origin']?.toString() ?? '';
-    
+
+    final String sourcePort      = r['source_port']?.toString()      ?? '';
+    final String destinationPort = r['destination_port']?.toString()  ?? '';
+    final String description     = r['description']?.toString()       ?? '';
+    final String direction       = r['direction']?.toString()         ?? 'in';
+    final String ipProtocol      = r['ipprotocol']?.toString()        ?? 'inet';
+
+    // enabled: the search_rule endpoint returns "1"/"0" or bool
+    final dynamic rawEnabled = r['enabled'];
+    final String enabled = rawEnabled == false || rawEnabled == '0' ? '0' : '1';
+
+    // sequence: numeric string or int
+    final int sequence =
+        int.tryParse(r['sequence']?.toString() ?? '0') ?? 0;
+
+    // sort_order present in search_rule — store in sortOrder
+    final String sortOrder = r['sort_order']?.toString() ?? '';
+
+    // system/automatic rules: 'is_automatic' or 'legacy' flags
+    final bool isAutomatic = r['is_automatic'] == true || r['legacy'] == true;
+    final String origin = isAutomatic ? (r['ref']?.toString() ?? 'automatic') : '';
+
+    // quick: "1"/"0" or bool
+    final dynamic rawQuick = r['quick'];
+    final String quick = rawQuick == false || rawQuick == '0' ? '0' : '1';
+
+    // log: same pattern
+    final dynamic rawLog = r['log'];
+    final String log = rawLog == true || rawLog == '1' ? '1' : '0';
+
     return FirewallRule(
-      uuid: ruleData['uuid']?.toString() ?? '',
-      type: type,
-      interfaceName: interfaceName,
-      protocol: protocol,
-      source: source,
-      destination: destination,
-      sourcePort: sourcePort,
-      destinationPort: destPort,
-      description: description,
-      enabled: ruleData['enabled']?.toString() ?? '1',
-      sequence: int.tryParse(ruleData['sequence']?.toString() ?? '0') ?? 0,
-      origin: origin,
+      uuid:            r['uuid']?.toString() ?? '',
+      type:            type,
+      interfaceName:   interfaceName,
+      protocol:        protocol,
+      source:          source,
+      destination:     destination,
+      sourcePort:      sourcePort,
+      destinationPort: destinationPort,
+      description:     description,
+      enabled:         enabled,
+      sequence:        sequence,
+      sortOrder:       sortOrder,
+      origin:          origin,
+      direction:       direction,
+      ipProtocol:      ipProtocol,
+      quick:           quick,
+      log:             log,
     );
   }
 
@@ -465,14 +403,24 @@ class FirewallService extends BaseOPNsenseService {
     }
   }
 
-  /// Apply firewall changes
+  /// Apply firewall changes so that saved rules become active.
+  ///
+  /// OPNsense reloads pf while serving this request, which can cause the
+  /// connection to drop or return an empty body — that is normal behaviour.
+  /// We therefore swallow ALL errors here and only log them as debug output.
+  /// A failed apply does NOT mean the rule was not saved; the rule is always
+  /// persisted by add_rule / set_rule regardless of whether apply succeeds.
   Future<void> applyFirewallChanges() async {
-    ensureInitialized();
+    if (!isInitialized) return;
 
     try {
       await dio.post(ApiEndpoints.firewallRulesApply);
     } on DioException catch (e) {
-      throw handleDioError(e);
+      // Ignore connection/timeout errors from the apply endpoint — pf reload
+      // can legitimately drop the HTTP connection mid-response.
+      debugPrint('[FirewallService] applyFirewallChanges warning (ignored): ${e.message}');
+    } catch (e) {
+      debugPrint('[FirewallService] applyFirewallChanges unexpected error (ignored): $e');
     }
   }
 

@@ -6871,6 +6871,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{name} address'**
   String interfaceAddress(String name);
+
+  /// No description provided for @sortOrderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort Order'**
+  String get sortOrderLabel;
+
+  /// No description provided for @sortOrderHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The order in which rules are being processed (auto-calculated, read-only).'**
+  String get sortOrderHelp;
 }
 
 class _AppLocalizationsDelegate

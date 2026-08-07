@@ -3804,4 +3804,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String interfaceAddress(String name) {
     return '$name address';
   }
+
+  @override
+  String get sortOrderLabel => 'Sort Order';
+
+  @override
+  String get sortOrderHelp =>
+      'The order in which rules are being processed (auto-calculated, read-only).';
 }

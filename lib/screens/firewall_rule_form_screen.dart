@@ -104,7 +104,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
   List<String> _selectedCategories = [];
 
   // ── Interface ────────────────────────────────────────────────────────────
-  String _selectedInterface = 'lan';
+  String _selectedInterface = '';
   bool _interfaceNot = false;
 
   // ── Filter ───────────────────────────────────────────────────────────────
@@ -345,6 +345,8 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
       noSync: _noSync ? '1' : '0',
       sequence: _sequenceController.text.trim(),
       allowOpts: _allowOpts ? '1' : '0',
+      tcpFlags1: _tcpFlags1,
+      tcpFlags2: _tcpFlags2,
       tcpFlagsAny: _tcpFlagsAny ? '1' : '0',
       schedule: _selectedSchedule,
       divertTo: _selectedDivertTo,
@@ -746,22 +748,34 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                   ),
                   _gap(),
                   DropdownButtonFormField<String>(
-                    initialValue: _viewModel.availableInterfaces.containsKey(_selectedInterface)
-                        ? _selectedInterface
-                        : null,
+                    initialValue: () {
+                      if (_viewModel.loadingInterfaces) return null;
+                      final ifaces = _viewModel.availableInterfaces;
+                      // '' is always valid (Any), named keys only valid if loaded
+                      if (_selectedInterface == '' ||
+                          ifaces.containsKey(_selectedInterface)) {
+                        return _selectedInterface;
+                      }
+                      return '';
+                    }(),
                     decoration: InputDecoration(
                       labelText: l10n.interface,
                       prefixIcon: const Icon(Icons.network_check),
                     ),
                     items: _viewModel.loadingInterfaces
-                        ? [DropdownMenuItem(value: 'loading', child: Text(l10n.loading))]
-                        : _viewModel.availableInterfaces.entries
-                            .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
-                            .toList(),
+                        ? [DropdownMenuItem(value: '', child: Text(l10n.loading))]
+                        : [
+                            DropdownMenuItem(value: '', child: Text(l10n.any)),
+                            ..._viewModel.availableInterfaces.entries
+                                .map((e) => DropdownMenuItem(
+                                      value: e.key,
+                                      child: Text(e.value),
+                                    )),
+                          ],
                     onChanged: _isLoading || _viewModel.loadingInterfaces
                         ? null
                         : (v) {
-                            if (v != null && v != 'loading') {
+                            if (v != null) {
                               setState(() => _selectedInterface = v);
                             }
                           },
@@ -1119,6 +1133,21 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                   icon: Icons.manage_search,
                   initiallyExpanded: false,
                   children: [
+                    // Sort Order — read-only display (value from existing rule only)
+                    if (widget.isEditing && widget.rule!.sortOrder.isNotEmpty) ...[
+                      TextFormField(
+                        initialValue: widget.rule!.sortOrder,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          labelText: l10n.sortOrderLabel,
+                          prefixIcon: const Icon(Icons.format_list_numbered_outlined),
+                          helperText: l10n.sortOrderHelp,
+                          helperMaxLines: 3,
+                          filled: true,
+                        ),
+                      ),
+                      _gap(),
+                    ],
                     TextFormField(
                       controller: _sequenceController,
                       decoration: InputDecoration(
