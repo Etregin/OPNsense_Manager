@@ -3649,6 +3649,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get icmpTypeLabel => 'ICMP Type';
 
   @override
+  String get icmp6TypeLabel => 'ICMPv6 Type';
+
+  @override
   String get sourcePortHelp =>
       'Source port number or well known name (imap, imaps, http, https, ...), for ranges use a dash';
 

@@ -6584,6 +6584,12 @@ abstract class AppLocalizations {
   /// **'ICMP Type'**
   String get icmpTypeLabel;
 
+  /// No description provided for @icmp6TypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ICMPv6 Type'**
+  String get icmp6TypeLabel;
+
   /// No description provided for @sourcePortHelp.
   ///
   /// In en, this message translates to:

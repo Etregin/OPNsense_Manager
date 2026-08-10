@@ -3146,6 +3146,8 @@
   "@fwVersionLabel": {},
   "icmpTypeLabel": "ICMP Type",
   "@icmpTypeLabel": {},
+  "icmp6TypeLabel": "ICMPv6 Type",
+  "@icmp6TypeLabel": {},
   "sourcePortHelp": "Source port number or well known name (imap, imaps, http, https, ...), for ranges use a dash",
   "@sourcePortHelp": {},
   "destinationPortHelp": "Destination port number or well known name (imap, imaps, http, https, ...), for ranges use a dash",
