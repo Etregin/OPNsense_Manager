@@ -620,6 +620,12 @@ abstract class AppLocalizations {
   /// **'Auto Refresh'**
   String get autoRefresh;
 
+  /// No description provided for @automaticRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic'**
+  String get automaticRule;
+
   /// No description provided for @backendState.
   ///
   /// In en, this message translates to:
@@ -1105,6 +1111,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create your first automation rule to get started'**
   String get createFirstAutomationRule;
+
+  /// No description provided for @createFirstFirewallRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first firewall rule to get started'**
+  String get createFirstFirewallRule;
 
   /// No description provided for @createFirstProfile.
   ///
@@ -2492,6 +2504,12 @@ abstract class AppLocalizations {
   /// **'5 min'**
   String get fiveMin;
 
+  /// No description provided for @floatingInterface.
+  ///
+  /// In en, this message translates to:
+  /// **'Floating'**
+  String get floatingInterface;
+
   /// No description provided for @fixFormErrors.
   ///
   /// In en, this message translates to:
@@ -3644,6 +3662,12 @@ abstract class AppLocalizations {
   /// **'No automation rules found'**
   String get noAutomationRulesFound;
 
+  /// No description provided for @noFirewallRulesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No firewall rules found'**
+  String get noFirewallRulesFound;
+
   /// No description provided for @noClientSpecificOverridesConfigured.
   ///
   /// In en, this message translates to:
@@ -3703,6 +3727,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No interfaces with automation rules'**
   String get noInterfacesWithAutomationRules;
+
+  /// No description provided for @noInterfacesWithRules.
+  ///
+  /// In en, this message translates to:
+  /// **'No interfaces with rules'**
+  String get noInterfacesWithRules;
 
   /// No description provided for @noItemsConfigured.
   ///

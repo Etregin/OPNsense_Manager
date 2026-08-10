@@ -293,6 +293,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get autoRefresh => 'Actualisation Automatique';
 
   @override
+  String get automaticRule => 'Automatique';
+
+  @override
   String get backendState => 'État du Backend';
 
   @override
@@ -574,6 +577,10 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get createFirstAutomationRule =>
       'Créez votre première règle d\'automatisation pour commencer';
+
+  @override
+  String get createFirstFirewallRule =>
+      'Créez votre première règle de pare-feu pour commencer';
 
   @override
   String get createFirstProfile => 'Créez votre premier profil pour commencer';
@@ -1405,6 +1412,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get fiveMin => '5 min';
 
   @override
+  String get floatingInterface => 'Flottant';
+
+  @override
   String get fixFormErrors =>
       'Veuillez corriger les erreurs dans le formulaire';
 
@@ -2049,6 +2059,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noAutomationRulesFound => 'Aucune règle d\'automatisation trouvée';
 
   @override
+  String get noFirewallRulesFound => 'Aucune règle de pare-feu trouvée';
+
+  @override
   String get noClientSpecificOverridesConfigured =>
       'Aucune substitution spécifique au client configurée';
 
@@ -2083,6 +2096,9 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get noInterfacesWithAutomationRules =>
       'Aucune interface avec des règles d\'automatisation';
+
+  @override
+  String get noInterfacesWithRules => 'Aucune interface avec des règles';
 
   @override
   String get noItemsConfigured => 'Aucun élément configuré';

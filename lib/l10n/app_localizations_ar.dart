@@ -283,6 +283,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get autoRefresh => 'التحديث التلقائي';
 
   @override
+  String get automaticRule => 'تلقائي';
+
+  @override
   String get backendState => 'حالة الخلفية';
 
   @override
@@ -559,6 +562,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get createFirstAutomationRule => 'أنشئ أول قاعدة أتمتة للبدء';
+
+  @override
+  String get createFirstFirewallRule => 'أنشئ أول قاعدة جدار حماية للبدء';
 
   @override
   String get createFirstProfile => 'أنشئ ملفك الشخصي الأول للبدء';
@@ -1377,6 +1383,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get fiveMin => '5 دقائق';
 
   @override
+  String get floatingInterface => 'عائم';
+
+  @override
   String get fixFormErrors => 'الرجاء إصلاح الأخطاء في النموذج';
 
   @override
@@ -2014,6 +2023,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noAutomationRulesFound => 'لم يتم العثور على قواعد أتمتة';
 
   @override
+  String get noFirewallRulesFound => 'لم يتم العثور على قواعد جدار الحماية';
+
+  @override
   String get noClientSpecificOverridesConfigured =>
       'لم يتم تكوين تجاوزات خاصة بالعميل';
 
@@ -2046,6 +2058,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noInterfacesWithAutomationRules => 'لا توجد واجهات بقواعد أتمتة';
+
+  @override
+  String get noInterfacesWithRules => 'لا توجد واجهات بقواعد';
 
   @override
   String get noItemsConfigured => 'لم يتم تكوين عناصر';
