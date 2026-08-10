@@ -34,9 +34,15 @@ class FirewallRuleFilter {
   /// The returned map's keys are sorted alphabetically.
   static Map<String, List<FirewallRule>> groupByInterface(
       List<FirewallRule> rules) {
-    // Sort all rules by sort_order before bucketing so insertion order is correct.
+    // Sort: user-created rules first (alphabetically by description),
+    // then automatic rules (alphabetically by description).
     final sorted = List<FirewallRule>.from(rules)
-      ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+      ..sort((a, b) {
+        final aAuto = a.isSystemGenerated ? 1 : 0;
+        final bAuto = b.isSystemGenerated ? 1 : 0;
+        if (aAuto != bAuto) return aAuto.compareTo(bAuto);
+        return a.description.toLowerCase().compareTo(b.description.toLowerCase());
+      });
 
     final Map<String, List<FirewallRule>> rulesByInterface = {};
 
