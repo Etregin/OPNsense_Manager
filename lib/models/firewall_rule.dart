@@ -29,6 +29,10 @@ class FirewallRule {
   @JsonKey(name: 'interface')
   final String interfaceName;
   final String protocol; // tcp, udp, icmp, any
+  @JsonKey(name: 'icmptype', defaultValue: '')
+  final String icmpType;
+  @JsonKey(name: 'icmp6type', defaultValue: '')
+  final String icmp6Type;
   final String source;
   final String destination;
   @JsonKey(name: 'source_port')
@@ -149,6 +153,8 @@ class FirewallRule {
     required this.type,
     required this.interfaceName,
     required this.protocol,
+    this.icmpType = '',
+    this.icmp6Type = '',
     required this.source,
     required this.destination,
     this.sourcePort = '',
@@ -375,6 +381,10 @@ class FirewallRuleRequest {
   @JsonKey(name: 'interface')
   final String interfaceName;
   final String protocol;
+  @JsonKey(name: 'icmptype', defaultValue: '')
+  final String icmpType;
+  @JsonKey(name: 'icmp6type', defaultValue: '')
+  final String icmp6Type;
 
   // Source fields
   @JsonKey(name: 'source_net')
@@ -502,6 +512,8 @@ class FirewallRuleRequest {
     required this.type,
     required this.interfaceName,
     required this.protocol,
+    this.icmpType = '',
+    this.icmp6Type = '',
     required this.source,
     required this.destination,
     required this.destinationPort,
@@ -593,9 +605,8 @@ class FirewallRuleRequest {
       'direction':        direction,
       'ipprotocol':       ipProtocol,
       'protocol':         protocolValue,
-      // ICMP type fields — always send empty string (form doesn't yet send values)
-      'icmptype':         '',
-      'icmp6type':        '',
+      'icmptype':         icmpType,
+      'icmp6type':        icmp6Type,
       'source_not':       sourceNot,
       'source_net':       src,
       'source_port':      sourcePort,

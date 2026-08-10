@@ -307,37 +307,90 @@ class FirewallService extends BaseOPNsenseService {
         }
         
         if (ruleData != null) {
-          // OPNsense returns complex nested structures for dropdowns
-          // Extract the selected values
-          final type = extractSelectedValue(ruleData['action']);
+          // OPNsense returns complex nested structures for dropdowns —
+          // extract the selected key from each.
+          final type         = extractSelectedValue(ruleData['action']);
           final interfaceName = extractSelectedValue(ruleData['interface']);
-          final protocol = extractSelectedValue(ruleData['protocol']);
-          
-          // Try both 'source_net' and 'source' field names
-          final source = ruleData['source_net']?.toString() ??
-                        ruleData['source']?.toString() ??
-                        'any';
-          final destination = ruleData['destination_net']?.toString() ??
-                             ruleData['destination']?.toString() ??
-                             'any';
-          final description = ruleData['descr']?.toString() ?? '';
-          
-          final sourcePort = ruleData['source_port']?.toString() ?? 'any';
-          final destPort = ruleData['destination_port']?.toString() ?? 'any';
-          
-          
+          final protocol     = extractSelectedValue(ruleData['protocol']);
+          final direction    = extractSelectedValue(ruleData['direction']);
+          final ipProtocol   = extractSelectedValue(ruleData['ipprotocol']);
+          final stateType    = extractSelectedValue(ruleData['statetype']);
+          final statePolicy  = extractSelectedValue(ruleData['state-policy']);
+          final divertTo     = extractSelectedValue(ruleData['divert-to']);
+          final gateway      = extractSelectedValue(ruleData['gateway']);
+          final replyTo      = extractSelectedValue(ruleData['replyto']);
+          final overload     = extractSelectedValue(ruleData['overload']);
+          final prio         = extractSelectedValue(ruleData['prio']);
+          final setPrio      = extractSelectedValue(ruleData['set-prio']);
+          final setPrioLow   = extractSelectedValue(ruleData['set-prio-low']);
+          final tos          = extractSelectedValue(ruleData['tos']);
+          final sched        = extractSelectedValue(ruleData['sched']);
+          final shaper1      = extractSelectedValue(ruleData['shaper1']);
+          final shaper2      = extractSelectedValue(ruleData['shaper2']);
+
+          // icmptype / icmp6type — extract the selected key ('' means "any")
+          final icmpType  = extractSelectedValue(ruleData['icmptype']);
+          final icmp6Type = extractSelectedValue(ruleData['icmp6type']);
+
+          // Flat string fields
+          final source      = ruleData['source_net']?.toString() ?? ruleData['source']?.toString() ?? 'any';
+          final destination = ruleData['destination_net']?.toString() ?? ruleData['destination']?.toString() ?? 'any';
+          final description = ruleData['descr']?.toString() ?? ruleData['description']?.toString() ?? '';
+          final sourcePort  = ruleData['source_port']?.toString() ?? '';
+          final destPort    = ruleData['destination_port']?.toString() ?? '';
+
           return FirewallRule(
             uuid: uuid,
-            type: type.isNotEmpty ? type : 'pass',
-            interfaceName: interfaceName,
-            protocol: protocol.isNotEmpty ? protocol : 'any',
-            source: source,
-            destination: destination,
-            sourcePort: sourcePort,
+            type:            type.isNotEmpty ? type : 'pass',
+            interfaceName:   interfaceName,
+            protocol:        protocol.isNotEmpty ? protocol : 'any',
+            icmpType:        icmpType,
+            icmp6Type:       icmp6Type,
+            source:          source,
+            destination:     destination,
+            sourcePort:      sourcePort,
             destinationPort: destPort,
-            description: description,
-            enabled: ruleData['enabled']?.toString() ?? '1',
-            sequence: int.tryParse(ruleData['sequence']?.toString() ?? '0') ?? 0,
+            description:     description,
+            enabled:         ruleData['enabled']?.toString() ?? '1',
+            sequence:        int.tryParse(ruleData['sequence']?.toString() ?? '0') ?? 0,
+            direction:       direction.isNotEmpty ? direction : 'in',
+            ipProtocol:      ipProtocol.isNotEmpty ? ipProtocol : 'inet',
+            quick:           ruleData['quick']?.toString() ?? '1',
+            log:             ruleData['log']?.toString() ?? '0',
+            stateType:       stateType.isNotEmpty ? stateType : 'keep',
+            statePolicy:     statePolicy,
+            divertTo:        divertTo,
+            gateway:         gateway,
+            replyTo:         replyTo,
+            overload:        overload,
+            prio:            prio,
+            setPrio:         setPrio,
+            setPrioLow:      setPrioLow,
+            tos:             tos,
+            schedule:        sched,
+            shaper1:         shaper1,
+            shaper2:         shaper2,
+            interfaceNot:    ruleData['interfacenot']?.toString() ?? '0',
+            sourceNot:       ruleData['source_not']?.toString() ?? '0',
+            destinationNot:  ruleData['destination_not']?.toString() ?? '0',
+            noSync:          ruleData['nosync']?.toString() ?? '0',
+            allowOpts:       ruleData['allowopts']?.toString() ?? '0',
+            noPfsync:        ruleData['nopfsync']?.toString() ?? '0',
+            disableReplyTo:  ruleData['disablereplyto']?.toString() ?? '0',
+            statTimeout:     ruleData['statetimeout']?.toString() ?? '',
+            udpFirst:        ruleData['udp-first']?.toString() ?? '',
+            udpSingle:       ruleData['udp-single']?.toString() ?? '',
+            udpMultiple:     ruleData['udp-multiple']?.toString() ?? '',
+            adaptiveStart:   ruleData['adaptivestart']?.toString() ?? '',
+            adaptiveEnd:     ruleData['adaptiveend']?.toString() ?? '',
+            max:             ruleData['max']?.toString() ?? '',
+            maxSrcNodes:     ruleData['max-src-nodes']?.toString() ?? '',
+            maxSrcStates:    ruleData['max-src-states']?.toString() ?? '',
+            maxSrcConn:      ruleData['max-src-conn']?.toString() ?? '',
+            maxSrcConnRate:  ruleData['max-src-conn-rate']?.toString() ?? '',
+            maxSrcConnRates: ruleData['max-src-conn-rates']?.toString() ?? '',
+            tag:             ruleData['tag']?.toString() ?? '',
+            tagged:          ruleData['tagged']?.toString() ?? '',
           );
         }
       }

@@ -30,31 +30,199 @@ import '../viewmodels/firewall_rule_form_view_model.dart';
 import '../widgets/common/loading_overlay.dart';
 
 // ──────────────────────────────────────────────────────────────────────────────
-// ICMP type options (common subset matching OPNsense web UI)
+// ICMP type options — full set from OPNsense API
 // ──────────────────────────────────────────────────────────────────────────────
 const _kIcmpTypes = {
-  '': 'any',
-  'echoreq': 'Echo Request',
-  'echorep': 'Echo Reply',
-  'unreach': 'Destination Unreachable',
-  'redir': 'Redirect',
-  'routeradv': 'Router Advertisement',
-  'routersol': 'Router Solicitation',
-  'timex': 'Time Exceeded',
-  'paramprob': 'Parameter Problem',
+  '':           'any',
+  // Common
+  'echoreq':    'Echo Request',
+  'echorep':    'Echo Reply',
+  'unreach':    'Destination Unreachable',
+  'redir':      'Redirect',
+  'routeradv':  'Router Advertisement',
+  'routersol':  'Router Solicitation',
+  'timex':      'Time Exceeded',
+  'paramprob':  'Parameter Problem',
+  'timereq':    'Timestamp',
+  'timerep':    'Timestamp Reply',
+  'photuris':   'Photuris',
+  // Deprecated
+  'squench':    'Source Quench',
+  'althost':    'Alternate Host Address',
+  'inforeq':    'Information Request',
+  'inforep':    'Information Reply',
+  'maskreq':    'Address Mask Request',
+  'maskrep':    'Address Mask Reply',
+  'trace':      'Traceroute',
+  'dataconv':   'Data conversion problem',
+  'mobredir':   'Mobile host redirection',
+  'ipv6-where': 'IPv6 where-are-you',
+  'ipv6-here':  'IPv6 i-am-here',
+  'mobregreq':  'Mobile registration request',
+  'mobregrep':  'Mobile registration reply',
+  'skip':       'SKIP',
 };
 
 const _kIcmp6Types = {
-  '': 'any',
+  '':    'any',
+  '1':   'Destination unreachable',
+  '2':   'Packet too big',
+  '3':   'Time exceeded',
+  '4':   'Invalid IPv6 header',
   '128': 'Echo service request',
   '129': 'Echo service reply',
-  '1': 'Destination unreachable',
-  '2': 'Packet too big',
-  '3': 'Time exceeded',
+  '130': 'Multicast Listener Query',
+  '131': 'Multicast listener report',
+  '132': 'Multicast listener done',
   '133': 'Router solicitation',
   '134': 'Router advertisement',
   '135': 'Neighbor solicitation',
   '136': 'Neighbor advertisement',
+  '137': 'Shorter route exists',
+  '138': 'Route renumbering',
+  '139': 'ICMP Node Information Query',
+  '140': 'Node information reply',
+  '200': 'mtrace response',
+  '201': 'mtrace messages',
+};
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Protocol options — full set from OPNsense API
+// ──────────────────────────────────────────────────────────────────────────────
+const _kProtocols = <String, String>{
+  'any':             'any',
+  'TCP':             'TCP',
+  'UDP':             'UDP',
+  'TCP/UDP':         'TCP/UDP',
+  'ICMP':            'ICMP',
+  'ESP':             'ESP',
+  'AH':              'AH',
+  'GRE':             'GRE',
+  'IGMP':            'IGMP',
+  'PIM':             'PIM',
+  'OSPF':            'OSPF',
+  '3PC':             '3PC',
+  'A/N':             'A/N',
+  'ARGUS':           'ARGUS',
+  'ARIS':            'ARIS',
+  'AX.25':           'AX.25',
+  'BBN-RCC':         'BBN-RCC',
+  'BNA':             'BNA',
+  'BR-SAT-MON':      'BR-SAT-MON',
+  'CARP':            'CARP',
+  'CBT':             'CBT',
+  'CFTP':            'CFTP',
+  'CHAOS':           'CHAOS',
+  'COMPAQ-PEER':     'COMPAQ-PEER',
+  'CPHB':            'CPHB',
+  'CPNX':            'CPNX',
+  'CRTP':            'CRTP',
+  'CRUDP':           'CRUDP',
+  'DCCP':            'DCCP',
+  'DCN':             'DCN',
+  'DDP':             'DDP',
+  'DDX':             'DDX',
+  'DGP':             'DGP',
+  'DIVERT':          'DIVERT',
+  'DSR':             'DSR',
+  'EGP':             'EGP',
+  'EIGRP':           'EIGRP',
+  'EMCON':           'EMCON',
+  'ENCAP':           'ENCAP',
+  'ETHERIP':         'ETHERIP',
+  'FC':              'FC',
+  'GGP':             'GGP',
+  'GMTP':            'GMTP',
+  'HIP':             'HIP',
+  'HMP':             'HMP',
+  'I-NLSP':          'I-NLSP',
+  'IATP':            'IATP',
+  'IDPR':            'IDPR',
+  'IDPR-CMTP':       'IDPR-CMTP',
+  'IDRP':            'IDRP',
+  'IFMP':            'IFMP',
+  'IGP':             'IGP',
+  'IL':              'IL',
+  'IPCOMP':          'IPCOMP',
+  'IPCV':            'IPCV',
+  'IPENCAP':         'IPENCAP',
+  'IPIP':            'IPIP',
+  'IPPC':            'IPPC',
+  'IPV6':            'IPV6',
+  'IPV6-ICMP':       'IPV6-ICMP',
+  'IPX-IN-IP':       'IPX-IN-IP',
+  'IRTP':            'IRTP',
+  'ISIS':            'ISIS',
+  'ISO-IP':          'ISO-IP',
+  'ISO-TP4':         'ISO-TP4',
+  'KRYPTOLAN':       'KRYPTOLAN',
+  'L2TP':            'L2TP',
+  'LARP':            'LARP',
+  'LEAF-1':          'LEAF-1',
+  'LEAF-2':          'LEAF-2',
+  'MANET':           'MANET',
+  'MERIT-INP':       'MERIT-INP',
+  'MFE-NSP':         'MFE-NSP',
+  'MICP':            'MICP',
+  'MOBILE':          'MOBILE',
+  'MPLS-IN-IP':      'MPLS-IN-IP',
+  'MTP':             'MTP',
+  'MUX':             'MUX',
+  'NARP':            'NARP',
+  'NETBLT':          'NETBLT',
+  'NSFNET-IGP':      'NSFNET-IGP',
+  'NVP':             'NVP',
+  'PFSYNC':          'PFSYNC',
+  'PGM':             'PGM',
+  'PIPE':            'PIPE',
+  'PNNI':            'PNNI',
+  'PRM':             'PRM',
+  'PTP':             'PTP',
+  'PUP':             'PUP',
+  'PVP':             'PVP',
+  'QNX':             'QNX',
+  'RDP':             'RDP',
+  'ROHC':            'ROHC',
+  'RSVP':            'RSVP',
+  'RSVP-E2E-IGNORE': 'RSVP-E2E-IGNORE',
+  'RVD':             'RVD',
+  'SAT-EXPAK':       'SAT-EXPAK',
+  'SAT-MON':         'SAT-MON',
+  'SCC-SP':          'SCC-SP',
+  'SCPS':            'SCPS',
+  'SCTP':            'SCTP',
+  'SDRP':            'SDRP',
+  'SECURE-VMTP':     'SECURE-VMTP',
+  'SHIM6':           'SHIM6',
+  'SKIP':            'SKIP',
+  'SM':              'SM',
+  'SMP':             'SMP',
+  'SNP':             'SNP',
+  'SPRITE-RPC':      'SPRITE-RPC',
+  'SPS':             'SPS',
+  'SRP':             'SRP',
+  'ST2':             'ST2',
+  'STP':             'STP',
+  'SUN-ND':          'SUN-ND',
+  'SWIPE':           'SWIPE',
+  'TCF':             'TCF',
+  'TLSP':            'TLSP',
+  'TP++':            'TP++',
+  'TRUNK-1':         'TRUNK-1',
+  'TRUNK-2':         'TRUNK-2',
+  'TTP':             'TTP',
+  'UDPLITE':         'UDPLITE',
+  'UTI':             'UTI',
+  'VINES':           'VINES',
+  'VISA':            'VISA',
+  'VMTP':            'VMTP',
+  'WB-EXPAK':        'WB-EXPAK',
+  'WB-MON':          'WB-MON',
+  'WESP':            'WESP',
+  'WSN':             'WSN',
+  'XNET':            'XNET',
+  'XNS-IDP':         'XNS-IDP',
+  'XTP':             'XTP',
 };
 
 const _kTcpFlagNames = ['syn', 'ack', 'fin', 'rst', 'psh', 'urg', 'ece', 'cwr'];
@@ -174,7 +342,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
     _viewModel.loadAliases();
 
     if (widget.isEditing) {
-      _loadRuleData();
+      _viewModel.loadFullRule();
     }
   }
 
@@ -205,12 +373,23 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
     super.dispose();
   }
 
+  bool _ruleDataLoaded = false;
+
   void _onViewModelChanged() {
-    if (mounted) setState(() {});
+    if (!mounted) return;
+    // Once the full rule has loaded, populate the form (once only).
+    if (widget.isEditing && !_ruleDataLoaded && !_viewModel.loadingFullRule) {
+      final full = _viewModel.fullRule;
+      if (full != null) {
+        _ruleDataLoaded = true;
+        setState(() => _loadRuleData(full));
+        return;
+      }
+    }
+    setState(() {});
   }
 
-  void _loadRuleData() {
-    final rule = widget.rule!;
+  void _loadRuleData(FirewallRule rule) {
     _descriptionController.text = rule.description;
 
     // Source net — split comma-separated value into list of selected keys.
@@ -251,7 +430,13 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
 
     _selectedType = rule.type;
     _selectedInterface = rule.interfaceName;
-    _selectedProtocol = rule.protocol;
+    // Normalise to API-canonical casing: 'any' stays lowercase, everything else uppercase
+    _selectedProtocol = rule.protocol.toLowerCase() == 'any'
+        ? 'any'
+        : rule.protocol.toUpperCase();
+    _selectedIcmpType = rule.protocol.toLowerCase() == 'ipv6-icmp'
+        ? rule.icmp6Type
+        : rule.icmpType;
     _enabled = rule.isEnabled;
     _selectedDirection = rule.direction;
     _selectedIpProtocol = rule.ipProtocol;
@@ -328,6 +513,8 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
       type: _selectedType,
       interfaceName: _selectedInterface,
       protocol: _selectedProtocol,
+      icmpType: _selectedProtocol.toLowerCase() == 'icmp' ? _selectedIcmpType : '',
+      icmp6Type: _selectedProtocol.toLowerCase() == 'ipv6-icmp' ? _selectedIcmpType : '',
       source: _encodeNetValue(_sourceSelected, _sourceController.text.trim()),
       destination: _encodeNetValue(_destinationSelected, _destinationController.text.trim()),
       destinationPort: _destinationPortType == 'any' ? '' : _destinationPortController.text.trim(),
@@ -403,7 +590,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
 
   bool get _showIcmpType =>
       _selectedProtocol.toLowerCase() == 'icmp' ||
-      _selectedProtocol.toLowerCase() == 'icmpv6';
+      _selectedProtocol.toLowerCase() == 'ipv6-icmp';
 
   /// True if [v] is a known fixed option (not a raw IP/CIDR).
   bool _isFixedNetKey(String v) {
@@ -619,6 +806,51 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                   );
                 }).toList(),
               ),
+      ),
+    );
+  }
+
+  /// Tappable chip field for single-select protocol picker.
+  Widget _buildProtocolPickerField() {
+    final l10n = AppLocalizations.of(context)!;
+    final displayLabel = _kProtocols[_selectedProtocol] ?? _selectedProtocol;
+
+    return InkWell(
+      onTap: _isLoading
+          ? null
+          : () async {
+              await showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                ),
+                builder: (_) => _PickerSheet(
+                  title: l10n.protocol,
+                  options: _kProtocols,
+                  initialSelected: [_selectedProtocol],
+                  isLoading: false,
+                  searchHint: l10n.protocol,
+                  doneLabel: l10n.done,
+                  emptyLabel: l10n.noItemsConfigured,
+                  showSubtitle: false,
+                  singleSelect: true,
+                  onDone: (result) => setState(() {
+                    _selectedProtocol = result.isNotEmpty ? result.first : 'any';
+                    // Reset ICMP sub-type when protocol changes
+                    _selectedIcmpType = '';
+                  }),
+                ),
+              );
+            },
+      borderRadius: BorderRadius.circular(8),
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: l10n.protocol,
+          prefixIcon: const Icon(Icons.settings_ethernet),
+          suffixIcon: const Icon(Icons.arrow_drop_down),
+        ),
+        child: Text(displayLabel),
       ),
     );
   }
@@ -858,42 +1090,23 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                   _gap(),
 
                   // Protocol
-                  DropdownButtonFormField<String>(
-                    initialValue: _selectedProtocol,
-                    decoration: InputDecoration(
-                      labelText: l10n.protocol,
-                      prefixIcon: const Icon(Icons.settings_ethernet),
-                    ),
-                    items: [
-                      DropdownMenuItem(value: 'any', child: Text(l10n.any)),
-                      const DropdownMenuItem(value: 'tcp', child: Text(StringConstants.tcp)),
-                      const DropdownMenuItem(value: 'udp', child: Text(StringConstants.udp)),
-                      const DropdownMenuItem(value: 'tcp/udp', child: Text(StringConstants.tcpUdp)),
-                      const DropdownMenuItem(value: 'icmp', child: Text(StringConstants.icmp)),
-                      const DropdownMenuItem(value: 'icmpv6', child: Text(StringConstants.icmpv6)),
-                      const DropdownMenuItem(value: 'esp', child: Text(StringConstants.esp)),
-                      const DropdownMenuItem(value: 'ah', child: Text(StringConstants.ah)),
-                      const DropdownMenuItem(value: 'gre', child: Text(StringConstants.gre)),
-                      const DropdownMenuItem(value: 'ipv6', child: Text(StringConstants.ipv6Protocol)),
-                      const DropdownMenuItem(value: 'igmp', child: Text(StringConstants.igmp)),
-                      const DropdownMenuItem(value: 'pim', child: Text(StringConstants.pim)),
-                      const DropdownMenuItem(value: 'ospf', child: Text(StringConstants.ospf)),
-                    ],
-                    onChanged: _isLoading
-                        ? null
-                        : (v) { if (v != null) setState(() => _selectedProtocol = v); },
-                  ),
+                  _buildProtocolPickerField(),
 
-                  // ICMP Type — only shown for icmp/icmpv6
+                  // ICMP Type — only shown for ICMP / IPV6-ICMP
                   if (_showIcmpType) ...[
                     _gap(),
                     DropdownButtonFormField<String>(
-                      initialValue: _selectedIcmpType,
+                      key: ValueKey(_selectedIcmpType),
+                      initialValue: _kIcmp6Types.containsKey(_selectedIcmpType) || _kIcmpTypes.containsKey(_selectedIcmpType)
+                          ? _selectedIcmpType
+                          : '',
                       decoration: InputDecoration(
-                        labelText: l10n.icmpTypeLabel,
+                        labelText: _selectedProtocol.toLowerCase() == 'ipv6-icmp'
+                            ? l10n.icmp6TypeLabel
+                            : l10n.icmpTypeLabel,
                         prefixIcon: const Icon(Icons.error_outline),
                       ),
-                      items: (_selectedIpProtocol == 'inet6' ? _kIcmp6Types : _kIcmpTypes)
+                      items: (_selectedProtocol.toLowerCase() == 'ipv6-icmp' ? _kIcmp6Types : _kIcmpTypes)
                           .entries
                           .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
                           .toList(),
@@ -1611,6 +1824,9 @@ class _PickerSheet extends StatefulWidget {
   final String emptyLabel;
   /// When true, shows the option key as a subtitle (useful for net options).
   final bool showSubtitle;
+  /// When true, tapping an item immediately selects it and closes the sheet
+  /// (radio-button behaviour). The Done button is hidden.
+  final bool singleSelect;
   final ValueChanged<List<String>> onDone;
 
   const _PickerSheet({
@@ -1623,6 +1839,7 @@ class _PickerSheet extends StatefulWidget {
     required this.emptyLabel,
     required this.showSubtitle,
     required this.onDone,
+    this.singleSelect = false,
   });
 
   @override
@@ -1705,9 +1922,33 @@ class _PickerSheetState extends State<_PickerSheet> {
                         itemCount: filtered.length,
                         itemBuilder: (_, i) {
                           final e = filtered[i];
+                          final isSelected = _working.contains(e.key);
+                          if (widget.singleSelect) {
+                            return ListTile(
+                              dense: true,
+                              selected: isSelected,
+                              leading: Icon(
+                                isSelected
+                                    ? Icons.radio_button_checked
+                                    : Icons.radio_button_unchecked,
+                                color: isSelected
+                                    ? Theme.of(context).colorScheme.primary
+                                    : null,
+                              ),
+                              title: Text(e.value),
+                              subtitle: widget.showSubtitle && e.key != e.value
+                                  ? Text(e.key,
+                                      style: Theme.of(context).textTheme.bodySmall)
+                                  : null,
+                              onTap: () {
+                                widget.onDone([e.key]);
+                                Navigator.of(context).pop();
+                              },
+                            );
+                          }
                           return CheckboxListTile(
                             dense: true,
-                            value: _working.contains(e.key),
+                            value: isSelected,
                             title: Text(e.value),
                             subtitle: widget.showSubtitle && e.key != e.value
                                 ? Text(e.key,
@@ -1733,21 +1974,22 @@ class _PickerSheetState extends State<_PickerSheet> {
                         },
                       ),
           ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-              child: SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: () {
-                    widget.onDone(List<String>.from(_working));
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(widget.doneLabel),
+          if (!widget.singleSelect)
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: () {
+                      widget.onDone(List<String>.from(_working));
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(widget.doneLabel),
+                  ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );

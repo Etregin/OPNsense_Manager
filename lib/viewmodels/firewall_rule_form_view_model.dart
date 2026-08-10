@@ -41,6 +41,11 @@ class FirewallRuleFormViewModel extends BaseFormViewModel {
   bool get isEditing => _existingRule != null;
   FirewallRule? get existingRule => _existingRule;
 
+  FirewallRule? _fullRule;
+  bool _loadingFullRule = false;
+  FirewallRule? get fullRule => _fullRule;
+  bool get loadingFullRule => _loadingFullRule;
+
   FirewallFormOptions get formOptions => _formOptions;
   bool get loadingOptions => _loadingOptions;
 
@@ -51,6 +56,21 @@ class FirewallRuleFormViewModel extends BaseFormViewModel {
     required this._apiService,
     this._existingRule,
   });
+
+  /// Fetch the complete rule data from the edit API endpoint (includes icmptype, icmp6type, etc.)
+  Future<void> loadFullRule() async {
+    if (_existingRule == null) return;
+    _loadingFullRule = true;
+    notifyListeners();
+    try {
+      _fullRule = await _apiService.getFirewallRule(_existingRule.uuid);
+    } catch (_) {
+      _fullRule = _existingRule; // fallback to list-view data
+    } finally {
+      _loadingFullRule = false;
+      notifyListeners();
+    }
+  }
 
   /// Load firewall aliases (names only — used in source/dest pickers)
   Future<void> loadAliases() async {
