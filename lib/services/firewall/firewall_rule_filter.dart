@@ -18,26 +18,38 @@
 
 import '../../models/firewall_rule.dart';
 
+/// Canonical key used for rules that have no interface (floating/global rules).
+const String kFloatingInterfaceKey = '(floating)';
+
 /// Utility class for filtering and grouping firewall rules
 class FirewallRuleFilter {
-  /// Filter rules to show only automation rules (non-system-generated)
+  /// Filter rules to show only user-created (non-system-generated) rules.
+  /// Kept for any future filtered views; not used in the main display path.
   static List<FirewallRule> filterAutomationRules(List<FirewallRule> rules) {
     return rules.where((rule) => !rule.isSystemGenerated).toList();
   }
 
-  /// Group rules by interface
+  /// Group rules by interface, sorted ascending by sort_order within each group.
+  /// Rules with an empty interfaceName are placed under [kFloatingInterfaceKey].
+  /// The returned map's keys are sorted alphabetically.
   static Map<String, List<FirewallRule>> groupByInterface(
       List<FirewallRule> rules) {
+    // Sort all rules by sort_order before bucketing so insertion order is correct.
+    final sorted = List<FirewallRule>.from(rules)
+      ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+
     final Map<String, List<FirewallRule>> rulesByInterface = {};
-    
-    for (var rule in rules) {
-      if (!rulesByInterface.containsKey(rule.interfaceName)) {
-        rulesByInterface[rule.interfaceName] = [];
-      }
-      rulesByInterface[rule.interfaceName]!.add(rule);
+
+    for (final rule in sorted) {
+      // Normalise to lowercase so 'LAN' and 'lan' collapse into one bucket.
+      final name = rule.interfaceName.toLowerCase();
+      final key = name.isEmpty ? kFloatingInterfaceKey : name;
+      rulesByInterface.putIfAbsent(key, () => []).add(rule);
     }
-    
-    return rulesByInterface;
+
+    // Return keys in alphabetical order.
+    final sortedKeys = rulesByInterface.keys.toList()..sort();
+    return {for (final k in sortedKeys) k: rulesByInterface[k]!};
   }
 
   /// Get rules for a specific interface
@@ -55,12 +67,9 @@ class FirewallRuleFilter {
     return rulesByInterface.isNotEmpty ? rulesByInterface.keys.first : null;
   }
 
-  /// Filter and group rules in one operation
+  /// Group all rules by interface (no filtering — automatic rules are included)
   static Map<String, List<FirewallRule>> filterAndGroup(
       List<FirewallRule> allRules) {
-    final automationRules = filterAutomationRules(allRules);
-    return groupByInterface(automationRules);
+    return groupByInterface(allRules);
   }
 }
-
-

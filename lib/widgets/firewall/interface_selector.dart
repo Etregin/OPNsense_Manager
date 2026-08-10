@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../services/firewall/firewall_rule_filter.dart';
 import '../../utils/constants.dart';
 import '../../l10n/app_localizations.dart';
 import 'rule_filter_chip.dart';
@@ -65,10 +66,13 @@ class InterfaceSelector extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: interfaceRuleCounts.entries.map((entry) {
+                final label = entry.key == kFloatingInterfaceKey
+                    ? l10n.floatingInterface
+                    : entry.key.toUpperCase();
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: RuleFilterChip(
-                    label: entry.key,
+                    label: label,
                     count: entry.value,
                     isSelected: entry.key == selectedInterface,
                     onSelected: () => onInterfaceSelected(entry.key),

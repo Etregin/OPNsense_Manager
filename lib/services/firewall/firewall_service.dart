@@ -253,7 +253,9 @@ class FirewallService extends BaseOPNsenseService {
 
     // system/automatic rules: 'is_automatic' or 'legacy' flags
     final bool isAutomatic = r['is_automatic'] == true || r['legacy'] == true;
-    final String origin = isAutomatic ? (r['ref']?.toString() ?? 'automatic') : '';
+    // Use 'automatic' sentinel when ref is absent or empty (some rules have ref: "")
+    final String rawRef = r['ref']?.toString() ?? '';
+    final String origin = isAutomatic ? (rawRef.isEmpty ? 'automatic' : rawRef) : '';
 
     // quick: "1"/"0" or bool
     final dynamic rawQuick = r['quick'];

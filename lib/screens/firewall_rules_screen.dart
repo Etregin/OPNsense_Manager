@@ -219,8 +219,8 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen>
     if (rules.isEmpty) {
       return EmptyStateWidget(
         icon: Icons.security,
-        title: l10n.noAutomationRulesFound,
-        subtitle: l10n.createFirstAutomationRule,
+        title: l10n.noFirewallRulesFound,
+        subtitle: l10n.createFirstFirewallRule,
       );
     }
 
@@ -256,7 +256,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen>
           Icon(Icons.security, size: 64, color: Theme.of(context).colorScheme.onSurfaceVariant),
           const SizedBox(height: 16),
           Text(
-            l10n.noInterfacesWithAutomationRules,
+            l10n.noInterfacesWithRules,
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ],
