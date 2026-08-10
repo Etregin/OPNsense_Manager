@@ -2981,7 +2981,7 @@ abstract class AppLocalizations {
   /// No description provided for @invertDestination.
   ///
   /// In en, this message translates to:
-  /// **'Invert destination (NOT)'**
+  /// **'Invert destination'**
   String get invertDestination;
 
   /// No description provided for @invertDestinationTooltip.
@@ -2993,7 +2993,7 @@ abstract class AppLocalizations {
   /// No description provided for @invertSource.
   ///
   /// In en, this message translates to:
-  /// **'Invert source (NOT)'**
+  /// **'Invert source'**
   String get invertSource;
 
   /// No description provided for @invertSourceTooltip.

@@ -1673,14 +1673,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get invalidSourceFormat => 'Formato de origen inválido';
 
   @override
-  String get invertDestination => 'Invert destination (NOT)';
+  String get invertDestination => 'Invert destination';
 
   @override
   String get invertDestinationTooltip =>
       'Match any address EXCEPT the destination';
 
   @override
-  String get invertSource => 'Invert source (NOT)';
+  String get invertSource => 'Invert source';
 
   @override
   String get invertSourceTooltip => 'Match any address EXCEPT the source';

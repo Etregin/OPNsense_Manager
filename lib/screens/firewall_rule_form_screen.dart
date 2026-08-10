@@ -282,10 +282,10 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
   String _selectedIpProtocol = 'inet';
   String _selectedProtocol = 'any';
   String _selectedIcmpType = '';
-  bool _sourceNot = false;
+  bool _invertSource = false;
   List<String> _sourceSelected = ['any'];
   String _sourcePortType = 'any';
-  bool _destinationNot = false;
+  bool _invertDestination = false;
   List<String> _destinationSelected = ['any'];
   String _destinationPortType = 'any';
   bool _log = false;
@@ -443,8 +443,8 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
     _quick = rule.quick == '1';
     _log = rule.log == '1';
     _selectedStateType = rule.stateType;
-    _sourceNot = rule.sourceNot == '1';
-    _destinationNot = rule.destinationNot == '1';
+    _invertSource = rule.sourceNot == '1';
+    _invertDestination = rule.destinationNot == '1';
     _interfaceNot = rule.interfaceNot == '1';
     _noSync = rule.noSync == '1';
     _allowOpts = rule.allowOpts == '1';
@@ -499,9 +499,9 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
       _sourcePortType = _destinationPortType;
       _destinationPortType = tempPortType;
 
-      final tempNot = _sourceNot;
-      _sourceNot = _destinationNot;
-      _destinationNot = tempNot;
+      final tempInvert = _invertSource;
+      _invertSource = _invertDestination;
+      _invertDestination = tempInvert;
     });
   }
 
@@ -526,8 +526,8 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
       quick: _quick ? '1' : '0',
       log: _log ? '1' : '0',
       stateType: _selectedStateType,
-      sourceNot: _sourceNot ? '1' : '0',
-      destinationNot: _destinationNot ? '1' : '0',
+      sourceNot: _invertSource ? '1' : '0',
+      destinationNot: _invertDestination ? '1' : '0',
       interfaceNot: _interfaceNot ? '1' : '0',
       noSync: _noSync ? '1' : '0',
       sequence: _sequenceController.text.trim(),
@@ -1119,35 +1119,11 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
 
                   // ── Source block ─────────────────────────────────────────
                   // Invert Source
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Tooltip(
-                      message: l10n.invertSourceTooltip,
-                      child: TextButton.icon(
-                        onPressed: _isLoading
-                            ? null
-                            : () => setState(() => _sourceNot = !_sourceNot),
-                        icon: Icon(
-                          _sourceNot ? Icons.do_not_disturb_on : Icons.do_not_disturb_on_outlined,
-                          color: _sourceNot
-                              ? Theme.of(context).colorScheme.error
-                              : Theme.of(context).colorScheme.outline,
-                        ),
-                        label: Text(
-                          l10n.invertSource,
-                          style: TextStyle(
-                            color: _sourceNot
-                                ? Theme.of(context).colorScheme.error
-                                : Theme.of(context).colorScheme.outline,
-                            fontSize: 12,
-                          ),
-                        ),
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
-                      ),
-                    ),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(l10n.invertSource),
+                    value: _invertSource,
+                    onChanged: _isLoading ? null : (v) => setState(() => _invertSource = v),
                   ),
                   _gap(8),
                   _buildNetPickerField(
@@ -1221,35 +1197,11 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
 
                   // ── Destination block ────────────────────────────────────
                   // Invert Destination
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Tooltip(
-                      message: l10n.invertDestinationTooltip,
-                      child: TextButton.icon(
-                        onPressed: _isLoading
-                            ? null
-                            : () => setState(() => _destinationNot = !_destinationNot),
-                        icon: Icon(
-                          _destinationNot ? Icons.do_not_disturb_on : Icons.do_not_disturb_on_outlined,
-                          color: _destinationNot
-                              ? Theme.of(context).colorScheme.error
-                              : Theme.of(context).colorScheme.outline,
-                        ),
-                        label: Text(
-                          l10n.invertDestination,
-                          style: TextStyle(
-                            color: _destinationNot
-                                ? Theme.of(context).colorScheme.error
-                                : Theme.of(context).colorScheme.outline,
-                            fontSize: 12,
-                          ),
-                        ),
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
-                      ),
-                    ),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(l10n.invertDestination),
+                    value: _invertDestination,
+                    onChanged: _isLoading ? null : (v) => setState(() => _invertDestination = v),
                   ),
                   _gap(8),
                   _buildNetPickerField(
