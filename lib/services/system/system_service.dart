@@ -425,6 +425,105 @@ class SystemService extends BaseOPNsenseService {
       throw handleDioError(e);
     }
   }
+
+  /// Trigger a firmware update check (POST /core/firmware/check).
+  /// Returns a map containing `msg_uuid` and `status`.
+  Future<Map<String, dynamic>> triggerFirmwareCheck() async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post(ApiEndpoints.firmwareCheck, data: {});
+
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        throw ApiException('Failed to trigger firmware check', response.statusCode, ApiErrorType.unknown);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Poll firmware upgrade status (GET /core/firmware/upgradestatus).
+  /// A cache-busting query param is appended to prevent stale responses.
+  /// Returns a map containing `status` and `log`.
+  Future<Map<String, dynamic>> getFirmwareUpgradeStatus() async {
+    ensureInitialized();
+
+    try {
+      final ts = DateTime.now().millisecondsSinceEpoch;
+      final response = await dio.get(
+        ApiEndpoints.firmwareUpgradeStatus,
+        queryParameters: {'v': ts},
+      );
+
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        throw ApiException('Failed to get firmware upgrade status', response.statusCode, ApiErrorType.unknown);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Get the current firmware status (GET /core/firmware/status).
+  /// Returns the full status payload including `product`, `upgrade_packages`, etc.
+  Future<Map<String, dynamic>> getFirmwareStatus() async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.get(ApiEndpoints.firmwareStatus);
+
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        throw ApiException('Failed to get firmware status', response.statusCode, ApiErrorType.unknown);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Fetch the changelog for a specific firmware [version]
+  /// (POST /core/firmware/changelog/{version}).
+  /// Returns a map containing `html`, `version`, and `date`.
+  Future<Map<String, dynamic>> getFirmwareChangelog(String version) async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post(ApiEndpoints.firmwareChangelog(version), data: {});
+
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        throw ApiException('Failed to get firmware changelog', response.statusCode, ApiErrorType.unknown);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
+
+  /// Trigger a firmware update (POST /core/firmware/update).
+  /// The real API returns an empty body — the empty-map fallback handles that.
+  Future<Map<String, dynamic>> triggerFirmwareUpdate() async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.post(ApiEndpoints.firmwareUpdate, data: {});
+
+      if (response.statusCode == 200) {
+        return response.data is Map
+            ? response.data as Map<String, dynamic>
+            : <String, dynamic>{};
+      } else {
+        throw ApiException(
+            'Failed to trigger firmware update', response.statusCode, ApiErrorType.unknown);
+      }
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    }
+  }
 }
 
 

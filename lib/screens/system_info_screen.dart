@@ -16,9 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'firmware_update_screen.dart';
 import '../services/demo_api_service.dart';
 import '../utils/constants.dart';
 import '../utils/formatters.dart';
@@ -28,7 +28,7 @@ import '../widgets/app_drawer.dart';
 import '../widgets/common/error_display.dart';
 import '../l10n/app_localizations.dart';
 
-/// System information screen showing detailed system data
+/// System information screen showing detailed system data.
 class SystemInfoScreen extends StatefulWidget {
   const SystemInfoScreen({super.key});
 
@@ -109,21 +109,30 @@ class _SystemInfoScreenState extends State<SystemInfoScreen>
             if (systemInfo.commit.isNotEmpty)
               _buildInfoRow(Icons.commit, l10n.gitCommit, systemInfo.commit),
             if (systemInfo.mirror.isNotEmpty)
-              _buildInfoRow(
-                  Icons.cloud, l10n.packageMirror, systemInfo.mirror),
+              _buildInfoRow(Icons.cloud, l10n.packageMirror, systemInfo.mirror),
             if (systemInfo.repositories.isNotEmpty)
-              _buildInfoRow(
-                  Icons.source, l10n.repository, systemInfo.repositories),
-            if (systemInfo.updatedOn != null &&
-                systemInfo.updatedOn!.isNotEmpty)
-              _buildInfoRow(
-                  Icons.update, l10n.lastUpdate, systemInfo.updatedOn!),
+              _buildInfoRow(Icons.source, l10n.repository, systemInfo.repositories),
+            if (systemInfo.updatedOn != null && systemInfo.updatedOn!.isNotEmpty)
+              _buildInfoRow(Icons.update, l10n.lastUpdate, systemInfo.updatedOn!),
             _buildInfoRow(
               Icons.access_time,
               l10n.uptime,
               Formatters.formatUptime(systemInfo.uptime, context),
             ),
           ],
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            icon: const Icon(Icons.system_update_outlined),
+            label: Text(l10n.checkForUpdates),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const FirmwareUpdateScreen(),
+              ),
+            ),
+          ),
         ),
       ],
     );
@@ -171,7 +180,9 @@ class _SystemInfoScreenState extends State<SystemInfoScreen>
               children: [
                 Text(
                   label,
-                  style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
                 ),
                 const SizedBox(height: 2),
                 Text(
