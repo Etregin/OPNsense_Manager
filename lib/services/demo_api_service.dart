@@ -21,6 +21,7 @@ export 'network/vip_service.dart' show CarpVipOption;
 import '../models/system_info.dart';
 import '../models/thermal_sensor.dart';
 import '../models/firewall_rule.dart';
+import '../models/firewall_form_options.dart';
 import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
 import '../models/network_host.dart';
@@ -101,6 +102,50 @@ class DemoApiService {
         isDemoMode: _isDemoMode,
         demoAction: () async => _demoDataService.generateAvailableInterfaces(),
         realAction: () => _realApiService.getAvailableInterfaces(),
+        delayMs: 200,
+      );
+
+  /// Get firewall rule form options (dynamic dropdowns)
+  Future<FirewallFormOptions> getFirewallRuleFormOptions() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => const FirewallFormOptions(
+          gateways:  {'': 'None', 'WAN_DHCP': 'WAN_DHCP - 192.168.1.1', 'Null4': 'Null4 - 127.0.0.1'},
+          replyTo:   {'': 'None', 'WAN_DHCP': 'WAN_DHCP - 192.168.1.1'},
+          divertTo:  {'': 'None', '8000': 'Intrusion Detection'},
+          overload:  {'': 'None', 'virusprot': 'virusprot', 'sshlockout': 'sshlockout'},
+          schedules: {'': 'None'},
+          shapers:   {'': 'None'},
+          prio:      {'': 'Any priority', '1': 'Background (1, lowest)', '7': 'Network Control (7, highest)'},
+          setPrio:   {'': 'Keep current priority', '1': 'Background (1, lowest)', '7': 'Network Control (7, highest)'},
+          tos:       {'': 'Any', 'lowdelay': 'lowdelay', 'throughput': 'throughput'},
+          categories: {
+            'LAN Rules': 'LAN Rules',
+            'WAN Rules': 'WAN Rules',
+            'VPN': 'VPN',
+            'IoT': 'IoT',
+            'Management': 'Management',
+          },
+          portOptions: {
+            'single': 'Single port or range',
+            '':       'any',
+            'http':   'HTTP (80)',
+            'https':  'HTTPS (443)',
+            'ssh':    'SSH (22)',
+            'smtp':   'SMTP (25)',
+            'domain': 'DOMAIN (53)',
+            'imap':   'IMAP (143)',
+            'imaps':  'IMAPS (993)',
+            'pop3':   'POP3 (110)',
+            'pop3s':  'POP3S (995)',
+            'ftp':    'FTP (21)',
+            'ntp':    'NTP (123)',
+            'snmp':   'SNMP (161)',
+            'ldap':   'LDAP (389)',
+            'ms-wbt-server': 'MS-WBT-SERVER (3389)',
+          },
+        ),
+        realAction: () => _realApiService.getFirewallRuleFormOptions(),
         delayMs: 200,
       );
 

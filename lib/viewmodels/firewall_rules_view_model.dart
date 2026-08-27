@@ -50,7 +50,7 @@ class FirewallRulesViewModel extends BaseListViewModel<FirewallRule> {
       _selectedInterface = FirewallRuleFilter.getFirstInterface(rulesByInterface);
     }
 
-    return FirewallRuleFilter.filterAutomationRules(allRules);
+    return allRules;
   }
 
   @override

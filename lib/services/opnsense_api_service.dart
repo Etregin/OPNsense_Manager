@@ -23,6 +23,7 @@ import '../models/opnsense_config.dart';
 import '../models/system_info.dart';
 import '../models/thermal_sensor.dart';
 import '../models/firewall_rule.dart';
+import '../models/firewall_form_options.dart';
 import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
 import '../models/network_host.dart';
@@ -228,6 +229,8 @@ class OPNsenseApiService {
   Future<List<FirewallRule>> getFirewallRules() => _firewallService.getFirewallRules();
   
   Future<Map<String, String>> getAvailableInterfaces() => _firewallService.getAvailableInterfaces();
+
+  Future<FirewallFormOptions> getFirewallRuleFormOptions() => _firewallService.getFirewallRuleFormOptions();
   
   Future<String> createFirewallRule(FirewallRuleRequest request) => _firewallService.createFirewallRule(request);
   

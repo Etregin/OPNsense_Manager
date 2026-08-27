@@ -47,13 +47,14 @@ class ApiEndpoints {
       '/core/service/$action/$id';
 
   // ── Firewall ─────────────────────────────────────────────────────────────────
-  static const String firewallRulesGet = '/firewall/filter/get';
-  static const String firewallRuleAdd = '/firewall/filter/addRule';
+  static const String firewallRulesSearch = '/firewall/filter/search_rule';
+  static const String firewallPortSelectOptions = '/firewall/filter/list_port_select_options';
+  static const String firewallRuleAdd = '/firewall/filter/add_rule';
   static const String firewallRulesApply = '/firewall/filter/apply';
   static String firewallRuleGetOne(String uuid) =>
       '/firewall/filter/getRule/$uuid';
   static String firewallRuleSet(String uuid) =>
-      '/firewall/filter/setRule/$uuid';
+      '/firewall/filter/set_rule/$uuid';
   static String firewallRuleToggle(String uuid) =>
       '/firewall/filter/toggleRule/$uuid';
   static String firewallRuleDelete(String uuid) =>

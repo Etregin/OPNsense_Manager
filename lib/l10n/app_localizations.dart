@@ -314,6 +314,12 @@ abstract class AppLocalizations {
   /// **'Additional Information'**
   String get additionalInformation;
 
+  /// No description provided for @advancedOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced Options'**
+  String get advancedOptions;
+
   /// No description provided for @address.
   ///
   /// In en, this message translates to:
@@ -613,6 +619,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Auto Refresh'**
   String get autoRefresh;
+
+  /// No description provided for @automaticRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic'**
+  String get automaticRule;
 
   /// No description provided for @backendState.
   ///
@@ -1100,6 +1112,12 @@ abstract class AppLocalizations {
   /// **'Create your first automation rule to get started'**
   String get createFirstAutomationRule;
 
+  /// No description provided for @createFirstFirewallRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first firewall rule to get started'**
+  String get createFirstFirewallRule;
+
   /// No description provided for @createFirstProfile.
   ///
   /// In en, this message translates to:
@@ -1459,6 +1477,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Direction'**
   String get direction;
+
+  /// No description provided for @directionBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'Both'**
+  String get directionBoth;
+
+  /// No description provided for @directionIn.
+  ///
+  /// In en, this message translates to:
+  /// **'In'**
+  String get directionIn;
+
+  /// No description provided for @directionOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Out'**
+  String get directionOut;
 
   /// No description provided for @disable.
   ///
@@ -2468,6 +2504,12 @@ abstract class AppLocalizations {
   /// **'5 min'**
   String get fiveMin;
 
+  /// No description provided for @floatingInterface.
+  ///
+  /// In en, this message translates to:
+  /// **'Floating'**
+  String get floatingInterface;
+
   /// No description provided for @fixFormErrors.
   ///
   /// In en, this message translates to:
@@ -2936,6 +2978,30 @@ abstract class AppLocalizations {
   /// **'Invalid source format'**
   String get invalidSourceFormat;
 
+  /// No description provided for @invertDestination.
+  ///
+  /// In en, this message translates to:
+  /// **'Invert destination'**
+  String get invertDestination;
+
+  /// No description provided for @invertDestinationTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Match any address EXCEPT the destination'**
+  String get invertDestinationTooltip;
+
+  /// No description provided for @invertSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Invert source'**
+  String get invertSource;
+
+  /// No description provided for @invertSourceTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Match any address EXCEPT the source'**
+  String get invertSourceTooltip;
+
   /// No description provided for @ipAddress.
   ///
   /// In en, this message translates to:
@@ -2947,6 +3013,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'IP Addresses'**
   String get ipAddresses;
+
+  /// No description provided for @ipAny.
+  ///
+  /// In en, this message translates to:
+  /// **'Any'**
+  String get ipAny;
+
+  /// No description provided for @ipProtocol.
+  ///
+  /// In en, this message translates to:
+  /// **'IP Version'**
+  String get ipProtocol;
 
   /// No description provided for @ipv4TunnelNetwork.
   ///
@@ -2995,6 +3073,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Keep Both'**
   String get keepBoth;
+
+  /// No description provided for @keepState.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep State'**
+  String get keepState;
 
   /// No description provided for @keepalive.
   ///
@@ -3284,6 +3368,18 @@ abstract class AppLocalizations {
   /// **'Login server is required'**
   String get loginServerRequired;
 
+  /// No description provided for @logTraffic.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Traffic'**
+  String get logTraffic;
+
+  /// No description provided for @logTrafficSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log packets matched by this rule'**
+  String get logTrafficSubtitle;
+
   /// No description provided for @logout.
   ///
   /// In en, this message translates to:
@@ -3403,6 +3499,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Modified'**
   String get modified;
+
+  /// No description provided for @modulateState.
+  ///
+  /// In en, this message translates to:
+  /// **'Modulate State'**
+  String get modulateState;
 
   /// No description provided for @monitorInterface.
   ///
@@ -3560,6 +3662,12 @@ abstract class AppLocalizations {
   /// **'No automation rules found'**
   String get noAutomationRulesFound;
 
+  /// No description provided for @noFirewallRulesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No firewall rules found'**
+  String get noFirewallRulesFound;
+
   /// No description provided for @noClientSpecificOverridesConfigured.
   ///
   /// In en, this message translates to:
@@ -3619,6 +3727,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No interfaces with automation rules'**
   String get noInterfacesWithAutomationRules;
+
+  /// No description provided for @noInterfacesWithRules.
+  ///
+  /// In en, this message translates to:
+  /// **'No interfaces with rules'**
+  String get noInterfacesWithRules;
 
   /// No description provided for @noItemsConfigured.
   ///
@@ -3787,6 +3901,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No static keys configured'**
   String get noStaticKeysConfigured;
+
+  /// No description provided for @noState.
+  ///
+  /// In en, this message translates to:
+  /// **'No State'**
+  String get noState;
 
   /// No description provided for @noSubnetsConfigured.
   ///
@@ -4357,6 +4477,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'QR Code'**
   String get qrCode;
+
+  /// No description provided for @quickRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Rule'**
+  String get quickRule;
+
+  /// No description provided for @quickRuleSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop processing rules after first match'**
+  String get quickRuleSubtitle;
 
   /// No description provided for @reason.
   ///
@@ -5168,6 +5300,12 @@ abstract class AppLocalizations {
   /// **'Source Port (Optional)'**
   String get sourcePortOptional;
 
+  /// No description provided for @sloppyState.
+  ///
+  /// In en, this message translates to:
+  /// **'Sloppy State'**
+  String get sloppyState;
+
   /// No description provided for @sshEnabled.
   ///
   /// In en, this message translates to:
@@ -5245,6 +5383,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Static'**
   String get staticLease;
+
+  /// No description provided for @stateType.
+  ///
+  /// In en, this message translates to:
+  /// **'State Type'**
+  String get stateType;
 
   /// No description provided for @status.
   ///
@@ -5383,6 +5527,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'System Type'**
   String get systemType;
+
+  /// No description provided for @swapSourceDestination.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap source and destination'**
+  String get swapSourceDestination;
+
+  /// No description provided for @synproxyState.
+  ///
+  /// In en, this message translates to:
+  /// **'Synproxy State'**
+  String get synproxyState;
 
   /// No description provided for @tags.
   ///
@@ -6307,6 +6463,480 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Raw Timestamp'**
   String get rawTimestamp;
+
+  /// No description provided for @organisationSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Organisation'**
+  String get organisationSection;
+
+  /// No description provided for @interfaceSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Interface'**
+  String get interfaceSection;
+
+  /// No description provided for @filterSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get filterSection;
+
+  /// No description provided for @sourceRoutingSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Source Routing'**
+  String get sourceRoutingSection;
+
+  /// No description provided for @statefulFirewallSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Stateful Firewall'**
+  String get statefulFirewallSection;
+
+  /// No description provided for @trafficShapingSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Traffic Shaping'**
+  String get trafficShapingSection;
+
+  /// No description provided for @prioritySection.
+  ///
+  /// In en, this message translates to:
+  /// **'Priority'**
+  String get prioritySection;
+
+  /// No description provided for @internalTaggingSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Internal Tagging'**
+  String get internalTaggingSection;
+
+  /// No description provided for @showAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Advanced'**
+  String get showAdvanced;
+
+  /// No description provided for @hideAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide Advanced'**
+  String get hideAdvanced;
+
+  /// No description provided for @enableThisRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable this rule'**
+  String get enableThisRule;
+
+  /// No description provided for @categoriesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categoriesLabel;
+
+  /// No description provided for @categoriesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For grouping purposes you may select multiple groups here.'**
+  String get categoriesHint;
+
+  /// No description provided for @invertInterface.
+  ///
+  /// In en, this message translates to:
+  /// **'Invert Interface'**
+  String get invertInterface;
+
+  /// No description provided for @invertInterfaceSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use all but selected interfaces'**
+  String get invertInterfaceSubtitle;
+
+  /// No description provided for @quickRuleHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'If a packet matches a rule specifying quick, then that rule is considered the last matching rule and the specified action is taken.'**
+  String get quickRuleHelp;
+
+  /// No description provided for @actionHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose what to do with packets that match the criteria specified below.'**
+  String get actionHelp;
+
+  /// No description provided for @directionHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Direction of the traffic. The default policy is to filter inbound traffic.'**
+  String get directionHelp;
+
+  /// No description provided for @fwVersionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get fwVersionLabel;
+
+  /// No description provided for @icmpTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ICMP Type'**
+  String get icmpTypeLabel;
+
+  /// No description provided for @icmp6TypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ICMPv6 Type'**
+  String get icmp6TypeLabel;
+
+  /// No description provided for @sourcePortHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Source port number or well known name (imap, imaps, http, https, ...), for ranges use a dash'**
+  String get sourcePortHelp;
+
+  /// No description provided for @destinationPortHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Destination port number or well known name (imap, imaps, http, https, ...), for ranges use a dash'**
+  String get destinationPortHelp;
+
+  /// No description provided for @logHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Log packets that are handled by this rule'**
+  String get logHelp;
+
+  /// No description provided for @fwGatewayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Gateway'**
+  String get fwGatewayLabel;
+
+  /// No description provided for @gatewayHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave as default to use the system routing table. Or choose a gateway to utilize policy based routing.'**
+  String get gatewayHelp;
+
+  /// No description provided for @sequenceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sequence'**
+  String get sequenceLabel;
+
+  /// No description provided for @sequenceHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The order in which rules are being processed.'**
+  String get sequenceHelp;
+
+  /// No description provided for @noXmlrpcSync.
+  ///
+  /// In en, this message translates to:
+  /// **'No XMLRPC Sync'**
+  String get noXmlrpcSync;
+
+  /// No description provided for @noXmlrpcSyncHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Exclude this item from the HA synchronization process.'**
+  String get noXmlrpcSyncHelp;
+
+  /// No description provided for @allowOptionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Options'**
+  String get allowOptionsLabel;
+
+  /// No description provided for @allowOptionsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'This allows packets with IP options to pass.'**
+  String get allowOptionsHelp;
+
+  /// No description provided for @tcpFlagsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'TCP Flags'**
+  String get tcpFlagsLabel;
+
+  /// No description provided for @tcpFlagsOutLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'TCP Flags [out of]'**
+  String get tcpFlagsOutLabel;
+
+  /// No description provided for @tcpFlagsAnyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'TCP Flags Any'**
+  String get tcpFlagsAnyLabel;
+
+  /// No description provided for @scheduleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get scheduleLabel;
+
+  /// No description provided for @divertToLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Divert-to'**
+  String get divertToLabel;
+
+  /// No description provided for @divertToHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Send packets matching this rule to the service specified.'**
+  String get divertToHelp;
+
+  /// No description provided for @statePolicyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'State Policy'**
+  String get statePolicyLabel;
+
+  /// No description provided for @noPfsyncLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'No pfsync'**
+  String get noPfsyncLabel;
+
+  /// No description provided for @noPfsyncHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Prevents states created by this rule to be synced with pfsync.'**
+  String get noPfsyncHelp;
+
+  /// No description provided for @tcpEstablishedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'TCP Established'**
+  String get tcpEstablishedLabel;
+
+  /// No description provided for @udpFirstLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'UDP First'**
+  String get udpFirstLabel;
+
+  /// No description provided for @udpSingleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'UDP Single'**
+  String get udpSingleLabel;
+
+  /// No description provided for @udpMultipleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'UDP Multiple'**
+  String get udpMultipleLabel;
+
+  /// No description provided for @adaptiveStartLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Adaptive Start'**
+  String get adaptiveStartLabel;
+
+  /// No description provided for @adaptiveEndLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Adaptive End'**
+  String get adaptiveEndLabel;
+
+  /// No description provided for @maxStatesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Max States'**
+  String get maxStatesLabel;
+
+  /// No description provided for @maxSrcNodesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Source Nodes'**
+  String get maxSrcNodesLabel;
+
+  /// No description provided for @maxSrcStatesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Source States'**
+  String get maxSrcStatesLabel;
+
+  /// No description provided for @maxSrcConnLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Source Connections'**
+  String get maxSrcConnLabel;
+
+  /// No description provided for @maxNewConnCLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Max New Connections [c]'**
+  String get maxNewConnCLabel;
+
+  /// No description provided for @maxNewConnSLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Max New Connections [s]'**
+  String get maxNewConnSLabel;
+
+  /// No description provided for @overloadTableLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Overload Table'**
+  String get overloadTableLabel;
+
+  /// No description provided for @overloadTableHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Overload table used when max new connections per time interval has been reached.'**
+  String get overloadTableHelp;
+
+  /// No description provided for @shaperLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Traffic Shaper'**
+  String get shaperLabel;
+
+  /// No description provided for @shaperReverseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Traffic Shaper [reverse]'**
+  String get shaperReverseLabel;
+
+  /// No description provided for @disableReplyToLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable Reply-to'**
+  String get disableReplyToLabel;
+
+  /// No description provided for @disableReplyToHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Explicit disable reply-to for this rule'**
+  String get disableReplyToHelp;
+
+  /// No description provided for @replyToLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply-to'**
+  String get replyToLabel;
+
+  /// No description provided for @replyToHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Determines how packets route back in the opposite direction.'**
+  String get replyToHelp;
+
+  /// No description provided for @matchPriorityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Match Priority'**
+  String get matchPriorityLabel;
+
+  /// No description provided for @setPriorityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Priority'**
+  String get setPriorityLabel;
+
+  /// No description provided for @setPriorityLowLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Priority [low-delay]'**
+  String get setPriorityLowLabel;
+
+  /// No description provided for @matchTosLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Match TOS / DSCP'**
+  String get matchTosLabel;
+
+  /// No description provided for @setLocalTagLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Local Tag'**
+  String get setLocalTagLabel;
+
+  /// No description provided for @setLocalTagHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Packets matching this rule will be tagged with the specified string.'**
+  String get setLocalTagHelp;
+
+  /// No description provided for @matchLocalTagLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Match Local Tag'**
+  String get matchLocalTagLabel;
+
+  /// No description provided for @matchLocalTagHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Packets must already be tagged with the given tag to match the rule.'**
+  String get matchLocalTagHelp;
+
+  /// No description provided for @singleHostOrNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Single host or network'**
+  String get singleHostOrNetwork;
+
+  /// No description provided for @singlePortOrRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Single port or range'**
+  String get singlePortOrRange;
+
+  /// No description provided for @thisFirwall.
+  ///
+  /// In en, this message translates to:
+  /// **'This Firewall'**
+  String get thisFirwall;
+
+  /// No description provided for @interfaceNet.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} net'**
+  String interfaceNet(String name);
+
+  /// No description provided for @interfaceAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} address'**
+  String interfaceAddress(String name);
+
+  /// No description provided for @sortOrderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort Order'**
+  String get sortOrderLabel;
+
+  /// No description provided for @sortOrderHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The order in which rules are being processed (auto-calculated, read-only).'**
+  String get sortOrderHelp;
+
+  /// No description provided for @portsNotSupportedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Port Fields Will Be Cleared'**
+  String get portsNotSupportedTitle;
+
+  /// No description provided for @portsNotSupportedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected protocol does not support source or destination ports. The port fields will be cleared before saving.'**
+  String get portsNotSupportedMessage;
+
+  /// No description provided for @clearAndSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear & Save'**
+  String get clearAndSave;
 }
 
 class _AppLocalizationsDelegate

@@ -102,11 +102,13 @@ class FirewallRuleCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Switch(
-                    value: rule.isEnabled,
-                    onChanged: rule.isSystemGenerated ? null : onToggle,
-                    activeTrackColor: AppColors.success,
-                  ),
+                  rule.isSystemGenerated
+                      ? _buildAutomaticBadge(context)
+                      : Switch(
+                          value: rule.isEnabled,
+                          onChanged: onToggle,
+                          activeTrackColor: AppColors.success,
+                        ),
                 ],
               ),
               const SizedBox(height: 12),
@@ -144,6 +146,27 @@ class FirewallRuleCard extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAutomaticBadge(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest,
+        border: Border.all(color: colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        l10n.automaticRule,
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+          color: colorScheme.onSurfaceVariant,
         ),
       ),
     );

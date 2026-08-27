@@ -25,6 +25,7 @@ abstract class BaseFormViewModel extends ChangeNotifier {
   String? _errorMessage;
   ApiException? _apiError;
   bool _hasUnsavedChanges = false;
+  bool _disposed = false;
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
@@ -35,6 +36,17 @@ abstract class BaseFormViewModel extends ChangeNotifier {
   ApiException? get apiError => _apiError;
 
   bool get hasUnsavedChanges => _hasUnsavedChanges;
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
+  @override
+  void notifyListeners() {
+    if (!_disposed) super.notifyListeners();
+  }
 
   void setLoading(bool value) {
     _isLoading = value;
