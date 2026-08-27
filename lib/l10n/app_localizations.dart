@@ -6922,16 +6922,19 @@ abstract class AppLocalizations {
 
   /// No description provided for @portsNotSupportedTitle.
   ///
+  /// In en, this message translates to:
   /// **'Port Fields Will Be Cleared'**
   String get portsNotSupportedTitle;
 
   /// No description provided for @portsNotSupportedMessage.
   ///
+  /// In en, this message translates to:
   /// **'The selected protocol does not support source or destination ports. The port fields will be cleared before saving.'**
   String get portsNotSupportedMessage;
 
   /// No description provided for @clearAndSave.
   ///
+  /// In en, this message translates to:
   /// **'Clear & Save'**
   String get clearAndSave;
 }

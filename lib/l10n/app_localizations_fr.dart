@@ -3884,8 +3884,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get portsNotSupportedMessage =>
-      'The selected protocol does not support source or destination ports. '
-      'The port fields will be cleared before saving.';
+      'The selected protocol does not support source or destination ports. The port fields will be cleared before saving.';
 
   @override
   String get clearAndSave => 'Clear & Save';

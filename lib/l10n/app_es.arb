@@ -3274,5 +3274,11 @@
   "sortOrderLabel": "Sort Order",
   "@sortOrderLabel": {},
   "sortOrderHelp": "The order in which rules are being processed (auto-calculated, read-only).",
-  "@sortOrderHelp": {}
+  "@sortOrderHelp": {},
+  "portsNotSupportedTitle": "Port Fields Will Be Cleared",
+  "@portsNotSupportedTitle": {},
+  "portsNotSupportedMessage": "The selected protocol does not support source or destination ports. The port fields will be cleared before saving.",
+  "@portsNotSupportedMessage": {},
+  "clearAndSave": "Clear & Save",
+  "@clearAndSave": {}
 }
