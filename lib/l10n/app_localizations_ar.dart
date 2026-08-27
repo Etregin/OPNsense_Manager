@@ -349,6 +349,35 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cancel => 'إلغاء';
 
   @override
+  String get checkForUpdates => 'Check for Updates';
+
+  @override
+  String get checkingForUpdates => 'Checking for updates…';
+
+  @override
+  String get installUpdate => 'Install Update';
+
+  @override
+  String get installingUpdate => 'Installing update…';
+
+  @override
+  String get updateComplete => 'Update installed successfully';
+
+  @override
+  String get rebootRequired => 'A reboot is required to complete the update.';
+
+  @override
+  String get rebootNow => 'Reboot Now';
+
+  @override
+  String get installUpdateConfirmTitle => 'Install Update';
+
+  @override
+  String installUpdateConfirmMessage(int count) {
+    return 'This will upgrade $count package(s) and requires a reboot to complete. Continue?';
+  }
+
+  @override
   String get cannotBeUndone => 'لا يمكن التراجع عن هذا الإجراء.';
 
   @override

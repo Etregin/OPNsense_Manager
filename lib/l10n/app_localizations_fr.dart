@@ -360,6 +360,36 @@ class AppLocalizationsFr extends AppLocalizations {
   String get cancel => 'Annuler';
 
   @override
+  String get checkForUpdates => 'Vérifier les mises à jour';
+
+  @override
+  String get checkingForUpdates => 'Vérification des mises à jour…';
+
+  @override
+  String get installUpdate => 'Installer la mise à jour';
+
+  @override
+  String get installingUpdate => 'Installation en cours…';
+
+  @override
+  String get updateComplete => 'Mise à jour installée avec succès';
+
+  @override
+  String get rebootRequired =>
+      'Un redémarrage est nécessaire pour terminer la mise à jour.';
+
+  @override
+  String get rebootNow => 'Redémarrer maintenant';
+
+  @override
+  String get installUpdateConfirmTitle => 'Installer la mise à jour';
+
+  @override
+  String installUpdateConfirmMessage(int count) {
+    return 'This will upgrade $count package(s) and requires a reboot to complete. Continue?';
+  }
+
+  @override
   String get cannotBeUndone => 'Cette action ne peut pas être annulée.';
 
   @override

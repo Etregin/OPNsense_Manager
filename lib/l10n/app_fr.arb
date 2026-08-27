@@ -269,6 +269,31 @@
   "@bytesSent": {},
   "cancel": "Annuler",
   "@cancel": {},
+  "checkForUpdates": "Vérifier les mises à jour",
+  "@checkForUpdates": {},
+  "checkingForUpdates": "Vérification des mises à jour\u2026",
+  "@checkingForUpdates": {},
+
+  "installUpdate": "Installer la mise à jour",
+  "@installUpdate": {},
+  "installingUpdate": "Installation en cours\u2026",
+  "@installingUpdate": {},
+  "updateComplete": "Mise à jour installée avec succès",
+  "@updateComplete": {},
+  "rebootRequired": "Un redémarrage est nécessaire pour terminer la mise à jour.",
+  "@rebootRequired": {},
+  "rebootNow": "Redémarrer maintenant",
+  "@rebootNow": {},
+  "installUpdateConfirmTitle": "Installer la mise à jour",
+  "@installUpdateConfirmTitle": {},
+  "installUpdateConfirmMessage": "This will upgrade {count} package(s) and requires a reboot to complete. Continue?",
+  "@installUpdateConfirmMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "cannotBeUndone": "Cette action ne peut pas être annulée.",
   "@cannotBeUndone": {},
   "cannotDeleteLastConnection": "Impossible de supprimer le dernier point de terminaison de connexion",

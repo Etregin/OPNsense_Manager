@@ -361,6 +361,36 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cancel => 'Cancelar';
 
   @override
+  String get checkForUpdates => 'Buscar actualizaciones';
+
+  @override
+  String get checkingForUpdates => 'Buscando actualizaciones…';
+
+  @override
+  String get installUpdate => 'Instalar actualización';
+
+  @override
+  String get installingUpdate => 'Instalando actualización…';
+
+  @override
+  String get updateComplete => 'Actualización instalada correctamente';
+
+  @override
+  String get rebootRequired =>
+      'Se requiere un reinicio para completar la actualización.';
+
+  @override
+  String get rebootNow => 'Reiniciar ahora';
+
+  @override
+  String get installUpdateConfirmTitle => 'Instalar actualización';
+
+  @override
+  String installUpdateConfirmMessage(int count) {
+    return 'This will upgrade $count package(s) and requires a reboot to complete. Continue?';
+  }
+
+  @override
   String get cannotBeUndone => 'Esta acción no se puede deshacer.';
 
   @override
