@@ -149,17 +149,59 @@ class FirewallService extends BaseOPNsenseService {
       // leave empty — categories are optional
     }
 
+    // Fetch port select options from dedicated endpoint.
+    // Response structure: {"single":{"label":"..."}, "aliases":{"label":"...","items":{...}},
+    //                      "ports":{"label":"...","items":{"":"any","http":"HTTP (80)",...}}}
+    final Map<String, String> portOptions = {};
+    try {
+      final portResponse = await dio.get(ApiEndpoints.firewallPortSelectOptions);
+      if (portResponse.statusCode == 200) {
+        final portData = portResponse.data as Map<String, dynamic>;
+
+        // 1. "single" — free-text entry; use sentinel key 'single'
+        final singleEntry = portData['single'];
+        if (singleEntry is Map<String, dynamic>) {
+          portOptions['single'] = singleEntry['label']?.toString() ?? 'Single port or range';
+        }
+
+        // 2. "aliases" — firewall alias names
+        final aliasEntry = portData['aliases'];
+        if (aliasEntry is Map<String, dynamic>) {
+          final aliasItems = aliasEntry['items'];
+          if (aliasItems is Map<String, dynamic>) {
+            for (final e in aliasItems.entries) {
+              portOptions[e.key] = e.value.toString();
+            }
+          }
+        }
+
+        // 3. "ports" — well-known named ports; key '' = any
+        final portsEntry = portData['ports'];
+        if (portsEntry is Map<String, dynamic>) {
+          final portItems = portsEntry['items'];
+          if (portItems is Map<String, dynamic>) {
+            for (final e in portItems.entries) {
+              portOptions[e.key] = e.value.toString();
+            }
+          }
+        }
+      }
+    } on DioException {
+      // leave empty — port options are optional, form still works
+    }
+
     return FirewallFormOptions(
-      gateways:   _extractOptions(ruleObj?['gateway'],   '', 'None'),
-      replyTo:    _extractOptions(ruleObj?['replyto'],   '', 'None'),
-      divertTo:   _extractOptions(ruleObj?['divert-to'], '', 'None'),
-      overload:   _extractOptions(ruleObj?['overload'],  '', 'None'),
-      schedules:  _extractOptions(ruleObj?['sched'],     '', 'None'),
-      shapers:    _extractOptions(ruleObj?['shaper1'],   '', 'None'),
-      prio:       _extractOptions(ruleObj?['prio'],      '', 'Any priority'),
-      setPrio:    _extractOptions(ruleObj?['set-prio'],  '', 'Keep current priority'),
-      tos:        _extractOptions(ruleObj?['tos'],       '', 'Any'),
-      categories: categoryMap,
+      gateways:    _extractOptions(ruleObj?['gateway'],   '', 'None'),
+      replyTo:     _extractOptions(ruleObj?['replyto'],   '', 'None'),
+      divertTo:    _extractOptions(ruleObj?['divert-to'], '', 'None'),
+      overload:    _extractOptions(ruleObj?['overload'],  '', 'None'),
+      schedules:   _extractOptions(ruleObj?['sched'],     '', 'None'),
+      shapers:     _extractOptions(ruleObj?['shaper1'],   '', 'None'),
+      prio:        _extractOptions(ruleObj?['prio'],      '', 'Any priority'),
+      setPrio:     _extractOptions(ruleObj?['set-prio'],  '', 'Keep current priority'),
+      tos:         _extractOptions(ruleObj?['tos'],       '', 'Any'),
+      categories:  categoryMap,
+      portOptions: portOptions,
     );
   }
 
@@ -180,14 +222,16 @@ class FirewallService extends BaseOPNsenseService {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data as Map<String, dynamic>;
+        final data = response.data is Map<String, dynamic>
+            ? response.data as Map<String, dynamic>
+            : null;
 
         debugPrint('[FirewallService] create response: $data');
 
-        final result = data['result'] as String?;
+        final result = data?['result'] as String?;
+
         if (result == 'failed') {
-          final validations = data['validations'] as Map<String, dynamic>?;
-          // Build a human-readable message showing field → error
+          final validations = data?['validations'] as Map<String, dynamic>?;
           final errorMessage = validations != null
               ? validations.entries.map((e) => '${e.key}: ${e.value}').join('\n')
               : 'Unknown validation error';
@@ -195,7 +239,16 @@ class FirewallService extends BaseOPNsenseService {
           throw ApiException('Failed to create rule:\n$errorMessage', 400, ApiErrorType.unknown);
         }
 
-        final uuid = data['uuid'] as String?;
+        if (result != 'saved') {
+          // Unexpected response shape — treat as failure rather than silent success.
+          throw ApiException(
+            'Unexpected response from server (result: $result)',
+            400,
+            ApiErrorType.unknown,
+          );
+        }
+
+        final uuid = data?['uuid'] as String?;
         if (uuid == null || uuid.isEmpty) {
           throw const ApiException('No UUID returned from add_rule', 500, ApiErrorType.unknown);
         }
@@ -215,6 +268,11 @@ class FirewallService extends BaseOPNsenseService {
   /// Parse a rule row from POST /firewall/filter/search_rule.
   /// All fields are flat strings; human-readable percent-prefixed fields
   /// (e.g. '%action', '%direction') are available as display labels.
+  ///
+  /// NOTE: The search endpoint returns only the fields needed for list display.
+  /// Advanced fields (stateType, gateway, tcpFlags, statTimeout, shaper, prio,
+  /// tos, tag, max-src-*, etc.) are only available from getRule/{uuid} and are
+  /// intentionally left at their FirewallRule constructor defaults here.
   FirewallRule _parseSearchRule(Map<String, dynamic> r) {
     // action: prefer the raw value, fall back to the display value stripped
     String type = r['action']?.toString() ?? '';
@@ -265,6 +323,11 @@ class FirewallService extends BaseOPNsenseService {
     final dynamic rawLog = r['log'];
     final String log = rawLog == true || rawLog == '1' ? '1' : '0';
 
+    // inversion flags — flat "1"/"0" strings
+    final String sourceNot      = r['source_not']?.toString()      ?? '0';
+    final String destinationNot = r['destination_not']?.toString() ?? '0';
+    final String interfaceNot   = r['interfacenot']?.toString()    ?? '0';
+
     return FirewallRule(
       uuid:            r['uuid']?.toString() ?? '',
       type:            type,
@@ -283,6 +346,9 @@ class FirewallService extends BaseOPNsenseService {
       ipProtocol:      ipProtocol,
       quick:           quick,
       log:             log,
+      sourceNot:       sourceNot,
+      destinationNot:  destinationNot,
+      interfaceNot:    interfaceNot,
     );
   }
 
@@ -409,9 +475,35 @@ class FirewallService extends BaseOPNsenseService {
         ApiEndpoints.firewallRuleSet(uuid),
         data: {'rule': request.toJson()},
       );
-      
+
       if (response.statusCode == 200) {
-        // Apply changes
+        final data = response.data is Map<String, dynamic>
+            ? response.data as Map<String, dynamic>
+            : null;
+
+        debugPrint('[FirewallService] update response: $data');
+
+        final result = data?['result'] as String?;
+
+        if (result == 'failed') {
+          final validations = data?['validations'] as Map<String, dynamic>?;
+          final errorMessage = validations != null
+              ? validations.entries.map((e) => '${e.key}: ${e.value}').join('\n')
+              : 'Unknown validation error';
+          debugPrint('[FirewallService] validation errors:\n$errorMessage');
+          throw ApiException('Failed to update rule:\n$errorMessage', 400, ApiErrorType.unknown);
+        }
+
+        if (result != 'saved') {
+          // Unexpected response shape — treat as failure rather than silent success.
+          throw ApiException(
+            'Unexpected response from server (result: $result)',
+            400,
+            ApiErrorType.unknown,
+          );
+        }
+
+        // Apply changes to make the rule active
         await applyFirewallChanges();
       } else {
         throw ApiException('Failed to update firewall rule', response.statusCode, ApiErrorType.unknown);

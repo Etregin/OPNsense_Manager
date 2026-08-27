@@ -374,9 +374,11 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
   }
 
   bool _ruleDataLoaded = false;
+  bool _portOptionsApplied = false;
 
   void _onViewModelChanged() {
     if (!mounted) return;
+
     // Once the full rule has loaded, populate the form (once only).
     if (widget.isEditing && !_ruleDataLoaded && !_viewModel.loadingFullRule) {
       final full = _viewModel.fullRule;
@@ -386,7 +388,56 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
         return;
       }
     }
+
+    // Re-resolve port types once portOptions has finished loading, in case
+    // _loadRuleData ran before the options arrived (parallel load race).
+    if (widget.isEditing &&
+        _ruleDataLoaded &&
+        !_portOptionsApplied &&
+        !_viewModel.loadingOptions) {
+      final full = _viewModel.fullRule;
+      if (full != null) {
+        _portOptionsApplied = true;
+        setState(() => _resolvePortTypes(full));
+        return;
+      }
+    }
+
     setState(() {});
+  }
+
+  /// Re-resolves _sourcePortType / _destinationPortType against the now-loaded
+  /// portOptions, promoting 'single' back to a named key if appropriate, and
+  /// demoting an unrecognised key to 'single' with the text field populated.
+  void _resolvePortTypes(FirewallRule rule) {
+    final knownPorts = _viewModel.formOptions.portOptions;
+
+    // Source port
+    if (_sourcePortType != 'any') {
+      final isNamedKey = knownPorts.containsKey(_sourcePortType) &&
+          _sourcePortType != '' &&
+          _sourcePortType != 'single';
+      if (!isNamedKey) {
+        // current type is not a known key — keep as 'single', ensure text is set
+        _sourcePortType = 'single';
+        if (_sourcePortController.text.isEmpty) {
+          _sourcePortController.text = rule.sourcePort;
+        }
+      }
+    }
+
+    // Destination port
+    if (_destinationPortType != 'any') {
+      final isNamedKey = knownPorts.containsKey(_destinationPortType) &&
+          _destinationPortType != '' &&
+          _destinationPortType != 'single';
+      if (!isNamedKey) {
+        _destinationPortType = 'single';
+        if (_destinationPortController.text.isEmpty) {
+          _destinationPortController.text = rule.destinationPort;
+        }
+      }
+    }
   }
 
   void _loadRuleData(FirewallRule rule) {
@@ -401,12 +452,22 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
           .join(',');
     }
 
-    // Source port
+    // Source port — 'any'/empty → 'any'; a key present in portOptions → that key;
+    // anything else (raw number, range like "80-443") → 'single' + text field.
+    _sourcePortController.text = '';
     if (rule.sourcePort.isEmpty || rule.sourcePort == 'any') {
       _sourcePortType = 'any';
     } else {
-      _sourcePortType = 'single';
-      _sourcePortController.text = rule.sourcePort;
+      final knownPorts = _viewModel.formOptions.portOptions;
+      final isNamedKey = knownPorts.containsKey(rule.sourcePort) &&
+          rule.sourcePort != '' &&
+          rule.sourcePort != 'single';
+      if (isNamedKey) {
+        _sourcePortType = rule.sourcePort;
+      } else {
+        _sourcePortType = 'single';
+        _sourcePortController.text = rule.sourcePort;
+      }
     }
 
     // Destination net
@@ -418,12 +479,21 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
           .join(',');
     }
 
-    // Destination port
+    // Destination port — same logic as source port above.
+    _destinationPortController.text = '';
     if (rule.destinationPort.isEmpty || rule.destinationPort == 'any') {
       _destinationPortType = 'any';
     } else {
-      _destinationPortType = 'single';
-      _destinationPortController.text = rule.destinationPort;
+      final knownPorts = _viewModel.formOptions.portOptions;
+      final isNamedKey = knownPorts.containsKey(rule.destinationPort) &&
+          rule.destinationPort != '' &&
+          rule.destinationPort != 'single';
+      if (isNamedKey) {
+        _destinationPortType = rule.destinationPort;
+      } else {
+        _destinationPortType = 'single';
+        _destinationPortController.text = rule.destinationPort;
+      }
     }
     _selectedCategories = List<String>.from(rule.categories);
     _sequenceController.text = rule.sequence > 0 ? rule.sequence.toString() : '';
@@ -505,8 +575,89 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
     });
   }
 
+  // ── Field-key → friendly label map for OPNsense validation error messages ──
+  static const _kApiFieldLabels = <String, String>{
+    'source_port':       'Source Port',
+    'destination_port':  'Destination Port',
+    'source_net':        'Source',
+    'destination_net':   'Destination',
+    'source_not':        'Invert Source',
+    'destination_not':   'Invert Destination',
+    'protocol':          'Protocol',
+    'interface':         'Interface',
+    'interfacenot':      'Invert Interface',
+    'action':            'Action',
+    'direction':         'Direction',
+    'ipprotocol':        'IP Version',
+    'icmptype':          'ICMP Type',
+    'icmp6type':         'ICMPv6 Type',
+    'sequence':          'Sequence',
+    'description':       'Description',
+    'gateway':           'Gateway',
+    'statetype':         'State Type',
+    'log':               'Log',
+    'quick':             'Quick',
+  };
+
+  /// Cleans a raw API error message for display.
+  ///
+  /// Strips the leading "Failed to (create|update) rule:\n" prefix, then for
+  /// each remaining "rule.field_key: message" line strips the "rule." prefix
+  /// and maps the field key to a friendly label.
+  String _cleanApiError(String raw) {
+    // Strip leading "Failed to ... rule:\n" prefix if present.
+    var body = raw.replaceFirst(RegExp(r'^Failed to (?:create|update) rule:\n'), '');
+
+    final lines = body.split('\n').map((line) {
+      // Each line is "rule.field_key: error message" or plain text.
+      final match = RegExp(r'^rule\.([^:]+):\s*(.+)$').firstMatch(line);
+      if (match == null) return line.trim();
+      final fieldKey   = match.group(1)!.trim();
+      final fieldError = match.group(2)!.trim();
+      final label = _kApiFieldLabels[fieldKey] ?? _friendlyFieldKey(fieldKey);
+      return '$label: $fieldError';
+    }).where((l) => l.isNotEmpty).toList();
+
+    return lines.join('\n');
+  }
+
+  /// Converts a snake_case API key to a Title Case label as fallback.
+  String _friendlyFieldKey(String key) =>
+      key.split('_').map((w) => w.isEmpty ? '' : '${w[0].toUpperCase()}${w.substring(1)}').join(' ');
+
   Future<void> _saveRule() async {
     final l10n = AppLocalizations.of(context)!;
+
+    // ── Pre-flight: protocol does not support ports but user has set one ──────
+    final hasSourcePort      = _sourcePortType != 'any';
+    final hasDestinationPort = _destinationPortType != 'any';
+    if (!_supportsPortsForProtocol(_selectedProtocol) &&
+        (hasSourcePort || hasDestinationPort)) {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) => AlertDialog(
+          title: Text(l10n.portsNotSupportedTitle),
+          content: Text(l10n.portsNotSupportedMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(l10n.cancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: Text(l10n.clearAndSave),
+            ),
+          ],
+        ),
+      );
+      if (confirmed != true) return; // user cancelled — stay on form
+      setState(() {
+        _sourcePortType      = 'any';
+        _destinationPortType = 'any';
+      });
+    }
+
     if (!_formKey.currentState!.validate()) return;
 
     final request = FirewallRuleRequest(
@@ -517,10 +668,20 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
       icmp6Type: _selectedProtocol.toLowerCase() == 'ipv6-icmp' ? _selectedIcmpType : '',
       source: _encodeNetValue(_sourceSelected, _sourceController.text.trim()),
       destination: _encodeNetValue(_destinationSelected, _destinationController.text.trim()),
-      destinationPort: _destinationPortType == 'any' ? '' : _destinationPortController.text.trim(),
+      destinationPort: !_supportsPortsForProtocol(_selectedProtocol) ||
+              _destinationPortType == 'any'
+          ? ''
+          : _destinationPortType == 'single'
+              ? _destinationPortController.text.trim()
+              : _destinationPortType,
       description: _descriptionController.text.trim(),
       enabled: _enabled ? '1' : '0',
-      sourcePort: _sourcePortType == 'any' ? '' : _sourcePortController.text.trim(),
+      sourcePort: !_supportsPortsForProtocol(_selectedProtocol) ||
+              _sourcePortType == 'any'
+          ? ''
+          : _sourcePortType == 'single'
+              ? _sourcePortController.text.trim()
+              : _sourcePortType,
       direction: _selectedDirection,
       ipProtocol: _selectedIpProtocol,
       quick: _quick ? '1' : '0',
@@ -570,10 +731,15 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
 
     if (mounted) {
       if (success) {
-        SnackBarHelper.showInfo(context, widget.isEditing ? l10n.ruleUpdated : l10n.ruleCreated);
+        SnackBarHelper.showSuccess(context, widget.isEditing ? l10n.ruleUpdated : l10n.ruleCreated);
         Navigator.of(context).pop();
       } else {
-        SnackBarHelper.showInfo(context, _viewModel.errorMessage ?? l10n.errorSavingRule(''));
+        final raw = _viewModel.errorMessage ?? l10n.errorSavingRule('');
+        SnackBarHelper.showError(
+          context,
+          _cleanApiError(raw),
+          duration: const Duration(seconds: 4),
+        );
       }
     }
   }
@@ -583,14 +749,128 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
   // ──────────────────────────────────────────────────────────────────────────
 
   bool get _isLoading => _viewModel.isLoading;
-  bool get _supportsPorts {
-    final p = _selectedProtocol.toLowerCase();
+
+  /// Returns true if the currently selected protocol supports port fields.
+  /// OPNsense only accepts source_port / destination_port for TCP, UDP, TCP/UDP.
+  bool _supportsPortsForProtocol(String protocol) {
+    final p = protocol.toLowerCase();
     return p == 'tcp' || p == 'udp' || p == 'tcp/udp';
   }
 
   bool get _showIcmpType =>
       _selectedProtocol.toLowerCase() == 'icmp' ||
       _selectedProtocol.toLowerCase() == 'ipv6-icmp';
+
+  /// Builds a port picker: a bottom-sheet picker listing all port options
+  /// (any, named ports, aliases) plus a "Single port or range" free-text entry.
+  ///
+  /// [portType] is the current selection state ('any', 'single', or a named key).
+  /// [portOptions] is the full map from [FirewallFormOptions.portOptions].
+  /// [onTypeChanged] is called when the selection changes.
+  /// [freeTextCtrl] is the controller for the free-text input.
+  /// [labelText] is the field label.
+  /// [helperText] is the helper shown on the free-text input.
+  /// [prefixIcon] is the icon for the picker field.
+  Widget _buildPortPickerField({
+    required String portType,
+    required Map<String, String> portOptions,
+    required ValueChanged<String> onTypeChanged,
+    required TextEditingController freeTextCtrl,
+    required String labelText,
+    required String helperText,
+    required IconData prefixIcon,
+  }) {
+    final l10n = AppLocalizations.of(context)!;
+    // Resolve display label for the current selection.
+    final displayLabel = portType == 'any'
+        ? (portOptions[''] ?? l10n.any)
+        : (portOptions[portType] ?? portType);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkWell(
+          onTap: _isLoading
+              ? null
+              : () async {
+                  // Build picker options: 'any' key (''), 'single', then all others.
+                  final pickerOpts = <String, String>{};
+                  if (portOptions.containsKey('')) {
+                    pickerOpts[''] = portOptions['']!; // any
+                  } else {
+                    pickerOpts[''] = l10n.any;
+                  }
+                  if (portOptions.containsKey('single')) {
+                    pickerOpts['single'] = portOptions['single']!;
+                  } else {
+                    pickerOpts['single'] = l10n.singlePortOrRange;
+                  }
+                  for (final e in portOptions.entries) {
+                    if (e.key != '' && e.key != 'single') {
+                      pickerOpts[e.key] = e.value;
+                    }
+                  }
+
+                  await showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                    ),
+                    builder: (_) => _PickerSheet(
+                      title: labelText,
+                      options: pickerOpts,
+                      initialSelected: [portType == 'any' ? '' : portType],
+                      isLoading: false,
+                      searchHint: l10n.protocol, // reuse generic search hint
+                      doneLabel: l10n.done,
+                      emptyLabel: l10n.noItemsConfigured,
+                      showSubtitle: true,
+                      singleSelect: true,
+                      onDone: (result) {
+                        if (result.isEmpty) return;
+                        final picked = result.first;
+                        setState(() {
+                          // Map '' back to internal sentinel 'any'
+                          onTypeChanged(picked.isEmpty ? 'any' : picked);
+                        });
+                      },
+                    ),
+                  );
+                },
+          borderRadius: BorderRadius.circular(8),
+          child: InputDecorator(
+            decoration: InputDecoration(
+              labelText: labelText,
+              prefixIcon: Icon(prefixIcon),
+              suffixIcon: const Icon(Icons.arrow_drop_down),
+            ),
+            child: Text(displayLabel),
+          ),
+        ),
+        if (portType == 'single') ...[
+          const SizedBox(height: 8),
+          TextFormField(
+            controller: freeTextCtrl,
+            decoration: InputDecoration(
+              labelText: l10n.singlePortOrRange,
+              hintText: l10n.anyPortNumberRangeOrAlias,
+              prefixIcon: Icon(prefixIcon),
+              helperText: helperText,
+              helperMaxLines: 3,
+            ),
+            validator: (v) {
+              if (portType != 'single') return null;
+              if (v == null || v.isEmpty) return null;
+              if (!Validators.isValidDestinationPort(v)) return l10n.invalidPortFormat;
+              return null;
+            },
+            enabled: !_isLoading,
+          ),
+        ],
+      ],
+    );
+  }
 
   /// True if [v] is a known fixed option (not a raw IP/CIDR).
   bool _isFixedNetKey(String v) {
@@ -1140,46 +1420,17 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                     },
                   ),
 
-                  // Source Port (TCP/UDP only)
-                  if (_supportsPorts) ...[
-                    _gap(8),
-                    DropdownButtonFormField<String>(
-                      initialValue: _sourcePortType,
-                      decoration: InputDecoration(
-                        labelText: l10n.sourcePortOptional,
-                        prefixIcon: const Icon(Icons.input),
-                        helperText: l10n.sourcePortHelp,
-                        helperMaxLines: 3,
-                      ),
-                      items: [
-                        DropdownMenuItem(value: 'any', child: Text(l10n.any)),
-                        DropdownMenuItem(value: 'single', child: Text(l10n.singlePortOrRange)),
-                      ],
-                      onChanged: _isLoading
-                          ? null
-                          : (v) {
-                              if (v != null) setState(() => _sourcePortType = v);
-                            },
-                    ),
-                    if (_sourcePortType == 'single') ...[
-                      _gap(8),
-                      TextFormField(
-                        controller: _sourcePortController,
-                        decoration: InputDecoration(
-                          labelText: l10n.singlePortOrRange,
-                          hintText: l10n.anyPortNumberRangeOrAlias,
-                          prefixIcon: const Icon(Icons.input),
-                        ),
-                        validator: (v) {
-                          if (_sourcePortType != 'single') return null;
-                          if (v == null || v.isEmpty) return null;
-                          if (!Validators.isValidDestinationPort(v)) return l10n.invalidPortFormat;
-                          return null;
-                        },
-                        enabled: !_isLoading,
-                      ),
-                    ],
-                  ],
+                  // Source Port
+                  _gap(8),
+                  _buildPortPickerField(
+                    portType: _sourcePortType,
+                    portOptions: opts.portOptions,
+                    onTypeChanged: (v) => _sourcePortType = v,
+                    freeTextCtrl: _sourcePortController,
+                    labelText: l10n.sourcePortOptional,
+                    helperText: l10n.sourcePortHelp,
+                    prefixIcon: Icons.input,
+                  ),
                   _gap(8),
 
                   // Swap button
@@ -1218,46 +1469,17 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                     },
                   ),
 
-                  // Destination Port (TCP/UDP only)
-                  if (_supportsPorts) ...[
-                    _gap(8),
-                    DropdownButtonFormField<String>(
-                      initialValue: _destinationPortType,
-                      decoration: InputDecoration(
-                        labelText: l10n.destinationPortOptional,
-                        prefixIcon: const Icon(Icons.settings_input_component),
-                        helperText: l10n.destinationPortHelp,
-                        helperMaxLines: 3,
-                      ),
-                      items: [
-                        DropdownMenuItem(value: 'any', child: Text(l10n.any)),
-                        DropdownMenuItem(value: 'single', child: Text(l10n.singlePortOrRange)),
-                      ],
-                      onChanged: _isLoading
-                          ? null
-                          : (v) {
-                              if (v != null) setState(() => _destinationPortType = v);
-                            },
-                    ),
-                    if (_destinationPortType == 'single') ...[
-                      _gap(8),
-                      TextFormField(
-                        controller: _destinationPortController,
-                        decoration: InputDecoration(
-                          labelText: l10n.singlePortOrRange,
-                          hintText: l10n.anyPortNumberRangeOrAlias,
-                          prefixIcon: const Icon(Icons.settings_input_component),
-                        ),
-                        validator: (v) {
-                          if (_destinationPortType != 'single') return null;
-                          if (v == null || v.isEmpty) return null;
-                          if (!Validators.isValidDestinationPort(v)) return l10n.invalidPortFormat;
-                          return null;
-                        },
-                        enabled: !_isLoading,
-                      ),
-                    ],
-                  ],
+                  // Destination Port
+                  _gap(8),
+                  _buildPortPickerField(
+                    portType: _destinationPortType,
+                    portOptions: opts.portOptions,
+                    onTypeChanged: (v) => _destinationPortType = v,
+                    freeTextCtrl: _destinationPortController,
+                    labelText: l10n.destinationPortOptional,
+                    helperText: l10n.destinationPortHelp,
+                    prefixIcon: Icons.settings_input_component,
+                  ),
                   _gap(),
 
                   // Log

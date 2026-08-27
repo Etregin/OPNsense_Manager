@@ -30,6 +30,11 @@ class FirewallFormOptions {
   final Map<String, String> tos;
   /// Firewall rule categories: uuid/name → display name
   final Map<String, String> categories;
+  /// Port select options from list_port_select_options.
+  /// Key = API value sent (e.g. 'http', '80', ''), value = display label.
+  /// Entry with key '' represents "any". Entry with key 'single' represents
+  /// the free-text "Single port or range" option.
+  final Map<String, String> portOptions;
 
   const FirewallFormOptions({
     required this.gateways,
@@ -42,6 +47,7 @@ class FirewallFormOptions {
     required this.setPrio,
     required this.tos,
     required this.categories,
+    this.portOptions = const {},
   });
 
   /// Empty / fallback options used before data loads or on error.
@@ -56,5 +62,6 @@ class FirewallFormOptions {
         setPrio:    {'': 'Keep current priority'},
         tos:        {'': 'Any'},
         categories: {},
+        portOptions: {},
       );
 }

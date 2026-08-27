@@ -6919,6 +6919,21 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The order in which rules are being processed (auto-calculated, read-only).'**
   String get sortOrderHelp;
+
+  /// No description provided for @portsNotSupportedTitle.
+  ///
+  /// **'Port Fields Will Be Cleared'**
+  String get portsNotSupportedTitle;
+
+  /// No description provided for @portsNotSupportedMessage.
+  ///
+  /// **'The selected protocol does not support source or destination ports. The port fields will be cleared before saving.'**
+  String get portsNotSupportedMessage;
+
+  /// No description provided for @clearAndSave.
+  ///
+  /// **'Clear & Save'**
+  String get clearAndSave;
 }
 
 class _AppLocalizationsDelegate

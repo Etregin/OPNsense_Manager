@@ -3880,4 +3880,15 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get sortOrderHelp =>
       'The order in which rules are being processed (auto-calculated, read-only).';
+
+  @override
+  String get portsNotSupportedTitle => 'Port Fields Will Be Cleared';
+
+  @override
+  String get portsNotSupportedMessage =>
+      'The selected protocol does not support source or destination ports. '
+      'The port fields will be cleared before saving.';
+
+  @override
+  String get clearAndSave => 'Clear & Save';
 }
