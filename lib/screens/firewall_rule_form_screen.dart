@@ -1155,10 +1155,11 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
         helperText: helperText,
         helperMaxLines: 3,
       ),
+      isExpanded: true,
       items: isLoading
-          ? [DropdownMenuItem(value: effectiveValue, child: Text(_viewModel.loadingOptions ? '...' : label))]
+          ? [DropdownMenuItem(value: effectiveValue, child: Text(_viewModel.loadingOptions ? '...' : label, overflow: TextOverflow.ellipsis))]
           : options.entries
-              .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
+              .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value, overflow: TextOverflow.ellipsis)))
               .toList(),
       onChanged: _isLoading || isLoading ? null : onChanged,
     );
@@ -1274,6 +1275,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                       labelText: l10n.interface,
                       prefixIcon: const Icon(Icons.network_check),
                     ),
+                    isExpanded: true,
                     items: _viewModel.loadingInterfaces
                         ? [DropdownMenuItem(value: '', child: Text(l10n.loading))]
                         : [
@@ -1281,7 +1283,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                             ..._viewModel.availableInterfaces.entries
                                 .map((e) => DropdownMenuItem(
                                       value: e.key,
-                                      child: Text(e.value),
+                                      child: Text(e.value, overflow: TextOverflow.ellipsis),
                                     )),
                           ],
                     onChanged: _isLoading || _viewModel.loadingInterfaces
@@ -1386,9 +1388,10 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                             : l10n.icmpTypeLabel,
                         prefixIcon: const Icon(Icons.error_outline),
                       ),
+                      isExpanded: true,
                       items: (_selectedProtocol.toLowerCase() == 'ipv6-icmp' ? _kIcmp6Types : _kIcmpTypes)
                           .entries
-                          .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
+                          .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value, overflow: TextOverflow.ellipsis)))
                           .toList(),
                       onChanged: _isLoading
                           ? null
