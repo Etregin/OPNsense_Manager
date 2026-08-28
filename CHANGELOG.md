@@ -2,10 +2,13 @@
 
 All notable changes to OPNsense Manager will be documented in this file.
 
-## [1.8.0] - 
+## [1.8.0] -
 
 ### Added
 
+- Added Firmware Update screen with the ability to check for available updates, view the current installed and latest versions, and install updates directly from the app.
+- Firmware update screen shows a live log terminal while an update is running, with a reboot prompt when required.
+- Detects when an OPNsense firmware upgrade is already in progress and attaches to the live log stream, showing an "Upgrade in progress…" banner until it completes.
 
 ### Changed
 
