@@ -134,7 +134,16 @@ class _FirmwareUpdateScreenState extends State<FirmwareUpdateScreen>
 
     // Error with no results
     if (_viewModel.errorMessage != null && _viewModel.firmwareStatus == null) {
-      // If we have log output from the failed run, show it below the error.
+      final hasLog = _viewModel.checkLog?.isNotEmpty == true;
+      if (!hasLog) {
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: ErrorDisplay(
+            message: _viewModel.errorMessage!,
+            onRetry: _viewModel.checkForUpdates,
+          ),
+        );
+      }
       return Column(
         children: [
           Padding(
@@ -144,8 +153,7 @@ class _FirmwareUpdateScreenState extends State<FirmwareUpdateScreen>
               onRetry: _viewModel.checkForUpdates,
             ),
           ),
-          if (_viewModel.checkLog?.isNotEmpty == true)
-            Expanded(child: _buildLogView(title: 'Output', isRunning: false)),
+          Expanded(child: _buildLogView(title: 'Output', isRunning: false)),
         ],
       );
     }
@@ -220,153 +228,164 @@ class _FirmwareUpdateScreenState extends State<FirmwareUpdateScreen>
     final theme = Theme.of(context);
     final upToDate = !status.updatesAvailable;
 
-    return Column(
-      children: [
-        // Summary card (fixed height content)
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Version row
-                  Row(
-                    children: [
-                      Icon(
-                        upToDate
-                            ? Icons.check_circle_outline
-                            : Icons.system_update_outlined,
-                        color: upToDate
-                            ? theme.colorScheme.primary
-                            : theme.colorScheme.error,
-                      ),
-                      const SizedBox(width: 8),
-                      if (upToDate)
-                        Text('Up to date',
-                            style: theme.textTheme.titleMedium)
-                      else ...[
-                        Text(status.currentVersion,
-                            style: theme.textTheme.titleMedium),
-                        const SizedBox(width: 8),
-                        const Icon(Icons.arrow_forward, size: 18),
-                        const SizedBox(width: 8),
-                        Text(
-                          status.latestVersion,
-                          style: theme.textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ],
+    // When there is a log panel below, the summary must be scrollable and the
+    // log must fill the remaining space.  When there is no log, the whole body
+    // can simply scroll.
+    final hasLog = _viewModel.checkLog?.isNotEmpty == true;
+
+    Widget summaryCard = Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Version row
+            Row(
+              children: [
+                Icon(
+                  upToDate
+                      ? Icons.check_circle_outline
+                      : Icons.system_update_outlined,
+                  color: upToDate
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.error,
+                ),
+                const SizedBox(width: 8),
+                if (upToDate)
+                  Text('Up to date', style: theme.textTheme.titleMedium)
+                else ...[
+                  Text(status.currentVersion,
+                      style: theme.textTheme.titleMedium),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.arrow_forward, size: 18),
+                  const SizedBox(width: 8),
+                  Text(
+                    status.latestVersion,
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  if (status.updatesAvailable) ...[
-                    const SizedBox(height: 6),
-                    Text('${status.totalPackageCount} package(s) to update',
-                        style: theme.textTheme.bodySmall),
-                    if (status.downloadSize.isNotEmpty)
-                      Text('Download: ${status.downloadSize}',
-                          style: theme.textTheme.bodySmall),
-                    if (status.needsReboot) ...[
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Icon(Icons.warning_amber_outlined,
-                              size: 16, color: theme.colorScheme.error),
-                          const SizedBox(width: 4),
-                          Text(
-                            'Reboot required after update',
-                            style: theme.textTheme.bodySmall
-                                ?.copyWith(color: theme.colorScheme.error),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ],
-                  if (status.lastCheck.isNotEmpty) ...[
-                    const SizedBox(height: 4),
-                    Text('Last checked: ${status.lastCheck}',
-                        style: theme.textTheme.bodySmall),
-                  ],
-                  // Changelog
-                  if (status.changelogText != null) ...[
-                    const SizedBox(height: 8),
-                    ExpansionTile(
-                      tilePadding: EdgeInsets.zero,
-                      title: const Text("What's New"),
-                      subtitle: status.changelogDate != null
-                          ? Text(status.changelogDate!)
-                          : null,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child:
-                              Text(status.changelogText!, softWrap: true),
-                        ),
-                      ],
+                ],
+              ],
+            ),
+            if (status.updatesAvailable) ...[
+              const SizedBox(height: 6),
+              Text('${status.totalPackageCount} package(s) to update',
+                  style: theme.textTheme.bodySmall),
+              if (status.downloadSize.isNotEmpty)
+                Text('Download: ${status.downloadSize}',
+                    style: theme.textTheme.bodySmall),
+              if (status.needsReboot) ...[
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Icon(Icons.warning_amber_outlined,
+                        size: 16, color: theme.colorScheme.error),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Reboot required after update',
+                      style: theme.textTheme.bodySmall
+                          ?.copyWith(color: theme.colorScheme.error),
                     ),
                   ],
-                  // Package lists
-                  if (status.upgradeCount > 0) ...[
-                    const SizedBox(height: 4),
-                    ExpansionTile(
-                      tilePadding: EdgeInsets.zero,
-                      title: Text(
-                          'Packages to Upgrade (${status.upgradeCount})'),
-                      children: status.upgradePackages
-                          .map((pkg) => ListTile(
-                                contentPadding: EdgeInsets.zero,
-                                title: Text(pkg['name']!),
-                                subtitle: Text(
-                                    '${pkg['current_version']} → ${pkg['new_version']}'),
-                                dense: true,
-                              ))
-                          .toList(),
-                    ),
-                  ],
-                  if (status.newPackageCount > 0) ...[
-                    const SizedBox(height: 4),
-                    ExpansionTile(
-                      tilePadding: EdgeInsets.zero,
-                      title:
-                          Text('New Packages (${status.newPackageCount})'),
-                      children: status.newPackages
-                          .map((pkg) => ListTile(
-                                contentPadding: EdgeInsets.zero,
-                                title: Text(pkg['name']!),
-                                subtitle: Text('NEW · ${pkg['version']}'),
-                                dense: true,
-                              ))
-                          .toList(),
-                    ),
-                  ],
-                  // Install Update button
-                  if (status.updatesAvailable) ...[
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: theme.colorScheme.error,
-                          foregroundColor: theme.colorScheme.onError,
-                        ),
-                        icon: const Icon(Icons.system_update_alt),
-                        label: Text(
-                            '${l10n.installUpdate} (${status.totalPackageCount} packages)'),
-                        onPressed: () => _confirmAndUpdate(l10n, status),
-                      ),
-                    ),
-                  ],
+                ),
+              ],
+            ],
+            if (status.lastCheck.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text('Last checked: ${status.lastCheck}',
+                  style: theme.textTheme.bodySmall),
+            ],
+            // Changelog
+            if (status.changelogText != null) ...[
+              const SizedBox(height: 8),
+              ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                title: const Text("What's New"),
+                subtitle: status.changelogDate != null
+                    ? Text(status.changelogDate!)
+                    : null,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Text(status.changelogText!, softWrap: true),
+                  ),
                 ],
               ),
-            ),
+            ],
+            // Package lists
+            if (status.upgradeCount > 0) ...[
+              const SizedBox(height: 4),
+              ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                title: Text('Packages to Upgrade (${status.upgradeCount})'),
+                children: status.upgradePackages
+                    .map((pkg) => ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(pkg['name']!),
+                          subtitle: Text(
+                              '${pkg['current_version']} → ${pkg['new_version']}'),
+                          dense: true,
+                        ))
+                    .toList(),
+              ),
+            ],
+            if (status.newPackageCount > 0) ...[
+              const SizedBox(height: 4),
+              ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                title: Text('New Packages (${status.newPackageCount})'),
+                children: status.newPackages
+                    .map((pkg) => ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(pkg['name']!),
+                          subtitle: Text('NEW · ${pkg['version']}'),
+                          dense: true,
+                        ))
+                    .toList(),
+              ),
+            ],
+            // Install Update button
+            if (status.updatesAvailable) ...[
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.colorScheme.error,
+                    foregroundColor: theme.colorScheme.onError,
+                  ),
+                  icon: const Icon(Icons.system_update_alt),
+                  label: Text(
+                      '${l10n.installUpdate} (${status.totalPackageCount} packages)'),
+                  onPressed: () => _confirmAndUpdate(l10n, status),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+
+    if (!hasLog) {
+      // No log: simple scrollable page.
+      return SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: summaryCard,
+      );
+    }
+
+    // Log present: summary scrolls in top half, log fills the rest.
+    return Column(
+      children: [
+        Flexible(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: summaryCard,
           ),
         ),
-        // Full check log below the summary card
-        if (_viewModel.checkLog?.isNotEmpty == true)
-          Expanded(
-            child: _buildLogView(title: 'Check output', isRunning: false),
-          ),
+        Expanded(
+          child: _buildLogView(title: 'Check output', isRunning: false),
+        ),
       ],
     );
   }
@@ -375,53 +394,64 @@ class _FirmwareUpdateScreenState extends State<FirmwareUpdateScreen>
 
   Widget _buildUpdateComplete(AppLocalizations l10n) {
     final theme = Theme.of(context);
+    final hasLog = _viewModel.checkLog?.isNotEmpty == true;
+
+    Widget completeCard = Card(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          children: [
+            Icon(Icons.check_circle_outline,
+                size: 48, color: theme.colorScheme.primary),
+            const SizedBox(height: 12),
+            Text(
+              l10n.updateComplete,
+              style: theme.textTheme.titleMedium
+                  ?.copyWith(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            if (_viewModel.updateRequiresReboot) ...[
+              const SizedBox(height: 8),
+              Text(l10n.rebootRequired,
+                  style: theme.textTheme.bodyMedium,
+                  textAlign: TextAlign.center),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.colorScheme.error,
+                    foregroundColor: theme.colorScheme.onError,
+                  ),
+                  icon: const Icon(Icons.restart_alt),
+                  label: Text(l10n.rebootNow),
+                  onPressed: _rebootFirewall,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+
+    if (!hasLog) {
+      return SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: completeCard,
+      );
+    }
+
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  Icon(Icons.check_circle_outline,
-                      size: 48, color: theme.colorScheme.primary),
-                  const SizedBox(height: 12),
-                  Text(
-                    l10n.updateComplete,
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                  if (_viewModel.updateRequiresReboot) ...[
-                    const SizedBox(height: 8),
-                    Text(l10n.rebootRequired,
-                        style: theme.textTheme.bodyMedium,
-                        textAlign: TextAlign.center),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: theme.colorScheme.error,
-                          foregroundColor: theme.colorScheme.onError,
-                        ),
-                        icon: const Icon(Icons.restart_alt),
-                        label: Text(l10n.rebootNow),
-                        onPressed: _rebootFirewall,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
+        Flexible(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: completeCard,
           ),
         ),
-        // Install log remains visible after completion
-        if (_viewModel.checkLog?.isNotEmpty == true)
-          Expanded(
-            child: _buildLogView(title: 'Install output', isRunning: false),
-          ),
+        Expanded(
+          child: _buildLogView(title: 'Install output', isRunning: false),
+        ),
       ],
     );
   }
