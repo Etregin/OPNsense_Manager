@@ -22,7 +22,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../models/firmware_update_status.dart';
-import '../screens/dashboard_screen.dart';
 import '../services/demo_api_service.dart';
 import '../utils/single_init_mixin.dart';
 import '../utils/snackbar_helper.dart';
@@ -124,12 +123,15 @@ class _FirmwareUpdateScreenState extends State<FirmwareUpdateScreen>
 
     // Checking or installing — show live log terminal
     if (_viewModel.isChecking || _viewModel.isUpdating) {
-      return _buildLogView(
-        title: _viewModel.isUpdating
-            ? l10n.installingUpdate
-            : l10n.checkingForUpdates,
-        isRunning: true,
-      );
+      final String logTitle;
+      if (_viewModel.isExternalUpdateRunning) {
+        logTitle = 'Upgrade in progress…';
+      } else if (_viewModel.isUpdating) {
+        logTitle = l10n.installingUpdate;
+      } else {
+        logTitle = l10n.checkingForUpdates;
+      }
+      return _buildLogView(title: logTitle, isRunning: true);
     }
 
     // Error with no results
@@ -344,8 +346,9 @@ class _FirmwareUpdateScreenState extends State<FirmwareUpdateScreen>
                     .toList(),
               ),
             ],
-            // Install Update button
-            if (status.updatesAvailable) ...[
+            // Install Update button — hidden after an update just completed
+            // until the user runs a fresh check.
+            if (status.updatesAvailable && !_viewModel.updateJustCompleted) ...[
               const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
@@ -411,23 +414,51 @@ class _FirmwareUpdateScreenState extends State<FirmwareUpdateScreen>
               textAlign: TextAlign.center,
             ),
             if (_viewModel.updateRequiresReboot) ...[
-              const SizedBox(height: 8),
-              Text(l10n.rebootRequired,
-                  style: theme.textTheme.bodyMedium,
-                  textAlign: TextAlign.center),
               const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.colorScheme.error,
-                    foregroundColor: theme.colorScheme.onError,
-                  ),
-                  icon: const Icon(Icons.restart_alt),
-                  label: Text(l10n.rebootNow),
-                  onPressed: _rebootFirewall,
+              if (_viewModel.isBackOnline) ...[
+                // Firewall came back online.
+                Icon(Icons.wifi, color: theme.colorScheme.primary, size: 28),
+                const SizedBox(height: 8),
+                Text(
+                  'Firewall is back online.',
+                  style: theme.textTheme.bodyMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
                 ),
-              ),
+              ] else if (_viewModel.isWaitingForReboot) ...[
+                // Reboot in progress — waiting for it to come back.
+                const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Waiting for firewall to come back online…',
+                  style: theme.textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+              ] else ...[
+                // Reboot detected — waiting for it to fully shut down.
+                const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'System is rebooting…',
+                  style: theme.textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'The firewall will be unavailable for a minute.',
+                  style: theme.textTheme.bodySmall
+                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ],
           ],
         ),
@@ -481,20 +512,4 @@ class _FirmwareUpdateScreenState extends State<FirmwareUpdateScreen>
     }
   }
 
-  Future<void> _rebootFirewall() async {
-    final apiService = context.read<DemoApiService>();
-    try {
-      await apiService.rebootSystem();
-    } catch (_) {
-      // Ignore — the firewall goes offline during reboot.
-    }
-    if (mounted) {
-      SnackBarHelper.showInfo(context, 'Rebooting firewall…');
-      unawaited(
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const DashboardScreen()),
-        ),
-      );
-    }
-  }
 }
