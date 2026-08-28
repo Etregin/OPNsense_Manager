@@ -269,6 +269,31 @@
   "@bytesSent": {},
   "cancel": "Abbrechen",
   "@cancel": {},
+  "checkForUpdates": "Updates prüfen",
+  "@checkForUpdates": {},
+  "checkingForUpdates": "Updates werden geprüft\u2026",
+  "@checkingForUpdates": {},
+
+  "installUpdate": "Update installieren",
+  "@installUpdate": {},
+  "installingUpdate": "Update wird installiert\u2026",
+  "@installingUpdate": {},
+  "updateComplete": "Update erfolgreich installiert",
+  "@updateComplete": {},
+  "rebootRequired": "Ein Neustart ist erforderlich, um das Update abzuschließen.",
+  "@rebootRequired": {},
+  "rebootNow": "Jetzt neu starten",
+  "@rebootNow": {},
+  "installUpdateConfirmTitle": "Update installieren",
+  "@installUpdateConfirmTitle": {},
+  "installUpdateConfirmMessage": "This will upgrade {count} package(s) and requires a reboot to complete. Continue?",
+  "@installUpdateConfirmMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "cannotBeUndone": "Diese Aktion kann nicht rückgängig gemacht werden.",
   "@cannotBeUndone": {},
   "cannotDeleteLastConnection": "Der letzte Verbindungsendpunkt kann nicht gelöscht werden",

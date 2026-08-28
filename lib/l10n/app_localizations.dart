@@ -740,6 +740,60 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// No description provided for @checkForUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Check for Updates'**
+  String get checkForUpdates;
+
+  /// No description provided for @checkingForUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking for updates…'**
+  String get checkingForUpdates;
+
+  /// No description provided for @installUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Install Update'**
+  String get installUpdate;
+
+  /// No description provided for @installingUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Installing update…'**
+  String get installingUpdate;
+
+  /// No description provided for @updateComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Update installed successfully'**
+  String get updateComplete;
+
+  /// No description provided for @rebootRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'A reboot is required to complete the update.'**
+  String get rebootRequired;
+
+  /// No description provided for @rebootNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Reboot Now'**
+  String get rebootNow;
+
+  /// No description provided for @installUpdateConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Install Update'**
+  String get installUpdateConfirmTitle;
+
+  /// No description provided for @installUpdateConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will upgrade {count} package(s) and requires a reboot to complete. Continue?'**
+  String installUpdateConfirmMessage(int count);
+
   /// No description provided for @cannotBeUndone.
   ///
   /// In en, this message translates to:

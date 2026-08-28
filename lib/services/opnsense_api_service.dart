@@ -221,6 +221,11 @@ class OPNsenseApiService {
   Future<List<ThermalSensor>> getSystemTemperature() => _systemService.getSystemTemperature();
   
   Future<void> rebootSystem() => _systemService.rebootSystem();
+  Future<Map<String, dynamic>> triggerFirmwareCheck() => _systemService.triggerFirmwareCheck();
+  Future<Map<String, dynamic>> triggerFirmwareUpdate() => _systemService.triggerFirmwareUpdate();
+  Future<Map<String, dynamic>> getFirmwareUpgradeStatus() => _systemService.getFirmwareUpgradeStatus();
+  Future<Map<String, dynamic>> getFirmwareStatus() => _systemService.getFirmwareStatus();
+  Future<Map<String, dynamic>> getFirmwareChangelog(String version) => _systemService.getFirmwareChangelog(version);
 
   // ============================================================================
   // Firewall Service Delegations

@@ -269,6 +269,31 @@
   "@bytesSent": {},
   "cancel": "إلغاء",
   "@cancel": {},
+  "checkForUpdates": "Check for Updates",
+  "@checkForUpdates": {},
+  "checkingForUpdates": "Checking for updates\u2026",
+  "@checkingForUpdates": {},
+
+  "installUpdate": "Install Update",
+  "@installUpdate": {},
+  "installingUpdate": "Installing update\u2026",
+  "@installingUpdate": {},
+  "updateComplete": "Update installed successfully",
+  "@updateComplete": {},
+  "rebootRequired": "A reboot is required to complete the update.",
+  "@rebootRequired": {},
+  "rebootNow": "Reboot Now",
+  "@rebootNow": {},
+  "installUpdateConfirmTitle": "Install Update",
+  "@installUpdateConfirmTitle": {},
+  "installUpdateConfirmMessage": "This will upgrade {count} package(s) and requires a reboot to complete. Continue?",
+  "@installUpdateConfirmMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "cannotBeUndone": "لا يمكن التراجع عن هذا الإجراء.",
   "@cannotBeUndone": {},
   "cannotDeleteLastConnection": "لا يمكن حذف نقطة الاتصال الأخيرة",

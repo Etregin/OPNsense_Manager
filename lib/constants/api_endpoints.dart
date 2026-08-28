@@ -27,6 +27,10 @@ class ApiEndpoints {
   static const String systemStatus = '/core/system/status';
   static const String firmwareInfo = '/core/firmware/info';
   static const String firmwareStatus = '/core/firmware/status';
+  static const String firmwareCheck = '/core/firmware/check';
+  static const String firmwareUpdate = '/core/firmware/update';
+  static const String firmwareUpgradeStatus = '/core/firmware/upgradestatus';
+  static String firmwareChangelog(String version) => '/core/firmware/changelog/$version';
   static const String systemInfo = '/core/system/info';
   static const String systemDisk = '/core/system/systemDisk';
   static const String systemReboot = '/core/system/reboot';

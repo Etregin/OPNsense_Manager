@@ -1428,6 +1428,95 @@ ${List.generate(16, (i) => List.generate(32, (j) => '0123456789abcdef'[(i * 32 +
         delayMs: 500,
       );
 
+  // ==================== Firmware Updates ====================
+
+  /// Trigger a firmware update check
+  Future<Map<String, dynamic>> triggerFirmwareCheck() =>
+      DemoApiDecorator.execute<Map<String, dynamic>>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'status': 'ok', 'msg_uuid': 'demo-uuid-123'},
+        realAction: () => _realApiService.triggerFirmwareCheck(),
+        delayMs: 300,
+      );
+
+  /// Trigger the actual firmware update (POST /core/firmware/update).
+  /// The real API returns an empty body; demo returns {} immediately.
+  Future<Map<String, dynamic>> triggerFirmwareUpdate() =>
+      DemoApiDecorator.execute<Map<String, dynamic>>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => <String, dynamic>{},
+        realAction: () => _realApiService.triggerFirmwareUpdate(),
+      );
+
+  /// Get firmware upgrade/check status (polling endpoint)
+  Future<Map<String, dynamic>> getFirmwareUpgradeStatus() =>
+      DemoApiDecorator.execute<Map<String, dynamic>>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async =>
+            {'status': 'done', 'log': 'Demo check complete.\n***DONE***'},
+        realAction: () => _realApiService.getFirmwareUpgradeStatus(),
+        delayMs: 200,
+      );
+
+  /// Get current firmware status (available updates, packages, etc.)
+  Future<Map<String, dynamic>> getFirmwareStatus() =>
+      DemoApiDecorator.execute<Map<String, dynamic>>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {
+          'needs_reboot': '1',
+          'download_size': '45MiB',
+          'last_check': 'Thu Jan 1 00:00:00 UTC 2026',
+          'new_packages': [
+            {
+              'name': 'cpu-microcode-rc',
+              'repository': 'OPNsense',
+              'version': '1.0_2',
+            },
+          ],
+          'upgrade_packages': [
+            {
+              'name': 'opnsense',
+              'repository': 'OPNsense',
+              'current_version': '26.7',
+              'new_version': '26.7.3',
+            },
+            {
+              'name': 'openssh-portable',
+              'repository': 'OPNsense',
+              'current_version': '10.3.p1,1',
+              'new_version': '10.5.p1_1,1',
+            },
+            {
+              'name': 'openssl35',
+              'repository': 'OPNsense',
+              'current_version': '3.5.7',
+              'new_version': '3.5.8',
+            },
+          ],
+          'product': {
+            'product_version': '26.7',
+            'product_latest': '26.7.3',
+          },
+        },
+        realAction: () => _realApiService.getFirmwareStatus(),
+        delayMs: 400,
+      );
+
+  /// Get firmware changelog for a given version
+  Future<Map<String, dynamic>> getFirmwareChangelog(String version) =>
+      DemoApiDecorator.execute<Map<String, dynamic>>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {
+          'status': 'ok',
+          'version': version,
+          'html':
+              '<p>Demo changelog for OPNsense $version. This update includes security fixes and performance improvements.</p>',
+          'date': 'January 1, 2026',
+        },
+        realAction: () => _realApiService.getFirmwareChangelog(version),
+        delayMs: 300,
+      );
+
   /// Clear service state
   void clear() {
     _demoDataService.reset();
