@@ -23,6 +23,17 @@ All notable changes to OPNsense Manager will be documented in this file.
 - Removed the incorrectly placed floating refresh button from the neighbor discovery screen.
 - Adjusted all conditionally-present fields in WireGuardStatusItem nullable to prevent runtime errors when the OPNsense API omits peer-only or interface-only fields.
 
+## [1.8.0-Beta.1] -
+
+### Changed
+
+- Comprehensive refactor of the codebase covering color token migration, constants extraction, l10n cleanup, ViewModel pattern adoption, and shared utility/widget extraction.
+
+### Fixed
+
+- Removed the incorrectly placed floating refresh button from the neighbor discovery screen.
+- Adjusted all conditionally-present fields in WireGuardStatusItem nullable to prevent runtime errors when the OPNsense API omits peer-only or interface-only fields.
+
 ## [1.7.2] -
 
 ### Changed
