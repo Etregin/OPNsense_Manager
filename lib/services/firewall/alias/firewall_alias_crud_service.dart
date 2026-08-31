@@ -78,23 +78,39 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
 
         if (data is Map && data['alias'] != null) {
           final aliasData = data['alias'] as Map<String, dynamic>;
+
+          // type — single-select map: return the selected key
+          final type = extractSelectedValue(aliasData['type']);
+
+          // content — multi-select map: collect all keys where selected == 1,
+          // skipping the empty-string sentinel entry, joined by newline
+          final content = _extractMultiSelected(aliasData['content']);
+
+          // proto — multi-select map: collect all selected keys, joined by comma
+          final proto = _extractMultiSelectedJoined(aliasData['proto'], ',');
+
+          // interface — single-select map with '' key meaning "None"
+          final interface_ = extractSelectedValue(aliasData['interface']);
+
+          // categories — may be a List or an empty array
+          final categoriesRaw = aliasData['categories'];
+          final categories = categoriesRaw is List
+              ? categoriesRaw.map((e) => e.toString()).join(',')
+              : extractSelectedValue(categoriesRaw);
+
           return FirewallAlias(
             uuid: uuid,
-            name: extractSelectedValue(aliasData['name']) as String? ?? '',
-            type: extractSelectedValue(aliasData['type']) as String? ?? '',
-            content:
-                extractSelectedValue(aliasData['content']) as String? ?? '',
-            description:
-                extractSelectedValue(aliasData['description']) as String? ?? '',
-            enabled:
-                extractSelectedValue(aliasData['enabled']) as String? ?? '1',
-            counters:
-                extractSelectedValue(aliasData['counters']) as String? ?? '0',
-            proto: extractSelectedValue(aliasData['proto']) as String? ?? '',
-            interface:
-                extractSelectedValue(aliasData['interface']) as String? ?? '',
-            categories:
-                extractSelectedValue(aliasData['categories']) as String? ?? '',
+            name: extractSelectedValue(aliasData['name']),
+            type: type,
+            content: content,
+            description: extractSelectedValue(aliasData['description']),
+            enabled: extractSelectedValue(aliasData['enabled']),
+            counters: aliasData['counters']?.toString() ?? '0',
+            proto: proto,
+            interface: interface_,
+            categories: categories,
+            updatefreq: aliasData['updatefreq']?.toString() ?? '',
+            pathExpression: aliasData['path_expression']?.toString() ?? '',
           );
         }
 
@@ -229,6 +245,26 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
     }
   }
 
+  /// Get default alias item structure (option lists for type, proto, interface, authtype)
+  Future<Map<String, dynamic>> getAliasItemDefaults() async {
+    ensureInitialized();
+
+    try {
+      final response = await dio.get('/firewall/alias/getItem/');
+
+      if (response.statusCode == 200 && response.data is Map) {
+        return response.data as Map<String, dynamic>;
+      }
+      throw ApiException(
+          'Failed to get alias item defaults', response.statusCode, ApiErrorType.unknown);
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    } catch (e) {
+      throw ApiException(
+          'Failed to get alias item defaults: ${e.toString()}', null, ApiErrorType.unknown);
+    }
+  }
+
   /// Delete a firewall alias
   Future<void> deleteFirewallAlias(String uuid) async {
     ensureInitialized();
@@ -248,6 +284,26 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
     } on DioException catch (e) {
       throw handleDioError(e);
     }
+  }
+
+  /// Collects all non-empty keys from a multi-select map where selected == 1,
+  /// joined by newline. Used for `content` fields.
+  String _extractMultiSelected(Object? field) {
+    if (field is! Map<String, dynamic>) return '';
+    return field.entries
+        .where((e) => e.key.isNotEmpty && e.value is Map && e.value['selected'] == 1)
+        .map((e) => e.key)
+        .join('\n');
+  }
+
+  /// Same as [_extractMultiSelected] but with a custom [separator].
+  /// Used for `proto` fields where values are joined by comma.
+  String _extractMultiSelectedJoined(Object? field, String separator) {
+    if (field is! Map<String, dynamic>) return '';
+    return field.entries
+        .where((e) => e.key.isNotEmpty && e.value is Map && e.value['selected'] == 1)
+        .map((e) => e.key)
+        .join(separator);
   }
 
   /// Apply firewall alias changes

@@ -40,6 +40,10 @@ class FirewallAlias {
   final String categories;
   @JsonKey(name: 'current_items', defaultValue: '0')
   final String currentItems;
+  @JsonKey(defaultValue: '')
+  final String updatefreq;
+  @JsonKey(name: 'path_expression', defaultValue: '')
+  final String pathExpression;
 
   FirewallAlias({
     required this.uuid,
@@ -53,10 +57,23 @@ class FirewallAlias {
     this.interface = '',
     this.categories = '',
     this.currentItems = '0',
+    this.updatefreq = '',
+    this.pathExpression = '',
   });
 
   /// Check if alias is enabled
   bool get isEnabled => enabled == '1';
+
+  /// Returns true for system-managed aliases (bogons, sshlockout, __lan_network, etc.).
+  /// System aliases have non-UUID identifiers — plain names or names with underscores/dashes
+  /// that don't follow the 8-4-4-4-12 UUID format. Only user-created aliases have real UUIDs.
+  bool get isSystemAlias {
+    // Standard UUID: 8-4-4-4-12 hex characters separated by dashes
+    final uuidPattern = RegExp(
+      r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
+    );
+    return !uuidPattern.hasMatch(uuid);
+  }
 
   /// Get type display name
   String get typeDisplayName {
@@ -120,6 +137,8 @@ class FirewallAlias {
     String? interface,
     String? categories,
     String? currentItems,
+    String? updatefreq,
+    String? pathExpression,
   }) {
     return FirewallAlias(
       uuid: uuid ?? this.uuid,
@@ -133,6 +152,8 @@ class FirewallAlias {
       interface: interface ?? this.interface,
       categories: categories ?? this.categories,
       currentItems: currentItems ?? this.currentItems,
+      updatefreq: updatefreq ?? this.updatefreq,
+      pathExpression: pathExpression ?? this.pathExpression,
     );
   }
 
@@ -169,6 +190,13 @@ class FirewallAliasRequest {
   final String interface;
   @JsonKey(name: 'categories', defaultValue: '')
   final String categories;
+  final String? updatefreq;
+  @JsonKey(name: 'path_expression')
+  final String? pathExpression;
+  final String? authtype;
+  final String? password;
+  final String? username;
+  final String? expire;
 
   FirewallAliasRequest({
     required this.name,
@@ -180,6 +208,12 @@ class FirewallAliasRequest {
     this.proto = '',
     this.interface = '',
     this.categories = '',
+    this.updatefreq,
+    this.pathExpression,
+    this.authtype,
+    this.password,
+    this.username,
+    this.expire,
   });
 
   /// Create from JSON
@@ -211,6 +245,8 @@ class FirewallAliasRequest {
       proto: alias.proto,
       interface: alias.interface,
       categories: alias.categories,
+      updatefreq: alias.updatefreq.isEmpty ? null : alias.updatefreq,
+      pathExpression: alias.pathExpression.isEmpty ? null : alias.pathExpression,
     );
   }
 }

@@ -269,7 +269,6 @@ class OPNsenseApiService {
   
   Future<void> deleteFirewallAlias(String uuid) => _firewallAliasService.deleteFirewallAlias(uuid);
   
-  Future<void> applyFirewallAliasChanges() => _firewallAliasService.applyFirewallAliasChanges();
   
   Future<Map<String, dynamic>> getGeoIP() => _firewallAliasService.getGeoIP();
   
@@ -296,6 +295,8 @@ class OPNsenseApiService {
   Future<Map<String, dynamic>> findAliasReferences(String aliasName) => _firewallAliasService.findAliasReferences(aliasName);
   
   Future<Map<String, dynamic>> updateBogons() => _firewallAliasService.updateBogons();
+  
+  Future<Map<String, dynamic>> getAliasItemDefaults() => _firewallAliasService.getAliasItemDefaults();
 
   // ============================================================================
   // VPN Service Delegations

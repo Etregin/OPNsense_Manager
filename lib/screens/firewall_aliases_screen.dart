@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async' show unawaited;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../constants/firewall_constants.dart';
@@ -32,6 +33,7 @@ import '../widgets/common/error_display.dart';
 import '../widgets/common/empty_state_widget.dart';
 import '../widgets/common/search_bar_field.dart';
 import '../l10n/app_localizations.dart';
+import 'firewall_alias_form_screen.dart';
 
 /// Firewall aliases management screen
 class FirewallAliasesScreen extends StatefulWidget {
@@ -187,6 +189,18 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen>
           SnackBarHelper.showError(context, l10n.failedToDeleteAlias(e.toString()));
         }
       }
+    }
+  }
+
+  Future<void> _navigateToForm({FirewallAlias? alias}) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => FirewallAliasFormScreen(alias: alias),
+      ),
+    );
+    if (mounted) {
+      unawaited(_viewModel.loadItems());
     }
   }
 
@@ -444,15 +458,18 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen>
                                             else
                                               Switch(
                                                 value: alias.isEnabled,
-                                                onChanged: (value) =>
-                                                    _toggleAlias(
-                                                        alias, value),
+                                                onChanged: alias.isSystemAlias
+                                                    ? null
+                                                    : (value) => _toggleAlias(alias, value),
                                                 activeTrackColor: AppColors.success,
                                               ),
                                             const SizedBox(width: 8),
                                             PopupMenuButton<String>(
                                               onSelected: (value) {
                                                 switch (value) {
+                                                  case 'edit':
+                                                    _navigateToForm(alias: alias);
+                                                    break;
                                                   case 'view':
                                                     _showAliasDetails(alias);
                                                     break;
@@ -462,6 +479,17 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen>
                                                 }
                                               },
                                               itemBuilder: (context) => [
+                                                if (!alias.isSystemAlias)
+                                                  PopupMenuItem(
+                                                    value: 'edit',
+                                                    child: Row(
+                                                      children: [
+                                                        const Icon(Icons.edit),
+                                                        const SizedBox(width: 8),
+                                                        Text(l10n.edit),
+                                                      ],
+                                                    ),
+                                                  ),
                                                 PopupMenuItem(
                                                   value: 'view',
                                                   child: Row(
@@ -473,20 +501,21 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen>
                                                     ],
                                                   ),
                                                 ),
-                                                PopupMenuItem(
-                                                  value: 'delete',
-                                                  child: Row(
-                                                    children: [
-                                                      const Icon(Icons.delete,
-                                                          color: AppColors.error),
-                                                      const SizedBox(width: 8),
-                                                      Text(l10n.delete,
-                                                          style:
-                                                              const TextStyle(
-                                                                  color: AppColors.error)),
-                                                    ],
+                                                if (!alias.isSystemAlias)
+                                                  PopupMenuItem(
+                                                    value: 'delete',
+                                                    child: Row(
+                                                      children: [
+                                                        const Icon(Icons.delete,
+                                                            color: AppColors.error),
+                                                        const SizedBox(width: 8),
+                                                        Text(l10n.delete,
+                                                            style:
+                                                                const TextStyle(
+                                                                    color: AppColors.error)),
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
                                               ],
                                             ),
                                           ],
@@ -501,9 +530,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen>
             ],
           ),
           floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              SnackBarHelper.showInfo(context, l10n.createAliasComingSoon);
-            },
+            onPressed: () => _navigateToForm(),
             child: const Icon(Icons.add),
           ),
         );
