@@ -1154,12 +1154,6 @@ abstract class AppLocalizations {
   /// **'CPU Usage'**
   String get cpuUsage;
 
-  /// No description provided for @createAliasComingSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Create Alias (Coming Soon)'**
-  String get createAliasComingSoon;
-
   /// No description provided for @createFirstAutomationRule.
   ///
   /// In en, this message translates to:
@@ -6991,6 +6985,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear & Save'**
   String get clearAndSave;
+
+  /// No description provided for @createAlias.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Alias'**
+  String get createAlias;
+
+  /// No description provided for @editAlias.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Alias'**
+  String get editAlias;
+
+  /// No description provided for @aliasCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Alias created successfully'**
+  String get aliasCreated;
+
+  /// No description provided for @aliasUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Alias updated successfully'**
+  String get aliasUpdated;
+
+  /// No description provided for @errorSavingAlias.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving alias: {error}'**
+  String errorSavingAlias(String error);
+
+  /// No description provided for @aliasNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get aliasNameLabel;
+
+  /// No description provided for @aliasNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Letters, digits, and underscores only'**
+  String get aliasNameHint;
+
+  /// No description provided for @aliasNameValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Name must start with a letter or underscore, max 32 characters, alphanumeric and underscores only'**
+  String get aliasNameValidation;
+
+  /// No description provided for @aliasTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get aliasTypeLabel;
+
+  /// No description provided for @refreshFrequencyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh Frequency'**
+  String get refreshFrequencyLabel;
+
+  /// No description provided for @refreshFrequencyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The frequency the list is refreshed. 1 day and 8 hours = refreshed after 32 hours. Leave empty to use defaults.'**
+  String get refreshFrequencyHint;
+
+  /// No description provided for @refreshDaysHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Days'**
+  String get refreshDaysHint;
+
+  /// No description provided for @refreshHoursHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours'**
+  String get refreshHoursHint;
+
+  /// No description provided for @pathExpressionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Path Expression'**
+  String get pathExpressionLabel;
+
+  /// No description provided for @pathExpressionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Simplified expression to select a field inside a container, e.g. container.fieldname. jq expressions are also supported.'**
+  String get pathExpressionHint;
+
+  /// No description provided for @authorizationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Authorization'**
+  String get authorizationLabel;
+
+  /// No description provided for @authorizationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If the remote server enforces authorization, specify the type here.'**
+  String get authorizationHint;
+
+  /// No description provided for @statisticsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics'**
+  String get statisticsLabel;
+
+  /// No description provided for @statisticsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintain a set of counters for each table entry'**
+  String get statisticsHint;
+
+  /// No description provided for @expireLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Expire'**
+  String get expireLabel;
+
+  /// No description provided for @expireHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Time in seconds after which addresses are purged from the alias when not being used.'**
+  String get expireHint;
+
+  /// No description provided for @aliasContentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter IPs, CIDRs, hostnames, or other values'**
+  String get aliasContentHint;
+
+  /// No description provided for @selectCountriesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Countries'**
+  String get selectCountriesLabel;
+
+  /// No description provided for @selectNetworkAliasesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Network Aliases'**
+  String get selectNetworkAliasesLabel;
+
+  /// No description provided for @selectVpnGroupsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Select VPN Groups'**
+  String get selectVpnGroupsLabel;
+
+  /// No description provided for @protoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'IP Version'**
+  String get protoLabel;
+
+  /// No description provided for @protoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by IP protocol version'**
+  String get protoHint;
+
+  /// No description provided for @interfaceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the interface for the dynamic IPv6 host'**
+  String get interfaceHint;
+
+  /// No description provided for @enableThisAlias.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable this alias'**
+  String get enableThisAlias;
+
+  /// No description provided for @region.
+  ///
+  /// In en, this message translates to:
+  /// **'Region'**
+  String get region;
+
+  /// No description provided for @countries.
+  ///
+  /// In en, this message translates to:
+  /// **'Countries'**
+  String get countries;
+
+  /// No description provided for @noCountriesSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing Selected'**
+  String get noCountriesSelected;
+
+  /// No description provided for @geoipRegionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'GeoIP Regions'**
+  String get geoipRegionsLabel;
+
+  /// No description provided for @basicSettingsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Settings'**
+  String get basicSettingsLabel;
 }
 
 class _AppLocalizationsDelegate

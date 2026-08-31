@@ -602,9 +602,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cpuUsage => 'Uso de CPU';
 
   @override
-  String get createAliasComingSoon => 'Crear alias (Próximamente)';
-
-  @override
   String get createFirstAutomationRule =>
       'Cree su primera regla de automatización para comenzar';
 
@@ -3920,4 +3917,114 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get clearAndSave => 'Clear & Save';
+
+  @override
+  String get createAlias => 'Create Alias';
+
+  @override
+  String get editAlias => 'Edit Alias';
+
+  @override
+  String get aliasCreated => 'Alias created successfully';
+
+  @override
+  String get aliasUpdated => 'Alias updated successfully';
+
+  @override
+  String errorSavingAlias(String error) {
+    return 'Error saving alias: $error';
+  }
+
+  @override
+  String get aliasNameLabel => 'Name';
+
+  @override
+  String get aliasNameHint => 'Letters, digits, and underscores only';
+
+  @override
+  String get aliasNameValidation =>
+      'Name must start with a letter or underscore, max 32 characters, alphanumeric and underscores only';
+
+  @override
+  String get aliasTypeLabel => 'Type';
+
+  @override
+  String get refreshFrequencyLabel => 'Refresh Frequency';
+
+  @override
+  String get refreshFrequencyHint =>
+      'The frequency the list is refreshed. 1 day and 8 hours = refreshed after 32 hours. Leave empty to use defaults.';
+
+  @override
+  String get refreshDaysHint => 'Days';
+
+  @override
+  String get refreshHoursHint => 'Hours';
+
+  @override
+  String get pathExpressionLabel => 'Path Expression';
+
+  @override
+  String get pathExpressionHint =>
+      'Simplified expression to select a field inside a container, e.g. container.fieldname. jq expressions are also supported.';
+
+  @override
+  String get authorizationLabel => 'Authorization';
+
+  @override
+  String get authorizationHint =>
+      'If the remote server enforces authorization, specify the type here.';
+
+  @override
+  String get statisticsLabel => 'Statistics';
+
+  @override
+  String get statisticsHint =>
+      'Maintain a set of counters for each table entry';
+
+  @override
+  String get expireLabel => 'Expire';
+
+  @override
+  String get expireHint =>
+      'Time in seconds after which addresses are purged from the alias when not being used.';
+
+  @override
+  String get aliasContentHint => 'Enter IPs, CIDRs, hostnames, or other values';
+
+  @override
+  String get selectCountriesLabel => 'Select Countries';
+
+  @override
+  String get selectNetworkAliasesLabel => 'Select Network Aliases';
+
+  @override
+  String get selectVpnGroupsLabel => 'Select VPN Groups';
+
+  @override
+  String get protoLabel => 'IP Version';
+
+  @override
+  String get protoHint => 'Filter by IP protocol version';
+
+  @override
+  String get interfaceHint => 'Select the interface for the dynamic IPv6 host';
+
+  @override
+  String get enableThisAlias => 'Enable this alias';
+
+  @override
+  String get region => 'Region';
+
+  @override
+  String get countries => 'Countries';
+
+  @override
+  String get noCountriesSelected => 'Nothing Selected';
+
+  @override
+  String get geoipRegionsLabel => 'GeoIP Regions';
+
+  @override
+  String get basicSettingsLabel => 'Basic Settings';
 }
