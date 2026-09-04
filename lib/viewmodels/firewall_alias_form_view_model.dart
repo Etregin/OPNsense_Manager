@@ -69,9 +69,10 @@ class FirewallAliasFormViewModel extends BaseFormViewModel {
         _apiService.getAliasItemDefaults(),
       ]);
 
-      // listAliasCategories → List<AliasCategory> → id (name) → name
+      // listAliasCategories → List<AliasCategory>
+      // AliasCategory.name = UUID, AliasCategory.description = display label
       final rawCategories = results[0] as List<AliasCategory>;
-      _categories = {for (final c in rawCategories) c.name: c.name};
+      _categories = {for (final c in rawCategories) c.name: c.description};
 
       // listNetworkAliases → Map<String, dynamic> → Map<String, String>
       final rawNetworkAliases = results[1] as Map<String, dynamic>;

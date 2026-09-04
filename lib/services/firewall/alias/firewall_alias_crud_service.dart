@@ -24,32 +24,28 @@ import '../../../models/firewall_alias.dart';
 /// Service for firewall alias CRUD operations
 class FirewallAliasCrudService extends BaseOPNsenseService {
   /// Get all firewall aliases
+  /// Get all firewall aliases via the search_item endpoint.
+  ///
+  /// This endpoint returns flat, pre-parsed rows — all fields are already
+  /// plain strings with no selection-map nesting. The `%type` field contains
+  /// the human-readable type label, while `type` is the internal key.
   Future<List<FirewallAlias>> getFirewallAliases() async {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/firewall/alias/get');
+      final response = await dio.post(
+        '/firewall/alias/search_item',
+        data: {'current': 1, 'rowCount': -1, 'searchPhrase': ''},
+      );
 
       if (response.statusCode == 200) {
         final data = response.data;
-
-        if (data is Map &&
-            data['alias'] != null &&
-            data['alias']['aliases'] != null &&
-            data['alias']['aliases']['alias'] != null) {
-          final aliasesMap =
-              data['alias']['aliases']['alias'] as Map<String, dynamic>;
-          final List<FirewallAlias> aliases = [];
-
-          aliasesMap.forEach((aliasName, aliasData) {
-            if (aliasData is Map<String, dynamic>) {
-              aliases.add(_parseAliasFromMap(aliasName, aliasData));
-            }
-          });
-
-          return aliases;
+        if (data is Map && data['rows'] is List) {
+          return (data['rows'] as List)
+              .whereType<Map<String, dynamic>>()
+              .map<FirewallAlias>(_parseAliasFromRow)
+              .toList();
         }
-
         return [];
       } else {
         throw ApiException(
@@ -71,7 +67,7 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/firewall/alias/getItem/$uuid');
+      final response = await dio.get('/firewall/alias/get_item/$uuid');
 
       if (response.statusCode == 200) {
         final data = response.data;
@@ -82,33 +78,44 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
           // type — single-select map: return the selected key
           final type = extractSelectedValue(aliasData['type']);
 
-          // content — multi-select map: collect all keys where selected == 1,
-          // skipping the empty-string sentinel entry, joined by newline
+          // content — multi-select picker of ALL aliases; the ones belonging
+          // to THIS alias have selected == 1. Skip the empty-string sentinel.
           final content = _extractMultiSelected(aliasData['content']);
 
           // proto — multi-select map: collect all selected keys, joined by comma
           final proto = _extractMultiSelectedJoined(aliasData['proto'], ',');
 
-          // interface — single-select map with '' key meaning "None"
+          // interface — single-select map; '' key means "None"
           final interface_ = extractSelectedValue(aliasData['interface']);
 
-          // categories — may be a List or an empty array
+          // categories — multi-select map {"uuid": {"value": "name", "selected": 0|1}}
+          // or empty array []. Collect selected UUIDs and display labels separately.
           final categoriesRaw = aliasData['categories'];
-          final categories = categoriesRaw is List
-              ? categoriesRaw.map((e) => e.toString()).join(',')
-              : extractSelectedValue(categoriesRaw);
+          String categories = '';
+          String categoryLabels = '';
+          if (categoriesRaw is Map<String, dynamic>) {
+            final selectedEntries = categoriesRaw.entries.where(
+              (e) => e.key.isNotEmpty && e.value is Map && e.value['selected'] == 1,
+            ).toList();
+            categories = selectedEntries.map((e) => e.key).join(',');
+            categoryLabels = selectedEntries
+                .map((e) => (e.value as Map)['value']?.toString() ?? e.key)
+                .join(', ');
+          }
 
           return FirewallAlias(
             uuid: uuid,
-            name: extractSelectedValue(aliasData['name']),
+            name: aliasData['name']?.toString() ?? uuid,
             type: type,
             content: content,
-            description: extractSelectedValue(aliasData['description']),
-            enabled: extractSelectedValue(aliasData['enabled']),
+            description: aliasData['description']?.toString() ?? '',
+            enabled: aliasData['enabled']?.toString() ?? '1',
             counters: aliasData['counters']?.toString() ?? '0',
             proto: proto,
             interface: interface_,
             categories: categories,
+            categoryLabels: categoryLabels,
+            currentItems: aliasData['current_items']?.toString() ?? '0',
             updatefreq: aliasData['updatefreq']?.toString() ?? '',
             pathExpression: aliasData['path_expression']?.toString() ?? '',
           );
@@ -135,7 +142,7 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
 
     try {
       final response =
-          await dio.get('/api/firewall/alias/get_alias_uuid/$name');
+          await dio.get('/firewall/alias/get_alias_uuid/$name');
 
       if (response.statusCode == 200) {
         final data = response.data;
@@ -159,7 +166,7 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/firewall/alias/addItem',
+        '/firewall/alias/add_item',
         data: {'alias': request.toJson()},
       );
 
@@ -196,7 +203,7 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/firewall/alias/setItem/$uuid',
+        '/firewall/alias/set_item/$uuid',
         data: {'alias': request.toJson()},
       );
 
@@ -229,7 +236,7 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/firewall/alias/toggleItem/$uuid');
+      final response = await dio.post('/firewall/alias/toggle_item/$uuid');
 
       if (response.statusCode == 200) {
         await _applyChanges();
@@ -250,7 +257,7 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/firewall/alias/getItem/');
+      final response = await dio.get('/firewall/alias/get_item/');
 
       if (response.statusCode == 200 && response.data is Map) {
         return response.data as Map<String, dynamic>;
@@ -270,7 +277,7 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.post('/firewall/alias/delItem/$uuid');
+      final response = await dio.post('/firewall/alias/del_item/$uuid');
 
       if (response.statusCode == 200) {
         await _applyChanges();
@@ -315,44 +322,26 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
     }
   }
 
-  /// Parse alias from map data
-  FirewallAlias _parseAliasFromMap(
-      String aliasName, Map<String, dynamic> aliasData) {
-    // Extract type
-    String aliasType = '';
-    if (aliasData['type'] is Map) {
-      final typeMap = aliasData['type'] as Map<String, dynamic>;
-      typeMap.forEach((key, value) {
-        if (value is Map && value['selected'] == 1) {
-          aliasType = key;
-        }
-      });
-    }
-
-    // Extract content
-    String content = '';
-    if (aliasData['content'] != null) {
-      content = aliasData['content'].toString();
-    } else if (aliasData['current_items'] != null) {
-      if (aliasData['current_items'] is List) {
-        content = (aliasData['current_items'] as List).join(',');
-      } else {
-        content = aliasData['current_items'].toString();
-      }
-    }
-
+  /// Parse a flat row from the POST /firewall/alias/search_item response.
+  ///
+  /// All fields are already plain strings — no selection-map nesting.
+  /// `type` is the internal key (e.g. "host", "internal").
+  /// `%type` is the human-readable label (unused here; [FirewallAlias.typeDisplayName] derives it).
+  FirewallAlias _parseAliasFromRow(Map<String, dynamic> row) {
     return FirewallAlias(
-      uuid: aliasName,
-      name: aliasData['name']?.toString() ?? aliasName,
-      type: aliasType,
-      content: content,
-      description: aliasData['description']?.toString() ?? '',
-      enabled: aliasData['enabled']?.toString() ?? '1',
-      counters: aliasData['counters']?.toString() ?? '0',
-      proto: aliasData['proto']?.toString() ?? '',
-      interface: aliasData['interface']?.toString() ?? '',
-      categories: aliasData['categories']?.toString() ?? '',
-      currentItems: aliasData['current_items']?.toString() ?? '0',
+      uuid: row['uuid']?.toString() ?? '',
+      name: row['name']?.toString() ?? '',
+      type: row['type']?.toString() ?? '',
+      content: row['content']?.toString() ?? '',
+      description: row['description']?.toString() ?? '',
+      enabled: row['enabled']?.toString() ?? '1',
+      counters: row['counters']?.toString() ?? '0',
+      proto: row['proto']?.toString() ?? '',
+      interface: row['interface']?.toString() ?? '',
+      categories: row['categories']?.toString() ?? '',
+      currentItems: row['current_items']?.toString() ?? '0',
+      updatefreq: row['updatefreq']?.toString() ?? '',
+      pathExpression: row['path_expression']?.toString() ?? '',
     );
   }
 }

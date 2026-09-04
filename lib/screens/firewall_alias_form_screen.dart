@@ -318,7 +318,7 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
           options: categoryOpts,
           initialSelected: _selectedCategories,
           isLoading: _viewModel.loadingFormData,
-          searchHint: l10n.searchAliases,
+          searchHint: l10n.searchCategories,
           doneLabel: l10n.done,
           emptyLabel: l10n.noItemsConfigured,
           showSubtitle: false,

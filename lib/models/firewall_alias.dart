@@ -37,7 +37,11 @@ class FirewallAlias {
   @JsonKey(name: 'interface', defaultValue: '')
   final String interface;
   @JsonKey(name: 'categories', defaultValue: '')
-  final String categories;
+  final String categories; // comma-separated selected category UUIDs
+  /// Human-readable category display names — populated when loading from
+  /// [getItem] which returns the full map. Not persisted to JSON.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final String categoryLabels;
   @JsonKey(name: 'current_items', defaultValue: '0')
   final String currentItems;
   @JsonKey(defaultValue: '')
@@ -56,6 +60,7 @@ class FirewallAlias {
     this.proto = '',
     this.interface = '',
     this.categories = '',
+    this.categoryLabels = '',
     this.currentItems = '0',
     this.updatefreq = '',
     this.pathExpression = '',
@@ -111,10 +116,14 @@ class FirewallAlias {
     }
   }
 
-  /// Get content items as list
+  /// Get content items as list.
+  /// Content is stored newline-separated (from getFirewallAlias API parsing)
+  /// but may also be comma-separated in legacy / list-endpoint data.
   List<String> get contentList {
     if (content.isEmpty) return [];
-    return content.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+    // Prefer newline split; fall back to comma split if no newlines present
+    final separator = content.contains('\n') ? '\n' : ',';
+    return content.split(separator).map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
   }
 
   /// Create from JSON
@@ -136,6 +145,7 @@ class FirewallAlias {
     String? proto,
     String? interface,
     String? categories,
+    String? categoryLabels,
     String? currentItems,
     String? updatefreq,
     String? pathExpression,
@@ -151,6 +161,7 @@ class FirewallAlias {
       proto: proto ?? this.proto,
       interface: interface ?? this.interface,
       categories: categories ?? this.categories,
+      categoryLabels: categoryLabels ?? this.categoryLabels,
       currentItems: currentItems ?? this.currentItems,
       updatefreq: updatefreq ?? this.updatefreq,
       pathExpression: pathExpression ?? this.pathExpression,

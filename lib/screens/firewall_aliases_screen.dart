@@ -28,8 +28,8 @@ import '../utils/snackbar_helper.dart';
 import '../viewmodels/firewall_aliases_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/confirmation_dialog.dart';
-import '../widgets/common/detail_row.dart';
 import '../widgets/common/error_display.dart';
+import '../widgets/firewall/alias_detail_sheet.dart';
 import '../widgets/common/empty_state_widget.dart';
 import '../widgets/common/search_bar_field.dart';
 import '../l10n/app_localizations.dart';
@@ -205,48 +205,16 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen>
   }
 
   void _showAliasDetails(FirewallAlias alias) {
-    final l10n = AppLocalizations.of(context)!;
-
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(alias.name),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildDetailRow('UUID', alias.uuid),
-              _buildDetailRow(l10n.type, alias.typeDisplayName),
-              _buildDetailRow(l10n.description, alias.description),
-              _buildDetailRow(l10n.enabled, alias.isEnabled ? l10n.yes : l10n.no),
-              const Divider(),
-              Text(
-                '${l10n.content}:',
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              ...alias.contentList.take(20).map((item) => Padding(
-                padding: const EdgeInsets.only(left: 16, bottom: 4),
-                child: Text('• $item'),
-              )),
-              if (alias.contentList.length > 20)
-                Text('... and ${alias.contentList.length - 20} more'),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.close),
-          ),
-        ],
+      isScrollControlled: true,
+      backgroundColor: AppColors.transparent,
+      builder: (_) => AliasDetailSheet(
+        alias: alias,
+        apiService: context.read<DemoApiService>(),
       ),
     );
   }
-
-  Widget _buildDetailRow(String label, String value) =>
-      DetailRow(label: label, value: value);
 
   IconData _getIconForType(String type) {
     switch (type.toLowerCase()) {

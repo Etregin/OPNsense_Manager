@@ -132,7 +132,7 @@ class FirewallService extends BaseOPNsenseService {
     // Fetch firewall categories from dedicated endpoint
     Map<String, String> categoryMap = {};
     try {
-      final catResponse = await dio.get('/firewall/category/searchItem');
+      final catResponse = await dio.get('/firewall/category/search_item');
       if (catResponse.statusCode == 200) {
         final catData = catResponse.data as Map<String, dynamic>;
         final rows = catData['rows'];
