@@ -2659,6 +2659,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get searchAliases => 'البحث عن الأسماء المستعارة...';
 
   @override
+  String get searchCategories => 'البحث عن الفئات...';
+
+  @override
   String get searchHostnameIpOrMac => 'البحث عن اسم المضيف أو IP أو MAC...';
 
   @override
@@ -3962,4 +3965,32 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get basicSettingsLabel => 'Basic Settings';
+
+  @override
+  String get aliasDetails => 'تفاصيل الاسم المستعار';
+
+  @override
+  String get noContent => 'لا توجد إدخالات محتوى';
+
+  @override
+  String get countersLabel => 'العدادات';
+
+  @override
+  String get lastUpdated => 'آخر تحديث';
+
+  @override
+  String get systemAliasReadOnly => 'اسم مستعار للنظام (للقراءة فقط)';
+
+  @override
+  String get aliasMetadata => 'البيانات الوصفية';
+
+  @override
+  String aliasContentEntries(int count) {
+    return 'المحتوى ($count)';
+  }
+
+  @override
+  String aliasRuntimeEntries(String count) {
+    return '$count إدخالات نشطة (وقت التشغيل)';
+  }
 }

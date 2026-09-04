@@ -2710,6 +2710,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get searchAliases => 'Buscar alias...';
 
   @override
+  String get searchCategories => 'Buscar categorías...';
+
+  @override
   String get searchHostnameIpOrMac => 'Buscar nombre de host, IP o MAC...';
 
   @override
@@ -4027,4 +4030,32 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get basicSettingsLabel => 'Basic Settings';
+
+  @override
+  String get aliasDetails => 'Detalles de alias';
+
+  @override
+  String get noContent => 'Sin entradas de contenido';
+
+  @override
+  String get countersLabel => 'Contadores';
+
+  @override
+  String get lastUpdated => 'Última actualización';
+
+  @override
+  String get systemAliasReadOnly => 'Alias del sistema (solo lectura)';
+
+  @override
+  String get aliasMetadata => 'Metadatos';
+
+  @override
+  String aliasContentEntries(int count) {
+    return 'Contenido ($count)';
+  }
+
+  @override
+  String aliasRuntimeEntries(String count) {
+    return '$count entradas activas (tiempo de ejecución)';
+  }
 }

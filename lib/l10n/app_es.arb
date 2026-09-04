@@ -2285,6 +2285,8 @@
   "@savingProfile": {},
   "searchAliases": "Buscar alias...",
   "@searchAliases": {},
+  "searchCategories": "Buscar categorías...",
+  "@searchCategories": {},
   "searchHostnameIpOrMac": "Buscar nombre de host, IP o MAC...",
   "@searchHostnameIpOrMac": {},
   "searchHostnameOrIp": "Buscar nombre de host o dirección IP...",
@@ -3375,5 +3377,29 @@
   "geoipRegionsLabel": "GeoIP Regions",
   "@geoipRegionsLabel": {},
   "basicSettingsLabel": "Basic Settings",
-  "@basicSettingsLabel": {}
+  "@basicSettingsLabel": {},
+  "aliasDetails": "Detalles de alias",
+  "@aliasDetails": {},
+  "noContent": "Sin entradas de contenido",
+  "@noContent": {},
+  "countersLabel": "Contadores",
+  "@countersLabel": {},
+  "lastUpdated": "Última actualización",
+  "@lastUpdated": {},
+  "systemAliasReadOnly": "Alias del sistema (solo lectura)",
+  "@systemAliasReadOnly": {},
+  "aliasMetadata": "Metadatos",
+  "@aliasMetadata": {},
+  "aliasContentEntries": "Contenido ({count})",
+  "@aliasContentEntries": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "aliasRuntimeEntries": "{count} entradas activas (tiempo de ejecución)",
+  "@aliasRuntimeEntries": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  }
 }

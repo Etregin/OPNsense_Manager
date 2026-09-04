@@ -4856,6 +4856,12 @@ abstract class AppLocalizations {
   /// **'Search aliases...'**
   String get searchAliases;
 
+  /// No description provided for @searchCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Search categories...'**
+  String get searchCategories;
+
   /// No description provided for @searchHostnameIpOrMac.
   ///
   /// In en, this message translates to:
@@ -7189,6 +7195,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Basic Settings'**
   String get basicSettingsLabel;
+
+  /// No description provided for @aliasDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Alias Details'**
+  String get aliasDetails;
+
+  /// No description provided for @noContent.
+  ///
+  /// In en, this message translates to:
+  /// **'No content entries'**
+  String get noContent;
+
+  /// No description provided for @countersLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Counters'**
+  String get countersLabel;
+
+  /// No description provided for @lastUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Updated'**
+  String get lastUpdated;
+
+  /// No description provided for @systemAliasReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'System alias (read-only)'**
+  String get systemAliasReadOnly;
+
+  /// No description provided for @aliasMetadata.
+  ///
+  /// In en, this message translates to:
+  /// **'Metadata'**
+  String get aliasMetadata;
+
+  /// No description provided for @aliasContentEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'Content ({count})'**
+  String aliasContentEntries(int count);
+
+  /// No description provided for @aliasRuntimeEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} active entries (runtime)'**
+  String aliasRuntimeEntries(String count);
 }
 
 class _AppLocalizationsDelegate

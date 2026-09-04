@@ -2277,6 +2277,8 @@
   "@savingProfile": {},
   "searchAliases": "البحث عن الأسماء المستعارة...",
   "@searchAliases": {},
+  "searchCategories": "البحث عن الفئات...",
+  "@searchCategories": {},
   "searchHostnameIpOrMac": "البحث عن اسم المضيف أو IP أو MAC...",
   "@searchHostnameIpOrMac": {},
   "searchHostnameOrIp": "البحث عن اسم المضيف أو عنوان IP...",
@@ -3366,5 +3368,29 @@
   "geoipRegionsLabel": "GeoIP Regions",
   "@geoipRegionsLabel": {},
   "basicSettingsLabel": "Basic Settings",
-  "@basicSettingsLabel": {}
+  "@basicSettingsLabel": {},
+  "aliasDetails": "تفاصيل الاسم المستعار",
+  "@aliasDetails": {},
+  "noContent": "لا توجد إدخالات محتوى",
+  "@noContent": {},
+  "countersLabel": "العدادات",
+  "@countersLabel": {},
+  "lastUpdated": "آخر تحديث",
+  "@lastUpdated": {},
+  "systemAliasReadOnly": "اسم مستعار للنظام (للقراءة فقط)",
+  "@systemAliasReadOnly": {},
+  "aliasMetadata": "البيانات الوصفية",
+  "@aliasMetadata": {},
+  "aliasContentEntries": "المحتوى ({count})",
+  "@aliasContentEntries": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "aliasRuntimeEntries": "{count} إدخالات نشطة (وقت التشغيل)",
+  "@aliasRuntimeEntries": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  }
 }
