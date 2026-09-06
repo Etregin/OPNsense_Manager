@@ -6,26 +6,21 @@ All notable changes to OPNsense Manager will be documented in this file.
 
 ### Added
 
-- Added Firmware Update screen with the ability to check for available updates, view the current installed and latest versions, and install updates directly from the app.
-- Firmware update screen shows a live log terminal while an update is running, with a reboot prompt when required.
-- Detects when an OPNsense firmware upgrade is already in progress and attaches to the live log stream, showing an "Upgrade in progress…" banner until it completes.
-- Added Firewall Alias management screen with create, edit, and detail views.
-- Alias form supports all types (Host, Network, Port, URL, GeoIP, etc.) with type-specific field rendering including autocomplete for internal aliases and region-grouped GeoIP country selection.
-- Alias list supports category filtering with colour-coded dots and a detail sheet for quick review.
-- Authentication fields (authtype, username, password) and expiry date are surfaced in the alias form, with API validation errors shown inline.
+- Added firmware updates with live logs, upgrade detection, and reboot handling.
+- Added firewall alias management with create, edit, detail, filtering, and type-specific forms.
+- Added alias autocomplete, GeoIP region selection, authentication fields, and inline API validation.
 
 ### Changed
 
-- Comprehensive refactor of the codebase covering color token migration, constants extraction, l10n cleanup, ViewModel pattern adoption, and shared utility/widget extraction.
-- Added the option to Long Press DHCP lease to copy the contents.
-- Adjusted the DHCP Card to be able to select text inside the widget.
-- Adjusted Firewall API calls to show ALL rules including automatic rules and disabling toggle for those rules.
-- Restructured the firewall ruls form to include all the options available in the GUI / API. 
+- Refactored colors, constants, localization, ViewModels, validation, and shared widgets.
+- Added long-press copying and text selection to DHCP leases.
+- Added automatic firewall rules to the rule list and expanded rule editing to match the GUI/API options.
+- Updated the minimum Flutter version and release version.
 
 ### Fixed
 
-- Removed the incorrectly placed floating refresh button from the neighbor discovery screen.
-- Adjusted all conditionally-present fields in WireGuardStatusItem nullable to prevent runtime errors when the OPNsense API omits peer-only or interface-only fields.
+- Removed the misplaced refresh button from Neighbor Discovery.
+- Made conditional WireGuard status fields nullable to prevent API deserialization errors.
 
 ## [1.8.0-Beta.1] -
 
