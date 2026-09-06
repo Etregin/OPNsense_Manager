@@ -116,11 +116,11 @@ class FirewallAlias {
       case 'port':
         return 'Port(s)';
       case 'url':
-        return 'URL';
+        return 'URL (IPs)';
       case 'urltable':
-        return 'URL Table';
+        return 'URL Table (IPs)';
       case 'urljson':
-        return 'URL (JSON)';
+        return 'URL Table in JSON format (IPs)';
       case 'geoip':
         return 'GeoIP';
       case 'networkgroup':

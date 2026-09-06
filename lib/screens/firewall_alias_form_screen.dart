@@ -37,16 +37,16 @@ const _kAliasTypes = <String, String>{
   'host':         'Host(s)',
   'network':      'Network(s)',
   'port':         'Port(s)',
-  'url':          'URL',
-  'urltable':     'URL Table',
-  'urljson':      'URL Table (JSON)',
+  'url':          'URL (IPs)',
+  'urltable':     'URL Table (IPs)',
+  'urljson':      'URL Table in JSON format (IPs)',
   'geoip':        'GeoIP',
   'networkgroup': 'Network Group',
   'mac':          'MAC Address',
   'asn':          'BGP ASN',
   'dynipv6host':  'Dynamic IPv6 Host',
   'authgroup':    'OpenVPN Group',
-  'internal':     'Internal',
+  'internal':     'Internal (automatic)',
   'external':     'External (advanced)',
 };
 
@@ -960,7 +960,7 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
                         prefixIcon: const Icon(Icons.badge_outlined),
                         helperMaxLines: 3,
                       ),
-                      enabled: !_isLoading && !widget.isEditing, // name is immutable on edit
+                      enabled: !_isLoading,
                       validator: (v) {
                         if (v == null || v.isEmpty) {
                           return l10n.fieldRequired;
