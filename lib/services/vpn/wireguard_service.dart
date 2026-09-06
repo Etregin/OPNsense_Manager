@@ -24,6 +24,7 @@ import '../../models/wireguard_peer.dart';
 import '../../models/wireguard_key_pair.dart';
 import '../../models/wireguard_client_builder.dart';
 import '../../models/wireguard_status.dart';
+import '../../models/openvpn_log_search_response.dart';
 import '../../constants/api_endpoints.dart';
 
 /// Service for WireGuard VPN operations
@@ -791,7 +792,7 @@ class WireGuardService extends BaseOPNsenseService {
   ///   validFrom: currentTime - WireGuardService.lastDaySeconds,
   /// );
   /// ```
-  Future<Map<String, dynamic>> getWireGuardLogs({
+  Future<OpenvpnLogSearchResponse> getWireGuardLogs({
     int rowCount = 50,
     List<String>? severity,
     double? validFrom,
@@ -799,15 +800,13 @@ class WireGuardService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      // Build payload according to API specification
       final payload = <String, dynamic>{
         'current': 1,
         'rowCount': rowCount,
         'sort': {},
-        'severity': severity ?? severityLevels['Debug']!, // Default to all severity levels
+        'severity': severity ?? severityLevels['Debug']!,
       };
 
-      // Add validFrom only if provided (for time filtering)
       if (validFrom != null) {
         payload['validFrom'] = validFrom;
       }
@@ -818,14 +817,9 @@ class WireGuardService extends BaseOPNsenseService {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data as Map<String, dynamic>;
-        
-        // Validate response structure
-        if (!data.containsKey('rows')) {
-          throw ApiException('Invalid response: missing rows field', response.statusCode, ApiErrorType.unknown);
-        }
-
-        return data;
+        return OpenvpnLogSearchResponse.fromJson(
+          response.data as Map<String, dynamic>,
+        );
       } else {
         throw ApiException('Failed to get WireGuard logs', response.statusCode, ApiErrorType.unknown);
       }

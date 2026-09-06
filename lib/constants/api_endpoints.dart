@@ -44,6 +44,11 @@ class ApiEndpoints {
   static const String diagnosticsTrafficTop = '/diagnostics/traffic/top';
   static const String diagnosticsLogOpenvpn = '/diagnostics/log/core/openvpn';
   static const String diagnosticsLogWireguard = '/diagnostics/log/core/wireguard';
+  static const String diagnosticsLogAudit   = '/diagnostics/log/core/audit';
+  static const String diagnosticsLogBackend = '/diagnostics/log/core/configd';
+  static const String diagnosticsLogBoot    = '/diagnostics/log/core/boot';
+  static const String diagnosticsLogGeneral = '/diagnostics/log/core/system';
+  static const String diagnosticsLogWebGui  = '/diagnostics/log/core/lighttpd';
 
   // ── Core service control ─────────────────────────────────────────────────────
   static const String coreServiceSearch = '/core/service/search';

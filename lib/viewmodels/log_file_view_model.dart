@@ -17,38 +17,57 @@
  */
 
 import '../models/openvpn_log_entry.dart';
-import '../services/demo_api_service.dart';
+import '../models/openvpn_log_search_response.dart';
 import 'base/base_list_view_model.dart';
 
-/// ViewModel for the OpenVPN log file screen.
+/// Callback type for fetching a page of log entries.
 ///
-/// Filter parameters (rowCount, severities, validFrom) are set by the screen
-/// before calling [loadItems], so [fetchItems] can use them.
-class OpenvpnLogViewModel extends BaseListViewModel<OpenvpnLogEntry> {
-  final DemoApiService _apiService;
+/// All OPNsense log endpoints share the same request/response contract, so a
+/// single typedef covers every log source (OpenVPN, WireGuard, Audit, Boot …).
+typedef LogFetcher = Future<OpenvpnLogSearchResponse> Function({
+  int current,
+  int rowCount,
+  Map<String, dynamic>? sort,
+  List<String>? severity,
+  double? validFrom,
+});
+
+/// Generic ViewModel for any OPNsense log file screen.
+///
+/// The screen sets [rowCount], [severities], [validFrom], and [currentPage]
+/// before calling [loadItems], then [fetchItems] forwards them to [fetcher].
+///
+/// Replaces the per-feature `OpenvpnLogViewModel` and `WireGuardLogViewModel`.
+class LogFileViewModel extends BaseListViewModel<OpenvpnLogEntry> {
+  final LogFetcher fetcher;
 
   int rowCount;
   List<String> severities;
   double? validFrom;
   int currentPage;
 
-  OpenvpnLogViewModel(
-    this._apiService, {
+  /// Total entries reported by the API (used for pagination display).
+  int total = 0;
+
+  LogFileViewModel(
+    this.fetcher, {
     this.rowCount = 50,
     List<String>? severities,
     this.validFrom,
     this.currentPage = 1,
-  }) : severities = severities ?? const ['Emergency', 'Alert', 'Critical', 'Error', 'Warning'];
+  }) : severities = severities ??
+            const ['Emergency', 'Alert', 'Critical', 'Error', 'Warning'];
 
   @override
   Future<List<OpenvpnLogEntry>> fetchItems() async {
-    final response = await _apiService.searchOpenvpnLogs(
+    final response = await fetcher(
       current: currentPage,
       rowCount: rowCount,
-      sort: const <String, dynamic>{'timestamp': 'desc'},
+      sort: const <String, dynamic>{},
       severity: severities,
       validFrom: validFrom,
     );
+    total = response.total;
     return response.rows;
   }
 
