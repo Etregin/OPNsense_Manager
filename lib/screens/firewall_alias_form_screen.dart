@@ -29,6 +29,7 @@ import '../widgets/common/form_section_container.dart';
 import '../widgets/common/loading_overlay.dart';
 import '../widgets/common/picker_sheet.dart';
 import '../widgets/openvpn/openvpn_form_field_widgets.dart' show OpenvpnArrayField;
+import '../widgets/firewall/alias_autocomplete_array_field.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Alias type display labels
@@ -475,9 +476,28 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
           ],
         );
 
+      case 'internal':
+        // Freetext array with inline autocomplete suggestions from existing aliases.
+        return FormSectionContainer(
+          title: l10n.content,
+          children: [
+            AliasAutocompleteArrayField(
+              title: l10n.content,
+              items: _contentItems,
+              suggestions: _viewModel.networkAliases,
+              enabled: !_isLoading,
+              emptyMessage: l10n.noItemsConfigured,
+              helperText: l10n.aliasContentHint,
+              onAdd: () => setState(() => _contentItems.add('')),
+              onRemove: (i) => setState(() => _contentItems.removeAt(i)),
+              onUpdate: (i, v) => setState(() => _contentItems[i] = v),
+            ),
+          ],
+        );
+
       default:
         // Standard array field for: host, network, port, url, urltable,
-        // urljson, mac, asn, dynipv6host, internal
+        // urljson, mac, asn, dynipv6host
         return FormSectionContainer(
           title: l10n.content,
           children: [
