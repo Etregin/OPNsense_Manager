@@ -1382,6 +1382,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get filterByType => 'تصفية حسب النوع';
 
   @override
+  String get filterByCategory => 'تصفية حسب الفئة';
+
+  @override
+  String get clearAll => 'مسح الكل';
+
+  @override
   String get filterLabel => 'تصفية: ';
 
   @override

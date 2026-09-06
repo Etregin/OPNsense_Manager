@@ -1416,6 +1416,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get filterByType => 'Nach Typ filtern';
 
   @override
+  String get filterByCategory => 'Nach Kategorie filtern';
+
+  @override
+  String get clearAll => 'Alle löschen';
+
+  @override
   String get filterLabel => 'Filter: ';
 
   @override

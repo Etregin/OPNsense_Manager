@@ -1412,6 +1412,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get filterByType => 'Filtrer par type';
 
   @override
+  String get filterByCategory => 'Filtrer par catégorie';
+
+  @override
+  String get clearAll => 'Tout effacer';
+
+  @override
   String get filterLabel => 'Filtre : ';
 
   @override

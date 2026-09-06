@@ -2498,6 +2498,18 @@ abstract class AppLocalizations {
   /// **'Filter by type'**
   String get filterByType;
 
+  /// No description provided for @filterByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by category'**
+  String get filterByCategory;
+
+  /// No description provided for @clearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get clearAll;
+
   /// No description provided for @filterLabel.
   ///
   /// In en, this message translates to:
