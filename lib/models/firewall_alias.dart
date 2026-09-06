@@ -38,10 +38,15 @@ class FirewallAlias {
   final String interface;
   @JsonKey(name: 'categories', defaultValue: '')
   final String categories; // comma-separated selected category UUIDs
-  /// Human-readable category display names — populated when loading from
-  /// [getItem] which returns the full map. Not persisted to JSON.
+  /// Human-readable category display names.
+  /// Populated from `%categories` (search_item) or computed from getItem map.
+  /// Not persisted to JSON.
   @JsonKey(includeFromJson: false, includeToJson: false)
   final String categoryLabels;
+  /// List of category UUIDs from `categories_uuid` in search_item response.
+  /// Not persisted to JSON.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final List<String> categoriesUuid;
   @JsonKey(name: 'current_items', defaultValue: '0')
   final String currentItems;
   @JsonKey(defaultValue: '')
@@ -61,6 +66,7 @@ class FirewallAlias {
     this.interface = '',
     this.categories = '',
     this.categoryLabels = '',
+    this.categoriesUuid = const [],
     this.currentItems = '0',
     this.updatefreq = '',
     this.pathExpression = '',
@@ -146,6 +152,7 @@ class FirewallAlias {
     String? interface,
     String? categories,
     String? categoryLabels,
+    List<String>? categoriesUuid,
     String? currentItems,
     String? updatefreq,
     String? pathExpression,
@@ -162,6 +169,7 @@ class FirewallAlias {
       interface: interface ?? this.interface,
       categories: categories ?? this.categories,
       categoryLabels: categoryLabels ?? this.categoryLabels,
+      categoriesUuid: categoriesUuid ?? this.categoriesUuid,
       currentItems: currentItems ?? this.currentItems,
       updatefreq: updatefreq ?? this.updatefreq,
       pathExpression: pathExpression ?? this.pathExpression,
@@ -293,16 +301,20 @@ class AliasTableEntry {
   Map<String, dynamic> toJson() => _$AliasTableEntryToJson(this);
 }
 
-/// Category information
+/// Category information.
+/// [name] = UUID, [description] = display label, [color] = 6-char hex (no #).
 @JsonSerializable()
 class AliasCategory {
   final String name;
   @JsonKey(name: 'description', defaultValue: '')
   final String description;
+  @JsonKey(defaultValue: '')
+  final String color;
   
   AliasCategory({
     required this.name,
     this.description = '',
+    this.color = '',
   });
   
   factory AliasCategory.fromJson(Map<String, dynamic> json) =>

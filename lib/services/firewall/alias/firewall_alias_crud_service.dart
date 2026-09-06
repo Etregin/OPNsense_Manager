@@ -328,6 +328,13 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
   /// `type` is the internal key (e.g. "host", "internal").
   /// `%type` is the human-readable label (unused here; [FirewallAlias.typeDisplayName] derives it).
   FirewallAlias _parseAliasFromRow(Map<String, dynamic> row) {
+    // `%categories` is the pre-resolved display label e.g. "test categ"
+    final categoryLabels = row['%categories']?.toString() ?? '';
+    // `categories_uuid` is a List of UUID strings
+    final categoriesUuid = (row['categories_uuid'] is List)
+        ? (row['categories_uuid'] as List).map((e) => e.toString()).toList()
+        : <String>[];
+
     return FirewallAlias(
       uuid: row['uuid']?.toString() ?? '',
       name: row['name']?.toString() ?? '',
@@ -339,6 +346,8 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
       proto: row['proto']?.toString() ?? '',
       interface: row['interface']?.toString() ?? '',
       categories: row['categories']?.toString() ?? '',
+      categoryLabels: categoryLabels,
+      categoriesUuid: categoriesUuid,
       currentItems: row['current_items']?.toString() ?? '0',
       updatefreq: row['updatefreq']?.toString() ?? '',
       pathExpression: row['path_expression']?.toString() ?? '',

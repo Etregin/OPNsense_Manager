@@ -78,6 +78,7 @@ class FirewallAliasMetadataService extends BaseOPNsenseService {
               .map((row) => AliasCategory(
                     name: row['uuid']?.toString() ?? '',
                     description: row['name']?.toString() ?? '',
+                    color: row['color']?.toString() ?? '',
                   ))
               .where((c) => c.name.isNotEmpty)
               .toList();

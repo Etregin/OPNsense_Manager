@@ -99,12 +99,14 @@ AliasCategory _$AliasCategoryFromJson(Map<String, dynamic> json) =>
     AliasCategory(
       name: json['name'] as String,
       description: json['description'] as String? ?? '',
+      color: json['color'] as String? ?? '',
     );
 
 Map<String, dynamic> _$AliasCategoryToJson(AliasCategory instance) =>
     <String, dynamic>{
       'name': instance.name,
       'description': instance.description,
+      'color': instance.color,
     };
 
 AliasCountry _$AliasCountryFromJson(Map<String, dynamic> json) =>
