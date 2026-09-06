@@ -12,6 +12,24 @@ class AppLocalizationsDe extends AppLocalizations {
   String get about => 'Über';
 
   @override
+  String get auditLog => 'Audit-Protokoll';
+
+  @override
+  String get backendLog => 'Backend-Protokoll';
+
+  @override
+  String get bootLog => 'Boot-Protokoll';
+
+  @override
+  String get generalLog => 'Allgemeines Protokoll';
+
+  @override
+  String get systemLogFiles => 'Systemprotokolldateien';
+
+  @override
+  String get webGuiLog => 'Web-GUI-Protokoll';
+
+  @override
   String get aboutDescription =>
       'Eine professionelle Flutter-Mobile-Anwendung zur Verwaltung von OPNsense-Firewall-Routern.';
 

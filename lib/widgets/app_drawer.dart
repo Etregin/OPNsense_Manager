@@ -23,6 +23,11 @@ import '../constants/routes.dart';
 import '../models/system_info.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/system_info_screen.dart';
+import '../screens/system_log_audit_screen.dart';
+import '../screens/system_log_backend_screen.dart';
+import '../screens/system_log_boot_screen.dart';
+import '../screens/system_log_general_screen.dart';
+import '../screens/system_log_web_gui_screen.dart';
 import '../screens/settings_screen.dart';
 import '../screens/profile_selection_screen.dart';
 import '../l10n/app_localizations.dart';
@@ -36,6 +41,7 @@ import '../utils/snackbar_helper.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import 'drawer/drawer_header_widget.dart';
+import 'drawer/expansion_navigation_tile.dart';
 import 'drawer/navigation_tile.dart';
 import 'drawer/firewall_navigation_section.dart';
 import 'drawer/network_navigation_section.dart';
@@ -62,6 +68,7 @@ class AppDrawer extends StatefulWidget {
 class _AppDrawerState extends State<AppDrawer> {
   bool _firewallExpanded = false;
   bool _vpnExpanded = false;
+  bool _systemLogsExpanded = false;
 
   /// Internally fetched system info, used when the caller does not supply one.
   SystemInfo? _internalSystemInfo;
@@ -79,6 +86,7 @@ class _AppDrawerState extends State<AppDrawer> {
                    NavigationService.isRouteInSection(widget.currentRoute, Routes.wireguardPrefix) ||
                    NavigationService.isRouteInSection(widget.currentRoute, Routes.openvpnPrefix) ||
                    NavigationService.isRouteInSection(widget.currentRoute, Routes.tailscalePrefix);
+    _systemLogsExpanded = NavigationService.isRouteInSection(widget.currentRoute, Routes.systemLogPrefix);
   }
 
   @override
@@ -135,9 +143,9 @@ class _AppDrawerState extends State<AppDrawer> {
             destination: const SystemInfoScreen(),
             onBeforeNavigate: widget.onBeforeNavigate,
           ),
-          
+
           const Divider(),
-          
+
           // 3. Network navigation section
           NetworkNavigationSection(
             currentRoute: widget.currentRoute,
@@ -165,8 +173,57 @@ class _AppDrawerState extends State<AppDrawer> {
             },
             onBeforeNavigate: widget.onBeforeNavigate,
           ),
-          
-          // 5. Settings (individual tile)
+
+          // 5. System Log Files (collapsible section)
+          ExpansionNavigationTile(
+            icon: Icons.article_outlined,
+            title: Text(l10n.systemLogFiles),
+            initiallyExpanded: _systemLogsExpanded,
+            onExpansionChanged: (expanded) {
+              setState(() {
+                _systemLogsExpanded = expanded;
+              });
+            },
+            children: [
+              NavigationTile(
+                title: l10n.auditLog,
+                currentRoute: widget.currentRoute,
+                targetRoute: Routes.systemLogAudit,
+                destination: const SystemLogAuditScreen(),
+                contentPadding: const EdgeInsets.only(left: 40, right: 16),
+              ),
+              NavigationTile(
+                title: l10n.backendLog,
+                currentRoute: widget.currentRoute,
+                targetRoute: Routes.systemLogBackend,
+                destination: const SystemLogBackendScreen(),
+                contentPadding: const EdgeInsets.only(left: 40, right: 16),
+              ),
+              NavigationTile(
+                title: l10n.bootLog,
+                currentRoute: widget.currentRoute,
+                targetRoute: Routes.systemLogBoot,
+                destination: const SystemLogBootScreen(),
+                contentPadding: const EdgeInsets.only(left: 40, right: 16),
+              ),
+              NavigationTile(
+                title: l10n.generalLog,
+                currentRoute: widget.currentRoute,
+                targetRoute: Routes.systemLogGeneral,
+                destination: const SystemLogGeneralScreen(),
+                contentPadding: const EdgeInsets.only(left: 40, right: 16),
+              ),
+              NavigationTile(
+                title: l10n.webGuiLog,
+                currentRoute: widget.currentRoute,
+                targetRoute: Routes.systemLogWebGui,
+                destination: const SystemLogWebGuiScreen(),
+                contentPadding: const EdgeInsets.only(left: 40, right: 16),
+              ),
+            ],
+          ),
+
+          // 6. Settings (individual tile)
           NavigationTile(
             icon: Icons.settings,
             title: l10n.settings,

@@ -12,6 +12,24 @@ class AppLocalizationsFr extends AppLocalizations {
   String get about => 'À Propos';
 
   @override
+  String get auditLog => 'Journal d\'audit';
+
+  @override
+  String get backendLog => 'Journal du backend';
+
+  @override
+  String get bootLog => 'Journal de démarrage';
+
+  @override
+  String get generalLog => 'Journal général';
+
+  @override
+  String get systemLogFiles => 'Fichiers journaux système';
+
+  @override
+  String get webGuiLog => 'Journal de l\'interface Web';
+
+  @override
   String get aboutDescription =>
       'Une application mobile Flutter professionnelle pour gérer les routeurs pare-feu OPNsense.';
 

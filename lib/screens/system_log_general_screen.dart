@@ -18,29 +18,25 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../constants/routes.dart';
 import '../l10n/app_localizations.dart';
 import '../services/demo_api_service.dart';
-import '../constants/routes.dart';
 import 'log_file_screen.dart';
 
-/// OpenVPN Log File screen — thin wrapper around the shared [LogFileScreen].
-class OpenvpnLogFileScreen extends StatelessWidget {
-  const OpenvpnLogFileScreen({super.key});
+/// System > Log Files > General
+class SystemLogGeneralScreen extends StatelessWidget {
+  const SystemLogGeneralScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final apiService = context.read<DemoApiService>();
     return LogFileScreen(
-      title: l10n.openvpnLogFile,
-      currentRoute: Routes.openvpnLogs,
-      fetcher: apiService.searchOpenvpnLogs,
+      title: l10n.generalLog,
+      currentRoute: Routes.systemLogGeneral,
+      fetcher: context.read<DemoApiService>().searchGeneralLogs,
+      // General log also shows Notice by default (matches OPNsense GUI payload).
       defaultSeverities: const [
-        'Emergency',
-        'Alert',
-        'Critical',
-        'Error',
-        'Warning',
+        'Emergency', 'Alert', 'Critical', 'Error', 'Warning', 'Notice',
       ],
     );
   }
