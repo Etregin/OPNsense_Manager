@@ -12,6 +12,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get about => 'About';
 
   @override
+  String get auditLog => 'Audit Log';
+
+  @override
+  String get backendLog => 'Backend Log';
+
+  @override
+  String get bootLog => 'Boot Log';
+
+  @override
+  String get generalLog => 'General Log';
+
+  @override
+  String get systemLogFiles => 'System Log Files';
+
+  @override
+  String get webGuiLog => 'Web GUI Log';
+
+  @override
   String get aboutDescription =>
       'A professional Flutter mobile application for managing OPNsense firewall routers.';
 

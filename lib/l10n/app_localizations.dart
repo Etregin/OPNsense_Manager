@@ -110,6 +110,42 @@ abstract class AppLocalizations {
   /// **'About'**
   String get about;
 
+  /// No description provided for @auditLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit Log'**
+  String get auditLog;
+
+  /// No description provided for @backendLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Backend Log'**
+  String get backendLog;
+
+  /// No description provided for @bootLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Boot Log'**
+  String get bootLog;
+
+  /// No description provided for @generalLog.
+  ///
+  /// In en, this message translates to:
+  /// **'General Log'**
+  String get generalLog;
+
+  /// No description provided for @systemLogFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'System Log Files'**
+  String get systemLogFiles;
+
+  /// No description provided for @webGuiLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Web GUI Log'**
+  String get webGuiLog;
+
   /// No description provided for @aboutDescription.
   ///
   /// In en, this message translates to:

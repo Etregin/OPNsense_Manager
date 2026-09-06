@@ -12,6 +12,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get about => 'حول';
 
   @override
+  String get auditLog => 'سجل التدقيق';
+
+  @override
+  String get backendLog => 'سجل الخلفية';
+
+  @override
+  String get bootLog => 'سجل التشغيل';
+
+  @override
+  String get generalLog => 'السجل العام';
+
+  @override
+  String get systemLogFiles => 'ملفات سجل النظام';
+
+  @override
+  String get webGuiLog => 'سجل واجهة الويب';
+
+  @override
   String get aboutDescription =>
       'تطبيق Flutter احترافي لإدارة جدران حماية OPNsense.';
 
