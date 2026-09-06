@@ -170,7 +170,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen>
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          title: Text(l10n.filterByType), // reuse "Filter by Type" → TODO: add filterByCategory key
+          title: Text(l10n.filterByCategory),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -182,13 +182,13 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen>
                       onPressed: () => setDialogState(
                           () => _selectedCategoryUuids = Set.from(categoryMap.keys)),
                       icon: const Icon(Icons.select_all),
-                      label: const Text('Select All'),
+                      label: Text(l10n.selectAll),
                     ),
                     TextButton.icon(
                       onPressed: () =>
                           setDialogState(() => _selectedCategoryUuids.clear()),
                       icon: const Icon(Icons.clear),
-                      label: const Text('Clear All'),
+                      label: Text(l10n.clearAll),
                     ),
                   ],
                 ),
@@ -225,7 +225,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen>
                 setState(() {});
                 Navigator.of(context).pop();
               },
-              child: const Text('Apply'),
+              child: Text(l10n.apply),
             ),
           ],
         ),

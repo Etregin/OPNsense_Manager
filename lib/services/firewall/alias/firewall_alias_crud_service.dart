@@ -103,6 +103,9 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
                 .join(', ');
           }
 
+          // authtype — single-select map: return the selected key (e.g. "Basic")
+          final authtype = extractSelectedValue(aliasData['authtype']);
+
           return FirewallAlias(
             uuid: uuid,
             name: aliasData['name']?.toString() ?? uuid,
@@ -118,6 +121,10 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
             currentItems: aliasData['current_items']?.toString() ?? '0',
             updatefreq: aliasData['updatefreq']?.toString() ?? '',
             pathExpression: aliasData['path_expression']?.toString() ?? '',
+            authtype: authtype,
+            username: aliasData['username']?.toString() ?? '',
+            password: aliasData['password']?.toString() ?? '',
+            expire: aliasData['expire']?.toString() ?? '',
           );
         }
 
@@ -159,7 +166,10 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
     }
   }
 
-  /// Create a new firewall alias
+  /// Create a new firewall alias.
+  ///
+  /// Throws [ApiException] if the API returns `result != "saved"`, including
+  /// a human-readable summary of any `validations` returned by the server.
   Future<Map<String, dynamic>> createFirewallAlias(
       FirewallAliasRequest request) async {
     ensureInitialized();
@@ -173,10 +183,18 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
       if (response.statusCode == 200) {
         final data = response.data;
         if (data is Map) {
-          if (data['result'] == 'saved') {
+          final result = data['result']?.toString() ?? '';
+          if (result == 'saved') {
             await _applyChanges();
+            return data as Map<String, dynamic>;
           }
-          return data as Map<String, dynamic>;
+          // Surface server-side validation failures as an exception so the
+          // ViewModel's executeWithLoading marks the save as failed.
+          throw ApiException(
+            _buildValidationMessage(data, 'Failed to create alias'),
+            response.statusCode,
+            ApiErrorType.unknown,
+          );
         }
         throw ApiException('Invalid response format', response.statusCode, ApiErrorType.unknown);
       } else {
@@ -188,13 +206,18 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
       }
     } on DioException catch (e) {
       throw handleDioError(e);
+    } on ApiException {
+      rethrow;
     } catch (e) {
       throw ApiException(
           'Failed to create firewall alias: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
-  /// Update an existing firewall alias
+  /// Update an existing firewall alias.
+  ///
+  /// Throws [ApiException] if the API returns `result != "saved"`, including
+  /// a human-readable summary of any `validations` returned by the server.
   Future<Map<String, dynamic>> updateFirewallAlias(
     String uuid,
     FirewallAliasRequest request,
@@ -210,10 +233,16 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
       if (response.statusCode == 200) {
         final data = response.data;
         if (data is Map) {
-          if (data['result'] == 'saved') {
+          final result = data['result']?.toString() ?? '';
+          if (result == 'saved') {
             await _applyChanges();
+            return data as Map<String, dynamic>;
           }
-          return data as Map<String, dynamic>;
+          throw ApiException(
+            _buildValidationMessage(data, 'Failed to update alias'),
+            response.statusCode,
+            ApiErrorType.unknown,
+          );
         }
         throw ApiException('Invalid response format', response.statusCode, ApiErrorType.unknown);
       } else {
@@ -225,6 +254,8 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
       }
     } on DioException catch (e) {
       throw handleDioError(e);
+    } on ApiException {
+      rethrow;
     } catch (e) {
       throw ApiException(
           'Failed to update firewall alias: ${e.toString()}', null, ApiErrorType.unknown);
@@ -320,6 +351,29 @@ class FirewallAliasCrudService extends BaseOPNsenseService {
     } on DioException catch (e) {
       throw handleDioError(e);
     }
+  }
+
+  /// Builds a human-readable error message from an OPNsense API response that
+  /// did NOT return `result == "saved"`.
+  ///
+  /// The `validations` node is a flat or nested map where each key is a field
+  /// path (e.g. `"alias.name"`) and the value is an error string. We join them
+  /// into a single message. If no validations are present we fall back to the
+  /// result string or [fallback].
+  String _buildValidationMessage(Map<dynamic, dynamic> data, String fallback) {
+    final validations = data['validations'];
+    if (validations is Map && validations.isNotEmpty) {
+      final messages = validations.entries
+          .map((e) {
+            final field = e.key.toString().replaceFirst('alias.', '');
+            final msg = e.value?.toString() ?? '';
+            return msg.isNotEmpty ? '$field: $msg' : field;
+          })
+          .toList();
+      return messages.join('; ');
+    }
+    final result = data['result']?.toString() ?? '';
+    return result.isNotEmpty ? '$fallback ($result)' : fallback;
   }
 
   /// Parse a flat row from the POST /firewall/alias/search_item response.

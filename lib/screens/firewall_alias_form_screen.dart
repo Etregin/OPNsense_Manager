@@ -200,6 +200,13 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
     _selectedProto = alias.proto.isNotEmpty
         ? alias.proto.split(',').map((s) => s.trim()).toList()
         : ['IPv4', 'IPv6'];
+    // Authorization fields — only present in full alias loaded via get_item.
+    if (alias.authtype.isNotEmpty) {
+      _selectedAuthtype = alias.authtype;
+    }
+    _usernameController.text = alias.username;
+    _passwordController.text = alias.password;
+    _expireController.text   = alias.expire;
   }
 
   // ─────────────────────────────────────────────────────────────────────────────

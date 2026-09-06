@@ -53,6 +53,22 @@ class FirewallAlias {
   final String updatefreq;
   @JsonKey(name: 'path_expression', defaultValue: '')
   final String pathExpression;
+  /// Selected authtype key from the API selection map, e.g. "none" / "Basic".
+  /// Not persisted to JSON (read-model only; write uses [FirewallAliasRequest]).
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final String authtype;
+  /// Username for URL-based aliases with Basic auth.
+  /// Not persisted to JSON.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final String username;
+  /// Password for URL-based aliases with Basic auth.
+  /// Not persisted to JSON.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final String password;
+  /// Expire date/time string for external aliases.
+  /// Not persisted to JSON.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final String expire;
 
   FirewallAlias({
     required this.uuid,
@@ -70,6 +86,10 @@ class FirewallAlias {
     this.currentItems = '0',
     this.updatefreq = '',
     this.pathExpression = '',
+    this.authtype = '',
+    this.username = '',
+    this.password = '',
+    this.expire = '',
   });
 
   /// Check if alias is enabled
@@ -156,6 +176,10 @@ class FirewallAlias {
     String? currentItems,
     String? updatefreq,
     String? pathExpression,
+    String? authtype,
+    String? username,
+    String? password,
+    String? expire,
   }) {
     return FirewallAlias(
       uuid: uuid ?? this.uuid,
@@ -173,6 +197,10 @@ class FirewallAlias {
       currentItems: currentItems ?? this.currentItems,
       updatefreq: updatefreq ?? this.updatefreq,
       pathExpression: pathExpression ?? this.pathExpression,
+      authtype: authtype ?? this.authtype,
+      username: username ?? this.username,
+      password: password ?? this.password,
+      expire: expire ?? this.expire,
     );
   }
 
