@@ -128,15 +128,15 @@ class FirewallAlias {
       case 'mac':
         return 'MAC Address';
       case 'asn':
-        return 'ASN';
+        return 'BGP ASN';
       case 'dynipv6host':
         return 'Dynamic IPv6 Host';
       case 'authgroup':
         return 'Auth Group';
       case 'internal':
-        return 'Internal';
+        return 'Internal (automatic)';
       case 'external':
-        return 'External';
+        return 'External (advanced)';
       default:
         return type;
     }
