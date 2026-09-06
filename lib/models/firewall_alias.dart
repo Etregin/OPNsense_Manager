@@ -351,15 +351,20 @@ class AliasCategory {
   Map<String, dynamic> toJson() => _$AliasCategoryToJson(this);
 }
 
-/// Country information for GeoIP
+/// Country information for GeoIP.
+/// [region] matches the API's `region` field (e.g. "Europe", "Asia", "America").
+/// Entries with a null region are placed under "Other".
 @JsonSerializable()
 class AliasCountry {
   final String code;
   final String name;
+  @JsonKey(defaultValue: '')
+  final String region;
   
   AliasCountry({
     required this.code,
     required this.name,
+    this.region = '',
   });
   
   factory AliasCountry.fromJson(Map<String, dynamic> json) =>

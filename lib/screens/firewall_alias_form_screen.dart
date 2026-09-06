@@ -88,19 +88,12 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
 
   // ── Conditional state (populated in Sub-Task 6) ─────────────────────────────
   List<String> _contentItems = [];
-  // GeoIP per-region selections: region label → list of country codes
-  final Map<String, List<String>> _geoipSelections = {
-    'Africa':     [],
-    'America':    [],
-    'Antarctica': [],
-    'Arctic':     [],
-    'Asia':       [],
-    'Atlantic':   [],
-    'Australia/Oceania': [],
-    'Europe':     [],
-    'Indian':     [],
-    'Pacific':    [],
-  };
+  // GeoIP per-region selections: region label → list of country codes.
+  // Keys are kept in sync with _viewModel.countriesByRegion once form data loads.
+  final Map<String, List<String>> _geoipSelections = {};
+  // Holds raw GeoIP country codes from the API when editing, until
+  // countriesByRegion is ready to dispatch them into _geoipSelections.
+  List<String>? _pendingGeoipCodes;
   List<String> _selectedProto = ['IPv4', 'IPv6'];
   String _selectedInterface = '';
   String _selectedAuthtype = '';
@@ -142,6 +135,22 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
   void _onViewModelChanged() {
     if (!mounted) return;
 
+    // Once form data (including countries) has finished loading, seed the
+    // _geoipSelections map with all regions from the API so every region row
+    // is present even when no countries are selected yet.
+    if (!_viewModel.loadingFormData) {
+      for (final region in _viewModel.countriesByRegion.keys) {
+        _geoipSelections.putIfAbsent(region, () => []);
+      }
+      // If we have pending GeoIP codes from an edit load that arrived before
+      // countriesByRegion was ready, dispatch them now.
+      final pending = _pendingGeoipCodes;
+      if (pending != null) {
+        _pendingGeoipCodes = null;
+        _dispatchGeoipCodes(pending);
+      }
+    }
+
     // Populate form once the full alias has loaded.
     if (widget.isEditing &&
         !_aliasDataLoaded &&
@@ -168,19 +177,19 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
       _selectedCategories =
           alias.categories.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
     }
-    // Content — for GeoIP, parse "RegionName:code1,code2" lines into _geoipSelections.
-    // For all other types, split newline-separated into _contentItems.
+    // Content — for GeoIP, the API stores plain newline-separated ISO codes.
+    // Dispatch them into _geoipSelections by region. If countriesByRegion
+    // isn't ready yet (still loading), stash them in _pendingGeoipCodes.
     if (alias.type == 'geoip') {
-      for (final line in alias.content.split('\n').where((s) => s.isNotEmpty)) {
-        final colonIdx = line.indexOf(':');
-        if (colonIdx > 0) {
-          final region = line.substring(0, colonIdx).trim();
-          final codes  = line.substring(colonIdx + 1).split(',')
-              .map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
-          if (_geoipSelections.containsKey(region)) {
-            _geoipSelections[region] = codes;
-          }
-        }
+      final codes = alias.content
+          .split('\n')
+          .map((s) => s.trim())
+          .where((s) => s.isNotEmpty)
+          .toList();
+      if (!_viewModel.loadingFormData && _viewModel.countriesByRegion.isNotEmpty) {
+        _dispatchGeoipCodes(codes);
+      } else {
+        _pendingGeoipCodes = codes;
       }
     } else {
       _contentItems = alias.content.isNotEmpty
@@ -207,6 +216,27 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
     _usernameController.text = alias.username;
     _passwordController.text = alias.password;
     _expireController.text   = alias.expire;
+  }
+
+  /// Distribute a flat list of ISO country codes into [_geoipSelections] by
+  /// looking up each code's region in [_viewModel.countriesByRegion].
+  /// Codes not found in any region fall into "Other".
+  void _dispatchGeoipCodes(List<String> codes) {
+    // Build reverse map: code → region
+    final codeToRegion = <String, String>{};
+    for (final entry in _viewModel.countriesByRegion.entries) {
+      for (final code in entry.value.keys) {
+        codeToRegion[code] = entry.key;
+      }
+    }
+    // Clear existing selections so we start clean
+    for (final key in _geoipSelections.keys) {
+      _geoipSelections[key] = [];
+    }
+    for (final code in codes) {
+      final region = codeToRegion[code] ?? 'Other';
+      _geoipSelections.putIfAbsent(region, () => []).add(code);
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -254,11 +284,12 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
       updatefreq  = total.toStringAsFixed(6);
     }
 
-    // For GeoIP, serialize _geoipSelections into "Region:code1,code2" lines.
+    // For GeoIP, flatten all selected country codes from all regions into a
+    // plain newline-separated list — exactly what the OPNsense API expects.
     final String contentValue = _selectedType == 'geoip'
-        ? _geoipSelections.entries
-            .where((e) => e.value.isNotEmpty)
-            .map((e) => '${e.key}:${e.value.join(',')}')
+        ? _geoipSelections.values
+            .expand((codes) => codes)
+            .toSet() // deduplicate in case a code appears in multiple regions
             .join('\n')
         : _contentItems.join('\n');
 
@@ -467,94 +498,105 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
 
   /// GeoIP region picker table.
   Widget _buildGeoIpContentSection() {
-    final countries = _viewModel.countries;
-
+    final countriesByRegion = _viewModel.countriesByRegion;
     final l10n = AppLocalizations.of(context)!;
+
+    // Rows come from the API regions; fall back to an empty placeholder while loading.
+    final regions = _geoipSelections.keys.toList()..sort();
+
     return FormSectionContainer(
       title: l10n.geoipRegionsLabel,
       children: [
-        Table(
-          columnWidths: const {
-            0: FlexColumnWidth(2),
-            1: FlexColumnWidth(3),
-          },
-          children: [
-            TableRow(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(l10n.region,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(l10n.countries,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                ),
-              ],
-            ),
-            ..._geoipSelections.entries.map((entry) {
-              final region   = entry.key;
-              final selected = entry.value;
-              return TableRow(
+        if (_viewModel.loadingFormData)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: Center(child: CircularProgressIndicator()),
+          )
+        else
+          Table(
+            columnWidths: const {
+              0: FlexColumnWidth(2),
+              1: FlexColumnWidth(3),
+            },
+            children: [
+              TableRow(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Text(region),
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Text(l10n.region,
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: InkWell(
-                      onTap: _isLoading
-                          ? null
-                          : () async {
-                              await showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(16)),
-                                ),
-                                builder: (_) => PickerSheet(
-                                  title: l10n.selectCountriesLabel,
-                                  options: countries,
-                                  initialSelected: selected,
-                                  isLoading: _viewModel.loadingFormData,
-                                  searchHint: l10n.searchAliases,
-                                  doneLabel: l10n.done,
-                                  emptyLabel: l10n.noItemsConfigured,
-                                  showSubtitle: false,
-                                  onDone: (result) => setState(
-                                      () => _geoipSelections[region] = result),
-                                ),
-                              );
-                            },
-                      child: selected.isEmpty
-                          ? Text(l10n.noCountriesSelected,
-                              style: TextStyle(
-                                  color: Theme.of(context).hintColor,
-                                  fontStyle: FontStyle.italic))
-                          : Wrap(
-                              spacing: 4,
-                              runSpacing: 2,
-                              children: selected.map((code) {
-                                final name = countries[code] ?? code;
-                                return Chip(
-                                  label: Text(name,
-                                      style: const TextStyle(fontSize: 11)),
-                                  materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                  visualDensity: VisualDensity.compact,
-                                );
-                              }).toList(),
-                            ),
-                    ),
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Text(l10n.countries,
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ],
-              );
-            }),
-          ],
-        ),
+              ),
+              ...regions.map((region) {
+                final selected = _geoipSelections[region] ?? [];
+                // Only the countries that belong to this region
+                final regionCountries = countriesByRegion[region] ?? {};
+                return TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Text(region),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: InkWell(
+                        onTap: _isLoading
+                            ? null
+                            : () async {
+                                await showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(16)),
+                                  ),
+                                  builder: (_) => PickerSheet(
+                                    title: '$region – ${l10n.selectCountriesLabel}',
+                                    options: regionCountries,
+                                    initialSelected: selected,
+                                    isLoading: false,
+                                    searchHint: l10n.searchAliases,
+                                    doneLabel: l10n.done,
+                                    emptyLabel: l10n.noItemsConfigured,
+                                    showSubtitle: false,
+                                    showSelectAll: true,
+                                    onDone: (result) => setState(
+                                        () => _geoipSelections[region] = result),
+                                  ),
+                                );
+                              },
+                        child: selected.isEmpty
+                            ? Text(l10n.noCountriesSelected,
+                                style: TextStyle(
+                                    color: Theme.of(context).hintColor,
+                                    fontStyle: FontStyle.italic))
+                            : Wrap(
+                                spacing: 4,
+                                runSpacing: 2,
+                                children: selected.map((code) {
+                                  final name = regionCountries[code] ?? code;
+                                  return Chip(
+                                    label: Text(name,
+                                        style: const TextStyle(fontSize: 11)),
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    visualDensity: VisualDensity.compact,
+                                  );
+                                }).toList(),
+                              ),
+                      ),
+                    ),
+                  ],
+                );
+              }),
+            ],
+          ),
       ],
     );
   }

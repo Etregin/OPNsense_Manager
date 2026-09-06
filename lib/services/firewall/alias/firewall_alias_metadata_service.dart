@@ -93,7 +93,10 @@ class FirewallAliasMetadataService extends BaseOPNsenseService {
     }
   }
 
-  /// List available countries for GeoIP
+  /// List available countries for GeoIP.
+  ///
+  /// The API returns a flat object keyed by ISO country code:
+  ///   `{"AD": {"name": "Andorra", "region": "Europe"}, ...}`
   Future<List<AliasCountry>> listAliasCountries() async {
     ensureInitialized();
 
@@ -102,13 +105,12 @@ class FirewallAliasMetadataService extends BaseOPNsenseService {
 
       if (response.statusCode == 200) {
         final data = response.data;
-        if (data is Map && data['countries'] != null) {
-          final countries = data['countries'] as Map<String, dynamic>;
-          return countries.entries.map((entry) {
-            return AliasCountry(
-              code: entry.key,
-              name: entry.value.toString(),
-            );
+        if (data is Map<String, dynamic>) {
+          return data.entries.map((entry) {
+            final info = entry.value;
+            final name   = (info is Map) ? (info['name']?.toString()   ?? entry.key) : entry.key;
+            final region = (info is Map) ? (info['region']?.toString() ?? '')        : '';
+            return AliasCountry(code: entry.key, name: name, region: region);
           }).toList();
         }
         return [];

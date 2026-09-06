@@ -109,8 +109,15 @@ Map<String, dynamic> _$AliasCategoryToJson(AliasCategory instance) =>
       'color': instance.color,
     };
 
-AliasCountry _$AliasCountryFromJson(Map<String, dynamic> json) =>
-    AliasCountry(code: json['code'] as String, name: json['name'] as String);
+AliasCountry _$AliasCountryFromJson(Map<String, dynamic> json) => AliasCountry(
+  code: json['code'] as String,
+  name: json['name'] as String,
+  region: json['region'] as String? ?? '',
+);
 
 Map<String, dynamic> _$AliasCountryToJson(AliasCountry instance) =>
-    <String, dynamic>{'code': instance.code, 'name': instance.name};
+    <String, dynamic>{
+      'code': instance.code,
+      'name': instance.name,
+      'region': instance.region,
+    };

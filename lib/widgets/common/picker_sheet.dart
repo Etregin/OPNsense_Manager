@@ -31,6 +31,9 @@ class PickerSheet extends StatefulWidget {
   /// When true, tapping an item immediately selects it and closes the sheet
   /// (radio-button behaviour). The Done button is hidden.
   final bool singleSelect;
+  /// When true, shows Select All / Clear All buttons above the list.
+  /// Select/clear operates on the currently filtered set (respects search).
+  final bool showSelectAll;
   final ValueChanged<List<String>> onDone;
 
   const PickerSheet({
@@ -45,6 +48,7 @@ class PickerSheet extends StatefulWidget {
     required this.showSubtitle,
     required this.onDone,
     this.singleSelect = false,
+    this.showSelectAll = false,
   });
 
   @override
@@ -117,6 +121,48 @@ class PickerSheetState extends State<PickerSheet> {
               onChanged: (_) => setState(() {}),
             ),
           ),
+          // Select All / Clear All row — shown only when showSelectAll is true
+          // and we are in multi-select mode.
+          if (widget.showSelectAll && !widget.singleSelect && !widget.isLoading)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                children: [
+                  TextButton.icon(
+                    onPressed: () => setState(() {
+                      for (final e in filtered) {
+                        if (!_working.contains(e.key)) _working.add(e.key);
+                      }
+                    }),
+                    icon: const Icon(Icons.select_all, size: 18),
+                    label: Text(filtered.length == widget.options.length
+                        ? 'Select all'
+                        : 'Select all (${filtered.length})'),
+                    style: TextButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                    ),
+                  ),
+                  TextButton.icon(
+                    onPressed: () => setState(() {
+                      for (final e in filtered) {
+                        _working.remove(e.key);
+                      }
+                    }),
+                    icon: const Icon(Icons.clear_all, size: 18),
+                    label: const Text('Clear all'),
+                    style: TextButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                    ),
+                  ),
+                  const Spacer(),
+                  if (_working.isNotEmpty)
+                    Text(
+                      '${_working.length} selected',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                ],
+              ),
+            ),
           Expanded(
             child: widget.isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -162,17 +208,9 @@ class PickerSheetState extends State<PickerSheet> {
                                 : null,
                             onChanged: (v) => setState(() {
                               if (v == true) {
-                                if (e.key == 'any') {
-                                  _working
-                                    ..clear()
-                                    ..add('any');
-                                } else {
-                                  _working.remove('any');
-                                  _working.add(e.key);
-                                }
+                                _working.add(e.key);
                               } else {
                                 _working.remove(e.key);
-                                if (_working.isEmpty) _working.add('any');
                               }
                             }),
                           );

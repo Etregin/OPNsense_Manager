@@ -34,7 +34,9 @@ class FirewallAliasFormViewModel extends BaseFormViewModel {
   Map<String, String> _categories = {};
   Map<String, String> _networkAliases = {};
   Map<String, String> _userGroups = {};
-  Map<String, String> _countries = {};
+  /// Countries grouped by region: region → {code → name}, sorted by name.
+  /// Regions are the API's `region` values. Countries with no region go under "Other".
+  Map<String, Map<String, String>> _countriesByRegion = {};
   Map<String, String> _availableInterfaces = {};
 
   // Getters
@@ -45,7 +47,8 @@ class FirewallAliasFormViewModel extends BaseFormViewModel {
   Map<String, String> get categories => _categories;
   Map<String, String> get networkAliases => _networkAliases;
   Map<String, String> get userGroups => _userGroups;
-  Map<String, String> get countries => _countries;
+  /// Countries grouped by region. Keys are the API region names (e.g. "Europe").
+  Map<String, Map<String, String>> get countriesByRegion => _countriesByRegion;
   Map<String, String> get availableInterfaces => _availableInterfaces;
 
   bool get isEditing => _existingAlias != null;
@@ -86,9 +89,20 @@ class FirewallAliasFormViewModel extends BaseFormViewModel {
         (k, v) => MapEntry(k, v.toString()),
       );
 
-      // listAliasCountries → List<AliasCountry> → code → name
+      // listAliasCountries → List<AliasCountry> → group by region → code → name
       final rawCountries = results[3] as List<AliasCountry>;
-      _countries = {for (final c in rawCountries) c.code: c.name};
+      final grouped = <String, Map<String, String>>{};
+      for (final c in rawCountries) {
+        final region = c.region.isNotEmpty ? c.region : 'Other';
+        grouped.putIfAbsent(region, () => {})[c.code] = c.name;
+      }
+      // Sort countries within each region by display name
+      _countriesByRegion = {
+        for (final entry in grouped.entries)
+          entry.key: Map.fromEntries(
+            entry.value.entries.toList()..sort((a, b) => a.value.compareTo(b.value)),
+          ),
+      };
 
       // getAliasItemDefaults → extract alias['interface'] map
       // Shape: {'lan': {'value': 'LAN', ...}, 'wan': {'value': 'WAN', ...}}
