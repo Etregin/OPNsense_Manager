@@ -22,6 +22,11 @@ import 'package:provider/provider.dart';
 import '../../constants/routes.dart';
 import '../../l10n/app_localizations.dart';
 import '../../screens/system_info_screen.dart';
+import '../../screens/system_log_audit_screen.dart';
+import '../../screens/system_log_backend_screen.dart';
+import '../../screens/system_log_boot_screen.dart';
+import '../../screens/system_log_general_screen.dart';
+import '../../screens/system_log_web_gui_screen.dart';
 import '../../services/opnsense_api_service.dart';
 import '../../services/app_version_service.dart';
 import '../../utils/app_colors.dart';
@@ -53,6 +58,41 @@ class SystemNavigationSection extends StatelessWidget {
           targetRoute: Routes.systemInfo,
           destination: const SystemInfoScreen(),
           onBeforeNavigate: onBeforeNavigate,
+        ),
+        NavigationTile(
+          icon: Icons.security_outlined,
+          title: l10n.auditLog,
+          currentRoute: currentRoute,
+          targetRoute: Routes.systemLogAudit,
+          destination: const SystemLogAuditScreen(),
+        ),
+        NavigationTile(
+          icon: Icons.settings_applications_outlined,
+          title: l10n.backendLog,
+          currentRoute: currentRoute,
+          targetRoute: Routes.systemLogBackend,
+          destination: const SystemLogBackendScreen(),
+        ),
+        NavigationTile(
+          icon: Icons.rocket_launch_outlined,
+          title: l10n.bootLog,
+          currentRoute: currentRoute,
+          targetRoute: Routes.systemLogBoot,
+          destination: const SystemLogBootScreen(),
+        ),
+        NavigationTile(
+          icon: Icons.article_outlined,
+          title: l10n.generalLog,
+          currentRoute: currentRoute,
+          targetRoute: Routes.systemLogGeneral,
+          destination: const SystemLogGeneralScreen(),
+        ),
+        NavigationTile(
+          icon: Icons.language_outlined,
+          title: l10n.webGuiLog,
+          currentRoute: currentRoute,
+          targetRoute: Routes.systemLogWebGui,
+          destination: const SystemLogWebGuiScreen(),
         ),
         ListTile(
           leading: const Icon(Icons.restart_alt, color: AppColors.error),

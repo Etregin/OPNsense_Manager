@@ -26,6 +26,13 @@ class Routes {
   static const String settings = 'settings';
   static const String switchProfile = 'switch_profile';
 
+  // ── System log file routes ───────────────────────────────────────────────────
+  static const String systemLogAudit   = 'system_log_audit';
+  static const String systemLogBackend = 'system_log_backend';
+  static const String systemLogBoot    = 'system_log_boot';
+  static const String systemLogGeneral = 'system_log_general';
+  static const String systemLogWebGui  = 'system_log_web_gui';
+
   // ── Network routes ───────────────────────────────────────────────────────────
   static const String liveNetworkMonitor = 'live_network_monitor';
   static const String dhcpLeases = 'dhcp_leases';
@@ -63,4 +70,5 @@ class Routes {
   static const String openvpnPrefix = 'openvpn_';
   static const String tailscalePrefix = 'tailscale_';
   static const String networkPrefix = 'network_';
+  static const String systemLogPrefix = 'system_log_';
 }

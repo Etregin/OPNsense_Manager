@@ -61,6 +61,7 @@ import 'network/neighbor_discovery_service.dart';
 import 'services/service_control_service.dart';
 import 'tailscale/tailscale_service.dart';
 import 'vpn/openvpn_service.dart';
+import 'system/system_log_service.dart';
 
 // Re-export ApiException and helper classes for backward compatibility
 export 'base/api_exception.dart';
@@ -91,6 +92,7 @@ class OPNsenseApiService {
   final NeighborDiscoveryService _neighborDiscoveryService = NeighborDiscoveryService();
   final ServiceControlService _serviceControlService = ServiceControlService();
   final TailscaleService _tailscaleService = TailscaleService();
+  final SystemLogService _systemLogService = SystemLogService();
 
   Dio? _dio;
   OPNsenseConfig? _config;
@@ -139,6 +141,7 @@ class OPNsenseApiService {
     _neighborDiscoveryService.init(_dio!, config);
     _serviceControlService.init(_dio!, config);
     _tailscaleService.init(_dio!, config);
+    _systemLogService.init(_dio!, config);
   }
 
   /// Test connection to OPNsense
@@ -196,6 +199,7 @@ class OPNsenseApiService {
     _neighborDiscoveryService.clear();
     _serviceControlService.clear();
     _tailscaleService.clear();
+    _systemLogService.clear();
     
     // Clear main service state
     _dio = null;
@@ -377,7 +381,7 @@ class OPNsenseApiService {
   
   Future<void> restartWireGuardInstance(String uuid) => _wireguardService.restartWireGuardInstance(uuid);
 
-  Future<Map<String, dynamic>> getWireGuardLogs({
+  Future<OpenvpnLogSearchResponse> getWireGuardLogs({
     int rowCount = 50,
     List<String>? severity,
     double? validFrom,
@@ -399,6 +403,63 @@ class OPNsenseApiService {
     sort: sort,
     severity: severity,
     validFrom: validFrom,
+  );
+
+  // ── System Log Files ─────────────────────────────────────────────────────────
+
+  Future<OpenvpnLogSearchResponse> searchAuditLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) => _systemLogService.searchAuditLogs(
+    current: current, rowCount: rowCount, sort: sort,
+    severity: severity, validFrom: validFrom,
+  );
+
+  Future<OpenvpnLogSearchResponse> searchBackendLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) => _systemLogService.searchBackendLogs(
+    current: current, rowCount: rowCount, sort: sort,
+    severity: severity, validFrom: validFrom,
+  );
+
+  Future<OpenvpnLogSearchResponse> searchBootLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) => _systemLogService.searchBootLogs(
+    current: current, rowCount: rowCount, sort: sort,
+    severity: severity, validFrom: validFrom,
+  );
+
+  Future<OpenvpnLogSearchResponse> searchGeneralLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) => _systemLogService.searchGeneralLogs(
+    current: current, rowCount: rowCount, sort: sort,
+    severity: severity, validFrom: validFrom,
+  );
+
+  Future<OpenvpnLogSearchResponse> searchWebGuiLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) => _systemLogService.searchWebGuiLogs(
+    current: current, rowCount: rowCount, sort: sort,
+    severity: severity, validFrom: validFrom,
   );
 
   // ============================================================================

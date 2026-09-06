@@ -570,18 +570,21 @@ class DemoApiService {
       );
 
   /// Get WireGuard logs
-  Future<Map<String, dynamic>> getWireGuardLogs({
+  Future<OpenvpnLogSearchResponse> getWireGuardLogs({
     int rowCount = 50,
     List<String>? severity,
     double? validFrom,
   }) =>
       DemoApiDecorator.execute(
         isDemoMode: _isDemoMode,
-        demoAction: () async => {
-          'rows': [],
-          'rowCount': 0,
-          'total': 0,
-        },
+        demoAction: () async => const OpenvpnLogSearchResponse(
+          filters: '',
+          totalRows: 0,
+          rowCount: 0,
+          total: 0,
+          current: 1,
+          rows: [],
+        ),
         realAction: () => _realApiService.getWireGuardLogs(
           rowCount: rowCount,
           severity: severity,
@@ -1456,6 +1459,103 @@ ${List.generate(16, (i) => List.generate(32, (j) => '0123456789abcdef'[(i * 32 +
           sort: sort,
           severity: severity,
           validFrom: validFrom,
+        ),
+        delayMs: 400,
+      );
+
+  // ==================== System Log Files ====================
+
+  Future<OpenvpnLogSearchResponse> searchAuditLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => const OpenvpnLogSearchResponse(
+          filters: '', totalRows: 0, rowCount: 0, total: 0, current: 1, rows: [],
+        ),
+        realAction: () => _realApiService.searchAuditLogs(
+          current: current, rowCount: rowCount, sort: sort,
+          severity: severity, validFrom: validFrom,
+        ),
+        delayMs: 400,
+      );
+
+  Future<OpenvpnLogSearchResponse> searchBackendLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => const OpenvpnLogSearchResponse(
+          filters: '', totalRows: 0, rowCount: 0, total: 0, current: 1, rows: [],
+        ),
+        realAction: () => _realApiService.searchBackendLogs(
+          current: current, rowCount: rowCount, sort: sort,
+          severity: severity, validFrom: validFrom,
+        ),
+        delayMs: 400,
+      );
+
+  Future<OpenvpnLogSearchResponse> searchBootLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => const OpenvpnLogSearchResponse(
+          filters: '', totalRows: 0, rowCount: 0, total: 0, current: 1, rows: [],
+        ),
+        realAction: () => _realApiService.searchBootLogs(
+          current: current, rowCount: rowCount, sort: sort,
+          severity: severity, validFrom: validFrom,
+        ),
+        delayMs: 400,
+      );
+
+  Future<OpenvpnLogSearchResponse> searchGeneralLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => const OpenvpnLogSearchResponse(
+          filters: '', totalRows: 0, rowCount: 0, total: 0, current: 1, rows: [],
+        ),
+        realAction: () => _realApiService.searchGeneralLogs(
+          current: current, rowCount: rowCount, sort: sort,
+          severity: severity, validFrom: validFrom,
+        ),
+        delayMs: 400,
+      );
+
+  Future<OpenvpnLogSearchResponse> searchWebGuiLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => const OpenvpnLogSearchResponse(
+          filters: '', totalRows: 0, rowCount: 0, total: 0, current: 1, rows: [],
+        ),
+        realAction: () => _realApiService.searchWebGuiLogs(
+          current: current, rowCount: rowCount, sort: sort,
+          severity: severity, validFrom: validFrom,
         ),
         delayMs: 400,
       );
