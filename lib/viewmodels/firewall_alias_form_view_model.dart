@@ -78,16 +78,21 @@ class FirewallAliasFormViewModel extends BaseFormViewModel {
       _categories = {for (final c in rawCategories) c.name: c.description};
 
       // listNetworkAliases → Map<String, dynamic> → Map<String, String>
+      // API shape: {"aliasName": {"name": "aliasName", "description": "..."}}
+      // or flat:   {"aliasName": "aliasName"}
       final rawNetworkAliases = results[1] as Map<String, dynamic>;
-      _networkAliases = rawNetworkAliases.map(
-        (k, v) => MapEntry(k, v.toString()),
-      );
+      _networkAliases = rawNetworkAliases.map((k, v) {
+        final label = (v is Map) ? (v['name']?.toString() ?? k) : v.toString();
+        return MapEntry(k, label);
+      });
 
       // listUserGroups → Map<String, dynamic> → Map<String, String>
+      // Same shape as network aliases.
       final rawUserGroups = results[2] as Map<String, dynamic>;
-      _userGroups = rawUserGroups.map(
-        (k, v) => MapEntry(k, v.toString()),
-      );
+      _userGroups = rawUserGroups.map((k, v) {
+        final label = (v is Map) ? (v['name']?.toString() ?? k) : v.toString();
+        return MapEntry(k, label);
+      });
 
       // listAliasCountries → List<AliasCountry> → group by region → code → name
       final rawCountries = results[3] as List<AliasCountry>;
