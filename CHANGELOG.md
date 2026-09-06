@@ -6,6 +6,7 @@ All notable changes to OPNsense Manager will be documented in this file.
 
 ### Added
 
+- Added access to system log files (Audit, Backend, Boot, General, and Web GUI) with severity filtering, time range, and pagination.
 - Added firmware updates with live logs, upgrade detection, and reboot handling.
 - Added firewall alias management with create, edit, detail, filtering, and type-specific forms.
 - Added alias autocomplete, GeoIP region selection, authentication fields, and inline API validation.
