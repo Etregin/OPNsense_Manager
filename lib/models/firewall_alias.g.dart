@@ -19,6 +19,8 @@ FirewallAlias _$FirewallAliasFromJson(Map<String, dynamic> json) =>
       interface: json['interface'] as String? ?? '',
       categories: json['categories'] as String? ?? '',
       currentItems: json['current_items'] as String? ?? '0',
+      updatefreq: json['updatefreq'] as String? ?? '',
+      pathExpression: json['path_expression'] as String? ?? '',
     );
 
 Map<String, dynamic> _$FirewallAliasToJson(FirewallAlias instance) =>
@@ -34,6 +36,8 @@ Map<String, dynamic> _$FirewallAliasToJson(FirewallAlias instance) =>
       'interface': instance.interface,
       'categories': instance.categories,
       'current_items': instance.currentItems,
+      'updatefreq': instance.updatefreq,
+      'path_expression': instance.pathExpression,
     };
 
 FirewallAliasRequest _$FirewallAliasRequestFromJson(
@@ -48,6 +52,12 @@ FirewallAliasRequest _$FirewallAliasRequestFromJson(
   proto: json['proto'] as String? ?? '',
   interface: json['interface'] as String? ?? '',
   categories: json['categories'] as String? ?? '',
+  updatefreq: json['updatefreq'] as String?,
+  pathExpression: json['path_expression'] as String?,
+  authtype: json['authtype'] as String?,
+  password: json['password'] as String?,
+  username: json['username'] as String?,
+  expire: json['expire'] as String?,
 );
 
 Map<String, dynamic> _$FirewallAliasRequestToJson(
@@ -62,6 +72,12 @@ Map<String, dynamic> _$FirewallAliasRequestToJson(
   'proto': instance.proto,
   'interface': instance.interface,
   'categories': instance.categories,
+  'updatefreq': instance.updatefreq,
+  'path_expression': instance.pathExpression,
+  'authtype': instance.authtype,
+  'password': instance.password,
+  'username': instance.username,
+  'expire': instance.expire,
 };
 
 AliasUtilItem _$AliasUtilItemFromJson(Map<String, dynamic> json) =>
@@ -83,16 +99,25 @@ AliasCategory _$AliasCategoryFromJson(Map<String, dynamic> json) =>
     AliasCategory(
       name: json['name'] as String,
       description: json['description'] as String? ?? '',
+      color: json['color'] as String? ?? '',
     );
 
 Map<String, dynamic> _$AliasCategoryToJson(AliasCategory instance) =>
     <String, dynamic>{
       'name': instance.name,
       'description': instance.description,
+      'color': instance.color,
     };
 
-AliasCountry _$AliasCountryFromJson(Map<String, dynamic> json) =>
-    AliasCountry(code: json['code'] as String, name: json['name'] as String);
+AliasCountry _$AliasCountryFromJson(Map<String, dynamic> json) => AliasCountry(
+  code: json['code'] as String,
+  name: json['name'] as String,
+  region: json['region'] as String? ?? '',
+);
 
 Map<String, dynamic> _$AliasCountryToJson(AliasCountry instance) =>
-    <String, dynamic>{'code': instance.code, 'name': instance.name};
+    <String, dynamic>{
+      'code': instance.code,
+      'name': instance.name,
+      'region': instance.region,
+    };

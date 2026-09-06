@@ -373,7 +373,7 @@ class FirewallRule {
 }
 
 /// Request model for creating/updating firewall rules
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class FirewallRuleRequest {
   // Use 'action' instead of 'type' as per OPNsense API
   @JsonKey(name: 'action')

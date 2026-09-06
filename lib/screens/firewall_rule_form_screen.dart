@@ -28,6 +28,7 @@ import '../utils/validators.dart';
 import '../l10n/app_localizations.dart';
 import '../viewmodels/firewall_rule_form_view_model.dart';
 import '../widgets/common/loading_overlay.dart';
+import '../widgets/common/picker_sheet.dart';
 
 // ──────────────────────────────────────────────────────────────────────────────
 // ICMP type options — full set from OPNsense API
@@ -817,7 +818,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                     ),
-                    builder: (_) => _PickerSheet(
+                    builder: (_) => PickerSheet(
                       title: labelText,
                       options: pickerOpts,
                       initialSelected: [portType == 'any' ? '' : portType],
@@ -952,7 +953,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (_) => _PickerSheet(
+      builder: (_) => PickerSheet(
         title: label,
         options: opts,
         initialSelected: selected,
@@ -1043,7 +1044,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
         ),
-        builder: (_) => _PickerSheet(
+        builder: (_) => PickerSheet(
           title: l10n.categoriesLabel,
           options: categoryOpts,
           initialSelected: _selectedCategories,
@@ -1105,7 +1106,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                 ),
-                builder: (_) => _PickerSheet(
+                builder: (_) => PickerSheet(
                   title: l10n.protocol,
                   options: _kProtocols,
                   initialSelected: [_selectedProtocol],
@@ -1986,189 +1987,3 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Reusable picker bottom-sheet widget.
-// Owns its TextEditingController and working-list state so there is no
-// use-after-dispose issue when the sheet animates away.
-// ─────────────────────────────────────────────────────────────────────────────
-class _PickerSheet extends StatefulWidget {
-  final String title;
-  final Map<String, String> options;
-  final List<String> initialSelected;
-  final bool isLoading;
-  final String searchHint;
-  final String doneLabel;
-  final String emptyLabel;
-  /// When true, shows the option key as a subtitle (useful for net options).
-  final bool showSubtitle;
-  /// When true, tapping an item immediately selects it and closes the sheet
-  /// (radio-button behaviour). The Done button is hidden.
-  final bool singleSelect;
-  final ValueChanged<List<String>> onDone;
-
-  const _PickerSheet({
-    required this.title,
-    required this.options,
-    required this.initialSelected,
-    required this.isLoading,
-    required this.searchHint,
-    required this.doneLabel,
-    required this.emptyLabel,
-    required this.showSubtitle,
-    required this.onDone,
-    this.singleSelect = false,
-  });
-
-  @override
-  State<_PickerSheet> createState() => _PickerSheetState();
-}
-
-class _PickerSheetState extends State<_PickerSheet> {
-  late final TextEditingController _searchCtrl;
-  late List<String> _working;
-
-  @override
-  void initState() {
-    super.initState();
-    _searchCtrl = TextEditingController();
-    _working = List<String>.from(widget.initialSelected);
-  }
-
-  @override
-  void dispose() {
-    _searchCtrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final query = _searchCtrl.text.toLowerCase();
-    final filtered = widget.options.entries
-        .where((e) =>
-            e.key.toLowerCase().contains(query) ||
-            e.value.toLowerCase().contains(query))
-        .toList();
-
-    return DraggableScrollableSheet(
-      initialChildSize: 0.65,
-      maxChildSize: 0.95,
-      minChildSize: 0.4,
-      expand: false,
-      builder: (_, scrollCtrl) => Column(
-        children: [
-          // Handle bar
-          const SizedBox(height: 8),
-          Container(
-            width: 36,
-            height: 4,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-            child: Text(
-              widget.title,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            child: TextField(
-              controller: _searchCtrl,
-              decoration: InputDecoration(
-                hintText: widget.searchHint,
-                prefixIcon: const Icon(Icons.search),
-                isDense: true,
-                border: const OutlineInputBorder(),
-              ),
-              onChanged: (_) => setState(() {}),
-            ),
-          ),
-          Expanded(
-            child: widget.isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : widget.options.isEmpty
-                    ? Center(child: Text(widget.emptyLabel))
-                    : ListView.builder(
-                        controller: scrollCtrl,
-                        itemCount: filtered.length,
-                        itemBuilder: (_, i) {
-                          final e = filtered[i];
-                          final isSelected = _working.contains(e.key);
-                          if (widget.singleSelect) {
-                            return ListTile(
-                              dense: true,
-                              selected: isSelected,
-                              leading: Icon(
-                                isSelected
-                                    ? Icons.radio_button_checked
-                                    : Icons.radio_button_unchecked,
-                                color: isSelected
-                                    ? Theme.of(context).colorScheme.primary
-                                    : null,
-                              ),
-                              title: Text(e.value),
-                              subtitle: widget.showSubtitle && e.key != e.value
-                                  ? Text(e.key,
-                                      style: Theme.of(context).textTheme.bodySmall)
-                                  : null,
-                              onTap: () {
-                                widget.onDone([e.key]);
-                                Navigator.of(context).pop();
-                              },
-                            );
-                          }
-                          return CheckboxListTile(
-                            dense: true,
-                            value: isSelected,
-                            title: Text(e.value),
-                            subtitle: widget.showSubtitle && e.key != e.value
-                                ? Text(e.key,
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall)
-                                : null,
-                            onChanged: (v) => setState(() {
-                              if (v == true) {
-                                if (e.key == 'any') {
-                                  _working
-                                    ..clear()
-                                    ..add('any');
-                                } else {
-                                  _working.remove('any');
-                                  _working.add(e.key);
-                                }
-                              } else {
-                                _working.remove(e.key);
-                                if (_working.isEmpty) _working.add('any');
-                              }
-                            }),
-                          );
-                        },
-                      ),
-          ),
-          if (!widget.singleSelect)
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    onPressed: () {
-                      widget.onDone(List<String>.from(_working));
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(widget.doneLabel),
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}

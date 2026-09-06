@@ -16,14 +16,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/material.dart';
 import '../models/firewall_alias.dart';
 import '../services/demo_api_service.dart';
 import 'base/base_list_view_model.dart';
+
+/// Resolved display info for a category (for the list screen).
+class AliasCategoryInfo {
+  final String uuid;
+  final String name;
+  final Color color;
+  const AliasCategoryInfo({required this.uuid, required this.name, required this.color});
+}
 
 /// ViewModel for managing the firewall aliases list screen.
 class FirewallAliasesViewModel extends BaseListViewModel<FirewallAlias> {
   final DemoApiService _apiService;
   final Set<String> _togglingAliases = {};
+
+  /// UUID → resolved category info (name + color).
+  Map<String, AliasCategoryInfo> _categoryMap = {};
+  Map<String, AliasCategoryInfo> get categoryMap => _categoryMap;
 
   FirewallAliasesViewModel(this._apiService);
 
@@ -32,7 +45,39 @@ class FirewallAliasesViewModel extends BaseListViewModel<FirewallAlias> {
 
   @override
   Future<List<FirewallAlias>> fetchItems() async {
-    return _apiService.getFirewallAliases();
+    // Load categories in parallel with aliases so color info is ready.
+    final results = await Future.wait([
+      _apiService.getFirewallAliases(),
+      _loadCategories(),
+    ]);
+    return results[0] as List<FirewallAlias>;
+  }
+
+  Future<void> _loadCategories() async {
+    try {
+      final cats = await _apiService.listAliasCategories();
+      _categoryMap = {
+        for (final c in cats)
+          c.name: AliasCategoryInfo(
+            uuid: c.name,
+            name: c.description,
+            color: _parseHexColor(c.color),
+          ),
+      };
+    } catch (_) {
+      _categoryMap = {};
+    }
+  }
+
+  /// Parse a 6-char hex color string (no #) from list_categories `color` field.
+  /// Falls back to the theme primary blue if invalid.
+  static Color _parseHexColor(String hex) {
+    try {
+      final clean = hex.replaceAll('#', '').padLeft(6, '0');
+      return Color(int.parse('FF$clean', radix: 16));
+    } catch (_) {
+      return const Color(0xFF579BFC);
+    }
   }
 
   @override

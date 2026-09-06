@@ -37,9 +37,38 @@ class FirewallAlias {
   @JsonKey(name: 'interface', defaultValue: '')
   final String interface;
   @JsonKey(name: 'categories', defaultValue: '')
-  final String categories;
+  final String categories; // comma-separated selected category UUIDs
+  /// Human-readable category display names.
+  /// Populated from `%categories` (search_item) or computed from getItem map.
+  /// Not persisted to JSON.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final String categoryLabels;
+  /// List of category UUIDs from `categories_uuid` in search_item response.
+  /// Not persisted to JSON.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final List<String> categoriesUuid;
   @JsonKey(name: 'current_items', defaultValue: '0')
   final String currentItems;
+  @JsonKey(defaultValue: '')
+  final String updatefreq;
+  @JsonKey(name: 'path_expression', defaultValue: '')
+  final String pathExpression;
+  /// Selected authtype key from the API selection map, e.g. "none" / "Basic".
+  /// Not persisted to JSON (read-model only; write uses [FirewallAliasRequest]).
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final String authtype;
+  /// Username for URL-based aliases with Basic auth.
+  /// Not persisted to JSON.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final String username;
+  /// Password for URL-based aliases with Basic auth.
+  /// Not persisted to JSON.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final String password;
+  /// Expire date/time string for external aliases.
+  /// Not persisted to JSON.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final String expire;
 
   FirewallAlias({
     required this.uuid,
@@ -52,11 +81,30 @@ class FirewallAlias {
     this.proto = '',
     this.interface = '',
     this.categories = '',
+    this.categoryLabels = '',
+    this.categoriesUuid = const [],
     this.currentItems = '0',
+    this.updatefreq = '',
+    this.pathExpression = '',
+    this.authtype = '',
+    this.username = '',
+    this.password = '',
+    this.expire = '',
   });
 
   /// Check if alias is enabled
   bool get isEnabled => enabled == '1';
+
+  /// Returns true for system-managed aliases (bogons, sshlockout, __lan_network, etc.).
+  /// System aliases have non-UUID identifiers — plain names or names with underscores/dashes
+  /// that don't follow the 8-4-4-4-12 UUID format. Only user-created aliases have real UUIDs.
+  bool get isSystemAlias {
+    // Standard UUID: 8-4-4-4-12 hex characters separated by dashes
+    final uuidPattern = RegExp(
+      r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
+    );
+    return !uuidPattern.hasMatch(uuid);
+  }
 
   /// Get type display name
   String get typeDisplayName {
@@ -68,11 +116,11 @@ class FirewallAlias {
       case 'port':
         return 'Port(s)';
       case 'url':
-        return 'URL';
+        return 'URL (IPs)';
       case 'urltable':
-        return 'URL Table';
+        return 'URL Table (IPs)';
       case 'urljson':
-        return 'URL (JSON)';
+        return 'URL Table in JSON format (IPs)';
       case 'geoip':
         return 'GeoIP';
       case 'networkgroup':
@@ -80,24 +128,28 @@ class FirewallAlias {
       case 'mac':
         return 'MAC Address';
       case 'asn':
-        return 'ASN';
+        return 'BGP ASN';
       case 'dynipv6host':
         return 'Dynamic IPv6 Host';
       case 'authgroup':
         return 'Auth Group';
       case 'internal':
-        return 'Internal';
+        return 'Internal (automatic)';
       case 'external':
-        return 'External';
+        return 'External (advanced)';
       default:
         return type;
     }
   }
 
-  /// Get content items as list
+  /// Get content items as list.
+  /// Content is stored newline-separated (from getFirewallAlias API parsing)
+  /// but may also be comma-separated in legacy / list-endpoint data.
   List<String> get contentList {
     if (content.isEmpty) return [];
-    return content.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+    // Prefer newline split; fall back to comma split if no newlines present
+    final separator = content.contains('\n') ? '\n' : ',';
+    return content.split(separator).map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
   }
 
   /// Create from JSON
@@ -119,7 +171,15 @@ class FirewallAlias {
     String? proto,
     String? interface,
     String? categories,
+    String? categoryLabels,
+    List<String>? categoriesUuid,
     String? currentItems,
+    String? updatefreq,
+    String? pathExpression,
+    String? authtype,
+    String? username,
+    String? password,
+    String? expire,
   }) {
     return FirewallAlias(
       uuid: uuid ?? this.uuid,
@@ -132,7 +192,15 @@ class FirewallAlias {
       proto: proto ?? this.proto,
       interface: interface ?? this.interface,
       categories: categories ?? this.categories,
+      categoryLabels: categoryLabels ?? this.categoryLabels,
+      categoriesUuid: categoriesUuid ?? this.categoriesUuid,
       currentItems: currentItems ?? this.currentItems,
+      updatefreq: updatefreq ?? this.updatefreq,
+      pathExpression: pathExpression ?? this.pathExpression,
+      authtype: authtype ?? this.authtype,
+      username: username ?? this.username,
+      password: password ?? this.password,
+      expire: expire ?? this.expire,
     );
   }
 
@@ -169,6 +237,13 @@ class FirewallAliasRequest {
   final String interface;
   @JsonKey(name: 'categories', defaultValue: '')
   final String categories;
+  final String? updatefreq;
+  @JsonKey(name: 'path_expression')
+  final String? pathExpression;
+  final String? authtype;
+  final String? password;
+  final String? username;
+  final String? expire;
 
   FirewallAliasRequest({
     required this.name,
@@ -180,6 +255,12 @@ class FirewallAliasRequest {
     this.proto = '',
     this.interface = '',
     this.categories = '',
+    this.updatefreq,
+    this.pathExpression,
+    this.authtype,
+    this.password,
+    this.username,
+    this.expire,
   });
 
   /// Create from JSON
@@ -211,6 +292,8 @@ class FirewallAliasRequest {
       proto: alias.proto,
       interface: alias.interface,
       categories: alias.categories,
+      updatefreq: alias.updatefreq.isEmpty ? null : alias.updatefreq,
+      pathExpression: alias.pathExpression.isEmpty ? null : alias.pathExpression,
     );
   }
 }
@@ -246,16 +329,20 @@ class AliasTableEntry {
   Map<String, dynamic> toJson() => _$AliasTableEntryToJson(this);
 }
 
-/// Category information
+/// Category information.
+/// [name] = UUID, [description] = display label, [color] = 6-char hex (no #).
 @JsonSerializable()
 class AliasCategory {
   final String name;
   @JsonKey(name: 'description', defaultValue: '')
   final String description;
+  @JsonKey(defaultValue: '')
+  final String color;
   
   AliasCategory({
     required this.name,
     this.description = '',
+    this.color = '',
   });
   
   factory AliasCategory.fromJson(Map<String, dynamic> json) =>
@@ -264,15 +351,20 @@ class AliasCategory {
   Map<String, dynamic> toJson() => _$AliasCategoryToJson(this);
 }
 
-/// Country information for GeoIP
+/// Country information for GeoIP.
+/// [region] matches the API's `region` field (e.g. "Europe", "Asia", "America").
+/// Entries with a null region are placed under "Other".
 @JsonSerializable()
 class AliasCountry {
   final String code;
   final String name;
+  @JsonKey(defaultValue: '')
+  final String region;
   
   AliasCountry({
     required this.code,
     required this.name,
+    this.region = '',
   });
   
   factory AliasCountry.fromJson(Map<String, dynamic> json) =>

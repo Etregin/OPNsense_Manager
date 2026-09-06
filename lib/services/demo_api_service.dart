@@ -873,6 +873,111 @@ class DemoApiService {
         delayMs: 400,
       );
 
+  /// Get alias item defaults (type, proto, interface, authtype option lists)
+  Future<Map<String, dynamic>> getAliasItemDefaults() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {
+          'alias': {
+            'type': {
+              'host': {'value': 'Host(s)', 'selected': 0},
+              'network': {'value': 'Network(s)', 'selected': 0},
+              'port': {'value': 'Port(s)', 'selected': 0},
+              'url': {'value': 'URL', 'selected': 0},
+              'urltable': {'value': 'URL Table', 'selected': 0},
+              'urljson': {'value': 'URL Table (JSON)', 'selected': 0},
+              'geoip': {'value': 'GeoIP', 'selected': 0},
+              'networkgroup': {'value': 'Network Group', 'selected': 0},
+              'mac': {'value': 'MAC Address', 'selected': 0},
+              'asn': {'value': 'BGP ASN', 'selected': 0},
+              'dynipv6host': {'value': 'Dynamic IPv6 Host', 'selected': 0},
+              'authgroup': {'value': 'OpenVPN Group', 'selected': 0},
+              'internal': {'value': 'Internal', 'selected': 0},
+              'external': {'value': 'External (advanced)', 'selected': 0},
+            },
+            'proto': {
+              'IPv4': {'value': 'IPv4', 'selected': 0},
+              'IPv6': {'value': 'IPv6', 'selected': 0},
+            },
+            'authtype': {
+              '': {'value': 'None', 'selected': 1},
+              'basic': {'value': 'Basic Auth', 'selected': 0},
+              'bearer': {'value': 'Bearer Token', 'selected': 0},
+              'header': {'value': 'HTTP Header', 'selected': 0},
+            },
+            'interface': {
+              'lan': {'value': 'LAN', 'selected': 0},
+              'wan': {'value': 'WAN', 'selected': 0},
+            },
+          }
+        },
+        realAction: () => _realApiService.getAliasItemDefaults(),
+        delayMs: 300,
+      );
+
+  /// List alias categories
+  Future<List<AliasCategory>> listAliasCategories() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => [
+          AliasCategory(name: 'Blocklists', description: 'Blocklist aliases'),
+          AliasCategory(name: 'Internal', description: 'Internal network aliases'),
+          AliasCategory(name: 'VPN', description: 'VPN-related aliases'),
+        ],
+        realAction: () => _realApiService.listAliasCategories(),
+        delayMs: 200,
+      );
+
+  /// List network aliases
+  Future<Map<String, dynamic>> listNetworkAliases() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => <String, dynamic>{
+          'RFC1918': 'RFC1918',
+          'LAN_NET': 'LAN_NET',
+          'Atest1': 'Atest1',
+          'Atest2': 'Atest2',
+          'Atest3': 'Atest3',
+          'Atest4': 'Atest4',
+          'Atest5': 'Atest5',
+          'Atest6': 'Atest6',
+          'Atest7': 'Atest7',
+          'Atest8': 'Atest8',
+          'Atest9': 'Atest9',
+          'Atest10': 'Atest10',
+          'Atest11': 'Atest11',
+        },
+        realAction: () => _realApiService.listNetworkAliases(),
+        delayMs: 200,
+      );
+
+  /// List user groups
+  Future<Map<String, dynamic>> listUserGroups() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => <String, dynamic>{
+          'vpn_users': 'vpn_users',
+          'staff': 'staff',
+        },
+        realAction: () => _realApiService.listUserGroups(),
+        delayMs: 200,
+      );
+
+  /// List alias countries for GeoIP
+  Future<List<AliasCountry>> listAliasCountries() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => [
+          AliasCountry(code: 'US', name: 'United States'),
+          AliasCountry(code: 'DE', name: 'Germany'),
+          AliasCountry(code: 'CN', name: 'China'),
+          AliasCountry(code: 'RU', name: 'Russia'),
+          AliasCountry(code: 'GB', name: 'United Kingdom'),
+        ],
+        realAction: () => _realApiService.listAliasCountries(),
+        delayMs: 200,
+      );
+
   /// Reboot system
   Future<void> rebootSystem() => DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,

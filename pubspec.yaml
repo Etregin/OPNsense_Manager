@@ -21,7 +21,7 @@ dependencies:
   provider: ^6.1.1
   
   # Secure Storage
-  flutter_secure_storage: ^10.0.0
+  flutter_secure_storage: ^11.0.0
   
   # Local Storage
   shared_preferences: ^2.2.2

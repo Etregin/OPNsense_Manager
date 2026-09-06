@@ -83,12 +83,10 @@ class FirewallAliasService {
     await _crudService.deleteFirewallAlias(uuid);
   }
 
-  /// Apply firewall alias changes
-  /// This must be called after creating, updating, toggling, or deleting aliases
-  /// to actually apply the changes to the running firewall configuration
-  Future<void> applyFirewallAliasChanges() async {
-    await _crudService.toggleFirewallAlias(''); // Triggers reconfigure
-  }
+  /// Get default alias item structure (option lists for type, proto, interface, authtype)
+  Future<Map<String, dynamic>> getAliasItemDefaults() =>
+      _crudService.getAliasItemDefaults();
+
 
   // ==================== Metadata Operations ====================
 

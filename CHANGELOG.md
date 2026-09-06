@@ -9,6 +9,10 @@ All notable changes to OPNsense Manager will be documented in this file.
 - Added Firmware Update screen with the ability to check for available updates, view the current installed and latest versions, and install updates directly from the app.
 - Firmware update screen shows a live log terminal while an update is running, with a reboot prompt when required.
 - Detects when an OPNsense firmware upgrade is already in progress and attaches to the live log stream, showing an "Upgrade in progress…" banner until it completes.
+- Added Firewall Alias management screen with create, edit, and detail views.
+- Alias form supports all types (Host, Network, Port, URL, GeoIP, etc.) with type-specific field rendering including autocomplete for internal aliases and region-grouped GeoIP country selection.
+- Alias list supports category filtering with colour-coded dots and a detail sheet for quick review.
+- Authentication fields (authtype, username, password) and expiry date are surfaced in the alias form, with API validation errors shown inline.
 
 ### Changed
 
