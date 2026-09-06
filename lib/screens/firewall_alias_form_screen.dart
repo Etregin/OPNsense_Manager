@@ -781,9 +781,9 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
     final l10n = AppLocalizations.of(context)!;
     final authtypeOptions = <String, String>{
       '':       l10n.none,
-      'basic':  'Basic Auth',
-      'bearer': 'Bearer Token',
-      'header': 'HTTP Header',
+      'Basic':  'Basic Auth',
+      'Bearer': 'Bearer Token',
+      'Header': 'HTTP Header',
     };
 
     return FormSectionContainer(
@@ -805,22 +805,26 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
               ? null
               : (v) => setState(() => _selectedAuthtype = v ?? ''),
         ),
-        if (_selectedAuthtype.isNotEmpty) ...[
+        // Username: shown for Basic (credential) and Header (HTTP header name), not Bearer
+        if (_selectedAuthtype == 'Basic' || _selectedAuthtype == 'Header') ...[
           const SizedBox(height: 12),
           TextFormField(
             controller: _usernameController,
-            decoration: const InputDecoration(
-              labelText: 'Username',
-              prefixIcon: Icon(Icons.person_outline),
+            decoration: InputDecoration(
+              labelText: _selectedAuthtype == 'Header' ? 'HTTP Header' : 'Username',
+              prefixIcon: const Icon(Icons.person_outline),
             ),
             enabled: !_isLoading,
           ),
+        ],
+        // Password / token: shown for all non-empty authtypes
+        if (_selectedAuthtype.isNotEmpty) ...[
           const SizedBox(height: 12),
           TextFormField(
             controller: _passwordController,
-            decoration: const InputDecoration(
-              labelText: 'Password',
-              prefixIcon: Icon(Icons.password_outlined),
+            decoration: InputDecoration(
+              labelText: _selectedAuthtype == 'Basic' ? 'Password' : 'API Token',
+              prefixIcon: const Icon(Icons.password_outlined),
             ),
             obscureText: true,
             enabled: !_isLoading,
