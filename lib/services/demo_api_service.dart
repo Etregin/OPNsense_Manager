@@ -116,7 +116,7 @@ class DemoApiService {
       );
 
   /// Get available interfaces
-  Future<Map<String, dynamic>> getAvailableInterfaces() =>
+  Future<Map<String, String>> getAvailableInterfaces() =>
       DemoApiDecorator.execute(
         isDemoMode: _isDemoMode,
         demoAction: () async => _demoDataService.generateAvailableInterfaces(),

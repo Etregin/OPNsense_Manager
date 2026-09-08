@@ -1284,7 +1284,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                             ..._viewModel.availableInterfaces.entries
                                 .map((e) => DropdownMenuItem(
                                       value: e.key,
-                                      child: Text(e.value, overflow: TextOverflow.ellipsis),
+                                      child: Text(e.value.toString(), overflow: TextOverflow.ellipsis),
                                     )),
                           ],
                     onChanged: _isLoading || _viewModel.loadingInterfaces

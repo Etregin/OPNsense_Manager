@@ -266,11 +266,11 @@ class DemoFirewallDataGenerator {
   }
 
   /// Generate available interfaces for firewall rules
-  Map<String, dynamic> generateAvailableInterfaces() {
+  Map<String, String> generateAvailableInterfaces() {
     return {
-      'wan': {'value': 'wan', 'selected': 0, 'description': 'WAN'},
-      'lan': {'value': 'lan', 'selected': 0, 'description': 'LAN'},
-      'opt1': {'value': 'opt1', 'selected': 0, 'description': 'OPT1'},
+      'wan': 'WAN',
+      'lan': 'LAN',
+      'opt1': 'OPT1',
     };
   }
 }

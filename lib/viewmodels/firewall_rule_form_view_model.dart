@@ -26,7 +26,7 @@ class FirewallRuleFormViewModel extends BaseFormViewModel {
   final DemoApiService _apiService;
   final FirewallRule? _existingRule;
 
-  Map<String, dynamic> _availableInterfaces = {};
+  Map<String, String> _availableInterfaces = {};
   bool _loadingInterfaces = true;
 
   FirewallFormOptions _formOptions = FirewallFormOptions.defaults();
@@ -36,7 +36,7 @@ class FirewallRuleFormViewModel extends BaseFormViewModel {
   Map<String, String> _aliases = {};
   bool _loadingAliases = true;
 
-  Map<String, dynamic> get availableInterfaces => _availableInterfaces;
+  Map<String, String> get availableInterfaces => _availableInterfaces;
   bool get loadingInterfaces => _loadingInterfaces;
   bool get isEditing => _existingRule != null;
   FirewallRule? get existingRule => _existingRule;

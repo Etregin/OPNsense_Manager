@@ -91,7 +91,7 @@ class DemoDataService {
       _firewallGenerator.generateFirewallLogs(limit: limit);
 
   /// Generate available interfaces for firewall rules
-  Map<String, dynamic> generateAvailableInterfaces() => 
+  Map<String, String> generateAvailableInterfaces() =>
       _firewallGenerator.generateAvailableInterfaces();
 
   /// Toggle firewall rule state
