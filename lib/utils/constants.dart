@@ -128,5 +128,11 @@ class StringConstants {
 
   // Legal / license metadata (verbatim — must not be translated)
   static const String gnuLicenseTitle = 'GNU General Public License v3.0';
+
+  // Support & Donation
+  static const String donationCryptoAddress = '0xe0b9015117a4a69131481c2e9c1553dde839df18';
+  static const String donationBinanceEmail = 'etreginwow@gmail.com';
+  static const String donationCryptoTokens = 'USDT / USDC';
+  static const String donationCryptoNetworks = 'BEP20, BSC, ERC20, Base, Polygon, Arbitrum, Avalanche C-Chain';
 }
 

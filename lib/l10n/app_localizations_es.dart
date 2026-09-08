@@ -12,6 +12,35 @@ class AppLocalizationsEs extends AppLocalizations {
   String get about => 'Acerca de';
 
   @override
+  String get support => 'Apoyar';
+
+  @override
+  String get supportProject => 'Apoyar el proyecto';
+
+  @override
+  String get supportDescription =>
+      'Si encuentras útil OPNsense Manager, considera apoyar su continuo desarrollo y mantenimiento.';
+
+  @override
+  String get cryptoDonation => 'Donación en cripto';
+
+  @override
+  String get supportedNetworks => 'Redes compatibles';
+
+  @override
+  String get binanceGiftCard => 'Tarjeta de regalo de Binance';
+
+  @override
+  String get binanceGiftCardDescription =>
+      'Las tarjetas de regalo de Binance se pueden enviar a:';
+
+  @override
+  String get addressCopied => 'Dirección copiada al portapapeles';
+
+  @override
+  String get emailCopied => 'Correo electrónico copiado al portapapeles';
+
+  @override
   String get auditLog => 'Registro de auditoría';
 
   @override

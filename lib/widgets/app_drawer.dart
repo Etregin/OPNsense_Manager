@@ -48,6 +48,7 @@ import 'drawer/network_navigation_section.dart';
 import 'drawer/reporting_navigation_section.dart';
 import 'drawer/vpn_navigation_section.dart';
 import 'common/confirmation_dialog.dart';
+import 'common/support_dialog.dart';
 
 /// Reusable app drawer for navigation
 class AppDrawer extends StatefulWidget {
@@ -270,7 +271,17 @@ class _AppDrawerState extends State<AppDrawer> {
             },
           ),
           
-          // 8. About (individual tile)
+          // 8. Support (individual tile)
+          ListTile(
+            leading: const Icon(Icons.favorite_outline),
+            title: Text(l10n.support),
+            onTap: () {
+              Navigator.pop(context);
+              SupportDialog.show(context);
+            },
+          ),
+
+          // 9. About (individual tile)
           ListTile(
             leading: const Icon(Icons.help_outline),
             title: Text(l10n.about),

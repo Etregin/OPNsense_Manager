@@ -32,6 +32,7 @@ import '../../services/app_version_service.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
 import '../../utils/snackbar_helper.dart';
+import '../common/support_dialog.dart';
 import 'navigation_tile.dart';
 
 /// System navigation section for the app drawer
@@ -102,6 +103,14 @@ class SystemNavigationSection extends StatelessWidget {
           ),
           onTap: () {
             _rebootFirewall(context);
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.favorite_outline),
+          title: Text(l10n.support),
+          onTap: () {
+            Navigator.pop(context);
+            SupportDialog.show(context);
           },
         ),
         ListTile(

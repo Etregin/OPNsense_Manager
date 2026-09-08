@@ -110,6 +110,60 @@ abstract class AppLocalizations {
   /// **'About'**
   String get about;
 
+  /// No description provided for @support.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get support;
+
+  /// No description provided for @supportProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Support the Project'**
+  String get supportProject;
+
+  /// No description provided for @supportDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'If you find OPNsense Manager useful, consider supporting its continued development and maintenance.'**
+  String get supportDescription;
+
+  /// No description provided for @cryptoDonation.
+  ///
+  /// In en, this message translates to:
+  /// **'Crypto Donation'**
+  String get cryptoDonation;
+
+  /// No description provided for @supportedNetworks.
+  ///
+  /// In en, this message translates to:
+  /// **'Supported Networks'**
+  String get supportedNetworks;
+
+  /// No description provided for @binanceGiftCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Binance Gift Card'**
+  String get binanceGiftCard;
+
+  /// No description provided for @binanceGiftCardDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Binance gift cards can be sent to:'**
+  String get binanceGiftCardDescription;
+
+  /// No description provided for @addressCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Address copied to clipboard'**
+  String get addressCopied;
+
+  /// No description provided for @emailCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Email copied to clipboard'**
+  String get emailCopied;
+
   /// No description provided for @auditLog.
   ///
   /// In en, this message translates to:
