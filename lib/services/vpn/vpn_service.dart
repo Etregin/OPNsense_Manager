@@ -292,7 +292,7 @@ class VPNService extends BaseOPNsenseService {
       
       // Get OpenVPN instances (servers and clients)
       try {
-        final response = await dio.get(ApiEndpoints.openvpnServiceSearchSessions);
+        final response = await dio.get(ApiEndpoints.openvpnInstancesSearchSessions);
         
         if (response.statusCode == 200 && response.data != null) {
           final data = response.data as Map<String, dynamic>;
