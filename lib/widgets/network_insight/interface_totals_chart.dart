@@ -381,7 +381,7 @@ class _InterfaceTotalsChartState extends State<InterfaceTotalsChart> {
     maxY = (maxY * 1.1).clamp(100.0, double.infinity);
 
     return SizedBox(
-      height: widget.isFullScreen ? null : 160,
+      height: widget.isFullScreen ? null : 190,
       child: LineChart(
         LineChartData(
           minX: minX,
@@ -426,7 +426,7 @@ class _InterfaceTotalsChartState extends State<InterfaceTotalsChart> {
             ),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
-                showTitles: widget.isFullScreen,
+                showTitles: true,
                 reservedSize: 22,
                 getTitlesWidget: (val, meta) {
                   if (val == meta.max || val == meta.min) return const SizedBox.shrink();
