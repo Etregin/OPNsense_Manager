@@ -6,26 +6,24 @@ All notable changes to OPNsense Manager will be documented in this file.
 
 ### Added
 
-- Added access to system log files (Audit, Backend, Boot, General, and Web GUI) with severity filtering, time range, and pagination.
-- Added firmware updates with live logs, upgrade detection, and reboot handling.
-- Added firewall alias management with create, edit, detail, filtering, and type-specific forms.
-- Added alias autocomplete, GeoIP region selection, authentication fields, and inline API validation.
-- Added NetFlow Config / Insight Analyzer with interactive drilldown overview charts with zoom and pan, top-talker breakdowns, flow details with filters, and CSV export.
-- Added Unbound DNS reporting under Reporting with dynamic overview metrics, interactive drilldown charts with zoom and pan, detailed query search table, and settings management.
+- Added system log viewer for Audit, Backend, Boot, General, and Web GUI logs with severity filtering and pagination.
+- Added firmware update screen with live upgrade logs and reboot support.
+- Added firewall alias management — create, edit, enable/disable, and delete aliases with type-specific forms, GeoIP region selection, and inline validation.
+- Added NetFlow / Insight Analyzer with interactive charts, top-talker breakdowns, flow details, and CSV export.
+- Added Unbound DNS reporting with overview metrics, interactive charts, detailed query search, and settings management.
 - Added Reporting Health graphs with category and subject selection.
-
 
 ### Changed
 
-- Refactored colors, constants, localization, ViewModels, validation, and shared widgets.
-- Added long-press copying and text selection to DHCP leases.
-- Added automatic firewall rules to the rule list and expanded rule editing to match the GUI/API options.
-- Updated the minimum Flutter version and release version.
+- Expanded firewall rule list to include system-generated rules, with full rule editing parity with the OPNsense GUI.
+- Added long-press copy and text selection to DHCP leases.
+- Updated minimum Flutter version and dependency versions.
 
 ### Fixed
 
-- Removed the misplaced refresh button from Neighbor Discovery.
-- Made conditional WireGuard status fields nullable to prevent API deserialization errors.
+- Fixed reboot button not rebooting the system.
+- Removed misplaced refresh button from the Neighbor Discovery screen.
+- Fixed WireGuard status fields causing deserialization errors when peer-only or interface-only fields are absent.
 
 ## [1.8.0-Beta.1] -
 
