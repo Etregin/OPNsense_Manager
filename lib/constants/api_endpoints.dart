@@ -41,7 +41,6 @@ class ApiEndpoints {
   static const String diagnosticsSystemResources = '/diagnostics/system/systemResources';
   static const String diagnosticsSystemTemperature = '/diagnostics/system/system_temperature';
   static const String diagnosticsFirewallLog = '/diagnostics/firewall/log';
-  static const String diagnosticsTrafficTop = '/diagnostics/traffic/top';
   static const String diagnosticsLogOpenvpn = '/diagnostics/log/core/openvpn';
   static const String diagnosticsLogWireguard = '/diagnostics/log/core/wireguard';
   static const String diagnosticsLogAudit   = '/diagnostics/log/core/audit';

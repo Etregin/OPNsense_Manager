@@ -54,7 +54,6 @@ class Routes {
   // ── OpenVPN routes ───────────────────────────────────────────────────────────
   static const String openvpnInstances = 'openvpn_instances';
   static const String openvpnClientOverrides = 'openvpn_client_overrides';
-  static const String openvpnClientOverrideForm = 'openvpn_client_override_form';
   static const String openvpnConnectionStatus = 'openvpn_connection_status';
   static const String openvpnLogs = 'openvpn_logs';
 

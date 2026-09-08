@@ -146,7 +146,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get additionalInformation => 'Zusätzliche Informationen';
 
   @override
-  String get advancedOptions => 'Advanced Options';
+  String get advancedOptions => 'Erweiterte Optionen';
 
   @override
   String get address => 'Adresse';
@@ -406,7 +406,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String installUpdateConfirmMessage(int count) {
-    return 'This will upgrade $count package(s) and requires a reboot to complete. Continue?';
+    return 'Dadurch werden $count Paket(e) aktualisiert und ein Neustart ist erforderlich, um den Vorgang abzuschließen. Fortfahren?';
   }
 
   @override
@@ -692,7 +692,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get debug => 'Debug';
+  String get debug => 'Fehlersuche';
 
   @override
   String get defineRoleOfInstance => 'Definieren Sie die Rolle dieser Instanz';
@@ -839,13 +839,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get direction => 'Richtung';
 
   @override
-  String get directionBoth => 'Both';
+  String get directionBoth => 'Beide';
 
   @override
-  String get directionIn => 'In';
+  String get directionIn => 'Eingehend';
 
   @override
-  String get directionOut => 'Out';
+  String get directionOut => 'Ausgehend';
 
   @override
   String get disable => 'Deaktivieren';
@@ -935,7 +935,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get done => 'Fertig';
 
   @override
-  String get download => 'Download';
+  String get download => 'Herunterladen';
 
   @override
   String get dynamicLease => 'Dynamisch';
@@ -1728,17 +1728,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get invalidSourceFormat => 'Ungültiges Quellformat';
 
   @override
-  String get invertDestination => 'Invert destination';
+  String get invertDestination => 'Ziel invertieren';
 
   @override
   String get invertDestinationTooltip =>
-      'Match any address EXCEPT the destination';
+      'Stimmt mit jeder Adresse AUSSER dem Ziel überein';
 
   @override
-  String get invertSource => 'Invert source';
+  String get invertSource => 'Quelle invertieren';
 
   @override
-  String get invertSourceTooltip => 'Match any address EXCEPT the source';
+  String get invertSourceTooltip =>
+      'Stimmt mit jeder Adresse AUSSER der Quelle überein';
 
   @override
   String get ipAddress => 'IP-Adresse';
@@ -1747,7 +1748,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get ipAddresses => 'IP-Adressen';
 
   @override
-  String get ipProtocol => 'IP Version';
+  String get ipProtocol => 'IP-Version';
 
   @override
   String get ipv4TunnelNetwork => 'IPv4-Tunnel-Netzwerk';
@@ -1776,7 +1777,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get keepBoth => 'Beide Behalten';
 
   @override
-  String get keepState => 'Keep State';
+  String get keepState => 'Status behalten';
 
   @override
   String get keepalive => 'Keepalive';
@@ -1858,7 +1859,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get lightMode => 'Heller Modus';
 
   @override
-  String get limit => 'Limit';
+  String get limit => 'Begrenzung';
 
   @override
   String get live => 'Live';
@@ -2061,7 +2062,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get longPressToCopy => 'Long press to copy';
+  String get longPressToCopy => 'Gedrückt halten zum Kopieren';
 
   @override
   String get logDetails => 'Protokolldetails';
@@ -2091,10 +2092,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get loginServerRequired => 'Anmeldeserver ist erforderlich';
 
   @override
-  String get logTraffic => 'Log Traffic';
+  String get logTraffic => 'Datenverkehr protokollieren';
 
   @override
-  String get logTrafficSubtitle => 'Log packets matched by this rule';
+  String get logTrafficSubtitle =>
+      'Pakete protokollieren, die dieser Regel entsprechen';
 
   @override
   String get logout => 'Abmelden';
@@ -2163,7 +2165,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get modified => 'Geändert';
 
   @override
-  String get modulateState => 'Modulate State';
+  String get modulateState => 'Status modulieren';
 
   @override
   String get monitorInterface => 'Überwachungsschnittstelle';
@@ -2382,7 +2384,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Keine statischen Schlüssel konfiguriert';
 
   @override
-  String get noState => 'No State';
+  String get noState => 'Kein Status';
 
   @override
   String get noSubnetsConfigured => 'Keine Subnetze konfiguriert';
@@ -2700,10 +2702,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get qrCode => 'QR-Code';
 
   @override
-  String get quickRule => 'Quick Rule';
+  String get quickRule => 'Schnellregel';
 
   @override
-  String get quickRuleSubtitle => 'Stop processing rules after first match';
+  String get quickRuleSubtitle =>
+      'Regelverarbeitung nach erster Übereinstimmung stoppen';
 
   @override
   String get reason => 'Grund';
@@ -3138,7 +3141,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get sourcePortOptional => 'Quellport (Optional)';
 
   @override
-  String get sloppyState => 'Sloppy State';
+  String get sloppyState => 'Nachsichtiger Status';
 
   @override
   String get sshEnabled => 'SSH aktiviert';
@@ -3184,7 +3187,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get staticLease => 'Statisch';
 
   @override
-  String get stateType => 'State Type';
+  String get stateType => 'Statustyp';
 
   @override
   String get status => 'Status';
@@ -3282,10 +3285,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get systemType => 'Systemtyp';
 
   @override
-  String get swapSourceDestination => 'Swap source and destination';
+  String get swapSourceDestination => 'Quelle und Ziel tauschen';
 
   @override
-  String get synproxyState => 'Synproxy State';
+  String get synproxyState => 'Synproxy-Status';
 
   @override
   String get tags => 'Tags';
@@ -3495,7 +3498,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get updateStaticKey => 'Statischen Schlüssel aktualisieren';
 
   @override
-  String get upload => 'Upload';
+  String get upload => 'Hochladen';
 
   @override
   String get uptime => 'Betriebszeit';
@@ -3642,7 +3645,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get connectionBlockingDescription =>
-      'Block this client connection based on its common name. Don\'t use this option to permanently disable a client due to a compromised key or password. Use a CRL (certificate revocation list) instead.';
+      'Diese Client-Verbindung anhand des allgemeinen Namens blockieren. Verwenden Sie diese Option nicht, um einen Client dauerhaft zu deaktivieren. Verwenden Sie stattdessen eine CRL (Zertifikats-Sperrliste).';
 
   @override
   String deviceLabel(String type) {
@@ -3650,7 +3653,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get facility => 'Facility';
+  String get facility => 'Einrichtung';
 
   @override
   String gatewayLabel(String gateway) {
@@ -3663,7 +3666,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get messageLabel => 'Message:';
+  String get messageLabel => 'Nachricht:';
 
   @override
   String pageOfTotal(int current, int total) {
@@ -3685,18 +3688,18 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get pushResetDescription =>
-      'Don\'t inherit the global push list for a specific client instance. NOTE: --push-reset is very thorough: it will remove almost all options from the list of to-be-pushed options. In many cases, some of these options will need to be re-configured afterwards - specifically, --topology subnet and --route-gateway will get lost and this will break client configs in many cases.';
+      'Die globale Push-Liste für eine bestimmte Client-Instanz nicht erben. HINWEIS: --push-reset ist sehr gründlich und entfernt fast alle Optionen aus der Push-Liste. In vielen Fällen müssen diese Optionen anschließend neu konfiguriert werden.';
 
   @override
-  String get record => 'Record';
+  String get record => 'Eintrag';
 
   @override
   String get redirectGatewayDescription =>
-      'Automatically execute routing commands to cause all outgoing IP traffic to be redirected over the VPN.';
+      'Routing-Befehle automatisch ausführen, um den gesamten ausgehenden IP-Datenverkehr über das VPN umzuleiten.';
 
   @override
   String get registerDnsDescription =>
-      'Run ipconfig /flushdns and ipconfig /registerdns on connection initiation. This is known to kick Windows into recognizing pushed DNS servers.';
+      'ipconfig /flushdns und ipconfig /registerdns beim Verbindungsaufbau ausführen. Dies hilft Windows dabei, die übertragenen DNS-Server zu erkennen.';
 
   @override
   String remoteLabel(String info) {
@@ -3734,7 +3737,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get unknownNetwork => 'Unknown Network';
+  String get unknownNetwork => 'Unbekanntes Netzwerk';
 
   @override
   String get actualUsed => 'Tatsächlich verwendet';
@@ -3823,210 +3826,215 @@ class AppLocalizationsDe extends AppLocalizations {
   String get filterSection => 'Filter';
 
   @override
-  String get sourceRoutingSection => 'Source Routing';
+  String get sourceRoutingSection => 'Quellbasiertes Routing';
 
   @override
-  String get statefulFirewallSection => 'Stateful Firewall';
+  String get statefulFirewallSection => 'Zustandsbasierte Firewall';
 
   @override
-  String get trafficShapingSection => 'Traffic Shaping';
+  String get trafficShapingSection => 'Datenverkehrsformung';
 
   @override
-  String get prioritySection => 'Priority';
+  String get prioritySection => 'Priorität';
 
   @override
-  String get internalTaggingSection => 'Internal Tagging';
+  String get internalTaggingSection => 'Interne Kennzeichnung';
 
   @override
-  String get showAdvanced => 'Show Advanced';
+  String get showAdvanced => 'Erweitert anzeigen';
 
   @override
-  String get hideAdvanced => 'Hide Advanced';
+  String get hideAdvanced => 'Erweitert ausblenden';
 
   @override
-  String get enableThisRule => 'Enable this rule';
+  String get enableThisRule => 'Diese Regel aktivieren';
 
   @override
   String get categoriesHint =>
-      'For grouping purposes you may select multiple groups here.';
+      'Zur Gruppierung können Sie hier mehrere Gruppen auswählen.';
 
   @override
-  String get invertInterface => 'Invert Interface';
+  String get invertInterface => 'Schnittstelle invertieren';
 
   @override
-  String get invertInterfaceSubtitle => 'Use all but selected interfaces';
+  String get invertInterfaceSubtitle =>
+      'Alle außer den ausgewählten Schnittstellen verwenden';
 
   @override
   String get quickRuleHelp =>
-      'If a packet matches a rule specifying quick, then that rule is considered the last matching rule and the specified action is taken.';
+      'Wenn ein Paket einer Regel mit \'Quick\' entspricht, wird diese Regel als letzte übereinstimmende Regel betrachtet und die angegebene Aktion ausgeführt.';
 
   @override
   String get actionHelp =>
-      'Choose what to do with packets that match the criteria specified below.';
+      'Wählen Sie, was mit Paketen geschehen soll, die den unten angegebenen Kriterien entsprechen.';
 
   @override
   String get directionHelp =>
-      'Direction of the traffic. The default policy is to filter inbound traffic.';
+      'Richtung des Datenverkehrs. Die Standardrichtlinie ist die Filterung des eingehenden Datenverkehrs.';
 
   @override
-  String get icmpTypeLabel => 'ICMP Type';
+  String get icmpTypeLabel => 'ICMP-Typ';
 
   @override
-  String get icmp6TypeLabel => 'ICMPv6 Type';
+  String get icmp6TypeLabel => 'ICMPv6-Typ';
 
   @override
   String get sourcePortHelp =>
-      'Source port number or well known name (imap, imaps, http, https, ...), for ranges use a dash';
+      'Quellportnummer oder bekannter Name (imap, imaps, http, https, ...), für Bereiche einen Bindestrich verwenden';
 
   @override
   String get destinationPortHelp =>
-      'Destination port number or well known name (imap, imaps, http, https, ...), for ranges use a dash';
+      'Zielportnummer oder bekannter Name (imap, imaps, http, https, ...), für Bereiche einen Bindestrich verwenden';
 
   @override
-  String get logHelp => 'Log packets that are handled by this rule';
+  String get logHelp =>
+      'Pakete protokollieren, die von dieser Regel verarbeitet werden';
 
   @override
   String get gatewayHelp =>
-      'Leave as default to use the system routing table. Or choose a gateway to utilize policy based routing.';
+      'Standard belassen, um die System-Routingtabelle zu verwenden. Oder ein Gateway für richtlinienbasiertes Routing auswählen.';
 
   @override
-  String get sequenceHelp => 'The order in which rules are being processed.';
+  String get sequenceHelp =>
+      'Die Reihenfolge, in der Regeln verarbeitet werden.';
 
   @override
-  String get noXmlrpcSync => 'No XMLRPC Sync';
+  String get noXmlrpcSync => 'Kein XMLRPC-Sync';
 
   @override
   String get noXmlrpcSyncHelp =>
-      'Exclude this item from the HA synchronization process.';
+      'Diesen Eintrag vom HA-Synchronisierungsprozess ausschließen.';
 
   @override
-  String get allowOptionsLabel => 'Allow Options';
+  String get allowOptionsLabel => 'Optionen erlauben';
 
   @override
-  String get allowOptionsHelp => 'This allows packets with IP options to pass.';
+  String get allowOptionsHelp =>
+      'Erlaubt Paketen mit IP-Optionen den Durchlass.';
 
   @override
-  String get tcpFlagsOutLabel => 'TCP Flags [out of]';
+  String get tcpFlagsOutLabel => 'TCP-Flags [von]';
 
   @override
-  String get tcpFlagsAnyLabel => 'TCP Flags Any';
+  String get tcpFlagsAnyLabel => 'TCP-Flags Beliebig';
 
   @override
-  String get scheduleLabel => 'Schedule';
+  String get scheduleLabel => 'Zeitplan';
 
   @override
-  String get divertToLabel => 'Divert-to';
+  String get divertToLabel => 'Umleiten zu';
 
   @override
   String get divertToHelp =>
-      'Send packets matching this rule to the service specified.';
+      'Pakete, die dieser Regel entsprechen, an den angegebenen Dienst senden.';
 
   @override
-  String get statePolicyLabel => 'State Policy';
+  String get statePolicyLabel => 'Statusrichtlinie';
 
   @override
-  String get noPfsyncLabel => 'No pfsync';
+  String get noPfsyncLabel => 'Kein pfsync';
 
   @override
   String get noPfsyncHelp =>
-      'Prevents states created by this rule to be synced with pfsync.';
+      'Verhindert, dass durch diese Regel erstellte Zustände mit pfsync synchronisiert werden.';
 
   @override
-  String get tcpEstablishedLabel => 'TCP Established';
+  String get tcpEstablishedLabel => 'TCP Etabliert';
 
   @override
-  String get udpFirstLabel => 'UDP First';
+  String get udpFirstLabel => 'UDP Erstes';
 
   @override
-  String get udpSingleLabel => 'UDP Single';
+  String get udpSingleLabel => 'UDP Einzeln';
 
   @override
-  String get udpMultipleLabel => 'UDP Multiple';
+  String get udpMultipleLabel => 'UDP Mehrfach';
 
   @override
-  String get adaptiveStartLabel => 'Adaptive Start';
+  String get adaptiveStartLabel => 'Adaptiver Start';
 
   @override
-  String get adaptiveEndLabel => 'Adaptive End';
+  String get adaptiveEndLabel => 'Adaptives Ende';
 
   @override
-  String get maxStatesLabel => 'Max States';
+  String get maxStatesLabel => 'Max. Zustände';
 
   @override
-  String get maxSrcNodesLabel => 'Max Source Nodes';
+  String get maxSrcNodesLabel => 'Max. Quellknoten';
 
   @override
-  String get maxSrcStatesLabel => 'Max Source States';
+  String get maxSrcStatesLabel => 'Max. Quellzustände';
 
   @override
-  String get maxSrcConnLabel => 'Max Source Connections';
+  String get maxSrcConnLabel => 'Max. Quellverbindungen';
 
   @override
-  String get maxNewConnCLabel => 'Max New Connections [c]';
+  String get maxNewConnCLabel => 'Max. neue Verbindungen [c]';
 
   @override
-  String get maxNewConnSLabel => 'Max New Connections [s]';
+  String get maxNewConnSLabel => 'Max. neue Verbindungen [s]';
 
   @override
-  String get overloadTableLabel => 'Overload Table';
+  String get overloadTableLabel => 'Überlasttabelle';
 
   @override
   String get overloadTableHelp =>
-      'Overload table used when max new connections per time interval has been reached.';
+      'Überlasttabelle, die verwendet wird, wenn die maximale Anzahl neuer Verbindungen pro Zeitintervall erreicht wurde.';
 
   @override
-  String get shaperLabel => 'Traffic Shaper';
+  String get shaperLabel => 'Datenverkehrsformer';
 
   @override
-  String get shaperReverseLabel => 'Traffic Shaper [reverse]';
+  String get shaperReverseLabel => 'Datenverkehrsformer [umgekehrt]';
 
   @override
-  String get disableReplyToLabel => 'Disable Reply-to';
+  String get disableReplyToLabel => 'Reply-to deaktivieren';
 
   @override
-  String get disableReplyToHelp => 'Explicit disable reply-to for this rule';
+  String get disableReplyToHelp =>
+      'Reply-to für diese Regel explizit deaktivieren';
 
   @override
-  String get replyToLabel => 'Reply-to';
+  String get replyToLabel => 'Antwort an';
 
   @override
   String get replyToHelp =>
-      'Determines how packets route back in the opposite direction.';
+      'Bestimmt, wie Pakete in der entgegengesetzten Richtung zurückgeleitet werden.';
 
   @override
-  String get matchPriorityLabel => 'Match Priority';
+  String get matchPriorityLabel => 'Priorität abgleichen';
 
   @override
-  String get setPriorityLabel => 'Set Priority';
+  String get setPriorityLabel => 'Priorität setzen';
 
   @override
-  String get setPriorityLowLabel => 'Set Priority [low-delay]';
+  String get setPriorityLowLabel => 'Priorität setzen [niedrige Verzögerung]';
 
   @override
-  String get matchTosLabel => 'Match TOS / DSCP';
+  String get matchTosLabel => 'TOS / DSCP abgleichen';
 
   @override
-  String get setLocalTagLabel => 'Set Local Tag';
+  String get setLocalTagLabel => 'Lokales Tag setzen';
 
   @override
   String get setLocalTagHelp =>
-      'Packets matching this rule will be tagged with the specified string.';
+      'Pakete, die dieser Regel entsprechen, werden mit der angegebenen Zeichenkette markiert.';
 
   @override
-  String get matchLocalTagLabel => 'Match Local Tag';
+  String get matchLocalTagLabel => 'Lokales Tag abgleichen';
 
   @override
   String get matchLocalTagHelp =>
-      'Packets must already be tagged with the given tag to match the rule.';
+      'Pakete müssen bereits mit dem angegebenen Tag markiert sein, um der Regel zu entsprechen.';
 
   @override
-  String get singleHostOrNetwork => 'Single host or network';
+  String get singleHostOrNetwork => 'Einzelner Host oder Netzwerk';
 
   @override
-  String get singlePortOrRange => 'Single port or range';
+  String get singlePortOrRange => 'Einzelner Port oder Bereich';
 
   @override
-  String get thisFirwall => 'This Firewall';
+  String get thisFirewall => 'Diese Firewall';
 
   @override
   String interfaceNet(String name) {
@@ -4039,122 +4047,124 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get sortOrderLabel => 'Sort Order';
+  String get sortOrderLabel => 'Sortierreihenfolge';
 
   @override
   String get sortOrderHelp =>
-      'The order in which rules are being processed (auto-calculated, read-only).';
+      'Die Reihenfolge, in der Regeln verarbeitet werden (automatisch berechnet, schreibgeschützt).';
 
   @override
-  String get portsNotSupportedTitle => 'Port Fields Will Be Cleared';
+  String get portsNotSupportedTitle => 'Portfelder werden geleert';
 
   @override
   String get portsNotSupportedMessage =>
-      'The selected protocol does not support source or destination ports. The port fields will be cleared before saving.';
+      'Das ausgewählte Protokoll unterstützt keine Quell- oder Zielports. Die Portfelder werden vor dem Speichern geleert.';
 
   @override
-  String get clearAndSave => 'Clear & Save';
+  String get clearAndSave => 'Leeren & Speichern';
 
   @override
-  String get createAlias => 'Create Alias';
+  String get createAlias => 'Alias erstellen';
 
   @override
-  String get editAlias => 'Edit Alias';
+  String get editAlias => 'Alias bearbeiten';
 
   @override
-  String get aliasCreated => 'Alias created successfully';
+  String get aliasCreated => 'Alias erfolgreich erstellt';
 
   @override
-  String get aliasUpdated => 'Alias updated successfully';
+  String get aliasUpdated => 'Alias erfolgreich aktualisiert';
 
   @override
   String errorSavingAlias(String error) {
-    return 'Error saving alias: $error';
+    return 'Fehler beim Speichern des Alias: $error';
   }
 
   @override
-  String get aliasNameHint => 'Letters, digits, and underscores only';
+  String get aliasNameHint => 'Nur Buchstaben, Ziffern und Unterstriche';
 
   @override
   String get aliasNameValidation =>
-      'Name must start with a letter or underscore, max 32 characters, alphanumeric and underscores only';
+      'Name muss mit einem Buchstaben oder Unterstrich beginnen, max. 32 Zeichen, nur alphanumerische Zeichen und Unterstriche';
 
   @override
-  String get refreshFrequencyLabel => 'Refresh Frequency';
+  String get refreshFrequencyLabel => 'Aktualisierungsfrequenz';
 
   @override
   String get refreshFrequencyHint =>
-      'The frequency the list is refreshed. 1 day and 8 hours = refreshed after 32 hours. Leave empty to use defaults.';
+      'Die Häufigkeit, mit der die Liste aktualisiert wird. 1 Tag und 8 Stunden = Aktualisierung nach 32 Stunden. Leer lassen für Standardwerte.';
 
   @override
-  String get refreshDaysHint => 'Days';
+  String get refreshDaysHint => 'Tage';
 
   @override
-  String get refreshHoursHint => 'Hours';
+  String get refreshHoursHint => 'Stunden';
 
   @override
-  String get pathExpressionLabel => 'Path Expression';
+  String get pathExpressionLabel => 'Pfadausdruck';
 
   @override
   String get pathExpressionHint =>
-      'Simplified expression to select a field inside a container, e.g. container.fieldname. jq expressions are also supported.';
+      'Vereinfachter Ausdruck zur Auswahl eines Felds in einem Container, z. B. container.feldname. jq-Ausdrücke werden ebenfalls unterstützt.';
 
   @override
-  String get authorizationLabel => 'Authorization';
+  String get authorizationLabel => 'Autorisierung';
 
   @override
   String get authorizationHint =>
-      'If the remote server enforces authorization, specify the type here.';
+      'Wenn der Remote-Server eine Autorisierung erfordert, geben Sie hier den Typ an.';
 
   @override
-  String get statisticsLabel => 'Statistics';
+  String get statisticsLabel => 'Statistiken';
 
   @override
   String get statisticsHint =>
-      'Maintain a set of counters for each table entry';
+      'Einen Satz Zähler für jeden Tabelleneintrag führen';
 
   @override
-  String get expireLabel => 'Expire';
+  String get expireLabel => 'Ablauf';
 
   @override
   String get expireHint =>
-      'Time in seconds after which addresses are purged from the alias when not being used.';
+      'Zeit in Sekunden, nach der Adressen aus dem Alias entfernt werden, wenn sie nicht verwendet werden.';
 
   @override
-  String get aliasContentHint => 'Enter IPs, CIDRs, hostnames, or other values';
+  String get aliasContentHint =>
+      'IPs, CIDRs, Hostnamen oder andere Werte eingeben';
 
   @override
-  String get selectCountriesLabel => 'Select Countries';
+  String get selectCountriesLabel => 'Länder auswählen';
 
   @override
-  String get selectNetworkAliasesLabel => 'Select Network Aliases';
+  String get selectNetworkAliasesLabel => 'Netzwerk-Aliase auswählen';
 
   @override
-  String get selectVpnGroupsLabel => 'Select VPN Groups';
+  String get selectVpnGroupsLabel => 'VPN-Gruppen auswählen';
 
   @override
-  String get protoHint => 'Filter by IP protocol version';
+  String get protoHint => 'Nach IP-Protokollversion filtern';
 
   @override
-  String get interfaceHint => 'Select the interface for the dynamic IPv6 host';
+  String get interfaceHint =>
+      'Schnittstelle für den dynamischen IPv6-Host auswählen';
 
   @override
-  String get enableThisAlias => 'Enable this alias';
+  String get enableThisAlias => 'Diesen Alias aktivieren';
 
   @override
   String get region => 'Region';
 
   @override
-  String get countries => 'Countries';
+  String get countries => 'Länder';
 
   @override
-  String get noCountriesSelected => 'Nothing Selected';
+  String get noCountriesSelected => 'Nichts ausgewählt';
 
   @override
-  String get geoipRegionsLabel => 'GeoIP Regions';
+  String get geoipRegionsLabel => 'GeoIP-Regionen';
 
   @override
-  String get basicSettingsLabel => 'Basic Settings';
+  String get basicSettingsLabel => 'Grundeinstellungen';
 
   @override
   String get aliasDetails => 'Alias-Details';
@@ -4225,7 +4235,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get netflowCacheStatsTitle => 'Cache-Statistiken';
 
   @override
-  String get netflowCacheFlow => 'Flow';
+  String get netflowCacheFlow => 'Datenfluss';
 
   @override
   String get netflowCachePackets => 'Pakete';

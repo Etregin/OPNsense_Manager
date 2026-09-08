@@ -396,7 +396,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String installUpdateConfirmMessage(int count) {
-    return 'This will upgrade $count package(s) and requires a reboot to complete. Continue?';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'packages',
+      one: 'package',
+    );
+    return 'This will upgrade $count $_temp0 and requires a reboot to complete. Continue?';
   }
 
   @override
@@ -3976,7 +3982,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get singlePortOrRange => 'Single port or range';
 
   @override
-  String get thisFirwall => 'This Firewall';
+  String get thisFirewall => 'This Firewall';
 
   @override
   String interfaceNet(String name) {

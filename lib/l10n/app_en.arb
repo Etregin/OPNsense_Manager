@@ -290,7 +290,7 @@
   "@rebootNow": {},
   "installUpdateConfirmTitle": "Install Update",
   "@installUpdateConfirmTitle": {},
-  "installUpdateConfirmMessage": "This will upgrade {count} package(s) and requires a reboot to complete. Continue?",
+  "installUpdateConfirmMessage": "This will upgrade {count} {count, plural, =1{package} other{packages}} and requires a reboot to complete. Continue?",
   "@installUpdateConfirmMessage": {
     "placeholders": {
       "count": {
@@ -3322,8 +3322,8 @@
   "@singleHostOrNetwork": {},
   "singlePortOrRange": "Single port or range",
   "@singlePortOrRange": {},
-  "thisFirwall": "This Firewall",
-  "@thisFirwall": {},
+  "thisFirewall": "This Firewall",
+  "@thisFirewall": {},
   "interfaceNet": "{name} net",
   "@interfaceNet": {
     "placeholders": {

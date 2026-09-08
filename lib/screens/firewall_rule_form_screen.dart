@@ -932,7 +932,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
       final label = e.value.toString();
       opts['${key}ip'] = l10n.interfaceAddress(label);
     }
-    opts['(self)'] = l10n.thisFirwall;
+    opts['(self)'] = l10n.thisFirewall;
     for (final a in _viewModel.aliases.keys) {
       opts[a] = a;
     }

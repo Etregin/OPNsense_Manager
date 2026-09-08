@@ -827,7 +827,7 @@ abstract class AppLocalizations {
   /// No description provided for @installUpdateConfirmMessage.
   ///
   /// In en, this message translates to:
-  /// **'This will upgrade {count} package(s) and requires a reboot to complete. Continue?'**
+  /// **'This will upgrade {count} {count, plural, =1{package} other{packages}} and requires a reboot to complete. Continue?'**
   String installUpdateConfirmMessage(int count);
 
   /// No description provided for @cannotBeUndone.
@@ -7172,11 +7172,11 @@ abstract class AppLocalizations {
   /// **'Single port or range'**
   String get singlePortOrRange;
 
-  /// No description provided for @thisFirwall.
+  /// No description provided for @thisFirewall.
   ///
   /// In en, this message translates to:
   /// **'This Firewall'**
-  String get thisFirwall;
+  String get thisFirewall;
 
   /// No description provided for @interfaceNet.
   ///
