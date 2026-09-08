@@ -65,9 +65,11 @@ class ThemeConfig {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          // Explicitly set to AppColors.onPrimary so button label colour is
-          // enforced rather than relying on Material's seed-colour algorithm.
-          foregroundColor: AppColors.onPrimary,
+          // foregroundColor is intentionally omitted — M3 derives the correct
+          // on-color from colorScheme.onPrimary automatically. Hardcoding white
+          // here would override any local foregroundColor set per-button (e.g.
+          // on the profile selection screen where the button background is white
+          // in light mode, requiring teal text, not white).
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppConstants.buttonBorderRadius),
           ),
