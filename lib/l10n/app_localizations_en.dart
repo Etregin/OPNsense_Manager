@@ -4283,4 +4283,136 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get netflowAddDestination => 'Add Destination';
+
+  @override
+  String get unboundDns => 'Unbound DNS';
+
+  @override
+  String get unboundOverview => 'Overview';
+
+  @override
+  String get unboundDetails => 'Details';
+
+  @override
+  String get unboundSettings => 'Settings';
+
+  @override
+  String get enableUnboundStatistics => 'Enable Unbound statistics';
+
+  @override
+  String get enableUnboundStatisticsDescription =>
+      'Collect statistics about DNS queries handled by Unbound for reporting.';
+
+  @override
+  String get resetDnsData => 'Reset DNS Data';
+
+  @override
+  String get resetDnsDataConfirmation =>
+      'Do you really want to reset the Unbound statistics data?';
+
+  @override
+  String get dnsDataResetSuccess => 'DNS statistics data has been reset.';
+
+  @override
+  String get unboundSettingsSaved =>
+      'Unbound DNS settings saved and reconfigured.';
+
+  @override
+  String startingFrom(String date) {
+    return 'Starting from $date';
+  }
+
+  @override
+  String get totalQueries => 'Total';
+
+  @override
+  String get resolvedQueries => 'Resolved';
+
+  @override
+  String get blockedQueries => 'Blocked';
+
+  @override
+  String get blocklistSize => 'Size of blocklist';
+
+  @override
+  String get queriesOverTheLast => 'Queries over the last';
+
+  @override
+  String get topClientActivityOverTheLast =>
+      'Top 10 client activity over the last';
+
+  @override
+  String get logarithmic => 'Logarithmic';
+
+  @override
+  String get numberOfDomains => 'Number of domains';
+
+  @override
+  String get topPassedDomains => 'Top passed domains';
+
+  @override
+  String get topBlockedDomains => 'Top blocked domains';
+
+  @override
+  String get domain => 'Domain';
+
+  @override
+  String get count => 'Count';
+
+  @override
+  String get percentOfTotal => '% of Total';
+
+  @override
+  String get unboundStatsDisabledNotice =>
+      'Unbound statistics are currently disabled. Enable statistics in the Settings tab to view DNS reporting data.';
+
+  @override
+  String hoursDuration(int hours) {
+    return '$hours hours';
+  }
+
+  @override
+  String get oneHourDuration => '1 hour';
+
+  @override
+  String get unboundQueryType => 'Type';
+
+  @override
+  String get unboundFamily => 'Family';
+
+  @override
+  String get unboundReturnCode => 'Return Code';
+
+  @override
+  String get unboundResolveTime => 'Resolve Time';
+
+  @override
+  String get unboundTtl => 'TTL';
+
+  @override
+  String get unboundBlocklist => 'Blocklist';
+
+  @override
+  String get unboundPolicy => 'Policy';
+
+  @override
+  String get unboundVisibleColumns => 'Columns';
+
+  @override
+  String get searchQueries => 'Search queries...';
+
+  @override
+  String get unboundQueries => 'Queries';
+
+  @override
+  String get fullScreen => 'Full screen';
+
+  @override
+  String get resetZoom => 'Reset Zoom';
+
+  @override
+  String get zoomIn => 'Zoom In';
+
+  @override
+  String get zoomOut => 'Zoom Out';
 }

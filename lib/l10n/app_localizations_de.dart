@@ -4335,4 +4335,136 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get netflowAddDestination => 'Ziel hinzufügen';
+
+  @override
+  String get unboundDns => 'Unbound DNS';
+
+  @override
+  String get unboundOverview => 'Übersicht';
+
+  @override
+  String get unboundDetails => 'Details';
+
+  @override
+  String get unboundSettings => 'Einstellungen';
+
+  @override
+  String get enableUnboundStatistics => 'Unbound-Statistiken aktivieren';
+
+  @override
+  String get enableUnboundStatisticsDescription =>
+      'Statistiken über von Unbound verarbeitete DNS-Abfragen für Berichte sammeln.';
+
+  @override
+  String get resetDnsData => 'DNS-Daten zurücksetzen';
+
+  @override
+  String get resetDnsDataConfirmation =>
+      'Möchten Sie die Unbound-Statistikdaten wirklich zurücksetzen?';
+
+  @override
+  String get dnsDataResetSuccess => 'DNS-Statistikdaten wurden zurückgesetzt.';
+
+  @override
+  String get unboundSettingsSaved =>
+      'Unbound DNS-Einstellungen gespeichert und neu konfiguriert.';
+
+  @override
+  String startingFrom(String date) {
+    return 'Beginnend ab $date';
+  }
+
+  @override
+  String get totalQueries => 'Gesamt';
+
+  @override
+  String get resolvedQueries => 'Aufgelöst';
+
+  @override
+  String get blockedQueries => 'Blockiert';
+
+  @override
+  String get blocklistSize => 'Größe der Blockliste';
+
+  @override
+  String get queriesOverTheLast => 'Abfragen der letzten';
+
+  @override
+  String get topClientActivityOverTheLast =>
+      'Top-10-Client-Aktivität der letzten';
+
+  @override
+  String get logarithmic => 'Logarithmisch';
+
+  @override
+  String get numberOfDomains => 'Anzahl der Domains';
+
+  @override
+  String get topPassedDomains => 'Top erlaubte Domains';
+
+  @override
+  String get topBlockedDomains => 'Top blockierte Domains';
+
+  @override
+  String get domain => 'Domain';
+
+  @override
+  String get count => 'Anzahl';
+
+  @override
+  String get percentOfTotal => '% der Gesamtzahl';
+
+  @override
+  String get unboundStatsDisabledNotice =>
+      'Unbound-Statistiken sind derzeit deaktiviert. Aktivieren Sie Statistiken auf der Registerkarte Einstellungen, um DNS-Berichtsdaten anzuzeigen.';
+
+  @override
+  String hoursDuration(int hours) {
+    return '$hours Stunden';
+  }
+
+  @override
+  String get oneHourDuration => '1 Stunde';
+
+  @override
+  String get unboundQueryType => 'Typ';
+
+  @override
+  String get unboundFamily => 'Familie';
+
+  @override
+  String get unboundReturnCode => 'Rückgabecode';
+
+  @override
+  String get unboundResolveTime => 'Auflösungszeit';
+
+  @override
+  String get unboundTtl => 'TTL';
+
+  @override
+  String get unboundBlocklist => 'Blockliste';
+
+  @override
+  String get unboundPolicy => 'Richtlinie';
+
+  @override
+  String get unboundVisibleColumns => 'Spalten';
+
+  @override
+  String get searchQueries => 'Abfragen durchsuchen...';
+
+  @override
+  String get unboundQueries => 'Abfragen';
+
+  @override
+  String get fullScreen => 'Vollbild';
+
+  @override
+  String get resetZoom => 'Zoom zurücksetzen';
+
+  @override
+  String get zoomIn => 'Vergrößern';
+
+  @override
+  String get zoomOut => 'Verkleinern';
 }

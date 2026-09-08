@@ -66,6 +66,7 @@ class Routes {
   // ── Reporting routes ─────────────────────────────────────────────────────────
   static const String networkInsight = 'reporting_network_insight';
   static const String netflow = 'reporting_netflow';
+  static const String unboundDns = 'reporting_unbound_dns';
 
   // ── Section prefix strings (used with NavigationService.isRouteInSection) ───
   static const String firewallPrefix = 'firewall_';

@@ -22,6 +22,7 @@ import '../../l10n/app_localizations.dart';
 import '../../screens/live_network_monitor_screen.dart';
 import '../../screens/netflow_screen.dart';
 import '../../screens/network_insight_screen.dart';
+import '../../screens/unbound_dns_screen.dart';
 import 'expansion_navigation_tile.dart';
 import 'navigation_tile.dart';
 
@@ -70,6 +71,13 @@ class ReportingNavigationSection extends StatelessWidget {
           currentRoute: currentRoute,
           targetRoute: Routes.netflow,
           destination: const NetflowScreen(),
+          contentPadding: const EdgeInsets.only(left: 40, right: 16),
+        ),
+        NavigationTile(
+          title: l10n.unboundDns,
+          currentRoute: currentRoute,
+          targetRoute: Routes.unboundDns,
+          destination: const UnboundDnsScreen(),
           contentPadding: const EdgeInsets.only(left: 40, right: 16),
         ),
       ],

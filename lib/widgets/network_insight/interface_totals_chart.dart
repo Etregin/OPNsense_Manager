@@ -28,18 +28,31 @@ import '../../utils/formatters.dart';
 ///
 /// Each distinct interface maps to a unique line colour. The Loopback
 /// interface is hidden unless [showLoopback] is `true`.
-class InterfaceTotalsChart extends StatelessWidget {
+class InterfaceTotalsChart extends StatefulWidget {
   /// All time-series returned by the timeserie endpoint.
   final List<NetworkInsightSeries> series;
 
   /// When `true`, include Loopback (`lo0`) series in the charts.
   final bool showLoopback;
 
+  final bool isFullScreen;
+
   const InterfaceTotalsChart({
     super.key,
     required this.series,
     this.showLoopback = false,
+    this.isFullScreen = false,
   });
+
+  @override
+  State<InterfaceTotalsChart> createState() => _InterfaceTotalsChartState();
+}
+
+class _InterfaceTotalsChartState extends State<InterfaceTotalsChart> {
+  double? _visibleMinX;
+  double? _visibleMaxX;
+  double _baseScaleMinX = 0;
+  double _baseScaleMaxX = 0;
 
   // Fixed colour palette cycling through distinct hues per interface.
   static const List<Color> _palette = [
@@ -57,9 +70,9 @@ class InterfaceTotalsChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    final filtered = showLoopback
-        ? series
-        : series.where((s) => !_isLoopback(s)).toList();
+    final filtered = widget.showLoopback
+        ? widget.series
+        : widget.series.where((s) => !_isLoopback(s)).toList();
 
     final inSeries = filtered.where((s) => s.direction == 'in').toList();
     final outSeries = filtered.where((s) => s.direction == 'out').toList();
@@ -72,17 +85,258 @@ class InterfaceTotalsChart extends StatelessWidget {
       }
     }
 
-    return Column(
+    final globalMinX = filtered.isNotEmpty && filtered.first.values.isNotEmpty
+        ? filtered.first.values.first[0]
+        : 0.0;
+    final globalMaxX = filtered.isNotEmpty && filtered.first.values.isNotEmpty
+        ? filtered.first.values.last[0]
+        : 0.0;
+    final isZoomed = (_visibleMinX != null && _visibleMinX! > globalMinX) ||
+        (_visibleMaxX != null && _visibleMaxX! < globalMaxX);
+
+    Widget content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (widget.isFullScreen)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppConstants.compactPadding),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(child: _buildLegend(context, ifaceOrder, filtered)),
+                IconButton(
+                  icon: const Icon(Icons.zoom_in, size: 20),
+                  tooltip: l10n.zoomIn,
+                  onPressed: () {
+                    final currentMin = _visibleMinX ?? globalMinX;
+                    final currentMax = _visibleMaxX ?? globalMaxX;
+                    final currentRange = currentMax - currentMin;
+                    final newRange = (currentRange * 0.7).clamp(60.0, globalMaxX - globalMinX);
+                    final center = (currentMin + currentMax) / 2;
+                    var newMin = center - (newRange / 2);
+                    var newMax = center + (newRange / 2);
+                    if (newMin < globalMinX) {
+                      newMin = globalMinX;
+                      newMax = (newMin + newRange).clamp(globalMinX, globalMaxX);
+                    }
+                    if (newMax > globalMaxX) {
+                      newMax = globalMaxX;
+                      newMin = (newMax - newRange).clamp(globalMinX, globalMaxX);
+                    }
+                    setState(() {
+                      _visibleMinX = newMin;
+                      _visibleMaxX = newMax;
+                    });
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.zoom_out, size: 20),
+                  tooltip: l10n.zoomOut,
+                  onPressed: !isZoomed
+                      ? null
+                      : () {
+                          final currentMin = _visibleMinX ?? globalMinX;
+                          final currentMax = _visibleMaxX ?? globalMaxX;
+                          final currentRange = currentMax - currentMin;
+                          final newRange = (currentRange / 0.7).clamp(60.0, globalMaxX - globalMinX);
+                          final center = (currentMin + currentMax) / 2;
+                          var newMin = center - (newRange / 2);
+                          var newMax = center + (newRange / 2);
+                          if (newMin <= globalMinX && newMax >= globalMaxX) {
+                            setState(() {
+                              _visibleMinX = null;
+                              _visibleMaxX = null;
+                            });
+                            return;
+                          }
+                          if (newMin < globalMinX) {
+                            newMin = globalMinX;
+                            newMax = (newMin + newRange).clamp(globalMinX, globalMaxX);
+                          }
+                          if (newMax > globalMaxX) {
+                            newMax = globalMaxX;
+                            newMin = (newMax - newRange).clamp(globalMinX, globalMaxX);
+                          }
+                          setState(() {
+                            _visibleMinX = newMin;
+                            _visibleMaxX = newMax;
+                          });
+                        },
+                ),
+                if (isZoomed)
+                  IconButton(
+                    icon: const Icon(Icons.zoom_out_map, size: 20),
+                    tooltip: l10n.resetZoom,
+                    onPressed: () {
+                      setState(() {
+                        _visibleMinX = null;
+                        _visibleMaxX = null;
+                      });
+                    },
+                  ),
+              ],
+            ),
+          ),
         _SectionLabel(label: '↓ ${l10n.timeRangeFrom}'),
-        _buildChart(context, inSeries, ifaceOrder),
+        if (widget.isFullScreen)
+          Expanded(child: _buildInteractiveChart(context, inSeries, ifaceOrder, globalMinX, globalMaxX))
+        else
+          _buildInteractiveChart(context, inSeries, ifaceOrder, globalMinX, globalMaxX),
         const SizedBox(height: AppConstants.standardPadding),
         _SectionLabel(label: '↑ ${l10n.timeRangeTo}'),
-        _buildChart(context, outSeries, ifaceOrder),
-        const SizedBox(height: AppConstants.compactPadding),
-        _buildLegend(context, ifaceOrder, filtered),
+        if (widget.isFullScreen)
+          Expanded(child: _buildInteractiveChart(context, outSeries, ifaceOrder, globalMinX, globalMaxX))
+        else
+          _buildInteractiveChart(context, outSeries, ifaceOrder, globalMinX, globalMaxX),
+        if (!widget.isFullScreen) ...[
+          const SizedBox(height: AppConstants.compactPadding),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(child: _buildLegend(context, ifaceOrder, filtered)),
+              IconButton(
+                icon: const Icon(Icons.zoom_in, size: 20),
+                tooltip: l10n.zoomIn,
+                onPressed: () {
+                  final currentMin = _visibleMinX ?? globalMinX;
+                  final currentMax = _visibleMaxX ?? globalMaxX;
+                  final currentRange = currentMax - currentMin;
+                  final newRange = (currentRange * 0.7).clamp(60.0, globalMaxX - globalMinX);
+                  final center = (currentMin + currentMax) / 2;
+                  var newMin = center - (newRange / 2);
+                  var newMax = center + (newRange / 2);
+                  if (newMin < globalMinX) {
+                    newMin = globalMinX;
+                    newMax = (newMin + newRange).clamp(globalMinX, globalMaxX);
+                  }
+                  if (newMax > globalMaxX) {
+                    newMax = globalMaxX;
+                    newMin = (newMax - newRange).clamp(globalMinX, globalMaxX);
+                  }
+                  setState(() {
+                    _visibleMinX = newMin;
+                    _visibleMaxX = newMax;
+                  });
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.zoom_out, size: 20),
+                tooltip: l10n.zoomOut,
+                onPressed: !isZoomed
+                    ? null
+                    : () {
+                        final currentMin = _visibleMinX ?? globalMinX;
+                        final currentMax = _visibleMaxX ?? globalMaxX;
+                        final currentRange = currentMax - currentMin;
+                        final newRange = (currentRange / 0.7).clamp(60.0, globalMaxX - globalMinX);
+                        final center = (currentMin + currentMax) / 2;
+                        var newMin = center - (newRange / 2);
+                        var newMax = center + (newRange / 2);
+                        if (newMin <= globalMinX && newMax >= globalMaxX) {
+                          setState(() {
+                            _visibleMinX = null;
+                            _visibleMaxX = null;
+                          });
+                          return;
+                        }
+                        if (newMin < globalMinX) {
+                          newMin = globalMinX;
+                          newMax = (newMin + newRange).clamp(globalMinX, globalMaxX);
+                        }
+                        if (newMax > globalMaxX) {
+                          newMax = globalMaxX;
+                          newMin = (newMax - newRange).clamp(globalMinX, globalMaxX);
+                        }
+                        setState(() {
+                          _visibleMinX = newMin;
+                          _visibleMaxX = newMax;
+                        });
+                      },
+              ),
+              if (isZoomed)
+                IconButton(
+                  icon: const Icon(Icons.zoom_out_map, size: 20),
+                  tooltip: l10n.resetZoom,
+                  onPressed: () {
+                    setState(() {
+                      _visibleMinX = null;
+                      _visibleMaxX = null;
+                    });
+                  },
+                ),
+            ],
+          ),
+        ],
       ],
+    );
+
+    return content;
+  }
+
+  Widget _buildInteractiveChart(
+    BuildContext context,
+    List<NetworkInsightSeries> data,
+    List<String> ifaceOrder,
+    double globalMinX,
+    double globalMaxX,
+  ) {
+    final minX = _visibleMinX ?? globalMinX;
+    final maxX = _visibleMaxX ?? globalMaxX;
+    final isZoomed = (_visibleMinX != null && _visibleMinX! > globalMinX) ||
+        (_visibleMaxX != null && _visibleMaxX! < globalMaxX);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final chartWidth = constraints.maxWidth;
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onScaleStart: (details) {
+            _baseScaleMinX = _visibleMinX ?? globalMinX;
+            _baseScaleMaxX = _visibleMaxX ?? globalMaxX;
+          },
+          onScaleUpdate: (details) {
+            if (details.pointerCount >= 2 && details.scale != 1.0) {
+              final baseRange = _baseScaleMaxX - _baseScaleMinX;
+              final newRange = (baseRange / details.scale).clamp(
+                60.0, // Minimum window of 1 minute
+                globalMaxX - globalMinX,
+              );
+              final focalFraction = chartWidth > 0
+                  ? (details.localFocalPoint.dx / chartWidth).clamp(0.0, 1.0)
+                  : 0.5;
+              final focalTimestamp = _baseScaleMinX + (focalFraction * baseRange);
+              var newMin = focalTimestamp - (focalFraction * newRange);
+              var newMax = newMin + newRange;
+
+              if (newMin < globalMinX) {
+                newMin = globalMinX;
+                newMax = (newMin + newRange).clamp(globalMinX, globalMaxX);
+              }
+              if (newMax > globalMaxX) {
+                newMax = globalMaxX;
+                newMin = (newMax - newRange).clamp(globalMinX, globalMaxX);
+              }
+              setState(() {
+                _visibleMinX = newMin;
+                _visibleMaxX = newMax;
+              });
+            } else if (details.pointerCount == 1 && details.focalPointDelta.dx != 0 && isZoomed) {
+              final range = maxX - minX;
+              final deltaFraction = chartWidth > 0
+                  ? -details.focalPointDelta.dx / chartWidth
+                  : -details.focalPointDelta.dx / 300.0;
+              final shift = deltaFraction * range;
+              var newMin = (minX + shift).clamp(globalMinX, globalMaxX - range);
+              var newMax = newMin + range;
+              setState(() {
+                _visibleMinX = newMin;
+                _visibleMaxX = newMax;
+              });
+            }
+          },
+          child: _buildChart(context, data, ifaceOrder, minX, maxX),
+        );
+      },
     );
   }
 
@@ -90,6 +344,8 @@ class InterfaceTotalsChart extends StatelessWidget {
     BuildContext context,
     List<NetworkInsightSeries> data,
     List<String> ifaceOrder,
+    double minX,
+    double maxX,
   ) {
     if (data.isEmpty) {
       return const SizedBox(height: 160);
@@ -124,12 +380,8 @@ class InterfaceTotalsChart extends StatelessWidget {
     // Add 10% headroom; floor at a small positive so the chart isn't flat.
     maxY = (maxY * 1.1).clamp(100.0, double.infinity);
 
-    // X range from first/last timestamp of first series (all share the same range).
-    double minX = data.first.values.first[0];
-    double maxX = data.first.values.last[0];
-
     return SizedBox(
-      height: 160,
+      height: widget.isFullScreen ? null : 190,
       child: LineChart(
         LineChartData(
           minX: minX,
@@ -172,8 +424,22 @@ class InterfaceTotalsChart extends StatelessWidget {
             topTitles: const AxisTitles(
               sideTitles: SideTitles(showTitles: false),
             ),
-            bottomTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 22,
+                getTitlesWidget: (val, meta) {
+                  if (val == meta.max || val == meta.min) return const SizedBox.shrink();
+                  final dt = DateTime.fromMillisecondsSinceEpoch((val * 1000).toInt());
+                  return Text(
+                    Formatters.formatTime(dt),
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          fontSize: 9,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                  );
+                },
+              ),
             ),
           ),
           lineTouchData: LineTouchData(

@@ -222,4 +222,27 @@ class ApiEndpoints {
     required int resolution,
   }) =>
       '/diagnostics/networkinsight/export/$collection/$fromTs/$toTs/$resolution';
+
+  // ── Unbound DNS Reporting ───────────────────────────────────────────────────
+  static const String unboundOverviewIsEnabled = '/unbound/overview/is_enabled';
+  static const String unboundOverviewReset = '/unbound/overview/reset';
+  static const String unboundOverviewGetPolicies = '/unbound/overview/get_policies';
+  static const String unboundOverviewSearchQueries = '/unbound/overview/search_queries/';
+  static const String unboundSettingsGet = '/unbound/settings/get';
+  static const String unboundSettingsSet = '/unbound/settings/set';
+  static const String unboundServiceReconfigureGeneral = '/unbound/service/reconfigure_general';
+  static const String unboundServiceStatus = '/unbound/service/status';
+
+  /// Unbound DNS rolling queries endpoint.
+  /// [hours] is typically 24, 12, or 1.
+  /// When [clientActivity] is true (passes `/1` suffix), returns top client activity time series.
+  static String unboundOverviewRolling(int hours, {bool clientActivity = false}) =>
+      clientActivity
+          ? '/unbound/overview/rolling/$hours/1'
+          : '/unbound/overview/rolling/$hours';
+
+  /// Unbound DNS totals endpoint with domain limit.
+  /// [limit] is typically 10, 25, 50, 75, 100.
+  static String unboundOverviewTotals(int limit) =>
+      '/unbound/overview/totals/$limit';
 }

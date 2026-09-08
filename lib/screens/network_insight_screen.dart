@@ -328,6 +328,41 @@ class _TotalsTab extends StatelessWidget {
                       value: showLoopback,
                       onChanged: onShowLoopbackChanged,
                     ),
+                    const SizedBox(width: AppConstants.compactPadding),
+                    IconButton(
+                      icon: const Icon(Icons.fullscreen, size: 20),
+                      tooltip: l10n.fullScreen,
+                      onPressed: vm.timeseries.isEmpty
+                          ? null
+                          : () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  fullscreenDialog: true,
+                                  builder: (ctx) {
+                                    return StatefulBuilder(
+                                      builder: (context, setDialogState) {
+                                        return Scaffold(
+                                          appBar: AppBar(
+                                            title: Text(l10n.interfaceTotalsBitsPerSec),
+                                          ),
+                                          body: SafeArea(
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(AppConstants.standardPadding),
+                                              child: InterfaceTotalsChart(
+                                                series: vm.timeseries,
+                                                showLoopback: showLoopback,
+                                                isFullScreen: true,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                    ),
                   ],
                 ),
               ],

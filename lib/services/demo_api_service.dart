@@ -50,8 +50,14 @@ import '../models/network_insight_direction_total.dart';
 import '../models/network_insight_timeserie.dart';
 import '../models/network_insight_top_addr.dart';
 import '../models/network_insight_top_port.dart';
+import '../models/unbound_overview_status.dart';
+import '../models/unbound_query_item.dart';
+import '../models/unbound_rolling.dart';
+import '../models/unbound_settings.dart';
+import '../models/unbound_totals.dart';
 import 'demo_data_service.dart';
 import 'demo/demo_network_insight_data_generator.dart';
+import 'demo/demo_unbound_data_generator.dart';
 import 'opnsense_api_service.dart';
 import 'demo/demo_api_decorator.dart';
 
@@ -61,6 +67,8 @@ class DemoApiService {
   final DemoDataService _demoDataService = DemoDataService();
   final DemoNetworkInsightDataGenerator _insightGenerator =
       DemoNetworkInsightDataGenerator();
+  final DemoUnboundDataGenerator _unboundGenerator =
+      DemoUnboundDataGenerator();
   bool _isDemoMode = false;
 
   DemoApiService(this._realApiService);
@@ -2006,6 +2014,109 @@ ${List.generate(16, (i) => List.generate(32, (j) => '0123456789abcdef'[(i * 32 +
         ],
         realAction: () => _realApiService.getNetflowCacheStats(),
         delayMs: 400,
+      );
+
+  // ── Unbound DNS Reporting ───────────────────────────────────────────────────
+
+  Future<UnboundOverviewStatus> checkUnboundOverviewEnabled() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _unboundGenerator.generateOverviewStatus(),
+        realAction: () => _realApiService.checkUnboundOverviewEnabled(),
+        delayMs: 300,
+      );
+
+  Future<UnboundTotals> getUnboundTotals({int limit = 10}) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _unboundGenerator.generateTotals(limit: limit),
+        realAction: () => _realApiService.getUnboundTotals(limit: limit),
+        delayMs: 400,
+      );
+
+  Future<List<UnboundRollingPoint>> getUnboundRolling(int hours) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _unboundGenerator.generateRolling(hours),
+        realAction: () => _realApiService.getUnboundRolling(hours),
+        delayMs: 400,
+      );
+
+  Future<List<UnboundRollingClientPoint>> getUnboundClientActivity(int hours) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _unboundGenerator.generateClientActivity(hours),
+        realAction: () => _realApiService.getUnboundClientActivity(hours),
+        delayMs: 400,
+      );
+
+  Future<UnboundQuerySearchResponse> searchUnboundQueries({
+    int current = 1,
+    int rowCount = 50,
+    String? searchPhrase,
+    String? client,
+    int? timeStart,
+    int? timeEnd,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _unboundGenerator.generateQueries(
+          current: current,
+          rowCount: rowCount,
+          searchPhrase: searchPhrase,
+          client: client,
+          timeStart: timeStart,
+          timeEnd: timeEnd,
+        ),
+        realAction: () => _realApiService.searchUnboundQueries(
+          current: current,
+          rowCount: rowCount,
+          searchPhrase: searchPhrase,
+          client: client,
+          timeStart: timeStart,
+          timeEnd: timeEnd,
+        ),
+        delayMs: 400,
+      );
+
+  Future<UnboundSettings> getUnboundSettings() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _unboundGenerator.generateSettings(),
+        realAction: () => _realApiService.getUnboundSettings(),
+        delayMs: 300,
+      );
+
+  Future<void> setUnboundStatsEnabled(bool enabled) =>
+      DemoApiDecorator.execute<void>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _unboundGenerator.setStatsEnabled(enabled),
+        realAction: () => _realApiService.setUnboundStatsEnabled(enabled),
+        delayMs: 400,
+      );
+
+  Future<void> reconfigureUnboundGeneral() =>
+      DemoApiDecorator.execute<void>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.reconfigureUnboundGeneral(),
+        delayMs: 500,
+      );
+
+  Future<void> resetUnboundDnsData() =>
+      DemoApiDecorator.execute<void>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.resetUnboundDnsData(),
+        delayMs: 400,
+      );
+
+  Future<String> getUnboundServiceStatus() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => 'running',
+        realAction: () => _realApiService.getUnboundServiceStatus(),
+        delayMs: 200,
       );
 
   /// Clear service state

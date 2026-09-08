@@ -4269,4 +4269,136 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get netflowAddDestination => 'إضافة وجهة';
+
+  @override
+  String get unboundDns => 'Unbound DNS';
+
+  @override
+  String get unboundOverview => 'نظرة عامة';
+
+  @override
+  String get unboundDetails => 'التفاصيل';
+
+  @override
+  String get unboundSettings => 'الإعدادات';
+
+  @override
+  String get enableUnboundStatistics => 'تفعيل إحصائيات Unbound';
+
+  @override
+  String get enableUnboundStatisticsDescription =>
+      'جمع إحصائيات حول استعلامات DNS المعالجة بواسطة Unbound للتقارير.';
+
+  @override
+  String get resetDnsData => 'إعادة تعيين بيانات DNS';
+
+  @override
+  String get resetDnsDataConfirmation =>
+      'هل تريد حقًا إعادة تعيين بيانات إحصائيات Unbound؟';
+
+  @override
+  String get dnsDataResetSuccess =>
+      'تمت إعادة تعيين بيانات إحصائيات DNS بنجاح.';
+
+  @override
+  String get unboundSettingsSaved =>
+      'تم حفظ إعدادات Unbound DNS وإعادة تكوينها.';
+
+  @override
+  String startingFrom(String date) {
+    return 'بدءاً من $date';
+  }
+
+  @override
+  String get totalQueries => 'الإجمالي';
+
+  @override
+  String get resolvedQueries => 'تم حلها';
+
+  @override
+  String get blockedQueries => 'محظورة';
+
+  @override
+  String get blocklistSize => 'حجم قائمة الحظر';
+
+  @override
+  String get queriesOverTheLast => 'الاستعلامات خلال آخر';
+
+  @override
+  String get topClientActivityOverTheLast => 'نشاط أفضل 10 عملاء خلال آخر';
+
+  @override
+  String get logarithmic => 'لوغاريتمي';
+
+  @override
+  String get numberOfDomains => 'عدد النطاقات';
+
+  @override
+  String get topPassedDomains => 'أكثر النطاقات المسموح بها';
+
+  @override
+  String get topBlockedDomains => 'أكثر النطاقات المحظورة';
+
+  @override
+  String get domain => 'النطاق';
+
+  @override
+  String get count => 'العدد';
+
+  @override
+  String get percentOfTotal => '% من الإجمالي';
+
+  @override
+  String get unboundStatsDisabledNotice =>
+      'إحصائيات Unbound معطلة حاليًا. قم بتمكين الإحصائيات في علامة تبويب الإعدادات لعرض بيانات تقارير DNS.';
+
+  @override
+  String hoursDuration(int hours) {
+    return '$hours ساعات';
+  }
+
+  @override
+  String get oneHourDuration => 'ساعة واحدة';
+
+  @override
+  String get unboundQueryType => 'النوع';
+
+  @override
+  String get unboundFamily => 'العائلة';
+
+  @override
+  String get unboundReturnCode => 'رمز الإرجاع';
+
+  @override
+  String get unboundResolveTime => 'وقت الحل';
+
+  @override
+  String get unboundTtl => 'TTL';
+
+  @override
+  String get unboundBlocklist => 'قائمة الحظر';
+
+  @override
+  String get unboundPolicy => 'السياسة';
+
+  @override
+  String get unboundVisibleColumns => 'الأعمدة';
+
+  @override
+  String get searchQueries => 'بحث في الاستعلامات...';
+
+  @override
+  String get unboundQueries => 'الاستعلامات';
+
+  @override
+  String get fullScreen => 'ملء الشاشة';
+
+  @override
+  String get resetZoom => 'إعادة تعيين التكبير';
+
+  @override
+  String get zoomIn => 'تكبير';
+
+  @override
+  String get zoomOut => 'تصغير';
 }
