@@ -223,6 +223,17 @@ class ApiEndpoints {
   }) =>
       '/diagnostics/networkinsight/export/$collection/$fromTs/$toTs/$resolution';
 
+  // ── System Health (RRD) Reporting ───────────────────────────────────────────
+  static const String systemHealthGet = '/diagnostics/systemhealth/get';
+  static const String systemHealthSet = '/diagnostics/systemhealth/set';
+  static const String systemHealthGetRrdList =
+      '/diagnostics/systemhealth/get_rrd_list';
+  static const String systemHealthDelRrd = '/diagnostics/systemhealth/del_rrd';
+  static String systemHealthDelRrdFile(String filename) =>
+      '/diagnostics/systemhealth/del_rrd/$filename';
+  static String systemHealthGetGraph(String key, {int period = 0}) =>
+      '/diagnostics/systemhealth/get_system_health/$key/$period';
+
   // ── Unbound DNS Reporting ───────────────────────────────────────────────────
   static const String unboundOverviewIsEnabled = '/unbound/overview/is_enabled';
   static const String unboundOverviewReset = '/unbound/overview/reset';

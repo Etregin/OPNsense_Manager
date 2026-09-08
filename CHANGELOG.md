@@ -12,6 +12,7 @@ All notable changes to OPNsense Manager will be documented in this file.
 - Added alias autocomplete, GeoIP region selection, authentication fields, and inline API validation.
 - Added NetFlow Config / Insight Analyzer with interactive drilldown overview charts with zoom and pan, top-talker breakdowns, flow details with filters, and CSV export.
 - Added Unbound DNS reporting under Reporting with dynamic overview metrics, interactive drilldown charts with zoom and pan, detailed query search table, and settings management.
+- Added Reporting Health graphs with category and subject selection.
 
 
 ### Changed

@@ -50,6 +50,9 @@ import '../models/network_insight_direction_total.dart';
 import '../models/network_insight_timeserie.dart';
 import '../models/network_insight_top_addr.dart';
 import '../models/network_insight_top_port.dart';
+import '../models/system_health_graph.dart';
+import '../models/system_health_rrd_list.dart';
+import '../models/system_health_status.dart';
 import '../models/unbound_overview_status.dart';
 import '../models/unbound_query_item.dart';
 import '../models/unbound_rolling.dart';
@@ -57,6 +60,7 @@ import '../models/unbound_settings.dart';
 import '../models/unbound_totals.dart';
 import 'demo_data_service.dart';
 import 'demo/demo_network_insight_data_generator.dart';
+import 'demo/demo_system_health_data_generator.dart';
 import 'demo/demo_unbound_data_generator.dart';
 import 'opnsense_api_service.dart';
 import 'demo/demo_api_decorator.dart';
@@ -69,6 +73,8 @@ class DemoApiService {
       DemoNetworkInsightDataGenerator();
   final DemoUnboundDataGenerator _unboundGenerator =
       DemoUnboundDataGenerator();
+  final DemoSystemHealthDataGenerator _systemHealthGenerator =
+      DemoSystemHealthDataGenerator();
   bool _isDemoMode = false;
 
   DemoApiService(this._realApiService);
@@ -2015,6 +2021,55 @@ ${List.generate(16, (i) => List.generate(32, (j) => '0123456789abcdef'[(i * 32 +
         realAction: () => _realApiService.getNetflowCacheStats(),
         delayMs: 400,
       );
+
+  // ── System Health Reporting ─────────────────────────────────────────────────
+
+  Future<void> setSystemHealthEnabled(bool enabled) =>
+      DemoApiDecorator.execute<void>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.setSystemHealthEnabled(enabled),
+      );
+
+  Future<void> deleteSystemHealthRrdFile(String filename) =>
+      DemoApiDecorator.execute<void>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.deleteSystemHealthRrdFile(filename),
+      );
+
+  Future<void> deleteAllSystemHealthRrd() =>
+      DemoApiDecorator.execute<void>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.deleteAllSystemHealthRrd(),
+      );
+
+  Future<SystemHealthStatus> getSystemHealthStatus() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _systemHealthGenerator.generateStatus(),
+        realAction: () => _realApiService.getSystemHealthStatus(),
+        delayMs: 300,
+      );
+
+  Future<SystemHealthRrdList> getSystemHealthRrdList() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _systemHealthGenerator.generateRrdList(),
+        realAction: () => _realApiService.getSystemHealthRrdList(),
+        delayMs: 300,
+      );
+
+  Future<SystemHealthGraphResponse> getSystemHealthGraph(
+    String key, {
+    int period = 0,
+  }) => DemoApiDecorator.execute(
+    isDemoMode: _isDemoMode,
+    demoAction: () async => _systemHealthGenerator.generateGraph(key),
+    realAction: () => _realApiService.getSystemHealthGraph(key, period: period),
+    delayMs: 400,
+  );
 
   // ── Unbound DNS Reporting ───────────────────────────────────────────────────
 
