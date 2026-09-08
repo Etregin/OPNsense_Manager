@@ -81,7 +81,7 @@ class ApiEndpoints {
   static const String openvpnInstancesAdd = '/openvpn/instances/add/';
   static const String openvpnInstancesGetNew = '/openvpn/instances/get/';
   static const String openvpnServiceReconfigure = '/openvpn/service/reconfigure';
-  static const String openvpnInstancesSearchSessions = '/openvpn/service/search_sessions';
+  static const String openvpnServiceSearchSessions = '/openvpn/service/search_sessions';
   static const String openvpnInstancesSearchRoutes = '/openvpn/service/search_routes';
   static const String openvpnStaticKeySearch = '/openvpn/instances/search_static_key/';
   static const String openvpnStaticKeyGetNew = '/openvpn/instances/get_static_key/';

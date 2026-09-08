@@ -886,7 +886,7 @@ class OpenvpnService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        ApiEndpoints.openvpnInstancesSearchSessions,
+        ApiEndpoints.openvpnServiceSearchSessions,
         data: {
           'current': current,
           'rowCount': rowCount,
