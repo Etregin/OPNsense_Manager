@@ -22,14 +22,21 @@ part 'unbound_totals.g.dart';
 
 @JsonSerializable()
 class UnboundTotalCategory {
+  @JsonKey(fromJson: _parseInt)
   final int total;
   @JsonKey(fromJson: _parseDouble)
   final double pcnt;
 
   const UnboundTotalCategory({
-    required this.total,
-    required this.pcnt,
+    this.total = 0,
+    this.pcnt = 0.0,
   });
+
+  static int _parseInt(dynamic value) {
+    if (value == null) return 0;
+    if (value is num) return value.toInt();
+    return int.tryParse(value.toString()) ?? 0;
+  }
 
   static double _parseDouble(dynamic value) {
     if (value == null) return 0.0;
@@ -45,22 +52,18 @@ class UnboundTotalCategory {
 
 @JsonSerializable()
 class UnboundDomainStat {
+  @JsonKey(defaultValue: '')
   final String domain;
+  @JsonKey(fromJson: UnboundTotalCategory._parseInt)
   final int total;
-  @JsonKey(fromJson: _parseDouble)
+  @JsonKey(fromJson: UnboundTotalCategory._parseDouble)
   final double pcnt;
 
   const UnboundDomainStat({
-    required this.domain,
-    required this.total,
-    required this.pcnt,
+    this.domain = '',
+    this.total = 0,
+    this.pcnt = 0.0,
   });
-
-  static double _parseDouble(dynamic value) {
-    if (value == null) return 0.0;
-    if (value is num) return value.toDouble();
-    return double.tryParse(value.toString()) ?? 0.0;
-  }
 
   factory UnboundDomainStat.fromJson(Map<String, dynamic> json) =>
       _$UnboundDomainStatFromJson(json);
@@ -70,9 +73,11 @@ class UnboundDomainStat {
 
 @JsonSerializable()
 class UnboundTotals {
+  @JsonKey(fromJson: UnboundTotalCategory._parseInt)
   final int total;
-  @JsonKey(name: 'blocklist_size')
+  @JsonKey(name: 'blocklist_size', fromJson: UnboundTotalCategory._parseInt)
   final int blocklistSize;
+  @JsonKey(fromJson: UnboundTotalCategory._parseInt)
   final int passed;
   final UnboundTotalCategory? resolved;
   final UnboundTotalCategory? blocked;
@@ -85,9 +90,9 @@ class UnboundTotals {
   final List<UnboundDomainStat> topBlocked;
 
   const UnboundTotals({
-    required this.total,
-    required this.blocklistSize,
-    required this.passed,
+    this.total = 0,
+    this.blocklistSize = 0,
+    this.passed = 0,
     this.resolved,
     this.blocked,
     this.local,
@@ -98,13 +103,13 @@ class UnboundTotals {
 
   static List<UnboundDomainStat> _parseDomainStats(dynamic value) {
     if (value == null) return [];
-    if (value is Map<String, dynamic>) {
+    if (value is Map) {
       final list = <UnboundDomainStat>[];
       value.forEach((domain, data) {
-        if (data is Map<String, dynamic>) {
+        if (data is Map) {
           list.add(UnboundDomainStat(
-            domain: domain,
-            total: (data['total'] as num?)?.toInt() ?? 0,
+            domain: domain.toString(),
+            total: UnboundTotalCategory._parseInt(data['total']),
             pcnt: UnboundTotalCategory._parseDouble(data['pcnt']),
           ));
         }
@@ -114,8 +119,11 @@ class UnboundTotals {
     if (value is List) {
       final list = <UnboundDomainStat>[];
       for (final item in value) {
-        if (item is Map<String, dynamic>) {
-          list.add(UnboundDomainStat.fromJson(item));
+        if (item is Map) {
+          final map = item is Map<String, dynamic>
+              ? item
+              : item.map((k, v) => MapEntry(k.toString(), v));
+          list.add(UnboundDomainStat.fromJson(map));
         }
       }
       return list;

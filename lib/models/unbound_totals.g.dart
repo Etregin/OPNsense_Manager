@@ -9,8 +9,8 @@ part of 'unbound_totals.dart';
 UnboundTotalCategory _$UnboundTotalCategoryFromJson(
   Map<String, dynamic> json,
 ) => UnboundTotalCategory(
-  total: (json['total'] as num).toInt(),
-  pcnt: UnboundTotalCategory._parseDouble(json['pcnt']),
+  total: json['total'] == null ? 0 : UnboundTotalCategory._parseInt(json['total']),
+  pcnt: json['pcnt'] == null ? 0.0 : UnboundTotalCategory._parseDouble(json['pcnt']),
 );
 
 Map<String, dynamic> _$UnboundTotalCategoryToJson(
@@ -19,9 +19,9 @@ Map<String, dynamic> _$UnboundTotalCategoryToJson(
 
 UnboundDomainStat _$UnboundDomainStatFromJson(Map<String, dynamic> json) =>
     UnboundDomainStat(
-      domain: json['domain'] as String,
-      total: (json['total'] as num).toInt(),
-      pcnt: UnboundDomainStat._parseDouble(json['pcnt']),
+      domain: json['domain'] as String? ?? '',
+      total: json['total'] == null ? 0 : UnboundTotalCategory._parseInt(json['total']),
+      pcnt: json['pcnt'] == null ? 0.0 : UnboundTotalCategory._parseDouble(json['pcnt']),
     );
 
 Map<String, dynamic> _$UnboundDomainStatToJson(UnboundDomainStat instance) =>
@@ -34,9 +34,9 @@ Map<String, dynamic> _$UnboundDomainStatToJson(UnboundDomainStat instance) =>
 UnboundTotals _$UnboundTotalsFromJson(
   Map<String, dynamic> json,
 ) => UnboundTotals(
-  total: (json['total'] as num).toInt(),
-  blocklistSize: (json['blocklist_size'] as num).toInt(),
-  passed: (json['passed'] as num).toInt(),
+  total: json['total'] == null ? 0 : UnboundTotalCategory._parseInt(json['total']),
+  blocklistSize: json['blocklist_size'] == null ? 0 : UnboundTotalCategory._parseInt(json['blocklist_size']),
+  passed: json['passed'] == null ? 0 : UnboundTotalCategory._parseInt(json['passed']),
   resolved: json['resolved'] == null
       ? null
       : UnboundTotalCategory.fromJson(json['resolved'] as Map<String, dynamic>),

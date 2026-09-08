@@ -51,10 +51,16 @@ class UnboundDnsService extends BaseOPNsenseService {
     ensureInitialized();
     try {
       final response = await dio.get(ApiEndpoints.unboundOverviewTotals(limit));
-      if (response.data is Map<String, dynamic>) {
-        return UnboundTotals.fromJson(response.data as Map<String, dynamic>);
+      if (response.data is Map) {
+        final map = response.data is Map<String, dynamic>
+            ? response.data as Map<String, dynamic>
+            : (response.data as Map).map((k, v) => MapEntry(k.toString(), v));
+        return UnboundTotals.fromJson(map);
       }
-      throw const ApiException('Invalid totals response', null, ApiErrorType.serverError);
+      if (response.data is List || response.data == null) {
+        return const UnboundTotals();
+      }
+      return const UnboundTotals();
     } on DioException catch (e) {
       throw handleDioError(e);
     }
@@ -68,20 +74,20 @@ class UnboundDnsService extends BaseOPNsenseService {
     try {
       final response = await dio.get(ApiEndpoints.unboundOverviewRolling(hours));
       final result = <UnboundRollingPoint>[];
-      if (response.data is Map<String, dynamic>) {
-        final map = response.data as Map<String, dynamic>;
+      if (response.data is Map) {
+        final map = response.data as Map;
         map.forEach((tsKey, pointData) {
-          if (pointData is Map<String, dynamic>) {
-            final ts = double.tryParse(tsKey) ?? 0.0;
+          if (pointData is Map) {
+            final ts = double.tryParse(tsKey.toString()) ?? 0.0;
             result.add(UnboundRollingPoint(
               timestamp: ts,
-              total: (pointData['total'] as num?)?.toInt() ?? 0,
-              passed: (pointData['passed'] as num?)?.toInt() ?? 0,
-              blocked: (pointData['blocked'] as num?)?.toInt() ?? 0,
-              dropped: (pointData['dropped'] as num?)?.toInt() ?? 0,
-              resolved: (pointData['resolved'] as num?)?.toInt() ?? 0,
-              local: (pointData['local'] as num?)?.toInt() ?? 0,
-              cached: (pointData['cached'] as num?)?.toInt() ?? 0,
+              total: (pointData['total'] as num?)?.toInt() ?? int.tryParse(pointData['total']?.toString() ?? '') ?? 0,
+              passed: (pointData['passed'] as num?)?.toInt() ?? int.tryParse(pointData['passed']?.toString() ?? '') ?? 0,
+              blocked: (pointData['blocked'] as num?)?.toInt() ?? int.tryParse(pointData['blocked']?.toString() ?? '') ?? 0,
+              dropped: (pointData['dropped'] as num?)?.toInt() ?? int.tryParse(pointData['dropped']?.toString() ?? '') ?? 0,
+              resolved: (pointData['resolved'] as num?)?.toInt() ?? int.tryParse(pointData['resolved']?.toString() ?? '') ?? 0,
+              local: (pointData['local'] as num?)?.toInt() ?? int.tryParse(pointData['local']?.toString() ?? '') ?? 0,
+              cached: (pointData['cached'] as num?)?.toInt() ?? int.tryParse(pointData['cached']?.toString() ?? '') ?? 0,
             ));
           }
         });
@@ -103,17 +109,17 @@ class UnboundDnsService extends BaseOPNsenseService {
         ApiEndpoints.unboundOverviewRolling(hours, clientActivity: true),
       );
       final result = <UnboundRollingClientPoint>[];
-      if (response.data is Map<String, dynamic>) {
-        final map = response.data as Map<String, dynamic>;
+      if (response.data is Map) {
+        final map = response.data as Map;
         map.forEach((tsKey, clientsData) {
-          final ts = double.tryParse(tsKey) ?? 0.0;
+          final ts = double.tryParse(tsKey.toString()) ?? 0.0;
           final clientList = <UnboundClientHit>[];
-          if (clientsData is Map<String, dynamic>) {
+          if (clientsData is Map) {
             clientsData.forEach((ip, clientInfo) {
-              if (clientInfo is Map<String, dynamic>) {
+              if (clientInfo is Map) {
                 clientList.add(UnboundClientHit(
-                  ip: ip,
-                  count: (clientInfo['count'] as num?)?.toInt() ?? 0,
+                  ip: ip.toString(),
+                  count: (clientInfo['count'] as num?)?.toInt() ?? int.tryParse(clientInfo['count']?.toString() ?? '') ?? 0,
                   hostname: clientInfo['hostname']?.toString() ?? '',
                 ));
               }

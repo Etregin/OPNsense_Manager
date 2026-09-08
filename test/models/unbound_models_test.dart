@@ -69,6 +69,46 @@ void main() {
       expect(totals.top.first.pcnt, 9.47);
       expect(totals.topBlocked, isEmpty);
     });
+
+    test('parses empty or reset totals response safely', () {
+      final emptyJson = <String, dynamic>{};
+      final totals = UnboundTotals.fromJson(emptyJson);
+
+      expect(totals.total, 0);
+      expect(totals.blocklistSize, 0);
+      expect(totals.passed, 0);
+      expect(totals.resolved, isNull);
+      expect(totals.blocked, isNull);
+      expect(totals.local, isNull);
+      expect(totals.startTime, isNull);
+      expect(totals.top, isEmpty);
+      expect(totals.topBlocked, isEmpty);
+    });
+
+    test('parses totals response with null and string numeric values', () {
+      final jsonWithStrings = {
+        'total': '120',
+        'blocklist_size': null,
+        'passed': '100',
+        'resolved': {'total': '50', 'pcnt': '41.6'},
+        'blocked': {'total': 0, 'pcnt': null},
+        'top': {
+          'example.com': {'total': '10', 'pcnt': '8.3'},
+        },
+      };
+      final totals = UnboundTotals.fromJson(jsonWithStrings);
+
+      expect(totals.total, 120);
+      expect(totals.blocklistSize, 0);
+      expect(totals.passed, 100);
+      expect(totals.resolved?.total, 50);
+      expect(totals.resolved?.pcnt, 41.6);
+      expect(totals.blocked?.total, 0);
+      expect(totals.blocked?.pcnt, 0.0);
+      expect(totals.top.first.domain, 'example.com');
+      expect(totals.top.first.total, 10);
+      expect(totals.top.first.pcnt, 8.3);
+    });
   });
 
   group('UnboundRollingPoint', () {
