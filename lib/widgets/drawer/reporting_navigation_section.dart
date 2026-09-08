@@ -22,14 +22,15 @@ import '../../l10n/app_localizations.dart';
 import '../../screens/live_network_monitor_screen.dart';
 import '../../screens/netflow_screen.dart';
 import '../../screens/network_insight_screen.dart';
+import '../../screens/system_health_screen.dart';
 import '../../screens/unbound_dns_screen.dart';
 import 'expansion_navigation_tile.dart';
 import 'navigation_tile.dart';
 
 /// Reporting navigation section for the app drawer.
 ///
-/// Contains the Live Network Monitor and Network Insight sub-screens,
-/// grouped under an expandable "Reporting" tile.
+/// Destinations (in order): Health, Insights, NetFlow, Live Network Monitor,
+/// Unbound DNS.
 class ReportingNavigationSection extends StatelessWidget {
   final String currentRoute;
   final bool isExpanded;
@@ -53,10 +54,10 @@ class ReportingNavigationSection extends StatelessWidget {
       onExpansionChanged: onExpansionChanged,
       children: [
         NavigationTile(
-          title: l10n.liveNetworkMonitor,
+          title: l10n.reportingHealth,
           currentRoute: currentRoute,
-          targetRoute: Routes.liveNetworkMonitor,
-          destination: const LiveNetworkMonitorScreen(),
+          targetRoute: Routes.reportingHealth,
+          destination: const SystemHealthScreen(),
           contentPadding: const EdgeInsets.only(left: 40, right: 16),
         ),
         NavigationTile(
@@ -71,6 +72,13 @@ class ReportingNavigationSection extends StatelessWidget {
           currentRoute: currentRoute,
           targetRoute: Routes.netflow,
           destination: const NetflowScreen(),
+          contentPadding: const EdgeInsets.only(left: 40, right: 16),
+        ),
+        NavigationTile(
+          title: l10n.liveNetworkMonitor,
+          currentRoute: currentRoute,
+          targetRoute: Routes.liveNetworkMonitor,
+          destination: const LiveNetworkMonitorScreen(),
           contentPadding: const EdgeInsets.only(left: 40, right: 16),
         ),
         NavigationTile(

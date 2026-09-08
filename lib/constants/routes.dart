@@ -64,6 +64,7 @@ class Routes {
   static const String tailscaleStatus = 'tailscale_status';
 
   // ── Reporting routes ─────────────────────────────────────────────────────────
+  static const String reportingHealth = 'reporting_health';
   static const String networkInsight = 'reporting_network_insight';
   static const String netflow = 'reporting_netflow';
   static const String unboundDns = 'reporting_unbound_dns';

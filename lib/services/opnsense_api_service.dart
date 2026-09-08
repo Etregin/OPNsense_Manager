@@ -52,6 +52,9 @@ import '../models/openvpn_session_search_response.dart';
 import '../models/openvpn_route_search_response.dart';
 import '../models/openvpn_log_search_response.dart';
 import '../models/neighbor.dart';
+import '../models/system_health_graph.dart';
+import '../models/system_health_rrd_list.dart';
+import '../models/system_health_status.dart';
 import '../models/unbound_overview_status.dart';
 import '../models/unbound_query_item.dart';
 import '../models/unbound_rolling.dart';
@@ -78,6 +81,7 @@ import 'tailscale/tailscale_service.dart';
 import 'vpn/openvpn_service.dart';
 import 'system/system_log_service.dart';
 import 'unbound/unbound_dns_service.dart';
+import 'reporting/system_health_service.dart';
 
 // Re-export ApiException and helper classes for backward compatibility
 export 'base/api_exception.dart';
@@ -112,6 +116,7 @@ class OPNsenseApiService {
   final NetflowConfigService _netflowConfigService = NetflowConfigService();
   final NetworkInsightService _networkInsightService = NetworkInsightService();
   final UnboundDnsService _unboundDnsService = UnboundDnsService();
+  final SystemHealthService _systemHealthService = SystemHealthService();
 
   Dio? _dio;
   OPNsenseConfig? _config;
@@ -164,6 +169,7 @@ class OPNsenseApiService {
     _netflowConfigService.init(_dio!, config);
     _networkInsightService.init(_dio!, config);
     _unboundDnsService.init(_dio!, config);
+    _systemHealthService.init(_dio!, config);
   }
 
   /// Test connection to OPNsense
@@ -225,6 +231,7 @@ class OPNsenseApiService {
     _netflowConfigService.clear();
     _networkInsightService.clear();
     _unboundDnsService.clear();
+    _systemHealthService.clear();
 
     // Clear main service state
     _dio = null;
@@ -813,6 +820,30 @@ class OPNsenseApiService {
         toTs: toTs,
         resolution: resolution,
       );
+
+  // ============================================================================
+  // System Health Reporting Delegations
+  // ============================================================================
+
+  Future<void> setSystemHealthEnabled(bool enabled) =>
+      _systemHealthService.setEnabled(enabled);
+
+  Future<void> deleteSystemHealthRrdFile(String filename) =>
+      _systemHealthService.deleteRrdFile(filename);
+
+  Future<void> deleteAllSystemHealthRrd() =>
+      _systemHealthService.deleteAllRrd();
+
+  Future<SystemHealthStatus> getSystemHealthStatus() =>
+      _systemHealthService.getStatus();
+
+  Future<SystemHealthRrdList> getSystemHealthRrdList() =>
+      _systemHealthService.getRrdList();
+
+  Future<SystemHealthGraphResponse> getSystemHealthGraph(
+    String key, {
+    int period = 0,
+  }) => _systemHealthService.getGraph(key, period: period);
 
   // ============================================================================
   // Unbound DNS Reporting Delegations
