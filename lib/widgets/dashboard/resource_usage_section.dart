@@ -74,10 +74,10 @@ class ResourceUsageSection extends StatelessWidget {
               ? (systemInfo.memoryArc / systemInfo.memoryTotal)
               : 0.0,
           icon: Icons.memory,
-          primaryLabel: 'Actual Used',
+          primaryLabel: l10n.actualUsed,
           primaryValue: '${Formatters.formatPercentage(systemInfo.memoryUsagePercentage)} '
               '(${Formatters.formatMemoryGB(systemInfo.memoryActualUsed, context)})',
-          secondaryLabel: systemInfo.memoryArc > 0 ? 'ARC Cache' : null,
+          secondaryLabel: systemInfo.memoryArc > 0 ? l10n.arcCache : null,
           secondaryValue: systemInfo.memoryArc > 0
               ? '${Formatters.formatPercentage((systemInfo.memoryArc / systemInfo.memoryTotal) * 100)} '
                   '(${Formatters.formatMemoryGB(systemInfo.memoryArc, context)})'

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'openvpn_dropdown_option.dart';
 
 /// Represents a complete OpenVPN instance configuration.
@@ -568,7 +569,12 @@ class OpenvpnInstance {
       if (value is Map<String, dynamic>) {
         try {
           options[key as String] = OpenvpnDropdownOption.fromJson(value);
-        } catch (_) {}
+        } catch (e) {
+          assert(() {
+            debugPrint('OpenvpnInstance: failed to parse dropdown option: $e');
+            return true;
+          }());
+        }
       }
     });
 
@@ -588,7 +594,12 @@ class OpenvpnInstance {
       if (item is Map<String, dynamic>) {
         try {
           options[i.toString()] = OpenvpnDropdownOption.fromJson(item);
-        } catch (_) {}
+        } catch (e) {
+          assert(() {
+            debugPrint('OpenvpnInstance: failed to parse dropdown option: $e');
+            return true;
+          }());
+        }
       }
     }
 

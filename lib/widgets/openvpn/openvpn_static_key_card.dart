@@ -17,8 +17,10 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/openvpn_static_key.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/snackbar_helper.dart';
 import 'package:intl/intl.dart';
 
 /// Card widget for displaying OpenVPN static key information
@@ -38,16 +40,17 @@ class OpenvpnStaticKeyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: staticKey.isValid ? Colors.green : Colors.grey,
-          child: Icon(
+          backgroundColor: staticKey.isValid ? AppColors.success : AppColors.disabled,
+          child: const Icon(
             Icons.vpn_key,
-            color: Colors.white,
+            color: AppColors.onPrimary,
             size: 20,
           ),
         ),
@@ -70,10 +73,10 @@ class OpenvpnStaticKeyCard extends StatelessWidget {
                 if (staticKey.createdAt != null) ...[
                   const SizedBox(width: 8),
                   Text(
-                    '• ${_formatDate(staticKey.createdAt!)}',
-                    style: TextStyle(
+                    '• ${_formatDate(context, staticKey.createdAt!)}',
+                    style: const TextStyle(
                       fontSize: 12,
-                      color: Colors.grey[600],
+                      color: AppColors.disabled,
                     ),
                   ),
                 ],
@@ -101,23 +104,23 @@ class OpenvpnStaticKeyCard extends StatelessWidget {
                 }
               },
               itemBuilder: (context) => [
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'edit',
                   child: Row(
                     children: [
-                      Icon(Icons.edit),
-                      SizedBox(width: 8),
-                      Text('Edit'),
+                      const Icon(Icons.edit),
+                      const SizedBox(width: 8),
+                      Text(l10n.edit),
                     ],
                   ),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'delete',
                   child: Row(
                     children: [
-                      Icon(Icons.delete, color: Colors.red),
-                      SizedBox(width: 8),
-                      Text('Delete', style: TextStyle(color: Colors.red)),
+                      Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
+                      const SizedBox(width: 8),
+                      Text(l10n.delete, style: TextStyle(color: Theme.of(context).colorScheme.error)),
                     ],
                   ),
                 ),
@@ -131,13 +134,13 @@ class OpenvpnStaticKeyCard extends StatelessWidget {
   }
 
   Widget _buildModeBadge(ThemeData theme) {
-    final color = staticKey.isBidirectional ? Colors.blue : Colors.purple;
+    final color = staticKey.isBidirectional ? theme.colorScheme.primary : theme.colorScheme.secondary;
     final label = staticKey.modeDescription;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withValues(alpha: AppColors.opacitySubtle),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: color, width: 1),
       ),
@@ -152,14 +155,15 @@ class OpenvpnStaticKeyCard extends StatelessWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
+  String _formatDate(BuildContext context, DateTime date) {
+    final l10n = AppLocalizations.of(context)!;
     final now = DateTime.now();
     final difference = now.difference(date);
 
     if (difference.inDays == 0) {
-      return 'Today';
+      return l10n.today;
     } else if (difference.inDays == 1) {
-      return 'Yesterday';
+      return l10n.yesterday;
     } else if (difference.inDays < 7) {
       return '${difference.inDays} days ago';
     } else {
@@ -168,14 +172,7 @@ class OpenvpnStaticKeyCard extends StatelessWidget {
   }
 
   void _copyKeyToClipboard(BuildContext context) {
-    Clipboard.setData(ClipboardData(text: staticKey.key));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Key copied to clipboard'),
-        duration: Duration(seconds: 2),
-        backgroundColor: Colors.green,
-      ),
-    );
+    SnackBarHelper.copyToClipboard(context, staticKey.key);
   }
 }
 

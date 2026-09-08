@@ -17,7 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/openvpn_instance_list_item.dart';
+import '../../utils/app_colors.dart';
 
 /// Card widget for displaying OpenVPN instance information
 class OpenvpnInstanceCard extends StatelessWidget {
@@ -40,16 +42,17 @@ class OpenvpnInstanceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: instance.enabled ? Colors.green : Colors.grey,
+          backgroundColor: instance.enabled ? AppColors.success : Theme.of(context).colorScheme.onSurface.withValues(alpha: AppColors.opacityDisabled),
           child: Icon(
             instance.enabled ? Icons.vpn_lock : Icons.vpn_lock_outlined,
-            color: Colors.white,
+            color: AppColors.onPrimary,
             size: 20,
           ),
         ),
@@ -63,7 +66,7 @@ class OpenvpnInstanceCard extends StatelessWidget {
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
-            _buildRoleBadge(theme),
+            _buildRoleBadge(theme, instance.isServer ? l10n.server : l10n.client),
           ],
         ),
         subtitle: Column(
@@ -84,10 +87,10 @@ class OpenvpnInstanceCard extends StatelessWidget {
             if (instance.local != null && instance.local!.isNotEmpty)
               Text('Local: ${instance.local}'),
             // Connection info based on role
-            if (instance.primaryConnectionInfo != null && 
+            if (instance.primaryConnectionInfo != null &&
                 instance.primaryConnectionInfo!.isNotEmpty)
               Text(
-                '${instance.isServer ? "Server" : "Remote"}: ${instance.primaryConnectionInfo}',
+                '${instance.isServer ? l10n.server : "Remote"}: ${instance.primaryConnectionInfo}',
               ),
             // Device type
             if (instance.devType != null && instance.devType!.isNotEmpty)
@@ -95,7 +98,7 @@ class OpenvpnInstanceCard extends StatelessWidget {
                 'Device: ${instance.devType}',
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey[600],
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: AppColors.opacityMuted),
                 ),
               ),
           ],
@@ -113,7 +116,7 @@ class OpenvpnInstanceCard extends StatelessWidget {
               Switch(
                 value: instance.enabled,
                 onChanged: onToggle,
-                activeTrackColor: Colors.green,
+                activeTrackColor: AppColors.success,
               ),
             const SizedBox(width: 8),
             PopupMenuButton<String>(
@@ -128,23 +131,23 @@ class OpenvpnInstanceCard extends StatelessWidget {
                 }
               },
               itemBuilder: (context) => [
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'edit',
                   child: Row(
                     children: [
-                      Icon(Icons.edit),
-                      SizedBox(width: 8),
-                      Text('Edit'),
+                      const Icon(Icons.edit),
+                      const SizedBox(width: 8),
+                      Text(l10n.edit),
                     ],
                   ),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'delete',
                   child: Row(
                     children: [
-                      Icon(Icons.delete, color: Colors.red),
-                      SizedBox(width: 8),
-                      Text('Delete', style: TextStyle(color: Colors.red)),
+                      Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
+                      const SizedBox(width: 8),
+                      Text(l10n.delete, style: TextStyle(color: Theme.of(context).colorScheme.error)),
                     ],
                   ),
                 ),
@@ -157,15 +160,14 @@ class OpenvpnInstanceCard extends StatelessWidget {
     );
   }
 
-  Widget _buildRoleBadge(ThemeData theme) {
+  Widget _buildRoleBadge(ThemeData theme, String label) {
     final isServer = instance.isServer;
-    final color = isServer ? Colors.blue : Colors.orange;
-    final label = isServer ? 'Server' : 'Client';
+    final color = isServer ? theme.colorScheme.primary : AppColors.warning;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withValues(alpha: AppColors.opacitySubtle),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: color, width: 1),
       ),

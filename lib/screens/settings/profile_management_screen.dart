@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/profile.dart';
@@ -25,8 +26,12 @@ import '../../services/demo_api_service.dart';
 import '../../services/opnsense_api_service.dart';
 import '../../services/settings/profile_manager_service.dart';
 import '../../services/settings/file_operations_service.dart';
+import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
+import '../../utils/snackbar_helper.dart';
 import '../../utils/validators.dart';
+import '../../viewmodels/profile_management_view_model.dart';
+import '../../widgets/common/confirmation_dialog.dart';
 import '../../widgets/settings/profile_card.dart';
 import '../../widgets/login/connection_endpoints_manager.dart';
 import '../../l10n/app_localizations.dart';
@@ -36,47 +41,35 @@ class ProfileManagementScreen extends StatefulWidget {
   const ProfileManagementScreen({super.key});
 
   @override
-  State<ProfileManagementScreen> createState() => _ProfileManagementScreenState();
+  State<ProfileManagementScreen> createState() =>
+      _ProfileManagementScreenState();
 }
 
 class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
   final ProfileManagerService _profileManager = ProfileManagerService();
   final FileOperationsService _fileOperations = FileOperationsService();
-  
-  List<Profile> _profiles = [];
-  String? _activeProfileId;
-  bool _isLoading = true;
+  late ProfileManagementViewModel _viewModel;
 
   @override
   void initState() {
     super.initState();
-    _loadProfiles();
+    _viewModel = ProfileManagementViewModel(_profileManager);
+    _viewModel.loadItems();
   }
 
-  Future<void> _loadProfiles() async {
-    if (!mounted) return;
-    
-    setState(() {
-      _isLoading = true;
-    });
-
-    final profiles = await _profileManager.loadProfiles();
-    final activeId = await _profileManager.getActiveProfileId();
-
-    if (mounted) {
-      setState(() {
-        _profiles = profiles;
-        _activeProfileId = activeId;
-        _isLoading = false;
-      });
-    }
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
   }
+
+  Future<void> _loadProfiles() => _viewModel.loadItems();
 
   Future<void> _activateProfile(Profile profile) async {
     if (!mounted) return;
     
     // Show loading
-    showDialog(
+    unawaited(showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
@@ -89,7 +82,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
           ],
         ),
       ),
-    );
+    ));
 
     try {
       final demoApiService = context.read<DemoApiService>();
@@ -111,32 +104,17 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
         }
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.activatedProfile(profile.name)),
-              backgroundColor: Colors.green,
-            ),
-          );
+          SnackBarHelper.showSuccess(context, l10n.activatedProfile(profile.name));
         }
       } else {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(result.errorMessage ?? AppLocalizations.of(context)!.activationFailed),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, result.errorMessage ?? AppLocalizations.of(context)!.activationFailed);
         }
       }
     } catch (e) {
       if (mounted) {
         Navigator.of(context).pop(); // Close loading dialog
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, 'Error: $e');
       }
     }
   }
@@ -174,7 +152,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                   TextFormField(
                     controller: nameController,
                     decoration: InputDecoration(
-                      labelText: l10n.profileNameLabel,
+                      labelText: l10n.profileName,
                       prefixIcon: const Icon(Icons.label),
                     ),
                     validator: (value) {
@@ -196,7 +174,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                   ),
                   const SizedBox(height: 16),
                   SwitchListTile(
-                    title: Text(l10n.useHttpsLabel),
+                    title: Text(l10n.useHttps),
                     value: useHttps,
                     onChanged: (value) {
                       setDialogState(() {
@@ -223,13 +201,13 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                   ListTile(
                     leading: const Icon(Icons.dns),
                     title: Text(l10n.dhcpServerType),
-                    subtitle: Text(dhcpServerType.getDisplayName(context)),
+                    subtitle: Text(dhcpServerType.displayName),
                     trailing: DropdownButton<DhcpServerType>(
                       value: dhcpServerType,
                       items: DhcpServerType.values.map((type) {
                         return DropdownMenuItem(
                           value: type,
-                          child: Text(type.getDisplayName(context)),
+                          child: Text(type.displayName),
                         );
                       }).toList(),
                       onChanged: (value) {
@@ -247,7 +225,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                     child: Text(
                       dhcpServerType.getDescription(context),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.grey[600],
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                             fontStyle: FontStyle.italic,
                           ),
                     ),
@@ -256,16 +234,16 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                   TextFormField(
                     controller: apiKeyController,
                     decoration: InputDecoration(
-                      labelText: l10n.apiKeyLabel,
+                      labelText: l10n.apiKey,
                       prefixIcon: const Icon(Icons.vpn_key),
                     ),
-                    validator: Validators.validateApiKey,
+                    validator: (v) => Validators.validateApiKey(v, context),
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: apiSecretController,
                     decoration: InputDecoration(
-                      labelText: l10n.apiSecretLabel,
+                      labelText: l10n.apiSecret,
                       prefixIcon: const Icon(Icons.password),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -281,7 +259,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                       ),
                     ),
                     obscureText: obscureSecret,
-                    validator: Validators.validateApiSecret,
+                    validator: (v) => Validators.validateApiSecret(v, context),
                   ),
                 ],
               ),
@@ -298,12 +276,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                 if (formKey.currentState!.validate()) {
                   // Validate connections
                   if (connections.isEmpty || connections.every((c) => c.host.trim().isEmpty)) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(l10n.pleaseAddConnectionEndpoint),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
+                    SnackBarHelper.showError(context, l10n.addConnectionEndpoint);
                     return;
                   }
                   
@@ -364,21 +337,11 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
       await _loadProfiles();
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(id == null ? l10n.profileAdded : l10n.profileUpdated),
-            backgroundColor: Colors.green,
-          ),
-        );
+        SnackBarHelper.showSuccess(context, id == null ? l10n.profileAdded : l10n.profileUpdated);
       }
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result.errorMessage ?? AppLocalizations.of(context)!.failedToSaveProfile),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, result.errorMessage ?? AppLocalizations.of(context)!.failedToSaveProfile);
       }
     }
   }
@@ -392,7 +355,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
     final includeCredentials = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.exportProfilesTitle),
+        title: Text(l10n.exportProfiles),
         content: Text(l10n.exportProfilesContent),
         actions: [
           TextButton(
@@ -402,7 +365,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
             style: TextButton.styleFrom(
-              foregroundColor: Colors.orange,
+              foregroundColor: AppColors.warning,
             ),
             child: Text(l10n.includeCredentials),
           ),
@@ -426,26 +389,9 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
     
     if (mounted) {
       if (result.success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${l10n.exportSuccess}\nSaved to: ${result.filePath}'),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 8),
-            action: SnackBarAction(
-              label: l10n.ok,
-              textColor: Colors.white,
-              onPressed: () {},
-            ),
-          ),
-        );
+        SnackBarHelper.showSuccess(context, '${l10n.exportSuccess}\nSaved to: ${result.filePath}', duration: const Duration(seconds: 8));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result.errorMessage ?? l10n.exportFailed),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 5),
-          ),
-        );
+        SnackBarHelper.showError(context, result.errorMessage ?? l10n.exportFailed, duration: const Duration(seconds: 5));
       }
     }
   }
@@ -455,25 +401,13 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
     
     final l10n = AppLocalizations.of(context)!;
     
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.deleteProfile),
-        content: Text(l10n.deleteProfileConfirmation(profile.name)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
-            child: Text(l10n.delete),
-          ),
-        ],
-      ),
+      title: l10n.deleteProfile,
+      message: l10n.deleteProfileConfirmation(profile.name),
+      confirmText: l10n.delete,
+      cancelText: l10n.cancel,
+      isDestructive: true,
     );
 
     if (!mounted) return;
@@ -486,21 +420,11 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
       if (success) {
         await _loadProfiles();
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.profileDeleted),
-              backgroundColor: Colors.green,
-            ),
-          );
+          SnackBarHelper.showSuccess(context, l10n.profileDeleted);
         }
       } else {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.failedToDeleteProfile),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.failedToDeleteProfile);
         }
       }
     }
@@ -508,19 +432,24 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        if (_viewModel.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    return Column(
-      children: [
-        Expanded(
-          child: _profiles.isEmpty
-              ? _buildEmptyState()
-              : _buildProfilesList(),
-        ),
-        _buildAddProfileButton(),
-      ],
+        return Column(
+          children: [
+            Expanded(
+              child: _viewModel.items.isEmpty
+                  ? _buildEmptyState()
+                  : _buildProfilesList(),
+            ),
+            _buildAddProfileButton(),
+          ],
+        );
+      },
     );
   }
 
@@ -532,19 +461,19 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
           Icon(
             Icons.dns_outlined,
             size: 64,
-            color: Colors.grey[400],
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
           const SizedBox(height: 16),
           Text(
             AppLocalizations.of(context)!.noProfiles,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Colors.grey[600],
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
           ),
           const SizedBox(height: 8),
           Text(
             AppLocalizations.of(context)!.addProfileToManageInstances,
-            style: TextStyle(color: Colors.grey[600]),
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
           ),
         ],
       ),
@@ -554,10 +483,10 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
   Widget _buildProfilesList() {
     return ListView.builder(
       padding: const EdgeInsets.all(AppConstants.standardPadding),
-      itemCount: _profiles.length,
+      itemCount: _viewModel.items.length,
       itemBuilder: (context, index) {
-        final profile = _profiles[index];
-        final isActive = profile.id == _activeProfileId;
+        final profile = _viewModel.items[index];
+        final isActive = profile.id == _viewModel.activeProfileId;
         
         return ProfileCard(
           profile: profile,
@@ -578,10 +507,10 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
     return Container(
       padding: const EdgeInsets.all(AppConstants.standardPadding),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: AppColors.shadow.withValues(alpha: AppColors.opacityHalf),
             blurRadius: 4,
             offset: const Offset(0, -2),
           ),

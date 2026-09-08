@@ -24,7 +24,7 @@ import '../base/api_exception.dart';
 class ServiceControlService extends BaseOPNsenseService {
   Future<List<dynamic>> getServices() async {
     if (!isInitialized) {
-      throw ApiException('API service not initialized', null);
+      throw const ApiException('API service not initialized', null, ApiErrorType.unknown);
     }
 
     try {
@@ -44,7 +44,7 @@ class ServiceControlService extends BaseOPNsenseService {
         
         return [];
       } else {
-        throw ApiException('Failed to get services', response.statusCode);
+        throw ApiException('Failed to get services', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -56,7 +56,7 @@ class ServiceControlService extends BaseOPNsenseService {
   /// Actions: start, stop, restart
   Future<bool> controlService(String serviceName, String action) async {
     if (!isInitialized) {
-      throw ApiException('API service not initialized', null);
+      throw const ApiException('API service not initialized', null, ApiErrorType.unknown);
     }
 
     try {
@@ -75,7 +75,7 @@ class ServiceControlService extends BaseOPNsenseService {
         }
         return true;
       } else {
-        throw ApiException('Failed to $action service', response.statusCode);
+        throw ApiException('Failed to $action service', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);

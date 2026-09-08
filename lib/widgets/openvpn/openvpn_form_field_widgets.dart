@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/openvpn_dropdown_option.dart';
+import '../../utils/app_colors.dart';
 
 /// Role selector widget for OpenVPN instances
 class OpenvpnRoleSelector extends StatelessWidget {
@@ -247,7 +248,7 @@ class OpenvpnDropdownField extends StatelessWidget {
           enabled: false,
           child: Text(
             optgroup,
-            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+            style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.disabled),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
           ),
@@ -334,7 +335,7 @@ class OpenvpnMultiSelectField extends StatelessWidget {
                     optgroup,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey,
+                      color: AppColors.disabled,
                       fontSize: 14,
                     ),
                   ),
@@ -384,14 +385,14 @@ class OpenvpnMultiSelectField extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
+                child: Text(AppLocalizations.of(context)!.cancel),
               ),
               ElevatedButton(
                 onPressed: () {
                   onChanged(selected);
                   Navigator.of(context).pop();
                 },
-                child: const Text('Done'),
+                child: Text(AppLocalizations.of(context)!.done),
               ),
             ],
           );
@@ -419,7 +420,7 @@ class OpenvpnMultiSelectField extends StatelessWidget {
               prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
               suffixIcon: Icon(
                 Icons.arrow_drop_down,
-                color: enabled ? null : Theme.of(context).disabledColor,
+                color: enabled ? null : Theme.of(context).colorScheme.onSurface.withValues(alpha: AppColors.opacityMuted),
               ),
               enabled: enabled,
             ),
@@ -487,7 +488,7 @@ class OpenvpnArrayField extends StatelessWidget {
             OutlinedButton.icon(
               onPressed: enabled ? onAdd : null,
               icon: const Icon(Icons.add, size: 18),
-              label: const Text('Add'),
+              label: Text(AppLocalizations.of(context)!.add),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),
@@ -509,7 +510,7 @@ class OpenvpnArrayField extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
               emptyMessage,
-              style: const TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+              style: const TextStyle(color: AppColors.disabled, fontStyle: FontStyle.italic),
             ),
           )
         else
@@ -532,7 +533,7 @@ class OpenvpnArrayField extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
+                    icon: const Icon(Icons.delete, color: AppColors.error),
                     onPressed: enabled ? () => onRemove(index) : null,
                   ),
                 ],

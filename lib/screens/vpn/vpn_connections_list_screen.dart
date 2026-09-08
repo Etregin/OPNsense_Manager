@@ -23,7 +23,11 @@ import '../../models/vpn_connection.dart';
 import '../../models/system_info.dart';
 import '../../services/demo_api_service.dart';
 import '../../services/vpn/vpn_connection_manager.dart';
+import '../../utils/auto_refresh_mixin.dart';
+import '../../utils/snackbar_helper.dart';
+import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
+import '../../widgets/common/confirmation_dialog.dart';
 import '../../widgets/vpn/vpn_connection_card.dart';
 import '../../widgets/vpn/vpn_summary_cards.dart';
 import '../../l10n/app_localizations.dart';
@@ -44,11 +48,11 @@ class VPNConnectionsListScreen extends StatefulWidget {
   State<VPNConnectionsListScreen> createState() => _VPNConnectionsListScreenState();
 }
 
-class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
+class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen>
+    with AutoRefreshMixin {
   List<VPNConnection> _connections = [];
   bool _isLoading = true;
   String? _errorMessage;
-  Timer? _refreshTimer;
   late VPNConnectionManager _connectionManager;
   String _filterType = 'all';
 
@@ -59,24 +63,7 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
     final demoApiService = context.read<DemoApiService>();
     _connectionManager = VPNConnectionManager(demoApiService);
     _loadData();
-    _startAutoRefresh();
-  }
-
-  @override
-  void dispose() {
-    _refreshTimer?.cancel();
-    super.dispose();
-  }
-
-  void _startAutoRefresh() {
-    _refreshTimer = Timer.periodic(
-      const Duration(seconds: 30),
-      (timer) {
-        if (mounted) {
-          _loadData();
-        }
-      },
-    );
+    startAutoRefresh(AppConstants.dashboardRefreshInterval, _loadData);
   }
 
   Future<void> _loadData() async {
@@ -106,43 +93,24 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
 
   Future<void> _toggleConnection(VPNConnection connection) async {
     final l10n = AppLocalizations.of(context)!;
-    final actionTitle = connection.isConnected ? l10n.disconnectVPN : l10n.connectVPN;
+    final actionTitle = connection.isConnected ? l10n.disconnectVpn : l10n.connectVpn;
     final action = connection.isConnected ? l10n.disconnect : l10n.connect;
     
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(actionTitle),
-        content: Text(
-          '${l10n.deleteRuleConfirmation(connection.name).split('"')[0]}"${connection.name}"?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: connection.isConnected ? Colors.red : Colors.green,
-            ),
-            child: Text(action),
-          ),
-        ],
-      ),
+      title: actionTitle,
+      message: '${l10n.deleteRuleConfirmation(connection.name).split('"')[0]}"${connection.name}"?',
+      confirmText: action,
+      cancelText: l10n.cancel,
+      isDestructive: connection.isConnected,
     );
 
     if (confirmed != true || !mounted) return;
 
     try {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(connection.isConnected 
-              ? l10n.disconnectingVPN(connection.name) 
-              : l10n.connectingVPN(connection.name)),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      SnackBarHelper.showInfo(context, connection.isConnected
+          ? l10n.disconnectingVPN(connection.name)
+          : l10n.connectingVPN(connection.name));
 
       final success = await _connectionManager.toggleConnection(
         connection.id,
@@ -152,40 +120,22 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
 
       if (mounted) {
         if (success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(connection.isConnected 
-                  ? l10n.successfullyDisconnected(connection.name) 
-                  : l10n.successfullyConnected(connection.name)),
-              backgroundColor: Colors.green,
-              duration: const Duration(seconds: 2),
-            ),
-          );
-          await Future.delayed(const Duration(seconds: 1));
+          SnackBarHelper.showSuccess(context, connection.isConnected
+              ? l10n.successfullyDisconnected(connection.name)
+              : l10n.successfullyConnected(connection.name));
+          await Future.delayed(AppConstants.postActionRefreshDelay);
           if (mounted) {
-            _loadData();
+            unawaited(_loadData());
           }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(connection.isConnected 
-                  ? l10n.failedToDisconnect(connection.name) 
-                  : l10n.failedToConnect(connection.name)),
-              backgroundColor: Colors.red,
-              duration: const Duration(seconds: 3),
-            ),
-          );
+          SnackBarHelper.showError(context, connection.isConnected
+              ? l10n.failedToDisconnect(connection.name)
+              : l10n.failedToConnect(connection.name));
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${l10n.error}: ${e.toString()}'),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        SnackBarHelper.showError(context, '${l10n.error}: ${e.toString()}');
       }
     }
   }
@@ -193,73 +143,36 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
   Future<void> _restartService(String type) async {
     final l10n = AppLocalizations.of(context)!;
     
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.restartVPNService),
-        content: Text(
-          l10n.restartServiceConfirmation(type.toUpperCase()),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange,
-            ),
-            child: Text(l10n.restart),
-          ),
-        ],
-      ),
+      title: l10n.restartVpnService,
+      message: l10n.restartServiceConfirmation(type.toUpperCase()),
+      confirmText: l10n.restart,
+      cancelText: l10n.cancel,
+      isDestructive: false,
     );
 
     if (confirmed != true || !mounted) return;
 
     try {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.restartingService(type.toUpperCase())),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      SnackBarHelper.showInfo(context, l10n.restartingService(type.toUpperCase()));
 
       final success = await _connectionManager.restartService(type);
 
       if (mounted) {
         if (success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.successfullyRestartedService(type.toUpperCase())),
-              backgroundColor: Colors.green,
-              duration: const Duration(seconds: 2),
-            ),
-          );
+          SnackBarHelper.showSuccess(context, l10n.successfullyRestartedService(type.toUpperCase()));
           await Future.delayed(const Duration(seconds: 2));
           if (mounted) {
-            _loadData();
+            unawaited(_loadData());
           }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.failedToRestartService(type.toUpperCase())),
-              backgroundColor: Colors.red,
-              duration: const Duration(seconds: 3),
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.failedToRestartService(type.toUpperCase()));
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${l10n.error}: ${e.toString()}'),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        SnackBarHelper.showError(context, '${l10n.error}: ${e.toString()}');
       }
     }
   }
@@ -283,14 +196,14 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.error_outline,
               size: 64,
-              color: Colors.red[300],
+              color: AppColors.error,
             ),
             const SizedBox(height: 16),
             Text(
-              l10n.errorLoadingVPNConnections,
+              l10n.errorLoadingVpnConnections,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
@@ -299,7 +212,7 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
               child: Text(
                 _errorMessage!,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey[600]),
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
             ),
             const SizedBox(height: 24),
@@ -323,19 +236,19 @@ class _VPNConnectionsListScreenState extends State<VPNConnectionsListScreen> {
             Icon(
               Icons.vpn_lock_outlined,
               size: 64,
-              color: Colors.grey[400],
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
             const SizedBox(height: 16),
             Text(
               _filterType == 'all'
-                  ? l10n.noVPNConnectionsFound
+                  ? l10n.noVpnConnectionsFound
                   : l10n.noConnectionsFound(_filterType.toUpperCase()),
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Text(
               l10n.vpnConnectionsWillAppear,
-              style: TextStyle(color: Colors.grey[600]),
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
           ],
         ),

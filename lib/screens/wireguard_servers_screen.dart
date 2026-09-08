@@ -16,12 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/wireguard_server.dart';
-import '../models/system_info.dart';
+import '../utils/app_colors.dart';
 import '../services/demo_api_service.dart';
+import '../utils/snackbar_helper.dart';
+import '../utils/single_init_mixin.dart';
+import '../viewmodels/wireguard_servers_view_model.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/common/confirmation_dialog.dart';
+import '../widgets/common/detail_row.dart';
+import '../widgets/common/error_display.dart';
+import '../widgets/common/empty_state_widget.dart';
+import '../widgets/common/search_bar_field.dart';
 import '../l10n/app_localizations.dart';
 import 'wireguard_server_form_screen.dart';
 
@@ -33,123 +42,38 @@ class WireGuardServersScreen extends StatefulWidget {
   State<WireGuardServersScreen> createState() => _WireGuardServersScreenState();
 }
 
-class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
-  List<WireGuardServer> _servers = [];
-  SystemInfo? _systemInfo;
-  bool _isLoading = true;
-  String? _errorMessage;
-  String _searchQuery = '';
-  final Set<String> _togglingServers = {};
+class _WireGuardServersScreenState extends State<WireGuardServersScreen>
+    with SingleInitMixin {
+  late WireGuardServersViewModel _viewModel;
 
   @override
-  void initState() {
-    super.initState();
-    _loadData();
+  void onFirstDependency() {
+    _viewModel = WireGuardServersViewModel(context.read<DemoApiService>());
+    _viewModel.loadItems();
   }
 
-  Future<void> _loadData() async {
-    await Future.wait([
-      _loadServers(),
-      _loadSystemInfo(),
-    ]);
-  }
-
-  Future<void> _loadSystemInfo() async {
-    try {
-      final apiService = context.read<DemoApiService>();
-      final systemInfo = await apiService.getSystemInfo();
-
-      if (mounted) {
-        setState(() {
-          _systemInfo = systemInfo;
-        });
-      }
-    } catch (e) {
-      // Silently fail - system info is optional for drawer
-    }
-  }
-
-  Future<void> _loadServers() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final apiService = context.read<DemoApiService>();
-      final servers = await apiService.getWireGuardServers();
-
-      if (mounted) {
-        setState(() {
-          _servers = servers;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  List<WireGuardServer> get _filteredServers {
-    if (_searchQuery.isEmpty) {
-      return _servers;
-    }
-
-    final query = _searchQuery.toLowerCase();
-    return _servers.where((server) {
-      return server.name.toLowerCase().contains(query) ||
-          server.tunnelAddressList.any((addr) => addr.toLowerCase().contains(query)) ||
-          server.port.contains(query);
-    }).toList();
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
   }
 
   Future<void> _toggleServer(WireGuardServer server) async {
-    if (_togglingServers.contains(server.uuid)) {
-      return;
-    }
-
-    setState(() {
-      _togglingServers.add(server.uuid);
-    });
-
     try {
-      final apiService = context.read<DemoApiService>();
-      await apiService.toggleWireGuardServer(server.uuid, !server.isEnabled);
-
+      await _viewModel.toggleServer(server.uuid, server.isEnabled);
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(server.isEnabled
-                ? l10n.serverDisabledSuccessfully
-                : l10n.serverEnabledSuccessfully),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 2),
-          ),
+        SnackBarHelper.showSuccess(
+          context,
+          server.isEnabled
+              ? l10n.serverDisabledSuccessfully
+              : l10n.serverEnabledSuccessfully,
         );
-        await _loadServers();
       }
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.failedToToggleServer(e.toString())),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _togglingServers.remove(server.uuid);
-        });
+        SnackBarHelper.showError(context, l10n.failedToToggleServer(e.toString()));
       }
     }
   }
@@ -157,51 +81,25 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
   Future<void> _deleteServer(WireGuardServer server) async {
     final l10n = AppLocalizations.of(context)!;
 
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ConfirmationDialog.show(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.delete),
-        content: Text(l10n.deleteServerConfirmation(server.name)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
-            child: Text(l10n.delete),
-          ),
-        ],
-      ),
+      title: l10n.delete,
+      message: l10n.deleteServerConfirmation(server.name),
+      confirmText: l10n.delete,
+      cancelText: l10n.cancel,
+      isDestructive: true,
     );
 
     if (confirmed == true && mounted) {
       try {
-        final apiService = context.read<DemoApiService>();
-        await apiService.deleteWireGuardServer(server.uuid);
-
+        await _viewModel.deleteServer(server.uuid);
         if (mounted) {
-          final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.serverDeletedSuccessfully),
-              backgroundColor: Colors.green,
-            ),
-          );
-          _loadServers();
+          SnackBarHelper.showSuccess(context, l10n.serverDeletedSuccessfully);
         }
       } catch (e) {
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.failedToDeleteServer(e.toString())),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.failedToDeleteServer(e.toString()));
         }
       }
     }
@@ -236,9 +134,9 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
               ),
               const SizedBox(height: 8),
               ...server.tunnelAddressList.map((addr) => Padding(
-                padding: const EdgeInsets.only(left: 16, bottom: 4),
-                child: Text('• $addr'),
-              )),
+                    padding: const EdgeInsets.only(left: 16, bottom: 4),
+                    child: Text('• $addr'),
+                  )),
               if (server.peers.isNotEmpty) ...[
                 const Divider(),
                 Text(
@@ -261,237 +159,202 @@ class _WireGuardServersScreenState extends State<WireGuardServersScreen> {
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              '$label:',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          Expanded(
-            child: Text(value),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _buildDetailRow(String label, String value) =>
+      DetailRow(label: label, value: value);
 
-  void _navigateToForm([WireGuardServer? server]) {
-    Navigator.of(context).push(
+  Future<void> _navigateToForm([WireGuardServer? server]) async {
+    await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => WireGuardServerFormScreen(server: server),
       ),
-    ).then((_) => _loadServers());
+    );
+    if (mounted) unawaited(_viewModel.loadItems());
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final filteredServers = _filteredServers;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.wireguardServers),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadServers,
-            tooltip: l10n.refresh,
-          ),
-        ],
-      ),
-      drawer: AppDrawer(
-        currentRoute: 'wireguard_servers',
-        systemInfo: _systemInfo,
-      ),
-      body: Column(
-        children: [
-          // Search bar
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: l10n.searchServers,
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        final isLoading = _viewModel.isLoading;
+        final errorMessage = _viewModel.errorMessage;
+        final servers = _viewModel.items;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(l10n.wireguardServers),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: _viewModel.loadItems,
+                tooltip: l10n.refresh,
               ),
-              onChanged: (value) {
-                setState(() {
-                  _searchQuery = value;
-                });
-              },
-            ),
+            ],
           ),
-          // Servers list
-          Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _errorMessage != null
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                            const SizedBox(height: 16),
-                            Text(
-                              l10n.error,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(_errorMessage!),
-                            const SizedBox(height: 16),
-                            ElevatedButton.icon(
-                              onPressed: _loadServers,
-                              icon: const Icon(Icons.refresh),
-                              label: Text(l10n.retry),
-                            ),
-                          ],
-                        ),
-                      )
-                    : filteredServers.isEmpty
-                        ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.security, size: 48, color: Colors.grey),
-                                const SizedBox(height: 16),
-                                Text(
-                                  _searchQuery.isNotEmpty
-                                      ? l10n.noServersMatchSearch
-                                      : l10n.noWireguardServersConfigured,
-                                  style: Theme.of(context).textTheme.titleMedium,
-                                ),
-                              ],
-                            ),
+          drawer: const AppDrawer(
+            currentRoute: 'wireguard_servers'
+          ),
+          body: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: SearchBarField(
+                  hintText: l10n.searchServers,
+                  onChanged: _viewModel.setSearchQuery,
+                ),
+              ),
+              // Servers list
+              Expanded(
+                child: isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : errorMessage != null
+                        ? ErrorDisplay(
+                            message: errorMessage,
+                            onRetry: _viewModel.loadItems,
                           )
-                        : RefreshIndicator(
-                            onRefresh: _loadServers,
-                            child: ListView.builder(
-                              itemCount: filteredServers.length,
-                              itemBuilder: (context, index) {
-                                final server = filteredServers[index];
-                                final isToggling = _togglingServers.contains(server.uuid);
+                        : servers.isEmpty
+                            ? EmptyStateWidget(
+                                icon: Icons.security,
+                                title: _viewModel.searchQuery.isNotEmpty
+                                    ? l10n.noServersMatchSearch
+                                    : l10n.noWireguardServersConfigured,
+                              )
+                            : RefreshIndicator(
+                                onRefresh: _viewModel.loadItems,
+                                child: ListView.builder(
+                                  itemCount: servers.length,
+                                  itemBuilder: (context, index) {
+                                    final server = servers[index];
+                                    final isToggling =
+                                        _viewModel.isToggling(server.uuid);
 
-                                return Card(
-                                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                                  child: ListTile(
-                                    leading: CircleAvatar(
-                                      backgroundColor: server.isEnabled
-                                          ? Colors.green
-                                          : Colors.grey,
-                                      child: const Icon(
-                                        Icons.security,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                    ),
-                                    title: Text(
-                                      server.name,
-                                      style: const TextStyle(fontWeight: FontWeight.bold),
-                                    ),
-                                    subtitle: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(l10n.portLabel(server.port)),
-                                        Text(l10n.tunnelLabel(server.tunnelAddressList.join(", "))),
-                                        Text(
-                                          l10n.peersConfigured(server.peerUuidList.length),
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey[600],
+                                    return Card(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 4),
+                                      child: ListTile(
+                                        leading: CircleAvatar(
+                                          backgroundColor: server.isEnabled
+                                              ? AppColors.success
+                                              : AppColors.disabled,
+                                          child: const Icon(
+                                            Icons.security,
+                                            color: AppColors.onPrimary,
+                                            size: 20,
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                    trailing: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        if (isToggling)
-                                          const SizedBox(
-                                            width: 24,
-                                            height: 24,
-                                            child: CircularProgressIndicator(strokeWidth: 2),
-                                          )
-                                        else
-                                          Switch(
-                                            value: server.isEnabled,
-                                            onChanged: (value) => _toggleServer(server),
-                                            activeTrackColor: Colors.green,
-                                          ),
-                                        const SizedBox(width: 8),
-                                        PopupMenuButton<String>(
-                                          onSelected: (value) {
-                                            switch (value) {
-                                              case 'view':
-                                                _showServerDetails(server);
-                                                break;
-                                              case 'edit':
-                                                _navigateToForm(server);
-                                                break;
-                                              case 'delete':
-                                                _deleteServer(server);
-                                                break;
-                                            }
-                                          },
-                                          itemBuilder: (context) => [
-                                            PopupMenuItem(
-                                              value: 'view',
-                                              child: Row(
-                                                children: [
-                                                  const Icon(Icons.visibility),
-                                                  const SizedBox(width: 8),
-                                                  Text(l10n.viewDetails),
-                                                ],
-                                              ),
-                                            ),
-                                            PopupMenuItem(
-                                              value: 'edit',
-                                              child: Row(
-                                                children: [
-                                                  const Icon(Icons.edit),
-                                                  const SizedBox(width: 8),
-                                                  Text(l10n.edit),
-                                                ],
-                                              ),
-                                            ),
-                                            PopupMenuItem(
-                                              value: 'delete',
-                                              child: Row(
-                                                children: [
-                                                  const Icon(Icons.delete, color: Colors.red),
-                                                  const SizedBox(width: 8),
-                                                  Text(l10n.delete, style: const TextStyle(color: Colors.red)),
-                                                ],
+                                        title: Text(
+                                          server.name,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        subtitle: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(l10n.portLabel(server.port)),
+                                            Text(l10n.tunnelLabel(server
+                                                .tunnelAddressList
+                                                .join(', '))),
+                                            Text(
+                                              l10n.peersConfigured(
+                                                  server.peerUuidList.length),
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                                               ),
                                             ),
                                           ],
                                         ),
-                                      ],
-                                    ),
-                                    onTap: () => _showServerDetails(server),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            if (isToggling)
+                                              const SizedBox(
+                                                width: 24,
+                                                height: 24,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                        strokeWidth: 2),
+                                              )
+                                            else
+                                              Switch(
+                                                value: server.isEnabled,
+                                                onChanged: (value) =>
+                                                    _toggleServer(server),
+                                                activeTrackColor: AppColors.success,
+                                              ),
+                                            const SizedBox(width: 8),
+                                            PopupMenuButton<String>(
+                                              onSelected: (value) {
+                                                switch (value) {
+                                                  case 'view':
+                                                    _showServerDetails(server);
+                                                    break;
+                                                  case 'edit':
+                                                    _navigateToForm(server);
+                                                    break;
+                                                  case 'delete':
+                                                    _deleteServer(server);
+                                                    break;
+                                                }
+                                              },
+                                              itemBuilder: (context) => [
+                                                PopupMenuItem(
+                                                  value: 'view',
+                                                  child: Row(
+                                                    children: [
+                                                      const Icon(
+                                                          Icons.visibility),
+                                                      const SizedBox(width: 8),
+                                                      Text(l10n.viewDetails),
+                                                    ],
+                                                  ),
+                                                ),
+                                                PopupMenuItem(
+                                                  value: 'edit',
+                                                  child: Row(
+                                                    children: [
+                                                      const Icon(Icons.edit),
+                                                      const SizedBox(width: 8),
+                                                      Text(l10n.edit),
+                                                    ],
+                                                  ),
+                                                ),
+                                                PopupMenuItem(
+                                                  value: 'delete',
+                                                  child: Row(
+                                                    children: [
+                                                      const Icon(Icons.delete,
+                                                          color: AppColors.error),
+                                                      const SizedBox(width: 8),
+                                                      Text(l10n.delete,
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: AppColors.error)),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        onTap: () => _showServerDetails(server),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+              ),
+            ],
           ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _navigateToForm(),
-        child: const Icon(Icons.add),
-      ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => _navigateToForm(),
+            child: const Icon(Icons.add),
+          ),
+        );
+      },
     );
   }
 }
-
-

@@ -21,6 +21,7 @@ export 'network/vip_service.dart' show CarpVipOption;
 import '../models/system_info.dart';
 import '../models/thermal_sensor.dart';
 import '../models/firewall_rule.dart';
+import '../models/firewall_form_options.dart';
 import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
 import '../models/network_host.dart';
@@ -41,7 +42,26 @@ import '../models/openvpn_client_override.dart';
 import '../models/openvpn_client_override_search_response.dart';
 import '../models/openvpn_log_search_response.dart';
 import '../models/neighbor.dart';
+import '../models/netflow_cache_stat.dart';
+import '../models/netflow_config.dart';
+import '../models/netflow_status.dart';
+import '../models/insight_flow_detail.dart';
+import '../models/network_insight_direction_total.dart';
+import '../models/network_insight_timeserie.dart';
+import '../models/network_insight_top_addr.dart';
+import '../models/network_insight_top_port.dart';
+import '../models/system_health_graph.dart';
+import '../models/system_health_rrd_list.dart';
+import '../models/system_health_status.dart';
+import '../models/unbound_overview_status.dart';
+import '../models/unbound_query_item.dart';
+import '../models/unbound_rolling.dart';
+import '../models/unbound_settings.dart';
+import '../models/unbound_totals.dart';
 import 'demo_data_service.dart';
+import 'demo/demo_network_insight_data_generator.dart';
+import 'demo/demo_system_health_data_generator.dart';
+import 'demo/demo_unbound_data_generator.dart';
 import 'opnsense_api_service.dart';
 import 'demo/demo_api_decorator.dart';
 
@@ -49,6 +69,12 @@ import 'demo/demo_api_decorator.dart';
 class DemoApiService {
   final OPNsenseApiService _realApiService;
   final DemoDataService _demoDataService = DemoDataService();
+  final DemoNetworkInsightDataGenerator _insightGenerator =
+      DemoNetworkInsightDataGenerator();
+  final DemoUnboundDataGenerator _unboundGenerator =
+      DemoUnboundDataGenerator();
+  final DemoSystemHealthDataGenerator _systemHealthGenerator =
+      DemoSystemHealthDataGenerator();
   bool _isDemoMode = false;
 
   DemoApiService(this._realApiService);
@@ -96,11 +122,55 @@ class DemoApiService {
       );
 
   /// Get available interfaces
-  Future<Map<String, dynamic>> getAvailableInterfaces() =>
+  Future<Map<String, String>> getAvailableInterfaces() =>
       DemoApiDecorator.execute(
         isDemoMode: _isDemoMode,
         demoAction: () async => _demoDataService.generateAvailableInterfaces(),
         realAction: () => _realApiService.getAvailableInterfaces(),
+        delayMs: 200,
+      );
+
+  /// Get firewall rule form options (dynamic dropdowns)
+  Future<FirewallFormOptions> getFirewallRuleFormOptions() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => const FirewallFormOptions(
+          gateways:  {'': 'None', 'WAN_DHCP': 'WAN_DHCP - 192.168.1.1', 'Null4': 'Null4 - 127.0.0.1'},
+          replyTo:   {'': 'None', 'WAN_DHCP': 'WAN_DHCP - 192.168.1.1'},
+          divertTo:  {'': 'None', '8000': 'Intrusion Detection'},
+          overload:  {'': 'None', 'virusprot': 'virusprot', 'sshlockout': 'sshlockout'},
+          schedules: {'': 'None'},
+          shapers:   {'': 'None'},
+          prio:      {'': 'Any priority', '1': 'Background (1, lowest)', '7': 'Network Control (7, highest)'},
+          setPrio:   {'': 'Keep current priority', '1': 'Background (1, lowest)', '7': 'Network Control (7, highest)'},
+          tos:       {'': 'Any', 'lowdelay': 'lowdelay', 'throughput': 'throughput'},
+          categories: {
+            'LAN Rules': 'LAN Rules',
+            'WAN Rules': 'WAN Rules',
+            'VPN': 'VPN',
+            'IoT': 'IoT',
+            'Management': 'Management',
+          },
+          portOptions: {
+            'single': 'Single port or range',
+            '':       'any',
+            'http':   'HTTP (80)',
+            'https':  'HTTPS (443)',
+            'ssh':    'SSH (22)',
+            'smtp':   'SMTP (25)',
+            'domain': 'DOMAIN (53)',
+            'imap':   'IMAP (143)',
+            'imaps':  'IMAPS (993)',
+            'pop3':   'POP3 (110)',
+            'pop3s':  'POP3S (995)',
+            'ftp':    'FTP (21)',
+            'ntp':    'NTP (123)',
+            'snmp':   'SNMP (161)',
+            'ldap':   'LDAP (389)',
+            'ms-wbt-server': 'MS-WBT-SERVER (3389)',
+          },
+        ),
+        realAction: () => _realApiService.getFirewallRuleFormOptions(),
         delayMs: 200,
       );
 
@@ -121,7 +191,7 @@ class DemoApiService {
       );
 
   /// Toggle firewall rule
-  Future<void> toggleFirewallRule(String uuid) => DemoApiDecorator.executeVoid(
+  Future<void> toggleFirewallRule(String uuid) => DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async => _demoDataService.toggleFirewallRuleState(uuid),
         realAction: () => _realApiService.toggleFirewallRule(uuid),
@@ -139,7 +209,7 @@ class DemoApiService {
 
   /// Update an existing firewall rule
   Future<void> updateFirewallRule(String uuid, FirewallRuleRequest request) =>
-      DemoApiDecorator.executeVoid(
+      DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.updateFirewallRule(uuid, request),
@@ -147,14 +217,14 @@ class DemoApiService {
       );
 
   /// Delete firewall rule
-  Future<void> deleteFirewallRule(String uuid) => DemoApiDecorator.executeVoid(
+  Future<void> deleteFirewallRule(String uuid) => DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.deleteFirewallRule(uuid),
       );
 
   /// Apply firewall changes
-  Future<void> applyFirewallChanges() => DemoApiDecorator.executeVoid(
+  Future<void> applyFirewallChanges() => DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.applyFirewallChanges(),
@@ -352,7 +422,7 @@ class DemoApiService {
 
   /// Toggle WireGuard server
   Future<void> toggleWireGuardServer(String uuid, bool enabled) =>
-      DemoApiDecorator.executeVoid(
+      DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.toggleWireGuardServer(uuid, enabled),
@@ -361,7 +431,7 @@ class DemoApiService {
 
   /// Delete WireGuard server
   Future<void> deleteWireGuardServer(String uuid) =>
-      DemoApiDecorator.executeVoid(
+      DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.deleteWireGuardServer(uuid),
@@ -380,7 +450,7 @@ class DemoApiService {
 
   /// Update WireGuard server
   Future<void> updateWireGuardServer(String uuid, WireGuardServerRequest request) =>
-      DemoApiDecorator.executeVoid(
+      DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.updateWireGuardServer(uuid, request),
@@ -389,7 +459,7 @@ class DemoApiService {
 
   /// Toggle WireGuard peer
   Future<void> toggleWireGuardPeer(String uuid, bool enabled) =>
-      DemoApiDecorator.executeVoid(
+      DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.toggleWireGuardPeer(uuid, enabled),
@@ -398,7 +468,7 @@ class DemoApiService {
 
   /// Delete WireGuard peer
   Future<void> deleteWireGuardPeer(String uuid) =>
-      DemoApiDecorator.executeVoid(
+      DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.deleteWireGuardPeer(uuid),
@@ -417,7 +487,7 @@ class DemoApiService {
 
   /// Update WireGuard peer
   Future<void> updateWireGuardPeer(String uuid, WireGuardPeerRequest request) =>
-      DemoApiDecorator.executeVoid(
+      DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.updateWireGuardPeer(uuid, request),
@@ -490,7 +560,7 @@ class DemoApiService {
 
   /// Add WireGuard client via builder
   Future<void> addClientBuilder(WireGuardClientBuilderRequest request) =>
-      DemoApiDecorator.executeVoid(
+      DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async {},
         realAction: () => _realApiService.addClientBuilder(request),
@@ -525,18 +595,21 @@ class DemoApiService {
       );
 
   /// Get WireGuard logs
-  Future<Map<String, dynamic>> getWireGuardLogs({
+  Future<OpenvpnLogSearchResponse> getWireGuardLogs({
     int rowCount = 50,
     List<String>? severity,
     double? validFrom,
   }) =>
       DemoApiDecorator.execute(
         isDemoMode: _isDemoMode,
-        demoAction: () async => {
-          'rows': [],
-          'rowCount': 0,
-          'total': 0,
-        },
+        demoAction: () async => const OpenvpnLogSearchResponse(
+          filters: '',
+          totalRows: 0,
+          rowCount: 0,
+          total: 0,
+          current: 1,
+          rows: [],
+        ),
         realAction: () => _realApiService.getWireGuardLogs(
           rowCount: rowCount,
           severity: severity,
@@ -792,14 +865,14 @@ class DemoApiService {
       );
 
   /// Toggle firewall alias
-  Future<void> toggleFirewallAlias(String uuid) => DemoApiDecorator.executeVoid(
+  Future<void> toggleFirewallAlias(String uuid) => DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async => _demoDataService.toggleFirewallAliasState(uuid),
         realAction: () => _realApiService.toggleFirewallAlias(uuid),
       );
 
   /// Delete firewall alias
-  Future<void> deleteFirewallAlias(String uuid) => DemoApiDecorator.executeVoid(
+  Future<void> deleteFirewallAlias(String uuid) => DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async => _demoDataService.deleteFirewallAlias(uuid),
         realAction: () => _realApiService.deleteFirewallAlias(uuid),
@@ -828,11 +901,116 @@ class DemoApiService {
         delayMs: 400,
       );
 
+  /// Get alias item defaults (type, proto, interface, authtype option lists)
+  Future<Map<String, dynamic>> getAliasItemDefaults() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {
+          'alias': {
+            'type': {
+              'host': {'value': 'Host(s)', 'selected': 0},
+              'network': {'value': 'Network(s)', 'selected': 0},
+              'port': {'value': 'Port(s)', 'selected': 0},
+              'url': {'value': 'URL', 'selected': 0},
+              'urltable': {'value': 'URL Table', 'selected': 0},
+              'urljson': {'value': 'URL Table (JSON)', 'selected': 0},
+              'geoip': {'value': 'GeoIP', 'selected': 0},
+              'networkgroup': {'value': 'Network Group', 'selected': 0},
+              'mac': {'value': 'MAC Address', 'selected': 0},
+              'asn': {'value': 'BGP ASN', 'selected': 0},
+              'dynipv6host': {'value': 'Dynamic IPv6 Host', 'selected': 0},
+              'authgroup': {'value': 'OpenVPN Group', 'selected': 0},
+              'internal': {'value': 'Internal', 'selected': 0},
+              'external': {'value': 'External (advanced)', 'selected': 0},
+            },
+            'proto': {
+              'IPv4': {'value': 'IPv4', 'selected': 0},
+              'IPv6': {'value': 'IPv6', 'selected': 0},
+            },
+            'authtype': {
+              '': {'value': 'None', 'selected': 1},
+              'basic': {'value': 'Basic Auth', 'selected': 0},
+              'bearer': {'value': 'Bearer Token', 'selected': 0},
+              'header': {'value': 'HTTP Header', 'selected': 0},
+            },
+            'interface': {
+              'lan': {'value': 'LAN', 'selected': 0},
+              'wan': {'value': 'WAN', 'selected': 0},
+            },
+          }
+        },
+        realAction: () => _realApiService.getAliasItemDefaults(),
+        delayMs: 300,
+      );
+
+  /// List alias categories
+  Future<List<AliasCategory>> listAliasCategories() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => [
+          AliasCategory(name: 'Blocklists', description: 'Blocklist aliases'),
+          AliasCategory(name: 'Internal', description: 'Internal network aliases'),
+          AliasCategory(name: 'VPN', description: 'VPN-related aliases'),
+        ],
+        realAction: () => _realApiService.listAliasCategories(),
+        delayMs: 200,
+      );
+
+  /// List network aliases
+  Future<Map<String, dynamic>> listNetworkAliases() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => <String, dynamic>{
+          'RFC1918': 'RFC1918',
+          'LAN_NET': 'LAN_NET',
+          'Atest1': 'Atest1',
+          'Atest2': 'Atest2',
+          'Atest3': 'Atest3',
+          'Atest4': 'Atest4',
+          'Atest5': 'Atest5',
+          'Atest6': 'Atest6',
+          'Atest7': 'Atest7',
+          'Atest8': 'Atest8',
+          'Atest9': 'Atest9',
+          'Atest10': 'Atest10',
+          'Atest11': 'Atest11',
+        },
+        realAction: () => _realApiService.listNetworkAliases(),
+        delayMs: 200,
+      );
+
+  /// List user groups
+  Future<Map<String, dynamic>> listUserGroups() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => <String, dynamic>{
+          'vpn_users': 'vpn_users',
+          'staff': 'staff',
+        },
+        realAction: () => _realApiService.listUserGroups(),
+        delayMs: 200,
+      );
+
+  /// List alias countries for GeoIP
+  Future<List<AliasCountry>> listAliasCountries() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => [
+          AliasCountry(code: 'US', name: 'United States'),
+          AliasCountry(code: 'DE', name: 'Germany'),
+          AliasCountry(code: 'CN', name: 'China'),
+          AliasCountry(code: 'RU', name: 'Russia'),
+          AliasCountry(code: 'GB', name: 'United Kingdom'),
+        ],
+        realAction: () => _realApiService.listAliasCountries(),
+        delayMs: 200,
+      );
+
   /// Reboot system
-  Future<void> rebootSystem() => DemoApiDecorator.executeVoid(
+  Future<void> rebootSystem() => DemoApiDecorator.execute<void>(
         isDemoMode: _isDemoMode,
         demoAction: () async =>
-            throw ApiException('Cannot reboot in demo mode', 403),
+            throw const ApiException('Cannot reboot in demo mode', 403, ApiErrorType.unknown),
         realAction: () => _realApiService.rebootSystem(),
         delayMs: 500,
       );
@@ -1310,6 +1488,103 @@ ${List.generate(16, (i) => List.generate(32, (j) => '0123456789abcdef'[(i * 32 +
         delayMs: 400,
       );
 
+  // ==================== System Log Files ====================
+
+  Future<OpenvpnLogSearchResponse> searchAuditLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => const OpenvpnLogSearchResponse(
+          filters: '', totalRows: 0, rowCount: 0, total: 0, current: 1, rows: [],
+        ),
+        realAction: () => _realApiService.searchAuditLogs(
+          current: current, rowCount: rowCount, sort: sort,
+          severity: severity, validFrom: validFrom,
+        ),
+        delayMs: 400,
+      );
+
+  Future<OpenvpnLogSearchResponse> searchBackendLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => const OpenvpnLogSearchResponse(
+          filters: '', totalRows: 0, rowCount: 0, total: 0, current: 1, rows: [],
+        ),
+        realAction: () => _realApiService.searchBackendLogs(
+          current: current, rowCount: rowCount, sort: sort,
+          severity: severity, validFrom: validFrom,
+        ),
+        delayMs: 400,
+      );
+
+  Future<OpenvpnLogSearchResponse> searchBootLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => const OpenvpnLogSearchResponse(
+          filters: '', totalRows: 0, rowCount: 0, total: 0, current: 1, rows: [],
+        ),
+        realAction: () => _realApiService.searchBootLogs(
+          current: current, rowCount: rowCount, sort: sort,
+          severity: severity, validFrom: validFrom,
+        ),
+        delayMs: 400,
+      );
+
+  Future<OpenvpnLogSearchResponse> searchGeneralLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => const OpenvpnLogSearchResponse(
+          filters: '', totalRows: 0, rowCount: 0, total: 0, current: 1, rows: [],
+        ),
+        realAction: () => _realApiService.searchGeneralLogs(
+          current: current, rowCount: rowCount, sort: sort,
+          severity: severity, validFrom: validFrom,
+        ),
+        delayMs: 400,
+      );
+
+  Future<OpenvpnLogSearchResponse> searchWebGuiLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => const OpenvpnLogSearchResponse(
+          filters: '', totalRows: 0, rowCount: 0, total: 0, current: 1, rows: [],
+        ),
+        realAction: () => _realApiService.searchWebGuiLogs(
+          current: current, rowCount: rowCount, sort: sort,
+          severity: severity, validFrom: validFrom,
+        ),
+        delayMs: 400,
+      );
+
   // ==================== OpenVPN Connection Status ====================
 
   /// Search OpenVPN sessions
@@ -1381,6 +1656,522 @@ ${List.generate(16, (i) => List.generate(32, (j) => '0123456789abcdef'[(i * 32 +
         demoAction: () async => {'result': 'ok'},
         realAction: () => _realApiService.restartService(id),
         delayMs: 500,
+      );
+
+  // ==================== Firmware Updates ====================
+
+  /// Trigger a firmware update check
+  Future<Map<String, dynamic>> triggerFirmwareCheck() =>
+      DemoApiDecorator.execute<Map<String, dynamic>>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'status': 'ok', 'msg_uuid': 'demo-uuid-123'},
+        realAction: () => _realApiService.triggerFirmwareCheck(),
+        delayMs: 300,
+      );
+
+  /// Trigger the actual firmware update (POST /core/firmware/update).
+  /// The real API returns an empty body; demo returns {} immediately.
+  Future<Map<String, dynamic>> triggerFirmwareUpdate() =>
+      DemoApiDecorator.execute<Map<String, dynamic>>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => <String, dynamic>{},
+        realAction: () => _realApiService.triggerFirmwareUpdate(),
+      );
+
+  /// Get firmware upgrade/check status (polling endpoint)
+  Future<Map<String, dynamic>> getFirmwareUpgradeStatus() =>
+      DemoApiDecorator.execute<Map<String, dynamic>>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async =>
+            {'status': 'done', 'log': 'Demo check complete.\n***DONE***'},
+        realAction: () => _realApiService.getFirmwareUpgradeStatus(),
+        delayMs: 200,
+      );
+
+  /// Get current firmware status (available updates, packages, etc.)
+  Future<Map<String, dynamic>> getFirmwareStatus() =>
+      DemoApiDecorator.execute<Map<String, dynamic>>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {
+          'needs_reboot': '1',
+          'download_size': '45MiB',
+          'last_check': 'Thu Jan 1 00:00:00 UTC 2026',
+          'new_packages': [
+            {
+              'name': 'cpu-microcode-rc',
+              'repository': 'OPNsense',
+              'version': '1.0_2',
+            },
+          ],
+          'upgrade_packages': [
+            {
+              'name': 'opnsense',
+              'repository': 'OPNsense',
+              'current_version': '26.7',
+              'new_version': '26.7.3',
+            },
+            {
+              'name': 'openssh-portable',
+              'repository': 'OPNsense',
+              'current_version': '10.3.p1,1',
+              'new_version': '10.5.p1_1,1',
+            },
+            {
+              'name': 'openssl35',
+              'repository': 'OPNsense',
+              'current_version': '3.5.7',
+              'new_version': '3.5.8',
+            },
+          ],
+          'product': {
+            'product_version': '26.7',
+            'product_latest': '26.7.3',
+          },
+        },
+        realAction: () => _realApiService.getFirmwareStatus(),
+        delayMs: 400,
+      );
+
+  /// Get firmware changelog for a given version
+  Future<Map<String, dynamic>> getFirmwareChangelog(String version) =>
+      DemoApiDecorator.execute<Map<String, dynamic>>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {
+          'status': 'ok',
+          'version': version,
+          'html':
+              '<p>Demo changelog for OPNsense $version. This update includes security fixes and performance improvements.</p>',
+          'date': 'January 1, 2026',
+        },
+        realAction: () => _realApiService.getFirmwareChangelog(version),
+        delayMs: 300,
+      );
+
+  // ── Network Insight ─────────────────────────────────────────────────────────
+
+  Future<NetflowStatus> checkNetflowEnabled() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _insightGenerator.generateNetflowStatus(),
+        realAction: () => _realApiService.checkNetflowEnabled(),
+        delayMs: 300,
+      );
+
+  Future<Map<String, String>> getInsightInterfaces() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _insightGenerator.generateInterfaces(),
+        realAction: () => _realApiService.getInsightInterfaces(),
+        delayMs: 300,
+      );
+
+  Future<List<NetworkInsightSeries>> getInsightTimeseries({
+    required int startTs,
+    required int endTs,
+    required int resolution,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _insightGenerator.generateTimeseries(
+          startTs: startTs,
+          endTs: endTs,
+          resolution: resolution,
+        ),
+        realAction: () => _realApiService.getInsightTimeseries(
+          startTs: startTs,
+          endTs: endTs,
+          resolution: resolution,
+        ),
+        delayMs: 500,
+      );
+
+  Future<List<NetworkInsightTopPort>> getInsightTopPorts({
+    required String interface,
+    required int startTs,
+    required int endTs,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _insightGenerator.generateTopPorts(),
+        realAction: () => _realApiService.getInsightTopPorts(
+          interface: interface,
+          startTs: startTs,
+          endTs: endTs,
+        ),
+        delayMs: 400,
+      );
+
+  Future<List<NetworkInsightTopAddr>> getInsightTopAddresses({
+    required String interface,
+    required int startTs,
+    required int endTs,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _insightGenerator.generateTopAddresses(),
+        realAction: () => _realApiService.getInsightTopAddresses(
+          interface: interface,
+          startTs: startTs,
+          endTs: endTs,
+        ),
+        delayMs: 400,
+      );
+
+  Future<Map<String, String>> reverseLookupAddresses(List<String> addresses) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        // In demo mode echo each address back unchanged (no real DNS).
+        demoAction: () async =>
+            {for (final a in addresses) a: a},
+        realAction: () => _realApiService.reverseLookupAddresses(addresses),
+        delayMs: 300,
+      );
+
+  Future<List<NetworkInsightDirectionTotal>> getInsightDirectionTotals({
+    required String interface,
+    required int startTs,
+    required int endTs,
+    required String measure,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => measure == 'packets'
+            ? _insightGenerator.generateDirectionPacketTotals()
+            : _insightGenerator.generateDirectionOctetTotals(),
+        realAction: () => _realApiService.getInsightDirectionTotals(
+          interface: interface,
+          startTs: startTs,
+          endTs: endTs,
+          measure: measure,
+        ),
+        delayMs: 400,
+      );
+
+  Future<List<InsightFlowDetail>> getInsightFlowDetails({
+    required int startTs,
+    required int endTs,
+    required String interface,
+    String? extraFilterField,
+    String? extraFilterValue,
+    String? dstPort,
+    String? dstAddr,
+    String? srcAddr,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => [
+          const InsightFlowDetail(
+            servicePort: '41127',
+            protocol: '6',
+            interface: 'pppoe1',
+            srcAddr: '162.196.24.123',
+            dstAddr: '192.168.1.100',
+            total: 170996949,
+            lastSeen: 1788777019,
+            lastSeenStr: '2026-09-07 13:30:19',
+            label: '41127 (tcp)',
+          ),
+          const InsightFlowDetail(
+            servicePort: '25872',
+            protocol: '17',
+            interface: 'pppoe1',
+            srcAddr: '208.77.22.27',
+            dstAddr: '192.168.1.100',
+            total: 117204231,
+            lastSeen: 1788777021,
+            lastSeenStr: '2026-09-07 13:30:21',
+            label: '25872 (udp)',
+          ),
+          const InsightFlowDetail(
+            servicePort: '6881',
+            protocol: '6',
+            interface: 'pppoe1',
+            srcAddr: '192.184.193.31',
+            dstAddr: '192.168.1.100',
+            total: 63944273,
+            lastSeen: 1788778168,
+            lastSeenStr: '2026-09-07 13:49:28',
+            label: '6881 (tcp)',
+          ),
+          const InsightFlowDetail(
+            servicePort: '42069',
+            protocol: '17',
+            interface: 'pppoe1',
+            srcAddr: '116.251.128.81',
+            dstAddr: '192.168.1.100',
+            total: 32093596,
+            lastSeen: 1788777495,
+            lastSeenStr: '2026-09-07 13:38:15',
+            label: '42069 (udp)',
+          ),
+          const InsightFlowDetail(
+            servicePort: '443',
+            protocol: '6',
+            interface: 'pppoe1',
+            srcAddr: '185.199.111.133',
+            dstAddr: '192.168.1.200',
+            total: 2135567,
+            lastSeen: 1788775201,
+            lastSeenStr: '2026-09-07 13:00:01',
+            label: 'https (tcp)',
+          ),
+          // "Other" sentinel row
+          const InsightFlowDetail(
+            servicePort: '',
+            protocol: '',
+            interface: '',
+            srcAddr: '',
+            dstAddr: '',
+            total: 57794173,
+            lastSeen: '',
+            lastSeenStr: '',
+            label: '',
+          ),
+        ],
+        realAction: () => _realApiService.getInsightFlowDetails(
+          startTs: startTs,
+          endTs: endTs,
+          interface: interface,
+          extraFilterField: extraFilterField,
+          extraFilterValue: extraFilterValue,
+          dstPort: dstPort,
+          dstAddr: dstAddr,
+          srcAddr: srcAddr,
+        ),
+        delayMs: 500,
+      );
+
+  Future<String> exportInsightData({
+    required String collection,
+    required int fromTs,
+    required int toTs,
+    required int resolution,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _insightGenerator.generateExportCsv(
+          collection: collection,
+          fromTs: fromTs,
+          toTs: toTs,
+          resolution: resolution,
+        ),
+        realAction: () => _realApiService.exportInsightData(
+          collection: collection,
+          fromTs: fromTs,
+          toTs: toTs,
+          resolution: resolution,
+        ),
+        delayMs: 600,
+      );
+
+  // ── NetFlow Config ────────────────────────────────────────────────────────
+
+  Future<NetflowConfig> getNetflowConfig() => DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => const NetflowConfig(
+          listeningInterfaceOptions: {'lan': 'LAN', 'wan': 'WAN', 'opt1': 'WAN2_MIFI'},
+          listeningInterfaces: ['lan', 'wan'],
+          wanInterfaceOptions: {'lan': 'LAN', 'wan': 'WAN', 'opt1': 'WAN2_MIFI'},
+          wanInterfaces: ['wan'],
+          versionOptions: {'v5': 'v5', 'v9': 'v9'},
+          version: 'v9',
+          targets: ['127.0.0.1:2056'],
+          captureLocal: false,
+          activeTimeout: '1800',
+          inactiveTimeout: '15',
+        ),
+        realAction: () => _realApiService.getNetflowConfig(),
+        delayMs: 400,
+      );
+
+  Future<void> saveNetflowConfig(NetflowConfig config) =>
+      DemoApiDecorator.execute<void>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.saveNetflowConfig(config),
+      );
+
+  Future<void> reconfigureNetflow() => DemoApiDecorator.execute<void>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.reconfigureNetflow(),
+        delayMs: 300,
+      );
+
+  Future<void> resetNetflowData() => DemoApiDecorator.execute<void>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.resetNetflowData(),
+        delayMs: 300,
+      );
+
+  Future<List<NetflowCacheStat>> getNetflowCacheStats() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => [
+          NetflowCacheStat.fromEntry('netflow_vtnet1',
+              {'Pkts': 170626, 'if': 'vtnet1', 'SrcIPaddresses': 205, 'DstIPaddresses': 605}),
+          NetflowCacheStat.fromEntry('ksocket_netflow_vtnet1',
+              {'Pkts': 0, 'if': 'netflow_vtnet1', 'SrcIPaddresses': 0, 'DstIPaddresses': 0}),
+          NetflowCacheStat.fromEntry('netflow_pppoe1',
+              {'Pkts': 0, 'if': 'pppoe1', 'SrcIPaddresses': 0, 'DstIPaddresses': 0}),
+          NetflowCacheStat.fromEntry('ksocket_netflow_pppoe1',
+              {'Pkts': 0, 'if': 'netflow_pppoe1', 'SrcIPaddresses': 0, 'DstIPaddresses': 0}),
+        ],
+        realAction: () => _realApiService.getNetflowCacheStats(),
+        delayMs: 400,
+      );
+
+  // ── System Health Reporting ─────────────────────────────────────────────────
+
+  Future<void> setSystemHealthEnabled(bool enabled) =>
+      DemoApiDecorator.execute<void>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.setSystemHealthEnabled(enabled),
+      );
+
+  Future<void> deleteSystemHealthRrdFile(String filename) =>
+      DemoApiDecorator.execute<void>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.deleteSystemHealthRrdFile(filename),
+      );
+
+  Future<void> deleteAllSystemHealthRrd() =>
+      DemoApiDecorator.execute<void>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.deleteAllSystemHealthRrd(),
+      );
+
+  Future<SystemHealthStatus> getSystemHealthStatus() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _systemHealthGenerator.generateStatus(),
+        realAction: () => _realApiService.getSystemHealthStatus(),
+        delayMs: 300,
+      );
+
+  Future<SystemHealthRrdList> getSystemHealthRrdList() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _systemHealthGenerator.generateRrdList(),
+        realAction: () => _realApiService.getSystemHealthRrdList(),
+        delayMs: 300,
+      );
+
+  Future<SystemHealthGraphResponse> getSystemHealthGraph(
+    String key, {
+    int period = 0,
+  }) => DemoApiDecorator.execute(
+    isDemoMode: _isDemoMode,
+    demoAction: () async => _systemHealthGenerator.generateGraph(key),
+    realAction: () => _realApiService.getSystemHealthGraph(key, period: period),
+    delayMs: 400,
+  );
+
+  // ── Unbound DNS Reporting ───────────────────────────────────────────────────
+
+  Future<UnboundOverviewStatus> checkUnboundOverviewEnabled() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _unboundGenerator.generateOverviewStatus(),
+        realAction: () => _realApiService.checkUnboundOverviewEnabled(),
+        delayMs: 300,
+      );
+
+  Future<UnboundTotals> getUnboundTotals({int limit = 10}) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _unboundGenerator.generateTotals(limit: limit),
+        realAction: () => _realApiService.getUnboundTotals(limit: limit),
+        delayMs: 400,
+      );
+
+  Future<List<UnboundRollingPoint>> getUnboundRolling(int hours) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _unboundGenerator.generateRolling(hours),
+        realAction: () => _realApiService.getUnboundRolling(hours),
+        delayMs: 400,
+      );
+
+  Future<List<UnboundRollingClientPoint>> getUnboundClientActivity(int hours) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _unboundGenerator.generateClientActivity(hours),
+        realAction: () => _realApiService.getUnboundClientActivity(hours),
+        delayMs: 400,
+      );
+
+  Future<UnboundQuerySearchResponse> searchUnboundQueries({
+    int current = 1,
+    int rowCount = 50,
+    String? searchPhrase,
+    String? client,
+    int? timeStart,
+    int? timeEnd,
+  }) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _unboundGenerator.generateQueries(
+          current: current,
+          rowCount: rowCount,
+          searchPhrase: searchPhrase,
+          client: client,
+          timeStart: timeStart,
+          timeEnd: timeEnd,
+        ),
+        realAction: () => _realApiService.searchUnboundQueries(
+          current: current,
+          rowCount: rowCount,
+          searchPhrase: searchPhrase,
+          client: client,
+          timeStart: timeStart,
+          timeEnd: timeEnd,
+        ),
+        delayMs: 400,
+      );
+
+  Future<UnboundSettings> getUnboundSettings() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _unboundGenerator.generateSettings(),
+        realAction: () => _realApiService.getUnboundSettings(),
+        delayMs: 300,
+      );
+
+  Future<void> setUnboundStatsEnabled(bool enabled) =>
+      DemoApiDecorator.execute<void>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => _unboundGenerator.setStatsEnabled(enabled),
+        realAction: () => _realApiService.setUnboundStatsEnabled(enabled),
+        delayMs: 400,
+      );
+
+  Future<void> reconfigureUnboundGeneral() =>
+      DemoApiDecorator.execute<void>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.reconfigureUnboundGeneral(),
+        delayMs: 500,
+      );
+
+  Future<void> resetUnboundDnsData() =>
+      DemoApiDecorator.execute<void>(
+        isDemoMode: _isDemoMode,
+        demoAction: () async {},
+        realAction: () => _realApiService.resetUnboundDnsData(),
+        delayMs: 400,
+      );
+
+  Future<String> getUnboundServiceStatus() =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => 'running',
+        realAction: () => _realApiService.getUnboundServiceStatus(),
+        delayMs: 200,
       );
 
   /// Clear service state

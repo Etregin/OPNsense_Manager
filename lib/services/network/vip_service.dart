@@ -97,7 +97,7 @@ class VipService extends BaseOPNsenseService {
         
         return carpOptions;
       } else {
-        throw ApiException('Failed to get VIP settings', response.statusCode);
+        throw ApiException('Failed to get VIP settings', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);

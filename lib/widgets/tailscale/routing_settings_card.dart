@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/tailscale_settings.dart';
+import '../../utils/app_colors.dart';
 import '../../viewmodels/tailscale_settings_form_state.dart';
 
 /// Widget for Tailscale routing settings
@@ -74,9 +75,9 @@ class RoutingSettingsCard extends StatelessWidget {
                 hintText: l10n.selectExitNode,
               ),
               items: [
-                const DropdownMenuItem<String>(
+                DropdownMenuItem<String>(
                   value: '',
-                  child: Text('None'),
+                  child: Text(l10n.none),
                 ),
                 if (settings?.useExitNode != null)
                   ...settings!.useExitNode!.entries
@@ -123,12 +124,12 @@ class RoutingSettingsCard extends StatelessWidget {
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context, false),
-                          child: const Text('Cancel'),
+                          child: Text(l10n.cancel),
                         ),
                         TextButton(
                           onPressed: () => Navigator.pop(context, true),
-                          style: TextButton.styleFrom(foregroundColor: Colors.red),
-                          child: const Text('Discard'),
+                          style: TextButton.styleFrom(foregroundColor: AppColors.error),
+                          child: Text(l10n.discard),
                         ),
                       ],
                     ),

@@ -16,30 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/foundation.dart';
 import '../models/wireguard_status.dart';
 import '../services/demo_api_service.dart';
+import 'base/base_form_view_model.dart';
 
 /// ViewModel for managing WireGuard status screen state
 ///
 /// Handles fetching and displaying WireGuard status data.
-class WireGuardStatusViewModel extends ChangeNotifier {
+class WireGuardStatusViewModel extends BaseFormViewModel {
   final DemoApiService _apiService;
 
-  // State properties
   WireGuardStatusResponse? _statusResponse;
-  bool _isLoading = false;
-  String? _errorMessage;
 
   WireGuardStatusViewModel(this._apiService) {
-    // Initialize by loading status data
     loadStatus();
   }
 
-  // Getters for state
   WireGuardStatusResponse? get statusResponse => _statusResponse;
-  bool get isLoading => _isLoading;
-  String? get errorMessage => _errorMessage;
 
   /// Returns the list of status items (or empty list if null)
   List<WireGuardStatusItem> get statusItems => _statusResponse?.rows ?? [];
@@ -50,27 +43,15 @@ class WireGuardStatusViewModel extends ChangeNotifier {
   /// Returns the total count of items
   int get totalItems => _statusResponse?.total ?? 0;
 
-  /// Fetches status data using OPNsenseApiService.getWireGuardStatusResponse()
+  /// Fetches status data from the API
   Future<void> loadStatus() async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
-
-    try {
+    await executeWithLoading(() async {
       _statusResponse = await _apiService.getWireGuardStatusResponse();
-      _errorMessage = null;
-    } catch (e) {
-      _errorMessage = 'Failed to load WireGuard status: ${e.toString()}';
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
+    });
   }
 
   /// Refreshes the status data
-  Future<void> refresh() async {
-    await loadStatus();
-  }
+  Future<void> refresh() => loadStatus();
 }
 
 

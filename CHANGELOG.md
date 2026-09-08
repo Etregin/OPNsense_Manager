@@ -2,6 +2,40 @@
 
 All notable changes to OPNsense Manager will be documented in this file.
 
+## [1.8.0] -
+
+### Added
+
+- Added system log viewer for Audit, Backend, Boot, General, and Web GUI logs with severity filtering and pagination.
+- Added firmware update screen with live upgrade logs and reboot support.
+- Added firewall alias management — create, edit, enable/disable, and delete aliases with type-specific forms, GeoIP region selection, and inline validation.
+- Added NetFlow / Insight Analyzer with interactive charts, top-talker breakdowns, flow details, and CSV export.
+- Added Unbound DNS reporting with overview metrics, interactive charts, detailed query search, and settings management.
+- Added Reporting Health graphs with category and subject selection.
+
+### Changed
+
+- Expanded firewall rule list to include system-generated rules, with full rule editing parity with the OPNsense GUI.
+- Added long-press copy and text selection to DHCP leases.
+- Updated minimum Flutter version and dependency versions.
+
+### Fixed
+
+- Fixed reboot button not rebooting the system.
+- Removed misplaced refresh button from the Neighbor Discovery screen.
+- Fixed WireGuard status fields causing deserialization errors when peer-only or interface-only fields are absent.
+
+## [1.8.0-Beta.1] -
+
+### Changed
+
+- Comprehensive refactor of the codebase covering color token migration, constants extraction, l10n cleanup, ViewModel pattern adoption, and shared utility/widget extraction.
+
+### Fixed
+
+- Removed the incorrectly placed floating refresh button from the neighbor discovery screen.
+- Adjusted all conditionally-present fields in WireGuardStatusItem nullable to prevent runtime errors when the OPNsense API omits peer-only or interface-only fields.
+
 ## [1.7.2] -
 
 ### Changed

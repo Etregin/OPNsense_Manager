@@ -86,7 +86,7 @@ class WireGuardPeer {
   });
 
   /// Check if peer is enabled
-  bool get isEnabled => enabled == "1";
+  bool get isEnabled => enabled == '1';
   
   /// Get tunnel addresses as a list
   List<String> get tunnelAddressList {

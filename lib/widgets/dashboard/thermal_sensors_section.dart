@@ -17,8 +17,10 @@
  */
 
 import 'package:flutter/material.dart';
-
+import '../../l10n/app_localizations.dart';
 import '../../models/thermal_sensor.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/color_helpers.dart';
 
 /// Widget for displaying thermal sensor readings in a compact format.
 class ThermalSensorsSection extends StatelessWidget {
@@ -31,6 +33,7 @@ class ThermalSensorsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -38,7 +41,7 @@ class ThermalSensorsSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Thermal Sensors',
+              l10n.thermalSensors,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -46,9 +49,9 @@ class ThermalSensorsSection extends StatelessWidget {
             const SizedBox(height: 12),
             if (sensors.isEmpty)
               Text(
-                'No thermal sensors available',
+                l10n.noThermalSensorsAvailable,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey[600],
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: AppColors.opacityMuted),
                     ),
               )
             else
@@ -79,10 +82,9 @@ class ThermalSensorsSection extends StatelessWidget {
           children: [
             _CompactSensorRow(sensor: sensor),
             if (!isLast)
-              Divider(
+              const Divider(
                 height: 1,
                 thickness: 1,
-                color: Colors.grey[200],
               ),
           ],
         );
@@ -122,7 +124,7 @@ class _CompactSensorRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final temperature = sensor.temperatureValue;
-    final color = _getTemperatureColor(temperature);
+    final color = thermalColor(temperature);
     final sensorName = _safeText(sensor.typeTranslated, fallback: 'Unknown');
     final deviceName = _safeText(sensor.device, fallback: 'Unknown device');
 
@@ -134,7 +136,7 @@ class _CompactSensorRow extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
+              color: color.withValues(alpha: AppColors.opacitySubtle),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
@@ -160,7 +162,7 @@ class _CompactSensorRow extends StatelessWidget {
                 Text(
                   deviceName,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey[600],
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: AppColors.opacityMuted),
                       ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -189,16 +191,6 @@ class _CompactSensorRow extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Color _getTemperatureColor(double temperature) {
-    if (temperature > 80) {
-      return Colors.red;
-    }
-    if (temperature >= 60) {
-      return Colors.orange;
-    }
-    return Colors.green;
   }
 
   String _safeText(String value, {required String fallback}) {

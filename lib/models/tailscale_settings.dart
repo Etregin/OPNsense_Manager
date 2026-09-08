@@ -40,7 +40,7 @@ class TailscaleExitNode {
     if (value == null) return false;
     if (value is bool) return value;
     if (value is int) return value == 1;
-    if (value is String) return value == "1";
+    if (value is String) return value == '1';
     return false;
   }
 
@@ -171,14 +171,14 @@ class TailscaleSettings {
   static bool? _boolFromString(dynamic value) {
     if (value == null) return null;
     if (value is bool) return value;
-    if (value is String) return value == "1";
+    if (value is String) return value == '1';
     return null;
   }
 
   /// Convert bool to API string
   static String? _boolToString(bool? value) {
     if (value == null) return null;
-    return value ? "1" : "0";
+    return value ? '1' : '0';
   }
 
   /// Parse exit node structure from API

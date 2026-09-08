@@ -26,7 +26,7 @@ class GatewayService extends BaseOPNsenseService {
   /// Endpoint: /api/routes/gateway/status
   Future<List<dynamic>> getGateways() async {
     if (!isInitialized) {
-      throw ApiException('API service not initialized', null);
+      throw const ApiException('API service not initialized', null, ApiErrorType.unknown);
     }
 
     try {
@@ -49,7 +49,7 @@ class GatewayService extends BaseOPNsenseService {
         
         return [];
       } else {
-        throw ApiException('Failed to get gateways', response.statusCode);
+        throw ApiException('Failed to get gateways', response.statusCode, ApiErrorType.unknown);
       }
     } on DioException catch (e) {
       throw handleDioError(e);

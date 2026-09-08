@@ -25,12 +25,24 @@ abstract class BaseListViewModel<T> extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
   String _searchQuery = '';
+  bool _disposed = false;
 
   List<T> get items => _filteredItems;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   String get searchQuery => _searchQuery;
   bool get hasItems => _filteredItems.isNotEmpty;
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
+  @override
+  void notifyListeners() {
+    if (!_disposed) super.notifyListeners();
+  }
 
   void setLoading(bool value) {
     _isLoading = value;

@@ -18,7 +18,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
 import '../widgets/app_drawer.dart';
 import '../l10n/app_localizations.dart';
@@ -39,7 +38,6 @@ class _OpenvpnInstancesScreenState extends State<OpenvpnInstancesScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late DemoApiService _apiService;
-  SystemInfo? _systemInfo;
   bool _isInitialized = false;
   
   // Callbacks to refresh child screens
@@ -59,7 +57,6 @@ class _OpenvpnInstancesScreenState extends State<OpenvpnInstancesScreen>
     if (!_isInitialized) {
       _apiService = context.read<DemoApiService>();
       _isInitialized = true;
-      _loadSystemInfo();
     }
   }
 
@@ -77,21 +74,6 @@ class _OpenvpnInstancesScreenState extends State<OpenvpnInstancesScreen>
     }
   }
 
-  Future<void> _loadSystemInfo() async {
-    try {
-      final apiService = context.read<DemoApiService>();
-      final systemInfo = await apiService.getSystemInfo();
-
-      if (mounted) {
-        setState(() {
-          _systemInfo = systemInfo;
-        });
-      }
-    } catch (e) {
-      // Silently fail - system info is optional for drawer
-    }
-  }
-
   Future<void> _onAddInstance() async {
     final result = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
@@ -102,7 +84,6 @@ class _OpenvpnInstancesScreenState extends State<OpenvpnInstancesScreen>
     // Refresh list if instance was added
     if (result == true && mounted) {
       _refreshInstancesList?.call();
-      _loadSystemInfo();
     }
   }
 
@@ -116,7 +97,6 @@ class _OpenvpnInstancesScreenState extends State<OpenvpnInstancesScreen>
     // Refresh list if static key was added
     if (result == true && mounted) {
       _refreshStaticKeysList?.call();
-      _loadSystemInfo();
     }
   }
   
@@ -156,21 +136,18 @@ class _OpenvpnInstancesScreenState extends State<OpenvpnInstancesScreen>
           ),
         ],
       ),
-      drawer: AppDrawer(
-        currentRoute: 'openvpn_instances',
-        systemInfo: _systemInfo,
+      drawer: const AppDrawer(
+        currentRoute: 'openvpn_instances'
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
           OpenvpnInstancesListScreen(
             apiService: _apiService,
-            onRefresh: _loadSystemInfo,
             onRegisterRefresh: (callback) => _refreshInstancesList = callback,
           ),
           OpenvpnStaticKeysListScreen(
             apiService: _apiService,
-            onRefresh: _loadSystemInfo,
             onRegisterRefresh: (callback) => _refreshStaticKeysList = callback,
           ),
         ],
@@ -179,7 +156,7 @@ class _OpenvpnInstancesScreenState extends State<OpenvpnInstancesScreen>
         onPressed: _tabController.index == 0 ? _onAddInstance : _onAddStaticKey,
         icon: const Icon(Icons.add),
         label: Text(_tabController.index == 0 ? l10n.addInstance : l10n.addStaticKey),
-        tooltip: _tabController.index == 0 ? l10n.addOpenVpnInstance : l10n.addStaticKeyTooltip,
+        tooltip: _tabController.index == 0 ? l10n.addOpenVpnInstance : l10n.addStaticKey,
       ),
     );
   }

@@ -18,8 +18,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../constants/routes.dart';
 import '../../l10n/app_localizations.dart';
-import '../../screens/live_network_monitor_screen.dart';
 import '../../screens/dhcp_leases_screen.dart';
 import '../../screens/neighbor_discovery_screen.dart';
 import '../../screens/wol_screen.dart';
@@ -80,24 +80,17 @@ class _NetworkNavigationSectionState extends State<NetworkNavigationSection> {
     return Column(
       children: [
         NavigationTile(
-          icon: Icons.network_check,
-          title: l10n.liveNetworkMonitor,
-          currentRoute: widget.currentRoute,
-          targetRoute: 'live_network_monitor',
-          destination: const LiveNetworkMonitorScreen(),
-        ),
-        NavigationTile(
           icon: Icons.dns,
           title: l10n.dhcpLeases,
           currentRoute: widget.currentRoute,
-          targetRoute: 'dhcp_leases',
+          targetRoute: Routes.dhcpLeases,
           destination: const DhcpLeasesScreen(),
         ),
         NavigationTile(
           icon: Icons.devices,
           title: l10n.neighborDiscovery,
           currentRoute: widget.currentRoute,
-          targetRoute: 'neighbor_discovery',
+          targetRoute: Routes.neighborDiscovery,
           destination: const NeighborDiscoveryScreen(),
         ),
         // Only show WOL tile if plugin is available and not loading
@@ -106,7 +99,7 @@ class _NetworkNavigationSectionState extends State<NetworkNavigationSection> {
             icon: Icons.power_settings_new,
             title: l10n.wakeOnLan,
             currentRoute: widget.currentRoute,
-            targetRoute: 'wol',
+            targetRoute: Routes.wol,
             destination: const WolScreen(),
           ),
       ],

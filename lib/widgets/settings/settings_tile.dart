@@ -64,8 +64,8 @@ class SettingsTile extends StatelessWidget {
                     Text(
                       subtitle!,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.grey[600],
-                          ),
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              ),
                     ),
                   ],
                 ],

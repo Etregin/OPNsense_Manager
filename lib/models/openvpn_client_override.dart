@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'openvpn_dropdown_option.dart';
 
@@ -180,8 +181,11 @@ class OpenvpnClientOverride {
       if (value is Map<String, dynamic>) {
         try {
           options[key as String] = OpenvpnDropdownOption.fromJson(value);
-        } catch (_) {
-          // Skip invalid options
+        } catch (e) {
+          assert(() {
+            debugPrint('OpenvpnClientOverride: failed to parse dropdown option: $e');
+            return true;
+          }());
         }
       }
     });

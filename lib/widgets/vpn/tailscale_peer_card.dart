@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import '../../utils/app_colors.dart';
 
 /// Widget for displaying a Tailscale peer card
 /// This is a placeholder for future Tailscale peer display functionality
@@ -39,7 +40,7 @@ class TailscalePeerCard extends StatelessWidget {
       child: ListTile(
         leading: Icon(
           isOnline ? Icons.computer : Icons.computer_outlined,
-          color: isOnline ? Colors.green : Colors.grey,
+          color: isOnline ? AppColors.success : AppColors.disabled,
           size: 32,
         ),
         title: Text(
@@ -54,7 +55,7 @@ class TailscalePeerCard extends StatelessWidget {
           height: 12,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: isOnline ? Colors.green : Colors.grey,
+            color: isOnline ? AppColors.success : AppColors.disabled,
           ),
         ),
       ),

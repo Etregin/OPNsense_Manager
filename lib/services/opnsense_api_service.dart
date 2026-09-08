@@ -23,9 +23,18 @@ import '../models/opnsense_config.dart';
 import '../models/system_info.dart';
 import '../models/thermal_sensor.dart';
 import '../models/firewall_rule.dart';
+import '../models/firewall_form_options.dart';
 import '../models/firewall_alias.dart';
 import '../models/vpn_connection.dart';
+import '../models/insight_flow_detail.dart';
+import '../models/netflow_cache_stat.dart';
+import '../models/netflow_config.dart';
+import '../models/netflow_status.dart';
 import '../models/network_host.dart';
+import '../models/network_insight_direction_total.dart';
+import '../models/network_insight_timeserie.dart';
+import '../models/network_insight_top_addr.dart';
+import '../models/network_insight_top_port.dart';
 import '../models/wireguard_server.dart';
 import '../models/wireguard_peer.dart';
 import '../models/wireguard_key_pair.dart';
@@ -43,6 +52,14 @@ import '../models/openvpn_session_search_response.dart';
 import '../models/openvpn_route_search_response.dart';
 import '../models/openvpn_log_search_response.dart';
 import '../models/neighbor.dart';
+import '../models/system_health_graph.dart';
+import '../models/system_health_rrd_list.dart';
+import '../models/system_health_status.dart';
+import '../models/unbound_overview_status.dart';
+import '../models/unbound_query_item.dart';
+import '../models/unbound_rolling.dart';
+import '../models/unbound_settings.dart';
+import '../models/unbound_totals.dart';
 import '../utils/constants.dart';
 
 // Import all specialized services
@@ -51,6 +68,8 @@ import 'firewall/firewall_service.dart';
 import 'firewall/firewall_alias_service.dart' as alias_service;
 import 'vpn/vpn_service.dart';
 import 'vpn/wireguard_service.dart';
+import 'network/netflow_config_service.dart';
+import 'network/network_insight_service.dart';
 import 'network/network_service.dart';
 import 'network/dhcp_service.dart';
 import 'network/gateway_service.dart';
@@ -60,6 +79,9 @@ import 'network/neighbor_discovery_service.dart';
 import 'services/service_control_service.dart';
 import 'tailscale/tailscale_service.dart';
 import 'vpn/openvpn_service.dart';
+import 'system/system_log_service.dart';
+import 'unbound/unbound_dns_service.dart';
+import 'reporting/system_health_service.dart';
 
 // Re-export ApiException and helper classes for backward compatibility
 export 'base/api_exception.dart';
@@ -90,6 +112,11 @@ class OPNsenseApiService {
   final NeighborDiscoveryService _neighborDiscoveryService = NeighborDiscoveryService();
   final ServiceControlService _serviceControlService = ServiceControlService();
   final TailscaleService _tailscaleService = TailscaleService();
+  final SystemLogService _systemLogService = SystemLogService();
+  final NetflowConfigService _netflowConfigService = NetflowConfigService();
+  final NetworkInsightService _networkInsightService = NetworkInsightService();
+  final UnboundDnsService _unboundDnsService = UnboundDnsService();
+  final SystemHealthService _systemHealthService = SystemHealthService();
 
   Dio? _dio;
   OPNsenseConfig? _config;
@@ -138,6 +165,11 @@ class OPNsenseApiService {
     _neighborDiscoveryService.init(_dio!, config);
     _serviceControlService.init(_dio!, config);
     _tailscaleService.init(_dio!, config);
+    _systemLogService.init(_dio!, config);
+    _netflowConfigService.init(_dio!, config);
+    _networkInsightService.init(_dio!, config);
+    _unboundDnsService.init(_dio!, config);
+    _systemHealthService.init(_dio!, config);
   }
 
   /// Test connection to OPNsense
@@ -195,7 +227,12 @@ class OPNsenseApiService {
     _neighborDiscoveryService.clear();
     _serviceControlService.clear();
     _tailscaleService.clear();
-    
+    _systemLogService.clear();
+    _netflowConfigService.clear();
+    _networkInsightService.clear();
+    _unboundDnsService.clear();
+    _systemHealthService.clear();
+
     // Clear main service state
     _dio = null;
     _config = null;
@@ -220,6 +257,11 @@ class OPNsenseApiService {
   Future<List<ThermalSensor>> getSystemTemperature() => _systemService.getSystemTemperature();
   
   Future<void> rebootSystem() => _systemService.rebootSystem();
+  Future<Map<String, dynamic>> triggerFirmwareCheck() => _systemService.triggerFirmwareCheck();
+  Future<Map<String, dynamic>> triggerFirmwareUpdate() => _systemService.triggerFirmwareUpdate();
+  Future<Map<String, dynamic>> getFirmwareUpgradeStatus() => _systemService.getFirmwareUpgradeStatus();
+  Future<Map<String, dynamic>> getFirmwareStatus() => _systemService.getFirmwareStatus();
+  Future<Map<String, dynamic>> getFirmwareChangelog(String version) => _systemService.getFirmwareChangelog(version);
 
   // ============================================================================
   // Firewall Service Delegations
@@ -228,6 +270,8 @@ class OPNsenseApiService {
   Future<List<FirewallRule>> getFirewallRules() => _firewallService.getFirewallRules();
   
   Future<Map<String, String>> getAvailableInterfaces() => _firewallService.getAvailableInterfaces();
+
+  Future<FirewallFormOptions> getFirewallRuleFormOptions() => _firewallService.getFirewallRuleFormOptions();
   
   Future<String> createFirewallRule(FirewallRuleRequest request) => _firewallService.createFirewallRule(request);
   
@@ -261,7 +305,6 @@ class OPNsenseApiService {
   
   Future<void> deleteFirewallAlias(String uuid) => _firewallAliasService.deleteFirewallAlias(uuid);
   
-  Future<void> applyFirewallAliasChanges() => _firewallAliasService.applyFirewallAliasChanges();
   
   Future<Map<String, dynamic>> getGeoIP() => _firewallAliasService.getGeoIP();
   
@@ -288,6 +331,8 @@ class OPNsenseApiService {
   Future<Map<String, dynamic>> findAliasReferences(String aliasName) => _firewallAliasService.findAliasReferences(aliasName);
   
   Future<Map<String, dynamic>> updateBogons() => _firewallAliasService.updateBogons();
+  
+  Future<Map<String, dynamic>> getAliasItemDefaults() => _firewallAliasService.getAliasItemDefaults();
 
   // ============================================================================
   // VPN Service Delegations
@@ -368,7 +413,7 @@ class OPNsenseApiService {
   
   Future<void> restartWireGuardInstance(String uuid) => _wireguardService.restartWireGuardInstance(uuid);
 
-  Future<Map<String, dynamic>> getWireGuardLogs({
+  Future<OpenvpnLogSearchResponse> getWireGuardLogs({
     int rowCount = 50,
     List<String>? severity,
     double? validFrom,
@@ -390,6 +435,63 @@ class OPNsenseApiService {
     sort: sort,
     severity: severity,
     validFrom: validFrom,
+  );
+
+  // ── System Log Files ─────────────────────────────────────────────────────────
+
+  Future<OpenvpnLogSearchResponse> searchAuditLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) => _systemLogService.searchAuditLogs(
+    current: current, rowCount: rowCount, sort: sort,
+    severity: severity, validFrom: validFrom,
+  );
+
+  Future<OpenvpnLogSearchResponse> searchBackendLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) => _systemLogService.searchBackendLogs(
+    current: current, rowCount: rowCount, sort: sort,
+    severity: severity, validFrom: validFrom,
+  );
+
+  Future<OpenvpnLogSearchResponse> searchBootLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) => _systemLogService.searchBootLogs(
+    current: current, rowCount: rowCount, sort: sort,
+    severity: severity, validFrom: validFrom,
+  );
+
+  Future<OpenvpnLogSearchResponse> searchGeneralLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) => _systemLogService.searchGeneralLogs(
+    current: current, rowCount: rowCount, sort: sort,
+    severity: severity, validFrom: validFrom,
+  );
+
+  Future<OpenvpnLogSearchResponse> searchWebGuiLogs({
+    int current = 1,
+    int rowCount = 50,
+    Map<String, dynamic>? sort,
+    List<String>? severity,
+    double? validFrom,
+  }) => _systemLogService.searchWebGuiLogs(
+    current: current, rowCount: rowCount, sort: sort,
+    severity: severity, validFrom: validFrom,
   );
 
   // ============================================================================
@@ -605,6 +707,191 @@ class OPNsenseApiService {
   Future<Map<String, dynamic>> deleteTailscaleSubnet(String uuid) => _tailscaleService.deleteTailscaleSubnet(uuid);
   
   Future<Map<String, dynamic>> reloadTailscaleSettings() => _tailscaleService.reloadTailscaleSettings();
+
+  // ============================================================================
+  // NetFlow Config Service Delegations
+  // ============================================================================
+
+  Future<NetflowConfig> getNetflowConfig() =>
+      _netflowConfigService.getConfig();
+
+  Future<void> saveNetflowConfig(NetflowConfig config) =>
+      _netflowConfigService.saveConfig(config);
+
+  Future<void> reconfigureNetflow() =>
+      _netflowConfigService.reconfigure();
+
+  Future<void> resetNetflowData() =>
+      _netflowConfigService.resetData();
+
+  Future<List<NetflowCacheStat>> getNetflowCacheStats() =>
+      _netflowConfigService.getCacheStats();
+
+  // ============================================================================
+  // Network Insight Service Delegations
+  // ============================================================================
+
+  Future<NetflowStatus> checkNetflowEnabled() =>
+      _networkInsightService.checkNetflowEnabled();
+
+  Future<Map<String, String>> getInsightInterfaces() =>
+      _networkInsightService.getInterfaces();
+
+  Future<List<NetworkInsightSeries>> getInsightTimeseries({
+    required int startTs,
+    required int endTs,
+    required int resolution,
+  }) =>
+      _networkInsightService.getTimeseries(
+        startTs: startTs,
+        endTs: endTs,
+        resolution: resolution,
+      );
+
+  Future<List<NetworkInsightTopPort>> getInsightTopPorts({
+    required String interface,
+    required int startTs,
+    required int endTs,
+  }) =>
+      _networkInsightService.getTopPorts(
+        interface: interface,
+        startTs: startTs,
+        endTs: endTs,
+      );
+
+  Future<List<NetworkInsightTopAddr>> getInsightTopAddresses({
+    required String interface,
+    required int startTs,
+    required int endTs,
+  }) =>
+      _networkInsightService.getTopAddresses(
+        interface: interface,
+        startTs: startTs,
+        endTs: endTs,
+      );
+
+  Future<Map<String, String>> reverseLookupAddresses(
+          List<String> addresses) =>
+      _networkInsightService.reverseLookup(addresses);
+
+  Future<List<NetworkInsightDirectionTotal>> getInsightDirectionTotals({
+    required String interface,
+    required int startTs,
+    required int endTs,
+    required String measure,
+  }) =>
+      _networkInsightService.getDirectionTotals(
+        interface: interface,
+        startTs: startTs,
+        endTs: endTs,
+        measure: measure,
+      );
+
+  Future<List<InsightFlowDetail>> getInsightFlowDetails({
+    required int startTs,
+    required int endTs,
+    required String interface,
+    String? extraFilterField,
+    String? extraFilterValue,
+    String? dstPort,
+    String? dstAddr,
+    String? srcAddr,
+  }) =>
+      _networkInsightService.getFlowDetails(
+        startTs: startTs,
+        endTs: endTs,
+        interface: interface,
+        extraFilterField: extraFilterField,
+        extraFilterValue: extraFilterValue,
+        dstPort: dstPort,
+        dstAddr: dstAddr,
+        srcAddr: srcAddr,
+      );
+
+  Future<String> exportInsightData({
+    required String collection,
+    required int fromTs,
+    required int toTs,
+    required int resolution,
+  }) =>
+      _networkInsightService.exportNetflowData(
+        collection: collection,
+        fromTs: fromTs,
+        toTs: toTs,
+        resolution: resolution,
+      );
+
+  // ============================================================================
+  // System Health Reporting Delegations
+  // ============================================================================
+
+  Future<void> setSystemHealthEnabled(bool enabled) =>
+      _systemHealthService.setEnabled(enabled);
+
+  Future<void> deleteSystemHealthRrdFile(String filename) =>
+      _systemHealthService.deleteRrdFile(filename);
+
+  Future<void> deleteAllSystemHealthRrd() =>
+      _systemHealthService.deleteAllRrd();
+
+  Future<SystemHealthStatus> getSystemHealthStatus() =>
+      _systemHealthService.getStatus();
+
+  Future<SystemHealthRrdList> getSystemHealthRrdList() =>
+      _systemHealthService.getRrdList();
+
+  Future<SystemHealthGraphResponse> getSystemHealthGraph(
+    String key, {
+    int period = 0,
+  }) => _systemHealthService.getGraph(key, period: period);
+
+  // ============================================================================
+  // Unbound DNS Reporting Delegations
+  // ============================================================================
+
+  Future<UnboundOverviewStatus> checkUnboundOverviewEnabled() =>
+      _unboundDnsService.checkIsEnabled();
+
+  Future<UnboundTotals> getUnboundTotals({int limit = 10}) =>
+      _unboundDnsService.getTotals(limit: limit);
+
+  Future<List<UnboundRollingPoint>> getUnboundRolling(int hours) =>
+      _unboundDnsService.getRolling(hours);
+
+  Future<List<UnboundRollingClientPoint>> getUnboundClientActivity(int hours) =>
+      _unboundDnsService.getClientActivity(hours);
+
+  Future<UnboundQuerySearchResponse> searchUnboundQueries({
+    int current = 1,
+    int rowCount = 50,
+    String? searchPhrase,
+    String? client,
+    int? timeStart,
+    int? timeEnd,
+  }) =>
+      _unboundDnsService.searchQueries(
+        current: current,
+        rowCount: rowCount,
+        searchPhrase: searchPhrase,
+        client: client,
+        timeStart: timeStart,
+        timeEnd: timeEnd,
+      );
+
+  Future<UnboundSettings> getUnboundSettings() =>
+      _unboundDnsService.getSettings();
+
+  Future<void> setUnboundStatsEnabled(bool enabled) =>
+      _unboundDnsService.setStatsEnabled(enabled);
+
+  Future<void> reconfigureUnboundGeneral() =>
+      _unboundDnsService.reconfigureGeneral();
+
+  Future<void> resetUnboundDnsData() =>
+      _unboundDnsService.resetDnsData();
+
+  Future<String> getUnboundServiceStatus() =>
+      _unboundDnsService.getServiceStatus();
 }
 
 

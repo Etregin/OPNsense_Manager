@@ -19,10 +19,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/demo_api_service.dart';
+import '../utils/app_colors.dart';
 import '../viewmodels/wireguard_status_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/wireguard/status_card.dart';
-import 'package:opnsense_manager/l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 /// Screen for displaying WireGuard service status
 class WireGuardStatusScreen extends StatefulWidget {
@@ -96,7 +97,7 @@ class _WireGuardStatusScreenState extends State<WireGuardStatusScreen> {
                           const Icon(
                             Icons.error_outline,
                             size: 48,
-                            color: Colors.red,
+                            color: AppColors.error,
                           ),
                           const SizedBox(height: 16),
                           Text(
@@ -128,7 +129,7 @@ class _WireGuardStatusScreenState extends State<WireGuardStatusScreen> {
                               const Icon(
                                 Icons.vpn_lock,
                                 size: 48,
-                                color: Colors.grey,
+                                color: AppColors.disabled,
                               ),
                               const SizedBox(height: 16),
                               Text(
@@ -138,7 +139,7 @@ class _WireGuardStatusScreenState extends State<WireGuardStatusScreen> {
                               const SizedBox(height: 8),
                               Text(
                                 l10n.checkIfWireguardIsConfiguredAndRunning,
-                                style: const TextStyle(color: Colors.grey),
+                                 style: const TextStyle(color: AppColors.disabled),
                               ),
                             ],
                           ),

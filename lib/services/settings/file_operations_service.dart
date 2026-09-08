@@ -96,7 +96,7 @@ class FileOperationsService {
         return ExportResult(success: false);
       }
       
-      return ExportResult(success: true, filePath: filePath);
+      return ExportResult(success: true, filePath: filePath.toString());
     } on FileSystemException catch (e) {
       final errorMessage = PlatformErrorHandler.getFileSystemErrorMessage(e);
       return ExportResult(success: false, errorMessage: errorMessage);
@@ -149,7 +149,7 @@ class FileOperationsService {
         return ExportResult(success: false);
       }
       
-      return ExportResult(success: true, filePath: filePath);
+      return ExportResult(success: true, filePath: filePath.toString());
     } on FileSystemException catch (e) {
       final errorMessage = PlatformErrorHandler.getFileSystemErrorMessage(e);
       return ExportResult(success: false, errorMessage: errorMessage);

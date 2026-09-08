@@ -12,6 +12,53 @@ class AppLocalizationsAr extends AppLocalizations {
   String get about => 'حول';
 
   @override
+  String get support => 'الدعم';
+
+  @override
+  String get supportProject => 'دعم المشروع';
+
+  @override
+  String get supportDescription =>
+      'إذا وجدت تطبيق OPNsense Manager مفيداً، يرجى التفكير في دعم تطويره وصيانته المستمرة.';
+
+  @override
+  String get cryptoDonation => 'تبرع بالعملات المشفرة';
+
+  @override
+  String get supportedNetworks => 'الشبكات المدعومة';
+
+  @override
+  String get binanceGiftCard => 'بطاقة هدايا بينانس';
+
+  @override
+  String get binanceGiftCardDescription =>
+      'يمكن إرسال بطاقات هدايا بينانس إلى:';
+
+  @override
+  String get addressCopied => 'تم نسخ العنوان إلى الحافظة';
+
+  @override
+  String get emailCopied => 'تم نسخ البريد الإلكتروني إلى الحافظة';
+
+  @override
+  String get auditLog => 'سجل التدقيق';
+
+  @override
+  String get backendLog => 'سجل الخلفية';
+
+  @override
+  String get bootLog => 'سجل التشغيل';
+
+  @override
+  String get generalLog => 'السجل العام';
+
+  @override
+  String get systemLogFiles => 'ملفات سجل النظام';
+
+  @override
+  String get webGuiLog => 'سجل واجهة الويب';
+
+  @override
   String get aboutDescription =>
       'تطبيق Flutter احترافي لإدارة جدران حماية OPNsense.';
 
@@ -79,9 +126,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get add => 'إضافة';
 
   @override
-  String get addButton => 'إضافة';
-
-  @override
   String get addClientOverride => 'إضافة تجاوز العميل';
 
   @override
@@ -119,9 +163,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get addStaticKey => 'إضافة مفتاح ثابت';
 
   @override
-  String get addStaticKeyTooltip => 'إضافة مفتاح ثابت';
-
-  @override
   String get addSubnet => 'إضافة شبكة فرعية';
 
   @override
@@ -129,6 +170,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get additionalInformation => 'معلومات إضافية';
+
+  @override
+  String get advancedOptions => 'خيارات متقدمة';
 
   @override
   String get address => 'العنوان';
@@ -183,10 +227,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get allTypes => 'جميع الأنواع';
 
   @override
-  String get allVPNs => 'جميع VPN';
-
-  @override
-  String get allowSelfSigned => 'السماح بالشهادة الموقعة ذاتياً';
+  String get allVpns => 'جميع VPN';
 
   @override
   String get allowSelfSignedCertificates => 'السماح بالشهادات الموقعة ذاتياً';
@@ -197,9 +238,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get allowedIps => 'عناوين IP المسموح بها';
-
-  @override
-  String get allowedIpsLabel => 'عناوين IP المسموح بها';
 
   @override
   String get any => 'أي';
@@ -222,26 +260,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get apiKeyIsRequired => 'مفتاح API مطلوب';
 
   @override
-  String get apiKeyLabel => 'مفتاح API';
-
-  @override
   String get apiSecret => 'سر API';
 
   @override
   String get apiSecretIsRequired => 'سر API مطلوب';
 
   @override
-  String get apiSecretLabel => 'سر API';
-
-  @override
-  String get appName => 'مدير OPNsense';
-
-  @override
   String get appearance => 'المظهر';
-
-  @override
-  String get applicationLegalese =>
-      '© 2026 OPNsense Manager\n\nمرخص بموجب رخصة جنو العمومية الإصدار 3.0\n\nهذا البرنامج مجاني: يمكنك إعادة توزيعه و/أو تعديله بموجب شروط رخصة جنو العمومية كما نشرتها مؤسسة البرمجيات الحرة، سواء الإصدار 3 من الرخصة، أو (حسب اختيارك) أي إصدار لاحق.';
 
   @override
   String get apply => 'تطبيق';
@@ -281,10 +306,31 @@ class AppLocalizationsAr extends AppLocalizations {
   String get authenticationSettings => 'إعدادات المصادقة';
 
   @override
+  String get authenticated => 'مصادق عليه';
+
+  @override
+  String get notAuthenticated => 'غير مصادق عليه';
+
+  @override
+  String get tailnet => 'تيلنت';
+
+  @override
+  String get deviceName => 'اسم الجهاز';
+
+  @override
+  String get authUrl => 'رابط المصادقة';
+
+  @override
+  String get user => 'المستخدم';
+
+  @override
   String get authorizedPeers => 'الأقران المصرح لهم';
 
   @override
   String get autoRefresh => 'التحديث التلقائي';
+
+  @override
+  String get automaticRule => 'تلقائي';
 
   @override
   String get backendState => 'حالة الخلفية';
@@ -294,6 +340,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get bandwidthLimitMbps => 'حد النطاق الترددي (ميجابت في الثانية)';
+
+  @override
+  String get bandwidthHistory => 'سجل عرض النطاق الترددي';
 
   @override
   String get base64EncodedPrivateKeyKeepSecret =>
@@ -347,7 +396,33 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cancel => 'إلغاء';
 
   @override
-  String get cancelButton => 'إلغاء';
+  String get checkForUpdates => 'التحقق من التحديثات';
+
+  @override
+  String get checkingForUpdates => 'جارٍ التحقق من التحديثات…';
+
+  @override
+  String get installUpdate => 'تثبيت التحديث';
+
+  @override
+  String get installingUpdate => 'جارٍ تثبيت التحديث…';
+
+  @override
+  String get updateComplete => 'تم تثبيت التحديث بنجاح';
+
+  @override
+  String get rebootRequired => 'إعادة التشغيل مطلوبة لإكمال التحديث.';
+
+  @override
+  String get rebootNow => 'إعادة التشغيل الآن';
+
+  @override
+  String get installUpdateConfirmTitle => 'تثبيت التحديث';
+
+  @override
+  String installUpdateConfirmMessage(int count) {
+    return 'سيؤدي هذا إلى ترقية $count حزمة (حزم) ويتطلب إعادة تشغيل. المتابعة؟';
+  }
 
   @override
   String get cannotBeUndone => 'لا يمكن التراجع عن هذا الإجراء.';
@@ -356,20 +431,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cannotDeleteLastConnection => 'لا يمكن حذف نقطة الاتصال الأخيرة';
 
   @override
-  String get cannotDeleteLastConnectionTooltip =>
-      'لا يمكن حذف نقطة الاتصال الأخيرة';
-
-  @override
   String get carpVhidToDepend => 'CARP VHID للاعتماد عليه';
 
   @override
   String get categories => 'الفئات';
 
   @override
-  String get changePIN => 'تغيير PIN';
-
-  @override
-  String get changePinTitle => 'تغيير PIN';
+  String get changePin => 'تغيير PIN';
 
   @override
   String get changesDiscarded => 'تم تجاهل التغييرات';
@@ -460,9 +528,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get confirmNewPin => 'تأكيد رمز PIN الجديد';
 
   @override
-  String get confirmPIN => 'تأكيد PIN';
-
-  @override
   String get confirmPin => 'تأكيد رمز PIN';
 
   @override
@@ -474,11 +539,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get connect => 'اتصال';
 
   @override
-  String get connectToYourOPNsenseFirewall =>
+  String get connectToYourOpnsenseFirewall =>
       'اتصل بجدار الحماية OPNsense الخاص بك';
 
   @override
-  String get connectVPN => 'اتصال VPN';
+  String get connectVpn => 'اتصال VPN';
 
   @override
   String get connected => 'متصل';
@@ -498,10 +563,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get connectionBlocking => 'حظر الاتصال';
-
-  @override
-  String get connectionBlockingSubtitle =>
-      'حظر اتصال العميل هذا بناءً على اسمه الشائع. لا تستخدم هذا الخيار لتعطيل عميل بشكل دائم بسبب مفتاح أو كلمة مرور مخترقة. استخدم CRL (قائمة إلغاء الشهادات) بدلاً من ذلك.';
 
   @override
   String get connectionDetails => 'تفاصيل الاتصال';
@@ -567,22 +628,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get copyKey => 'نسخ المفتاح';
 
   @override
-  String get copyKeyTooltip => 'نسخ المفتاح';
-
-  @override
   String get copySelected => 'نسخ المحدد';
-
-  @override
-  String get copyTooltip => 'نسخ';
 
   @override
   String get cpuUsage => 'استخدام المعالج';
 
   @override
-  String get createAliasComingSoon => 'إنشاء اسم مستعار (قريباً)';
+  String get createFirstAutomationRule => 'أنشئ أول قاعدة أتمتة للبدء';
 
   @override
-  String get createFirstAutomationRule => 'أنشئ أول قاعدة أتمتة للبدء';
+  String get createFirstFirewallRule => 'أنشئ أول قاعدة جدار حماية للبدء';
 
   @override
   String get createFirstProfile => 'أنشئ ملفك الشخصي الأول للبدء';
@@ -648,9 +703,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get debug => 'التصحيح';
 
   @override
-  String get debugDescription => 'تفعيل تسجيل التصحيح';
-
-  @override
   String get defineRoleOfInstance => 'حدد دور هذا المثيل';
 
   @override
@@ -701,9 +753,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String deleteProfileConfirmation(String name) {
     return 'هل أنت متأكد من رغبتك في حذف \"$name\"؟';
   }
-
-  @override
-  String get deleteProfileTitle => 'حذف الملف الشخصي';
 
   @override
   String get deleteRule => 'حذف القاعدة';
@@ -765,9 +814,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get descriptionRequired => 'الوصف مطلوب';
 
   @override
-  String get descriptiveNameForStaticKey => 'اسم وصفي لهذا المفتاح الثابت';
-
-  @override
   String get destination => 'الوجهة';
 
   @override
@@ -800,6 +846,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get direction => 'الاتجاه';
 
   @override
+  String get directionBoth => 'كلاهما';
+
+  @override
+  String get directionIn => 'وارد';
+
+  @override
+  String get directionOut => 'صادر';
+
+  @override
   String get disable => 'تعطيل';
 
   @override
@@ -807,9 +862,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get disableRoutes => 'تعطيل المسارات';
-
-  @override
-  String get disableRoutesDescription => 'منع تثبيت المسارات التلقائي';
 
   @override
   String get disableRule => 'تعطيل القاعدة';
@@ -825,9 +877,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get disabled => 'معطل';
 
   @override
-  String get disabledStatus => 'معطل';
-
-  @override
   String get disablingRule => 'جاري تعطيل القاعدة...';
 
   @override
@@ -837,7 +886,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get disconnect => 'قطع الاتصال';
 
   @override
-  String get disconnectVPN => 'قطع اتصال VPN';
+  String get disconnectVpn => 'قطع اتصال VPN';
 
   @override
   String get disconnected => 'غير متصل';
@@ -889,13 +938,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dnsmasqDescription => 'خادم DNS و DHCP خفيف الوزن';
 
   @override
-  String get dnsmasqServerName => 'Dnsmasq';
-
-  @override
   String get done => 'تم';
-
-  @override
-  String get doneButton => 'تم';
 
   @override
   String get download => 'التنزيل';
@@ -949,10 +992,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get enableDebugLogging => 'تمكين تسجيل التصحيح';
 
   @override
-  String get enablePinLockFirst =>
-      'يرجى تفعيل قفل PIN أولاً قبل استخدام البيومترية';
-
-  @override
   String get enablePinLockFirstBiometric =>
       'قم بتفعيل قفل PIN أولاً لاستخدام البيومترية';
 
@@ -976,12 +1015,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get enabled => 'مفعّل';
-
-  @override
-  String get enabledLabel => 'مفعّل';
-
-  @override
-  String get enabledStatus => 'مفعّل';
 
   @override
   String get enablingRule => 'جاري تفعيل القاعدة...';
@@ -1018,9 +1051,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get enterOrGeneratePublicKey => 'أدخل أو أنشئ مفتاحًا عامًا';
-
-  @override
-  String get enterPIN => 'أدخل PIN';
 
   @override
   String get enterPin => 'أدخل رمز PIN';
@@ -1088,7 +1118,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorLoadingSystemInfo => 'خطأ في تحميل معلومات النظام';
 
   @override
-  String get errorLoadingVPNConnections => 'خطأ في تحميل اتصالات VPN';
+  String get errorLoadingVpnConnections => 'خطأ في تحميل اتصالات VPN';
 
   @override
   String errorPrefix(String message) {
@@ -1185,9 +1215,6 @@ class AppLocalizationsAr extends AppLocalizations {
       'هل تريد تضمين بيانات اعتماد API في التصدير؟\n\nتحذير: سيؤدي تضمين بيانات الاعتماد إلى تخزين مفاتيح API والأسرار بنص عادي. قم بتضمين بيانات الاعتماد فقط إذا كنت ستخزن الملف بشكل آمن.';
 
   @override
-  String get exportProfilesTitle => 'تصدير الملفات الشخصية';
-
-  @override
   String get exportSuccess => 'نجح التصدير';
 
   @override
@@ -1203,6 +1230,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get failedToApplyConfiguration => 'فشل تطبيق التكوين';
+
+  @override
+  String failedToSwitchProfile(String error) {
+    return 'فشل تبديل الملف الشخصي: $error';
+  }
 
   @override
   String get failedToBlockHost => 'فشل حظر المضيف';
@@ -1394,13 +1426,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get filterByType => 'تصفية حسب النوع';
 
   @override
+  String get filterByCategory => 'تصفية حسب الفئة';
+
+  @override
+  String get clearAll => 'مسح الكل';
+
+  @override
   String get filterLabel => 'تصفية: ';
 
   @override
   String get filters => 'المرشحات';
-
-  @override
-  String get filtersLabel => 'الفلاتر';
 
   @override
   String get firewall => 'جدار الحماية';
@@ -1422,6 +1457,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get fiveMin => '5 دقائق';
+
+  @override
+  String get floatingInterface => 'عائم';
 
   @override
   String get fixFormErrors => 'الرجاء إصلاح الأخطاء في النموذج';
@@ -1469,13 +1507,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get gitCommit => 'التزام Git';
 
   @override
-  String get gnuLicenseText =>
-      'هذا البرنامج مجاني: يمكنك إعادة توزيعه و/أو تعديله بموجب شروط رخصة جنو العمومية كما نشرتها مؤسسة البرمجيات الحرة، سواء الإصدار 3 من الرخصة، أو (حسب اختيارك) أي إصدار لاحق.\n\nيتم توزيع هذا البرنامج على أمل أن يكون مفيداً، ولكن دون أي ضمان؛ حتى بدون الضمان الضمني للتسويق أو الملاءمة لغرض معين. راجع رخصة جنو العمومية لمزيد من التفاصيل.\n\nيجب أن تكون قد تلقيت نسخة من رخصة جنو العمومية مع هذا البرنامج. إذا لم يكن الأمر كذلك، راجع <https://www.gnu.org/licenses/>.\n\nلماذا GPLv3؟\n\n• يضمن بقاء البرنامج مجانياً ومفتوح المصدر\n• يجب أن تكون أي تعديلات أو مشتقات مفتوحة المصدر أيضاً\n• للمستخدمين حرية استخدام ودراسة ومشاركة وتعديل البرنامج\n• يستفيد المجتمع من التحسينات والمساهمات';
-
-  @override
-  String get gnuLicenseTitle => 'رخصة جنو العمومية الإصدار 3.0';
-
-  @override
   String get healthStatus => 'حالة الصحة';
 
   @override
@@ -1506,9 +1537,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get hostIpAddress => 'المضيف / عنوان IP';
 
   @override
-  String get hostIpAddressLabel => 'المضيف/عنوان IP';
-
-  @override
   String get hostIsRequired => 'المضيف مطلوب';
 
   @override
@@ -1524,21 +1552,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get hour => 'ساعة';
 
   @override
-  String get hourAbbrev => 'س';
-
-  @override
   String get hours => 'ساعات';
 
   @override
-  String hoursAgo(String hours) {
+  String hoursAgo(int hours) {
     return 'منذ $hours ساعة';
   }
-
-  @override
-  String get http => 'http';
-
-  @override
-  String get https => 'https';
 
   @override
   String get id => 'المعرف';
@@ -1550,20 +1569,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get importAndExport => 'الاستيراد والتصدير';
 
   @override
-  String get importExport => 'الاستيراد والتصدير';
-
-  @override
   String get importExportDescription =>
       'قم بتصدير ملفاتك الشخصية لنسخها احتياطياً أو نقلها إلى جهاز آخر. استيراد الملفات الشخصية من ملف تم تصديره مسبقاً.\n\nيتم حفظ الملفات الشخصية بتنسيق JSON ويمكن أن تتضمن نقاط الاتصال والإعدادات.';
 
   @override
   String importFailed(String error) {
     return 'فشل الاستيراد: $error';
-  }
-
-  @override
-  String importFailedWithErrors(String errors) {
-    return 'فشل الاستيراد: $errors';
   }
 
   @override
@@ -1577,15 +1588,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get importProfilesSubtitle => 'استيراد الملفات الشخصية من ملف JSON';
 
   @override
-  String get importProfilesTitle => 'استيراد الملفات التعريفية';
-
-  @override
   String get importSuccess => 'نجح الاستيراد';
-
-  @override
-  String importedProfiles(int count) {
-    return 'تم استيراد $count ملف شخصي';
-  }
 
   @override
   String importedWithFailures(int failed, int success) {
@@ -1599,17 +1602,17 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String inDays(String days) {
+  String inDays(int days) {
     return 'خلال $days يوم';
   }
 
   @override
-  String inHours(String hours) {
+  String inHours(int hours) {
     return 'خلال $hours ساعة';
   }
 
   @override
-  String inMinutes(String minutes) {
+  String inMinutes(int minutes) {
     return 'خلال $minutes دقيقة';
   }
 
@@ -1656,11 +1659,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get interface => 'الواجهة';
 
   @override
-  String interfaceLabel(String interface) {
-    return '$interface';
-  }
-
-  @override
   String get invalidApiKeyFormat => 'تنسيق مفتاح API غير صالح';
 
   @override
@@ -1670,20 +1668,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invalidBase64Format => 'تنسيق Base64 غير صالح';
 
   @override
-  String get invalidCidrFormat =>
-      'تدوين CIDR غير صالح (استخدم الصيغة: IP/prefix)';
-
-  @override
   String get invalidCidrNotation =>
       'تدوين CIDR غير صالح (استخدم التنسيق: IP/prefix)';
 
   @override
   String get invalidDestinationFormat => 'تنسيق الوجهة غير صالح';
-
-  @override
-  String invalidFileError(String error) {
-    return 'ملف غير صالح: $error';
-  }
 
   @override
   String invalidFileFormat(String error) {
@@ -1722,7 +1711,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invalidIpv6Prefix => 'بادئة IPv6 غير صالحة (يجب أن تكون 0-128)';
 
   @override
-  String get invalidPIN => 'PIN غير صالح';
+  String get invalidPin => 'PIN غير صالح';
 
   @override
   String get invalidPortFormat => 'تنسيق المنفذ غير صالح';
@@ -1734,37 +1723,34 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invalidSourceFormat => 'تنسيق المصدر غير صالح';
 
   @override
+  String get invertDestination => 'عكس الوجهة';
+
+  @override
+  String get invertDestinationTooltip => 'مطابقة أي عنوان باستثناء الوجهة';
+
+  @override
+  String get invertSource => 'عكس المصدر';
+
+  @override
+  String get invertSourceTooltip => 'مطابقة أي عنوان باستثناء المصدر';
+
+  @override
   String get ipAddress => 'عنوان IP';
 
   @override
   String get ipAddresses => 'عناوين IP';
 
   @override
-  String get ipv4CidrHint => '10.8.0.0/24';
-
-  @override
-  String get ipv4OrIpv6CidrHint => '10.8.0.0/24 أو fd00::/64';
+  String get ipProtocol => 'إصدار IP';
 
   @override
   String get ipv4TunnelNetwork => 'شبكة النفق IPv4';
 
   @override
-  String get ipv4TunnelNetworkHint => '10.8.0.0/24';
-
-  @override
-  String get ipv6CidrHint => 'fd00::/64';
-
-  @override
   String get ipv6TunnelNetwork => 'شبكة النفق IPv6';
 
   @override
-  String get ipv6TunnelNetworkHint => 'fd00::/64';
-
-  @override
   String get iscDhcpDescription => 'خادم DHCP من Internet Systems Consortium';
-
-  @override
-  String get iscDhcpServerName => 'ISC DHCP';
 
   @override
   String itemsCount(int count) {
@@ -1778,13 +1764,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get keaDhcpDescription => 'خادم DHCP حديث وعالي الأداء';
 
   @override
-  String get keaDhcpServerName => 'Kea DHCP';
-
-  @override
   String get keepAliveIntervalOptional => 'فترة الحفاظ على الاتصال (اختياري)';
 
   @override
   String get keepBoth => 'الاحتفاظ بكليهما';
+
+  @override
+  String get keepState => 'احتفاظ بالحالة';
 
   @override
   String get keepalive => 'الحفاظ على الاتصال';
@@ -1800,11 +1786,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get keyGeneratedSuccessfully => 'تم إنشاء المفتاح بنجاح';
-
-  @override
-  String keyLabel(String id) {
-    return 'المفتاح $id';
-  }
 
   @override
   String keyWithId(String id) {
@@ -1879,6 +1860,150 @@ class AppLocalizationsAr extends AppLocalizations {
   String get liveNetworkMonitor => 'مراقب الشبكة المباشر';
 
   @override
+  String get networkInsight => 'نظرة ثاقبة على الشبكة';
+
+  @override
+  String get reporting => 'التقارير';
+
+  @override
+  String get netflowNotEnabled =>
+      'جمع البيانات المحلية غير مفعّل حاليًا، يرجى ضبط إعدادات NetFlow أولًا.';
+
+  @override
+  String get interfaceTotalsBitsPerSec => 'إجماليات الواجهة (بت/ثانية)';
+
+  @override
+  String get showLoopback => 'إظهار الاسترجاع';
+
+  @override
+  String get protocolsBreakdown => 'البروتوكولات';
+
+  @override
+  String get sourceAddressBreakdown => 'عناوين المصدر';
+
+  @override
+  String get reverseLookup => 'البحث العكسي';
+
+  @override
+  String get other => 'أخرى';
+
+  @override
+  String get timeRangeFrom => 'من';
+
+  @override
+  String get timeRangeTo => 'إلى';
+
+  @override
+  String get resolutionLabel => 'الدقة';
+
+  @override
+  String get resolution30s => '30 ثانية';
+
+  @override
+  String get resolution5min => '5 دقائق';
+
+  @override
+  String get resolution24hr => '24 ساعة';
+
+  @override
+  String get perInterfaceBreakdown => 'تفصيل لكل واجهة';
+
+  @override
+  String get totalBytesIn => 'إجمالي البايت الواردة';
+
+  @override
+  String get totalBytesOut => 'إجمالي البايت الصادرة';
+
+  @override
+  String get totalPacketsIn => 'إجمالي الحزم الواردة';
+
+  @override
+  String get totalPacketsOut => 'إجمالي الحزم الصادرة';
+
+  @override
+  String get checkingNetflowStatus => 'جارٍ التحقق من حالة NetFlow...';
+
+  @override
+  String timePresetLabel(String window, String avgInterval) {
+    return '$window، متوسط $avgInterval';
+  }
+
+  @override
+  String durationHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'ساعات',
+      one: 'ساعة',
+    );
+    return '$count $_temp0';
+  }
+
+  @override
+  String durationDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'أيام',
+      one: 'يوم',
+    );
+    return '$count $_temp0';
+  }
+
+  @override
+  String get durationLastYear => 'السنة الماضية';
+
+  @override
+  String get goToNetflowConfig => 'الانتقال إلى إعدادات NetFlow';
+
+  @override
+  String get tabTotals => 'الإجماليات';
+
+  @override
+  String get tabDetails => 'التفاصيل';
+
+  @override
+  String get collection => 'المجموعة';
+
+  @override
+  String get resolutionSeconds => 'الدقة (بالثواني)';
+
+  @override
+  String get resolution86400 => '86400 (يوم واحد)';
+
+  @override
+  String get exportNetflowCsv => 'تصدير NetFlow بتنسيق CSV';
+
+  @override
+  String get netflowExportSuccess => 'تم تصدير ملف NetFlow CSV بنجاح';
+
+  @override
+  String netflowExportFailed(String error) {
+    return 'فشل تصدير ملف NetFlow CSV: $error';
+  }
+
+  @override
+  String get dateFrom => 'التاريخ من';
+
+  @override
+  String get dateTo => 'التاريخ إلى';
+
+  @override
+  String get serviceColumn => 'الخدمة';
+
+  @override
+  String get bytesColumn => 'البايتات';
+
+  @override
+  String get lastSeenColumn => 'آخر ظهور';
+
+  @override
+  String get percentColumn => '%';
+
+  @override
+  String get total => 'الإجمالي';
+
+  @override
   String get neighborDiscovery => 'اكتشاف الأجهزة المجاورة';
 
   @override
@@ -1929,12 +2054,10 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get logDetails => 'تفاصيل السجل';
+  String get longPressToCopy => 'اضغط مطولاً للنسخ';
 
   @override
-  String logEntriesCopied(int count, String entries) {
-    return 'تم نسخ $count $entries من السجل';
-  }
+  String get logDetails => 'تفاصيل السجل';
 
   @override
   String get logEntryCopied => 'تم نسخ إدخال السجل';
@@ -1961,6 +2084,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loginServerRequired => 'خادم تسجيل الدخول مطلوب';
 
   @override
+  String get logTraffic => 'تسجيل حركة المرور';
+
+  @override
+  String get logTrafficSubtitle => 'تسجيل الحزم المطابقة لهذه القاعدة';
+
+  @override
   String get logout => 'تسجيل الخروج';
 
   @override
@@ -1983,7 +2112,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get macAddressHint => 'مثال: 00:11:22:33:44:55';
 
   @override
-  String get magicDns => 'Magic DNS';
+  String get macAddressIsRequired => 'عنوان MAC مطلوب';
+
+  @override
+  String get invalidMacAddressFormat =>
+      'تنسيق عنوان MAC غير صالح (مثال: AA:BB:CC:DD:EE:FF)';
 
   @override
   String get manageProfiles => 'إدارة الملفات الشخصية';
@@ -2007,13 +2140,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get minute => 'دقيقة';
 
   @override
-  String get minuteAbbrev => 'د';
-
-  @override
   String get minutes => 'دقائق';
 
   @override
-  String minutesAgo(String minutes) {
+  String minutesAgo(int minutes) {
     return 'منذ $minutes دقيقة';
   }
 
@@ -2022,6 +2152,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get modified => 'تم التعديل';
+
+  @override
+  String get modulateState => 'تعديل الحالة';
 
   @override
   String get monitorInterface => 'واجهة المراقبة';
@@ -2093,9 +2226,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get next => 'التالي';
 
   @override
-  String get nextButton => 'التالي';
-
-  @override
   String get no => 'لا';
 
   @override
@@ -2109,6 +2239,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noAutomationRulesFound => 'لم يتم العثور على قواعد أتمتة';
 
   @override
+  String get noFirewallRulesFound => 'لم يتم العثور على قواعد جدار الحماية';
+
+  @override
   String get noClientSpecificOverridesConfigured =>
       'لم يتم تكوين تجاوزات خاصة بالعميل';
 
@@ -2116,9 +2249,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String noConnectionsFound(String type) {
     return 'لم يتم العثور على اتصالات $type';
   }
-
-  @override
-  String get noData => 'لا توجد بيانات متاحة';
 
   @override
   String get noDataAvailable => 'لا توجد بيانات متاحة';
@@ -2144,6 +2274,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noInterfacesWithAutomationRules => 'لا توجد واجهات بقواعد أتمتة';
+
+  @override
+  String get noInterfacesWithRules => 'لا توجد واجهات بقواعد';
 
   @override
   String get noItemsConfigured => 'لم يتم تكوين عناصر';
@@ -2232,13 +2365,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noStaticKeysConfigured => 'لم يتم تكوين مفاتيح ثابتة';
 
   @override
+  String get noState => 'بدون حالة';
+
+  @override
   String get noSubnetsConfigured => 'لا توجد شبكات فرعية مكونة';
 
   @override
   String get noTunnelAddressesConfigured => 'لم يتم تكوين عناوين النفق';
 
   @override
-  String get noVPNConnectionsFound => 'لم يتم العثور على اتصالات VPN';
+  String get noVpnConnectionsFound => 'لم يتم العثور على اتصالات VPN';
 
   @override
   String get noWinsServersConfigured => 'لم يتم تكوين خوادم WINS';
@@ -2276,9 +2412,6 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعيين عنوان خادم NTP الأساسي (بروتوكول وقت الشبكة). كرر هذا الخيار لتعيين عناوين خادم NTP الثانوية.';
 
   @override
-  String get of1Gbps => 'من 1 جيجابت في الثانية';
-
-  @override
   String get offline => 'غير متصل';
 
   @override
@@ -2292,9 +2425,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get online => 'متصل';
-
-  @override
-  String get openvpn => 'OpenVPN';
 
   @override
   String get openvpnConnectionStatus => 'حالة اتصال OpenVPN';
@@ -2342,11 +2472,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get packetLength => 'طول الحزمة';
 
   @override
-  String pageOfPages(String current, String total) {
-    return 'الصفحة $current من $total';
-  }
-
-  @override
   String get pass => 'سماح';
 
   @override
@@ -2357,9 +2482,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get paused => 'متوقف مؤقتاً';
-
-  @override
-  String get peerActiveWhenEnabled => 'سيكون النظير نشطاً عند التفعيل';
 
   @override
   String get peerCreatedReadyForNext =>
@@ -2420,9 +2542,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pinLockEnabled => 'تم تفعيل قفل PIN';
 
   @override
-  String get pinLockTitle => 'قفل PIN';
-
-  @override
   String get pinMismatch => 'رموز PIN غير متطابقة';
 
   @override
@@ -2433,10 +2552,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get platform => 'المنصة';
-
-  @override
-  String get pleaseAddConnectionEndpoint =>
-      'يرجى إضافة نقطة اتصال واحدة على الأقل';
 
   @override
   String get pleaseEnterCurrentPin => 'الرجاء إدخال رمز PIN الحالي';
@@ -2474,9 +2589,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get portMustBeBetween => 'يجب أن يكون المنفذ بين 1 و 65535';
 
   @override
-  String get portPlaceholder => '443';
-
-  @override
   String get preAuthKey => 'مفتاح المصادقة المسبقة';
 
   @override
@@ -2497,9 +2609,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get previous => 'السابق';
 
   @override
-  String get previousButton => 'السابق';
-
-  @override
   String get privateKey => 'المفتاح الخاص';
 
   @override
@@ -2516,9 +2625,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get profileName => 'اسم الملف الشخصي';
-
-  @override
-  String get profileNameLabel => 'اسم الملف التعريفي';
 
   @override
   String get profileNameOptional => 'اسم الملف الشخصي (اختياري)';
@@ -2544,42 +2650,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get protocol => 'البروتوكول';
 
   @override
-  String get protocolAh => 'AH';
-
-  @override
-  String get protocolEsp => 'ESP';
-
-  @override
-  String get protocolGre => 'GRE';
-
-  @override
-  String get protocolIcmp => 'ICMP';
-
-  @override
-  String get protocolIcmpv6 => 'ICMPv6';
-
-  @override
-  String get protocolIgmp => 'IGMP';
-
-  @override
-  String get protocolIpv6 => 'IPv6';
-
-  @override
-  String get protocolOspf => 'OSPF';
-
-  @override
-  String get protocolPim => 'PIM';
-
-  @override
-  String get protocolTcp => 'TCP';
-
-  @override
-  String get protocolTcpUdp => 'TCP/UDP';
-
-  @override
-  String get protocolUdp => 'UDP';
-
-  @override
   String get publicKey => 'المفتاح العام';
 
   @override
@@ -2597,15 +2667,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pushReset => 'إعادة تعيين الدفع';
 
   @override
-  String get pushResetSubtitle =>
-      'لا ترث قائمة الدفع العامة لمثيل عميل معين. ملاحظة: --push-reset شامل جداً: سيزيل تقريباً جميع الخيارات من قائمة الخيارات المراد دفعها. في كثير من الحالات، سيحتاج بعض هذه الخيارات إلى إعادة تكوين بعد ذلك - على وجه التحديد، --topology subnet و --route-gateway سيضيعان وهذا سيكسر تكوينات العميل في كثير من الحالات.';
-
-  @override
   String get pushVirtualIpEndpoints =>
       'دفع نقاط نهاية IP الافتراضية لنفق العميل، متجاوزًا التخصيص الديناميكي.';
 
   @override
   String get qrCode => 'رمز QR';
+
+  @override
+  String get quickRule => 'قاعدة سريعة';
+
+  @override
+  String get quickRuleSubtitle => 'إيقاف معالجة القواعد بعد أول تطابق';
 
   @override
   String get reason => 'السبب';
@@ -2638,21 +2710,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get redirectGateway => 'إعادة توجيه البوابة';
 
   @override
-  String get redirectGatewayHelperText =>
-      'تنفيذ أوامر التوجيه تلقائياً لإعادة توجيه جميع حركة مرور IP الصادرة عبر VPN.';
-
-  @override
   String get refresh => 'تحديث';
 
   @override
-  String get refreshTooltip => 'تحديث';
-
-  @override
   String get registerDns => 'تسجيل DNS';
-
-  @override
-  String get registerDnsSubtitle =>
-      'تشغيل ipconfig /flushdns و ipconfig /registerdns عند بدء الاتصال. من المعروف أن هذا يدفع Windows للتعرف على خوادم DNS المدفوعة.';
 
   @override
   String get reject => 'رفض';
@@ -2680,9 +2741,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get restart => 'إعادة التشغيل';
 
   @override
-  String get restartButton => 'إعادة التشغيل';
-
-  @override
   String get restartService => 'إعادة تشغيل الخدمة';
 
   @override
@@ -2691,7 +2749,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get restartVPNService => 'إعادة تشغيل خدمة VPN';
+  String get restartVpnService => 'إعادة تشغيل خدمة VPN';
 
   @override
   String restartingService(String type) {
@@ -2705,9 +2763,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get retry => 'إعادة المحاولة';
 
   @override
-  String get retryButton => 'إعادة المحاولة';
-
-  @override
   String get role => 'الدور';
 
   @override
@@ -2718,19 +2773,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'حدد بوابة افتراضية لاستخدامها للعميل المتصل. بدون تعيين واحد، يتم تقديم العنوان الأول في كتلة الشبكة. عند تقسيم شبكة النفق (الخادم)، قد لا يكون هذا متاحًا من العميل.';
 
   @override
-  String get routeGatewayHint => '10.8.0.1';
-
-  @override
   String get routes => 'المسارات';
 
   @override
   String get routing => 'التوجيه';
-
-  @override
-  String get rowsPerPage => 'صفوف لكل صفحة';
-
-  @override
-  String get rowsPerPageDropdown => 'الصفوف لكل صفحة';
 
   @override
   String get rowsPerPageLabel => 'الصفوف لكل صفحة: ';
@@ -2779,9 +2825,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get running => 'قيد التشغيل';
 
   @override
-  String get runningStatus => 'قيد التشغيل';
-
-  @override
   String get save => 'حفظ';
 
   @override
@@ -2789,9 +2832,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get saveSettings => 'حفظ الإعدادات';
-
-  @override
-  String get saveTooltip => 'حفظ';
 
   @override
   String get saveWithoutTesting => 'حفظ بدون اختبار';
@@ -2807,6 +2847,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get searchAliases => 'البحث عن الأسماء المستعارة...';
+
+  @override
+  String get searchCategories => 'البحث عن الفئات...';
 
   @override
   String get searchHostnameIpOrMac => 'البحث عن اسم المضيف أو IP أو MAC...';
@@ -2828,9 +2871,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get second => 'ثانية';
-
-  @override
-  String get secondAbbrev => 'ث';
 
   @override
   String get seconds => 'ثواني';
@@ -2858,10 +2898,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get selectInterfaceToViewRules => 'حدد واجهة لعرض القواعد';
 
   @override
-  String get selectKeyModeForAuthOrEncryption =>
-      'حدد وضع المفتاح للمصادقة أو التشفير';
-
-  @override
   String selectLabel(String label) {
     return 'اختر $label';
   }
@@ -2877,7 +2913,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get selectServerAndGenerateKeys =>
-      '# حدد خادمًا وأنشئ مفاتيح لمعاينة التكوين';
+      'حدد خادمًا وأنشئ مفاتيح لمعاينة التكوين';
 
   @override
   String get selectServerForQrCode => 'تحديد الخادم لإنشاء رمز QR';
@@ -2886,17 +2922,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get selectServerInstance => 'الرجاء تحديد مثيل الخادم';
 
   @override
-  String get selectServerToGenerateQrCode => 'حدد الخادم لإنشاء رمز QR';
-
-  @override
   String get selectServers => 'تحديد الخوادم';
 
   @override
   String get selectServersHelperText =>
       'حدد خوادم OpenVPN التي ينطبق عليها هذا التجاوز، اتركه فارغاً للكل';
-
-  @override
-  String get selectServersTitle => 'تحديد الخوادم';
 
   @override
   String get selectVhid => 'اختر VHID';
@@ -2920,9 +2950,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get server => 'الخادم';
-
-  @override
-  String get serverActiveWhenEnabled => 'سيكون الخادم نشطاً عند التفعيل';
 
   @override
   String get serverAddress => 'عنوان الخادم';
@@ -2964,9 +2991,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get servers => 'الخوادم';
 
   @override
-  String get serversLabel => 'الخوادم';
-
-  @override
   String serversSelected(int count) {
     return '$count خادم (خوادم) محددة';
   }
@@ -2978,25 +3002,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get serviceControls => 'عناصر تحكم الخدمة';
 
   @override
-  String get serviceRestarted => 'تمت إعادة تشغيل الخدمة بنجاح';
-
-  @override
   String get serviceRestartedSuccessfully => 'تمت إعادة تشغيل الخدمة بنجاح';
 
   @override
   String get serviceRunning => 'الخدمة قيد التشغيل';
 
   @override
-  String get serviceStarted => 'تم تشغيل الخدمة بنجاح';
-
-  @override
   String get serviceStartedSuccessfully => 'تم بدء الخدمة بنجاح';
 
   @override
   String get serviceStatus => 'حالة الخدمة';
-
-  @override
-  String get serviceStopped => 'تم إيقاف الخدمة بنجاح';
 
   @override
   String get serviceStoppedSuccessfully => 'تم إيقاف الخدمة بنجاح';
@@ -3028,34 +3043,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get severity => 'الخطورة';
 
   @override
-  String get severityAlert => 'تنبيه';
-
-  @override
-  String get severityCritical => 'حرج';
-
-  @override
-  String get severityDebug => 'تصحيح';
-
-  @override
-  String get severityEmergency => 'طوارئ';
-
-  @override
   String get severityEmergencyShort => 'طوارئ';
-
-  @override
-  String get severityError => 'خطأ';
 
   @override
   String get severityInformational => 'معلوماتي';
 
   @override
   String get severityInformationalShort => 'معلومات';
-
-  @override
-  String get severityNotice => 'إشعار';
-
-  @override
-  String get severityWarning => 'تحذير';
 
   @override
   String get showAdvancedSettings => 'إظهار الإعدادات المتقدمة';
@@ -3065,11 +3059,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get showKey => 'إظهار المفتاح';
-
-  @override
-  String showingEntriesCount(String start, String end) {
-    return 'عرض $start إلى $end';
-  }
 
   @override
   String showingInstancesCount(String count, String total) {
@@ -3116,13 +3105,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sourcePortOptional => 'منفذ المصدر (اختياري)';
 
   @override
+  String get sloppyState => 'حالة مرنة';
+
+  @override
   String get sshEnabled => 'SSH مفعل';
 
   @override
   String get start => 'بدء';
-
-  @override
-  String get startButton => 'تشغيل';
 
   @override
   String get startService => 'بدء الخدمة';
@@ -3146,10 +3135,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get staticKeyDetails => 'تفاصيل المفتاح الثابت';
 
   @override
-  String get staticKeyInfoHelp =>
-      '• Auth: يضيف مصادقة HMAC لقناة التحكم\n• Crypt: يشفر ويصادق جميع حزم قناة التحكم\n• Crypt V2: تشفير محسّن بأمان أفضل\n\nيمكنك إنشاء مفتاح جديد أو لصق مفتاح موجود.';
-
-  @override
   String get staticKeyInformation => 'معلومات المفتاح الثابت';
 
   @override
@@ -3162,22 +3147,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get staticLease => 'ثابت';
 
   @override
+  String get stateType => 'نوع الحالة';
+
+  @override
   String get status => 'الحالة';
 
   @override
   String get stop => 'إيقاف';
 
   @override
-  String get stopButton => 'إيقاف';
-
-  @override
   String get stopService => 'إيقاف الخدمة';
 
   @override
   String get stopped => 'متوقف';
-
-  @override
-  String get stoppedStatus => 'متوقف';
 
   @override
   String get storeAndGenerateNext => 'حفظ وإنشاء التالي';
@@ -3224,12 +3206,18 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String successfullyWokenDevices(
-    int successCount,
-    int totalCount,
-    String plural,
-  ) {
-    return 'تم تنبيه $successCount من $totalCount جهاز بنجاح';
+  String successfullyWokenDevices(int successCount, int totalCount) {
+    String _temp0 = intl.Intl.pluralLogic(
+      successCount,
+      locale: localeName,
+      other: 'تم تنبيه $successCount جهاز من أصل $totalCount بنجاح',
+      many: 'تم تنبيه $successCount جهازًا من أصل $totalCount بنجاح',
+      few: 'تم تنبيه $successCount أجهزة من أصل $totalCount بنجاح',
+      two: 'تم تنبيه جهازَين من أصل $totalCount بنجاح',
+      one: 'تم تنبيه جهاز واحد من أصل $totalCount بنجاح',
+      zero: 'لم يتم تنبيه أي جهاز من أصل $totalCount',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -3255,19 +3243,19 @@ class AppLocalizationsAr extends AppLocalizations {
       'لا يمكن تعديل القواعد التي تم إنشاؤها بواسطة النظام';
 
   @override
-  String get systemInfo => 'معلومات النظام';
-
-  @override
   String get systemInformation => 'معلومات النظام';
 
   @override
   String get systemType => 'نوع النظام';
 
   @override
-  String get tags => 'العلامات';
+  String get swapSourceDestination => 'تبديل المصدر والوجهة';
 
   @override
-  String get tailscale => 'Tailscale';
+  String get synproxyState => 'حالة Synproxy';
+
+  @override
+  String get tags => 'العلامات';
 
   @override
   String get tailscaleAuthentication => 'مصادقة Tailscale';
@@ -3300,9 +3288,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tailscaleSubnets => 'شبكات Tailscale الفرعية';
-
-  @override
-  String get tailscaleVersion => 'الإصدار';
 
   @override
   String get tapPlusButtonToCreateFirstInstance =>
@@ -3352,9 +3337,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get timeRange => 'النطاق الزمني';
 
   @override
-  String get timeRangeLabel => 'النطاق الزمني';
-
-  @override
   String get timeout => 'انتهت مهلة الطلب';
 
   @override
@@ -3376,7 +3358,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get totalUpload => 'إجمالي الرفع';
 
   @override
-  String get totalVPNs => 'إجمالي VPN';
+  String get totalVpns => 'إجمالي VPN';
 
   @override
   String get tryAdjustingFilters =>
@@ -3395,9 +3377,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tunnelAddressCidr => 'عنوان النفق (CIDR)';
 
   @override
-  String get tunnelAddressRequired => 'مطلوب عنوان نفق واحد على الأقل';
-
-  @override
   String get tunnelAddresses => 'عناوين النفق';
 
   @override
@@ -3410,11 +3389,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tunnelSettings => 'إعدادات النفق';
-
-  @override
-  String tunnelWithValue(String value) {
-    return 'النفق: $value';
-  }
 
   @override
   String get twoMin => '2 دقيقة';
@@ -3441,37 +3415,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get unauthorized => 'وصول غير مصرح به';
 
   @override
-  String get unitBytes => 'بايت';
-
-  @override
-  String get unitGigabytes => 'جيجابايت';
-
-  @override
-  String get unitKilobytes => 'كيلوبايت';
-
-  @override
-  String get unitMegabytes => 'ميجابايت';
-
-  @override
-  String get unitPerSecond => '/ث';
-
-  @override
-  String get unitPetabytes => 'بيتابايت';
-
-  @override
-  String get unitTerabytes => 'تيرابايت';
-
-  @override
   String get unknown => 'غير معروف';
-
-  @override
-  String get unknownStatus => 'غير معروف';
 
   @override
   String get unlock => 'فتح';
 
   @override
-  String get unlockOPNsenseManager => 'فتح OPNsense Manager';
+  String get unlockOpnsenseManager => 'فتح OPNsense Manager';
 
   @override
   String get unnamedHost => 'مضيف بدون اسم';
@@ -3532,9 +3482,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get useHttpsDescription => 'استخدام اتصال HTTPS آمن';
-
-  @override
-  String get useHttpsLabel => 'استخدام HTTPS';
 
   @override
   String get useProtocolForCommunicating => 'استخدم هذا البروتوكول للاتصال';
@@ -3615,9 +3562,6 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعيين عنوان خادم WINS الأساسي (خادم اسم NetBIOS عبر TCP/IP). كرر هذا الخيار لتعيين عناوين خادم WINS الثانوية.';
 
   @override
-  String get wireguard => 'WireGuard';
-
-  @override
   String get wireguardLogs => 'سجلات WireGuard';
 
   @override
@@ -3661,15 +3605,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get zeroSeconds => '0 ثانية';
 
   @override
-  String get addToList => 'إضافة';
-
-  @override
-  String get allFilterOption => 'الكل';
-
-  @override
-  String get commonNameLabel => 'الاسم الشائع';
-
-  @override
   String get connectionBlockingDescription =>
       'حظر اتصال العميل هذا بناءً على اسمه الشائع. لا تستخدم هذا الخيار لتعطيل عميل بشكل دائم بسبب مفتاح أو كلمة مرور مخترقة. استخدم CRL (قائمة إلغاء الشهادات) بدلاً من ذلك.';
 
@@ -3679,22 +3614,12 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get enableThisClientOverride => 'تمكين تجاوز العميل المحدد هذا';
-
-  @override
-  String get enterClientX509CommonName => 'أدخل الاسم الشائع X.509 للعميل هنا.';
-
-  @override
   String get facility => 'المرفق';
 
   @override
   String gatewayLabel(String gateway) {
     return 'البوابة: $gateway';
   }
-
-  @override
-  String get invalidIpAddressMustBeIpv4OrIpv6 =>
-      'عنوان IP غير صالح (يجب أن يكون IPv4 أو IPv6)';
 
   @override
   String localLabel(String address) {
@@ -3763,9 +3688,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get statusLabel => 'الحالة';
-
-  @override
   String timestampLabel(String timestamp) {
     return 'الطابع الزمني: $timestamp';
   }
@@ -3776,12 +3698,719 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get udp => 'UDP';
-
-  @override
   String get unknownNetwork => 'شبكة غير معروفة';
 
   @override
-  String get youMayEnterDescriptionForReference =>
-      'يمكنك إدخال وصف هنا للرجوع إليه (لا يتم تحليله).';
+  String get actualUsed => 'المستخدم الفعلي';
+
+  @override
+  String get arcCache => 'ذاكرة التخزين المؤقت ARC';
+
+  @override
+  String get demoModeIndicator => 'وضع العرض التوضيحي - عرض بيانات نموذجية';
+
+  @override
+  String get thermalSensors => 'أجهزة الاستشعار الحرارية';
+
+  @override
+  String get noThermalSensorsAvailable => 'لا توجد أجهزة استشعار حرارية متاحة';
+
+  @override
+  String get collapseAll => 'طي الكل';
+
+  @override
+  String get expandAll => 'توسيع الكل';
+
+  @override
+  String get savingInstance => 'جارٍ حفظ المثيل...';
+
+  @override
+  String get staticKeyDescriptionHelper => 'اسم وصفي لهذا المفتاح الثابت';
+
+  @override
+  String get selectKeyModeHelper => 'حدد وضع المفتاح للمصادقة أو التشفير';
+
+  @override
+  String get staticKeyHelpText =>
+      '• Auth: يضيف مصادقة HMAC إلى قناة التحكم\n• Crypt: يشفر ويصادق على جميع حزم قناة التحكم\n• Crypt V2: تشفير محسن مع أمان متقدم\n\nيمكنك إنشاء مفتاح جديد أو لصق مفتاح موجود.';
+
+  @override
+  String get device => 'الجهاز';
+
+  @override
+  String get listenPort => 'منفذ الاستماع';
+
+  @override
+  String get fwMark => 'علامة جدار الحماية';
+
+  @override
+  String get peerStatus => 'حالة النظير';
+
+  @override
+  String get handshakeAge => 'عمر المصافحة';
+
+  @override
+  String secondsAgo(int count) {
+    return 'منذ $count ثانية';
+  }
+
+  @override
+  String get handshake => 'المصافحة';
+
+  @override
+  String get processInformation => 'معلومات العملية';
+
+  @override
+  String get processName => 'اسم العملية';
+
+  @override
+  String get processId => 'معرّف العملية';
+
+  @override
+  String get logMessage => 'رسالة السجل';
+
+  @override
+  String get message => 'الرسالة';
+
+  @override
+  String get timestampInformation => 'معلومات الطابع الزمني';
+
+  @override
+  String get rawTimestamp => 'الطابع الزمني الخام';
+
+  @override
+  String get organisationSection => 'التنظيم';
+
+  @override
+  String get filterSection => 'التصفية';
+
+  @override
+  String get sourceRoutingSection => 'توجيه المصدر';
+
+  @override
+  String get statefulFirewallSection => 'جدار الحماية ذو الحالة';
+
+  @override
+  String get trafficShapingSection => 'تشكيل حركة المرور';
+
+  @override
+  String get prioritySection => 'الأولوية';
+
+  @override
+  String get internalTaggingSection => 'الوسم الداخلي';
+
+  @override
+  String get showAdvanced => 'إظهار الإعدادات المتقدمة';
+
+  @override
+  String get hideAdvanced => 'إخفاء الإعدادات المتقدمة';
+
+  @override
+  String get enableThisRule => 'تفعيل هذه القاعدة';
+
+  @override
+  String get categoriesHint => 'لأغراض التجميع يمكنك تحديد مجموعات متعددة هنا.';
+
+  @override
+  String get invertInterface => 'عكس الواجهة';
+
+  @override
+  String get invertInterfaceSubtitle =>
+      'استخدام جميع الواجهات باستثناء المحددة';
+
+  @override
+  String get quickRuleHelp =>
+      'إذا تطابق الحزمة مع قاعدة تحدد الخيار «سريع»، تُعتبر تلك القاعدة هي آخر قاعدة مطابقة ويُنفَّذ الإجراء المحدد.';
+
+  @override
+  String get actionHelp =>
+      'اختر ما يجب فعله بالحزم التي تطابق المعايير المحددة أدناه.';
+
+  @override
+  String get directionHelp =>
+      'اتجاه حركة المرور. السياسة الافتراضية هي تصفية حركة المرور الواردة.';
+
+  @override
+  String get icmpTypeLabel => 'نوع ICMP';
+
+  @override
+  String get icmp6TypeLabel => 'نوع ICMPv6';
+
+  @override
+  String get sourcePortHelp =>
+      'رقم منفذ المصدر أو اسمه المعروف (imap, imaps, http, https, ...)، استخدم شرطة للنطاقات';
+
+  @override
+  String get destinationPortHelp =>
+      'رقم منفذ الوجهة أو اسمه المعروف (imap, imaps, http, https, ...)، استخدم شرطة للنطاقات';
+
+  @override
+  String get logHelp => 'تسجيل الحزم التي تعالجها هذه القاعدة';
+
+  @override
+  String get gatewayHelp =>
+      'اتركه افتراضياً لاستخدام جدول التوجيه للنظام، أو اختر بوابة لاستخدام التوجيه المستند إلى السياسة.';
+
+  @override
+  String get sequenceHelp => 'الترتيب الذي تُعالَج به القواعد.';
+
+  @override
+  String get noXmlrpcSync => 'بدون مزامنة XMLRPC';
+
+  @override
+  String get noXmlrpcSyncHelp => 'استبعاد هذا العنصر من عملية مزامنة HA.';
+
+  @override
+  String get allowOptionsLabel => 'السماح بالخيارات';
+
+  @override
+  String get allowOptionsHelp =>
+      'يسمح هذا بمرور الحزم التي تحتوي على خيارات IP.';
+
+  @override
+  String get tcpFlagsOutLabel => 'أعلام TCP [من أصل]';
+
+  @override
+  String get tcpFlagsAnyLabel => 'أي أعلام TCP';
+
+  @override
+  String get scheduleLabel => 'الجدول الزمني';
+
+  @override
+  String get divertToLabel => 'التحويل إلى';
+
+  @override
+  String get divertToHelp =>
+      'إرسال الحزم المطابقة لهذه القاعدة إلى الخدمة المحددة.';
+
+  @override
+  String get statePolicyLabel => 'سياسة الحالة';
+
+  @override
+  String get noPfsyncLabel => 'بدون pfsync';
+
+  @override
+  String get noPfsyncHelp =>
+      'يمنع مزامنة الحالات التي أنشأتها هذه القاعدة مع pfsync.';
+
+  @override
+  String get tcpEstablishedLabel => 'TCP مُنشأ';
+
+  @override
+  String get udpFirstLabel => 'UDP الأول';
+
+  @override
+  String get udpSingleLabel => 'UDP مفرد';
+
+  @override
+  String get udpMultipleLabel => 'UDP متعدد';
+
+  @override
+  String get adaptiveStartLabel => 'بداية التكيّف';
+
+  @override
+  String get adaptiveEndLabel => 'نهاية التكيّف';
+
+  @override
+  String get maxStatesLabel => 'الحد الأقصى للحالات';
+
+  @override
+  String get maxSrcNodesLabel => 'الحد الأقصى لعقد المصدر';
+
+  @override
+  String get maxSrcStatesLabel => 'الحد الأقصى لحالات المصدر';
+
+  @override
+  String get maxSrcConnLabel => 'الحد الأقصى لاتصالات المصدر';
+
+  @override
+  String get maxNewConnCLabel => 'الحد الأقصى للاتصالات الجديدة [c]';
+
+  @override
+  String get maxNewConnSLabel => 'الحد الأقصى للاتصالات الجديدة [s]';
+
+  @override
+  String get overloadTableLabel => 'جدول التحميل الزائد';
+
+  @override
+  String get overloadTableHelp =>
+      'جدول التحميل الزائد المستخدم عند الوصول إلى الحد الأقصى للاتصالات الجديدة في الفترة الزمنية.';
+
+  @override
+  String get shaperLabel => 'مُشكِّل حركة المرور';
+
+  @override
+  String get shaperReverseLabel => 'مُشكِّل حركة المرور [عكسي]';
+
+  @override
+  String get disableReplyToLabel => 'تعطيل الرد إلى';
+
+  @override
+  String get disableReplyToHelp => 'تعطيل صريح لميزة الرد إلى لهذه القاعدة';
+
+  @override
+  String get replyToLabel => 'الرد إلى';
+
+  @override
+  String get replyToHelp => 'يحدد كيفية توجيه الحزم في الاتجاه المعاكس.';
+
+  @override
+  String get matchPriorityLabel => 'تطابق الأولوية';
+
+  @override
+  String get setPriorityLabel => 'تعيين الأولوية';
+
+  @override
+  String get setPriorityLowLabel => 'تعيين الأولوية [تأخير منخفض]';
+
+  @override
+  String get matchTosLabel => 'تطابق TOS / DSCP';
+
+  @override
+  String get setLocalTagLabel => 'تعيين وسم محلي';
+
+  @override
+  String get setLocalTagHelp =>
+      'ستُوسَم الحزم المطابقة لهذه القاعدة بالسلسلة المحددة.';
+
+  @override
+  String get matchLocalTagLabel => 'تطابق الوسم المحلي';
+
+  @override
+  String get matchLocalTagHelp =>
+      'يجب أن تكون الحزم مُوسَمة مسبقاً بالوسم المحدد لتطابق القاعدة.';
+
+  @override
+  String get singleHostOrNetwork => 'مضيف أو شبكة واحدة';
+
+  @override
+  String get singlePortOrRange => 'منفذ واحد أو نطاق';
+
+  @override
+  String get thisFirewall => 'هذا الجدار الناري';
+
+  @override
+  String interfaceNet(String name) {
+    return 'شبكة $name';
+  }
+
+  @override
+  String interfaceAddress(String name) {
+    return 'عنوان $name';
+  }
+
+  @override
+  String get sortOrderLabel => 'ترتيب الفرز';
+
+  @override
+  String get sortOrderHelp =>
+      'الترتيب الذي تُعالَج به القواعد (محسوب تلقائياً، للقراءة فقط).';
+
+  @override
+  String get portsNotSupportedTitle => 'سيتم مسح حقول المنفذ';
+
+  @override
+  String get portsNotSupportedMessage =>
+      'البروتوكول المحدد لا يدعم منافذ المصدر أو الوجهة. سيتم مسح حقول المنفذ قبل الحفظ.';
+
+  @override
+  String get clearAndSave => 'مسح وحفظ';
+
+  @override
+  String get createAlias => 'إنشاء اسم مستعار';
+
+  @override
+  String get editAlias => 'تعديل الاسم المستعار';
+
+  @override
+  String get aliasCreated => 'تم إنشاء الاسم المستعار بنجاح';
+
+  @override
+  String get aliasUpdated => 'تم تحديث الاسم المستعار بنجاح';
+
+  @override
+  String errorSavingAlias(String error) {
+    return 'خطأ في حفظ الاسم المستعار: $error';
+  }
+
+  @override
+  String get aliasNameHint => 'أحرف وأرقام وشرطات سفلية فقط';
+
+  @override
+  String get aliasNameValidation =>
+      'يجب أن يبدأ الاسم بحرف أو شرطة سفلية، بحد أقصى 32 حرفاً، أحرف وأرقام وشرطات سفلية فقط';
+
+  @override
+  String get refreshFrequencyLabel => 'تكرار التحديث';
+
+  @override
+  String get refreshFrequencyHint =>
+      'تكرار تحديث القائمة. يوم واحد و 8 ساعات = يتم التحديث بعد 32 ساعة. اتركه فارغاً لاستخدام الإعدادات الافتراضية.';
+
+  @override
+  String get refreshDaysHint => 'أيام';
+
+  @override
+  String get refreshHoursHint => 'ساعات';
+
+  @override
+  String get pathExpressionLabel => 'تعبير المسار';
+
+  @override
+  String get pathExpressionHint =>
+      'تعبير مبسط لتحديد حقل داخل الحاوية، مثل container.fieldname. تعبيرات jq مدعومة أيضاً.';
+
+  @override
+  String get authorizationLabel => 'المصادقة';
+
+  @override
+  String get authorizationHint =>
+      'إذا كان الخادم البعيد يفرض مصادقة، حدد النوع هنا.';
+
+  @override
+  String get statisticsLabel => 'الإحصائيات';
+
+  @override
+  String get statisticsHint =>
+      'الاحتفاظ بمجموعة من العدادات لكل إدخال في الجدول';
+
+  @override
+  String get expireLabel => 'انتهاء الصلاحية';
+
+  @override
+  String get expireHint =>
+      'الوقت بالثواني الذي يتم بعده إزالة العناوين من الاسم المستعار عند عدم استخدامها.';
+
+  @override
+  String get aliasContentHint =>
+      'أدخل عناوين IP أو CIDRs أو أسماء المضيفين أو قيماً أخرى';
+
+  @override
+  String get selectCountriesLabel => 'تحديد الدول';
+
+  @override
+  String get selectNetworkAliasesLabel => 'تحديد الأسماء المستعارة للشبكة';
+
+  @override
+  String get selectVpnGroupsLabel => 'تحديد مجموعات VPN';
+
+  @override
+  String get protoHint => 'تصفية حسب إصدار بروتوكول IP';
+
+  @override
+  String get interfaceHint => 'حدد الواجهة لمضيف IPv6 الديناميكي';
+
+  @override
+  String get enableThisAlias => 'تفعيل هذا الاسم المستعار';
+
+  @override
+  String get region => 'المنطقة';
+
+  @override
+  String get countries => 'الدول';
+
+  @override
+  String get noCountriesSelected => 'لم يتم الاختيار';
+
+  @override
+  String get geoipRegionsLabel => 'مناطق GeoIP';
+
+  @override
+  String get basicSettingsLabel => 'الإعدادات الأساسية';
+
+  @override
+  String get aliasDetails => 'تفاصيل الاسم المستعار';
+
+  @override
+  String get noContent => 'لا توجد إدخالات محتوى';
+
+  @override
+  String get countersLabel => 'العدادات';
+
+  @override
+  String get lastUpdated => 'آخر تحديث';
+
+  @override
+  String get systemAliasReadOnly => 'اسم مستعار للنظام (للقراءة فقط)';
+
+  @override
+  String get aliasMetadata => 'البيانات الوصفية';
+
+  @override
+  String aliasContentEntries(int count) {
+    return 'المحتوى ($count)';
+  }
+
+  @override
+  String aliasRuntimeEntries(String count) {
+    return '$count إدخالات نشطة (وقت التشغيل)';
+  }
+
+  @override
+  String get netflowConfig => 'NetFlow';
+
+  @override
+  String get netflowCaptureTab => 'التقاط';
+
+  @override
+  String get netflowCacheTab => 'ذاكرة التخزين المؤقت';
+
+  @override
+  String get netflowListeningInterfaces => 'واجهات الاستماع';
+
+  @override
+  String get netflowWanInterfaces => 'واجهات WAN';
+
+  @override
+  String get netflowDestinations => 'الوجهات';
+
+  @override
+  String get netflowCaptureLocal => 'التقاط محلي';
+
+  @override
+  String get netflowActiveTimeout => 'مهلة التدفق النشط';
+
+  @override
+  String get netflowInactiveTimeout => 'مهلة التدفق غير النشط';
+
+  @override
+  String get netflowResetData => 'إعادة تعيين بيانات NetFlow';
+
+  @override
+  String get netflowResetWarning =>
+      'هل تريد حقًا إعادة تعيين بيانات NetFlow؟ سيؤدي ذلك إلى مسح جميع بيانات رسوم بيانية Insight.';
+
+  @override
+  String get netflowSaved => 'تم حفظ إعدادات NetFlow.';
+
+  @override
+  String get netflowCacheStatsTitle => 'إحصائيات ذاكرة التخزين المؤقت';
+
+  @override
+  String get netflowCacheFlow => 'التدفق';
+
+  @override
+  String get netflowCachePackets => 'الحزم';
+
+  @override
+  String get netflowCacheSrcIps => 'المصادر';
+
+  @override
+  String get remove => 'إزالة';
+
+  @override
+  String get netflowListeningInterfacesHint =>
+      'حدد جميع الواجهات لتفعيل NetFlow عليها.';
+
+  @override
+  String get netflowWanInterfacesHint =>
+      'حدد الواجهات المستخدمة لحركة مرور WAN لتجنب احتساب حركة NAT مرتين.';
+
+  @override
+  String get netflowCaptureLocalHint =>
+      'جمع بيانات NetFlow على هذا الجدار الناري لاستخدامها مع Insight. يحتفظ الذاكرة المحلية بآخر 100 ميغابايت فقط.';
+
+  @override
+  String get netflowDestinationsHint =>
+      'حدد وجهات إرسال بيانات NetFlow إليها (عنوان IP:منفذ، مثلاً 192.168.0.1:2550).';
+
+  @override
+  String get netflowActiveTimeoutHint =>
+      'تقسيم التدفقات طويلة المدى إلى أجزاء أصغر.';
+
+  @override
+  String get netflowInactiveTimeoutHint => 'انتهاء صلاحية التدفقات الخاملة.';
+
+  @override
+  String get netflowAddDestination => 'إضافة وجهة';
+
+  @override
+  String get unboundDns => 'Unbound DNS';
+
+  @override
+  String get unboundOverview => 'نظرة عامة';
+
+  @override
+  String get enableUnboundStatistics => 'تفعيل إحصائيات Unbound';
+
+  @override
+  String get enableUnboundStatisticsDescription =>
+      'جمع إحصائيات حول استعلامات DNS المعالجة بواسطة Unbound للتقارير.';
+
+  @override
+  String get resetDnsData => 'إعادة تعيين بيانات DNS';
+
+  @override
+  String get resetDnsDataConfirmation =>
+      'هل تريد حقًا إعادة تعيين بيانات إحصائيات Unbound؟';
+
+  @override
+  String get dnsDataResetSuccess =>
+      'تمت إعادة تعيين بيانات إحصائيات DNS بنجاح.';
+
+  @override
+  String get unboundSettingsSaved =>
+      'تم حفظ إعدادات Unbound DNS وإعادة تكوينها.';
+
+  @override
+  String startingFrom(String date) {
+    return 'بدءاً من $date';
+  }
+
+  @override
+  String get resolvedQueries => 'تم حلها';
+
+  @override
+  String get blockedQueries => 'محظورة';
+
+  @override
+  String get blocklistSize => 'حجم قائمة الحظر';
+
+  @override
+  String get queriesOverTheLast => 'الاستعلامات خلال آخر';
+
+  @override
+  String get topClientActivityOverTheLast => 'نشاط أفضل 10 عملاء خلال آخر';
+
+  @override
+  String get logarithmic => 'لوغاريتمي';
+
+  @override
+  String get numberOfDomains => 'عدد النطاقات';
+
+  @override
+  String get topPassedDomains => 'أكثر النطاقات المسموح بها';
+
+  @override
+  String get topBlockedDomains => 'أكثر النطاقات المحظورة';
+
+  @override
+  String get domain => 'النطاق';
+
+  @override
+  String get count => 'العدد';
+
+  @override
+  String get percentOfTotal => '% من الإجمالي';
+
+  @override
+  String get unboundStatsDisabledNotice =>
+      'إحصائيات Unbound معطلة حاليًا. قم بتمكين الإحصائيات في علامة تبويب الإعدادات لعرض بيانات تقارير DNS.';
+
+  @override
+  String hoursDuration(int hours) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hours,
+      locale: localeName,
+      other: '$hours ساعة',
+      many: '$hours ساعة',
+      few: '$hours ساعات',
+      two: 'ساعتان',
+      one: 'ساعة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get unboundFamily => 'العائلة';
+
+  @override
+  String get unboundReturnCode => 'رمز الإرجاع';
+
+  @override
+  String get unboundResolveTime => 'وقت الحل';
+
+  @override
+  String get unboundTtl => 'TTL';
+
+  @override
+  String get unboundBlocklist => 'قائمة الحظر';
+
+  @override
+  String get unboundPolicy => 'السياسة';
+
+  @override
+  String get unboundVisibleColumns => 'الأعمدة';
+
+  @override
+  String get searchQueries => 'بحث في الاستعلامات...';
+
+  @override
+  String get unboundQueries => 'الاستعلامات';
+
+  @override
+  String get fullScreen => 'ملء الشاشة';
+
+  @override
+  String get resetZoom => 'إعادة تعيين التكبير';
+
+  @override
+  String get zoomIn => 'تكبير';
+
+  @override
+  String get zoomOut => 'تصغير';
+
+  @override
+  String get reportingHealth => 'الصحة';
+
+  @override
+  String get healthCategory => 'الفئة';
+
+  @override
+  String get healthSubject => 'الموضوع';
+
+  @override
+  String get healthGranularity => 'الدقة الزمنية';
+
+  @override
+  String get healthGranularity1Min => 'دقيقة واحدة';
+
+  @override
+  String get healthGranularity5Min => '5 دقائق';
+
+  @override
+  String get healthGranularity1Hour => 'ساعة واحدة';
+
+  @override
+  String get healthGranularity24Hours => '24 ساعة';
+
+  @override
+  String get healthDisabledNotice =>
+      'تقارير صحة النظام معطّلة حاليًا. فعّلها في OPNsense ضمن التقارير ← الإعدادات لعرض الرسوم البيانية.';
+
+  @override
+  String get healthSettingsPlaceholder =>
+      'إعدادات الصحة غير قابلة للتكوين من هذا التطبيق بعد. استخدم واجهة الويب الخاصة بـ OPNsense لضبط إعدادات جمع بيانات RRD.';
+
+  @override
+  String get healthGraphLoadError => 'فشل تحميل بيانات الرسم البياني';
+
+  @override
+  String get healthNoSeries => 'لم يتم إرجاع بيانات سلاسل لهذا الموضوع.';
+
+  @override
+  String get healthEnableReporting => 'تفعيل تقارير الصحة';
+
+  @override
+  String get healthCollectedReports => 'التقارير المجمّعة';
+
+  @override
+  String get healthShowCollectedReports => 'عرض التقارير المجمّعة';
+
+  @override
+  String get healthNoReports => 'لا توجد بيانات محلية متاحة.';
+
+  @override
+  String get healthResetRrdData => 'إعادة ضبط بيانات RRD';
+
+  @override
+  String get healthResetConfirmTitle => 'إعادة ضبط رسوم RRD البيانية';
+
+  @override
+  String get healthResetConfirmMessage =>
+      'هل تريد حقًا إعادة ضبط رسوم RRD البيانية؟ سيؤدي ذلك إلى مسح جميع بيانات الرسوم البيانية.';
+
+  @override
+  String get healthDeleteReportConfirmMessage =>
+      'حذف هذا التقرير المجمّع؟ ستُفقد بيانات الرسم البياني لهذا الإدخال.';
 }

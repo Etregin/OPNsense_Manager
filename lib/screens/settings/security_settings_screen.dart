@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import '../../services/auth_service.dart';
 import '../../utils/constants.dart';
+import '../../utils/snackbar_helper.dart';
 import '../../widgets/settings/settings_section.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -83,9 +84,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
       });
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.pinLockDisabled)),
-        );
+        SnackBarHelper.showInfo(context, l10n.pinLockDisabled);
       }
     }
   }
@@ -123,7 +122,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
                     return l10n.pinTooShort;
                   }
                   if (!RegExp(r'^\d+$').hasMatch(value)) {
-                    return l10n.invalidPIN;
+                    return l10n.invalidPin;
                   }
                   return null;
                 },
@@ -174,9 +173,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
       });
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.pinLockEnabled)),
-        );
+        SnackBarHelper.showInfo(context, l10n.pinLockEnabled);
       }
     }
   }
@@ -191,7 +188,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
     final result = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.changePinTitle),
+        title: Text(l10n.changePin),
         content: Form(
           key: formKey,
           child: Column(
@@ -270,7 +267,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
                 Navigator.of(dialogContext).pop(true);
               }
             },
-            child: Text(l10n.changePinTitle),
+            child: Text(l10n.changePin),
           ),
         ],
       ),
@@ -284,12 +281,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
       
       if (!isCurrentValid) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.currentPinIncorrect),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.currentPinIncorrect);
         }
         return;
       }
@@ -298,12 +290,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
       await authService.setPinCode(newPinController.text);
       
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.pinChangedSuccessfully),
-            backgroundColor: Colors.green,
-          ),
-        );
+        SnackBarHelper.showSuccess(context, l10n.pinChangedSuccessfully);
       }
     }
   }
@@ -315,12 +302,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
     if (!_pinEnabled) {
       if (mounted) {
         final l10n2 = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n2.enablePinLockFirst),
-            backgroundColor: Colors.orange,
-          ),
-        );
+        SnackBarHelper.showWarning(context, l10n2.enablePinLockFirstBiometric);
       }
       return;
     }
@@ -331,12 +313,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
       if (!isAvailable) {
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.biometricNotAvailable),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.biometricNotAvailable);
         }
         return;
       }
@@ -353,22 +330,12 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
         });
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.biometricLockEnabled),
-              backgroundColor: Colors.green,
-            ),
-          );
+          SnackBarHelper.showSuccess(context, l10n.biometricLockEnabled);
         }
       } else {
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.biometricAuthFailed),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarHelper.showError(context, l10n.biometricAuthFailed);
         }
       }
     } else {
@@ -378,9 +345,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
       });
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.biometricLockDisabled)),
-        );
+        SnackBarHelper.showInfo(context, l10n.biometricLockDisabled);
       }
     }
   }
@@ -408,11 +373,11 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
           icon: Icons.security,
           children: [
             SwitchListTile(
-              title: Text(l10n.pinLockTitle),
+              title: Text(l10n.pinLock),
               subtitle: Text(l10n.requirePinToUnlock),
               secondary: Icon(
                 Icons.pin,
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.primary,
               ),
               value: _pinEnabled,
               onChanged: _togglePinLock,
@@ -422,9 +387,9 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
               ListTile(
                 leading: Icon(
                   Icons.edit,
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
-                title: Text(l10n.changePinTitle),
+                title: Text(l10n.changePin),
                 subtitle: Text(l10n.updatePinCode),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: _showChangePinDialog,
@@ -439,7 +404,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
                     : l10n.enablePinLockFirstBiometric),
                 secondary: Icon(
                   Icons.fingerprint,
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 value: _biometricEnabled,
                 onChanged: _pinEnabled ? _toggleBiometric : null,
@@ -450,7 +415,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
               ListTile(
                 leading: Icon(
                   Icons.timer,
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 title: Text(l10n.lockTimeoutLabel),
                 subtitle: Text(l10n.lockAfterMinutes(_lockTimeout)),
@@ -470,15 +435,12 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
                       setState(() {
                         _lockTimeout = value;
                       });
-                      final authService = AuthService();
                       final messenger = ScaffoldMessenger.of(context);
+                      final message = l10n.lockTimeoutSet(value);
+                      final authService = AuthService();
                       await authService.setLockTimeout(value);
                       if (mounted) {
-                        messenger.showSnackBar(
-                          SnackBar(
-                            content: Text(l10n.lockTimeoutSet(value)),
-                          ),
-                        );
+                        messenger.showSnackBar(SnackBar(content: Text(message)));
                       }
                     }
                   },

@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/profile.dart';
@@ -25,12 +26,14 @@ import '../services/profile_service.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../services/settings/profile_import_service.dart';
+import '../utils/snackbar_helper.dart';
 import '../viewmodels/login_view_model.dart';
 import '../widgets/common/error_display.dart';
 import '../widgets/login/connection_endpoints_manager.dart';
 import '../widgets/login/credentials_fields_section.dart';
 import '../widgets/login/dhcp_server_selector.dart';
 import '../widgets/login/login_form_actions.dart';
+import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../l10n/app_localizations.dart';
 import 'dashboard_screen.dart';
@@ -115,22 +118,20 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Future<void> _handleTestProfile() async {
+  bool _validateForm() {
     if (!_formKey.currentState!.validate()) {
-      return;
+      return false;
     }
-
-    // Validate that we have at least one connection with a valid host
     if (_connections.isEmpty || _connections.every((c) => c.host.trim().isEmpty)) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.addConnectionEndpoint),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
+      SnackBarHelper.showError(context, l10n.addConnectionEndpoint);
+      return false;
     }
+    return true;
+  }
+
+  Future<void> _handleTestProfile() async {
+    if (!_validateForm()) return;
 
     setState(() => _loadingButton = 'test');
 
@@ -172,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     : l10n.someConnectionsFailed,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: successCount == totalCount ? Colors.green : Colors.orange,
+                  color: successCount == totalCount ? AppColors.success : AppColors.warning,
                 ),
               ),
               const SizedBox(height: 16),
@@ -186,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Icon(
                         success ? Icons.check_circle : Icons.error,
-                        color: success ? Colors.green : Colors.red,
+                        color: success ? AppColors.success : AppColors.error,
                         size: 20,
                       ),
                       const SizedBox(width: 8),
@@ -194,7 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Text(
                           endpoint,
                           style: TextStyle(
-                            color: success ? Colors.green : Colors.red,
+                            color: success ? AppColors.success : AppColors.error,
                           ),
                         ),
                       ),
@@ -216,21 +217,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleSaveProfile() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
-    // Validate that we have at least one connection with a valid host
-    if (_connections.isEmpty || _connections.every((c) => c.host.trim().isEmpty)) {
-      final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.addConnectionEndpoint),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
+    if (!_validateForm()) return;
 
     // Get the active connection for the default name
     final activeConnection = _connections.firstWhere(
@@ -258,32 +245,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (success) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.profileSaved),
-          backgroundColor: Colors.green,
-        ),
-      );
+      SnackBarHelper.showSuccess(context, l10n.profileSaved);
       Navigator.of(context).pop(true);
     }
   }
 
   Future<void> _handleSaveAndConnect() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
-    // Validate that we have at least one connection with a valid host
-    if (_connections.isEmpty || _connections.every((c) => c.host.trim().isEmpty)) {
-      final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.addConnectionEndpoint),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
+    if (!_validateForm()) return;
 
     // Get the active connection for the default name
     final activeConnection = _connections.firstWhere(
@@ -310,8 +278,10 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     if (success) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const DashboardScreen()),
+      unawaited(
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const DashboardScreen()),
+        ),
       );
     }
   }
@@ -325,7 +295,7 @@ class _LoginScreenState extends State<LoginScreen> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(l10n.importProfilesTitle),
+            title: Text(l10n.importProfiles),
             content: Text(l10n.importProfilesDialog),
             actions: [
               TextButton(
@@ -355,27 +325,17 @@ class _LoginScreenState extends State<LoginScreen> {
       final failedCount = result['failed'] as int;
       final errors = result['errors'] as List<String>;
 
-      String message;
-      Color backgroundColor;
-
+      final String message;
       if (failedCount == 0) {
         message = l10n.successfullyImportedProfiles(successCount);
-        backgroundColor = Colors.green;
+        SnackBarHelper.showSuccess(context, message, duration: const Duration(seconds: 5));
       } else if (successCount == 0) {
-        message = l10n.importFailedWithErrors(errors.join(', '));
-        backgroundColor = Colors.red;
+        message = l10n.importFailed(errors.join(', '));
+        SnackBarHelper.showError(context, message, duration: const Duration(seconds: 5));
       } else {
         message = l10n.importedWithFailures(successCount, failedCount);
-        backgroundColor = Colors.orange;
+        SnackBarHelper.showWarning(context, message, duration: const Duration(seconds: 5));
       }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: backgroundColor,
-          duration: const Duration(seconds: 5),
-        ),
-      );
 
       if (successCount > 0) {
         Navigator.of(context).pop(true);
@@ -383,12 +343,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       if (!mounted) return;
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.importFailed(e.toString())),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.importFailed(e.toString()));
     }
   }
 
@@ -411,7 +366,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Icon(
                     Icons.security,
                     size: 80,
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                   const SizedBox(height: 16),
 
@@ -431,7 +386,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(
                     widget.profile != null
                         ? 'Update your connection settings'
-                        : l10n.connectToYourOPNsenseFirewall,
+                        : l10n.connectToYourOpnsenseFirewall,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: Theme.of(context).textTheme.bodySmall?.color,
@@ -499,6 +454,36 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 24),
 
+                  // Status message (progress updates — shown as neutral info, not an error)
+                  if (_viewModel.statusMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: AppColors.opacityDivider)),
+                        ),
+                        child: Row(
+                          children: [
+                            const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                _viewModel.statusMessage!,
+                                style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
                   // Error Display
                   if (_viewModel.errorMessage != null)
                     Padding(
@@ -523,7 +508,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     l10n.needHelpCheckDocumentation,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.grey[600],
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                   ),
                 ],

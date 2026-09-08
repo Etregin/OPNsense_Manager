@@ -2,7 +2,7 @@ name: opnsense_manager
 description: "OPNsense Manager - A professional Flutter mobile application for managing OPNsense firewall routers."
 publish_to: 'none'
 
-version: 1.7.2+14
+version: 1.8.0+16
 
 environment:
   sdk: '>=3.12.0 <4.0.0'
@@ -21,24 +21,18 @@ dependencies:
   provider: ^6.1.1
   
   # Secure Storage
-  flutter_secure_storage: ^10.0.0
+  flutter_secure_storage: ^11.0.0
   
   # Local Storage
   shared_preferences: ^2.2.2
   
-  # Charts
-  fl_chart: ^1.1.1
-  
   # JSON Serialization
-  json_annotation: ^4.8.1
-  
-  # UI Components
-  cupertino_icons: ^1.0.8
+  json_annotation: ^4.12.0
   
   # Utilities
   intl: ^0.20.2
   uuid: ^4.5.1
-  path: ^1.9.0
+  package_info_plus: ^10.2.0
   
   # Biometric Authentication
   local_auth: ^3.0.0
@@ -46,18 +40,12 @@ dependencies:
   # File Picker for import/export
   file_picker: ^12.0.0-beta.4
   
-  # Path Provider for file operations
-  path_provider: ^2.1.5
-  
   # QR Code generation for WireGuard configs
   qr_flutter: ^4.1.0
   
-  # Share files for WireGuard config export
-  share_plus: ^13.1.0
+  # Charts for Network Insight and Reporting
+  fl_chart: ^1.2.0
   
-  # URL Launcher for opening authentication URLs
-  url_launcher: ^6.2.2
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

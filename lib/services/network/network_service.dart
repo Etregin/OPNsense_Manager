@@ -21,6 +21,7 @@ import '../base/base_opnsense_service.dart';
 import '../base/api_exception.dart';
 import '../../models/network_host.dart';
 import 'dhcp_service.dart';
+import '../../constants/api_endpoints.dart';
 
 /// Service for network operations
 class NetworkService extends BaseOPNsenseService {
@@ -33,7 +34,7 @@ class NetworkService extends BaseOPNsenseService {
     ensureInitialized();
     
     try {
-      final response = await dio.get('/diagnostics/traffic/top/$interface');
+      final response = await dio.get(ApiEndpoints.diagnosticsTrafficTopInterface(interface));
       
       if (response.statusCode == 200) {
         final data = response.data;
@@ -73,12 +74,13 @@ class NetworkService extends BaseOPNsenseService {
         throw ApiException(
           'Failed to get traffic data: HTTP ${response.statusCode}',
           response.statusCode,
+          ApiErrorType.unknown,
         );
       }
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to get traffic data: ${e.toString()}', null);
+      throw ApiException('Failed to get traffic data: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -162,7 +164,7 @@ class NetworkService extends BaseOPNsenseService {
       
       return hosts;
     } catch (e) {
-      throw ApiException('Failed to get network hosts: ${e.toString()}', null);
+      throw ApiException('Failed to get network hosts: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 }

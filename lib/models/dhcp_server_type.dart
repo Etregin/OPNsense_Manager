@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import '../l10n/app_localizations.dart';
+import '../utils/constants.dart';
 
 /// Enum representing different DHCP server types supported by OPNsense
 enum DhcpServerType {
@@ -35,15 +36,14 @@ enum DhcpServerType {
   kea;
 
   /// Get display name for the DHCP server type
-  String getDisplayName(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+  String get displayName {
     switch (this) {
       case DhcpServerType.dnsmasq:
-        return l10n.dnsmasqServerName;
+        return StringConstants.dnsmasq;
       case DhcpServerType.isc:
-        return l10n.iscDhcpServerName;
+        return StringConstants.iscDhcp;
       case DhcpServerType.kea:
-        return l10n.keaDhcpServerName;
+        return StringConstants.keaDhcp;
     }
   }
 

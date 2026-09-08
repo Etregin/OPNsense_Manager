@@ -20,6 +20,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
+import '../utils/app_colors.dart';
+import '../utils/auto_refresh_mixin.dart';
+import '../utils/constants.dart';
+import '../utils/snackbar_helper.dart';
 import '../viewmodels/tailscale_settings_view_model.dart';
 import '../viewmodels/tailscale_settings_form_state.dart';
 import '../widgets/app_drawer.dart';
@@ -42,11 +46,11 @@ class TailscaleSettingsScreen extends StatefulWidget {
       _TailscaleSettingsScreenState();
 }
 
-class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
+class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen>
+    with AutoRefreshMixin {
   late TailscaleSettingsViewModel _viewModel;
   late TailscaleSettingsFormState _formState;
   final _formKey = GlobalKey<FormState>();
-  Timer? _refreshTimer;
   bool _showServiceControls = false;
 
   @override
@@ -62,12 +66,14 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
     );
     _viewModel.addListener(_onViewModelChanged);
     _loadData();
-    _startAutoRefresh();
+    startAutoRefresh(
+      AppConstants.dashboardRefreshInterval,
+      () { if (!_viewModel.hasUnsavedChanges) _loadData(); },
+    );
   }
 
   @override
   void dispose() {
-    _refreshTimer?.cancel();
     _viewModel.removeListener(_onViewModelChanged);
     _viewModel.dispose();
     _formState.dispose();
@@ -83,17 +89,6 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
         }
       });
     }
-  }
-
-  void _startAutoRefresh() {
-    _refreshTimer = Timer.periodic(
-      const Duration(seconds: 30),
-      (timer) {
-        if (mounted && !_viewModel.hasUnsavedChanges) {
-          _loadData();
-        }
-      },
-    );
   }
 
   Future<void> _loadData() async {
@@ -113,17 +108,11 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
     final success = await _viewModel.saveChanges();
     if (mounted) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success
-                ? l10n.allSettingsSavedSuccessfully
-                : _viewModel.errorMessage ?? l10n.failedToSaveSettings,
-          ),
-          backgroundColor: success ? Colors.green : Colors.red,
-          duration: Duration(seconds: success ? 2 : 5),
-        ),
-      );
+      if (success) {
+        SnackBarHelper.showSuccess(context, l10n.allSettingsSavedSuccessfully);
+      } else {
+        SnackBarHelper.showError(context, _viewModel.errorMessage ?? l10n.failedToSaveSettings, duration: const Duration(seconds: 5));
+      }
     }
   }
 
@@ -134,12 +123,7 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
     }
     setState(() {});
     final l10n = AppLocalizations.of(context)!;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.changesDiscarded),
-        duration: const Duration(seconds: 1),
-      ),
-    );
+    SnackBarHelper.showInfo(context, l10n.changesDiscarded, duration: const Duration(seconds: 1));
   }
 
   Future<void> _controlService(String action) async {
@@ -155,31 +139,22 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
       title: l10n.tailscaleServiceAction(actionTitle),
       message: l10n.tailscaleServiceActionConfirmation(action),
       confirmText: actionTitle,
+      cancelText: l10n.cancel,
       isDestructive: action == 'stop',
     );
 
     if (!confirmed || !mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.tailscaleServiceActioning(actionTitle)),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    SnackBarHelper.showInfo(context, l10n.tailscaleServiceActioning(actionTitle));
 
     final success = await _viewModel.controlService(action);
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success
-                ? l10n.tailscaleServiceActionSuccess(actionTitle)
-                : _viewModel.errorMessage ?? l10n.failedToActionTailscaleService(action),
-          ),
-          backgroundColor: success ? Colors.green : Colors.red,
-        ),
-      );
+      if (success) {
+        SnackBarHelper.showSuccess(context, l10n.tailscaleServiceActionSuccess(actionTitle));
+      } else {
+        SnackBarHelper.showError(context, _viewModel.errorMessage ?? l10n.failedToActionTailscaleService(action));
+      }
     }
   }
 
@@ -191,7 +166,7 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
       ),
     );
     if (mounted && !_viewModel.hasUnsavedChanges) {
-      _loadData();
+      unawaited(_loadData());
     }
   }
 
@@ -204,6 +179,7 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
       title: l10n.unsavedChanges,
       message: l10n.unsavedChangesConfirmation,
       confirmText: l10n.discard,
+      cancelText: l10n.cancel,
       isDestructive: true,
     );
 
@@ -254,7 +230,7 @@ class _TailscaleSettingsScreenState extends State<TailscaleSettingsScreen> {
                 children: [
                   FloatingActionButton.extended(
                     onPressed: _viewModel.isLoading ? null : _discardChanges,
-                    backgroundColor: Colors.grey,
+                    backgroundColor: AppColors.disabled,
                     heroTag: 'discard',
                     icon: const Icon(Icons.close),
                     label: Text(AppLocalizations.of(context)!.discard),

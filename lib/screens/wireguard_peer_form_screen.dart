@@ -21,10 +21,12 @@ import 'package:flutter/services.dart';
 import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/wireguard_peer.dart';
+import '../utils/constants.dart';
+import '../utils/snackbar_helper.dart';
 import '../viewmodels/wireguard_peer_form_view_model.dart';
 import '../widgets/common/loading_overlay.dart';
 import '../widgets/wireguard/list_manager_card.dart';
-import '../utils/common_validators.dart';
+import '../utils/validators.dart';
 import '../utils/wireguard_validators.dart';
 
 /// Form screen for creating/editing WireGuard peers (clients)
@@ -45,7 +47,6 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
   // Controllers
   final _nameController = TextEditingController();
   final _publicKeyController = TextEditingController();
-  final _privateKeyController = TextEditingController(); // Dummy for KeyPairSection
   final _pskController = TextEditingController();
   final _serverAddressController = TextEditingController();
   final _serverPortController = TextEditingController();
@@ -72,7 +73,7 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
     if (_viewModel.isEditing) {
       _loadPeerData();
     } else {
-      _serverPortController.text = '51820';
+      _serverPortController.text = '${AppConstants.defaultWireGuardPort}';
     }
   }
 
@@ -82,7 +83,6 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
     _viewModel.dispose();
     _nameController.dispose();
     _publicKeyController.dispose();
-    _privateKeyController.dispose();
     _pskController.dispose();
     _serverAddressController.dispose();
     _serverPortController.dispose();
@@ -128,21 +128,9 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
         _pskController.text = psk;
       });
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.presharedKeyGeneratedSuccessfully),
-          backgroundColor: Colors.green,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      SnackBarHelper.showSuccess(context, l10n.presharedKeyGeneratedSuccessfully);
     } else if (_viewModel.errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_viewModel.errorMessage!),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 4),
-        ),
-      );
+      SnackBarHelper.showError(context, _viewModel.errorMessage!, duration: const Duration(seconds: 4));
     }
   }
 
@@ -152,22 +140,12 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     if (_tunnelAddresses.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.tunnelAddressRequired),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.atLeastOneTunnelAddressRequired);
       return;
     }
 
     if (_selectedServerUuids.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.serverSelectionRequired),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.serverSelectionRequired);
       return;
     }
 
@@ -196,26 +174,12 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
 
     if (mounted) {
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              _viewModel.isEditing
-                  ? l10n.peerUpdatedSuccessfully
-                  : l10n.peerCreatedSuccessfully,
-            ),
-            backgroundColor: Colors.green,
-          ),
-        );
+        SnackBarHelper.showSuccess(context, _viewModel.isEditing
+            ? l10n.peerUpdatedSuccessfully
+            : l10n.peerCreatedSuccessfully);
         Navigator.of(context).pop(true);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              _viewModel.errorMessage ?? l10n.failedToSavePeer,
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, _viewModel.errorMessage ?? l10n.failedToSavePeer);
       }
     }
   }
@@ -280,7 +244,7 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
                   hintText: l10n.myWireguardPeer,
                   prefixIcon: const Icon(Icons.label),
                 ),
-                validator: (value) => CommonValidators.required(value, fieldName: l10n.name),
+                validator: (value) => Validators.required(value, fieldName: l10n.name),
                 enabled: !_viewModel.isLoading,
               ),
               const SizedBox(height: 16),
@@ -400,7 +364,7 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
                   hintText: '192.168.1.1 or vpn.example.com',
                   prefixIcon: const Icon(Icons.dns),
                 ),
-                validator: (value) => CommonValidators.required(value, fieldName: l10n.endpointAddress),
+                validator: (value) => Validators.required(value, fieldName: l10n.endpointAddress),
                 enabled: !_viewModel.isLoading,
               ),
               const SizedBox(height: 16),
@@ -410,12 +374,12 @@ class _WireGuardPeerFormScreenState extends State<WireGuardPeerFormScreen> {
                 controller: _serverPortController,
                 decoration: InputDecoration(
                   labelText: l10n.endpointPort,
-                  hintText: '51820',
+                  hintText: '${AppConstants.defaultWireGuardPort}',
                   prefixIcon: const Icon(Icons.settings_ethernet),
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                validator: CommonValidators.port,
+                validator: Validators.port,
                 enabled: !_viewModel.isLoading,
               ),
               const SizedBox(height: 16),
@@ -516,7 +480,7 @@ class _ServerSelectorDialogState extends State<_ServerSelectorDialog> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return AlertDialog(
-      title: Text(l10n.selectServersTitle),
+      title: Text(l10n.selectServers),
       content: SizedBox(
         width: double.maxFinite,
         child: widget.availableServers.isEmpty

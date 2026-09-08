@@ -20,6 +20,8 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../models/openvpn_session.dart';
 import '../services/demo_api_service.dart';
+import '../utils/app_colors.dart';
+import '../utils/snackbar_helper.dart';
 
 /// Tab widget for displaying OpenVPN sessions
 class OpenvpnSessionsTab extends StatefulWidget {
@@ -90,12 +92,7 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
       if (result['result'] == 'ok') {
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.serviceStartedSuccessfully),
-              backgroundColor: Colors.green,
-            ),
-          );
+          SnackBarHelper.showSuccess(context, l10n.serviceStartedSuccessfully);
           await _loadSessions();
         }
       } else {
@@ -105,12 +102,7 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.errorStartingService(e.toString())),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, l10n.errorStartingService(e.toString()));
       }
     } finally {
       if (mounted) {
@@ -132,12 +124,7 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
       if (result['result'] == 'ok') {
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.serviceStoppedSuccessfully),
-              backgroundColor: Colors.green,
-            ),
-          );
+          SnackBarHelper.showSuccess(context, l10n.serviceStoppedSuccessfully);
           await _loadSessions();
         }
       } else {
@@ -147,12 +134,7 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.errorStoppingService(e.toString())),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, l10n.errorStoppingService(e.toString()));
       }
     } finally {
       if (mounted) {
@@ -174,12 +156,7 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
       if (result['result'] == 'ok') {
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.serviceRestartedSuccessfully),
-              backgroundColor: Colors.green,
-            ),
-          );
+          SnackBarHelper.showSuccess(context, l10n.serviceRestartedSuccessfully);
           await _loadSessions();
         }
       } else {
@@ -188,12 +165,7 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.errorRestartingService(e.toString())),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, l10n.errorRestartingService(e.toString()));
       }
     } finally {
       if (mounted) {
@@ -350,7 +322,7 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
                               : const Icon(Icons.stop, size: 18),
                           label: const Text('Stop'),
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.red,
+                            foregroundColor: AppColors.error,
                           ),
                         ),
                       ] else if (session.canStart) ...[
@@ -365,8 +337,8 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
                               : const Icon(Icons.play_arrow, size: 18),
                           label: const Text('Start'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            foregroundColor: Colors.white,
+                            backgroundColor: AppColors.success,
+                            foregroundColor: AppColors.onPrimary,
                           ),
                         ),
                       ],
@@ -387,15 +359,15 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
     final IconData icon;
 
     if (session.status == 'ok') {
-      color = Colors.green;
+      color = AppColors.success;
       label = 'Running';
       icon = Icons.check_circle;
     } else if (session.status == null) {
-      color = Colors.grey;
+      color = AppColors.disabled;
       label = 'Stopped';
       icon = Icons.stop_circle;
     } else {
-      color = Colors.orange;
+      color = AppColors.warning;
       label = session.status ?? 'Unknown';
       icon = Icons.warning;
     }
@@ -403,7 +375,7 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withValues(alpha: AppColors.opacitySubtle),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: color, width: 1.5),
       ),

@@ -16,12 +16,44 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/// Exception thrown by API operations
+/// Classifies the root cause of an [ApiException] so callers can branch on
+/// error type rather than matching against human-readable message strings.
+enum ApiErrorType {
+  /// The request timed out before receiving a response.
+  timeout,
+
+  /// The server returned HTTP 401 — credentials are invalid or missing.
+  authFailure,
+
+  /// The server returned HTTP 403 — the authenticated user lacks permission.
+  permissionDenied,
+
+  /// The server returned HTTP 404 — the requested resource does not exist.
+  notFound,
+
+  /// The server returned an HTTP error other than 401/403/404.
+  serverError,
+
+  /// TLS/SSL certificate validation failed (e.g. self-signed cert rejected).
+  certificateError,
+
+  /// A low-level network error occurred (e.g. socket refused, unreachable host).
+  networkError,
+
+  /// The request was cancelled before completion.
+  cancelled,
+
+  /// An error occurred that does not fit any of the categories above.
+  unknown,
+}
+
+/// Exception thrown by API operations.
 class ApiException implements Exception {
   final String message;
   final int? statusCode;
+  final ApiErrorType errorType;
 
-  ApiException(this.message, this.statusCode);
+  const ApiException(this.message, this.statusCode, this.errorType);
 
   @override
   String toString() {
@@ -31,5 +63,3 @@ class ApiException implements Exception {
     return 'ApiException: $message';
   }
 }
-
-

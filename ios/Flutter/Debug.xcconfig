@@ -1,1 +1,2 @@
 #include "Generated.xcconfig"
+IPHONEOS_DEPLOYMENT_TARGET=14.0

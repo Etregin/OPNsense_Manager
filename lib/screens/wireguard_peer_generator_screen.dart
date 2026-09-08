@@ -19,14 +19,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import '../utils/single_init_mixin.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../models/wireguard_client_builder.dart';
-import '../models/system_info.dart';
 import '../services/demo_api_service.dart';
+import '../utils/app_colors.dart';
+import '../utils/snackbar_helper.dart';
 import '../viewmodels/wireguard_peer_generator_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/loading_overlay.dart';
-import '../utils/common_validators.dart';
+import '../utils/validators.dart';
 import '../l10n/app_localizations.dart';
 
 /// Screen for generating WireGuard peer configurations
@@ -39,11 +41,10 @@ class WireGuardPeerGeneratorScreen extends StatefulWidget {
 }
 
 class _WireGuardPeerGeneratorScreenState
-    extends State<WireGuardPeerGeneratorScreen> {
+    extends State<WireGuardPeerGeneratorScreen>
+    with SingleInitMixin {
   late WireGuardPeerGeneratorViewModel _viewModel;
   final _formKey = GlobalKey<FormState>();
-  SystemInfo? _systemInfo;
-  bool _isInitialized = false;
 
   // Controllers
   final _nameController = TextEditingController();
@@ -59,39 +60,17 @@ class _WireGuardPeerGeneratorScreenState
   String? _selectedServerUuid;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInitialized) {
-      final apiService = context.read<DemoApiService>();
-      _viewModel = WireGuardPeerGeneratorViewModel(
-        apiService: apiService,
-      );
-      _viewModel.addListener(_onViewModelChanged);
-      _isInitialized = true;
-      _loadData();
-    }
+  void onFirstDependency() {
+    final apiService = context.read<DemoApiService>();
+    _viewModel = WireGuardPeerGeneratorViewModel(apiService: apiService);
+    _viewModel.addListener(_onViewModelChanged);
+    _loadData();
   }
 
   Future<void> _loadData() async {
     await Future.wait([
       _viewModel.loadBuilderData(),
-      _loadSystemInfo(),
     ]);
-  }
-
-  Future<void> _loadSystemInfo() async {
-    try {
-      final apiService = context.read<DemoApiService>();
-      final systemInfo = await apiService.getSystemInfo();
-
-      if (mounted) {
-        setState(() {
-          _systemInfo = systemInfo;
-        });
-      }
-    } catch (e) {
-      // Silently fail - system info is optional for drawer
-    }
   }
 
   @override
@@ -171,13 +150,7 @@ class _WireGuardPeerGeneratorScreenState
     if (_viewModel.psk != null) {
       _pskController.text = _viewModel.psk!;
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.presharedKeyGeneratedSuccessfully),
-          backgroundColor: Colors.green,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      SnackBarHelper.showSuccess(context, l10n.presharedKeyGeneratedSuccessfully);
     }
   }
 
@@ -189,12 +162,7 @@ class _WireGuardPeerGeneratorScreenState
     final l10n = AppLocalizations.of(context)!;
 
     if (_selectedServerUuid == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.selectServerInstance),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.selectServerInstance);
       return;
     }
 
@@ -203,23 +171,13 @@ class _WireGuardPeerGeneratorScreenState
     final publicKey = _publicKeyController.text.trim();
     
     if (privateKey.isEmpty || publicKey.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.keysRequired),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.keysRequired);
       return;
     }
 
     final serverInfo = _viewModel.selectedServerInfo;
     if (serverInfo == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.serverInfoNotLoaded),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackBarHelper.showError(context, l10n.serverInfoNotLoaded);
       return;
     }
 
@@ -241,12 +199,7 @@ class _WireGuardPeerGeneratorScreenState
 
     if (mounted) {
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.peerCreatedReadyForNext),
-            backgroundColor: Colors.green,
-          ),
-        );
+        SnackBarHelper.showSuccess(context, l10n.peerCreatedReadyForNext);
         // Reset form for next peer
         _nameController.clear();
         _pskController.clear();
@@ -255,14 +208,7 @@ class _WireGuardPeerGeneratorScreenState
           _selectedServerUuid = null;
         });
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              _viewModel.errorMessage ?? 'Failed to create peer',
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, _viewModel.errorMessage ?? 'Failed to create peer');
       }
     }
   }
@@ -272,16 +218,11 @@ class _WireGuardPeerGeneratorScreenState
 
     if (mounted) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success
-                ? l10n.configurationAppliedSuccessfully
-                : _viewModel.errorMessage ?? l10n.failedToApplyConfiguration,
-          ),
-          backgroundColor: success ? Colors.green : Colors.red,
-        ),
-      );
+      if (success) {
+        SnackBarHelper.showSuccess(context, l10n.configurationAppliedSuccessfully);
+      } else {
+        SnackBarHelper.showError(context, _viewModel.errorMessage ?? l10n.failedToApplyConfiguration);
+      }
     }
   }
 
@@ -325,9 +266,8 @@ class _WireGuardPeerGeneratorScreenState
       appBar: AppBar(
         title: Text(l10n.peerGenerator),
       ),
-      drawer: AppDrawer(
-        currentRoute: 'wireguard_peer_generator',
-        systemInfo: _systemInfo,
+      drawer: const AppDrawer(
+        currentRoute: 'wireguard_peer_generator'
       ),
       body: LoadingOverlay(
         isLoading: _viewModel.isLoading || _viewModel.loadingBuilder,
@@ -339,12 +279,12 @@ class _WireGuardPeerGeneratorScreenState
                     const Icon(
                       Icons.error_outline,
                       size: 48,
-                      color: Colors.red,
+                      color: AppColors.error,
                     ),
                     const SizedBox(height: 16),
                     Text(
                       l10n.error,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -407,7 +347,7 @@ class _WireGuardPeerGeneratorScreenState
                         prefixIcon: const Icon(Icons.public),
                       ),
                       validator: (value) =>
-                          CommonValidators.required(value, fieldName: l10n.endpoint),
+                          Validators.required(value, fieldName: l10n.endpoint),
                       enabled: !_viewModel.isLoading,
                     ),
                     const SizedBox(height: 16),
@@ -421,7 +361,7 @@ class _WireGuardPeerGeneratorScreenState
                         prefixIcon: const Icon(Icons.label),
                       ),
                       validator: (value) =>
-                          CommonValidators.required(value, fieldName: l10n.name),
+                          Validators.required(value, fieldName: l10n.name),
                       enabled: !_viewModel.isLoading,
                     ),
                     const SizedBox(height: 16),
@@ -435,7 +375,7 @@ class _WireGuardPeerGeneratorScreenState
                         prefixIcon: const Icon(Icons.key),
                       ),
                       validator: (value) =>
-                          CommonValidators.required(value, fieldName: l10n.publicKey),
+                          Validators.required(value, fieldName: l10n.publicKey),
                       enabled: !_viewModel.isLoading,
                       maxLines: 2,
                       style: const TextStyle(
@@ -454,7 +394,7 @@ class _WireGuardPeerGeneratorScreenState
                         prefixIcon: const Icon(Icons.vpn_key),
                       ),
                       validator: (value) =>
-                          CommonValidators.required(value, fieldName: l10n.privateKey),
+                          Validators.required(value, fieldName: l10n.privateKey),
                       enabled: !_viewModel.isLoading,
                       maxLines: 2,
                       style: const TextStyle(
@@ -491,7 +431,7 @@ class _WireGuardPeerGeneratorScreenState
                         prefixIcon: const Icon(Icons.location_on),
                       ),
                       validator: (value) =>
-                          CommonValidators.required(value, fieldName: l10n.address),
+                          Validators.required(value, fieldName: l10n.address),
                       enabled: !_viewModel.isLoading,
                     ),
                     const SizedBox(height: 16),
@@ -532,12 +472,12 @@ class _WireGuardPeerGeneratorScreenState
                     TextFormField(
                       controller: _allowedIpsController,
                       decoration: InputDecoration(
-                        labelText: l10n.allowedIpsLabel,
+                        labelText: l10n.allowedIps,
                         hintText: '0.0.0.0/0,::/0',
                         prefixIcon: const Icon(Icons.network_check),
                       ),
                       validator: (value) =>
-                          CommonValidators.required(value, fieldName: l10n.allowedIpsLabel),
+                          Validators.required(value, fieldName: l10n.allowedIps),
                       enabled: !_viewModel.isLoading,
                     ),
                     const SizedBox(height: 16),
@@ -572,7 +512,7 @@ class _WireGuardPeerGeneratorScreenState
                     // Config Preview
                     Text(
                       l10n.configurationPreview,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -595,7 +535,7 @@ class _WireGuardPeerGeneratorScreenState
                     // QR Code
                     Text(
                       l10n.qrCode,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -610,7 +550,7 @@ class _WireGuardPeerGeneratorScreenState
                               ? Container(
                                   padding: const EdgeInsets.all(16),
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: AppColors.onPrimary,
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: QrImageView(
@@ -619,7 +559,7 @@ class _WireGuardPeerGeneratorScreenState
                                     size: 200.0,
                                   ),
                                 )
-                              : Text(l10n.selectServerToGenerateQrCode),
+                              : Text(l10n.selectServerForQrCode),
                         ),
                       ),
                     ),
@@ -635,7 +575,7 @@ class _WireGuardPeerGeneratorScreenState
                       ),
                       child: Text(
                         l10n.storeAndGenerateNext,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -652,17 +592,16 @@ class _WireGuardPeerGeneratorScreenState
                           ? null
                           : (value) async {
                               final messenger = ScaffoldMessenger.of(context);
+                              final message = value
+                                  ? l10n.wireguardServiceStarted
+                                  : l10n.wireguardServiceStopped;
                               final success =
                                   await _viewModel.toggleWireGuardService(value);
                               if (mounted && success) {
                                 messenger.showSnackBar(
                                   SnackBar(
-                                    content: Text(
-                                      value
-                                          ? l10n.wireguardServiceStarted
-                                          : l10n.wireguardServiceStopped,
-                                    ),
-                                    backgroundColor: Colors.green,
+                                    content: Text(message),
+                                    backgroundColor: AppColors.success,
                                   ),
                                 );
                               }
@@ -680,7 +619,7 @@ class _WireGuardPeerGeneratorScreenState
                       ),
                       child: Text(
                         l10n.apply,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),

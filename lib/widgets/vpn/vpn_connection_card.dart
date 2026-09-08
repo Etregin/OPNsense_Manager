@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import '../../models/vpn_connection.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/app_colors.dart';
 import 'vpn_detail_section.dart';
 
 /// Widget for displaying a single VPN connection card
@@ -43,7 +44,7 @@ class VPNConnectionCard extends StatelessWidget {
       child: ExpansionTile(
         leading: Icon(
           _getVPNIcon(connection.type),
-          color: connection.isConnected ? Colors.green : Colors.grey,
+          color: connection.isConnected ? AppColors.success : AppColors.disabled,
           size: 32,
         ),
         title: Text(
@@ -59,13 +60,13 @@ class VPNConnectionCard extends StatelessWidget {
                 Icon(
                   connection.isConnected ? Icons.check_circle : Icons.cancel,
                   size: 16,
-                  color: connection.isConnected ? Colors.green : Colors.red,
+                  color: connection.isConnected ? AppColors.success : AppColors.error,
                 ),
                 const SizedBox(width: 4),
                 Text(
                   connection.statusDisplay,
                   style: TextStyle(
-                    color: connection.isConnected ? Colors.green : Colors.red,
+                    color: connection.isConnected ? AppColors.success : AppColors.error,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -79,7 +80,7 @@ class VPNConnectionCard extends StatelessWidget {
             IconButton(
               icon: Icon(
                 connection.isConnected ? Icons.stop : Icons.play_arrow,
-                color: connection.isConnected ? Colors.red : Colors.green,
+                color: connection.isConnected ? AppColors.error : AppColors.success,
               ),
               onPressed: onToggle,
               tooltip: connection.isConnected ? l10n.disconnect : l10n.connect,

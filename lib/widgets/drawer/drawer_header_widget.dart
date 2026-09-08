@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import '../../models/system_info.dart';
+import '../../utils/app_colors.dart'; // opacityStrong
 import '../../utils/constants.dart';
 
 /// Reusable drawer header widget with app branding and system info
@@ -31,24 +32,25 @@ class DrawerHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return DrawerHeader(
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
+        color: colorScheme.primaryContainer,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          const Icon(
+          Icon(
             Icons.router,
             size: 48,
-            color: Colors.white,
+            color: colorScheme.onPrimaryContainer,
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             AppConstants.appName,
             style: TextStyle(
-              color: Colors.white,
+              color: colorScheme.onPrimaryContainer,
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
@@ -56,8 +58,8 @@ class DrawerHeaderWidget extends StatelessWidget {
           if (systemInfo != null)
             Text(
               systemInfo!.hostname,
-              style: const TextStyle(
-                color: Colors.white70,
+              style: TextStyle(
+                color: colorScheme.onPrimaryContainer.withValues(alpha: AppColors.opacityStrong),
                 fontSize: 14,
               ),
             ),

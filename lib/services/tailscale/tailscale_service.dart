@@ -258,7 +258,7 @@ class TailscaleService extends BaseOPNsenseService {
         final data = response.data as Map<String, dynamic>;
         return TailscaleSettingsResponse.fromJson(data);
       }
-      throw ApiException('Failed to get Tailscale settings', response.statusCode);
+      throw ApiException('Failed to get Tailscale settings', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     }
@@ -278,7 +278,7 @@ class TailscaleService extends BaseOPNsenseService {
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       }
-      throw ApiException('Failed to set Tailscale settings', response.statusCode);
+      throw ApiException('Failed to set Tailscale settings', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     }
@@ -296,7 +296,7 @@ class TailscaleService extends BaseOPNsenseService {
         final data = response.data as Map<String, dynamic>;
         return TailscaleSubnetSearchResponse.fromJson(data);
       }
-      throw ApiException('Failed to search Tailscale subnets', response.statusCode);
+      throw ApiException('Failed to search Tailscale subnets', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     }
@@ -314,7 +314,7 @@ class TailscaleService extends BaseOPNsenseService {
         final data = response.data as Map<String, dynamic>;
         return TailscaleSubnetResponse.fromJson(data);
       }
-      throw ApiException('Failed to get Tailscale subnet', response.statusCode);
+      throw ApiException('Failed to get Tailscale subnet', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     }
@@ -338,7 +338,7 @@ class TailscaleService extends BaseOPNsenseService {
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       }
-      throw ApiException('Failed to add Tailscale subnet', response.statusCode);
+      throw ApiException('Failed to add Tailscale subnet', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     }
@@ -362,7 +362,7 @@ class TailscaleService extends BaseOPNsenseService {
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       }
-      throw ApiException('Failed to update Tailscale subnet', response.statusCode);
+      throw ApiException('Failed to update Tailscale subnet', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     }
@@ -381,7 +381,7 @@ class TailscaleService extends BaseOPNsenseService {
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       }
-      throw ApiException('Failed to delete Tailscale subnet', response.statusCode);
+      throw ApiException('Failed to delete Tailscale subnet', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     }
@@ -398,7 +398,7 @@ class TailscaleService extends BaseOPNsenseService {
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       }
-      throw ApiException('Failed to reload Tailscale settings', response.statusCode);
+      throw ApiException('Failed to reload Tailscale settings', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     }

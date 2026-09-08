@@ -17,12 +17,15 @@
  */
 
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../services/app_version_service.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../services/auth_service.dart';
 import '../services/profile_service.dart';
+import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../l10n/app_localizations.dart';
 import 'profile_selection_screen.dart';
@@ -58,13 +61,14 @@ class _SplashScreenState extends State<SplashScreen> {
     if (authRequired) {
       // Show PIN lock screen
       if (!mounted) return;
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => PinLockScreen(
-            onAuthenticated: (pinContext) async {
-              // Navigate from the PIN lock screen context
-              await _proceedToAppWithContext(pinContext, profileService, demoApiService, realApiService);
-            },
+      unawaited(
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => PinLockScreen(
+              onAuthenticated: (pinContext) async {
+                await _proceedToAppWithContext(pinContext, profileService, demoApiService, realApiService);
+              },
+            ),
           ),
         ),
       );
@@ -117,25 +121,29 @@ class _SplashScreenState extends State<SplashScreen> {
 
       if (isConnected) {
         // Navigate to dashboard
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const DashboardScreen(),
+        unawaited(
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => const DashboardScreen(),
+            ),
           ),
         );
       } else {
-        // Connection failed, go to profile selection
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const ProfileSelectionScreen(),
+        unawaited(
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => const ProfileSelectionScreen(),
+            ),
           ),
         );
       }
     } else {
-      // No active profile, go to profile selection
       if (!context.mounted) return;
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const ProfileSelectionScreen(),
+      unawaited(
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const ProfileSelectionScreen(),
+          ),
         ),
       );
     }
@@ -146,7 +154,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final l10n = AppLocalizations.of(context)!;
     
     return Scaffold(
-      backgroundColor: const Color(AppConstants.primaryColorValue),
+      backgroundColor: AppColors.primary,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -157,11 +165,11 @@ class _SplashScreenState extends State<SplashScreen> {
               height: 120,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.2),
+                    color: AppColors.shadow,
                     blurRadius: 20,
-                    offset: const Offset(0, 10),
+                    offset: Offset(0, 10),
                   ),
                 ],
               ),
@@ -182,22 +190,22 @@ class _SplashScreenState extends State<SplashScreen> {
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppColors.onPrimary,
               ),
             ),
             const SizedBox(height: 8),
             // Version
             Text(
-              l10n.version(AppConstants.appVersion),
+              l10n.version(context.read<AppVersionService>().version),
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.white.withValues(alpha: 0.8),
+                color: AppColors.onPrimary.withValues(alpha: AppColors.opacityHeavy),
               ),
             ),
             const SizedBox(height: 48),
             // Loading Indicator
             const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.onPrimary),
             ),
           ],
         ),

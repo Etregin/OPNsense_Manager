@@ -55,7 +55,7 @@ class DemoNetworkDataGenerator {
         macAddress: '00:1C:42:00:00:09',
         rateIn: 25000000 + _random.nextInt(10000000), // 25-35 Mbps (4K streaming)
         rateOut: 500000 + _random.nextInt(300000),    // 0.5-0.8 Mbps upload
-        leaseExpiry: DateTime.now().add(Duration(hours: 24)),
+        leaseExpiry: DateTime.now().add(const Duration(hours: 24)),
       ),
       NetworkHost(
         address: '192.168.1.25',
@@ -73,7 +73,7 @@ class DemoNetworkDataGenerator {
         macAddress: '00:11:32:2C:A7:85',
         rateIn: 3000000 + _random.nextInt(2000000),  // 3-5 Mbps download
         rateOut: 10000000 + _random.nextInt(5000000), // 10-15 Mbps upload (backup)
-        leaseExpiry: DateTime.now().add(Duration(days: 7)),
+        leaseExpiry: DateTime.now().add(const Duration(days: 7)),
       ),
       NetworkHost(
         address: '192.168.1.35',
@@ -91,7 +91,7 @@ class DemoNetworkDataGenerator {
         macAddress: '00:12:17:A0:B1:C2',
         rateIn: 100000 + _random.nextInt(50000),     // 0.1-0.15 Mbps download
         rateOut: 2000000 + _random.nextInt(1000000), // 2-3 Mbps upload (video)
-        leaseExpiry: DateTime.now().add(Duration(days: 30)),
+        leaseExpiry: DateTime.now().add(const Duration(days: 30)),
       ),
       NetworkHost(
         address: '192.168.1.45',
@@ -100,7 +100,7 @@ class DemoNetworkDataGenerator {
         macAddress: 'B8:27:EB:12:34:56',
         rateIn: 200000 + _random.nextInt(100000),    // 0.2-0.3 Mbps download
         rateOut: 150000 + _random.nextInt(100000),   // 0.15-0.25 Mbps upload
-        leaseExpiry: DateTime.now().add(Duration(days: 90)),
+        leaseExpiry: DateTime.now().add(const Duration(days: 90)),
       ),
       NetworkHost(
         address: '192.168.1.50',

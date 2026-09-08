@@ -28,16 +28,16 @@ class FirewallAliasMetadataService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/api/firewall/alias/get_geoip');
+      final response = await dio.get('/firewall/alias/get_geoip');
 
       if (response.statusCode == 200 && response.data is Map) {
         return response.data as Map<String, dynamic>;
       }
-      throw ApiException('Failed to get GeoIP data', response.statusCode);
+      throw ApiException('Failed to get GeoIP data', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to get GeoIP data: ${e.toString()}', null);
+      throw ApiException('Failed to get GeoIP data: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -46,72 +46,80 @@ class FirewallAliasMetadataService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/api/firewall/alias/get_table_size');
+      final response = await dio.get('/firewall/alias/get_table_size');
 
       if (response.statusCode == 200 && response.data is Map) {
         return response.data as Map<String, dynamic>;
       }
-      throw ApiException('Failed to get table size', response.statusCode);
+      throw ApiException('Failed to get table size', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to get table size: ${e.toString()}', null);
+      throw ApiException('Failed to get table size: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
-  /// List available categories
+  /// List available categories.
+  ///
+  /// Returns `{"rows": [{"uuid": "...", "name": "...", ...}]}` — same flat
+  /// search_item style. [AliasCategory.name] = UUID (sent to API on save),
+  /// [AliasCategory.description] = display label shown in the UI.
   Future<List<AliasCategory>> listAliasCategories() async {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/api/firewall/alias/listCategories');
+      final response = await dio.get('/firewall/alias/list_categories');
 
       if (response.statusCode == 200) {
         final data = response.data;
-        if (data is Map && data['categories'] != null) {
-          final categories = data['categories'] as Map<String, dynamic>;
-          return categories.entries.map((entry) {
-            return AliasCategory(
-              name: entry.key,
-              description: entry.value.toString(),
-            );
-          }).toList();
+        if (data is Map && data['rows'] is List) {
+          return (data['rows'] as List)
+              .whereType<Map<String, dynamic>>()
+              .map((row) => AliasCategory(
+                    name: row['uuid']?.toString() ?? '',
+                    description: row['name']?.toString() ?? '',
+                    color: row['color']?.toString() ?? '',
+                  ))
+              .where((c) => c.name.isNotEmpty)
+              .toList();
         }
         return [];
       }
-      throw ApiException('Failed to list categories', response.statusCode);
+      throw ApiException('Failed to list categories', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to list categories: ${e.toString()}', null);
+      throw ApiException('Failed to list categories: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
-  /// List available countries for GeoIP
+  /// List available countries for GeoIP.
+  ///
+  /// The API returns a flat object keyed by ISO country code:
+  ///   `{"AD": {"name": "Andorra", "region": "Europe"}, ...}`
   Future<List<AliasCountry>> listAliasCountries() async {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/api/firewall/alias/listCountries');
+      final response = await dio.get('/firewall/alias/list_countries');
 
       if (response.statusCode == 200) {
         final data = response.data;
-        if (data is Map && data['countries'] != null) {
-          final countries = data['countries'] as Map<String, dynamic>;
-          return countries.entries.map((entry) {
-            return AliasCountry(
-              code: entry.key,
-              name: entry.value.toString(),
-            );
+        if (data is Map<String, dynamic>) {
+          return data.entries.map((entry) {
+            final info = entry.value;
+            final name   = (info is Map) ? (info['name']?.toString()   ?? entry.key) : entry.key;
+            final region = (info is Map) ? (info['region']?.toString() ?? '')        : '';
+            return AliasCountry(code: entry.key, name: name, region: region);
           }).toList();
         }
         return [];
       }
-      throw ApiException('Failed to list countries', response.statusCode);
+      throw ApiException('Failed to list countries', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to list countries: ${e.toString()}', null);
+      throw ApiException('Failed to list countries: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -120,18 +128,18 @@ class FirewallAliasMetadataService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/api/firewall/alias/listNetworkAliases');
+      final response = await dio.get('/firewall/alias/list_network_aliases');
 
       if (response.statusCode == 200 && response.data is Map) {
         return response.data as Map<String, dynamic>;
       }
       throw ApiException(
-          'Failed to list network aliases', response.statusCode);
+          'Failed to list network aliases', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
       throw ApiException(
-          'Failed to list network aliases: ${e.toString()}', null);
+          'Failed to list network aliases: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -140,16 +148,16 @@ class FirewallAliasMetadataService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/api/firewall/alias/listUserGroups');
+      final response = await dio.get('/firewall/alias/list_user_groups');
 
       if (response.statusCode == 200 && response.data is Map) {
         return response.data as Map<String, dynamic>;
       }
-      throw ApiException('Failed to list user groups', response.statusCode);
+      throw ApiException('Failed to list user groups', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to list user groups: ${e.toString()}', null);
+      throw ApiException('Failed to list user groups: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 }

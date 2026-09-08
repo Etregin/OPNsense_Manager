@@ -28,16 +28,16 @@ class FirewallAliasUtilService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/api/firewall/alias_util/aliases');
+      final response = await dio.get('/firewall/alias_util/aliases');
 
       if (response.statusCode == 200 && response.data is Map) {
         return response.data as Map<String, dynamic>;
       }
-      throw ApiException('Failed to get aliases', response.statusCode);
+      throw ApiException('Failed to get aliases', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to get aliases: ${e.toString()}', null);
+      throw ApiException('Failed to get aliases: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -47,7 +47,7 @@ class FirewallAliasUtilService extends BaseOPNsenseService {
 
     try {
       final response =
-          await dio.get('/api/firewall/alias_util/list/$aliasName');
+          await dio.get('/firewall/alias_util/list/$aliasName');
 
       if (response.statusCode == 200) {
         final data = response.data;
@@ -62,11 +62,11 @@ class FirewallAliasUtilService extends BaseOPNsenseService {
         }
         return [];
       }
-      throw ApiException('Failed to list alias table', response.statusCode);
+      throw ApiException('Failed to list alias table', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to list alias table: ${e.toString()}', null);
+      throw ApiException('Failed to list alias table: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -77,18 +77,18 @@ class FirewallAliasUtilService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/api/firewall/alias_util/add/$aliasName',
+        '/firewall/alias_util/add/$aliasName',
         data: {'address': address},
       );
 
       if (response.statusCode == 200 && response.data is Map) {
         return response.data as Map<String, dynamic>;
       }
-      throw ApiException('Failed to add to alias table', response.statusCode);
+      throw ApiException('Failed to add to alias table', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to add to alias table: ${e.toString()}', null);
+      throw ApiException('Failed to add to alias table: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -99,7 +99,7 @@ class FirewallAliasUtilService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/api/firewall/alias_util/delete/$aliasName',
+        '/firewall/alias_util/delete/$aliasName',
         data: {'address': address},
       );
 
@@ -107,12 +107,12 @@ class FirewallAliasUtilService extends BaseOPNsenseService {
         return response.data as Map<String, dynamic>;
       }
       throw ApiException(
-          'Failed to delete from alias table', response.statusCode);
+          'Failed to delete from alias table', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
       throw ApiException(
-          'Failed to delete from alias table: ${e.toString()}', null);
+          'Failed to delete from alias table: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -122,16 +122,16 @@ class FirewallAliasUtilService extends BaseOPNsenseService {
 
     try {
       final response =
-          await dio.post('/api/firewall/alias_util/flush/$aliasName');
+          await dio.post('/firewall/alias_util/flush/$aliasName');
 
       if (response.statusCode == 200 && response.data is Map) {
         return response.data as Map<String, dynamic>;
       }
-      throw ApiException('Failed to flush alias table', response.statusCode);
+      throw ApiException('Failed to flush alias table', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to flush alias table: ${e.toString()}', null);
+      throw ApiException('Failed to flush alias table: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -141,7 +141,7 @@ class FirewallAliasUtilService extends BaseOPNsenseService {
 
     try {
       final response = await dio.post(
-        '/api/firewall/alias_util/find_references',
+        '/firewall/alias_util/find_references',
         data: {'alias': aliasName},
       );
 
@@ -149,12 +149,12 @@ class FirewallAliasUtilService extends BaseOPNsenseService {
         return response.data as Map<String, dynamic>;
       }
       throw ApiException(
-          'Failed to find alias references', response.statusCode);
+          'Failed to find alias references', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
       throw ApiException(
-          'Failed to find alias references: ${e.toString()}', null);
+          'Failed to find alias references: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 
@@ -163,16 +163,16 @@ class FirewallAliasUtilService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      final response = await dio.get('/api/firewall/alias_util/update_bogons');
+      final response = await dio.get('/firewall/alias_util/update_bogons');
 
       if (response.statusCode == 200 && response.data is Map) {
         return response.data as Map<String, dynamic>;
       }
-      throw ApiException('Failed to update bogons', response.statusCode);
+      throw ApiException('Failed to update bogons', response.statusCode, ApiErrorType.unknown);
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw ApiException('Failed to update bogons: ${e.toString()}', null);
+      throw ApiException('Failed to update bogons: ${e.toString()}', null, ApiErrorType.unknown);
     }
   }
 }
