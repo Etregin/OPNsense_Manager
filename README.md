@@ -75,23 +75,21 @@ OPNsense Manager lets you monitor and manage OPNsense from a mobile device. It s
 
 ## Screenshots
 
-> [Screenshot: Dashboard]
+<div align="center">
 
-> [Screenshot: System Information and Firmware Updates]
+| Dashboard | System Info | Firewall Rules |
+|:-:|:-:|:-:|
+| ![Dashboard](screenshots/Android/dashboard.png) | ![System Info](screenshots/Android/system_info.png) | ![Firewall Rules](screenshots/Android/firewall_rules.png) |
 
-> [Screenshot: Firewall Rules and Aliases]
+| Firewall Logs | Live Network Monitor | DHCP Leases |
+|:-:|:-:|:-:|
+| ![Firewall Logs](screenshots/Android/firewall_logs.png) | ![Live Network Monitor](screenshots/Android/live_network_monitor.png) | ![DHCP Leases](screenshots/Android/dhcp_leases.png) |
 
-> [Screenshot: Firewall Alias Editor]
+| Services | Settings | Menu |
+|:-:|:-:|:-:|
+| ![Services](screenshots/Android/services.png) | ![Settings](screenshots/Android/settings.png) | ![Menu](screenshots/Android/Menu.png) |
 
-> [Screenshot: Firewall Logs]
-
-> [Screenshot: Live Network Monitor]
-
-> [Screenshot: DHCP Leases and Neighbor Discovery]
-
-> [Screenshot: VPN Management]
-
-> [Screenshot: Services and Settings]
+</div>
 
 ## Requirements
 
