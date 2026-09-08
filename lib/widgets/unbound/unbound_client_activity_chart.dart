@@ -33,6 +33,7 @@ class UnboundClientActivityChart extends StatefulWidget {
   final ValueChanged<bool> onLogarithmicChanged;
   final void Function(String client, int timeStart, int timeEnd)? onClientSpotTapped;
   final bool isFullScreen;
+  final Listenable? notifier;
 
   const UnboundClientActivityChart({
     super.key,
@@ -43,6 +44,7 @@ class UnboundClientActivityChart extends StatefulWidget {
     required this.onLogarithmicChanged,
     this.onClientSpotTapped,
     this.isFullScreen = false,
+    this.notifier,
   });
 
   @override
@@ -54,6 +56,8 @@ class _UnboundClientActivityChartState extends State<UnboundClientActivityChart>
   double? _visibleMaxX;
   double _baseScaleMinX = 0;
   double _baseScaleMaxX = 0;
+  Offset _lastFocalPoint = Offset.zero;
+  int _activePointerCount = 0;
 
   static const List<Color> _clientColors = [
     AppColors.primary,
@@ -259,39 +263,51 @@ class _UnboundClientActivityChartState extends State<UnboundClientActivityChart>
                 icon: const Icon(Icons.fullscreen, size: 20),
                 tooltip: l10n.fullScreen,
                 onPressed: () {
+                  bool localIsLogarithmic = widget.isLogarithmic;
+                  int localDuration = widget.selectedDurationHours;
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       fullscreenDialog: true,
                       builder: (ctx) {
-                        return StatefulBuilder(
-                          builder: (context, setDialogState) {
-                            return Scaffold(
-                              appBar: AppBar(
-                                title: Text(l10n.topClientActivityOverTheLast),
-                              ),
-                              body: SafeArea(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(AppConstants.standardPadding),
-                                  child: UnboundClientActivityChart(
-                                    points: widget.points,
-                                    selectedDurationHours: widget.selectedDurationHours,
-                                    isLogarithmic: widget.isLogarithmic,
-                                    onDurationChanged: (val) {
-                                      widget.onDurationChanged(val);
-                                      setDialogState(() {});
-                                    },
-                                    onLogarithmicChanged: (val) {
-                                      widget.onLogarithmicChanged(val);
-                                      setDialogState(() {});
-                                    },
-                                    onClientSpotTapped: (client, start, end) {
-                                      Navigator.of(ctx).pop();
-                                      widget.onClientSpotTapped?.call(client, start, end);
-                                    },
-                                    isFullScreen: true,
+                        return ListenableBuilder(
+                          listenable: widget.notifier ?? ValueNotifier(null),
+                          builder: (context, _) {
+                            return StatefulBuilder(
+                              builder: (context, setDialogState) {
+                                return Scaffold(
+                                  appBar: AppBar(
+                                    title: Text(l10n.topClientActivityOverTheLast),
                                   ),
-                                ),
-                              ),
+                                  body: SafeArea(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(AppConstants.standardPadding),
+                                      child: UnboundClientActivityChart(
+                                        points: widget.points,
+                                        selectedDurationHours: localDuration,
+                                        isLogarithmic: localIsLogarithmic,
+                                        onDurationChanged: (val) {
+                                          widget.onDurationChanged(val);
+                                          setDialogState(() {
+                                            localDuration = val;
+                                          });
+                                        },
+                                        onLogarithmicChanged: (val) {
+                                          widget.onLogarithmicChanged(val);
+                                          setDialogState(() {
+                                            localIsLogarithmic = val;
+                                          });
+                                        },
+                                        onClientSpotTapped: (client, start, end) {
+                                          Navigator.of(ctx).pop();
+                                          widget.onClientSpotTapped?.call(client, start, end);
+                                        },
+                                        isFullScreen: true,
+                                        notifier: widget.notifier,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
                             );
                           },
                         );
@@ -338,53 +354,76 @@ class _UnboundClientActivityChartState extends State<UnboundClientActivityChart>
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final chartWidth = constraints.maxWidth;
-                return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onScaleStart: (details) {
-                    _baseScaleMinX = _visibleMinX ?? globalMinX;
-                    _baseScaleMaxX = _visibleMaxX ?? globalMaxX;
+                return Listener(
+                  onPointerDown: (event) {
+                    _activePointerCount++;
+                    _lastFocalPoint = event.localPosition;
                   },
-                  onScaleUpdate: (details) {
-                    if (details.pointerCount >= 2 && details.scale != 1.0) {
-                      final baseRange = _baseScaleMaxX - _baseScaleMinX;
-                      final newRange = (baseRange / details.scale).clamp(
-                        300.0, // Minimum window of 5 minutes
-                        globalMaxX - globalMinX,
-                      );
-                      final focalFraction = chartWidth > 0
-                          ? (details.localFocalPoint.dx / chartWidth).clamp(0.0, 1.0)
-                          : 0.5;
-                      final focalTimestamp = _baseScaleMinX + (focalFraction * baseRange);
-                      var newMin = focalTimestamp - (focalFraction * newRange);
-                      var newMax = newMin + newRange;
-
-                      if (newMin < globalMinX) {
-                        newMin = globalMinX;
-                        newMax = (newMin + newRange).clamp(globalMinX, globalMaxX);
+                  onPointerUp: (event) {
+                    _activePointerCount = (_activePointerCount - 1).clamp(0, 5);
+                  },
+                  onPointerCancel: (event) {
+                    _activePointerCount = (_activePointerCount - 1).clamp(0, 5);
+                  },
+                  onPointerMove: (event) {
+                    if (isZoomed && _activePointerCount == 1) {
+                      final deltaDx = event.localPosition.dx - _lastFocalPoint.dx;
+                      if (deltaDx != 0) {
+                        final range = maxX - minX;
+                        final deltaFraction = chartWidth > 0
+                            ? -deltaDx / chartWidth
+                            : -deltaDx / 300.0;
+                        final shift = deltaFraction * range;
+                        var newMin = (minX + shift).clamp(globalMinX, globalMaxX - range);
+                        var newMax = newMin + range;
+                        setState(() {
+                          _visibleMinX = newMin;
+                          _visibleMaxX = newMax;
+                        });
                       }
-                      if (newMax > globalMaxX) {
-                        newMax = globalMaxX;
-                        newMin = (newMax - newRange).clamp(globalMinX, globalMaxX);
-                      }
-                      setState(() {
-                        _visibleMinX = newMin;
-                        _visibleMaxX = newMax;
-                      });
-                    } else if (details.pointerCount == 1 && details.focalPointDelta.dx != 0 && isZoomed) {
-                      final range = maxX - minX;
-                      final deltaFraction = chartWidth > 0
-                          ? -details.focalPointDelta.dx / chartWidth
-                          : -details.focalPointDelta.dx / 300.0;
-                      final shift = deltaFraction * range;
-                      var newMin = (minX + shift).clamp(globalMinX, globalMaxX - range);
-                      var newMax = newMin + range;
-                      setState(() {
-                        _visibleMinX = newMin;
-                        _visibleMaxX = newMax;
-                      });
                     }
+                    _lastFocalPoint = event.localPosition;
                   },
-                  child: LineChart(
+                  child: GestureDetector(
+                    onVerticalDragStart: isZoomed ? (_) {} : null,
+                    onVerticalDragUpdate: isZoomed ? (_) {} : null,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onScaleStart: (details) {
+                        _baseScaleMinX = _visibleMinX ?? globalMinX;
+                        _baseScaleMaxX = _visibleMaxX ?? globalMaxX;
+                        _lastFocalPoint = details.localFocalPoint;
+                      },
+                      onScaleUpdate: (details) {
+                        if (details.pointerCount >= 2 && details.scale != 1.0) {
+                          final baseRange = _baseScaleMaxX - _baseScaleMinX;
+                          final newRange = (baseRange / details.scale).clamp(
+                            300.0, // Minimum window of 5 minutes
+                            globalMaxX - globalMinX,
+                          );
+                          final focalFraction = chartWidth > 0
+                              ? (details.localFocalPoint.dx / chartWidth).clamp(0.0, 1.0)
+                              : 0.5;
+                          final focalTimestamp = _baseScaleMinX + (focalFraction * baseRange);
+                          var newMin = focalTimestamp - (focalFraction * newRange);
+                          var newMax = newMin + newRange;
+
+                          if (newMin < globalMinX) {
+                            newMin = globalMinX;
+                            newMax = (newMin + newRange).clamp(globalMinX, globalMaxX);
+                          }
+                          if (newMax > globalMaxX) {
+                            newMax = globalMaxX;
+                            newMin = (newMax - newRange).clamp(globalMinX, globalMaxX);
+                          }
+                          setState(() {
+                            _visibleMinX = newMin;
+                            _visibleMaxX = newMax;
+                          });
+                        }
+                        _lastFocalPoint = details.localFocalPoint;
+                      },
+                      child: LineChart(
                 LineChartData(
                   minX: minX,
                   maxX: maxX,
@@ -476,11 +515,11 @@ class _UnboundClientActivityChartState extends State<UnboundClientActivityChart>
                       },
                     ),
                   ),
+                  ),
                 ),
-              ),
-            );
-          },
-        ),
+              )));
+            },
+          ),
       ),
     ),
       ],

@@ -49,6 +49,7 @@ class UnboundOverviewTab extends StatelessWidget {
             isLogarithmic: viewModel.isRollingLogarithmic,
             onDurationChanged: viewModel.setRollingDurationHours,
             onLogarithmicChanged: viewModel.toggleRollingLogarithmic,
+            notifier: viewModel,
           ),
           const SizedBox(height: AppConstants.standardPadding),
           UnboundClientActivityChart(
@@ -58,6 +59,7 @@ class UnboundOverviewTab extends StatelessWidget {
             onDurationChanged: viewModel.setClientDurationHours,
             onLogarithmicChanged: viewModel.toggleClientLogarithmic,
             onClientSpotTapped: onClientFilterSelected,
+            notifier: viewModel,
           ),
           const SizedBox(height: AppConstants.standardPadding),
           UnboundDomainsSection(

@@ -53,6 +53,8 @@ class _InterfaceTotalsChartState extends State<InterfaceTotalsChart> {
   double? _visibleMaxX;
   double _baseScaleMinX = 0;
   double _baseScaleMaxX = 0;
+  Offset _lastFocalPoint = Offset.zero;
+  int _activePointerCount = 0;
 
   // Fixed colour palette cycling through distinct hues per interface.
   static const List<Color> _palette = [
@@ -288,53 +290,78 @@ class _InterfaceTotalsChartState extends State<InterfaceTotalsChart> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final chartWidth = constraints.maxWidth;
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onScaleStart: (details) {
-            _baseScaleMinX = _visibleMinX ?? globalMinX;
-            _baseScaleMaxX = _visibleMaxX ?? globalMaxX;
+        return Listener(
+          onPointerDown: (event) {
+            _activePointerCount++;
+            _lastFocalPoint = event.localPosition;
           },
-          onScaleUpdate: (details) {
-            if (details.pointerCount >= 2 && details.scale != 1.0) {
-              final baseRange = _baseScaleMaxX - _baseScaleMinX;
-              final newRange = (baseRange / details.scale).clamp(
-                60.0, // Minimum window of 1 minute
-                globalMaxX - globalMinX,
-              );
-              final focalFraction = chartWidth > 0
-                  ? (details.localFocalPoint.dx / chartWidth).clamp(0.0, 1.0)
-                  : 0.5;
-              final focalTimestamp = _baseScaleMinX + (focalFraction * baseRange);
-              var newMin = focalTimestamp - (focalFraction * newRange);
-              var newMax = newMin + newRange;
-
-              if (newMin < globalMinX) {
-                newMin = globalMinX;
-                newMax = (newMin + newRange).clamp(globalMinX, globalMaxX);
+          onPointerUp: (event) {
+            _activePointerCount = (_activePointerCount - 1).clamp(0, 5);
+          },
+          onPointerCancel: (event) {
+            _activePointerCount = (_activePointerCount - 1).clamp(0, 5);
+          },
+          onPointerMove: (event) {
+            if (isZoomed && _activePointerCount == 1) {
+              final deltaDx = event.localPosition.dx - _lastFocalPoint.dx;
+              if (deltaDx != 0) {
+                final range = maxX - minX;
+                final deltaFraction = chartWidth > 0
+                    ? -deltaDx / chartWidth
+                    : -deltaDx / 300.0;
+                final shift = deltaFraction * range;
+                var newMin = (minX + shift).clamp(globalMinX, globalMaxX - range);
+                var newMax = newMin + range;
+                setState(() {
+                  _visibleMinX = newMin;
+                  _visibleMaxX = newMax;
+                });
               }
-              if (newMax > globalMaxX) {
-                newMax = globalMaxX;
-                newMin = (newMax - newRange).clamp(globalMinX, globalMaxX);
-              }
-              setState(() {
-                _visibleMinX = newMin;
-                _visibleMaxX = newMax;
-              });
-            } else if (details.pointerCount == 1 && details.focalPointDelta.dx != 0 && isZoomed) {
-              final range = maxX - minX;
-              final deltaFraction = chartWidth > 0
-                  ? -details.focalPointDelta.dx / chartWidth
-                  : -details.focalPointDelta.dx / 300.0;
-              final shift = deltaFraction * range;
-              var newMin = (minX + shift).clamp(globalMinX, globalMaxX - range);
-              var newMax = newMin + range;
-              setState(() {
-                _visibleMinX = newMin;
-                _visibleMaxX = newMax;
-              });
             }
+            _lastFocalPoint = event.localPosition;
           },
-          child: _buildChart(context, data, ifaceOrder, minX, maxX),
+          child: GestureDetector(
+            onVerticalDragStart: isZoomed ? (_) {} : null,
+            onVerticalDragUpdate: isZoomed ? (_) {} : null,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onScaleStart: (details) {
+                _baseScaleMinX = _visibleMinX ?? globalMinX;
+                _baseScaleMaxX = _visibleMaxX ?? globalMaxX;
+                _lastFocalPoint = details.localFocalPoint;
+              },
+              onScaleUpdate: (details) {
+                if (details.pointerCount >= 2 && details.scale != 1.0) {
+                  final baseRange = _baseScaleMaxX - _baseScaleMinX;
+                  final newRange = (baseRange / details.scale).clamp(
+                    60.0, // Minimum window of 1 minute
+                    globalMaxX - globalMinX,
+                  );
+                  final focalFraction = chartWidth > 0
+                      ? (details.localFocalPoint.dx / chartWidth).clamp(0.0, 1.0)
+                      : 0.5;
+                  final focalTimestamp = _baseScaleMinX + (focalFraction * baseRange);
+                  var newMin = focalTimestamp - (focalFraction * newRange);
+                  var newMax = newMin + newRange;
+
+                  if (newMin < globalMinX) {
+                    newMin = globalMinX;
+                    newMax = (newMin + newRange).clamp(globalMinX, globalMaxX);
+                  }
+                  if (newMax > globalMaxX) {
+                    newMax = globalMaxX;
+                    newMin = (newMax - newRange).clamp(globalMinX, globalMaxX);
+                  }
+                  setState(() {
+                    _visibleMinX = newMin;
+                    _visibleMaxX = newMax;
+                  });
+                }
+                _lastFocalPoint = details.localFocalPoint;
+              },
+              child: _buildChart(context, data, ifaceOrder, minX, maxX),
+            ),
+          ),
         );
       },
     );
