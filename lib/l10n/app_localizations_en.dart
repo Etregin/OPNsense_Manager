@@ -4415,4 +4415,74 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get zoomOut => 'Zoom Out';
+
+  @override
+  String get reportingHealth => 'Health';
+
+  @override
+  String get healthTab => 'Health';
+
+  @override
+  String get healthSettingsTab => 'Settings';
+
+  @override
+  String get healthCategory => 'Category';
+
+  @override
+  String get healthSubject => 'Subject';
+
+  @override
+  String get healthGranularity => 'Granularity';
+
+  @override
+  String get healthGranularity1Min => '1 Minute';
+
+  @override
+  String get healthGranularity5Min => '5 Minutes';
+
+  @override
+  String get healthGranularity1Hour => '1 Hour';
+
+  @override
+  String get healthGranularity24Hours => '24 Hours';
+
+  @override
+  String get healthDisabledNotice =>
+      'System health reporting is currently disabled. Enable it in OPNsense under Reporting → Settings to view RRD graphs.';
+
+  @override
+  String get healthSettingsPlaceholder =>
+      'Health settings are not yet configurable from this app. Use the OPNsense web interface to adjust RRD collection settings.';
+
+  @override
+  String get healthGraphLoadError => 'Failed to load graph data';
+
+  @override
+  String get healthNoSeries => 'No series data returned for this subject.';
+
+  @override
+  String get healthEnableReporting => 'Enable Health Reporting';
+
+  @override
+  String get healthCollectedReports => 'Collected Reports';
+
+  @override
+  String get healthShowCollectedReports => 'Show Collected Reports';
+
+  @override
+  String get healthNoReports => 'No local data available.';
+
+  @override
+  String get healthResetRrdData => 'Reset RRD Data';
+
+  @override
+  String get healthResetConfirmTitle => 'Reset RRD Graphs';
+
+  @override
+  String get healthResetConfirmMessage =>
+      'Do you really want to reset the RRD graphs? This will erase all graph data.';
+
+  @override
+  String get healthDeleteReportConfirmMessage =>
+      'Delete this collected report? The graph data for this entry will be lost.';
 }

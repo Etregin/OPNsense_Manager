@@ -4401,4 +4401,74 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get zoomOut => 'تصغير';
+
+  @override
+  String get reportingHealth => 'الصحة';
+
+  @override
+  String get healthTab => 'الصحة';
+
+  @override
+  String get healthSettingsTab => 'الإعدادات';
+
+  @override
+  String get healthCategory => 'الفئة';
+
+  @override
+  String get healthSubject => 'الموضوع';
+
+  @override
+  String get healthGranularity => 'الدقة الزمنية';
+
+  @override
+  String get healthGranularity1Min => 'دقيقة واحدة';
+
+  @override
+  String get healthGranularity5Min => '5 دقائق';
+
+  @override
+  String get healthGranularity1Hour => 'ساعة واحدة';
+
+  @override
+  String get healthGranularity24Hours => '24 ساعة';
+
+  @override
+  String get healthDisabledNotice =>
+      'تقارير صحة النظام معطّلة حاليًا. فعّلها في OPNsense ضمن التقارير ← الإعدادات لعرض الرسوم البيانية.';
+
+  @override
+  String get healthSettingsPlaceholder =>
+      'إعدادات الصحة غير قابلة للتكوين من هذا التطبيق بعد. استخدم واجهة الويب الخاصة بـ OPNsense لضبط إعدادات جمع بيانات RRD.';
+
+  @override
+  String get healthGraphLoadError => 'فشل تحميل بيانات الرسم البياني';
+
+  @override
+  String get healthNoSeries => 'لم يتم إرجاع بيانات سلاسل لهذا الموضوع.';
+
+  @override
+  String get healthEnableReporting => 'تفعيل تقارير الصحة';
+
+  @override
+  String get healthCollectedReports => 'التقارير المجمّعة';
+
+  @override
+  String get healthShowCollectedReports => 'عرض التقارير المجمّعة';
+
+  @override
+  String get healthNoReports => 'لا توجد بيانات محلية متاحة.';
+
+  @override
+  String get healthResetRrdData => 'إعادة ضبط بيانات RRD';
+
+  @override
+  String get healthResetConfirmTitle => 'إعادة ضبط رسوم RRD البيانية';
+
+  @override
+  String get healthResetConfirmMessage =>
+      'هل تريد حقًا إعادة ضبط رسوم RRD البيانية؟ سيؤدي ذلك إلى مسح جميع بيانات الرسوم البيانية.';
+
+  @override
+  String get healthDeleteReportConfirmMessage =>
+      'حذف هذا التقرير المجمّع؟ ستُفقد بيانات الرسم البياني لهذا الإدخال.';
 }

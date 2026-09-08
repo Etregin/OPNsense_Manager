@@ -4467,4 +4467,75 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get zoomOut => 'Alejar';
+
+  @override
+  String get reportingHealth => 'Salud';
+
+  @override
+  String get healthTab => 'Salud';
+
+  @override
+  String get healthSettingsTab => 'Configuración';
+
+  @override
+  String get healthCategory => 'Categoría';
+
+  @override
+  String get healthSubject => 'Asunto';
+
+  @override
+  String get healthGranularity => 'Granularidad';
+
+  @override
+  String get healthGranularity1Min => '1 Minuto';
+
+  @override
+  String get healthGranularity5Min => '5 Minutos';
+
+  @override
+  String get healthGranularity1Hour => '1 Hora';
+
+  @override
+  String get healthGranularity24Hours => '24 Horas';
+
+  @override
+  String get healthDisabledNotice =>
+      'Los informes de salud del sistema están desactivados. Actívelos en OPNsense bajo Informes → Configuración para ver los gráficos RRD.';
+
+  @override
+  String get healthSettingsPlaceholder =>
+      'La configuración de salud aún no se puede configurar desde esta aplicación. Use la interfaz web de OPNsense para ajustar la configuración de recopilación RRD.';
+
+  @override
+  String get healthGraphLoadError => 'Error al cargar los datos del gráfico';
+
+  @override
+  String get healthNoSeries =>
+      'No se devolvieron datos de series para este asunto.';
+
+  @override
+  String get healthEnableReporting => 'Activar informes de salud';
+
+  @override
+  String get healthCollectedReports => 'Informes recopilados';
+
+  @override
+  String get healthShowCollectedReports => 'Mostrar informes recopilados';
+
+  @override
+  String get healthNoReports => 'No hay datos locales disponibles.';
+
+  @override
+  String get healthResetRrdData => 'Restablecer datos RRD';
+
+  @override
+  String get healthResetConfirmTitle => 'Restablecer gráficos RRD';
+
+  @override
+  String get healthResetConfirmMessage =>
+      '¿Realmente desea restablecer los gráficos RRD? Esto borrará todos los datos de los gráficos.';
+
+  @override
+  String get healthDeleteReportConfirmMessage =>
+      '¿Eliminar este informe recopilado? Los datos del gráfico para esta entrada se perderán.';
 }

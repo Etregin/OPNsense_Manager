@@ -4467,4 +4467,75 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get zoomOut => 'Verkleinern';
+
+  @override
+  String get reportingHealth => 'Gesundheit';
+
+  @override
+  String get healthTab => 'Gesundheit';
+
+  @override
+  String get healthSettingsTab => 'Einstellungen';
+
+  @override
+  String get healthCategory => 'Kategorie';
+
+  @override
+  String get healthSubject => 'Betreff';
+
+  @override
+  String get healthGranularity => 'Granularität';
+
+  @override
+  String get healthGranularity1Min => '1 Minute';
+
+  @override
+  String get healthGranularity5Min => '5 Minuten';
+
+  @override
+  String get healthGranularity1Hour => '1 Stunde';
+
+  @override
+  String get healthGranularity24Hours => '24 Stunden';
+
+  @override
+  String get healthDisabledNotice =>
+      'Die Systemzustandsberichterstattung ist derzeit deaktiviert. Aktivieren Sie sie in OPNsense unter Berichterstattung → Einstellungen, um RRD-Graphen anzuzeigen.';
+
+  @override
+  String get healthSettingsPlaceholder =>
+      'Gesundheitseinstellungen können in dieser App noch nicht konfiguriert werden. Verwenden Sie die OPNsense-Weboberfläche, um die RRD-Sammeleinstellungen anzupassen.';
+
+  @override
+  String get healthGraphLoadError => 'Fehler beim Laden der Graphdaten';
+
+  @override
+  String get healthNoSeries =>
+      'Keine Reihendaten für dieses Thema zurückgegeben.';
+
+  @override
+  String get healthEnableReporting => 'Gesundheitsberichterstattung aktivieren';
+
+  @override
+  String get healthCollectedReports => 'Gesammelte Berichte';
+
+  @override
+  String get healthShowCollectedReports => 'Gesammelte Berichte anzeigen';
+
+  @override
+  String get healthNoReports => 'Keine lokalen Daten verfügbar.';
+
+  @override
+  String get healthResetRrdData => 'RRD-Daten zurücksetzen';
+
+  @override
+  String get healthResetConfirmTitle => 'RRD-Graphen zurücksetzen';
+
+  @override
+  String get healthResetConfirmMessage =>
+      'Möchten Sie die RRD-Graphen wirklich zurücksetzen? Dadurch werden alle Graphdaten gelöscht.';
+
+  @override
+  String get healthDeleteReportConfirmMessage =>
+      'Diesen gesammelten Bericht löschen? Die Graphdaten für diesen Eintrag gehen verloren.';
 }

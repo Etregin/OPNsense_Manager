@@ -4465,4 +4465,76 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get zoomOut => 'Zoom arrière';
+
+  @override
+  String get reportingHealth => 'Santé';
+
+  @override
+  String get healthTab => 'Santé';
+
+  @override
+  String get healthSettingsTab => 'Paramètres';
+
+  @override
+  String get healthCategory => 'Catégorie';
+
+  @override
+  String get healthSubject => 'Sujet';
+
+  @override
+  String get healthGranularity => 'Granularité';
+
+  @override
+  String get healthGranularity1Min => '1 Minute';
+
+  @override
+  String get healthGranularity5Min => '5 Minutes';
+
+  @override
+  String get healthGranularity1Hour => '1 Heure';
+
+  @override
+  String get healthGranularity24Hours => '24 Heures';
+
+  @override
+  String get healthDisabledNotice =>
+      'Les rapports d\'état du système sont actuellement désactivés. Activez-les dans OPNsense sous Rapports → Paramètres pour afficher les graphiques RRD.';
+
+  @override
+  String get healthSettingsPlaceholder =>
+      'Les paramètres de santé ne sont pas encore configurables depuis cette application. Utilisez l\'interface web OPNsense pour ajuster les paramètres de collecte RRD.';
+
+  @override
+  String get healthGraphLoadError =>
+      'Échec du chargement des données du graphique';
+
+  @override
+  String get healthNoSeries =>
+      'Aucune donnée de série retournée pour ce sujet.';
+
+  @override
+  String get healthEnableReporting => 'Activer les rapports de santé';
+
+  @override
+  String get healthCollectedReports => 'Rapports collectés';
+
+  @override
+  String get healthShowCollectedReports => 'Afficher les rapports collectés';
+
+  @override
+  String get healthNoReports => 'Aucune donnée locale disponible.';
+
+  @override
+  String get healthResetRrdData => 'Réinitialiser les données RRD';
+
+  @override
+  String get healthResetConfirmTitle => 'Réinitialiser les graphiques RRD';
+
+  @override
+  String get healthResetConfirmMessage =>
+      'Voulez-vous vraiment réinitialiser les graphiques RRD ? Cela effacera toutes les données des graphiques.';
+
+  @override
+  String get healthDeleteReportConfirmMessage =>
+      'Supprimer ce rapport collecté ? Les données du graphique pour cette entrée seront perdues.';
 }

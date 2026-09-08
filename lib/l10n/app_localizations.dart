@@ -7987,6 +7987,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Zoom Out'**
   String get zoomOut;
+
+  /// No description provided for @reportingHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Health'**
+  String get reportingHealth;
+
+  /// No description provided for @healthTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Health'**
+  String get healthTab;
+
+  /// No description provided for @healthSettingsTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get healthSettingsTab;
+
+  /// No description provided for @healthCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get healthCategory;
+
+  /// No description provided for @healthSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject'**
+  String get healthSubject;
+
+  /// No description provided for @healthGranularity.
+  ///
+  /// In en, this message translates to:
+  /// **'Granularity'**
+  String get healthGranularity;
+
+  /// No description provided for @healthGranularity1Min.
+  ///
+  /// In en, this message translates to:
+  /// **'1 Minute'**
+  String get healthGranularity1Min;
+
+  /// No description provided for @healthGranularity5Min.
+  ///
+  /// In en, this message translates to:
+  /// **'5 Minutes'**
+  String get healthGranularity5Min;
+
+  /// No description provided for @healthGranularity1Hour.
+  ///
+  /// In en, this message translates to:
+  /// **'1 Hour'**
+  String get healthGranularity1Hour;
+
+  /// No description provided for @healthGranularity24Hours.
+  ///
+  /// In en, this message translates to:
+  /// **'24 Hours'**
+  String get healthGranularity24Hours;
+
+  /// No description provided for @healthDisabledNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'System health reporting is currently disabled. Enable it in OPNsense under Reporting → Settings to view RRD graphs.'**
+  String get healthDisabledNotice;
+
+  /// No description provided for @healthSettingsPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Health settings are not yet configurable from this app. Use the OPNsense web interface to adjust RRD collection settings.'**
+  String get healthSettingsPlaceholder;
+
+  /// No description provided for @healthGraphLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load graph data'**
+  String get healthGraphLoadError;
+
+  /// No description provided for @healthNoSeries.
+  ///
+  /// In en, this message translates to:
+  /// **'No series data returned for this subject.'**
+  String get healthNoSeries;
+
+  /// No description provided for @healthEnableReporting.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Health Reporting'**
+  String get healthEnableReporting;
+
+  /// No description provided for @healthCollectedReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Collected Reports'**
+  String get healthCollectedReports;
+
+  /// No description provided for @healthShowCollectedReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Collected Reports'**
+  String get healthShowCollectedReports;
+
+  /// No description provided for @healthNoReports.
+  ///
+  /// In en, this message translates to:
+  /// **'No local data available.'**
+  String get healthNoReports;
+
+  /// No description provided for @healthResetRrdData.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset RRD Data'**
+  String get healthResetRrdData;
+
+  /// No description provided for @healthResetConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset RRD Graphs'**
+  String get healthResetConfirmTitle;
+
+  /// No description provided for @healthResetConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you really want to reset the RRD graphs? This will erase all graph data.'**
+  String get healthResetConfirmMessage;
+
+  /// No description provided for @healthDeleteReportConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this collected report? The graph data for this entry will be lost.'**
+  String get healthDeleteReportConfirmMessage;
 }
 
 class _AppLocalizationsDelegate
