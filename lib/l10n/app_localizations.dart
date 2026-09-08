@@ -1598,12 +1598,6 @@ abstract class AppLocalizations {
   /// **'Disable Routes'**
   String get disableRoutes;
 
-  /// No description provided for @disableRoutesDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Prevent automatic route installation'**
-  String get disableRoutesDescription;
-
   /// No description provided for @disableRule.
   ///
   /// In en, this message translates to:
@@ -3110,12 +3104,6 @@ abstract class AppLocalizations {
   /// **'IP Addresses'**
   String get ipAddresses;
 
-  /// No description provided for @ipAny.
-  ///
-  /// In en, this message translates to:
-  /// **'Any'**
-  String get ipAny;
-
   /// No description provided for @ipProtocol.
   ///
   /// In en, this message translates to:
@@ -3422,12 +3410,6 @@ abstract class AppLocalizations {
   /// **'5 minutes'**
   String get resolution5min;
 
-  /// No description provided for @resolution1hr.
-  ///
-  /// In en, this message translates to:
-  /// **'1 hour'**
-  String get resolution1hr;
-
   /// No description provided for @resolution24hr.
   ///
   /// In en, this message translates to:
@@ -3512,12 +3494,6 @@ abstract class AppLocalizations {
   /// **'Details'**
   String get tabDetails;
 
-  /// No description provided for @tabExport.
-  ///
-  /// In en, this message translates to:
-  /// **'Export'**
-  String get tabExport;
-
   /// No description provided for @collection.
   ///
   /// In en, this message translates to:
@@ -3566,41 +3542,11 @@ abstract class AppLocalizations {
   /// **'Date To'**
   String get dateTo;
 
-  /// No description provided for @dstPort.
-  ///
-  /// In en, this message translates to:
-  /// **'Destination Port'**
-  String get dstPort;
-
-  /// No description provided for @dstAddress.
-  ///
-  /// In en, this message translates to:
-  /// **'Destination Address'**
-  String get dstAddress;
-
-  /// No description provided for @srcAddress.
-  ///
-  /// In en, this message translates to:
-  /// **'Source Address'**
-  String get srcAddress;
-
   /// No description provided for @serviceColumn.
   ///
   /// In en, this message translates to:
   /// **'Service'**
   String get serviceColumn;
-
-  /// No description provided for @sourceColumn.
-  ///
-  /// In en, this message translates to:
-  /// **'Source'**
-  String get sourceColumn;
-
-  /// No description provided for @destinationColumn.
-  ///
-  /// In en, this message translates to:
-  /// **'Destination'**
-  String get destinationColumn;
 
   /// No description provided for @bytesColumn.
   ///
@@ -5558,23 +5504,11 @@ abstract class AppLocalizations {
   /// **'Severity'**
   String get severity;
 
-  /// No description provided for @severityEmergency.
-  ///
-  /// In en, this message translates to:
-  /// **'Emergency'**
-  String get severityEmergency;
-
   /// No description provided for @severityEmergencyShort.
   ///
   /// In en, this message translates to:
   /// **'Emerg'**
   String get severityEmergencyShort;
-
-  /// No description provided for @severityError.
-  ///
-  /// In en, this message translates to:
-  /// **'Error'**
-  String get severityError;
 
   /// No description provided for @severityInformational.
   ///
@@ -5983,12 +5917,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tailscale Subnets'**
   String get tailscaleSubnets;
-
-  /// Label for Tailscale version information
-  ///
-  /// In en, this message translates to:
-  /// **'Version'**
-  String get tailscaleVersion;
 
   /// No description provided for @tapPlusButtonToCreateFirstInstance.
   ///
@@ -6860,12 +6788,6 @@ abstract class AppLocalizations {
   /// **'Organisation'**
   String get organisationSection;
 
-  /// No description provided for @interfaceSection.
-  ///
-  /// In en, this message translates to:
-  /// **'Interface'**
-  String get interfaceSection;
-
   /// No description provided for @filterSection.
   ///
   /// In en, this message translates to:
@@ -6920,12 +6842,6 @@ abstract class AppLocalizations {
   /// **'Enable this rule'**
   String get enableThisRule;
 
-  /// No description provided for @categoriesLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Categories'**
-  String get categoriesLabel;
-
   /// No description provided for @categoriesHint.
   ///
   /// In en, this message translates to:
@@ -6962,12 +6878,6 @@ abstract class AppLocalizations {
   /// **'Direction of the traffic. The default policy is to filter inbound traffic.'**
   String get directionHelp;
 
-  /// No description provided for @fwVersionLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Version'**
-  String get fwVersionLabel;
-
   /// No description provided for @icmpTypeLabel.
   ///
   /// In en, this message translates to:
@@ -6998,23 +6908,11 @@ abstract class AppLocalizations {
   /// **'Log packets that are handled by this rule'**
   String get logHelp;
 
-  /// No description provided for @fwGatewayLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Gateway'**
-  String get fwGatewayLabel;
-
   /// No description provided for @gatewayHelp.
   ///
   /// In en, this message translates to:
   /// **'Leave as default to use the system routing table. Or choose a gateway to utilize policy based routing.'**
   String get gatewayHelp;
-
-  /// No description provided for @sequenceLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Sequence'**
-  String get sequenceLabel;
 
   /// No description provided for @sequenceHelp.
   ///
@@ -7045,12 +6943,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This allows packets with IP options to pass.'**
   String get allowOptionsHelp;
-
-  /// No description provided for @tcpFlagsLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'TCP Flags'**
-  String get tcpFlagsLabel;
 
   /// No description provided for @tcpFlagsOutLabel.
   ///
@@ -7358,12 +7250,6 @@ abstract class AppLocalizations {
   /// **'Error saving alias: {error}'**
   String errorSavingAlias(String error);
 
-  /// No description provided for @aliasNameLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Name'**
-  String get aliasNameLabel;
-
   /// No description provided for @aliasNameHint.
   ///
   /// In en, this message translates to:
@@ -7375,12 +7261,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Name must start with a letter or underscore, max 32 characters, alphanumeric and underscores only'**
   String get aliasNameValidation;
-
-  /// No description provided for @aliasTypeLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Type'**
-  String get aliasTypeLabel;
 
   /// No description provided for @refreshFrequencyLabel.
   ///
@@ -7477,12 +7357,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select VPN Groups'**
   String get selectVpnGroupsLabel;
-
-  /// No description provided for @protoLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'IP Version'**
-  String get protoLabel;
 
   /// No description provided for @protoHint.
   ///
@@ -7610,12 +7484,6 @@ abstract class AppLocalizations {
   /// **'WAN Interfaces'**
   String get netflowWanInterfaces;
 
-  /// No description provided for @netflowVersion.
-  ///
-  /// In en, this message translates to:
-  /// **'Version'**
-  String get netflowVersion;
-
   /// No description provided for @netflowDestinations.
   ///
   /// In en, this message translates to:
@@ -7670,12 +7538,6 @@ abstract class AppLocalizations {
   /// **'Flow'**
   String get netflowCacheFlow;
 
-  /// No description provided for @netflowCacheInterface.
-  ///
-  /// In en, this message translates to:
-  /// **'Interface'**
-  String get netflowCacheInterface;
-
   /// No description provided for @netflowCachePackets.
   ///
   /// In en, this message translates to:
@@ -7687,12 +7549,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sources'**
   String get netflowCacheSrcIps;
-
-  /// No description provided for @netflowCacheDstIps.
-  ///
-  /// In en, this message translates to:
-  /// **'Destinations'**
-  String get netflowCacheDstIps;
 
   /// No description provided for @remove.
   ///
@@ -7754,18 +7610,6 @@ abstract class AppLocalizations {
   /// **'Overview'**
   String get unboundOverview;
 
-  /// No description provided for @unboundDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'Details'**
-  String get unboundDetails;
-
-  /// No description provided for @unboundSettings.
-  ///
-  /// In en, this message translates to:
-  /// **'Settings'**
-  String get unboundSettings;
-
   /// No description provided for @enableUnboundStatistics.
   ///
   /// In en, this message translates to:
@@ -7807,12 +7651,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Starting from {date}'**
   String startingFrom(String date);
-
-  /// No description provided for @totalQueries.
-  ///
-  /// In en, this message translates to:
-  /// **'Total'**
-  String get totalQueries;
 
   /// No description provided for @resolvedQueries.
   ///
@@ -7898,18 +7736,6 @@ abstract class AppLocalizations {
   /// **'{hours} hours'**
   String hoursDuration(int hours);
 
-  /// No description provided for @oneHourDuration.
-  ///
-  /// In en, this message translates to:
-  /// **'1 hour'**
-  String get oneHourDuration;
-
-  /// No description provided for @unboundQueryType.
-  ///
-  /// In en, this message translates to:
-  /// **'Type'**
-  String get unboundQueryType;
-
   /// No description provided for @unboundFamily.
   ///
   /// In en, this message translates to:
@@ -7993,18 +7819,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Health'**
   String get reportingHealth;
-
-  /// No description provided for @healthTab.
-  ///
-  /// In en, this message translates to:
-  /// **'Health'**
-  String get healthTab;
-
-  /// No description provided for @healthSettingsTab.
-  ///
-  /// In en, this message translates to:
-  /// **'Settings'**
-  String get healthSettingsTab;
 
   /// No description provided for @healthCategory.
   ///

@@ -835,9 +835,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get disableRoutes => 'تعطيل المسارات';
 
   @override
-  String get disableRoutesDescription => 'منع تثبيت المسارات التلقائي';
-
-  @override
   String get disableRule => 'تعطيل القاعدة';
 
   @override
@@ -1716,9 +1713,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ipAddresses => 'عناوين IP';
 
   @override
-  String get ipAny => 'Any';
-
-  @override
   String get ipProtocol => 'IP Version';
 
   @override
@@ -1881,9 +1875,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get resolution5min => '5 دقائق';
 
   @override
-  String get resolution1hr => 'ساعة واحدة';
-
-  @override
   String get resolution24hr => '24 ساعة';
 
   @override
@@ -1944,9 +1935,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tabDetails => 'التفاصيل';
 
   @override
-  String get tabExport => 'تصدير';
-
-  @override
   String get collection => 'المجموعة';
 
   @override
@@ -1973,22 +1961,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dateTo => 'التاريخ إلى';
 
   @override
-  String get dstPort => 'المنفذ الوجهة';
-
-  @override
-  String get dstAddress => 'عنوان الوجهة';
-
-  @override
-  String get srcAddress => 'عنوان المصدر';
-
-  @override
   String get serviceColumn => 'الخدمة';
-
-  @override
-  String get sourceColumn => 'المصدر';
-
-  @override
-  String get destinationColumn => 'الوجهة';
 
   @override
   String get bytesColumn => 'البايتات';
@@ -3042,13 +3015,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get severity => 'الخطورة';
 
   @override
-  String get severityEmergency => 'طوارئ';
-
-  @override
   String get severityEmergencyShort => 'طوارئ';
-
-  @override
-  String get severityError => 'خطأ';
 
   @override
   String get severityInformational => 'معلوماتي';
@@ -3293,9 +3260,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tailscaleSubnets => 'شبكات Tailscale الفرعية';
-
-  @override
-  String get tailscaleVersion => 'الإصدار';
 
   @override
   String get tapPlusButtonToCreateFirstInstance =>
@@ -3792,9 +3756,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get organisationSection => 'Organisation';
 
   @override
-  String get interfaceSection => 'Interface';
-
-  @override
   String get filterSection => 'Filter';
 
   @override
@@ -3822,9 +3783,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get enableThisRule => 'Enable this rule';
 
   @override
-  String get categoriesLabel => 'Categories';
-
-  @override
   String get categoriesHint =>
       'For grouping purposes you may select multiple groups here.';
 
@@ -3847,9 +3805,6 @@ class AppLocalizationsAr extends AppLocalizations {
       'Direction of the traffic. The default policy is to filter inbound traffic.';
 
   @override
-  String get fwVersionLabel => 'Version';
-
-  @override
   String get icmpTypeLabel => 'ICMP Type';
 
   @override
@@ -3867,14 +3822,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get logHelp => 'Log packets that are handled by this rule';
 
   @override
-  String get fwGatewayLabel => 'Gateway';
-
-  @override
   String get gatewayHelp =>
       'Leave as default to use the system routing table. Or choose a gateway to utilize policy based routing.';
-
-  @override
-  String get sequenceLabel => 'Sequence';
 
   @override
   String get sequenceHelp => 'The order in which rules are being processed.';
@@ -3891,9 +3840,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get allowOptionsHelp => 'This allows packets with IP options to pass.';
-
-  @override
-  String get tcpFlagsLabel => 'TCP Flags';
 
   @override
   String get tcpFlagsOutLabel => 'TCP Flags [out of]';
@@ -4063,17 +4009,11 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get aliasNameLabel => 'Name';
-
-  @override
   String get aliasNameHint => 'Letters, digits, and underscores only';
 
   @override
   String get aliasNameValidation =>
       'Name must start with a letter or underscore, max 32 characters, alphanumeric and underscores only';
-
-  @override
-  String get aliasTypeLabel => 'Type';
 
   @override
   String get refreshFrequencyLabel => 'Refresh Frequency';
@@ -4127,9 +4067,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get selectVpnGroupsLabel => 'Select VPN Groups';
-
-  @override
-  String get protoLabel => 'IP Version';
 
   @override
   String get protoHint => 'Filter by IP protocol version';
@@ -4199,9 +4136,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get netflowWanInterfaces => 'واجهات WAN';
 
   @override
-  String get netflowVersion => 'الإصدار';
-
-  @override
   String get netflowDestinations => 'الوجهات';
 
   @override
@@ -4230,16 +4164,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get netflowCacheFlow => 'التدفق';
 
   @override
-  String get netflowCacheInterface => 'الواجهة';
-
-  @override
   String get netflowCachePackets => 'الحزم';
 
   @override
   String get netflowCacheSrcIps => 'المصادر';
-
-  @override
-  String get netflowCacheDstIps => 'الوجهات';
 
   @override
   String get remove => 'إزالة';
@@ -4277,12 +4205,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get unboundOverview => 'نظرة عامة';
 
   @override
-  String get unboundDetails => 'التفاصيل';
-
-  @override
-  String get unboundSettings => 'الإعدادات';
-
-  @override
   String get enableUnboundStatistics => 'تفعيل إحصائيات Unbound';
 
   @override
@@ -4308,9 +4230,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String startingFrom(String date) {
     return 'بدءاً من $date';
   }
-
-  @override
-  String get totalQueries => 'الإجمالي';
 
   @override
   String get resolvedQueries => 'تم حلها';
@@ -4358,12 +4277,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get oneHourDuration => 'ساعة واحدة';
-
-  @override
-  String get unboundQueryType => 'النوع';
-
-  @override
   String get unboundFamily => 'العائلة';
 
   @override
@@ -4404,12 +4317,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reportingHealth => 'الصحة';
-
-  @override
-  String get healthTab => 'الصحة';
-
-  @override
-  String get healthSettingsTab => 'الإعدادات';
 
   @override
   String get healthCategory => 'الفئة';

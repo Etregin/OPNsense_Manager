@@ -857,10 +857,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get disableRoutes => 'Routen deaktivieren';
 
   @override
-  String get disableRoutesDescription =>
-      'Automatische Routeninstallation verhindern';
-
-  @override
   String get disableRule => 'Regel deaktivieren';
 
   @override
@@ -1751,9 +1747,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get ipAddresses => 'IP-Adressen';
 
   @override
-  String get ipAny => 'Any';
-
-  @override
   String get ipProtocol => 'IP Version';
 
   @override
@@ -1917,9 +1910,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get resolution5min => '5 Minuten';
 
   @override
-  String get resolution1hr => '1 Stunde';
-
-  @override
   String get resolution24hr => '24 Stunden';
 
   @override
@@ -1980,9 +1970,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get tabDetails => 'Details';
 
   @override
-  String get tabExport => 'Exportieren';
-
-  @override
   String get collection => 'Sammlung';
 
   @override
@@ -2009,22 +1996,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dateTo => 'Datum bis';
 
   @override
-  String get dstPort => 'Zielport';
-
-  @override
-  String get dstAddress => 'Zieladresse';
-
-  @override
-  String get srcAddress => 'Quelladresse';
-
-  @override
   String get serviceColumn => 'Dienst';
-
-  @override
-  String get sourceColumn => 'Quelle';
-
-  @override
-  String get destinationColumn => 'Ziel';
 
   @override
   String get bytesColumn => 'Bytes';
@@ -3104,13 +3076,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get severity => 'Schweregrad';
 
   @override
-  String get severityEmergency => 'Notfall';
-
-  @override
   String get severityEmergencyShort => 'Notf';
-
-  @override
-  String get severityError => 'Fehler';
 
   @override
   String get severityInformational => 'Informativ';
@@ -3355,9 +3321,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tailscaleSubnets => 'Tailscale-Subnetze';
-
-  @override
-  String get tailscaleVersion => 'Version';
 
   @override
   String get tapPlusButtonToCreateFirstInstance =>
@@ -3857,9 +3820,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get organisationSection => 'Organisation';
 
   @override
-  String get interfaceSection => 'Interface';
-
-  @override
   String get filterSection => 'Filter';
 
   @override
@@ -3887,9 +3847,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get enableThisRule => 'Enable this rule';
 
   @override
-  String get categoriesLabel => 'Categories';
-
-  @override
   String get categoriesHint =>
       'For grouping purposes you may select multiple groups here.';
 
@@ -3912,9 +3869,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Direction of the traffic. The default policy is to filter inbound traffic.';
 
   @override
-  String get fwVersionLabel => 'Version';
-
-  @override
   String get icmpTypeLabel => 'ICMP Type';
 
   @override
@@ -3932,14 +3886,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get logHelp => 'Log packets that are handled by this rule';
 
   @override
-  String get fwGatewayLabel => 'Gateway';
-
-  @override
   String get gatewayHelp =>
       'Leave as default to use the system routing table. Or choose a gateway to utilize policy based routing.';
-
-  @override
-  String get sequenceLabel => 'Sequence';
 
   @override
   String get sequenceHelp => 'The order in which rules are being processed.';
@@ -3956,9 +3904,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get allowOptionsHelp => 'This allows packets with IP options to pass.';
-
-  @override
-  String get tcpFlagsLabel => 'TCP Flags';
 
   @override
   String get tcpFlagsOutLabel => 'TCP Flags [out of]';
@@ -4128,17 +4073,11 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get aliasNameLabel => 'Name';
-
-  @override
   String get aliasNameHint => 'Letters, digits, and underscores only';
 
   @override
   String get aliasNameValidation =>
       'Name must start with a letter or underscore, max 32 characters, alphanumeric and underscores only';
-
-  @override
-  String get aliasTypeLabel => 'Type';
 
   @override
   String get refreshFrequencyLabel => 'Refresh Frequency';
@@ -4192,9 +4131,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get selectVpnGroupsLabel => 'Select VPN Groups';
-
-  @override
-  String get protoLabel => 'IP Version';
 
   @override
   String get protoHint => 'Filter by IP protocol version';
@@ -4264,9 +4200,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get netflowWanInterfaces => 'WAN-Interfaces';
 
   @override
-  String get netflowVersion => 'Version';
-
-  @override
   String get netflowDestinations => 'Ziele';
 
   @override
@@ -4295,16 +4228,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get netflowCacheFlow => 'Flow';
 
   @override
-  String get netflowCacheInterface => 'Interface';
-
-  @override
   String get netflowCachePackets => 'Pakete';
 
   @override
   String get netflowCacheSrcIps => 'Quellen';
-
-  @override
-  String get netflowCacheDstIps => 'Ziele';
 
   @override
   String get remove => 'Entfernen';
@@ -4343,12 +4270,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get unboundOverview => 'Übersicht';
 
   @override
-  String get unboundDetails => 'Details';
-
-  @override
-  String get unboundSettings => 'Einstellungen';
-
-  @override
   String get enableUnboundStatistics => 'Unbound-Statistiken aktivieren';
 
   @override
@@ -4373,9 +4294,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String startingFrom(String date) {
     return 'Beginnend ab $date';
   }
-
-  @override
-  String get totalQueries => 'Gesamt';
 
   @override
   String get resolvedQueries => 'Aufgelöst';
@@ -4424,12 +4342,6 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get oneHourDuration => '1 Stunde';
-
-  @override
-  String get unboundQueryType => 'Typ';
-
-  @override
   String get unboundFamily => 'Familie';
 
   @override
@@ -4470,12 +4382,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get reportingHealth => 'Gesundheit';
-
-  @override
-  String get healthTab => 'Gesundheit';
-
-  @override
-  String get healthSettingsTab => 'Einstellungen';
 
   @override
   String get healthCategory => 'Kategorie';

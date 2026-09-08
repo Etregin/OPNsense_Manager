@@ -65,7 +65,7 @@ class UnboundMetricsHeader extends StatelessWidget {
           children: [
             Expanded(
               child: _MetricCard(
-                title: l10n.totalQueries,
+                title: l10n.total,
                 value: totals != null ? Formatters.formatNumber(totals!.total) : '—',
                 color: AppColors.primary,
                 icon: Icons.query_stats,

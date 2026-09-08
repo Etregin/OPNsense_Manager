@@ -192,7 +192,7 @@ class _InsightDetailsTabState extends State<InsightDetailsTab> {
             TextField(
               controller: _dstPortCtrl,
               decoration: InputDecoration(
-                labelText: '(dst) ${l10n.dstPort}',
+                labelText: '(dst) ${l10n.destinationPort}',
                 border: const OutlineInputBorder(),
                 isDense: true,
               ),
@@ -207,7 +207,7 @@ class _InsightDetailsTabState extends State<InsightDetailsTab> {
             TextField(
               controller: _dstAddrCtrl,
               decoration: InputDecoration(
-                labelText: '(dst) ${l10n.dstAddress}',
+                labelText: '(dst) ${l10n.destinationAddress}',
                 border: const OutlineInputBorder(),
                 isDense: true,
               ),
@@ -222,7 +222,7 @@ class _InsightDetailsTabState extends State<InsightDetailsTab> {
             TextField(
               controller: _srcAddrCtrl,
               decoration: InputDecoration(
-                labelText: '(src) ${l10n.srcAddress}',
+                labelText: '(src) ${l10n.sourceAddress}',
                 border: const OutlineInputBorder(),
                 isDense: true,
               ),
@@ -286,8 +286,8 @@ class _InsightDetailsTabState extends State<InsightDetailsTab> {
         dataRowMaxHeight: 48,
         columns: [
           DataColumn(label: Text(l10n.serviceColumn)),
-          DataColumn(label: Text(l10n.sourceColumn)),
-          DataColumn(label: Text(l10n.destinationColumn)),
+          DataColumn(label: Text(l10n.source)),
+          DataColumn(label: Text(l10n.destination)),
           DataColumn(label: Text(l10n.bytesColumn), numeric: true),
           DataColumn(label: Text(l10n.lastSeenColumn)),
           DataColumn(label: Text(l10n.percentColumn), numeric: true),

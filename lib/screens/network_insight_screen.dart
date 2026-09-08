@@ -119,7 +119,7 @@ class _NetworkInsightScreenState extends State<NetworkInsightScreen>
       case 300:
         avgInterval = l10n.resolution5min;
       case 3600:
-        avgInterval = l10n.resolution1hr;
+        avgInterval = l10n.oneHour;
       default:
         avgInterval = l10n.resolution24hr;
     }
@@ -141,7 +141,7 @@ class _NetworkInsightScreenState extends State<NetworkInsightScreen>
           tabs: [
             Tab(text: l10n.tabTotals),
             Tab(text: l10n.tabDetails),
-            Tab(text: l10n.tabExport),
+            Tab(text: l10n.export),
           ],
         ),
         actions: [

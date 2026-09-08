@@ -353,7 +353,7 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
           borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
         ),
         builder: (_) => PickerSheet(
-          title: l10n.categoriesLabel,
+          title: l10n.categories,
           options: categoryOpts,
           initialSelected: _selectedCategories,
           isLoading: _viewModel.loadingFormData,
@@ -371,7 +371,7 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
       borderRadius: BorderRadius.circular(AppConstants.buttonBorderRadius),
       child: InputDecorator(
         decoration: InputDecoration(
-          labelText: l10n.categoriesLabel,
+          labelText: l10n.categories,
           prefixIcon: const Icon(Icons.label_outline),
           suffixIcon: _viewModel.loadingFormData
               ? const SizedBox(
@@ -715,7 +715,7 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
           borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
         ),
         builder: (_) => PickerSheet(
-          title: l10n.protoLabel,
+          title: l10n.ipProtocol,
           options: protoOptions,
           initialSelected: _selectedProto,
           isLoading: false,
@@ -730,7 +730,7 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
     }
 
     return FormSectionContainer(
-      title: l10n.protoLabel,
+      title: l10n.ipProtocol,
       children: [
         InkWell(
           onTap: _isLoading ? null : openPicker,
@@ -738,7 +738,7 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
               BorderRadius.circular(AppConstants.buttonBorderRadius),
           child: InputDecorator(
             decoration: InputDecoration(
-              labelText: l10n.protoLabel,
+              labelText: l10n.ipProtocol,
               prefixIcon: const Icon(Icons.filter_list),
               suffixIcon: const Icon(Icons.arrow_drop_down),
               helperText: l10n.protoHint,
@@ -1017,7 +1017,7 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
                     TextFormField(
                       controller: _nameController,
                       decoration: InputDecoration(
-                        labelText: l10n.aliasNameLabel,
+                        labelText: l10n.name,
                         hintText: l10n.aliasNameHint,
                         prefixIcon: const Icon(Icons.badge_outlined),
                         helperMaxLines: 3,
@@ -1037,7 +1037,7 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
                     DropdownButtonFormField<String>(
                       initialValue: _selectedType,
                       decoration: InputDecoration(
-                        labelText: l10n.aliasTypeLabel,
+                        labelText: l10n.type,
                         prefixIcon: const Icon(Icons.category_outlined),
                       ),
                       isExpanded: true,
@@ -1071,7 +1071,7 @@ class _FirewallAliasFormScreenState extends State<FirewallAliasFormScreen> {
 
                 // ── CATEGORIES ────────────────────────────────────────────────
                 FormSectionContainer(
-                  title: l10n.categoriesLabel,
+                  title: l10n.categories,
                   children: [_buildCategoryPickerField()],
                 ),
 

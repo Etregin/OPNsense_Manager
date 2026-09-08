@@ -395,7 +395,7 @@ class _FirewallAliasesScreenState extends State<FirewallAliasesScreen>
                             ? Theme.of(context).colorScheme.primary
                             : null,
                       ),
-                      tooltip: l10n.categoriesLabel,
+                      tooltip: l10n.categories,
                       onPressed: _showCategoryFilterDialog,
                     ),
                   ],

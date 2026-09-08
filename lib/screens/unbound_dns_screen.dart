@@ -89,11 +89,11 @@ class _UnboundDnsScreenState extends State<UnboundDnsScreen>
                 tabs: isEnabled
                     ? [
                         Tab(text: l10n.unboundOverview),
-                        Tab(text: l10n.unboundDetails),
-                        Tab(text: l10n.unboundSettings),
+                        Tab(text: l10n.tabDetails),
+                        Tab(text: l10n.settings),
                       ]
                     : [
-                        Tab(text: l10n.unboundSettings),
+                        Tab(text: l10n.settings),
                       ],
               )
             : null,

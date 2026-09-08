@@ -77,8 +77,8 @@ class _SystemHealthScreenState extends State<SystemHealthScreen>
         bottom: TabBar(
           controller: _tabController,
           tabs: [
-            Tab(text: l10n.healthTab),
-            Tab(text: l10n.healthSettingsTab),
+            Tab(text: l10n.reportingHealth),
+            Tab(text: l10n.settings),
           ],
         ),
       ),

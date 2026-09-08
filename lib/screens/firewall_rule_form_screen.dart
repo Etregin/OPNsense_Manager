@@ -1045,7 +1045,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
           borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
         ),
         builder: (_) => PickerSheet(
-          title: l10n.categoriesLabel,
+          title: l10n.categories,
           options: categoryOpts,
           initialSelected: _selectedCategories,
           isLoading: _viewModel.loadingOptions,
@@ -1063,7 +1063,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
       borderRadius: BorderRadius.circular(8),
       child: InputDecorator(
         decoration: InputDecoration(
-          labelText: l10n.categoriesLabel,
+          labelText: l10n.categories,
           prefixIcon: const Icon(Icons.label_outline),
           suffixIcon: const Icon(Icons.arrow_drop_down),
           helperText: l10n.categoriesHint,
@@ -1250,7 +1250,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
 
               // ── INTERFACE ─────────────────────────────────────────────────
               _section(
-                title: l10n.interfaceSection,
+                title: l10n.interface,
                 icon: Icons.network_check,
                 children: [
                   SwitchListTile(
@@ -1358,7 +1358,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                   DropdownButtonFormField<String>(
                     initialValue: _selectedIpProtocol,
                     decoration: InputDecoration(
-                      labelText: l10n.fwVersionLabel,
+                      labelText: l10n.versionLabel,
                       prefixIcon: const Icon(Icons.lan),
                     ),
                     items: const [
@@ -1504,7 +1504,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                 icon: Icons.route_outlined,
                 children: [
                   _buildApiDropdown(
-                    label: l10n.fwGatewayLabel,
+                    label: l10n.gateway,
                     value: _selectedGateway,
                     options: opts.gateways,
                     helperText: l10n.gatewayHelp,
@@ -1542,7 +1542,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                     TextFormField(
                       controller: _sequenceController,
                       decoration: InputDecoration(
-                        labelText: l10n.sequenceLabel,
+                        labelText: l10n.sequence,
                         prefixIcon: const Icon(Icons.format_list_numbered),
                         helperText: l10n.sequenceHelp,
                         helperMaxLines: 3,
@@ -1578,7 +1578,7 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
                     _gap(),
 
                     // TCP Flags (must be set)
-                    Text(l10n.tcpFlagsLabel,
+                    Text(l10n.tcpFlags,
                         style: Theme.of(context).textTheme.bodySmall),
                     _gap(4),
                     Wrap(

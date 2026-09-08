@@ -125,7 +125,7 @@ class _UnboundRollingChartState extends State<UnboundRollingChart> {
               items: [
                 DropdownMenuItem(value: 24, child: Text(l10n.hoursDuration(24))),
                 DropdownMenuItem(value: 12, child: Text(l10n.hoursDuration(12))),
-                DropdownMenuItem(value: 1, child: Text(l10n.oneHourDuration)),
+                DropdownMenuItem(value: 1, child: Text(l10n.oneHour)),
               ],
               onChanged: (val) {
                 if (val != null) {
@@ -271,7 +271,7 @@ class _UnboundRollingChartState extends State<UnboundRollingChart> {
           children: [
             Row(
               children: [
-                _LegendDot(color: AppColors.primary, label: l10n.totalQueries),
+                _LegendDot(color: AppColors.primary, label: l10n.total),
                 const SizedBox(width: AppConstants.standardPadding),
                 const _LegendDot(color: AppColors.success, label: 'Passed'),
                 const SizedBox(width: AppConstants.standardPadding),
@@ -457,7 +457,7 @@ class _UnboundRollingChartState extends State<UnboundRollingChart> {
 
                           String label = '';
                           if (touchedSpot.barIndex == 0) {
-                            label = l10n.totalQueries;
+                            label = l10n.total;
                           } else if (touchedSpot.barIndex == 1) {
                             label = 'Passed';
                           } else if (touchedSpot.barIndex == 2) {

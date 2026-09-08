@@ -92,7 +92,7 @@ class _UnboundDetailsTabState extends State<UnboundDetailsTab> {
       case UnboundQueryColumn.family:
         return l10n.unboundFamily;
       case UnboundQueryColumn.type:
-        return l10n.unboundQueryType;
+        return l10n.type;
       case UnboundQueryColumn.domain:
         return l10n.domain;
       case UnboundQueryColumn.action:

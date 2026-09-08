@@ -166,7 +166,7 @@ class _CaptureTab extends StatelessWidget {
 
         // ── Version (dropdown) ───────────────────────────────────────────
         _SectionCard(
-          title: l10n.netflowVersion,
+          title: l10n.versionLabel,
           child: DropdownButtonFormField<String>(
             initialValue: config.version.isEmpty
                 ? null
@@ -369,9 +369,9 @@ class _CacheTab extends StatelessWidget {
                   ),
                   columns: [
                     DataColumn(label: Text(l10n.netflowCacheFlow)),
-                    DataColumn(label: Text(l10n.netflowCacheInterface)),
+                    DataColumn(label: Text(l10n.interface)),
                     DataColumn(
-                        label: Text(l10n.netflowCacheDstIps), numeric: true),
+                        label: Text(l10n.netflowDestinations), numeric: true),
                     DataColumn(
                         label: Text(l10n.netflowCacheSrcIps), numeric: true),
                     DataColumn(

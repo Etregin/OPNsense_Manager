@@ -214,15 +214,15 @@ class _AliasDetailSheetState extends State<AliasDetailSheet> {
                 : Theme.of(context).colorScheme.error,
           ),
           if (alias.proto.isNotEmpty)
-            _Row(l10n.protoLabel, alias.proto, icon: Icons.filter_list),
+            _Row(l10n.ipProtocol, alias.proto, icon: Icons.filter_list),
           if (alias.interface.isNotEmpty && alias.interface != '')
             _Row(l10n.interface, alias.interface.toUpperCase(),
                 icon: Icons.router),
           if (alias.categoryLabels.isNotEmpty)
-            _Row(l10n.categoriesLabel, alias.categoryLabels,
+            _Row(l10n.categories, alias.categoryLabels,
                 icon: Icons.folder_outlined),
           if (alias.categoryLabels.isEmpty && alias.categories.isNotEmpty)
-            _Row(l10n.categoriesLabel, alias.categories,
+            _Row(l10n.categories, alias.categories,
                 icon: Icons.folder_outlined),
         ]),
 

@@ -174,7 +174,7 @@ class _UnboundClientActivityChartState extends State<UnboundClientActivityChart>
               items: [
                 DropdownMenuItem(value: 24, child: Text(l10n.hoursDuration(24))),
                 DropdownMenuItem(value: 12, child: Text(l10n.hoursDuration(12))),
-                DropdownMenuItem(value: 1, child: Text(l10n.oneHourDuration)),
+                DropdownMenuItem(value: 1, child: Text(l10n.oneHour)),
               ],
               onChanged: (val) {
                 if (val != null) {
