@@ -266,7 +266,6 @@ class _AppDrawerState extends State<AppDrawer> {
               style: const TextStyle(color: AppColors.error),
             ),
             onTap: () {
-              Navigator.pop(context);
               _rebootFirewall(context);
             },
           ),
@@ -388,7 +387,7 @@ class _AppDrawerState extends State<AppDrawer> {
         if (context.mounted) {
           Navigator.of(context).pop(); // Close loading dialog
           
-          SnackBarHelper.showError(context, l10n.rebootSuccess, duration: const Duration(seconds: 5));
+          SnackBarHelper.showSuccess(context, l10n.rebootSuccess, duration: const Duration(seconds: 5));
         }
       } catch (e) {
         if (context.mounted) {

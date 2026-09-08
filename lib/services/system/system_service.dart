@@ -414,10 +414,19 @@ class SystemService extends BaseOPNsenseService {
     ensureInitialized();
 
     try {
-      
       final response = await dio.post(ApiEndpoints.systemReboot);
-      
+
       if (response.statusCode == 200) {
+        if (response.data is Map) {
+          final data = response.data as Map;
+          if (data['status'] != null && data['status'] != 'ok') {
+            throw ApiException(
+              'Failed to reboot system: ${data['status']}',
+              response.statusCode,
+              ApiErrorType.unknown,
+            );
+          }
+        }
       } else {
         throw ApiException('Failed to reboot system', response.statusCode, ApiErrorType.unknown);
       }
