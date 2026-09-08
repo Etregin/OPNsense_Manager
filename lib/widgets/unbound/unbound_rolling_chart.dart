@@ -25,7 +25,7 @@ import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
 import '../../utils/formatters.dart';
 
-class UnboundRollingChart extends StatelessWidget {
+class UnboundRollingChart extends StatefulWidget {
   final List<UnboundRollingPoint> points;
   final int selectedDurationHours;
   final bool isLogarithmic;
@@ -43,8 +43,18 @@ class UnboundRollingChart extends StatelessWidget {
     this.isFullScreen = false,
   });
 
+  @override
+  State<UnboundRollingChart> createState() => _UnboundRollingChartState();
+}
+
+class _UnboundRollingChartState extends State<UnboundRollingChart> {
+  double? _visibleMinX;
+  double? _visibleMaxX;
+  double _baseScaleMinX = 0;
+  double _baseScaleMaxX = 0;
+
   double _transformY(double value) {
-    if (!isLogarithmic) return value;
+    if (!widget.isLogarithmic) return value;
     if (value <= 0) return 0;
     return log(value + 1) / ln10;
   }
@@ -54,7 +64,7 @@ class UnboundRollingChart extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
-    if (points.isEmpty) {
+    if (widget.points.isEmpty) {
       return Card(
         elevation: AppConstants.cardElevation,
         shape: RoundedRectangleBorder(
@@ -67,24 +77,28 @@ class UnboundRollingChart extends StatelessWidget {
       );
     }
 
-    final minX = points.first.timestamp;
-    final maxX = points.last.timestamp;
+    final globalMinX = widget.points.first.timestamp;
+    final globalMaxX = widget.points.last.timestamp;
+    final minX = _visibleMinX ?? globalMinX;
+    final maxX = _visibleMaxX ?? globalMaxX;
+    final isZoomed = (_visibleMinX != null && _visibleMinX! > globalMinX) ||
+        (_visibleMaxX != null && _visibleMaxX! < globalMaxX);
 
     double maxVal = 0;
-    for (final p in points) {
+    for (final p in widget.points) {
       if (p.total > maxVal) maxVal = p.total.toDouble();
     }
     if (maxVal == 0) maxVal = 10;
 
     final maxY = _transformY(maxVal) * 1.15;
 
-    final totalSpots = points
+    final totalSpots = widget.points
         .map((p) => FlSpot(p.timestamp, _transformY(p.total.toDouble())))
         .toList();
-    final passedSpots = points
+    final passedSpots = widget.points
         .map((p) => FlSpot(p.timestamp, _transformY(p.passed.toDouble())))
         .toList();
-    final blockedSpots = points
+    final blockedSpots = widget.points
         .map((p) => FlSpot(p.timestamp, _transformY(p.blocked.toDouble())))
         .toList();
 
@@ -102,7 +116,7 @@ class UnboundRollingChart extends StatelessWidget {
               ),
             ),
             DropdownButton<int>(
-              value: selectedDurationHours,
+              value: widget.selectedDurationHours,
               underline: const SizedBox.shrink(),
               items: [
                 DropdownMenuItem(value: 24, child: Text(l10n.hoursDuration(24))),
@@ -110,10 +124,87 @@ class UnboundRollingChart extends StatelessWidget {
                 DropdownMenuItem(value: 1, child: Text(l10n.oneHourDuration)),
               ],
               onChanged: (val) {
-                if (val != null) onDurationChanged(val);
+                if (val != null) {
+                  setState(() {
+                    _visibleMinX = null;
+                    _visibleMaxX = null;
+                  });
+                  widget.onDurationChanged(val);
+                }
               },
             ),
-            if (!isFullScreen) ...[
+            IconButton(
+              icon: const Icon(Icons.zoom_in, size: 20),
+              tooltip: l10n.zoomIn,
+              onPressed: () {
+                final currentMin = minX;
+                final currentMax = maxX;
+                final currentRange = currentMax - currentMin;
+                final newRange = (currentRange * 0.7).clamp(300.0, globalMaxX - globalMinX);
+                final center = (currentMin + currentMax) / 2;
+                var newMin = center - (newRange / 2);
+                var newMax = center + (newRange / 2);
+                if (newMin < globalMinX) {
+                  newMin = globalMinX;
+                  newMax = (newMin + newRange).clamp(globalMinX, globalMaxX);
+                }
+                if (newMax > globalMaxX) {
+                  newMax = globalMaxX;
+                  newMin = (newMax - newRange).clamp(globalMinX, globalMaxX);
+                }
+                setState(() {
+                  _visibleMinX = newMin;
+                  _visibleMaxX = newMax;
+                });
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.zoom_out, size: 20),
+              tooltip: l10n.zoomOut,
+              onPressed: !isZoomed
+                  ? null
+                  : () {
+                      final currentMin = minX;
+                      final currentMax = maxX;
+                      final currentRange = currentMax - currentMin;
+                      final newRange = (currentRange / 0.7).clamp(300.0, globalMaxX - globalMinX);
+                      final center = (currentMin + currentMax) / 2;
+                      var newMin = center - (newRange / 2);
+                      var newMax = center + (newRange / 2);
+                      if (newMin <= globalMinX && newMax >= globalMaxX) {
+                        setState(() {
+                          _visibleMinX = null;
+                          _visibleMaxX = null;
+                        });
+                        return;
+                      }
+                      if (newMin < globalMinX) {
+                        newMin = globalMinX;
+                        newMax = (newMin + newRange).clamp(globalMinX, globalMaxX);
+                      }
+                      if (newMax > globalMaxX) {
+                        newMax = globalMaxX;
+                        newMin = (newMax - newRange).clamp(globalMinX, globalMaxX);
+                      }
+                      setState(() {
+                        _visibleMinX = newMin;
+                        _visibleMaxX = newMax;
+                      });
+                    },
+            ),
+            if (isZoomed) ...[
+              IconButton(
+                icon: const Icon(Icons.zoom_out_map, size: 20),
+                tooltip: l10n.resetZoom,
+                onPressed: () {
+                  setState(() {
+                    _visibleMinX = null;
+                    _visibleMaxX = null;
+                  });
+                },
+              ),
+            ],
+            if (!widget.isFullScreen) ...[
               const SizedBox(width: AppConstants.compactPadding),
               IconButton(
                 icon: const Icon(Icons.fullscreen, size: 20),
@@ -122,24 +213,36 @@ class UnboundRollingChart extends StatelessWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       fullscreenDialog: true,
-                      builder: (ctx) => Scaffold(
-                        appBar: AppBar(
-                          title: Text(l10n.queriesOverTheLast),
-                        ),
-                        body: SafeArea(
-                          child: Padding(
-                            padding: const EdgeInsets.all(AppConstants.standardPadding),
-                            child: UnboundRollingChart(
-                              points: points,
-                              selectedDurationHours: selectedDurationHours,
-                              isLogarithmic: isLogarithmic,
-                              onDurationChanged: onDurationChanged,
-                              onLogarithmicChanged: onLogarithmicChanged,
-                              isFullScreen: true,
-                            ),
-                          ),
-                        ),
-                      ),
+                      builder: (ctx) {
+                        return StatefulBuilder(
+                          builder: (context, setDialogState) {
+                            return Scaffold(
+                              appBar: AppBar(
+                                title: Text(l10n.queriesOverTheLast),
+                              ),
+                              body: SafeArea(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(AppConstants.standardPadding),
+                                  child: UnboundRollingChart(
+                                    points: widget.points,
+                                    selectedDurationHours: widget.selectedDurationHours,
+                                    isLogarithmic: widget.isLogarithmic,
+                                    onDurationChanged: (val) {
+                                      widget.onDurationChanged(val);
+                                      setDialogState(() {});
+                                    },
+                                    onLogarithmicChanged: (val) {
+                                      widget.onLogarithmicChanged(val);
+                                      setDialogState(() {});
+                                    },
+                                    isFullScreen: true,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
                     ),
                   );
                 },
@@ -163,8 +266,8 @@ class UnboundRollingChart extends StatelessWidget {
               children: [
                 Text(l10n.logarithmic, style: theme.textTheme.bodySmall),
                 Switch(
-                  value: isLogarithmic,
-                  onChanged: onLogarithmicChanged,
+                  value: widget.isLogarithmic,
+                  onChanged: widget.onLogarithmicChanged,
                 ),
               ],
             ),
@@ -172,10 +275,59 @@ class UnboundRollingChart extends StatelessWidget {
         ),
         const SizedBox(height: AppConstants.standardPadding),
         Expanded(
-          flex: isFullScreen ? 1 : 0,
+          flex: widget.isFullScreen ? 1 : 0,
           child: SizedBox(
-            height: isFullScreen ? null : 200,
-            child: LineChart(
+            height: widget.isFullScreen ? null : 200,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final chartWidth = constraints.maxWidth;
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onScaleStart: (details) {
+                    _baseScaleMinX = _visibleMinX ?? globalMinX;
+                    _baseScaleMaxX = _visibleMaxX ?? globalMaxX;
+                  },
+                  onScaleUpdate: (details) {
+                    if (details.pointerCount >= 2 && details.scale != 1.0) {
+                      final baseRange = _baseScaleMaxX - _baseScaleMinX;
+                      final newRange = (baseRange / details.scale).clamp(
+                        300.0, // Minimum window of 5 minutes
+                        globalMaxX - globalMinX,
+                      );
+                      final focalFraction = chartWidth > 0
+                          ? (details.localFocalPoint.dx / chartWidth).clamp(0.0, 1.0)
+                          : 0.5;
+                      final focalTimestamp = _baseScaleMinX + (focalFraction * baseRange);
+                      var newMin = focalTimestamp - (focalFraction * newRange);
+                      var newMax = newMin + newRange;
+
+                      if (newMin < globalMinX) {
+                        newMin = globalMinX;
+                        newMax = (newMin + newRange).clamp(globalMinX, globalMaxX);
+                      }
+                      if (newMax > globalMaxX) {
+                        newMax = globalMaxX;
+                        newMin = (newMax - newRange).clamp(globalMinX, globalMaxX);
+                      }
+                      setState(() {
+                        _visibleMinX = newMin;
+                        _visibleMaxX = newMax;
+                      });
+                    } else if (details.pointerCount == 1 && details.focalPointDelta.dx != 0 && isZoomed) {
+                      final range = maxX - minX;
+                      final deltaFraction = chartWidth > 0
+                          ? -details.focalPointDelta.dx / chartWidth
+                          : -details.focalPointDelta.dx / 300.0;
+                      final shift = deltaFraction * range;
+                      var newMin = (minX + shift).clamp(globalMinX, globalMaxX - range);
+                      var newMax = newMin + range;
+                      setState(() {
+                        _visibleMinX = newMin;
+                        _visibleMaxX = newMax;
+                      });
+                    }
+                  },
+                  child: LineChart(
                 LineChartData(
                   minX: minX,
                   maxX: maxX,
@@ -200,7 +352,7 @@ class UnboundRollingChart extends StatelessWidget {
                         reservedSize: 40,
                         getTitlesWidget: (val, meta) {
                           if (val == meta.max || val == meta.min) return const SizedBox.shrink();
-                          final display = isLogarithmic ? pow(10, val).round() : val.round();
+                          final display = widget.isLogarithmic ? pow(10, val).round() : val.round();
                           return Text(
                             Formatters.formatNumber(display),
                             style: theme.textTheme.labelSmall?.copyWith(
@@ -256,10 +408,11 @@ class UnboundRollingChart extends StatelessWidget {
                     ),
                   ],
                   lineTouchData: LineTouchData(
+                    handleBuiltInTouches: true,
                     touchTooltipData: LineTouchTooltipData(
                       getTooltipItems: (touchedSpots) {
                         return touchedSpots.map((touchedSpot) {
-                          final originalY = isLogarithmic
+                          final originalY = widget.isLogarithmic
                               ? (touchedSpot.y == 0 ? 0 : (pow(10, touchedSpot.y) - 1).round())
                               : touchedSpot.y.round();
 
@@ -286,12 +439,15 @@ class UnboundRollingChart extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
+        ),
+      ),
+    ),
       ],
     );
 
-    if (isFullScreen) {
+    if (widget.isFullScreen) {
       return content;
     }
 

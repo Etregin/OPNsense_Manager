@@ -3680,5 +3680,11 @@
   "unboundQueries": "Abfragen",
   "@unboundQueries": {},
   "fullScreen": "Vollbild",
-  "@fullScreen": {}
+  "@fullScreen": {},
+  "resetZoom": "Zoom zurücksetzen",
+  "@resetZoom": {},
+  "zoomIn": "Vergrößern",
+  "@zoomIn": {},
+  "zoomOut": "Verkleinern",
+  "@zoomOut": {}
 }

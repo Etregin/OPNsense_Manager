@@ -4458,4 +4458,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get fullScreen => 'Vollbild';
+
+  @override
+  String get resetZoom => 'Zoom zurücksetzen';
+
+  @override
+  String get zoomIn => 'Vergrößern';
+
+  @override
+  String get zoomOut => 'Verkleinern';
 }

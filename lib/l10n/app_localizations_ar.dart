@@ -4392,4 +4392,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get fullScreen => 'ملء الشاشة';
+
+  @override
+  String get resetZoom => 'إعادة تعيين التكبير';
+
+  @override
+  String get zoomIn => 'تكبير';
+
+  @override
+  String get zoomOut => 'تصغير';
 }

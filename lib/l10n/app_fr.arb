@@ -3680,5 +3680,11 @@
   "unboundQueries": "Requêtes",
   "@unboundQueries": {},
   "fullScreen": "Plein écran",
-  "@fullScreen": {}
+  "@fullScreen": {},
+  "resetZoom": "Réinitialiser le zoom",
+  "@resetZoom": {},
+  "zoomIn": "Zoom avant",
+  "@zoomIn": {},
+  "zoomOut": "Zoom arrière",
+  "@zoomOut": {}
 }

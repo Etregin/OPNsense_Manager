@@ -4458,4 +4458,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get fullScreen => 'Pantalla completa';
+
+  @override
+  String get resetZoom => 'Restablecer zoom';
+
+  @override
+  String get zoomIn => 'Acercar';
+
+  @override
+  String get zoomOut => 'Alejar';
 }

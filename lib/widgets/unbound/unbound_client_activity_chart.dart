@@ -25,7 +25,7 @@ import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
 import '../../utils/formatters.dart';
 
-class UnboundClientActivityChart extends StatelessWidget {
+class UnboundClientActivityChart extends StatefulWidget {
   final List<UnboundRollingClientPoint> points;
   final int selectedDurationHours;
   final bool isLogarithmic;
@@ -45,6 +45,16 @@ class UnboundClientActivityChart extends StatelessWidget {
     this.isFullScreen = false,
   });
 
+  @override
+  State<UnboundClientActivityChart> createState() => _UnboundClientActivityChartState();
+}
+
+class _UnboundClientActivityChartState extends State<UnboundClientActivityChart> {
+  double? _visibleMinX;
+  double? _visibleMaxX;
+  double _baseScaleMinX = 0;
+  double _baseScaleMaxX = 0;
+
   static const List<Color> _clientColors = [
     AppColors.primary,
     AppColors.secondary,
@@ -59,7 +69,7 @@ class UnboundClientActivityChart extends StatelessWidget {
   ];
 
   double _transformY(double value) {
-    if (!isLogarithmic) return value;
+    if (!widget.isLogarithmic) return value;
     if (value <= 0) return 0;
     return log(value + 1) / ln10;
   }
@@ -69,7 +79,7 @@ class UnboundClientActivityChart extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
-    if (points.isEmpty) {
+    if (widget.points.isEmpty) {
       return Card(
         elevation: AppConstants.cardElevation,
         shape: RoundedRectangleBorder(
@@ -82,8 +92,15 @@ class UnboundClientActivityChart extends StatelessWidget {
       );
     }
 
+    final globalMinX = widget.points.first.timestamp;
+    final globalMaxX = widget.points.last.timestamp;
+    final minX = _visibleMinX ?? globalMinX;
+    final maxX = _visibleMaxX ?? globalMaxX;
+    final isZoomed = (_visibleMinX != null && _visibleMinX! > globalMinX) ||
+        (_visibleMaxX != null && _visibleMaxX! < globalMaxX);
+
     final clientIpTotals = <String, int>{};
-    for (final p in points) {
+    for (final p in widget.points) {
       for (final c in p.clients) {
         clientIpTotals[c.ip] = (clientIpTotals[c.ip] ?? 0) + c.count;
       }
@@ -92,11 +109,8 @@ class UnboundClientActivityChart extends StatelessWidget {
       ..sort((a, b) => (clientIpTotals[b] ?? 0).compareTo(clientIpTotals[a] ?? 0));
     final top10Ips = sortedClients.take(10).toList();
 
-    final minX = points.first.timestamp;
-    final maxX = points.last.timestamp;
-
     double maxVal = 0;
-    for (final p in points) {
+    for (final p in widget.points) {
       for (final c in p.clients) {
         if (c.count > maxVal) maxVal = c.count.toDouble();
       }
@@ -110,7 +124,7 @@ class UnboundClientActivityChart extends StatelessWidget {
       final color = _clientColors[i % _clientColors.length];
       final spots = <FlSpot>[];
 
-      for (final p in points) {
+      for (final p in widget.points) {
         final hit = p.clients.firstWhere(
           (c) => c.ip == ip,
           orElse: () => const UnboundClientHit(ip: '', count: 0, hostname: ''),
@@ -151,7 +165,7 @@ class UnboundClientActivityChart extends StatelessWidget {
               ),
             ),
             DropdownButton<int>(
-              value: selectedDurationHours,
+              value: widget.selectedDurationHours,
               underline: const SizedBox.shrink(),
               items: [
                 DropdownMenuItem(value: 24, child: Text(l10n.hoursDuration(24))),
@@ -159,10 +173,87 @@ class UnboundClientActivityChart extends StatelessWidget {
                 DropdownMenuItem(value: 1, child: Text(l10n.oneHourDuration)),
               ],
               onChanged: (val) {
-                if (val != null) onDurationChanged(val);
+                if (val != null) {
+                  setState(() {
+                    _visibleMinX = null;
+                    _visibleMaxX = null;
+                  });
+                  widget.onDurationChanged(val);
+                }
               },
             ),
-            if (!isFullScreen) ...[
+            IconButton(
+              icon: const Icon(Icons.zoom_in, size: 20),
+              tooltip: l10n.zoomIn,
+              onPressed: () {
+                final currentMin = minX;
+                final currentMax = maxX;
+                final currentRange = currentMax - currentMin;
+                final newRange = (currentRange * 0.7).clamp(300.0, globalMaxX - globalMinX);
+                final center = (currentMin + currentMax) / 2;
+                var newMin = center - (newRange / 2);
+                var newMax = center + (newRange / 2);
+                if (newMin < globalMinX) {
+                  newMin = globalMinX;
+                  newMax = (newMin + newRange).clamp(globalMinX, globalMaxX);
+                }
+                if (newMax > globalMaxX) {
+                  newMax = globalMaxX;
+                  newMin = (newMax - newRange).clamp(globalMinX, globalMaxX);
+                }
+                setState(() {
+                  _visibleMinX = newMin;
+                  _visibleMaxX = newMax;
+                });
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.zoom_out, size: 20),
+              tooltip: l10n.zoomOut,
+              onPressed: !isZoomed
+                  ? null
+                  : () {
+                      final currentMin = minX;
+                      final currentMax = maxX;
+                      final currentRange = currentMax - currentMin;
+                      final newRange = (currentRange / 0.7).clamp(300.0, globalMaxX - globalMinX);
+                      final center = (currentMin + currentMax) / 2;
+                      var newMin = center - (newRange / 2);
+                      var newMax = center + (newRange / 2);
+                      if (newMin <= globalMinX && newMax >= globalMaxX) {
+                        setState(() {
+                          _visibleMinX = null;
+                          _visibleMaxX = null;
+                        });
+                        return;
+                      }
+                      if (newMin < globalMinX) {
+                        newMin = globalMinX;
+                        newMax = (newMin + newRange).clamp(globalMinX, globalMaxX);
+                      }
+                      if (newMax > globalMaxX) {
+                        newMax = globalMaxX;
+                        newMin = (newMax - newRange).clamp(globalMinX, globalMaxX);
+                      }
+                      setState(() {
+                        _visibleMinX = newMin;
+                        _visibleMaxX = newMax;
+                      });
+                    },
+            ),
+            if (isZoomed) ...[
+              IconButton(
+                icon: const Icon(Icons.zoom_out_map, size: 20),
+                tooltip: l10n.resetZoom,
+                onPressed: () {
+                  setState(() {
+                    _visibleMinX = null;
+                    _visibleMaxX = null;
+                  });
+                },
+              ),
+            ],
+            if (!widget.isFullScreen) ...[
               const SizedBox(width: AppConstants.compactPadding),
               IconButton(
                 icon: const Icon(Icons.fullscreen, size: 20),
@@ -171,28 +262,40 @@ class UnboundClientActivityChart extends StatelessWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       fullscreenDialog: true,
-                      builder: (ctx) => Scaffold(
-                        appBar: AppBar(
-                          title: Text(l10n.topClientActivityOverTheLast),
-                        ),
-                        body: SafeArea(
-                          child: Padding(
-                            padding: const EdgeInsets.all(AppConstants.standardPadding),
-                            child: UnboundClientActivityChart(
-                              points: points,
-                              selectedDurationHours: selectedDurationHours,
-                              isLogarithmic: isLogarithmic,
-                              onDurationChanged: onDurationChanged,
-                              onLogarithmicChanged: onLogarithmicChanged,
-                              onClientSpotTapped: (client, start, end) {
-                                Navigator.of(ctx).pop();
-                                onClientSpotTapped?.call(client, start, end);
-                              },
-                              isFullScreen: true,
-                            ),
-                          ),
-                        ),
-                      ),
+                      builder: (ctx) {
+                        return StatefulBuilder(
+                          builder: (context, setDialogState) {
+                            return Scaffold(
+                              appBar: AppBar(
+                                title: Text(l10n.topClientActivityOverTheLast),
+                              ),
+                              body: SafeArea(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(AppConstants.standardPadding),
+                                  child: UnboundClientActivityChart(
+                                    points: widget.points,
+                                    selectedDurationHours: widget.selectedDurationHours,
+                                    isLogarithmic: widget.isLogarithmic,
+                                    onDurationChanged: (val) {
+                                      widget.onDurationChanged(val);
+                                      setDialogState(() {});
+                                    },
+                                    onLogarithmicChanged: (val) {
+                                      widget.onLogarithmicChanged(val);
+                                      setDialogState(() {});
+                                    },
+                                    onClientSpotTapped: (client, start, end) {
+                                      Navigator.of(ctx).pop();
+                                      widget.onClientSpotTapped?.call(client, start, end);
+                                    },
+                                    isFullScreen: true,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
                     ),
                   );
                 },
@@ -220,8 +323,8 @@ class UnboundClientActivityChart extends StatelessWidget {
               children: [
                 Text(l10n.logarithmic, style: theme.textTheme.bodySmall),
                 Switch(
-                  value: isLogarithmic,
-                  onChanged: onLogarithmicChanged,
+                  value: widget.isLogarithmic,
+                  onChanged: widget.onLogarithmicChanged,
                 ),
               ],
             ),
@@ -229,10 +332,59 @@ class UnboundClientActivityChart extends StatelessWidget {
         ),
         const SizedBox(height: AppConstants.standardPadding),
         Expanded(
-          flex: isFullScreen ? 1 : 0,
+          flex: widget.isFullScreen ? 1 : 0,
           child: SizedBox(
-            height: isFullScreen ? null : 200,
-            child: LineChart(
+            height: widget.isFullScreen ? null : 200,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final chartWidth = constraints.maxWidth;
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onScaleStart: (details) {
+                    _baseScaleMinX = _visibleMinX ?? globalMinX;
+                    _baseScaleMaxX = _visibleMaxX ?? globalMaxX;
+                  },
+                  onScaleUpdate: (details) {
+                    if (details.pointerCount >= 2 && details.scale != 1.0) {
+                      final baseRange = _baseScaleMaxX - _baseScaleMinX;
+                      final newRange = (baseRange / details.scale).clamp(
+                        300.0, // Minimum window of 5 minutes
+                        globalMaxX - globalMinX,
+                      );
+                      final focalFraction = chartWidth > 0
+                          ? (details.localFocalPoint.dx / chartWidth).clamp(0.0, 1.0)
+                          : 0.5;
+                      final focalTimestamp = _baseScaleMinX + (focalFraction * baseRange);
+                      var newMin = focalTimestamp - (focalFraction * newRange);
+                      var newMax = newMin + newRange;
+
+                      if (newMin < globalMinX) {
+                        newMin = globalMinX;
+                        newMax = (newMin + newRange).clamp(globalMinX, globalMaxX);
+                      }
+                      if (newMax > globalMaxX) {
+                        newMax = globalMaxX;
+                        newMin = (newMax - newRange).clamp(globalMinX, globalMaxX);
+                      }
+                      setState(() {
+                        _visibleMinX = newMin;
+                        _visibleMaxX = newMax;
+                      });
+                    } else if (details.pointerCount == 1 && details.focalPointDelta.dx != 0 && isZoomed) {
+                      final range = maxX - minX;
+                      final deltaFraction = chartWidth > 0
+                          ? -details.focalPointDelta.dx / chartWidth
+                          : -details.focalPointDelta.dx / 300.0;
+                      final shift = deltaFraction * range;
+                      var newMin = (minX + shift).clamp(globalMinX, globalMaxX - range);
+                      var newMax = newMin + range;
+                      setState(() {
+                        _visibleMinX = newMin;
+                        _visibleMaxX = newMax;
+                      });
+                    }
+                  },
+                  child: LineChart(
                 LineChartData(
                   minX: minX,
                   maxX: maxX,
@@ -257,7 +409,7 @@ class UnboundClientActivityChart extends StatelessWidget {
                         reservedSize: 40,
                         getTitlesWidget: (val, meta) {
                           if (val == meta.max || val == meta.min) return const SizedBox.shrink();
-                          final display = isLogarithmic ? pow(10, val).round() : val.round();
+                          final display = widget.isLogarithmic ? pow(10, val).round() : val.round();
                           return Text(
                             Formatters.formatNumber(display),
                             style: theme.textTheme.labelSmall?.copyWith(
@@ -291,20 +443,20 @@ class UnboundClientActivityChart extends StatelessWidget {
                       if (event is FlTapUpEvent && touchResponse?.lineBarSpots != null && touchResponse!.lineBarSpots!.isNotEmpty) {
                         final spot = touchResponse.lineBarSpots!.first;
                         final ip = spot.barIndex < top10Ips.length ? top10Ips[spot.barIndex] : '';
-                        if (ip.isNotEmpty && onClientSpotTapped != null) {
-                          final intervalSeconds = selectedDurationHours == 1 ? 60 : 600;
+                        if (ip.isNotEmpty && widget.onClientSpotTapped != null) {
+                          final intervalSeconds = widget.selectedDurationHours == 1 ? 60 : 600;
                           final timeEnd = spot.x.toInt();
                           final timeStart = timeEnd - intervalSeconds;
-                          onClientSpotTapped!(ip, timeStart, timeEnd);
+                          widget.onClientSpotTapped!(ip, timeStart, timeEnd);
                         }
                       }
                     },
                     touchTooltipData: LineTouchTooltipData(
                       getTooltipItems: (touchedSpots) {
-                        return touchedSpots
-                            .where((spot) => spot.y > 0)
-                            .map((touchedSpot) {
-                          final originalY = isLogarithmic
+                        return touchedSpots.map((touchedSpot) {
+                          if (touchedSpot.y <= 0) return null;
+
+                          final originalY = widget.isLogarithmic
                               ? (touchedSpot.y == 0 ? 0 : (pow(10, touchedSpot.y) - 1).round())
                               : touchedSpot.y.round();
 
@@ -326,12 +478,15 @@ class UnboundClientActivityChart extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
+        ),
+      ),
+    ),
       ],
     );
 
-    if (isFullScreen) {
+    if (widget.isFullScreen) {
       return content;
     }
 

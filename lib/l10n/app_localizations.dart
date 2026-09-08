@@ -7969,6 +7969,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Full screen'**
   String get fullScreen;
+
+  /// No description provided for @resetZoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Zoom'**
+  String get resetZoom;
+
+  /// No description provided for @zoomIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom In'**
+  String get zoomIn;
+
+  /// No description provided for @zoomOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom Out'**
+  String get zoomOut;
 }
 
 class _AppLocalizationsDelegate

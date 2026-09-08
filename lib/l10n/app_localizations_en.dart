@@ -4406,4 +4406,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fullScreen => 'Full screen';
+
+  @override
+  String get resetZoom => 'Reset Zoom';
+
+  @override
+  String get zoomIn => 'Zoom In';
+
+  @override
+  String get zoomOut => 'Zoom Out';
 }

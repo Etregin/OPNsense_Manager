@@ -3671,5 +3671,11 @@
   "unboundQueries": "الاستعلامات",
   "@unboundQueries": {},
   "fullScreen": "ملء الشاشة",
-  "@fullScreen": {}
+  "@fullScreen": {},
+  "resetZoom": "إعادة تعيين التكبير",
+  "@resetZoom": {},
+  "zoomIn": "تكبير",
+  "@zoomIn": {},
+  "zoomOut": "تصغير",
+  "@zoomOut": {}
 }
