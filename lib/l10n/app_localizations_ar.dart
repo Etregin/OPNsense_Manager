@@ -4413,4 +4413,70 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get healthDeleteReportConfirmMessage =>
       'حذف هذا التقرير المجمّع؟ ستُفقد بيانات الرسم البياني لهذا الإدخال.';
+
+  @override
+  String get migrationDialogTitle => 'OPNsense Manager is Moving to Free!';
+
+  @override
+  String get migrationDialogWhyTitle => 'Why the change?';
+
+  @override
+  String get migrationDialogWhyBody =>
+      'Making the app free expands community adoption and supports open-source development.';
+
+  @override
+  String get migrationDialogAdsTitle => 'About ads';
+
+  @override
+  String get migrationDialogAdsBody =>
+      'Banner ads will appear on informational screens like Dashboard and Settings. They will never appear on critical screens like firewall rule editing or VPN controls.';
+
+  @override
+  String get migrationDialogLegacyTitle => 'Already a paid user?';
+
+  @override
+  String get migrationDialogLegacyBody =>
+      'If you previously purchased the app, your experience stays 100% ad-free. Press on \'Claim Legacy Access\' to email us your order number for the app purchase to get a promo code.';
+
+  @override
+  String get claimLegacyAccess => 'Claim Legacy Access';
+
+  @override
+  String get continueToApp => 'Continue to App';
+
+  @override
+  String get supporterAndAdRemoval => 'Supporter & Ad Removal';
+
+  @override
+  String get supporterActiveStatus => 'Supporter Active';
+
+  @override
+  String get becomeSupporter => 'Remove Ads / Become a Supporter';
+
+  @override
+  String get becomeSupporterSubtitle => 'One-time purchase to remove all ads';
+
+  @override
+  String get restorePurchase => 'Restore Purchase';
+
+  @override
+  String get restorePurchaseSubtitle =>
+      'Already purchased? Restore your supporter status';
+
+  @override
+  String get claimLegacyAccessSubtitle =>
+      'Previously paid? Email us your order number to receive a promo code';
+
+  @override
+  String get supporterPurchaseSuccess => 'Thank you! Ads have been removed.';
+
+  @override
+  String get supporterRestoreSuccess =>
+      'Supporter status restored. Ads removed.';
+
+  @override
+  String get supporterRestoreNotFound => 'No previous purchase found.';
+
+  @override
+  String get supporterPurchaseFailed => 'Purchase failed. Please try again.';
 }

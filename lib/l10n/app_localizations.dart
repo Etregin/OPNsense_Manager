@@ -7987,6 +7987,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete this collected report? The graph data for this entry will be lost.'**
   String get healthDeleteReportConfirmMessage;
+
+  /// No description provided for @migrationDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'OPNsense Manager is Moving to Free!'**
+  String get migrationDialogTitle;
+
+  /// No description provided for @migrationDialogWhyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Why the change?'**
+  String get migrationDialogWhyTitle;
+
+  /// No description provided for @migrationDialogWhyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Making the app free expands community adoption and supports open-source development.'**
+  String get migrationDialogWhyBody;
+
+  /// No description provided for @migrationDialogAdsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'About ads'**
+  String get migrationDialogAdsTitle;
+
+  /// No description provided for @migrationDialogAdsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Banner ads will appear on informational screens like Dashboard and Settings. They will never appear on critical screens like firewall rule editing or VPN controls.'**
+  String get migrationDialogAdsBody;
+
+  /// No description provided for @migrationDialogLegacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Already a paid user?'**
+  String get migrationDialogLegacyTitle;
+
+  /// No description provided for @migrationDialogLegacyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'If you previously purchased the app, your experience stays 100% ad-free. Press on \'Claim Legacy Access\' to email us your order number for the app purchase to get a promo code.'**
+  String get migrationDialogLegacyBody;
+
+  /// No description provided for @claimLegacyAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Claim Legacy Access'**
+  String get claimLegacyAccess;
+
+  /// No description provided for @continueToApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue to App'**
+  String get continueToApp;
+
+  /// No description provided for @supporterAndAdRemoval.
+  ///
+  /// In en, this message translates to:
+  /// **'Supporter & Ad Removal'**
+  String get supporterAndAdRemoval;
+
+  /// No description provided for @supporterActiveStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Supporter Active'**
+  String get supporterActiveStatus;
+
+  /// No description provided for @becomeSupporter.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Ads / Become a Supporter'**
+  String get becomeSupporter;
+
+  /// No description provided for @becomeSupporterSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One-time purchase to remove all ads'**
+  String get becomeSupporterSubtitle;
+
+  /// No description provided for @restorePurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore Purchase'**
+  String get restorePurchase;
+
+  /// No description provided for @restorePurchaseSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Already purchased? Restore your supporter status'**
+  String get restorePurchaseSubtitle;
+
+  /// No description provided for @claimLegacyAccessSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Previously paid? Email us your order number to receive a promo code'**
+  String get claimLegacyAccessSubtitle;
+
+  /// No description provided for @supporterPurchaseSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you! Ads have been removed.'**
+  String get supporterPurchaseSuccess;
+
+  /// No description provided for @supporterRestoreSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Supporter status restored. Ads removed.'**
+  String get supporterRestoreSuccess;
+
+  /// No description provided for @supporterRestoreNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No previous purchase found.'**
+  String get supporterRestoreNotFound;
+
+  /// No description provided for @supporterPurchaseFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase failed. Please try again.'**
+  String get supporterPurchaseFailed;
 }
 
 class _AppLocalizationsDelegate
