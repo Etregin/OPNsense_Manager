@@ -1,0 +1,15 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <application>
+        <!--
+            Disable the Google Mobile Ads auto-initialisation ContentProvider.
+            The GMA AAR registers MobileAdsInitProvider in its own manifest,
+            which fires at process start on every flavor.  On F-Droid we must
+            prevent any ad-network calls, so we remove it via manifest merger.
+        -->
+        <provider
+            android:name="com.google.android.gms.ads.MobileAdsInitProvider"
+            android:authorities="${applicationId}.mobileadsinitprovider"
+            tools:node="remove" />
+    </application>
+</manifest>

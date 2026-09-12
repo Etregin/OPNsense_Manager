@@ -30,6 +30,7 @@ import '../widgets/app_drawer.dart';
 import '../widgets/common/confirmation_dialog.dart';
 import '../widgets/common/error_display.dart';
 import '../widgets/health/system_health_chart.dart';
+import '../widgets/common/app_banner_ad_widget.dart';
 
 /// Reporting → Health screen.
 ///
@@ -83,15 +84,22 @@ class _SystemHealthScreenState extends State<SystemHealthScreen>
         ),
       ),
       drawer: const AppDrawer(currentRoute: Routes.reportingHealth),
-      body: ListenableBuilder(
-        listenable: _vm,
-        builder: (context, _) => TabBarView(
-          controller: _tabController,
-          children: [
-            _HealthTab(vm: _vm),
-            _SettingsTab(vm: _vm),
-          ],
-        ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListenableBuilder(
+              listenable: _vm,
+              builder: (context, _) => TabBarView(
+                controller: _tabController,
+                children: [
+                  _HealthTab(vm: _vm),
+                  _SettingsTab(vm: _vm),
+                ],
+              ),
+            ),
+          ),
+          const AppBannerAdWidget(),
+        ],
       ),
     );
   }

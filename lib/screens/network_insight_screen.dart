@@ -33,6 +33,7 @@ import '../widgets/network_insight/insight_export_tab.dart';
 import '../widgets/network_insight/interface_totals_chart.dart';
 import '../widgets/network_insight/netflow_disabled_banner.dart';
 import '../widgets/network_insight/top_breakdown_pie_chart.dart';
+import '../widgets/common/app_banner_ad_widget.dart';
 
 /// Insights screen.
 ///
@@ -153,7 +154,12 @@ class _NetworkInsightScreenState extends State<NetworkInsightScreen>
         ],
       ),
       drawer: const AppDrawer(currentRoute: Routes.networkInsight),
-      body: _buildBody(context, l10n),
+      body: Column(
+        children: [
+          Expanded(child: _buildBody(context, l10n)),
+          const AppBannerAdWidget(),
+        ],
+      ),
     );
   }
 

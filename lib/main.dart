@@ -32,12 +32,16 @@ import 'services/opnsense_api_service.dart';
 import 'services/demo_api_service.dart';
 import 'services/auth_service.dart';
 import 'services/profile_service.dart';
+import 'services/supporter_service.dart';
+import 'services/ads/ad_service.dart';
+import 'config/flavor_config.dart';
 import 'config/theme_config.dart' show ThemeConfig;
 import 'utils/app_colors.dart';
 import 'utils/constants.dart';
 import 'l10n/app_localizations.dart';
 
 void main() async {
+  FlavorConfig.initialize();
   WidgetsFlutterBinding.ensureInitialized();
   
   // Enable edge-to-edge display for proper Android 15+ support
@@ -60,6 +64,8 @@ void main() async {
     AuthService().init(),
     ProfileService().init(),
     AppVersionService().init(),
+    SupporterService().init(),
+    AdService().initialize(),
   ]);
   
   // Migrate from old storage to profile-based storage (non-blocking)
@@ -145,6 +151,12 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
         ),
         Provider<AppVersionService>(
           create: (_) => AppVersionService(),
+        ),
+        Provider<SupporterService>(
+          create: (_) => SupporterService(),
+        ),
+        Provider<AdService>(
+          create: (_) => AdService(),
         ),
         Provider<Function(String)>(
           create: (_) => _updateThemeMode,

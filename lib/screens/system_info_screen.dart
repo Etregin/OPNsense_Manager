@@ -27,6 +27,7 @@ import '../viewmodels/system_info_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/error_display.dart';
 import '../l10n/app_localizations.dart';
+import '../widgets/common/app_banner_ad_widget.dart';
 
 /// System information screen showing detailed system data.
 class SystemInfoScreen extends StatefulWidget {
@@ -74,9 +75,16 @@ class _SystemInfoScreenState extends State<SystemInfoScreen>
             currentRoute: 'system_info',
             systemInfo: _viewModel.systemInfo,
           ),
-          body: RefreshIndicator(
-            onRefresh: _viewModel.loadSystemInfo,
-            child: _buildBody(l10n),
+          body: Column(
+            children: [
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: _viewModel.loadSystemInfo,
+                  child: _buildBody(l10n),
+                ),
+              ),
+              const AppBannerAdWidget(),
+            ],
           ),
         );
       },

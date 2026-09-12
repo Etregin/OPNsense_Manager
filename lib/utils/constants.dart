@@ -42,6 +42,8 @@ class AppConstants {
   static const String keyLocale                       = 'locale';
   static const String keyNetworkMonitorBandwidthLimit = 'network_monitor_bandwidth_limit';
   static const String keyNetworkMonitorInterfaces     = 'network_monitor_interfaces';
+  static const String keySupporterActive              = 'supporter_active';
+  static const String keyMigrationNoticeDismissed     = 'migration_notice_dismissed';
 
   // UI Constants
   static const double standardPadding = 16.0;
@@ -132,7 +134,23 @@ class StringConstants {
   // Support & Donation
   static const String donationCryptoAddress = '0xe0b9015117a4a69131481c2e9c1553dde839df18';
   static const String donationBinanceEmail = 'etreginwow@gmail.com';
+
+  // Pre-encoded mailto: URI for legacy order verification.
+  // Spaces encoded as %20 and newlines as %0A so email clients render them correctly.
+  static const String legacyClaimMailtoUri =
+      'mailto:etreginwow@gmail.com'
+      '?subject=Legacy%20Order%20Verification%20-%20OPNsense%20Manager'
+      '&body=Hi%2C%0A%0A'
+      'I%20previously%20purchased%20OPNsense%20Manager%20and%20would%20like%20to%20claim%20my%20ad-free%20access.'
+      '%0A%0AMy%20order%20number%20is%3A%20%5BGPA.xxxx%20%2F%20Apple%20Order%20ID%5D'
+      '%0A%0AThank%20you%21';
   static const String donationCryptoTokens = 'USDT / USDC';
   static const String donationCryptoNetworks = 'BEP20, BSC, ERC20, Base, Polygon, Arbitrum, Avalanche C-Chain';
+
+  // In-App Purchase & Store URLs
+  static const String supporterProductId = 'opnsense_manager_supporter';
+  // Play Store listing URL (for legacy users to redeem promo codes)
+  static const String playStoreListingUrl = 'https://play.google.com/store/apps/details?id=com.dt.opnsense_manager';
+  static const String appStoreListingUrl = 'https://apps.apple.com/us/app/opnsense-manager/id6767634059';
 }
 

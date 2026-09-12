@@ -37,15 +37,25 @@ android {
     }
 
     flavorDimensions += "distribution"
-    
+
     productFlavors {
         create("playstore") {
             dimension = "distribution"
             isDefault = true
+            // Entry point: lib/main_playstore.dart
+            // Sets FlavorConfig.playstore — GMA SDK and IAP are active.
         }
-        
+
         create("fdroid") {
             dimension = "distribution"
+            // Entry point: lib/main_fdroid.dart
+            // Sets FlavorConfig.fdroid — no GMA SDK, no IAP.
+        }
+
+        create("github") {
+            dimension = "distribution"
+            // Entry point: lib/main_github.dart
+            // Sets FlavorConfig.github — no GMA SDK, no IAP.
         }
     }
 
@@ -71,13 +81,32 @@ flutter {
     source = "../.."
 }
 
+// Exclude Google Mobile Ads and in-app billing from fdroid and github APKs.
+//
+// Flutter wires every pub plugin into every variant's runtime classpath.
+// Excluding by group here strips the AAR from the final APK for the two
+// non-ad flavors, satisfying F-Droid's no-proprietary-tracking-SDK policy.
+// The Dart-side AdService and SupporterService already guard against any
+// calls on these flavors; this makes the exclusion native-layer complete.
+configurations.configureEach {
+    val cfg = name
+    if (cfg.startsWith("fdroid") || cfg.startsWith("github")) {
+        // Google Mobile Ads SDK
+        exclude(group = "com.google.android.gms", module = "play-services-ads")
+        exclude(group = "com.google.android.gms", module = "play-services-ads-lite")
+        exclude(group = "com.google.android.gms", module = "play-services-measurement-api")
+        // Google Play Billing (in_app_purchase)
+        exclude(group = "com.android.billingclient", module = "billing")
+        exclude(group = "com.android.billingclient", module = "billing-ktx")
+    }
+}
 
 // Apply ABI version code logic ONLY for F-Droid flavor
 val abiCodes = mapOf("armeabi-v7a" to 1, "arm64-v8a" to 2, "x86_64" to 3)
 
 android.applicationVariants.configureEach {
     val variant = this
-    
+
     // Only apply ABI version code override for fdroid flavor
     if (variant.flavorName == "fdroid") {
         variant.outputs.forEach { output ->

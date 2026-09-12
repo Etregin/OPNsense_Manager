@@ -37,6 +37,7 @@ import '../widgets/dashboard/services_section.dart';
 import '../widgets/dashboard/gateways_section.dart';
 import '../widgets/dashboard/thermal_sensors_section.dart';
 import '../l10n/app_localizations.dart';
+import '../widgets/common/app_banner_ad_widget.dart';
 
 /// Main dashboard screen showing system overview
 class DashboardScreen extends StatefulWidget {
@@ -162,6 +163,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   child: _buildBody(l10n),
                 ),
               ),
+              const AppBannerAdWidget(),
             ],
           ),
         );

@@ -32,6 +32,7 @@ import '../viewmodels/dhcp_leases_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/error_display.dart';
 import '../widgets/common/empty_state_widget.dart';
+import '../widgets/common/app_banner_ad_widget.dart';
 
 /// Screen displaying DHCP leases from OPNsense
 class DhcpLeasesScreen extends StatefulWidget {
@@ -378,6 +379,7 @@ class _DhcpLeasesScreenState extends State<DhcpLeasesScreen>
                                 ),
                               ),
               ),
+              const AppBannerAdWidget(),
             ],
           ),
         );

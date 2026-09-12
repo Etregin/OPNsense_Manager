@@ -24,6 +24,8 @@ import 'settings/general_settings_screen.dart';
 import 'settings/security_settings_screen.dart';
 import 'settings/profile_management_screen.dart';
 import 'settings/profile_import_export_screen.dart';
+import '../widgets/common/app_banner_ad_widget.dart';
+import '../widgets/settings/supporter_settings_section.dart';
 
 /// Main Settings screen with tabs for different settings categories
 class SettingsScreen extends StatefulWidget {
@@ -80,14 +82,21 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
       drawer: const AppDrawer(
         currentRoute: 'settings'
       ),
-      body: TabBarView(
-        controller: _tabController,
+      body: Column(
         children: [
-          _GeneralAndSecurityTab(),
-          _ProfilesTab(
-            key: ValueKey(_profilesTabIndex),
-            onProfilesChanged: _onProfilesChanged,
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _GeneralAndSecurityTab(),
+                _ProfilesTab(
+                  key: ValueKey(_profilesTabIndex),
+                  onProfilesChanged: _onProfilesChanged,
+                ),
+              ],
+            ),
           ),
+          const AppBannerAdWidget(),
         ],
       ),
     );
@@ -101,6 +110,8 @@ class _GeneralAndSecurityTab extends StatelessWidget {
     return const SingleChildScrollView(
       child: Column(
         children: [
+          SupporterSettingsSection(),
+          SizedBox(height: 16),
           GeneralSettingsScreen(),
           SizedBox(height: 16),
           SecuritySettingsScreen(),
