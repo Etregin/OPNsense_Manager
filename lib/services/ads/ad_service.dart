@@ -36,11 +36,10 @@ class AdService {
   bool _isAdFree = false;
 
   // ── Android and iOS banner test ad unit IDs ──────────────────────────────
-  // TODO: Replace test IDs with production IDs before release.
-  static const String _androidBannerTestId =
-      'ca-app-pub-3940256099942544/6300978111';
-  static const String _iosBannerTestId =
-      'ca-app-pub-3940256099942544/2934735716';
+  static const String _androidBanner =
+      'ca-app-pub-1147999674623176/2922541728';
+  static const String _iosBanner =
+      'ca-app-pub-1147999674623176/5924109586';
 
   // ── Public getters ────────────────────────────────────────────────────────
 
@@ -84,7 +83,7 @@ class AdService {
     if (!showAds) return null;
 
     final adUnitId =
-        Platform.isAndroid ? _androidBannerTestId : _iosBannerTestId;
+        Platform.isAndroid ? _androidBanner : _iosBanner;
 
     return BannerAd(
       adUnitId: adUnitId,

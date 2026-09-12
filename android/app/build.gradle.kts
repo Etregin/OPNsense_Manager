@@ -77,6 +77,15 @@ android {
     }
 }
 
+// Show full deprecation details (class + line) for the playstore flavor only.
+// The google_mobile_ads and in_app_purchase dependencies call deprecated Android
+// APIs; this makes the javac notes actionable during investigation.
+tasks.withType<JavaCompile>().configureEach {
+    if (name.contains("Playstore", ignoreCase = true)) {
+        options.compilerArgs.add("-Xlint:deprecation")
+    }
+}
+
 flutter {
     source = "../.."
 }

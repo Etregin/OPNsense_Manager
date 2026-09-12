@@ -25,7 +25,6 @@ import '../../services/supporter_service.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
 import '../../utils/snackbar_helper.dart';
-import 'settings_section.dart';
 
 /// Settings section that surfaces supporter status, IAP purchase/restore
 /// (playstore only), and legacy access claim on all flavors.
@@ -111,52 +110,70 @@ class _SupporterSettingsSectionState extends State<SupporterSettingsSection> {
 
     final l10n = AppLocalizations.of(context)!;
 
-    final Widget? loadingIndicator = _isLoading
-        ? const SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          )
-        : null;
-
-    final children = <Widget>[];
-
     if (_isSupporter) {
-      children.add(
-        ListTile(
+      return Card(
+        elevation: 2,
+        clipBehavior: Clip.antiAlias,
+        child: ListTile(
           leading: const Icon(Icons.verified, color: AppColors.success),
           title: Text(l10n.supporterActiveStatus),
         ),
       );
-    } else {
-      children.addAll([
-        ListTile(
-          leading: const Icon(Icons.star_outline),
-          title: Text(l10n.becomeSupporter),
-          subtitle: Text(l10n.becomeSupporterSubtitle),
-          trailing: loadingIndicator,
-          onTap: _isLoading ? null : _handleBuy,
-        ),
-        ListTile(
-          leading: const Icon(Icons.restore),
-          title: Text(l10n.restorePurchase),
-          subtitle: Text(l10n.restorePurchaseSubtitle),
-          trailing: loadingIndicator,
-          onTap: _isLoading ? null : _handleRestore,
-        ),
-        ListTile(
-          leading: const Icon(Icons.redeem_outlined),
-          title: Text(l10n.claimLegacyAccess),
-          subtitle: Text(l10n.claimLegacyAccessSubtitle),
-          onTap: _handleClaimLegacy,
-        ),
-      ]);
     }
 
-    return SettingsSection(
-      title: l10n.supporterAndAdRemoval,
-      icon: Icons.star_outline,
-      children: children,
+    return Card(
+      elevation: 2,
+      clipBehavior: Clip.antiAlias,
+      child: ExpansionTile(
+        initiallyExpanded: false,
+        leading: const Icon(Icons.star_outline),
+        title: Text(l10n.supporterAndAdRemoval),
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                FilledButton.icon(
+                  onPressed: _isLoading ? null : _handleBuy,
+                  icon: _isLoading
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Icon(Icons.star),
+                  label: Text(l10n.becomeSupporter),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  l10n.becomeSupporterSubtitle,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                OutlinedButton.icon(
+                  onPressed: _isLoading ? null : _handleRestore,
+                  icon: const Icon(Icons.restore),
+                  label: Text(l10n.restorePurchase),
+                ),
+                const SizedBox(height: 4),
+                Center(
+                  child: TextButton(
+                    onPressed: _isLoading ? null : _handleClaimLegacy,
+                    child: Text(l10n.claimLegacyAccess),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
