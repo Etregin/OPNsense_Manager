@@ -277,11 +277,13 @@ Builds:
       - export PUB_CACHE=$(pwd)/.pub-cache
       - sed -i '/org.gradle.java.home/d' android/gradle.properties
       - sed -i -e '/google_mobile_ads/d' -e '/in_app_purchase/d' pubspec.yaml
+      - sed -i -e '/google_mobile_ads:/,/version:/d' -e '/in_app_purchase/,/version:/d'
+        -e '/webview_flutter/,/version:/d' pubspec.lock
       - cp lib/services/ads/ad_service_fdroid.dart lib/services/ads/ad_service.dart
       - cp lib/services/supporter_service_fdroid.dart lib/services/supporter_service.dart
       - cp lib/widgets/common/app_banner_ad_widget_fdroid.dart lib/widgets/common/app_banner_ad_widget.dart
       - $$flutter$$/bin/flutter config --no-analytics
-      - $$flutter$$/bin/flutter pub get
+      - $$flutter$$/bin/flutter pub get --enforce-lockfile
     scandelete:
       - .pub-cache
     build:
@@ -309,11 +311,13 @@ Builds:
       - export PUB_CACHE=$(pwd)/.pub-cache
       - sed -i '/org.gradle.java.home/d' android/gradle.properties
       - sed -i -e '/google_mobile_ads/d' -e '/in_app_purchase/d' pubspec.yaml
+      - sed -i -e '/google_mobile_ads:/,/version:/d' -e '/in_app_purchase/,/version:/d'
+        -e '/webview_flutter/,/version:/d' pubspec.lock
       - cp lib/services/ads/ad_service_fdroid.dart lib/services/ads/ad_service.dart
       - cp lib/services/supporter_service_fdroid.dart lib/services/supporter_service.dart
       - cp lib/widgets/common/app_banner_ad_widget_fdroid.dart lib/widgets/common/app_banner_ad_widget.dart
       - $$flutter$$/bin/flutter config --no-analytics
-      - $$flutter$$/bin/flutter pub get
+      - $$flutter$$/bin/flutter pub get --enforce-lockfile
     scandelete:
       - .pub-cache
     build:
@@ -341,11 +345,13 @@ Builds:
       - export PUB_CACHE=$(pwd)/.pub-cache
       - sed -i '/org.gradle.java.home/d' android/gradle.properties
       - sed -i -e '/google_mobile_ads/d' -e '/in_app_purchase/d' pubspec.yaml
+      - sed -i -e '/google_mobile_ads:/,/version:/d' -e '/in_app_purchase/,/version:/d'
+        -e '/webview_flutter/,/version:/d' pubspec.lock
       - cp lib/services/ads/ad_service_fdroid.dart lib/services/ads/ad_service.dart
       - cp lib/services/supporter_service_fdroid.dart lib/services/supporter_service.dart
       - cp lib/widgets/common/app_banner_ad_widget_fdroid.dart lib/widgets/common/app_banner_ad_widget.dart
       - $$flutter$$/bin/flutter config --no-analytics
-      - $$flutter$$/bin/flutter pub get
+      - $$flutter$$/bin/flutter pub get --enforce-lockfile
     scandelete:
       - .pub-cache
     build:
