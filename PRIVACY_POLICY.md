@@ -1,6 +1,6 @@
 # Privacy Policy for OPNsense Manager
 
-**Last Updated: April 2, 2026**
+**Last Updated: September 13, 2026**
 
 ## Introduction
 
@@ -43,8 +43,8 @@ OPNsense Manager stores the following information **locally on your device only*
 - ❌ We do NOT transmit your data to our servers (we don't have any servers)
 - ❌ We do NOT track your usage or behavior
 - ❌ We do NOT use analytics or tracking services
-- ❌ We do NOT share your data with third parties
 - ❌ We do NOT sell your data to anyone
+- ⚠️ We do NOT share your data with third parties, **with one exception**: the Play Store and App Store versions use Google AdMob to display banner ads. AdMob may collect limited device data as described in the [Advertising](#advertising-play-store--app-store-versions-only) section below.
 
 ## How We Use Your Information
 
@@ -114,15 +114,76 @@ You have complete control over your data:
 
 ## Third-Party Services
 
-OPNsense Manager does NOT use any third-party services, including:
+OPNsense Manager uses minimal third-party services:
 
 - ❌ No analytics services (Google Analytics, Firebase Analytics, etc.)
 - ❌ No crash reporting services
-- ❌ No advertising networks
 - ❌ No social media integrations
 - ❌ No cloud storage services
+- ⚠️ **Google AdMob** — used for banner advertising in the Play Store (Android) and App Store (iOS) versions only. See the [Advertising](#advertising-play-store--app-store-versions-only) section for full details.
 
-The app is completely self-contained and only communicates with your OPNsense firewall.
+The F-Droid and GitHub direct builds are completely self-contained and only communicate with your OPNsense firewall.
+
+## Advertising (Play Store & App Store Versions Only)
+
+The Play Store (Android) and App Store (iOS) versions of OPNsense Manager display banner advertisements powered by **Google AdMob**. This section explains how advertising works and what data may be collected.
+
+### Why Ads?
+
+Ads allow OPNsense Manager to be distributed free of charge on the Play Store and App Store while funding continued development and maintenance.
+
+### Where Ads Appear
+
+Banner ads appear only on **informational screens**, including:
+
+- Dashboard
+- System Info & System Health
+- Settings
+- DHCP Leases
+- Neighbor Discovery
+- Network Insight / NetFlow
+- Unbound DNS
+
+Ads **never** appear on critical security or configuration screens such as firewall rule editing, VPN controls, or authentication screens.
+
+### How to Remove Ads
+
+You can permanently remove all ads with a **one-time Supporter purchase** available in the app:
+
+1. Go to **Settings**
+2. Tap **Supporter & Ad Removal**
+3. Complete the one-time in-app purchase
+
+Your supporter status is tied to your store account and can be restored at any time using the **Restore Purchase** option.
+
+### What AdMob May Collect
+
+When ads are shown, Google AdMob may collect the following data on behalf of Google:
+
+- **Advertising ID** — Android Advertising ID (AAID) or iOS Identifier for Advertisers (IDFA), used to serve relevant ads
+- **IP Address** — used for general geographic targeting (country/region level)
+- **Device information** — device model, OS version, screen size
+- **Ad interaction data** — whether an ad was viewed or tapped
+
+OPNsense Manager itself does **not** receive or store any of this data. It is collected and processed solely by Google under their own privacy policy.
+
+### AdMob Data Processing
+
+Google AdMob processes ad-related data in accordance with:
+
+- [Google Privacy Policy](https://policies.google.com/privacy)
+- [Google AdMob & AdSense Policies](https://support.google.com/admob/answer/6128543)
+
+### Opting Out of Personalised Ads
+
+You can limit ad personalisation at the device level:
+
+- **Android**: Settings → Google → Ads → Delete Advertising ID, or opt out of ads personalisation
+- **iOS**: Settings → Privacy & Security → Apple Advertising → turn off Personalised Ads (for Apple ads) or use App Tracking Transparency prompts
+
+### Ad-Free Builds
+
+The **F-Droid** and **GitHub direct** builds of OPNsense Manager do not include the AdMob SDK and do not show any advertisements. No ad-related data is collected on these builds.
 
 ## Children's Privacy
 
@@ -179,17 +240,19 @@ We implement security best practices:
 
 ### GDPR Compliance (European Users)
 
-- **Data Controller**: You are the data controller (data stays on your device)
-- **Data Processing**: All processing happens locally on your device
+- **Data Controller**: You are the data controller for all app data (stays on your device)
+- **Data Processing**: All app processing happens locally on your device
 - **Right to Access**: You can view all stored data in the app
 - **Right to Erasure**: You can delete data at any time
 - **Right to Portability**: You can export your data as JSON
+- **AdMob (store versions only)**: Google acts as a data processor for advertising. Google's data processing is governed by their [Data Processing Addendum](https://privacy.google.com/businesses/processorterms/). You may opt out of personalised ads via your device settings.
 
 ### CCPA Compliance (California Users)
 
 - **No Sale of Data**: We do not sell your personal information
-- **No Sharing**: We do not share your data with third parties
+- **No Sharing**: We do not share your personal data with third parties, except that AdMob (store versions only) may collect device identifiers for advertising purposes under Google's own CCPA compliance posture
 - **No Collection**: We do not collect personal information beyond what's necessary for app functionality
+- **AdMob opt-out**: California residents may opt out of the sale/sharing of personal information for advertising via Android or iOS device ad settings
 
 ## Contact Us
 
@@ -211,15 +274,16 @@ By using OPNsense Manager, you acknowledge that you have read and understood thi
 
 ## Summary (TL;DR)
 
-- ✅ All data stored **locally on your device only**
-- ✅ **No servers**, no cloud, no tracking
-- ✅ **No data collection** or sharing with third parties
-- ✅ **Open source** - verify our claims by reviewing the code
+- ✅ All app data stored **locally on your device only**
+- ✅ **No servers**, no cloud, no tracking by us
+- ✅ **No data collection** by us beyond what's needed for app functionality
+- ✅ **Open source** — verify our claims by reviewing the code
 - ✅ **You control** all your data
 - ✅ **Encrypted storage** for credentials
 - ✅ **Direct connection** to your OPNsense firewall only
+- ⚠️ **Play Store & App Store versions** show banner ads via Google AdMob — removable with a one-time Supporter purchase. F-Droid and GitHub direct builds have no ads.
 
-**We respect your privacy because we don't have access to your data in the first place.**
+**We respect your privacy. Your firewall credentials and network data never leave your device.**
 
 ---
 
