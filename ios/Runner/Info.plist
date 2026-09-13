@@ -28,6 +28,12 @@
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>mailto</string>
+			<string>https</string>
+			<string>http</string>
+		</array>
 		<key>NSFaceIDUsageDescription</key>
 		<string>Authenticate using Face ID to unlock OPNsense Manager</string>
 		<key>NSPhotoLibraryUsageDescription</key>
@@ -76,5 +82,14 @@
 		</array>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+		<key>GADApplicationIdentifier</key>
+		<string>ca-app-pub-3940256099942544~1458002511</string>
+		<key>SKAdNetworkItems</key>
+		<array>
+			<dict>
+				<key>SKAdNetworkIdentifier</key>
+				<string>cstr6suwn9.skadnetwork</string>
+			</dict>
+		</array>
 	</dict>
 </plist>

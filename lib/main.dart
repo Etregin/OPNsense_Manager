@@ -32,34 +32,25 @@ import 'services/opnsense_api_service.dart';
 import 'services/demo_api_service.dart';
 import 'services/auth_service.dart';
 import 'services/profile_service.dart';
+import 'services/supporter_service.dart';
+import 'services/ads/ad_service.dart';
+import 'config/flavor_config.dart';
 import 'config/theme_config.dart' show ThemeConfig;
-import 'utils/app_colors.dart';
 import 'utils/constants.dart';
 import 'l10n/app_localizations.dart';
 
 void main() async {
+  FlavorConfig.initialize();
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Enable edge-to-edge display for proper Android 15+ support
-  // This makes the app draw behind system bars (status bar and navigation bar)
-  unawaited(SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge));
-  
-  // Set system UI overlay style to be transparent
-  // This removes the deprecated status bar and navigation bar colors
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: AppColors.transparent,
-      systemNavigationBarColor: AppColors.transparent,
-      systemNavigationBarDividerColor: AppColors.transparent,
-    ),
-  );
-  
+
   // Initialize services in parallel for faster startup
   await Future.wait([
     StorageService().init(),
     AuthService().init(),
     ProfileService().init(),
     AppVersionService().init(),
+    SupporterService().init(),
+    AdService().initialize(),
   ]);
   
   // Migrate from old storage to profile-based storage (non-blocking)
@@ -75,15 +66,41 @@ class OPNsenseManagerApp extends StatefulWidget {
   State<OPNsenseManagerApp> createState() => _OPNsenseManagerAppState();
 }
 
-class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
+class _OPNsenseManagerAppState extends State<OPNsenseManagerApp>
+    with WidgetsBindingObserver {
   ThemeMode _themeMode = ThemeMode.system;
   Locale? _locale;
+
+  // Hides the navigation bar and keeps only the status bar.
+  // Must be called on startup and every time the app is resumed because
+  // Android resets system UI flags on resume, keyboard show, and other events.
+  static void _hideNavBar() {
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: [SystemUiOverlay.top],
+    );
+  }
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _hideNavBar();
     _loadThemeMode();
     _loadLocale();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _hideNavBar();
+    }
   }
 
   Future<void> _loadThemeMode() async {
@@ -145,6 +162,12 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp> {
         ),
         Provider<AppVersionService>(
           create: (_) => AppVersionService(),
+        ),
+        ChangeNotifierProvider<SupporterService>(
+          create: (_) => SupporterService(),
+        ),
+        ChangeNotifierProvider<AdService>(
+          create: (_) => AdService(),
         ),
         Provider<Function(String)>(
           create: (_) => _updateThemeMode,

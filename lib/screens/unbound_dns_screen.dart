@@ -28,6 +28,7 @@ import '../widgets/common/error_display.dart';
 import '../widgets/unbound/unbound_details_tab.dart';
 import '../widgets/unbound/unbound_overview_tab.dart';
 import '../widgets/unbound/unbound_settings_tab.dart';
+import '../widgets/common/app_banner_ad_widget.dart';
 
 class UnboundDnsScreen extends StatefulWidget {
   const UnboundDnsScreen({super.key});
@@ -106,7 +107,10 @@ class _UnboundDnsScreenState extends State<UnboundDnsScreen>
         ],
       ),
       drawer: const AppDrawer(currentRoute: Routes.unboundDns),
-      body: ListenableBuilder(
+      body: Column(
+        children: [
+          Expanded(
+            child: ListenableBuilder(
         listenable: _viewModel,
         builder: (context, _) {
           if (_viewModel.isLoading && _viewModel.settings == null && _viewModel.totals == null) {
@@ -147,6 +151,10 @@ class _UnboundDnsScreenState extends State<UnboundDnsScreen>
                   ],
           );
         },
+          ),
+          ),
+          const AppBannerAdWidget(),
+        ],
       ),
     );
   }

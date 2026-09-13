@@ -54,5 +54,15 @@
         <intent>
             <action android:name="android.intent.action.GET_CONTENT"/>
         </intent>
+        <!-- Allow querying email apps for mailto: links -->
+        <intent>
+            <action android:name="android.intent.action.SENDTO"/>
+            <data android:scheme="mailto"/>
+        </intent>
+        <!-- Allow querying browser apps for https: links -->
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="https"/>
+        </intent>
     </queries>
 </manifest>

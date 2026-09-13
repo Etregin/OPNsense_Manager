@@ -20,14 +20,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../config/flavor_config.dart';
 import '../services/app_version_service.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../services/auth_service.dart';
 import '../services/profile_service.dart';
+import '../services/supporter_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../l10n/app_localizations.dart';
+import '../widgets/common/migration_dialog.dart';
 import 'profile_selection_screen.dart';
 import 'dashboard_screen.dart';
 import 'pin_lock_screen.dart';
@@ -86,6 +89,16 @@ class _SplashScreenState extends State<SplashScreen> {
     await _proceedToAppWithContext(context, profileService, demoApiService, realApiService);
   }
 
+  /// Shows the migration dialog once if on a flavor that supports ads and the
+  /// dialog has not been dismissed yet.
+  Future<void> _showMigrationDialogIfNeeded(BuildContext context) async {
+    if (!FlavorConfig().supportsAds) return;
+    final dismissed = await context.read<SupporterService>().isMigrationDismissed();
+    if (dismissed) return;
+    if (!context.mounted) return;
+    await MigrationDialog.show(context);
+  }
+
   Future<void> _proceedToAppWithContext(
     BuildContext context,
     ProfileService profileService,
@@ -119,6 +132,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
       if (!context.mounted) return;
 
+      await _showMigrationDialogIfNeeded(context);
+      if (!context.mounted) return;
+
       if (isConnected) {
         // Navigate to dashboard
         unawaited(
@@ -138,6 +154,8 @@ class _SplashScreenState extends State<SplashScreen> {
         );
       }
     } else {
+      if (!context.mounted) return;
+      await _showMigrationDialogIfNeeded(context);
       if (!context.mounted) return;
       unawaited(
         Navigator.of(context).pushReplacement(

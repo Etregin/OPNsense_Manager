@@ -28,6 +28,7 @@ import '../widgets/app_drawer.dart';
 import '../widgets/common/confirmation_dialog.dart';
 import '../widgets/common/error_display.dart';
 import '../utils/single_init_mixin.dart';
+import '../widgets/common/app_banner_ad_widget.dart';
 
 /// NetFlow configuration screen with two tabs: Capture and Cache.
 class NetflowScreen extends StatefulWidget {
@@ -81,15 +82,22 @@ class _NetflowScreenState extends State<NetflowScreen>
         ),
       ),
       drawer: const AppDrawer(currentRoute: Routes.netflow),
-      body: ListenableBuilder(
-        listenable: _viewModel,
-        builder: (context, _) => TabBarView(
-          controller: _tabController,
-          children: [
-            _CaptureTab(viewModel: _viewModel),
-            _CacheTab(viewModel: _viewModel),
-          ],
-        ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListenableBuilder(
+              listenable: _viewModel,
+              builder: (context, _) => TabBarView(
+                controller: _tabController,
+                children: [
+                  _CaptureTab(viewModel: _viewModel),
+                  _CacheTab(viewModel: _viewModel),
+                ],
+              ),
+            ),
+          ),
+          const AppBannerAdWidget(),
+        ],
       ),
     );
   }

@@ -12,10 +12,10 @@ A Flutter mobile application for managing OPNsense firewalls and routers.
 [![Issues][issues-shield]][issues-url]
 [![License][license-shield]][license-url]
 
-<p>
-  <a href="https://play.google.com/store/apps/details?id=com.dt.opnsense_manager"><img src="https://raw.githubusercontent.com/Etregin/OPNsense_Manager/main/assets/getiton/GooglePlayStore.svg" alt="Get it on Google Play" height="40"></a>
-  <a href="https://apps.apple.com/us/app/opnsense-manager/id6767634059"><img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" height="50"></a>
-  <a href="https://f-droid.org/en/packages/com.dt.opnsense_manager/"><img src="https://raw.githubusercontent.com/Etregin/OPNsense_Manager/main/assets/getiton/F-Droid.svg" alt="Get it on F-Droid" height="55"></a>
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.dt.opnsense_manager"><img src="assets/getiton/GetItOnGooglePlay_Badge_Web_color_English.svg" alt="Get it on Google Play" height="40" style="vertical-align:middle"></a>
+  <a href="https://apps.apple.com/us/app/opnsense-manager/id6767634059"><img src="assets/getiton/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg" alt="Download on the App Store" height="40" style="vertical-align:middle"></a>
+  <a href="https://f-droid.org/en/packages/com.dt.opnsense_manager/"><img src="assets/getiton/fdroid_get-it-on.svg" alt="Get it on F-Droid" height="58" style="vertical-align:middle"></a>
 </p>
 
 </div>
@@ -23,6 +23,22 @@ A Flutter mobile application for managing OPNsense firewalls and routers.
 ## About
 
 OPNsense Manager lets you monitor and manage OPNsense from a mobile device. It supports firewall management, network monitoring, VPN management, services, profiles, and system information through the OPNsense API.
+
+The app is free to download on Google Play and the App Store. Banner ads appear on informational screens such as the Dashboard and Settings, and are never shown on operational screens such as firewall rule editing or VPN controls. A one-time in-app supporter purchase removes all ads permanently. F-Droid and GitHub builds are always ad-free and include no in-app purchases.
+
+### Donate
+
+If you find OPNsense Manager useful, you can also support its development with a crypto donation:
+
+**USDT / USDC:**
+
+```text
+0xe0b9015117a4a69131481c2e9c1553dde839df18
+```
+
+![Donation QR code](https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=0xe0b9015117a4a69131481c2e9c1553dde839df18)
+
+Supported networks include BEP20, BSC, ERC20, Base, Polygon, Arbitrum, and Avalanche C-Chain. Binance gift cards can be sent to `etreginwow@gmail.com`.
 
 ## Features
 
@@ -72,6 +88,9 @@ OPNsense Manager lets you monitor and manage OPNsense from a mobile device. It s
 - Multiple languages.
 - Configurable automatic refresh.
 - Material Design interface for phones and supported screen sizes.
+- Free on Google Play and the App Store; banner ads appear on informational screens only.
+- One-time in-app supporter purchase removes all ads permanently.
+- F-Droid and GitHub builds are ad-free and include no in-app purchases.
 
 ## Screenshots
 
@@ -156,17 +175,14 @@ Check the API user's permissions and confirm that the relevant service, plugin, 
 
 ## Support the Project
 
-If you find OPNsense Manager useful, support its development:
+### Remove ads
 
-**USDT / USDC:**
+A one-time supporter purchase is available from **Settings → Support the Project** inside the app on Google Play and the App Store. Purchasing removes all banner ads permanently.
 
-```text
-0xe0b9015117a4a69131481c2e9c1553dde839df18
-```
+### Previously purchased the app?
 
-![Donation QR code](https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=0xe0b9015117a4a69131481c2e9c1553dde839df18)
+If you paid for OPNsense Manager before it became free, your ad-free experience is preserved. Email `Etreginwow@gmail.com` with your Google Play or App Store order number and we will send you a promo code to unlock ad-free access at no charge.
 
-Supported networks include BEP20, BSC, ERC20, Base, Polygon, Arbitrum, and Avalanche C-Chain. Binance gift cards can be sent to `etreginwow@gmail.com`.
 
 ## Contributing
 

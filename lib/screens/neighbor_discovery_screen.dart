@@ -28,6 +28,7 @@ import '../viewmodels/neighbor_discovery_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/error_display.dart';
 import '../widgets/common/empty_state_widget.dart';
+import '../widgets/common/app_banner_ad_widget.dart';
 
 /// Screen displaying discovered neighbors from OPNsense
 class NeighborDiscoveryScreen extends StatefulWidget {
@@ -156,14 +157,21 @@ class _NeighborDiscoveryScreenState extends State<NeighborDiscoveryScreen>
             ],
           ),
           drawer: const AppDrawer(currentRoute: '/neighbor_discovery'),
-          body: _viewModel.isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : _viewModel.errorMessage != null
-                  ? ErrorDisplay(
-                      message: _viewModel.errorMessage!,
-                      onRetry: _viewModel.loadItems,
-                    )
-                  : _buildContent(),
+          body: Column(
+            children: [
+              Expanded(
+                child: _viewModel.isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : _viewModel.errorMessage != null
+                        ? ErrorDisplay(
+                            message: _viewModel.errorMessage!,
+                            onRetry: _viewModel.loadItems,
+                          )
+                        : _buildContent(),
+              ),
+              const AppBannerAdWidget(),
+            ],
+          ),
         );
       },
     );

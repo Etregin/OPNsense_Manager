@@ -42,6 +42,8 @@ class AppConstants {
   static const String keyLocale                       = 'locale';
   static const String keyNetworkMonitorBandwidthLimit = 'network_monitor_bandwidth_limit';
   static const String keyNetworkMonitorInterfaces     = 'network_monitor_interfaces';
+  static const String keySupporterActive              = 'supporter_active';
+  static const String keyMigrationNoticeDismissed     = 'migration_notice_dismissed';
 
   // UI Constants
   static const double standardPadding = 16.0;
@@ -132,7 +134,38 @@ class StringConstants {
   // Support & Donation
   static const String donationCryptoAddress = '0xe0b9015117a4a69131481c2e9c1553dde839df18';
   static const String donationBinanceEmail = 'etreginwow@gmail.com';
+
+  // Support and legacy order verification details
+  static const String supportEmail = 'etreginwow@gmail.com';
+  static const String legacyClaimSubject = 'Legacy Order Verification - OPNsense Manager';
+  static const String legacyClaimBody =
+      'Hi,\n\n'
+      'I previously purchased OPNsense Manager and would like to claim my ad-free access.\n\n'
+      'My order number is: [GPA.xxxx / Apple Order ID]\n\n'
+      'Thank you!';
+
+  /// Legacy order verification mailto [Uri].
+  ///
+  /// Built manually with [Uri.encodeComponent] so spaces are encoded as `%20`
+  /// (RFC 6068) rather than `+` (which Android email clients display literally).
+  static Uri get legacyClaimUri {
+    final subject = Uri.encodeComponent(legacyClaimSubject);
+    final body = Uri.encodeComponent(legacyClaimBody);
+    return Uri.parse('mailto:$supportEmail?subject=$subject&body=$body');
+  }
+
+  // Pre-encoded mailto: URI string for backwards compatibility
+  static String get legacyClaimMailtoUri => legacyClaimUri.toString();
   static const String donationCryptoTokens = 'USDT / USDC';
   static const String donationCryptoNetworks = 'BEP20, BSC, ERC20, Base, Polygon, Arbitrum, Avalanche C-Chain';
+
+  // In-App Purchase & Store URLs
+  static const String supporterProductId = 'opnsense_manager_supporter';
+  // Play Store listing URL (for legacy users to redeem promo codes)
+  static const String playStoreListingUrl = 'https://play.google.com/store/apps/details?id=com.dt.opnsense_manager';
+  static const String appStoreListingUrl = 'https://apps.apple.com/us/app/opnsense-manager/id6767634059';
+
+  // GitHub repository URLs
+  static const String githubIssuesUrl = 'https://github.com/Etregin/OPNsense_Manager/issues/new/choose';
 }
 

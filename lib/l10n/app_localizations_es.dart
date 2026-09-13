@@ -12,6 +12,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get about => 'Acerca de';
 
   @override
+  String get suggestFeatureOrReportBug =>
+      'Sugerir una función / Reportar un error';
+
+  @override
+  String get couldNotOpenBrowser => 'No se pudo abrir el navegador';
+
+  @override
   String get support => 'Apoyar';
 
   @override
@@ -4481,4 +4488,74 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get healthDeleteReportConfirmMessage =>
       '¿Eliminar este informe recopilado? Los datos del gráfico para esta entrada se perderán.';
+
+  @override
+  String get migrationDialogTitle => '¡OPNsense Manager se vuelve gratuito!';
+
+  @override
+  String get migrationDialogWhyTitle => '¿Por qué el cambio?';
+
+  @override
+  String get migrationDialogWhyBody =>
+      'Hacer la app gratuita amplía la adopción de la comunidad y apoya el desarrollo de código abierto.';
+
+  @override
+  String get migrationDialogAdsTitle => 'Sobre los anuncios';
+
+  @override
+  String get migrationDialogAdsBody =>
+      'Los banners publicitarios aparecerán en pantallas informativas como el Panel y la Configuración. Nunca aparecerán en pantallas críticas como la edición de reglas de firewall o los controles de VPN.';
+
+  @override
+  String get migrationDialogLegacyTitle => '¿Ya eres usuario de pago?';
+
+  @override
+  String get migrationDialogLegacyBody =>
+      'Si compraste la app anteriormente, tu experiencia se mantiene 100% libre de anuncios. Pulsa en \"Reclamar acceso heredado\" para enviarnos tu número de pedido por correo electrónico y recibir un código promocional.';
+
+  @override
+  String get claimLegacyAccess => 'Reclamar acceso heredado';
+
+  @override
+  String get continueToApp => 'Continuar a la app';
+
+  @override
+  String get supporterAndAdRemoval => 'Patrocinador y eliminación de anuncios';
+
+  @override
+  String get supporterActiveStatus => 'Patrocinador activo';
+
+  @override
+  String get becomeSupporter => 'Eliminar anuncios / Ser patrocinador';
+
+  @override
+  String get becomeSupporterSubtitle =>
+      'Compra única para eliminar todos los anuncios';
+
+  @override
+  String get restorePurchase => 'Restaurar compra';
+
+  @override
+  String get restorePurchaseSubtitle =>
+      '¿Ya compraste? Restaura tu estado de patrocinador';
+
+  @override
+  String get claimLegacyAccessSubtitle =>
+      '¿Compraste la app anteriormente? Envíanos tu número de pedido para recibir un código promocional';
+
+  @override
+  String get supporterPurchaseSuccess =>
+      '¡Gracias! Los anuncios han sido eliminados.';
+
+  @override
+  String get supporterRestoreSuccess =>
+      'Estado de patrocinador restaurado. Anuncios eliminados.';
+
+  @override
+  String get supporterRestoreNotFound =>
+      'No se encontró ninguna compra anterior.';
+
+  @override
+  String get supporterPurchaseFailed =>
+      'La compra falló. Por favor, inténtalo de nuevo.';
 }
