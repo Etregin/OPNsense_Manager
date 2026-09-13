@@ -12,6 +12,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get about => 'About';
 
   @override
+  String get suggestFeatureOrReportBug => 'Suggest a Feature / Report a Bug';
+
+  @override
+  String get couldNotOpenBrowser => 'Could not open browser';
+
+  @override
   String get support => 'Support';
 
   @override

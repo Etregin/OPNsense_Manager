@@ -164,5 +164,8 @@ class StringConstants {
   // Play Store listing URL (for legacy users to redeem promo codes)
   static const String playStoreListingUrl = 'https://play.google.com/store/apps/details?id=com.dt.opnsense_manager';
   static const String appStoreListingUrl = 'https://apps.apple.com/us/app/opnsense-manager/id6767634059';
+
+  // GitHub repository URLs
+  static const String githubIssuesUrl = 'https://github.com/Etregin/OPNsense_Manager/issues/new/choose';
 }
 

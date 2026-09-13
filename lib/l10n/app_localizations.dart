@@ -110,6 +110,18 @@ abstract class AppLocalizations {
   /// **'About'**
   String get about;
 
+  /// No description provided for @suggestFeatureOrReportBug.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggest a Feature / Report a Bug'**
+  String get suggestFeatureOrReportBug;
+
+  /// No description provided for @couldNotOpenBrowser.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open browser'**
+  String get couldNotOpenBrowser;
+
   /// No description provided for @support.
   ///
   /// In en, this message translates to:

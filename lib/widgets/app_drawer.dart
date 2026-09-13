@@ -47,6 +47,7 @@ import 'drawer/firewall_navigation_section.dart';
 import 'drawer/network_navigation_section.dart';
 import 'drawer/reporting_navigation_section.dart';
 import 'drawer/vpn_navigation_section.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'common/confirmation_dialog.dart';
 import 'common/support_dialog.dart';
 
@@ -281,7 +282,16 @@ class _AppDrawerState extends State<AppDrawer> {
             },
           ),
 
-          // 9. About (individual tile)
+          // 9. Suggest a Feature / Report a Bug
+          ListTile(
+            leading: const Icon(Icons.tips_and_updates_outlined),
+            title: Text(l10n.suggestFeatureOrReportBug),
+            onTap: () {
+              Navigator.pop(context);
+              _launchGitHubIssues(context);
+            },
+          ),
+          // 10. About (individual tile)
           ListTile(
             leading: const Icon(Icons.help_outline),
             title: Text(l10n.about),
@@ -290,6 +300,7 @@ class _AppDrawerState extends State<AppDrawer> {
               _showAboutDialog(context);
             },
           ),
+
         ],
       ),
     );
@@ -468,6 +479,18 @@ class _AppDrawerState extends State<AppDrawer> {
         ),
       ],
     );
+  }
+
+  Future<void> _launchGitHubIssues(BuildContext context) async {
+    final uri = Uri.parse(StringConstants.githubIssuesUrl);
+    try {
+      await launchUrl(uri, mode: LaunchMode.platformDefault);
+    } catch (_) {
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!; // ignore: use_build_context_synchronously
+        SnackBarHelper.showError(context, l10n.couldNotOpenBrowser); // ignore: use_build_context_synchronously
+      }
+    }
   }
 }
 

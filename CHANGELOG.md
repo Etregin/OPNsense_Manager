@@ -2,6 +2,12 @@
 
 All notable changes to OPNsense Manager will be documented in this file.
 
+## [1.8.1]
+
+### Added
+
+- Added "Suggest a Feature / Report a Bug" drawer entry that opens the GitHub Issues template chooser page.
+
 ## [1.8.0] -
 
 ### Added
