@@ -62,12 +62,12 @@ class _AppBannerAdWidgetState extends State<AppBannerAdWidget> {
     _bannerAd!.load();
   }
 
-  void _disposeBannerAd() {
+  void _disposeBannerAd({bool disposing = false}) {
     if (_bannerAd != null || _showAd || _adLoadingOrLoaded) {
       _bannerAd?.dispose();
       _bannerAd = null;
       _adLoadingOrLoaded = false;
-      if (mounted && _showAd) {
+      if (!disposing && mounted && _showAd) {
         setState(() => _showAd = false);
       } else {
         _showAd = false;
@@ -91,7 +91,7 @@ class _AppBannerAdWidgetState extends State<AppBannerAdWidget> {
 
   @override
   void dispose() {
-    _disposeBannerAd();
+    _disposeBannerAd(disposing: true);
     super.dispose();
   }
 
