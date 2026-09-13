@@ -36,20 +36,7 @@ class SupporterSettingsSection extends StatefulWidget {
 }
 
 class _SupporterSettingsSectionState extends State<SupporterSettingsSection> {
-  bool _isSupporter = false;
   bool _isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadSupporterStatus();
-  }
-
-  Future<void> _loadSupporterStatus() async {
-    final service = context.read<SupporterService>();
-    final status = await service.isSupporterActive();
-    if (mounted) setState(() => _isSupporter = status);
-  }
 
   Future<void> _handleBuy() async {
     final service = context.read<SupporterService>();
@@ -57,10 +44,6 @@ class _SupporterSettingsSectionState extends State<SupporterSettingsSection> {
     setState(() => _isLoading = true);
     try {
       await service.buySupporter();
-      // Purchase result comes via SupporterService stream listener.
-      // Re-check status after a brief delay to allow stream processing.
-      await Future.delayed(const Duration(seconds: 2));
-      await _loadSupporterStatus();
     } catch (e) {
       if (mounted) {
         SnackBarHelper.showError(context, l10n.supporterPurchaseFailed);
@@ -76,11 +59,10 @@ class _SupporterSettingsSectionState extends State<SupporterSettingsSection> {
     setState(() => _isLoading = true);
     try {
       await service.restorePurchases();
-      // Give the stream a moment to process.
-      await Future.delayed(const Duration(seconds: 2));
-      await _loadSupporterStatus();
+      // Give the stream a brief moment to process if restored purchases exist.
+      await Future.delayed(const Duration(milliseconds: 500));
       if (mounted) {
-        if (_isSupporter) {
+        if (service.isSupporter) {
           SnackBarHelper.showSuccess(context, l10n.supporterRestoreSuccess);
         } else {
           SnackBarHelper.showInfo(context, l10n.supporterRestoreNotFound);
@@ -128,8 +110,9 @@ class _SupporterSettingsSectionState extends State<SupporterSettingsSection> {
     if (!FlavorConfig().supportsAds) return const SizedBox.shrink();
 
     final l10n = AppLocalizations.of(context)!;
+    final isSupporter = context.select<SupporterService, bool>((s) => s.isSupporter);
 
-    if (_isSupporter) {
+    if (isSupporter) {
       return Card(
         elevation: 2,
         clipBehavior: Clip.antiAlias,

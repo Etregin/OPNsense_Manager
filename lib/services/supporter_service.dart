@@ -17,7 +17,7 @@
  */
 
 import 'dart:async';
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import '../config/flavor_config.dart';
 import '../utils/constants.dart';
@@ -26,17 +26,26 @@ import 'storage_service.dart';
 
 /// Service managing supporter in-app purchase lifecycle, restore operations,
 /// and supporter/migration status storage.
-class SupporterService {
+class SupporterService extends ChangeNotifier {
   static final SupporterService _instance = SupporterService._internal();
   factory SupporterService() => _instance;
   SupporterService._internal();
 
   StreamSubscription<List<PurchaseDetails>>? _purchaseSubscription;
+  bool _isSupporter = false;
+  bool _isInitialized = false;
 
-  /// Initializes the in-app purchase stream subscription.
+  /// Whether the current user is a supporter.
+  bool get isSupporter => _isSupporter;
+
+  /// Initializes the in-app purchase stream subscription and loads initial status.
   ///
   /// Early-returns on non-ad flavors (`fdroid`, `github`).
   Future<void> init() async {
+    final stored = await StorageService().loadBool(AppConstants.keySupporterActive);
+    _isSupporter = stored ?? false;
+    _isInitialized = true;
+
     if (!FlavorConfig().supportsAds) return;
 
     final Stream<List<PurchaseDetails>> purchaseUpdated =
@@ -61,11 +70,11 @@ class SupporterService {
           await setSupporter(true);
           await AdService().refreshAdFreeStatus();
         }
-        if (Platform.isIOS) {
+        if (purchaseDetails.pendingCompletePurchase) {
           await InAppPurchase.instance.completePurchase(purchaseDetails);
         }
       } else if (purchaseDetails.status == PurchaseStatus.error) {
-        if (Platform.isIOS) {
+        if (purchaseDetails.pendingCompletePurchase) {
           await InAppPurchase.instance.completePurchase(purchaseDetails);
         }
       }
@@ -74,12 +83,18 @@ class SupporterService {
 
   /// Checks whether the user has active supporter status.
   Future<bool> isSupporterActive() async {
-    return await StorageService().loadBool(AppConstants.keySupporterActive) ?? false;
+    if (!_isInitialized) {
+      _isSupporter = await StorageService().loadBool(AppConstants.keySupporterActive) ?? false;
+      _isInitialized = true;
+    }
+    return _isSupporter;
   }
 
   /// Sets the supporter status in local storage.
   Future<void> setSupporter(bool value) async {
+    _isSupporter = value;
     await StorageService().saveBool(AppConstants.keySupporterActive, value);
+    notifyListeners();
   }
 
   /// Checks whether the migration notice has been dismissed.
@@ -114,7 +129,9 @@ class SupporterService {
   }
 
   /// Cancels purchase subscription stream.
+  @override
   void dispose() {
     _purchaseSubscription?.cancel();
+    super.dispose();
   }
 }

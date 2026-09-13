@@ -37,44 +37,68 @@ class AppBannerAdWidget extends StatefulWidget {
 class _AppBannerAdWidgetState extends State<AppBannerAdWidget> {
   BannerAd? _bannerAd;
   bool _showAd = false;
-  bool _initialized = false;
+  bool _adLoadingOrLoaded = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_initialized) return;
-    _initialized = true;
+    final adService = context.watch<AdService>();
+    if (!adService.showAds) {
+      _disposeBannerAd();
+      return;
+    }
 
-    final adService = context.read<AdService>();
-    if (!adService.showAds) return;
+    if (!_adLoadingOrLoaded && _bannerAd == null) {
+      _loadBanner(adService);
+    }
+  }
 
+  void _loadBanner(AdService adService) {
     final ad = adService.createBannerAd(AdSize.banner, _createListener());
     if (ad == null) return;
 
+    _adLoadingOrLoaded = true;
     _bannerAd = ad;
     _bannerAd!.load();
   }
 
+  void _disposeBannerAd() {
+    if (_bannerAd != null || _showAd || _adLoadingOrLoaded) {
+      _bannerAd?.dispose();
+      _bannerAd = null;
+      _adLoadingOrLoaded = false;
+      if (mounted && _showAd) {
+        setState(() => _showAd = false);
+      } else {
+        _showAd = false;
+      }
+    }
+  }
+
   BannerAdListener _createListener() {
     return BannerAdListener(
-      onAdLoaded: (_) => setState(() => _showAd = true),
+      onAdLoaded: (_) {
+        if (mounted) setState(() => _showAd = true);
+      },
       onAdFailedToLoad: (ad, _) {
-        setState(() => _showAd = false);
+        if (mounted) setState(() => _showAd = false);
         _bannerAd?.dispose();
         _bannerAd = null;
+        _adLoadingOrLoaded = false;
       },
     );
   }
 
   @override
   void dispose() {
-    _bannerAd?.dispose();
+    _disposeBannerAd();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_showAd || _bannerAd == null) return const SizedBox.shrink();
+    final showAds = context.select<AdService, bool>((service) => service.showAds);
+    if (!showAds || !_showAd || _bannerAd == null) return const SizedBox.shrink();
     return SizedBox(
       height: _bannerAd!.size.height.toDouble(),
       child: AdWidget(ad: _bannerAd!),

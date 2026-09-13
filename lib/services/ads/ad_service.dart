@@ -17,6 +17,7 @@
  */
 
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../config/flavor_config.dart';
 import '../../utils/constants.dart';
@@ -28,7 +29,7 @@ import '../storage_service.dart';
 ///
 /// Call [initialize] once during app startup (after [StorageService] is
 /// ready).  All other methods are safe to call synchronously afterwards.
-class AdService {
+class AdService extends ChangeNotifier {
   static final AdService _instance = AdService._internal();
   factory AdService() => _instance;
   AdService._internal();
@@ -102,6 +103,10 @@ class AdService {
   Future<void> refreshAdFreeStatus() async {
     final stored =
         await StorageService().loadBool(AppConstants.keySupporterActive);
-    _isAdFree = stored ?? false;
+    final newStatus = stored ?? false;
+    if (_isAdFree != newStatus) {
+      _isAdFree = newStatus;
+      notifyListeners();
+    }
   }
 }

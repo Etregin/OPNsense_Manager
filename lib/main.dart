@@ -163,10 +163,10 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp>
         Provider<AppVersionService>(
           create: (_) => AppVersionService(),
         ),
-        Provider<SupporterService>(
+        ChangeNotifierProvider<SupporterService>(
           create: (_) => SupporterService(),
         ),
-        Provider<AdService>(
+        ChangeNotifierProvider<AdService>(
           create: (_) => AdService(),
         ),
         Provider<Function(String)>(
