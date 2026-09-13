@@ -4478,7 +4478,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get claimLegacyAccessSubtitle =>
-      'Previously paid? Email us your order number to receive a promo code';
+      'Previously Purchased the App? Email us your order number to receive a promo code';
 
   @override
   String get supporterPurchaseSuccess => 'Thank you! Ads have been removed.';

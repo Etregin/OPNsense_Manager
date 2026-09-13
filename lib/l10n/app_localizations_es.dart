@@ -4483,68 +4483,72 @@ class AppLocalizationsEs extends AppLocalizations {
       '¿Eliminar este informe recopilado? Los datos del gráfico para esta entrada se perderán.';
 
   @override
-  String get migrationDialogTitle => 'OPNsense Manager is Moving to Free!';
+  String get migrationDialogTitle => '¡OPNsense Manager se vuelve gratuito!';
 
   @override
-  String get migrationDialogWhyTitle => 'Why the change?';
+  String get migrationDialogWhyTitle => '¿Por qué el cambio?';
 
   @override
   String get migrationDialogWhyBody =>
-      'Making the app free expands community adoption and supports open-source development.';
+      'Hacer la app gratuita amplía la adopción de la comunidad y apoya el desarrollo de código abierto.';
 
   @override
-  String get migrationDialogAdsTitle => 'About ads';
+  String get migrationDialogAdsTitle => 'Sobre los anuncios';
 
   @override
   String get migrationDialogAdsBody =>
-      'Banner ads will appear on informational screens like Dashboard and Settings. They will never appear on critical screens like firewall rule editing or VPN controls.';
+      'Los banners publicitarios aparecerán en pantallas informativas como el Panel y la Configuración. Nunca aparecerán en pantallas críticas como la edición de reglas de firewall o los controles de VPN.';
 
   @override
-  String get migrationDialogLegacyTitle => 'Already a paid user?';
+  String get migrationDialogLegacyTitle => '¿Ya eres usuario de pago?';
 
   @override
   String get migrationDialogLegacyBody =>
-      'If you previously purchased the app, your experience stays 100% ad-free. Press on \'Claim Legacy Access\' to email us your order number for the app purchase to get a promo code.';
+      'Si compraste la app anteriormente, tu experiencia se mantiene 100% libre de anuncios. Pulsa en \"Reclamar acceso heredado\" para enviarnos tu número de pedido por correo electrónico y recibir un código promocional.';
 
   @override
-  String get claimLegacyAccess => 'Claim Legacy Access';
+  String get claimLegacyAccess => 'Reclamar acceso heredado';
 
   @override
-  String get continueToApp => 'Continue to App';
+  String get continueToApp => 'Continuar a la app';
 
   @override
-  String get supporterAndAdRemoval => 'Supporter & Ad Removal';
+  String get supporterAndAdRemoval => 'Patrocinador y eliminación de anuncios';
 
   @override
-  String get supporterActiveStatus => 'Supporter Active';
+  String get supporterActiveStatus => 'Patrocinador activo';
 
   @override
-  String get becomeSupporter => 'Remove Ads / Become a Supporter';
+  String get becomeSupporter => 'Eliminar anuncios / Ser patrocinador';
 
   @override
-  String get becomeSupporterSubtitle => 'One-time purchase to remove all ads';
+  String get becomeSupporterSubtitle =>
+      'Compra única para eliminar todos los anuncios';
 
   @override
-  String get restorePurchase => 'Restore Purchase';
+  String get restorePurchase => 'Restaurar compra';
 
   @override
   String get restorePurchaseSubtitle =>
-      'Already purchased? Restore your supporter status';
+      '¿Ya compraste? Restaura tu estado de patrocinador';
 
   @override
   String get claimLegacyAccessSubtitle =>
-      'Previously paid? Email us your order number to receive a promo code';
+      '¿Compraste la app anteriormente? Envíanos tu número de pedido para recibir un código promocional';
 
   @override
-  String get supporterPurchaseSuccess => 'Thank you! Ads have been removed.';
+  String get supporterPurchaseSuccess =>
+      '¡Gracias! Los anuncios han sido eliminados.';
 
   @override
   String get supporterRestoreSuccess =>
-      'Supporter status restored. Ads removed.';
+      'Estado de patrocinador restaurado. Anuncios eliminados.';
 
   @override
-  String get supporterRestoreNotFound => 'No previous purchase found.';
+  String get supporterRestoreNotFound =>
+      'No se encontró ninguna compra anterior.';
 
   @override
-  String get supporterPurchaseFailed => 'Purchase failed. Please try again.';
+  String get supporterPurchaseFailed =>
+      'La compra falló. Por favor, inténtalo de nuevo.';
 }

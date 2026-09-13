@@ -22,6 +22,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/supporter_service.dart';
 import '../../utils/constants.dart';
+import '../../utils/snackbar_helper.dart';
 
 /// One-time migration dialog shown on first launch after moving to free model.
 /// Explains the change, ad placement transparency, and legacy user options.
@@ -75,10 +76,30 @@ class MigrationDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () async {
-            await launchUrl(
-              Uri.parse(StringConstants.legacyClaimMailtoUri),
-              mode: LaunchMode.externalApplication,
-            );
+            final uri = StringConstants.legacyClaimUri;
+            try {
+              final launched = await launchUrl(
+                uri,
+                mode: LaunchMode.platformDefault,
+              );
+              if (!launched && context.mounted) {
+                final l10n = AppLocalizations.of(context)!;
+                await SnackBarHelper.copyToClipboard(
+                  context,
+                  StringConstants.supportEmail,
+                  successMessage: l10n.emailCopied,
+                );
+              }
+            } catch (_) {
+              if (context.mounted) {
+                final l10n = AppLocalizations.of(context)!;
+                await SnackBarHelper.copyToClipboard(
+                  context,
+                  StringConstants.supportEmail,
+                  successMessage: l10n.emailCopied,
+                );
+              }
+            }
           },
           child: Text(l10n.claimLegacyAccess),
         ),

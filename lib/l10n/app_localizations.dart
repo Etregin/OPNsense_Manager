@@ -8081,7 +8081,7 @@ abstract class AppLocalizations {
   /// No description provided for @claimLegacyAccessSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Previously paid? Email us your order number to receive a promo code'**
+  /// **'Previously Purchased the App? Email us your order number to receive a promo code'**
   String get claimLegacyAccessSubtitle;
 
   /// No description provided for @supporterPurchaseSuccess.

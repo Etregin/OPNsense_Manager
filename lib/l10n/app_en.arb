@@ -3662,7 +3662,7 @@
   "@restorePurchase": {},
   "restorePurchaseSubtitle": "Already purchased? Restore your supporter status",
   "@restorePurchaseSubtitle": {},
-  "claimLegacyAccessSubtitle": "Previously paid? Email us your order number to receive a promo code",
+  "claimLegacyAccessSubtitle": "Previously Purchased the App? Email us your order number to receive a promo code",
   "@claimLegacyAccessSubtitle": {},
   "supporterPurchaseSuccess": "Thank you! Ads have been removed.",
   "@supporterPurchaseSuccess": {},

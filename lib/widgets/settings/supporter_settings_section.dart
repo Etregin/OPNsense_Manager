@@ -96,9 +96,28 @@ class _SupporterSettingsSectionState extends State<SupporterSettingsSection> {
   }
 
   Future<void> _handleClaimLegacy() async {
-    await launchUrl(
-      Uri.parse(StringConstants.legacyClaimMailtoUri),
-      mode: LaunchMode.externalApplication,
+    final uri = StringConstants.legacyClaimUri;
+    try {
+      final launched = await launchUrl(
+        uri,
+        mode: LaunchMode.platformDefault,
+      );
+      if (!launched && mounted) {
+        await _fallbackClaimEmail();
+      }
+    } catch (_) {
+      if (mounted) {
+        await _fallbackClaimEmail();
+      }
+    }
+  }
+
+  Future<void> _fallbackClaimEmail() async {
+    final l10n = AppLocalizations.of(context)!;
+    await SnackBarHelper.copyToClipboard(
+      context,
+      StringConstants.supportEmail,
+      successMessage: l10n.emailCopied,
     );
   }
 
@@ -156,11 +175,19 @@ class _SupporterSettingsSectionState extends State<SupporterSettingsSection> {
                       ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 OutlinedButton.icon(
                   onPressed: _isLoading ? null : _handleRestore,
                   icon: const Icon(Icons.restore),
                   label: Text(l10n.restorePurchase),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  l10n.restorePurchaseSubtitle,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 4),
                 Center(
@@ -168,6 +195,14 @@ class _SupporterSettingsSectionState extends State<SupporterSettingsSection> {
                     onPressed: _isLoading ? null : _handleClaimLegacy,
                     child: Text(l10n.claimLegacyAccess),
                   ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  l10n.claimLegacyAccessSubtitle,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),

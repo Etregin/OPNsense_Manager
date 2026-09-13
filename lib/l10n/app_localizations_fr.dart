@@ -4482,68 +4482,71 @@ class AppLocalizationsFr extends AppLocalizations {
       'Supprimer ce rapport collecté ? Les données du graphique pour cette entrée seront perdues.';
 
   @override
-  String get migrationDialogTitle => 'OPNsense Manager is Moving to Free!';
+  String get migrationDialogTitle => 'OPNsense Manager devient gratuit !';
 
   @override
-  String get migrationDialogWhyTitle => 'Why the change?';
+  String get migrationDialogWhyTitle => 'Pourquoi ce changement ?';
 
   @override
   String get migrationDialogWhyBody =>
-      'Making the app free expands community adoption and supports open-source development.';
+      'Rendre l\'application gratuite élargit l\'adoption par la communauté et soutient le développement open-source.';
 
   @override
-  String get migrationDialogAdsTitle => 'About ads';
+  String get migrationDialogAdsTitle => 'À propos des publicités';
 
   @override
   String get migrationDialogAdsBody =>
-      'Banner ads will appear on informational screens like Dashboard and Settings. They will never appear on critical screens like firewall rule editing or VPN controls.';
+      'Des bannières publicitaires apparaîtront sur les écrans informatifs comme le Tableau de bord et les Paramètres. Elles n\'apparaîtront jamais sur les écrans critiques comme l\'édition de règles de pare-feu ou les contrôles VPN.';
 
   @override
-  String get migrationDialogLegacyTitle => 'Already a paid user?';
+  String get migrationDialogLegacyTitle => 'Déjà un utilisateur payant ?';
 
   @override
   String get migrationDialogLegacyBody =>
-      'If you previously purchased the app, your experience stays 100% ad-free. Press on \'Claim Legacy Access\' to email us your order number for the app purchase to get a promo code.';
+      'Si vous avez précédemment acheté l\'application, votre expérience reste 100% sans publicité. Appuyez sur \"Réclamer l\'accès hérité\" pour nous envoyer votre numéro de commande par e-mail et recevoir un code promo.';
 
   @override
-  String get claimLegacyAccess => 'Claim Legacy Access';
+  String get claimLegacyAccess => 'Réclamer l\'accès hérité';
 
   @override
-  String get continueToApp => 'Continue to App';
+  String get continueToApp => 'Continuer vers l\'application';
 
   @override
-  String get supporterAndAdRemoval => 'Supporter & Ad Removal';
+  String get supporterAndAdRemoval => 'Supporter et suppression des publicités';
 
   @override
-  String get supporterActiveStatus => 'Supporter Active';
+  String get supporterActiveStatus => 'Supporter actif';
 
   @override
-  String get becomeSupporter => 'Remove Ads / Become a Supporter';
+  String get becomeSupporter => 'Supprimer les publicités / Devenir supporter';
 
   @override
-  String get becomeSupporterSubtitle => 'One-time purchase to remove all ads';
+  String get becomeSupporterSubtitle =>
+      'Achat unique pour supprimer toutes les publicités';
 
   @override
-  String get restorePurchase => 'Restore Purchase';
+  String get restorePurchase => 'Restaurer l\'achat';
 
   @override
   String get restorePurchaseSubtitle =>
-      'Already purchased? Restore your supporter status';
+      'Déjà acheté ? Restaurez votre statut de supporter';
 
   @override
   String get claimLegacyAccessSubtitle =>
-      'Previously paid? Email us your order number to receive a promo code';
+      'Vous avez déjà acheté l\'application ? Envoyez-nous votre numéro de commande pour recevoir un code promo';
 
   @override
-  String get supporterPurchaseSuccess => 'Thank you! Ads have been removed.';
+  String get supporterPurchaseSuccess =>
+      'Merci ! Les publicités ont été supprimées.';
 
   @override
   String get supporterRestoreSuccess =>
-      'Supporter status restored. Ads removed.';
+      'Statut de supporter restauré. Publicités supprimées.';
 
   @override
-  String get supporterRestoreNotFound => 'No previous purchase found.';
+  String get supporterRestoreNotFound => 'Aucun achat précédent trouvé.';
 
   @override
-  String get supporterPurchaseFailed => 'Purchase failed. Please try again.';
+  String get supporterPurchaseFailed =>
+      'L\'achat a échoué. Veuillez réessayer.';
 }

@@ -135,15 +135,27 @@ class StringConstants {
   static const String donationCryptoAddress = '0xe0b9015117a4a69131481c2e9c1553dde839df18';
   static const String donationBinanceEmail = 'etreginwow@gmail.com';
 
-  // Pre-encoded mailto: URI for legacy order verification.
-  // Spaces encoded as %20 and newlines as %0A so email clients render them correctly.
-  static const String legacyClaimMailtoUri =
-      'mailto:etreginwow@gmail.com'
-      '?subject=Legacy%20Order%20Verification%20-%20OPNsense%20Manager'
-      '&body=Hi%2C%0A%0A'
-      'I%20previously%20purchased%20OPNsense%20Manager%20and%20would%20like%20to%20claim%20my%20ad-free%20access.'
-      '%0A%0AMy%20order%20number%20is%3A%20%5BGPA.xxxx%20%2F%20Apple%20Order%20ID%5D'
-      '%0A%0AThank%20you%21';
+  // Support and legacy order verification details
+  static const String supportEmail = 'etreginwow@gmail.com';
+  static const String legacyClaimSubject = 'Legacy Order Verification - OPNsense Manager';
+  static const String legacyClaimBody =
+      'Hi,\n\n'
+      'I previously purchased OPNsense Manager and would like to claim my ad-free access.\n\n'
+      'My order number is: [GPA.xxxx / Apple Order ID]\n\n'
+      'Thank you!';
+
+  /// Legacy order verification mailto [Uri].
+  ///
+  /// Built manually with [Uri.encodeComponent] so spaces are encoded as `%20`
+  /// (RFC 6068) rather than `+` (which Android email clients display literally).
+  static Uri get legacyClaimUri {
+    final subject = Uri.encodeComponent(legacyClaimSubject);
+    final body = Uri.encodeComponent(legacyClaimBody);
+    return Uri.parse('mailto:$supportEmail?subject=$subject&body=$body');
+  }
+
+  // Pre-encoded mailto: URI string for backwards compatibility
+  static String get legacyClaimMailtoUri => legacyClaimUri.toString();
   static const String donationCryptoTokens = 'USDT / USDC';
   static const String donationCryptoNetworks = 'BEP20, BSC, ERC20, Base, Polygon, Arbitrum, Avalanche C-Chain';
 

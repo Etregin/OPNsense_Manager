@@ -4485,68 +4485,70 @@ class AppLocalizationsDe extends AppLocalizations {
       'Diesen gesammelten Bericht löschen? Die Graphdaten für diesen Eintrag gehen verloren.';
 
   @override
-  String get migrationDialogTitle => 'OPNsense Manager is Moving to Free!';
+  String get migrationDialogTitle => 'OPNsense Manager wird kostenlos!';
 
   @override
-  String get migrationDialogWhyTitle => 'Why the change?';
+  String get migrationDialogWhyTitle => 'Warum diese Änderung?';
 
   @override
   String get migrationDialogWhyBody =>
-      'Making the app free expands community adoption and supports open-source development.';
+      'Die App kostenlos zu machen erweitert die Community und unterstützt die Open-Source-Entwicklung.';
 
   @override
-  String get migrationDialogAdsTitle => 'About ads';
+  String get migrationDialogAdsTitle => 'Über Werbung';
 
   @override
   String get migrationDialogAdsBody =>
-      'Banner ads will appear on informational screens like Dashboard and Settings. They will never appear on critical screens like firewall rule editing or VPN controls.';
+      'Banner-Werbung erscheint auf informativen Bildschirmen wie Dashboard und Einstellungen. Sie erscheint niemals auf kritischen Bildschirmen wie der Bearbeitung von Firewall-Regeln oder VPN-Steuerelementen.';
 
   @override
-  String get migrationDialogLegacyTitle => 'Already a paid user?';
+  String get migrationDialogLegacyTitle => 'Bereits ein zahlender Nutzer?';
 
   @override
   String get migrationDialogLegacyBody =>
-      'If you previously purchased the app, your experience stays 100% ad-free. Press on \'Claim Legacy Access\' to email us your order number for the app purchase to get a promo code.';
+      'Wenn Sie die App zuvor gekauft haben, bleibt Ihre Erfahrung 100% werbefrei. Drücken Sie auf \"Legacy-Zugang beanspruchen\", um uns Ihre Bestellnummer per E-Mail zu senden und einen Promo-Code zu erhalten.';
 
   @override
-  String get claimLegacyAccess => 'Claim Legacy Access';
+  String get claimLegacyAccess => 'Legacy-Zugang beanspruchen';
 
   @override
-  String get continueToApp => 'Continue to App';
+  String get continueToApp => 'Weiter zur App';
 
   @override
-  String get supporterAndAdRemoval => 'Supporter & Ad Removal';
+  String get supporterAndAdRemoval => 'Unterstützer & Werbung entfernen';
 
   @override
-  String get supporterActiveStatus => 'Supporter Active';
+  String get supporterActiveStatus => 'Unterstützer aktiv';
 
   @override
-  String get becomeSupporter => 'Remove Ads / Become a Supporter';
+  String get becomeSupporter => 'Werbung entfernen / Unterstützer werden';
 
   @override
-  String get becomeSupporterSubtitle => 'One-time purchase to remove all ads';
+  String get becomeSupporterSubtitle =>
+      'Einmaliger Kauf zum Entfernen aller Werbung';
 
   @override
-  String get restorePurchase => 'Restore Purchase';
+  String get restorePurchase => 'Kauf wiederherstellen';
 
   @override
   String get restorePurchaseSubtitle =>
-      'Already purchased? Restore your supporter status';
+      'Bereits gekauft? Unterstützer-Status wiederherstellen';
 
   @override
   String get claimLegacyAccessSubtitle =>
-      'Previously paid? Email us your order number to receive a promo code';
+      'App bereits gekauft? Senden Sie uns Ihre Bestellnummer für einen Promo-Code';
 
   @override
-  String get supporterPurchaseSuccess => 'Thank you! Ads have been removed.';
+  String get supporterPurchaseSuccess => 'Vielen Dank! Werbung wurde entfernt.';
 
   @override
   String get supporterRestoreSuccess =>
-      'Supporter status restored. Ads removed.';
+      'Unterstützer-Status wiederhergestellt. Werbung entfernt.';
 
   @override
-  String get supporterRestoreNotFound => 'No previous purchase found.';
+  String get supporterRestoreNotFound => 'Kein früherer Kauf gefunden.';
 
   @override
-  String get supporterPurchaseFailed => 'Purchase failed. Please try again.';
+  String get supporterPurchaseFailed =>
+      'Kauf fehlgeschlagen. Bitte versuchen Sie es erneut.';
 }
