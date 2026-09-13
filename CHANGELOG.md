@@ -8,6 +8,10 @@ All notable changes to OPNsense Manager will be documented in this file.
 
 - Added "Suggest a Feature / Report a Bug" drawer entry that opens the GitHub Issues template chooser page.
 
+### Fixed
+
+- Fixed navigation bar overlapping app content on Android devices — the navigation bar is now fully hidden and revealed only on swipe, matching standard Android app behaviour.
+
 ## [1.8.0] -
 
 ### Added
