@@ -260,7 +260,7 @@ Builds:
 
   - versionName: 1.8.1
     versionCode: 191
-    commit: 
+    commit: 8cd93b2d20fc7afbeb2cd5d52e647212d6148ef6
     output: build/app/outputs/flutter-apk/app-armeabi-v7a-fdroid-release.apk
     srclibs:
       - flutter@stable
@@ -290,7 +290,7 @@ Builds:
 
   - versionName: 1.8.1
     versionCode: 192
-    commit: 
+    commit: 8cd93b2d20fc7afbeb2cd5d52e647212d6148ef6
     output: build/app/outputs/flutter-apk/app-arm64-v8a-fdroid-release.apk
     srclibs:
       - flutter@stable
@@ -320,7 +320,7 @@ Builds:
 
   - versionName: 1.8.1
     versionCode: 193
-    commit: 
+    commit: 8cd93b2d20fc7afbeb2cd5d52e647212d6148ef6
     output: build/app/outputs/flutter-apk/app-x86_64-fdroid-release.apk
     srclibs:
       - flutter@stable
