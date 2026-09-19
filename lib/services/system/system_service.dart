@@ -50,36 +50,10 @@ class SystemService extends BaseOPNsenseService {
 
     try {
       final response = await dio.get(ApiEndpoints.firmwareInfo);
-      
-      if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
-      }
-    } catch (e) {
-      debugPrint('[SystemService] Endpoint fallback: $e');
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      throw handleDioError(e);
     }
-
-    // Try alternative endpoints
-    try {
-      final response = await dio.get(ApiEndpoints.firmwareStatus);
-      
-      if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
-      }
-    } catch (e) {
-      debugPrint('[SystemService] Endpoint fallback: $e');
-    }
-
-    try {
-      final response = await dio.get(ApiEndpoints.systemInfo);
-      
-      if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
-      }
-    } catch (e) {
-      debugPrint('[SystemService] Endpoint fallback: $e');
-    }
-
-    return {};
   }
 
   /// Get system activity (CPU, uptime)
@@ -106,17 +80,6 @@ class SystemService extends BaseOPNsenseService {
     // Try multiple endpoints for disk information
     try {
       final response = await dio.get(ApiEndpoints.diagnosticsSystemDisk);
-      
-      if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
-      }
-    } catch (e) {
-      debugPrint('[SystemService] Endpoint fallback: $e');
-    }
-
-    // Try alternative endpoint
-    try {
-      final response = await dio.get(ApiEndpoints.systemDisk);
       
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;

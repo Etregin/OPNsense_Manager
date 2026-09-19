@@ -2,6 +2,13 @@
 
 All notable changes to OPNsense Manager will be documented in this file.
 
+## [1.8.2]
+
+### Fixed
+
+- Fixed OPNsense API endpoints that had regressed to legacy camelCase names — migrated `getActivity`, `systemDisk`, `systemResources`, `getRule`, `toggleRule`, `delRule`, `getconfig`, and `setconfig` to their current snake_case equivalents.
+- Removed invalid `/core/system/systemDisk` fallback endpoint (HTTP 404) and dead `/core/system/info` fallback from system information fetch.
+
 ## [1.8.1]
 
 ### Added
