@@ -4,6 +4,11 @@ All notable changes to OPNsense Manager will be documented in this file.
 
 ## [1.8.2]
 
+### Changed
+
+- Dashboard disk usage now shows one progress card per mounted filesystem (all mount points returned by the API) instead of only the root filesystem, with used/total sizes and available space per device.
+- Updated dependencies: `flutter_secure_storage` 11.1.1 → 11.2.0, `in_app_purchase` 3.3.0 → 3.3.1, `file_picker` 12.0.0-beta.4 → 13.1.0.
+
 ### Fixed
 
 - Fixed OPNsense API endpoints that had regressed to legacy camelCase names — migrated `getActivity`, `systemDisk`, `systemResources`, `getRule`, `toggleRule`, `delRule`, `getconfig`, and `setconfig` to their current snake_case equivalents.

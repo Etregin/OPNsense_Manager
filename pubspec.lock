@@ -21,10 +21,10 @@ packages:
     dependency: transitive
     description:
       name: android_file_picker
-      sha256: "014c74ab48d452c3252465682375a7fe6ddf56abb908ec361f207a3c4ffb2444"
+      sha256: "14ab27769b54c48d5a8a71aa9858372b7a3ae77572ea0a8aee744643c5d8c53d"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.1"
+    version: "2.0.0"
   ansicolor:
     dependency: transitive
     description:
@@ -37,10 +37,10 @@ packages:
     dependency: transitive
     description:
       name: archive
-      sha256: ace891da0862b0e4cabbb064ee3fd87b2728b898949fdb366d83fe98342c9f19
+      sha256: "6c5bcd986e06b94e3c40244af471750840a3d2341d1f9763a1100a14add517b4"
       url: "https://pub.dev"
     source: hosted
-    version: "4.2.0"
+    version: "4.3.0"
   args:
     dependency: transitive
     description:
@@ -269,42 +269,42 @@ packages:
     dependency: "direct main"
     description:
       name: file_picker
-      sha256: "9be6aac79508dbcf8dac80a4fb20f27ce6f910837ca27e3670b9295995cc0110"
+      sha256: "98c0b156b6380ba55bc767a14e2e6b3feb246e713ad40092424596fa79005bea"
       url: "https://pub.dev"
     source: hosted
-    version: "12.3.0"
+    version: "13.1.0"
   file_picker_darwin:
     dependency: transitive
     description:
       name: file_picker_darwin
-      sha256: "59fa5394cfa5b6dc8bf491630cb17077b77b844adbb840df371e7be5355d6cf6"
+      sha256: deb3ff69d58656b885c85bc1627f09ecb79860f272a5e7577149582ede4dce5d
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "2.1.0"
   file_picker_linux:
     dependency: transitive
     description:
       name: file_picker_linux
-      sha256: bd52ff1e0048f29df95f913c55ad2991c72791d93e6c42241912c4bdee946cb9
+      sha256: e7db600f50672ce5ebbe422ac0906e0f3d2a476188cc93e7126afee12bf08063
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "2.0.0"
   file_picker_platform_interface:
     dependency: transitive
     description:
       name: file_picker_platform_interface
-      sha256: "0355558fd9af6da499d18e333d6b3beb44b0bf19e00933fccd15d18eb8d0e9ca"
+      sha256: bbdc085a6f168e63f147e9ce8988f79fa0800a58e7f25a48f762c60837107ba5
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.0"
+    version: "4.0.0"
   file_picker_web:
     dependency: transitive
     description:
       name: file_picker_web
-      sha256: "935560a9d29fa6f006f2855addebb88e88d438e13627d4cc24187033c106f227"
+      sha256: b3004268da0c1b52baa18df430e7ec4438194de855a807d26b447cbf07ef3496
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.0"
+    version: "4.0.0"
   fixnum:
     dependency: transitive
     description:
@@ -367,18 +367,18 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_secure_storage
-      sha256: d87713a152ee2f255117bdbbf43da1dea1797e0551e499e0334f0c9dcfafddd2
+      sha256: d4e1fb6b2cb524868929e78dc0282fa000554b22060fb53789dc481c9fc95bb8
       url: "https://pub.dev"
     source: hosted
-    version: "11.1.1"
+    version: "11.2.0"
   flutter_secure_storage_darwin:
     dependency: transitive
     description:
       name: flutter_secure_storage_darwin
-      sha256: d0b136b1e21fd4081170fc394e64197046ce889e8f63f2370a13e41b832cc044
+      sha256: a031ceac9b070e62ef183cd7f7d1a8798ebde402d5049f0fe6eb3a51bd797a21
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.2"
+    version: "0.4.3"
   flutter_secure_storage_linux:
     dependency: transitive
     description:
@@ -391,10 +391,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_secure_storage_platform_interface
-      sha256: "4bc033841169d07f690d46d89dbc3f5305b6562820822445384c82e0866e2719"
+      sha256: "64951127f001f546891c86f414972bf49ef2c4c8a4c92c65f5790cc0c9100045"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   flutter_secure_storage_web:
     dependency: transitive
     description:
@@ -489,18 +489,18 @@ packages:
     dependency: transitive
     description:
       name: image
-      sha256: "1976370a4df3091bb0f72409c187ad1f9132a818bc6b95ca59c0bae1c75c688e"
+      sha256: a1e7f4951e538a568e14b856702afc9ae1d2f4b202daced8d22c1b9cd211ce89
       url: "https://pub.dev"
     source: hosted
-    version: "4.9.2"
+    version: "4.10.1"
   in_app_purchase:
     dependency: "direct main"
     description:
       name: in_app_purchase
-      sha256: "0e9510b80b0074e89ab0a8e0fc901439b779dc9ae575ab8d419253c6e1627716"
+      sha256: d8317ec2ed6fe33199957d67ee67e08a4fd4871ef93b91d7611d8ee560892afc
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.0"
+    version: "3.3.1"
   in_app_purchase_android:
     dependency: transitive
     description:
@@ -625,10 +625,10 @@ packages:
     dependency: transitive
     description:
       name: local_auth_android
-      sha256: "2de619ed7196c136ec4579539c0446668e794afeec1e1815786a3158a478d04b"
+      sha256: "76c389998fe95cff4352644776ab5775f24ddd58f179dbf3df1b9c268cbbadc4"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.10"
+    version: "2.2.0"
   local_auth_darwin:
     dependency: transitive
     description:
@@ -1206,10 +1206,10 @@ packages:
     dependency: transitive
     description:
       name: windows_file_picker
-      sha256: "62e6e6e115231d1d1d71c7b5883b4091ce3e0190e49548dfb0ff8cba8d91ad96"
+      sha256: "9f3aa833068b09e380fdc59560ad260a4a14e9397173abb533699f967443602e"
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.0"
+    version: "2.0.0"
   xdg_directories:
     dependency: transitive
     description:
