@@ -744,6 +744,8 @@
   },
   "diskUsage": "Disk Usage",
   "@diskUsage": {},
+  "diskAvailable": "available",
+  "@diskAvailable": {},
   "dnsDomainList": "DNS Domain List",
   "@dnsDomainList": {},
   "dnsDomainListHelperText": "Set Connection-specific DNS Suffixes.",
