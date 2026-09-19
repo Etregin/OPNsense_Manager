@@ -15,8 +15,11 @@ SystemInfo _$SystemInfoFromJson(Map<String, dynamic> json) => SystemInfo(
   memoryUsed: (json['memoryUsed'] as num).toInt(),
   memoryTotal: (json['memoryTotal'] as num).toInt(),
   memoryArc: (json['memoryArc'] as num?)?.toInt() ?? 0,
-  diskUsed: (json['diskUsed'] as num?)?.toInt() ?? 0,
-  diskTotal: (json['diskTotal'] as num?)?.toInt() ?? 0,
+  diskDevices:
+      (json['diskDevices'] as List<dynamic>?)
+          ?.map((e) => DiskDevice.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
   type: json['type'] as String? ?? 'opnsense',
   architecture: json['architecture'] as String? ?? 'amd64',
   commit: json['commit'] as String? ?? '',
@@ -35,8 +38,7 @@ Map<String, dynamic> _$SystemInfoToJson(SystemInfo instance) =>
       'memoryUsed': instance.memoryUsed,
       'memoryTotal': instance.memoryTotal,
       'memoryArc': instance.memoryArc,
-      'diskUsed': instance.diskUsed,
-      'diskTotal': instance.diskTotal,
+      'diskDevices': instance.diskDevices,
       'type': instance.type,
       'architecture': instance.architecture,
       'commit': instance.commit,
