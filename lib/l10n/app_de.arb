@@ -756,6 +756,8 @@
       }
     }
   },
+  "diskAvailable": "verfügbar",
+  "@diskAvailable": {},
   "diskUsage": "Festplattennutzung",
   "@diskUsage": {},
   "dnsDomainList": "DNS-Domänenliste",

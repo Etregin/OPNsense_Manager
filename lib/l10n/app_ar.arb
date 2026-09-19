@@ -756,6 +756,8 @@
       }
     }
   },
+  "diskAvailable": "متاح",
+  "@diskAvailable": {},
   "diskUsage": "استخدام القرص",
   "@diskUsage": {},
   "dnsDomainList": "قائمة نطاقات DNS",

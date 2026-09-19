@@ -20,6 +20,7 @@ import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import '../base/base_opnsense_service.dart';
 import '../base/api_exception.dart';
+import '../../models/disk_device.dart';
 import '../../models/system_info.dart';
 import '../../models/thermal_sensor.dart';
 import '../../constants/api_endpoints.dart';
@@ -50,36 +51,10 @@ class SystemService extends BaseOPNsenseService {
 
     try {
       final response = await dio.get(ApiEndpoints.firmwareInfo);
-      
-      if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
-      }
-    } catch (e) {
-      debugPrint('[SystemService] Endpoint fallback: $e');
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      throw handleDioError(e);
     }
-
-    // Try alternative endpoints
-    try {
-      final response = await dio.get(ApiEndpoints.firmwareStatus);
-      
-      if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
-      }
-    } catch (e) {
-      debugPrint('[SystemService] Endpoint fallback: $e');
-    }
-
-    try {
-      final response = await dio.get(ApiEndpoints.systemInfo);
-      
-      if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
-      }
-    } catch (e) {
-      debugPrint('[SystemService] Endpoint fallback: $e');
-    }
-
-    return {};
   }
 
   /// Get system activity (CPU, uptime)
@@ -106,17 +81,6 @@ class SystemService extends BaseOPNsenseService {
     // Try multiple endpoints for disk information
     try {
       final response = await dio.get(ApiEndpoints.diagnosticsSystemDisk);
-      
-      if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
-      }
-    } catch (e) {
-      debugPrint('[SystemService] Endpoint fallback: $e');
-    }
-
-    // Try alternative endpoint
-    try {
-      final response = await dio.get(ApiEndpoints.systemDisk);
       
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -318,40 +282,16 @@ class SystemService extends BaseOPNsenseService {
       }
     }
 
-    // Parse disk usage from disk data
-    // Data format: {device: /dev/gpt/rootfs, blocks: 40G, used: 8.0G, ...}
-    int diskUsed = 0;
-    int diskTotal = 0;
-    
-    if (diskData.isNotEmpty) {
-      if (diskData.containsKey('devices')) {
-        final devices = diskData['devices'] as List?;
-        if (devices != null && devices.isNotEmpty) {
-          // Find root filesystem (usually mounted on /)
-          for (var device in devices) {
-            if (device is Map<String, dynamic>) {
-              final mountpoint = device['mountpoint'] as String?;
-              if (mountpoint == '/') {
-                final usedStr = device['used'] as String?;
-                final totalStr = device['blocks'] as String?;
-                
-                
-                // Parse strings like "8.0G" or "40G" to bytes
-                if (usedStr != null) {
-                  diskUsed = parseStorageString(usedStr);
-                }
-                if (totalStr != null) {
-                  diskTotal = parseStorageString(totalStr);
-                }
-                
-                break;
-              }
-            }
-          }
+    // Parse all disk devices from disk data
+    final List<DiskDevice> diskDevices = [];
+    final rawDevices = diskData['devices'] as List?;
+    if (rawDevices != null) {
+      for (final entry in rawDevices) {
+        if (entry is Map<String, dynamic>) {
+          diskDevices.add(DiskDevice.fromJson(entry));
         }
       }
     }
-    
 
     return SystemInfo(
       hostname: hostname,
@@ -361,8 +301,7 @@ class SystemService extends BaseOPNsenseService {
       cpuUsage: cpuUsage,
       memoryUsed: memoryUsed,
       memoryArc: memoryArc,
-      diskUsed: diskUsed,
-      diskTotal: diskTotal,
+      diskDevices: diskDevices,
       memoryTotal: memoryTotal,
       type: type,
       architecture: architecture,

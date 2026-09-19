@@ -1730,6 +1730,12 @@ abstract class AppLocalizations {
   /// **'Disk Usage'**
   String get diskUsage;
 
+  /// No description provided for @diskAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'available'**
+  String get diskAvailable;
+
   /// No description provided for @dnsDomainList.
   ///
   /// In en, this message translates to:

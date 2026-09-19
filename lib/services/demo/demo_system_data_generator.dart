@@ -17,6 +17,7 @@
  */
 
 import 'dart:math';
+import '../../models/disk_device.dart';
 import '../../models/system_info.dart';
 import '../../models/thermal_sensor.dart';
 import 'demo_state_manager.dart';
@@ -42,12 +43,63 @@ class DemoSystemDataGenerator {
     );
     final cpuUsage = 15 + _random.nextInt(30); // 15-45%
     final memoryUsage = 40 + _random.nextInt(20); // 40-60%
-    final diskUsage = 25 + _random.nextInt(30); // 25-55%
 
     final memoryTotal = 8589934592; // 8GB
     final memoryUsed = (memoryTotal * memoryUsage / 100).round();
     // ARC typically uses 50-60% of used memory on ZFS systems
     final memoryArc = (memoryUsed * (0.5 + _random.nextDouble() * 0.1)).round();
+
+    final rootPct = 25 + _random.nextInt(30); // 25-55%
+    final varLogPct = 10 + _random.nextInt(40); // 10-50%
+    final tmpPct = _random.nextInt(5); // 0-5%
+
+    final diskDevices = [
+      DiskDevice(
+        device: 'zroot/ROOT/default',
+        type: 'zfs',
+        blocks: '100G',
+        used: '${rootPct}G',
+        available: '${100 - rootPct}G',
+        usedPct: rootPct,
+        mountpoint: '/',
+      ),
+      const DiskDevice(
+        device: '/dev/gpt/efiboot0',
+        type: 'msdosfs',
+        blocks: '256M',
+        used: '1.3M',
+        available: '255M',
+        usedPct: 0,
+        mountpoint: '/boot/efi',
+      ),
+      DiskDevice(
+        device: 'zroot/var/log',
+        type: 'zfs',
+        blocks: '100G',
+        used: '${varLogPct}G',
+        available: '${100 - varLogPct}G',
+        usedPct: varLogPct,
+        mountpoint: '/var/log',
+      ),
+      DiskDevice(
+        device: 'zroot/tmp',
+        type: 'zfs',
+        blocks: '100G',
+        used: '${tmpPct}M',
+        available: '100G',
+        usedPct: tmpPct,
+        mountpoint: '/tmp',
+      ),
+      const DiskDevice(
+        device: 'zroot/home',
+        type: 'zfs',
+        blocks: '100G',
+        used: '96K',
+        available: '100G',
+        usedPct: 0,
+        mountpoint: '/home',
+      ),
+    ];
 
     return SystemInfo(
       hostname: 'demo-opnsense',
@@ -58,8 +110,7 @@ class DemoSystemDataGenerator {
       memoryTotal: memoryTotal,
       memoryUsed: memoryUsed,
       memoryArc: memoryArc,
-      diskTotal: 107374182400, // 100GB
-      diskUsed: (107374182400 * diskUsage / 100).round(),
+      diskDevices: diskDevices,
       type: 'opnsense',
       architecture: 'amd64',
       commit: 'c2f076f30',

@@ -906,6 +906,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get diskUsage => 'استخدام القرص';
 
   @override
+  String get diskAvailable => 'متاح';
+
+  @override
   String get dnsDomainList => 'قائمة نطاقات DNS';
 
   @override

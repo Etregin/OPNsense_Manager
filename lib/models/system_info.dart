@@ -18,6 +18,7 @@
 
 
 import 'package:json_annotation/json_annotation.dart';
+import 'disk_device.dart';
 
 part 'system_info.g.dart';
 
@@ -32,9 +33,10 @@ class SystemInfo {
   final int memoryUsed; // in bytes
   final int memoryTotal; // in bytes
   final int memoryArc; // ARC (Adaptive Replacement Cache) in bytes
-  final int diskUsed; // in bytes
-  final int diskTotal; // in bytes
-  
+
+  /// All mounted filesystems returned by `/diagnostics/system/system_disk`.
+  final List<DiskDevice> diskDevices;
+
   // Additional firmware/system details
   final String type; // e.g., "opnsense"
   final String architecture; // e.g., "amd64"
@@ -52,8 +54,7 @@ class SystemInfo {
     required this.memoryUsed,
     required this.memoryTotal,
     this.memoryArc = 0,
-    this.diskUsed = 0,
-    this.diskTotal = 0,
+    this.diskDevices = const [],
     this.type = 'opnsense',
     this.architecture = 'amd64',
     this.commit = '',
@@ -88,21 +89,12 @@ class SystemInfo {
     return memoryTotal / (1024 * 1024 * 1024);
   }
 
-  /// Get disk usage percentage
-  double get diskUsagePercentage {
-    if (diskTotal == 0) return 0;
-    return (diskUsed / diskTotal) * 100;
-  }
+  /// Root filesystem device (`mountpoint == "/"`), or null if not present.
+  DiskDevice? get rootDisk =>
+      diskDevices.where((d) => d.mountpoint == '/').firstOrNull;
 
-  /// Get disk used in GB
-  double get diskUsedGB {
-    return diskUsed / (1024 * 1024 * 1024);
-  }
-
-  /// Get disk total in GB
-  double get diskTotalGB {
-    return diskTotal / (1024 * 1024 * 1024);
-  }
+  /// Disk usage percentage of the root filesystem (for dashboard summary).
+  double get diskUsagePercentage => rootDisk?.usedPct.toDouble() ?? 0;
 
   /// Create from JSON
   factory SystemInfo.fromJson(Map<String, dynamic> json) =>
@@ -121,8 +113,7 @@ class SystemInfo {
     int? memoryUsed,
     int? memoryTotal,
     int? memoryArc,
-    int? diskUsed,
-    int? diskTotal,
+    List<DiskDevice>? diskDevices,
     String? type,
     String? architecture,
     String? commit,
@@ -139,8 +130,7 @@ class SystemInfo {
       memoryUsed: memoryUsed ?? this.memoryUsed,
       memoryTotal: memoryTotal ?? this.memoryTotal,
       memoryArc: memoryArc ?? this.memoryArc,
-      diskUsed: diskUsed ?? this.diskUsed,
-      diskTotal: diskTotal ?? this.diskTotal,
+      diskDevices: diskDevices ?? this.diskDevices,
       type: type ?? this.type,
       architecture: architecture ?? this.architecture,
       commit: commit ?? this.commit,

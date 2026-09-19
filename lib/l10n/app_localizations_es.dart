@@ -925,6 +925,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get diskUsage => 'Uso del Disco';
 
   @override
+  String get diskAvailable => 'disponible';
+
+  @override
   String get dnsDomainList => 'Lista de Dominios DNS';
 
   @override

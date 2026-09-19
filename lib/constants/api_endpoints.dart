@@ -31,14 +31,12 @@ class ApiEndpoints {
   static const String firmwareUpdate = '/core/firmware/update';
   static const String firmwareUpgradeStatus = '/core/firmware/upgradestatus';
   static String firmwareChangelog(String version) => '/core/firmware/changelog/$version';
-  static const String systemInfo = '/core/system/info';
-  static const String systemDisk = '/core/system/systemDisk';
   static const String systemReboot = '/core/system/reboot';
 
   // ── Diagnostics ─────────────────────────────────────────────────────────────
-  static const String diagnosticsActivity = '/diagnostics/activity/getActivity';
-  static const String diagnosticsSystemDisk = '/diagnostics/system/systemDisk';
-  static const String diagnosticsSystemResources = '/diagnostics/system/systemResources';
+  static const String diagnosticsActivity = '/diagnostics/activity/get_activity';
+  static const String diagnosticsSystemDisk = '/diagnostics/system/system_disk';
+  static const String diagnosticsSystemResources = '/diagnostics/system/system_resources';
   static const String diagnosticsSystemTemperature = '/diagnostics/system/system_temperature';
   static const String diagnosticsFirewallLog = '/diagnostics/firewall/log';
   static const String diagnosticsLogOpenvpn = '/diagnostics/log/core/openvpn';
@@ -60,13 +58,13 @@ class ApiEndpoints {
   static const String firewallRuleAdd = '/firewall/filter/add_rule';
   static const String firewallRulesApply = '/firewall/filter/apply';
   static String firewallRuleGetOne(String uuid) =>
-      '/firewall/filter/getRule/$uuid';
+      '/firewall/filter/get_rule/$uuid';
   static String firewallRuleSet(String uuid) =>
       '/firewall/filter/set_rule/$uuid';
   static String firewallRuleToggle(String uuid) =>
-      '/firewall/filter/toggleRule/$uuid';
+      '/firewall/filter/toggle_rule/$uuid';
   static String firewallRuleDelete(String uuid) =>
-      '/firewall/filter/delRule/$uuid';
+      '/firewall/filter/del_rule/$uuid';
 
   // ── Tailscale ────────────────────────────────────────────────────────────────
   static const String tailscaleServiceStatus = '/tailscale/service/status';
