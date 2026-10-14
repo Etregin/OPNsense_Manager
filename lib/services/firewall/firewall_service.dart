@@ -27,7 +27,8 @@ import '../../constants/api_endpoints.dart';
 /// Service for firewall rule operations
 class FirewallService extends BaseOPNsenseService {
   /// Fetch all firewall rules via POST /firewall/filter/search_rule.
-  /// Returns rules sorted by sort_order so the list matches the web UI order.
+  /// Returns rules in the order the API provides them. Ordering by sort_order
+  /// and grouping happen in FirewallRuleFilter so the list matches the web UI.
   Future<List<FirewallRule>> getFirewallRules() async {
     ensureInitialized();
 
@@ -190,7 +191,10 @@ class FirewallService extends BaseOPNsenseService {
       // leave empty — port options are optional, form still works
     }
 
+    final seq = ruleObj?['sequence'];
+
     return FirewallFormOptions(
+      defaultSequence: seq is String || seq is num ? seq.toString() : '',
       gateways:    _extractOptions(ruleObj?['gateway'],   '', 'None'),
       replyTo:     _extractOptions(ruleObj?['replyto'],   '', 'None'),
       divertTo:    _extractOptions(ruleObj?['divert-to'], '', 'None'),

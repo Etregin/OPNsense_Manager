@@ -26,11 +26,19 @@ class FirewallRulesViewModel extends BaseListViewModel<FirewallRule> {
   final DemoApiService _apiService;
 
   Map<String, List<FirewallRule>> _rulesByInterface = {};
+  List<FirewallRule> _automaticRules = [];
   String? _selectedInterface;
 
   FirewallRulesViewModel(this._apiService);
 
+  /// User-created rules grouped by interface (automatic rules excluded).
   Map<String, List<FirewallRule>> get rulesByInterface => _rulesByInterface;
+
+  /// Automatic (system-generated) rules, ordered by sort_order.
+  List<FirewallRule> get automaticRules => _automaticRules;
+
+  /// Selected chip key: an interface key, [kFloatingInterfaceKey] or
+  /// [kAutomaticInterfaceKey].
   String? get selectedInterface => _selectedInterface;
 
   void selectInterface(String? interface) {
@@ -44,10 +52,18 @@ class FirewallRulesViewModel extends BaseListViewModel<FirewallRule> {
     final rulesByInterface = FirewallRuleFilter.filterAndGroup(allRules);
 
     _rulesByInterface = rulesByInterface;
+    _automaticRules = FirewallRuleFilter.automaticRules(allRules);
 
-    // Set default selected interface to the first one if not yet chosen
-    if (_selectedInterface == null && rulesByInterface.isNotEmpty) {
-      _selectedInterface = FirewallRuleFilter.getFirstInterface(rulesByInterface);
+    // Default to the first interface chip; fall back to Automatic only when
+    // there are no user rules. Also recover if the selection no longer exists.
+    final selectionValid = _selectedInterface != null &&
+        (rulesByInterface.containsKey(_selectedInterface) ||
+            (_selectedInterface == kAutomaticInterfaceKey &&
+                _automaticRules.isNotEmpty));
+    if (!selectionValid) {
+      _selectedInterface = rulesByInterface.isNotEmpty
+          ? FirewallRuleFilter.getFirstInterface(rulesByInterface)
+          : (_automaticRules.isNotEmpty ? kAutomaticInterfaceKey : null);
     }
 
     return allRules;

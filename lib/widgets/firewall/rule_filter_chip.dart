@@ -25,6 +25,7 @@ class RuleFilterChip extends StatelessWidget {
   final int count;
   final bool isSelected;
   final VoidCallback onSelected;
+  final IconData? icon;
 
   const RuleFilterChip({
     super.key,
@@ -32,11 +33,13 @@ class RuleFilterChip extends StatelessWidget {
     required this.count,
     required this.isSelected,
     required this.onSelected,
+    this.icon,
   });
 
   @override
   Widget build(BuildContext context) {
     return FilterChip(
+      avatar: icon != null ? Icon(icon, size: 18) : null,
       label: Text('$label ($count)'),
       selected: isSelected,
       onSelected: (_) => onSelected(),

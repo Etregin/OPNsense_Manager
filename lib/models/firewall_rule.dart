@@ -588,7 +588,8 @@ class FirewallRuleRequest {
     final String src = source.isEmpty ? 'any' : source;
     final String dst = destination.isEmpty ? 'any' : destination;
 
-    // sequence: OPNsense rejects empty string — default to '1' for new rules
+    // sequence: OPNsense rejects empty string. The form normally prefills the
+    // server-proposed value; '1' is only a last resort if that was unavailable.
     final String sequenceValue = sequence.isEmpty ? '1' : sequence;
 
     return <String, dynamic>{

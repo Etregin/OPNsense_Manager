@@ -2,6 +2,19 @@
 
 All notable changes to OPNsense Manager will be documented in this file.
 
+## [new_version]
+
+### Added
+
+- Added a dedicated "Automatic" section to the Firewall Rules screen. System-generated rules are shown there, separated from the interface tabs, in the same order as the OPNsense web GUI.
+
+### Changed
+
+### Fixed
+
+- Fixed firewall rule sort order differing from the OPNsense web GUI (#71). Rules are now ordered by their `sort_order` instead of alphabetically by description, and interface tabs list user-created rules only.
+- New firewall rules now start with the sequence proposed by the OPNsense server (the same value the web GUI offers) instead of always `1`.
+
 ## [1.8.2]
 
 ### Changed
