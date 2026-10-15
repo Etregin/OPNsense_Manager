@@ -4559,4 +4559,16 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get supporterPurchaseFailed =>
       'L\'achat a échoué. Veuillez réessayer.';
+
+  @override
+  String get editDashboard => 'Modifier le tableau de bord';
+
+  @override
+  String get topDevices => 'Principaux appareils';
+
+  @override
+  String get viewAll => 'Voir tout';
+
+  @override
+  String get noActiveDevices => 'Aucun appareil actif';
 }

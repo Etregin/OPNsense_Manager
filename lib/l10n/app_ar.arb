@@ -3721,5 +3721,13 @@
   "supporterRestoreNotFound": "لم يُعثر على أي عملية شراء سابقة.",
   "@supporterRestoreNotFound": {},
   "supporterPurchaseFailed": "فشل الشراء. يرجى المحاولة مرة أخرى.",
-  "@supporterPurchaseFailed": {}
+  "@supporterPurchaseFailed": {},
+  "editDashboard": "تعديل لوحة التحكم",
+  "@editDashboard": {},
+  "topDevices": "أفضل الأجهزة",
+  "@topDevices": {},
+  "viewAll": "عرض الكل",
+  "@viewAll": {},
+  "noActiveDevices": "لا توجد أجهزة نشطة",
+  "@noActiveDevices": {}
 }

@@ -3677,5 +3677,13 @@
   "supporterRestoreNotFound": "No previous purchase found.",
   "@supporterRestoreNotFound": {},
   "supporterPurchaseFailed": "Purchase failed. Please try again.",
-  "@supporterPurchaseFailed": {}
+  "@supporterPurchaseFailed": {},
+  "editDashboard": "Edit Dashboard",
+  "@editDashboard": {},
+  "topDevices": "Top Devices",
+  "@topDevices": {},
+  "viewAll": "View All",
+  "@viewAll": {},
+  "noActiveDevices": "No active devices",
+  "@noActiveDevices": {}
 }

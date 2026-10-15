@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import '../models/network_host.dart';
 import '../models/system_info.dart';
 import '../models/thermal_sensor.dart';
 import '../services/demo_api_service.dart';
@@ -31,26 +32,39 @@ class DashboardViewModel extends BaseFormViewModel {
   Map<String, dynamic> _servicesData = {};
   List<Map<String, dynamic>> _gateways = [];
   List<ThermalSensor>? _thermalSensors;
+  Map<String, String> _availableInterfaces = {'lan': 'LAN'};
+  Map<String, List<NetworkHost>> _networkHostsByInterface = {};
 
   SystemInfo? get systemInfo => _systemInfo;
   Map<String, dynamic> get servicesData => _servicesData;
   List<Map<String, dynamic>> get gateways => _gateways;
   List<ThermalSensor>? get thermalSensors => _thermalSensors;
+  Map<String, String> get availableInterfaces => _availableInterfaces;
+
+  /// Returns the hosts for a given interface, or an empty list if not loaded.
+  List<NetworkHost> getHostsForInterface(String interface) =>
+      _networkHostsByInterface[interface] ?? [];
 
   DashboardViewModel(this._apiService) {
     _dataLoader = DashboardDataLoader(_apiService);
   }
 
-  Future<void> loadDashboardData() async {
+  Future<void> loadDashboardData({
+    Set<String> requestedInterfaces = const {'lan'},
+  }) async {
     setLoading(true);
     clearError();
 
     try {
-      final data = await _dataLoader.loadAllData();
+      final data = await _dataLoader.loadAllData(
+        requestedInterfaces: requestedInterfaces,
+      );
       _systemInfo = data.systemInfo;
       _servicesData = data.servicesData;
       _gateways = data.gateways;
       _thermalSensors = data.thermalSensors;
+      _availableInterfaces = data.availableInterfaces;
+      _networkHostsByInterface = data.networkHostsByInterface;
     } catch (e) {
       setError(e.toString());
     } finally {

@@ -8125,6 +8125,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Purchase failed. Please try again.'**
   String get supporterPurchaseFailed;
+
+  /// No description provided for @editDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Dashboard'**
+  String get editDashboard;
+
+  /// No description provided for @topDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Devices'**
+  String get topDevices;
+
+  /// No description provided for @viewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get viewAll;
+
+  /// No description provided for @noActiveDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'No active devices'**
+  String get noActiveDevices;
 }
 
 class _AppLocalizationsDelegate

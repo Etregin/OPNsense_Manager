@@ -4561,4 +4561,16 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get supporterPurchaseFailed =>
       'La compra falló. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get editDashboard => 'Editar panel';
+
+  @override
+  String get topDevices => 'Principales dispositivos';
+
+  @override
+  String get viewAll => 'Ver todo';
+
+  @override
+  String get noActiveDevices => 'No hay dispositivos activos';
 }
