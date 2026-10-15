@@ -174,8 +174,8 @@ class _DashboardScreenState extends State<DashboardScreen>
               IconButton(
                 icon: Icon(
                   _layoutViewModel.isEditMode
-                      ? Icons.check_circle_outline
-                      : Icons.dashboard_customize_outlined,
+                      ? Icons.check
+                      : Icons.edit_outlined,
                 ),
                 tooltip: _layoutViewModel.isEditMode
                     ? l10n.done
