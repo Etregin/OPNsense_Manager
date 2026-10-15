@@ -4501,4 +4501,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get supporterPurchaseFailed => 'Purchase failed. Please try again.';
+
+  @override
+  String get editDashboard => 'Edit Dashboard';
+
+  @override
+  String get topDevices => 'Top Devices';
+
+  @override
+  String get viewAll => 'View All';
+
+  @override
+  String get noActiveDevices => 'No active devices';
 }

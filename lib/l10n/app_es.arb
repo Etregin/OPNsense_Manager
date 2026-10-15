@@ -3730,5 +3730,13 @@
   "supporterRestoreNotFound": "No se encontró ninguna compra anterior.",
   "@supporterRestoreNotFound": {},
   "supporterPurchaseFailed": "La compra falló. Por favor, inténtalo de nuevo.",
-  "@supporterPurchaseFailed": {}
+  "@supporterPurchaseFailed": {},
+  "editDashboard": "Editar panel",
+  "@editDashboard": {},
+  "topDevices": "Principales dispositivos",
+  "@topDevices": {},
+  "viewAll": "Ver todo",
+  "@viewAll": {},
+  "noActiveDevices": "No hay dispositivos activos",
+  "@noActiveDevices": {}
 }

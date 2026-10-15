@@ -3730,5 +3730,13 @@
   "supporterRestoreNotFound": "Aucun achat précédent trouvé.",
   "@supporterRestoreNotFound": {},
   "supporterPurchaseFailed": "L'achat a échoué. Veuillez réessayer.",
-  "@supporterPurchaseFailed": {}
+  "@supporterPurchaseFailed": {},
+  "editDashboard": "Modifier le tableau de bord",
+  "@editDashboard": {},
+  "topDevices": "Principaux appareils",
+  "@topDevices": {},
+  "viewAll": "Voir tout",
+  "@viewAll": {},
+  "noActiveDevices": "Aucun appareil actif",
+  "@noActiveDevices": {}
 }

@@ -3730,6 +3730,14 @@
   "supporterRestoreNotFound": "Kein früherer Kauf gefunden.",
   "@supporterRestoreNotFound": {},
   "supporterPurchaseFailed": "Kauf fehlgeschlagen. Bitte versuchen Sie es erneut.",
-  "@supporterPurchaseFailed": {}
+  "@supporterPurchaseFailed": {},
+  "editDashboard": "Dashboard bearbeiten",
+  "@editDashboard": {},
+  "topDevices": "Top-Geräte",
+  "@topDevices": {},
+  "viewAll": "Alle anzeigen",
+  "@viewAll": {},
+  "noActiveDevices": "Keine aktiven Geräte",
+  "@noActiveDevices": {}
 }
 

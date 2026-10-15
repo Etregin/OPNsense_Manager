@@ -4487,4 +4487,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get supporterPurchaseFailed => 'فشل الشراء. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get editDashboard => 'تعديل لوحة التحكم';
+
+  @override
+  String get topDevices => 'أفضل الأجهزة';
+
+  @override
+  String get viewAll => 'عرض الكل';
+
+  @override
+  String get noActiveDevices => 'لا توجد أجهزة نشطة';
 }
