@@ -93,7 +93,7 @@ class FirewallRuleCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '${rule.typeDisplayName} • ${rule.interfaceName} • ${rule.protocolDisplayName}',
+                          '${rule.typeDisplayName} • ${rule.interfaceDisplayName} • ${rule.protocolDisplayName}',
                           style: TextStyle(
                             fontSize: 12,
                             color: colorScheme.onSurfaceVariant,

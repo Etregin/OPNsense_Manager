@@ -285,6 +285,10 @@ class FirewallService extends BaseOPNsenseService {
 
     // interface: raw key (e.g. 'lan', 'wan', '') — '' means any/floating
     final String interfaceName = r['interface']?.toString() ?? '';
+    // %interface: human-readable display name; absent on legacy/automatic rules
+    final String rawDisplayName = r['%interface']?.toString() ?? '';
+    final String interfaceDisplayName =
+        rawDisplayName.isNotEmpty ? rawDisplayName : interfaceName;
 
     // protocol: raw lowercase (e.g. 'tcp', 'udp', 'any', '')
     String protocol = r['protocol']?.toString() ?? '';
@@ -333,9 +337,10 @@ class FirewallService extends BaseOPNsenseService {
     final String interfaceNot   = r['interfacenot']?.toString()    ?? '0';
 
     return FirewallRule(
-      uuid:            r['uuid']?.toString() ?? '',
-      type:            type,
-      interfaceName:   interfaceName,
+      uuid:                 r['uuid']?.toString() ?? '',
+      type:                 type,
+      interfaceName:        interfaceName,
+      interfaceDisplayName: interfaceDisplayName,
       protocol:        protocol,
       source:          source,
       destination:     destination,
