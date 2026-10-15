@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import '../../models/network_host.dart';
 import '../../models/system_info.dart';
 import '../../models/thermal_sensor.dart';
 import '../demo_api_service.dart';
@@ -26,12 +27,16 @@ class DashboardData {
   final Map<String, dynamic> servicesData;
   final List<Map<String, dynamic>> gateways;
   final List<ThermalSensor>? thermalSensors;
+  final Map<String, String> availableInterfaces;
+  final Map<String, List<NetworkHost>> networkHostsByInterface;
 
   DashboardData({
     required this.systemInfo,
     required this.servicesData,
     required this.gateways,
     this.thermalSensors,
+    required this.availableInterfaces,
+    required this.networkHostsByInterface,
   });
 }
 
@@ -41,13 +46,20 @@ class DashboardDataLoader {
 
   DashboardDataLoader(this._apiService);
 
-  /// Load all dashboard data in parallel for faster loading
-  Future<DashboardData> loadAllData() async {
+  /// Load all dashboard data in parallel for faster loading.
+  ///
+  /// [requestedInterfaces] — the set of interface IDs selected by the user's
+  /// network cards. Hosts are fetched once per unique interface.
+  Future<DashboardData> loadAllData({
+    Set<String> requestedInterfaces = const {'lan'},
+  }) async {
     final results = await Future.wait([
       _apiService.getSystemInfo(),
       _loadServices(),
       _loadGateways(),
       _loadThermalSensors(),
+      _loadAvailableInterfaces(),
+      _loadNetworkHostsForInterfaces(requestedInterfaces),
     ]);
 
     return DashboardData(
@@ -55,6 +67,8 @@ class DashboardDataLoader {
       servicesData: results[1] as Map<String, dynamic>,
       gateways: results[2] as List<Map<String, dynamic>>,
       thermalSensors: results[3] as List<ThermalSensor>?,
+      availableInterfaces: results[4] as Map<String, String>,
+      networkHostsByInterface: results[5] as Map<String, List<NetworkHost>>,
     );
   }
 
@@ -88,6 +102,33 @@ class DashboardDataLoader {
       // Return null on error to distinguish from empty array (VM case)
       return null;
     }
+  }
+
+  /// Load available network interfaces for the interface selector.
+  Future<Map<String, String>> _loadAvailableInterfaces() async {
+    try {
+      return await _apiService.getInsightInterfaces();
+    } catch (_) {
+      return {'lan': 'LAN'};
+    }
+  }
+
+  /// Load network hosts for each requested interface in parallel.
+  Future<Map<String, List<NetworkHost>>> _loadNetworkHostsForInterfaces(
+    Set<String> interfaces,
+  ) async {
+    if (interfaces.isEmpty) return {};
+    final entries = await Future.wait(
+      interfaces.map((iface) async {
+        try {
+          final hosts = await _apiService.getNetworkHosts(interface: iface);
+          return MapEntry(iface, hosts);
+        } catch (_) {
+          return MapEntry(iface, <NetworkHost>[]);
+        }
+      }),
+    );
+    return Map.fromEntries(entries);
   }
 }
 
