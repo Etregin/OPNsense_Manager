@@ -28,6 +28,8 @@ class FirewallRule {
   final String type; // pass, block, reject
   @JsonKey(name: 'interface')
   final String interfaceName;
+  @JsonKey(name: '%interface', defaultValue: '')
+  final String interfaceDisplayName;
   final String protocol; // tcp, udp, icmp, any
   @JsonKey(name: 'icmptype', defaultValue: '')
   final String icmpType;
@@ -152,6 +154,7 @@ class FirewallRule {
     required this.uuid,
     required this.type,
     required this.interfaceName,
+    this.interfaceDisplayName = '',
     required this.protocol,
     this.icmpType = '',
     this.icmp6Type = '',
@@ -245,6 +248,7 @@ class FirewallRule {
     String? uuid,
     String? type,
     String? interfaceName,
+    String? interfaceDisplayName,
     String? protocol,
     String? source,
     String? destination,
@@ -302,6 +306,7 @@ class FirewallRule {
       uuid: uuid ?? this.uuid,
       type: type ?? this.type,
       interfaceName: interfaceName ?? this.interfaceName,
+      interfaceDisplayName: interfaceDisplayName ?? this.interfaceDisplayName,
       protocol: protocol ?? this.protocol,
       source: source ?? this.source,
       destination: destination ?? this.destination,

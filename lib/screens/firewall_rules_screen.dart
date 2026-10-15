@@ -161,6 +161,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen>
         final rulesByInterface = _viewModel.rulesByInterface;
         final automaticRules = _viewModel.automaticRules;
         final selectedInterface = _viewModel.selectedInterface;
+        final interfaceDisplayNames = _viewModel.interfaceDisplayNames;
 
         return Scaffold(
           appBar: AppBar(
@@ -184,6 +185,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen>
             rulesByInterface: rulesByInterface,
             automaticRules: automaticRules,
             selectedInterface: selectedInterface,
+            interfaceDisplayNames: interfaceDisplayNames,
           ),
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () async {
@@ -210,6 +212,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen>
     required Map<String, List<FirewallRule>> rulesByInterface,
     required List<FirewallRule> automaticRules,
     required String? selectedInterface,
+    required Map<String, String> interfaceDisplayNames,
   }) {
     if (isLoading) {
       return const Center(child: CircularProgressIndicator());
@@ -237,6 +240,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen>
           interfaceRuleCounts: rulesByInterface.map(
             (key, value) => MapEntry(key, value.length),
           ),
+          interfaceDisplayNames: interfaceDisplayNames,
           automaticRuleCount: automaticRules.length,
           selectedInterface: selectedInterface,
           onInterfaceSelected: _viewModel.selectInterface,

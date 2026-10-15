@@ -28,6 +28,7 @@ class FirewallRulesViewModel extends BaseListViewModel<FirewallRule> {
   Map<String, List<FirewallRule>> _rulesByInterface = {};
   List<FirewallRule> _automaticRules = [];
   String? _selectedInterface;
+  Map<String, String> _interfaceDisplayNames = {};
 
   FirewallRulesViewModel(this._apiService);
 
@@ -41,6 +42,10 @@ class FirewallRulesViewModel extends BaseListViewModel<FirewallRule> {
   /// [kAutomaticInterfaceKey].
   String? get selectedInterface => _selectedInterface;
 
+  /// Human-readable display name for each interface bucket key.
+  /// Keyed by the same lowercase internal ID used in [rulesByInterface].
+  Map<String, String> get interfaceDisplayNames => _interfaceDisplayNames;
+
   void selectInterface(String? interface) {
     _selectedInterface = interface;
     notifyListeners();
@@ -53,6 +58,12 @@ class FirewallRulesViewModel extends BaseListViewModel<FirewallRule> {
 
     _rulesByInterface = rulesByInterface;
     _automaticRules = FirewallRuleFilter.automaticRules(allRules);
+
+    // Build a display-name map: for each bucket, take the first rule's interfaceDisplayName.
+    _interfaceDisplayNames = {
+      for (final entry in rulesByInterface.entries)
+        entry.key: entry.value.first.interfaceDisplayName,
+    };
 
     // Default to the first interface chip; fall back to Automatic only when
     // there are no user rules. Also recover if the selection no longer exists.
@@ -73,7 +84,8 @@ class FirewallRulesViewModel extends BaseListViewModel<FirewallRule> {
   bool matchesFilter(FirewallRule rule, String query) {
     final lower = query.toLowerCase();
     return rule.description.toLowerCase().contains(lower) ||
-        rule.interfaceName.toLowerCase().contains(lower);
+        rule.interfaceName.toLowerCase().contains(lower) ||
+        rule.interfaceDisplayName.toLowerCase().contains(lower);
   }
 
   /// Toggle a firewall rule enabled/disabled state

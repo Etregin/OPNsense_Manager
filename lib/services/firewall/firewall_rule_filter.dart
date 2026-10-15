@@ -54,8 +54,9 @@ class FirewallRuleFilter {
 
     for (final rule in sorted) {
       // Normalise to lowercase so 'LAN' and 'lan' collapse into one bucket.
+      // Multi-interface rules (e.g. 'lan,wan') go under floating, not their own bucket.
       final name = rule.interfaceName.toLowerCase();
-      final key = name.isEmpty ? kFloatingInterfaceKey : name;
+      final key = (name.isEmpty || name.contains(',')) ? kFloatingInterfaceKey : name;
       rulesByInterface.putIfAbsent(key, () => []).add(rule);
     }
 

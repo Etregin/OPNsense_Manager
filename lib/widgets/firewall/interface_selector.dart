@@ -28,6 +28,7 @@ import 'rule_filter_chip.dart';
 /// (key [kAutomaticInterfaceKey]) when [automaticRuleCount] is greater than 0.
 class InterfaceSelector extends StatelessWidget {
   final Map<String, int> interfaceRuleCounts;
+  final Map<String, String> interfaceDisplayNames;
   final int automaticRuleCount;
   final String? selectedInterface;
   final ValueChanged<String> onInterfaceSelected;
@@ -35,6 +36,7 @@ class InterfaceSelector extends StatelessWidget {
   const InterfaceSelector({
     super.key,
     required this.interfaceRuleCounts,
+    this.interfaceDisplayNames = const {},
     this.automaticRuleCount = 0,
     required this.selectedInterface,
     required this.onInterfaceSelected,
@@ -74,7 +76,7 @@ class InterfaceSelector extends StatelessWidget {
                 ...interfaceRuleCounts.entries.map((entry) {
                   final label = entry.key == kFloatingInterfaceKey
                       ? l10n.floatingInterface
-                      : entry.key.toUpperCase();
+                      : (interfaceDisplayNames[entry.key] ?? entry.key.toUpperCase());
                   return Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: RuleFilterChip(
