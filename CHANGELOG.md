@@ -2,7 +2,7 @@
 
 All notable changes to OPNsense Manager will be documented in this file.
 
-## [new_version]
+## [1.9.0]
 
 ### Added
 
