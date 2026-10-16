@@ -631,7 +631,8 @@ class DemoApiService {
   Future<List<NetworkHost>> getNetworkHosts({String interface = 'lan'}) =>
       DemoApiDecorator.execute(
         isDemoMode: _isDemoMode,
-        demoAction: () async => _demoDataService.generateNetworkHosts(),
+        demoAction: () async =>
+            _demoDataService.generateNetworkHostsForInterface(interface),
         realAction: () => _realApiService.getNetworkHosts(interface: interface),
         delayMs: 400,
       );

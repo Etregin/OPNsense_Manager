@@ -18,9 +18,9 @@
 
 
 import 'dart:async';
-import '../utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../utils/app_colors.dart';
 import '../models/dashboard_layout.dart';
 import '../screens/live_network_monitor_screen.dart';
 import '../services/dashboard/dashboard_layout_service.dart';
@@ -54,19 +54,77 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen>
-    with AutoRefreshMixin, SingleInitMixin {
+    with AutoRefreshMixin, SingleInitMixin, WidgetsBindingObserver {
   late DashboardViewModel _viewModel;
   late DashboardLayoutViewModel _layoutViewModel;
 
+  /// Fast 2-second timer that keeps only the network cards live.
+  Timer? _networkRefreshTimer;
+
   @override
   void onFirstDependency() {
+    WidgetsBinding.instance.addObserver(this);
     _viewModel = DashboardViewModel(context.read<DemoApiService>());
     _layoutViewModel = DashboardLayoutViewModel(
       context.read<DashboardLayoutService>(),
       context.read<ProfileService>(),
     );
     _initializeAndLoad();
-    startAutoRefresh(AppConstants.dashboardRefreshInterval, _refreshWithLayout);
+    startAutoRefresh(AppConstants.dashboardRefreshInterval, _viewModel.refreshSystemData);
+    _startNetworkTimer();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Network refresh timer helpers
+  // ---------------------------------------------------------------------------
+
+  /// Extracts the set of interface IDs currently selected by network cards.
+  Set<String> _requestedNetworkInterfaces() {
+    final interfaces = _layoutViewModel.allCards
+        .where((c) =>
+            c.type == DashboardCardType.networkTotals ||
+            c.type == DashboardCardType.topDevices)
+        .map((c) => c.selectedInterface ?? 'lan')
+        .toSet();
+    return interfaces.isEmpty ? const {'lan'} : interfaces;
+  }
+
+  void _startNetworkTimer() {
+    _networkRefreshTimer?.cancel();
+    _networkRefreshTimer = Timer.periodic(
+      const Duration(seconds: 2),
+      (_) => _refreshNetworkDataIfVisible(),
+    );
+  }
+
+  void _stopNetworkTimer() {
+    _networkRefreshTimer?.cancel();
+    _networkRefreshTimer = null;
+  }
+
+  /// Fires on every 2-second tick — skips the fetch when the dashboard is not
+  /// the active route or when a frame is still pending.
+  Future<void> _refreshNetworkDataIfVisible() async {
+    if (!mounted) return;
+    // Skip if another route is on top (e.g. navigated via drawer).
+    final route = ModalRoute.of(context);
+    if (route == null || !route.isCurrent) return;
+    await _viewModel.refreshNetworkData(
+      requestedInterfaces: _requestedNetworkInterfaces(),
+    );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        _startNetworkTimer();
+      case AppLifecycleState.paused:
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.hidden:
+      case AppLifecycleState.detached:
+        _stopNetworkTimer();
+    }
   }
 
   Future<void> _initializeAndLoad() async {
@@ -81,9 +139,6 @@ class _DashboardScreenState extends State<DashboardScreen>
     await _layoutViewModel.loadLayout();
     await _loadDataWithLayout();
   }
-
-  /// Refresh data using the currently selected interfaces from the layout.
-  Future<void> _refreshWithLayout() => _loadDataWithLayout();
 
   Future<void> _loadDataWithLayout() async {
     final requestedInterfaces = _layoutViewModel.allCards
@@ -101,6 +156,8 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _stopNetworkTimer();
     _viewModel.dispose();
     _layoutViewModel.dispose();
     super.dispose();
@@ -292,7 +349,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         final iface = card.selectedInterface ?? 'lan';
         return NetworkTotalsCard(
           hosts: _viewModel.getHostsForInterface(iface),
-          isLoading: _viewModel.isLoading,
+          isLoading: _viewModel.isInterfaceLoading(iface),
           availableInterfaces: _viewModel.availableInterfaces,
           selectedInterface: iface,
           onInterfaceChanged: (newIface) async {
@@ -311,7 +368,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         final iface = card.selectedInterface ?? 'lan';
         return TopDevicesCard(
           hosts: _viewModel.getHostsForInterface(iface),
-          isLoading: _viewModel.isLoading,
+          isLoading: _viewModel.isInterfaceLoading(iface),
           availableInterfaces: _viewModel.availableInterfaces,
           selectedInterface: iface,
           onInterfaceChanged: (newIface) async {

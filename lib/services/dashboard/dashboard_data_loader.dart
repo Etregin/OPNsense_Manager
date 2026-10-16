@@ -40,6 +40,24 @@ class DashboardData {
   });
 }
 
+/// Subset of [DashboardData] that excludes network host data.
+/// Used by the 30-second system refresh so network cards are never disrupted.
+class SystemOnlyData {
+  final SystemInfo systemInfo;
+  final Map<String, dynamic> servicesData;
+  final List<Map<String, dynamic>> gateways;
+  final List<ThermalSensor>? thermalSensors;
+  final Map<String, String> availableInterfaces;
+
+  SystemOnlyData({
+    required this.systemInfo,
+    required this.servicesData,
+    required this.gateways,
+    this.thermalSensors,
+    required this.availableInterfaces,
+  });
+}
+
 /// Service for loading dashboard data in parallel
 class DashboardDataLoader {
   final DemoApiService _apiService;
@@ -105,13 +123,43 @@ class DashboardDataLoader {
   }
 
   /// Load available network interfaces for the interface selector.
+  /// Uses the same source as the Live Network Monitor screen so that the
+  /// interface IDs passed to getNetworkHosts() are consistent.
   Future<Map<String, String>> _loadAvailableInterfaces() async {
     try {
-      return await _apiService.getInsightInterfaces();
+      return await _apiService.getAvailableInterfaces();
     } catch (_) {
       return {'lan': 'LAN'};
     }
   }
+
+  /// Load system data only — skips network hosts entirely.
+  /// Used by the 30-second background refresh so network cards keep showing
+  /// live data from the 2-second timer without being reset to a loading state.
+  Future<SystemOnlyData> loadSystemDataOnly() async {
+    final results = await Future.wait([
+      _apiService.getSystemInfo(),
+      _loadServices(),
+      _loadGateways(),
+      _loadThermalSensors(),
+      _loadAvailableInterfaces(),
+    ]);
+
+    return SystemOnlyData(
+      systemInfo: results[0] as SystemInfo,
+      servicesData: results[1] as Map<String, dynamic>,
+      gateways: results[2] as List<Map<String, dynamic>>,
+      thermalSensors: results[3] as List<ThermalSensor>?,
+      availableInterfaces: results[4] as Map<String, String>,
+    );
+  }
+
+  /// Public entry point used by the dashboard's fast 2-second refresh timer.
+  /// Fetches only network host data — does not touch system info or gateways.
+  Future<Map<String, List<NetworkHost>>> loadNetworkHostsOnly(
+    Set<String> interfaces,
+  ) =>
+      _loadNetworkHostsForInterfaces(interfaces);
 
   /// Load network hosts for each requested interface in parallel.
   Future<Map<String, List<NetworkHost>>> _loadNetworkHostsForInterfaces(
