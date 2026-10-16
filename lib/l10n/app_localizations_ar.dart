@@ -4424,34 +4424,18 @@ class AppLocalizationsAr extends AppLocalizations {
       'حذف هذا التقرير المجمّع؟ ستُفقد بيانات الرسم البياني لهذا الإدخال.';
 
   @override
-  String get migrationDialogTitle => 'OPNsense Manager ينتقل إلى المجانية!';
-
-  @override
-  String get migrationDialogWhyTitle => 'لماذا هذا التغيير؟';
-
-  @override
-  String get migrationDialogWhyBody =>
-      'جعل التطبيق مجانيًا يوسّع انتشار المجتمع ويدعم التطوير مفتوح المصدر.';
-
-  @override
-  String get migrationDialogAdsTitle => 'بشأن الإعلانات';
-
-  @override
-  String get migrationDialogAdsBody =>
-      'ستظهر إعلانات البانر على الشاشات المعلوماتية كلوحة التحكم والإعدادات. لن تظهر أبدًا على الشاشات الحساسة كتحرير قواعد جدار الحماية أو ضوابط VPN.';
-
-  @override
-  String get migrationDialogLegacyTitle => 'هل اشتريت التطبيق مسبقًا؟';
-
-  @override
-  String get migrationDialogLegacyBody =>
-      'إن كنت قد اشتريت التطبيق سابقًا، تبقى تجربتك خالية من الإعلانات بالكامل. اضغط على \"المطالبة بالوصول القديم\" لإرسال رقم طلبك بالبريد الإلكتروني والحصول على رمز ترويجي.';
-
-  @override
   String get claimLegacyAccess => 'المطالبة بالوصول القديم';
 
   @override
-  String get continueToApp => 'الاستمرار إلى التطبيق';
+  String whatsNewTitle(String version) {
+    return 'الجديد في الإصدار $version';
+  }
+
+  @override
+  String get changelog => 'سجل التغييرات';
+
+  @override
+  String get changelogUnreleased => 'غير منشور';
 
   @override
   String get supporterAndAdRemoval => 'الداعم وإزالة الإعلانات';

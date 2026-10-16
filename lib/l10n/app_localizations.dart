@@ -8006,59 +8006,29 @@ abstract class AppLocalizations {
   /// **'Delete this collected report? The graph data for this entry will be lost.'**
   String get healthDeleteReportConfirmMessage;
 
-  /// No description provided for @migrationDialogTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'OPNsense Manager is Moving to Free!'**
-  String get migrationDialogTitle;
-
-  /// No description provided for @migrationDialogWhyTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Why the change?'**
-  String get migrationDialogWhyTitle;
-
-  /// No description provided for @migrationDialogWhyBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Making the app free expands community adoption and supports open-source development.'**
-  String get migrationDialogWhyBody;
-
-  /// No description provided for @migrationDialogAdsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'About ads'**
-  String get migrationDialogAdsTitle;
-
-  /// No description provided for @migrationDialogAdsBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Banner ads will appear on informational screens like Dashboard and Settings. They will never appear on critical screens like firewall rule editing or VPN controls.'**
-  String get migrationDialogAdsBody;
-
-  /// No description provided for @migrationDialogLegacyTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Already a paid user?'**
-  String get migrationDialogLegacyTitle;
-
-  /// No description provided for @migrationDialogLegacyBody.
-  ///
-  /// In en, this message translates to:
-  /// **'If you previously purchased the app, your experience stays 100% ad-free. Press on \'Claim Legacy Access\' to email us your order number for the app purchase to get a promo code.'**
-  String get migrationDialogLegacyBody;
-
   /// No description provided for @claimLegacyAccess.
   ///
   /// In en, this message translates to:
   /// **'Claim Legacy Access'**
   String get claimLegacyAccess;
 
-  /// No description provided for @continueToApp.
+  /// No description provided for @whatsNewTitle.
   ///
   /// In en, this message translates to:
-  /// **'Continue to App'**
-  String get continueToApp;
+  /// **'What\'s New in v{version}'**
+  String whatsNewTitle(String version);
+
+  /// No description provided for @changelog.
+  ///
+  /// In en, this message translates to:
+  /// **'Changelog'**
+  String get changelog;
+
+  /// No description provided for @changelogUnreleased.
+  ///
+  /// In en, this message translates to:
+  /// **'Unreleased'**
+  String get changelogUnreleased;
 
   /// No description provided for @supporterAndAdRemoval.
   ///

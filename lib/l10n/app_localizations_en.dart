@@ -4437,34 +4437,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'Delete this collected report? The graph data for this entry will be lost.';
 
   @override
-  String get migrationDialogTitle => 'OPNsense Manager is Moving to Free!';
-
-  @override
-  String get migrationDialogWhyTitle => 'Why the change?';
-
-  @override
-  String get migrationDialogWhyBody =>
-      'Making the app free expands community adoption and supports open-source development.';
-
-  @override
-  String get migrationDialogAdsTitle => 'About ads';
-
-  @override
-  String get migrationDialogAdsBody =>
-      'Banner ads will appear on informational screens like Dashboard and Settings. They will never appear on critical screens like firewall rule editing or VPN controls.';
-
-  @override
-  String get migrationDialogLegacyTitle => 'Already a paid user?';
-
-  @override
-  String get migrationDialogLegacyBody =>
-      'If you previously purchased the app, your experience stays 100% ad-free. Press on \'Claim Legacy Access\' to email us your order number for the app purchase to get a promo code.';
-
-  @override
   String get claimLegacyAccess => 'Claim Legacy Access';
 
   @override
-  String get continueToApp => 'Continue to App';
+  String whatsNewTitle(String version) {
+    return 'What\'s New in v$version';
+  }
+
+  @override
+  String get changelog => 'Changelog';
+
+  @override
+  String get changelogUnreleased => 'Unreleased';
 
   @override
   String get supporterAndAdRemoval => 'Supporter & Ad Removal';
