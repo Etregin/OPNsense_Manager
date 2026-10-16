@@ -3732,6 +3732,33 @@
   "viewAll": "Alle anzeigen",
   "@viewAll": {},
   "noActiveDevices": "Keine aktiven Geräte",
-  "@noActiveDevices": {}
+  "@noActiveDevices": {},
+  "realAddress": "Reale Adresse",
+  "@realAddress": {},
+  "lastReferenced": "Zuletzt referenziert",
+  "@lastReferenced": {},
+  "username": "Benutzername",
+  "@username": {},
+  "dataChannelCipher": "Datenkanal-Chiffre",
+  "@dataChannelCipher": {},
+  "killSession": "Sitzung beenden",
+  "@killSession": {},
+  "confirmKillSession": "Möchten Sie die Sitzung von {name} wirklich beenden?",
+  "@confirmKillSession": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionKilledSuccessfully": "Sitzung erfolgreich beendet",
+  "@sessionKilledSuccessfully": {},
+  "errorKillingSession": "Fehler beim Beenden der Sitzung: {error}",
+  "@errorKillingSession": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }
-
