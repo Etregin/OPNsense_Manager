@@ -8,6 +8,7 @@ All notable changes to OPNsense Manager will be documented in this file.
 
 - Added dynamic dashboard with per-profile card reordering, show/hide toggles, and two new live network monitoring cards (Network Totals and Top 5 Devices) with per-card interface selection.
 - Added a dedicated "Automatic" section to the Firewall Rules screen. System-generated rules are shown there, separated from the interface tabs, in the same order as the OPNsense web GUI.
+- Added a Changelog screen to the drawer listing every version of the app.
 
 ### Changed
 

@@ -25,6 +25,7 @@ class Routes {
   static const String systemInfo = 'system_info';
   static const String settings = 'settings';
   static const String switchProfile = 'switch_profile';
+  static const String changelog = 'changelog';
 
   // ── System log file routes ───────────────────────────────────────────────────
   static const String systemLogAudit   = 'system_log_audit';
