@@ -18,8 +18,9 @@ All notable changes to OPNsense Manager will be documented in this file.
 
 - Fixed firmware update screen spinner running indefinitely after firewall reboots post-update.
 - Fixed firewall rules interface display showing internal IDs (e.g. `opt1`) instead of friendly names (e.g. `WAN2_MIFIhello`) in rule cards and interface filter chips.
-- Fixed firewall rule sort order differing from the OPNsense web GUI (#71). Rules are now ordered by their `sort_order` instead of alphabetically by description, and interface tabs list user-created rules only.
+- Fixed firewall rule sort order differing from the OPNsense web GUI. Rules are now ordered by their `sort_order` instead of alphabetically by description, and interface tabs list user-created rules only.
 - New firewall rules now start with the sequence proposed by the OPNsense server (the same value the web GUI offers) instead of always `1`.
+- Fixed OpenVPN connection status: sessions now show client details (common name, addresses, traffic, connected since) with a Kill button, and the routes tab shows the fields returned by OPNsense.
 
 ## [1.8.2]
 
