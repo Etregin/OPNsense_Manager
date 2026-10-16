@@ -2,26 +2,6 @@
 
 All notable changes to OPNsense Manager will be documented in this file.
 
-## [1.9.0]
-
-### Added
-
-- Added dynamic dashboard with per-profile card reordering, show/hide toggles, and two new live network monitoring cards (Network Totals and Top 5 Devices) with per-card interface selection.
-- Added a dedicated "Automatic" section to the Firewall Rules screen. System-generated rules are shown there, separated from the interface tabs, in the same order as the OPNsense web GUI.
-- Added a Changelog screen to the drawer listing every version of the app.
-
-### Changed
-
-- Multi-interface rules are now grouped under Floating.
-
-### Fixed
-
-- Fixed firmware update screen spinner running indefinitely after firewall reboots post-update.
-- Fixed firewall rules interface display showing internal IDs (e.g. `opt1`) instead of friendly names (e.g. `WAN2_MIFIhello`) in rule cards and interface filter chips.
-- Fixed firewall rule sort order differing from the OPNsense web GUI. Rules are now ordered by their `sort_order` instead of alphabetically by description, and interface tabs list user-created rules only.
-- New firewall rules now start with the sequence proposed by the OPNsense server (the same value the web GUI offers) instead of always `1`.
-- Fixed OpenVPN connection status: sessions now show client details (common name, addresses, traffic, connected since) with a Kill button, and the routes tab shows the fields returned by OPNsense.
-
 ## [1.8.2]
 
 ### Changed

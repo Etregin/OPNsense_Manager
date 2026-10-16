@@ -387,21 +387,18 @@ class FirmwareUpdateViewModel extends BaseFormViewModel {
         }
         return;
       } on ApiException catch (e) {
-        if (e.errorType == ApiErrorType.networkError ||
-            e.errorType == ApiErrorType.timeout) {
-          // Host is still unreachable — keep polling.
-        } else {
-          // Any other API error (auth, server error, etc.) means the host
-          // responded — treat it as back online.
+        // Any network/connection error means still offline — keep polling.
+        if (e.errorType != ApiErrorType.networkError &&
+            e.errorType != ApiErrorType.timeout) {
+          // Unexpected error type — stop waiting silently.
           if (!_cancelled) {
             _isWaitingForReboot = false;
-            _isBackOnline = true;
             notifyListeners();
           }
           return;
         }
       } catch (_) {
-        // Swallow truly unexpected errors and keep trying.
+        // Swallow any other error and keep trying.
       }
       await Future.delayed(const Duration(seconds: 5));
     }

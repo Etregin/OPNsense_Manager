@@ -1014,44 +1014,6 @@ class OpenvpnService extends BaseOPNsenseService {
     }
   }
 
-  /// Kill a connected OpenVPN client session
-  ///
-  /// Endpoint: POST /api/openvpn/service/kill_session/
-  /// Payload: `{"server_id": "{instance uuid}", "session_id": "{common name}"}`
-  ///
-  /// Returns: API response map, `{"status": "killed", "clients": n}` on success
-  Future<Map<String, dynamic>> killSession(String serverId, String sessionId) async {
-    ensureInitialized();
-
-    try {
-      final response = await dio.post(
-        ApiEndpoints.openvpnServiceKillSession,
-        data: {
-          'server_id': serverId,
-          'session_id': sessionId,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final data = response.data as Map<String, dynamic>;
-
-        if (data['status'] != 'killed') {
-          throw ApiException(
-            'Failed to kill session: ${data['status'] ?? 'Unknown error'}',
-            response.statusCode,
-            ApiErrorType.unknown,
-          );
-        }
-
-        return data;
-      } else {
-        throw ApiException('Failed to kill OpenVPN session', response.statusCode, ApiErrorType.unknown);
-      }
-    } on DioException catch (e) {
-      throw handleDioError(e);
-    }
-  }
-
   /// Search/list OpenVPN routes with pagination support
   ///
   /// Endpoint: POST /api/openvpn/service/search_routes

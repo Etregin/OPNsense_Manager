@@ -4424,18 +4424,34 @@ class AppLocalizationsAr extends AppLocalizations {
       'حذف هذا التقرير المجمّع؟ ستُفقد بيانات الرسم البياني لهذا الإدخال.';
 
   @override
+  String get migrationDialogTitle => 'OPNsense Manager ينتقل إلى المجانية!';
+
+  @override
+  String get migrationDialogWhyTitle => 'لماذا هذا التغيير؟';
+
+  @override
+  String get migrationDialogWhyBody =>
+      'جعل التطبيق مجانيًا يوسّع انتشار المجتمع ويدعم التطوير مفتوح المصدر.';
+
+  @override
+  String get migrationDialogAdsTitle => 'بشأن الإعلانات';
+
+  @override
+  String get migrationDialogAdsBody =>
+      'ستظهر إعلانات البانر على الشاشات المعلوماتية كلوحة التحكم والإعدادات. لن تظهر أبدًا على الشاشات الحساسة كتحرير قواعد جدار الحماية أو ضوابط VPN.';
+
+  @override
+  String get migrationDialogLegacyTitle => 'هل اشتريت التطبيق مسبقًا؟';
+
+  @override
+  String get migrationDialogLegacyBody =>
+      'إن كنت قد اشتريت التطبيق سابقًا، تبقى تجربتك خالية من الإعلانات بالكامل. اضغط على \"المطالبة بالوصول القديم\" لإرسال رقم طلبك بالبريد الإلكتروني والحصول على رمز ترويجي.';
+
+  @override
   String get claimLegacyAccess => 'المطالبة بالوصول القديم';
 
   @override
-  String whatsNewTitle(String version) {
-    return 'الجديد في الإصدار $version';
-  }
-
-  @override
-  String get changelog => 'سجل التغييرات';
-
-  @override
-  String get changelogUnreleased => 'غير منشور';
+  String get continueToApp => 'الاستمرار إلى التطبيق';
 
   @override
   String get supporterAndAdRemoval => 'الداعم وإزالة الإعلانات';
@@ -4471,44 +4487,4 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get supporterPurchaseFailed => 'فشل الشراء. يرجى المحاولة مرة أخرى.';
-
-  @override
-  String get editDashboard => 'تعديل لوحة التحكم';
-
-  @override
-  String get topDevices => 'أفضل الأجهزة';
-
-  @override
-  String get viewAll => 'عرض الكل';
-
-  @override
-  String get noActiveDevices => 'لا توجد أجهزة نشطة';
-
-  @override
-  String get realAddress => 'العنوان الفعلي';
-
-  @override
-  String get lastReferenced => 'آخر مرجع';
-
-  @override
-  String get username => 'اسم المستخدم';
-
-  @override
-  String get dataChannelCipher => 'تشفير قناة البيانات';
-
-  @override
-  String get killSession => 'إنهاء الجلسة';
-
-  @override
-  String confirmKillSession(String name) {
-    return 'هل أنت متأكد أنك تريد إنهاء الجلسة الخاصة بـ $name؟';
-  }
-
-  @override
-  String get sessionKilledSuccessfully => 'تم إنهاء الجلسة بنجاح';
-
-  @override
-  String errorKillingSession(String error) {
-    return 'خطأ في إنهاء الجلسة: $error';
-  }
 }

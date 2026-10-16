@@ -8006,29 +8006,59 @@ abstract class AppLocalizations {
   /// **'Delete this collected report? The graph data for this entry will be lost.'**
   String get healthDeleteReportConfirmMessage;
 
+  /// No description provided for @migrationDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'OPNsense Manager is Moving to Free!'**
+  String get migrationDialogTitle;
+
+  /// No description provided for @migrationDialogWhyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Why the change?'**
+  String get migrationDialogWhyTitle;
+
+  /// No description provided for @migrationDialogWhyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Making the app free expands community adoption and supports open-source development.'**
+  String get migrationDialogWhyBody;
+
+  /// No description provided for @migrationDialogAdsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'About ads'**
+  String get migrationDialogAdsTitle;
+
+  /// No description provided for @migrationDialogAdsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Banner ads will appear on informational screens like Dashboard and Settings. They will never appear on critical screens like firewall rule editing or VPN controls.'**
+  String get migrationDialogAdsBody;
+
+  /// No description provided for @migrationDialogLegacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Already a paid user?'**
+  String get migrationDialogLegacyTitle;
+
+  /// No description provided for @migrationDialogLegacyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'If you previously purchased the app, your experience stays 100% ad-free. Press on \'Claim Legacy Access\' to email us your order number for the app purchase to get a promo code.'**
+  String get migrationDialogLegacyBody;
+
   /// No description provided for @claimLegacyAccess.
   ///
   /// In en, this message translates to:
   /// **'Claim Legacy Access'**
   String get claimLegacyAccess;
 
-  /// No description provided for @whatsNewTitle.
+  /// No description provided for @continueToApp.
   ///
   /// In en, this message translates to:
-  /// **'What\'s New in v{version}'**
-  String whatsNewTitle(String version);
-
-  /// No description provided for @changelog.
-  ///
-  /// In en, this message translates to:
-  /// **'Changelog'**
-  String get changelog;
-
-  /// No description provided for @changelogUnreleased.
-  ///
-  /// In en, this message translates to:
-  /// **'Unreleased'**
-  String get changelogUnreleased;
+  /// **'Continue to App'**
+  String get continueToApp;
 
   /// No description provided for @supporterAndAdRemoval.
   ///
@@ -8095,78 +8125,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Purchase failed. Please try again.'**
   String get supporterPurchaseFailed;
-
-  /// No description provided for @editDashboard.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit Dashboard'**
-  String get editDashboard;
-
-  /// No description provided for @topDevices.
-  ///
-  /// In en, this message translates to:
-  /// **'Top Devices'**
-  String get topDevices;
-
-  /// No description provided for @viewAll.
-  ///
-  /// In en, this message translates to:
-  /// **'View All'**
-  String get viewAll;
-
-  /// No description provided for @noActiveDevices.
-  ///
-  /// In en, this message translates to:
-  /// **'No active devices'**
-  String get noActiveDevices;
-
-  /// No description provided for @realAddress.
-  ///
-  /// In en, this message translates to:
-  /// **'Real Address'**
-  String get realAddress;
-
-  /// No description provided for @lastReferenced.
-  ///
-  /// In en, this message translates to:
-  /// **'Last Referenced'**
-  String get lastReferenced;
-
-  /// No description provided for @username.
-  ///
-  /// In en, this message translates to:
-  /// **'Username'**
-  String get username;
-
-  /// No description provided for @dataChannelCipher.
-  ///
-  /// In en, this message translates to:
-  /// **'Data Channel Cipher'**
-  String get dataChannelCipher;
-
-  /// No description provided for @killSession.
-  ///
-  /// In en, this message translates to:
-  /// **'Kill Session'**
-  String get killSession;
-
-  /// No description provided for @confirmKillSession.
-  ///
-  /// In en, this message translates to:
-  /// **'Are you sure you want to kill the session for {name}?'**
-  String confirmKillSession(String name);
-
-  /// No description provided for @sessionKilledSuccessfully.
-  ///
-  /// In en, this message translates to:
-  /// **'Session killed successfully'**
-  String get sessionKilledSuccessfully;
-
-  /// No description provided for @errorKillingSession.
-  ///
-  /// In en, this message translates to:
-  /// **'Error killing session: {error}'**
-  String errorKillingSession(String error);
 }
 
 class _AppLocalizationsDelegate

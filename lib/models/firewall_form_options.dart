@@ -35,9 +35,6 @@ class FirewallFormOptions {
   /// Entry with key '' represents "any". Entry with key 'single' represents
   /// the free-text "Single port or range" option.
   final Map<String, String> portOptions;
-  /// Next free sequence proposed by the server for a new rule (blank get_rule
-  /// response, e.g. '511'). Empty when unavailable.
-  final String defaultSequence;
 
   const FirewallFormOptions({
     required this.gateways,
@@ -51,7 +48,6 @@ class FirewallFormOptions {
     required this.tos,
     required this.categories,
     this.portOptions = const {},
-    this.defaultSequence = '',
   });
 
   /// Empty / fallback options used before data loads or on error.

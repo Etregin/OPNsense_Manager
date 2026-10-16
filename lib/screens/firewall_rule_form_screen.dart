@@ -374,24 +374,11 @@ class _FirewallRuleFormScreenState extends State<FirewallRuleFormScreen> {
     super.dispose();
   }
 
-  bool _sequenceDefaultApplied = false;
   bool _ruleDataLoaded = false;
   bool _portOptionsApplied = false;
 
   void _onViewModelChanged() {
     if (!mounted) return;
-
-    // New rule: prefill the sequence with the server-proposed value, once the
-    // options have loaded, and never overwrite something the user typed.
-    if (!widget.isEditing &&
-        !_sequenceDefaultApplied &&
-        !_viewModel.loadingOptions) {
-      _sequenceDefaultApplied = true;
-      final seq = _viewModel.formOptions.defaultSequence;
-      if (seq.isNotEmpty && _sequenceController.text.isEmpty) {
-        _sequenceController.text = seq;
-      }
-    }
 
     // Once the full rule has loaded, populate the form (once only).
     if (widget.isEditing && !_ruleDataLoaded && !_viewModel.loadingFullRule) {

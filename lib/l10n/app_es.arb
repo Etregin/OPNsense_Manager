@@ -3691,18 +3691,24 @@
   "@healthResetConfirmMessage": {},
   "healthDeleteReportConfirmMessage": "¿Eliminar este informe recopilado? Los datos del gráfico para esta entrada se perderán.",
   "@healthDeleteReportConfirmMessage": {},
+  "migrationDialogTitle": "¡OPNsense Manager se vuelve gratuito!",
+  "@migrationDialogTitle": {},
+  "migrationDialogWhyTitle": "¿Por qué el cambio?",
+  "@migrationDialogWhyTitle": {},
+  "migrationDialogWhyBody": "Hacer la app gratuita amplía la adopción de la comunidad y apoya el desarrollo de código abierto.",
+  "@migrationDialogWhyBody": {},
+  "migrationDialogAdsTitle": "Sobre los anuncios",
+  "@migrationDialogAdsTitle": {},
+  "migrationDialogAdsBody": "Los banners publicitarios aparecerán en pantallas informativas como el Panel y la Configuración. Nunca aparecerán en pantallas críticas como la edición de reglas de firewall o los controles de VPN.",
+  "@migrationDialogAdsBody": {},
+  "migrationDialogLegacyTitle": "¿Ya eres usuario de pago?",
+  "@migrationDialogLegacyTitle": {},
+  "migrationDialogLegacyBody": "Si compraste la app anteriormente, tu experiencia se mantiene 100% libre de anuncios. Pulsa en \"Reclamar acceso heredado\" para enviarnos tu número de pedido por correo electrónico y recibir un código promocional.",
+  "@migrationDialogLegacyBody": {},
   "claimLegacyAccess": "Reclamar acceso heredado",
   "@claimLegacyAccess": {},
-  "whatsNewTitle": "Novedades de la v{version}",
-  "@whatsNewTitle": {
-    "placeholders": {
-      "version": { "type": "String" }
-    }
-  },
-  "changelog": "Registro de cambios",
-  "@changelog": {},
-  "changelogUnreleased": "Sin publicar",
-  "@changelogUnreleased": {},
+  "continueToApp": "Continuar a la app",
+  "@continueToApp": {},
   "supporterAndAdRemoval": "Patrocinador y eliminación de anuncios",
   "@supporterAndAdRemoval": {},
   "supporterActiveStatus": "Patrocinador activo",
@@ -3724,41 +3730,5 @@
   "supporterRestoreNotFound": "No se encontró ninguna compra anterior.",
   "@supporterRestoreNotFound": {},
   "supporterPurchaseFailed": "La compra falló. Por favor, inténtalo de nuevo.",
-  "@supporterPurchaseFailed": {},
-  "editDashboard": "Editar panel",
-  "@editDashboard": {},
-  "topDevices": "Principales dispositivos",
-  "@topDevices": {},
-  "viewAll": "Ver todo",
-  "@viewAll": {},
-  "noActiveDevices": "No hay dispositivos activos",
-  "@noActiveDevices": {},
-  "realAddress": "Dirección Real",
-  "@realAddress": {},
-  "lastReferenced": "Última Referencia",
-  "@lastReferenced": {},
-  "username": "Nombre de Usuario",
-  "@username": {},
-  "dataChannelCipher": "Cifrado del Canal de Datos",
-  "@dataChannelCipher": {},
-  "killSession": "Finalizar Sesión",
-  "@killSession": {},
-  "confirmKillSession": "¿Está seguro de que desea finalizar la sesión de {name}?",
-  "@confirmKillSession": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "sessionKilledSuccessfully": "Sesión finalizada correctamente",
-  "@sessionKilledSuccessfully": {},
-  "errorKillingSession": "Error al finalizar la sesión: {error}",
-  "@errorKillingSession": {
-    "placeholders": {
-      "error": {
-        "type": "String"
-      }
-    }
-  }
+  "@supporterPurchaseFailed": {}
 }

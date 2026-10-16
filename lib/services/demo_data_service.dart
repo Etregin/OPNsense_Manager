@@ -149,9 +149,6 @@ class DemoDataService {
   /// Generate demo network hosts with bandwidth usage
   List<NetworkHost> generateNetworkHosts() => _networkGenerator.generateNetworkHosts();
 
-  List<NetworkHost> generateNetworkHostsForInterface(String interface) =>
-      _networkGenerator.generateNetworkHostsForInterface(interface);
-
   /// Generate demo DHCP leases
   List<Map<String, dynamic>> generateDhcpLeases() => _networkGenerator.generateDhcpLeases();
 

@@ -4493,18 +4493,34 @@ class AppLocalizationsEs extends AppLocalizations {
       '¿Eliminar este informe recopilado? Los datos del gráfico para esta entrada se perderán.';
 
   @override
+  String get migrationDialogTitle => '¡OPNsense Manager se vuelve gratuito!';
+
+  @override
+  String get migrationDialogWhyTitle => '¿Por qué el cambio?';
+
+  @override
+  String get migrationDialogWhyBody =>
+      'Hacer la app gratuita amplía la adopción de la comunidad y apoya el desarrollo de código abierto.';
+
+  @override
+  String get migrationDialogAdsTitle => 'Sobre los anuncios';
+
+  @override
+  String get migrationDialogAdsBody =>
+      'Los banners publicitarios aparecerán en pantallas informativas como el Panel y la Configuración. Nunca aparecerán en pantallas críticas como la edición de reglas de firewall o los controles de VPN.';
+
+  @override
+  String get migrationDialogLegacyTitle => '¿Ya eres usuario de pago?';
+
+  @override
+  String get migrationDialogLegacyBody =>
+      'Si compraste la app anteriormente, tu experiencia se mantiene 100% libre de anuncios. Pulsa en \"Reclamar acceso heredado\" para enviarnos tu número de pedido por correo electrónico y recibir un código promocional.';
+
+  @override
   String get claimLegacyAccess => 'Reclamar acceso heredado';
 
   @override
-  String whatsNewTitle(String version) {
-    return 'Novedades de la v$version';
-  }
-
-  @override
-  String get changelog => 'Registro de cambios';
-
-  @override
-  String get changelogUnreleased => 'Sin publicar';
+  String get continueToApp => 'Continuar a la app';
 
   @override
   String get supporterAndAdRemoval => 'Patrocinador y eliminación de anuncios';
@@ -4545,44 +4561,4 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get supporterPurchaseFailed =>
       'La compra falló. Por favor, inténtalo de nuevo.';
-
-  @override
-  String get editDashboard => 'Editar panel';
-
-  @override
-  String get topDevices => 'Principales dispositivos';
-
-  @override
-  String get viewAll => 'Ver todo';
-
-  @override
-  String get noActiveDevices => 'No hay dispositivos activos';
-
-  @override
-  String get realAddress => 'Dirección Real';
-
-  @override
-  String get lastReferenced => 'Última Referencia';
-
-  @override
-  String get username => 'Nombre de Usuario';
-
-  @override
-  String get dataChannelCipher => 'Cifrado del Canal de Datos';
-
-  @override
-  String get killSession => 'Finalizar Sesión';
-
-  @override
-  String confirmKillSession(String name) {
-    return '¿Está seguro de que desea finalizar la sesión de $name?';
-  }
-
-  @override
-  String get sessionKilledSuccessfully => 'Sesión finalizada correctamente';
-
-  @override
-  String errorKillingSession(String error) {
-    return 'Error al finalizar la sesión: $error';
-  }
 }

@@ -23,12 +23,8 @@ import '../../utils/app_colors.dart';
 import '../../utils/color_helpers.dart';
 
 /// Widget for displaying thermal sensor readings in a compact format.
-///
-/// Pass [sensors] as `null` when data has not yet been fetched (loading state)
-/// or when the device has no sensor hardware — a placeholder message is shown
-/// in both cases.
 class ThermalSensorsSection extends StatelessWidget {
-  final List<ThermalSensor>? sensors;
+  final List<ThermalSensor> sensors;
 
   const ThermalSensorsSection({
     super.key,
@@ -51,7 +47,7 @@ class ThermalSensorsSection extends StatelessWidget {
                   ),
             ),
             const SizedBox(height: 12),
-            if (sensors == null || sensors!.isEmpty)
+            if (sensors.isEmpty)
               Text(
                 l10n.noThermalSensorsAvailable,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -67,7 +63,7 @@ class ThermalSensorsSection extends StatelessWidget {
   }
 
   Widget _buildCompactSensorList(BuildContext context) {
-    final groupedSensors = _groupSensors(sensors!);
+    final groupedSensors = _groupSensors(sensors);
     final orderedSensors = [
       ...groupedSensors['cpu'] ?? const <ThermalSensor>[],
       ...groupedSensors['zone'] ?? const <ThermalSensor>[],

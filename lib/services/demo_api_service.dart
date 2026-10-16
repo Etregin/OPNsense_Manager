@@ -631,8 +631,7 @@ class DemoApiService {
   Future<List<NetworkHost>> getNetworkHosts({String interface = 'lan'}) =>
       DemoApiDecorator.execute(
         isDemoMode: _isDemoMode,
-        demoAction: () async =>
-            _demoDataService.generateNetworkHostsForInterface(interface),
+        demoAction: () async => _demoDataService.generateNetworkHosts(),
         realAction: () => _realApiService.getNetworkHosts(interface: interface),
         delayMs: 400,
       );
@@ -1656,15 +1655,6 @@ ${List.generate(16, (i) => List.generate(32, (j) => '0123456789abcdef'[(i * 32 +
         isDemoMode: _isDemoMode,
         demoAction: () async => {'result': 'ok'},
         realAction: () => _realApiService.restartService(id),
-        delayMs: 500,
-      );
-
-  /// Kill a connected OpenVPN client session
-  Future<Map<String, dynamic>> killSession(String serverId, String sessionId) =>
-      DemoApiDecorator.execute(
-        isDemoMode: _isDemoMode,
-        demoAction: () async => {'status': 'killed', 'clients': 1},
-        realAction: () => _realApiService.killSession(serverId, sessionId),
         delayMs: 500,
       );
 
