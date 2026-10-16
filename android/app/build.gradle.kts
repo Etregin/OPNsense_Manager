@@ -114,6 +114,18 @@ configurations.configureEach {
     }
 }
 
+// Force WorkManager to a version that supports 16 KB memory page sizes
+// (required for Android 15+ devices such as the sdk_gphone16k_arm64 emulator).
+// Without this, androidx.work.impl.WorkDatabase fails to be created on 16 KB
+// page size devices and the app crashes at process start via
+// androidx.startup.InitializationProvider.
+configurations.all {
+    resolutionStrategy {
+        force("androidx.work:work-runtime:2.9.0")
+        force("androidx.work:work-runtime-ktx:2.9.0")
+    }
+}
+
 // Apply ABI version code logic ONLY for F-Droid flavor
 val abiCodes = mapOf("armeabi-v7a" to 1, "arm64-v8a" to 2, "x86_64" to 3)
 
