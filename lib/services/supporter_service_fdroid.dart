@@ -54,14 +54,6 @@ class SupporterService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> isMigrationDismissed() async {
-    return await StorageService().loadBool(AppConstants.keyMigrationNoticeDismissed) ?? false;
-  }
-
-  Future<void> setMigrationDismissed() async {
-    await StorageService().saveBool(AppConstants.keyMigrationNoticeDismissed, true);
-  }
-
   /// No-op on F-Droid — IAP is not available.
   Future<void> buySupporter() async {}
 
