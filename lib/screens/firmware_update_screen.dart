@@ -425,6 +425,11 @@ class _FirmwareUpdateScreenState extends State<FirmwareUpdateScreen>
                       ?.copyWith(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
+                const SizedBox(height: 16),
+                FilledButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(l10n.done),
+                ),
               ] else if (_viewModel.isWaitingForReboot) ...[
                 // Reboot in progress — waiting for it to come back.
                 const SizedBox(

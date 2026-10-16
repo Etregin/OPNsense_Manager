@@ -27,6 +27,51 @@ import '../../models/network_host.dart';
 class DemoNetworkDataGenerator {
   final Random _random = Random();
 
+  /// Returns interface-specific demo hosts.
+  ///
+  /// - `'lan'` (or any unrecognised interface) → full 10-host LAN picture.
+  /// - `'wan'` → 3 heavy-bandwidth hosts representing WAN-routed traffic.
+  List<NetworkHost> generateNetworkHostsForInterface(String interface) {
+    if (interface == 'wan') return _generateWanHosts();
+    return generateNetworkHosts();
+  }
+
+  /// WAN-facing traffic: only the high-bandwidth internal clients appear;
+  /// IoT and low-traffic devices do not route significant WAN traffic.
+  List<NetworkHost> _generateWanHosts() {
+    final hosts = <NetworkHost>[
+      NetworkHost(
+        address: '192.168.1.10',
+        hostname: 'desktop-gaming',
+        manufacturer: 'Intel Corporate',
+        macAddress: '00:1A:2B:3C:4D:5E',
+        rateIn: 45000000 + _random.nextInt(10000000),  // 45–55 Mbps download
+        rateOut: 8000000 + _random.nextInt(4000000),   // 8–12 Mbps upload
+        leaseExpiry: DateTime.now().add(const Duration(hours: 12)),
+      ),
+      NetworkHost(
+        address: '192.168.1.20',
+        hostname: 'smart-tv-living',
+        manufacturer: 'Samsung Electronics',
+        macAddress: '00:1C:42:00:00:09',
+        rateIn: 30000000 + _random.nextInt(10000000),  // 30–40 Mbps (4K stream)
+        rateOut: 1000000 + _random.nextInt(1000000),   // 1–2 Mbps upload
+        leaseExpiry: DateTime.now().add(const Duration(hours: 24)),
+      ),
+      NetworkHost(
+        address: '192.168.1.25',
+        hostname: 'laptop-work',
+        manufacturer: 'Dell Inc.',
+        macAddress: '00:1D:60:B3:01:84',
+        rateIn: 10000000 + _random.nextInt(8000000),   // 10–18 Mbps download
+        rateOut: 3000000 + _random.nextInt(2000000),   // 3–5 Mbps upload
+        leaseExpiry: DateTime.now().add(const Duration(hours: 8)),
+      ),
+    ];
+    hosts.sort((a, b) => b.totalRate.compareTo(a.totalRate));
+    return hosts;
+  }
+
   /// Generate demo network hosts with realistic bandwidth usage
   List<NetworkHost> generateNetworkHosts() {
     final hosts = <NetworkHost>[

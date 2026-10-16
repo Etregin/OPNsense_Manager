@@ -34,6 +34,7 @@ import 'services/auth_service.dart';
 import 'services/profile_service.dart';
 import 'services/supporter_service.dart';
 import 'services/ads/ad_service.dart';
+import 'services/dashboard/dashboard_layout_service.dart';
 import 'config/flavor_config.dart';
 import 'config/theme_config.dart' show ThemeConfig;
 import 'utils/constants.dart';
@@ -162,6 +163,10 @@ class _OPNsenseManagerAppState extends State<OPNsenseManagerApp>
         ),
         Provider<AppVersionService>(
           create: (_) => AppVersionService(),
+        ),
+        ProxyProvider<StorageService, DashboardLayoutService>(
+          update: (_, storage, previous) =>
+              previous ?? DashboardLayoutService(storage),
         ),
         ChangeNotifierProvider<SupporterService>(
           create: (_) => SupporterService(),

@@ -40,40 +40,28 @@ class _GatewaysSectionState extends State<GatewaysSection> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n.gateways,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(height: 12),
-        Card(
-          child: Column(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.router),
-                title: Text(l10n.gateways),
-                subtitle: Text('${widget.gateways.length} ${l10n.gateways}'),
-                trailing: Icon(
-                  _isExpanded ? Icons.expand_less : Icons.expand_more,
-                ),
-                onTap: () {
-                  setState(() {
-                    _isExpanded = !_isExpanded;
-                  });
-                },
-              ),
-              if (_isExpanded) ...[
-                const Divider(height: 1),
-                ...widget.gateways.map((gateway) => _buildGatewayTile(gateway)),
-              ],
-            ],
+    return Card(
+      child: Column(
+        children: [
+          ListTile(
+            leading: const Icon(Icons.router),
+            title: Text(l10n.gateways),
+            subtitle: Text('${widget.gateways.length} ${l10n.gateways}'),
+            trailing: Icon(
+              _isExpanded ? Icons.expand_less : Icons.expand_more,
+            ),
+            onTap: () {
+              setState(() {
+                _isExpanded = !_isExpanded;
+              });
+            },
           ),
-        ),
-      ],
+          if (_isExpanded) ...[
+            const Divider(height: 1),
+            ...widget.gateways.map((gateway) => _buildGatewayTile(gateway)),
+          ],
+        ],
+      ),
     );
   }
 

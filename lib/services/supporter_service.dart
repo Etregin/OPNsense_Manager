@@ -97,16 +97,6 @@ class SupporterService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Checks whether the migration notice has been dismissed.
-  Future<bool> isMigrationDismissed() async {
-    return await StorageService().loadBool(AppConstants.keyMigrationNoticeDismissed) ?? false;
-  }
-
-  /// Sets the migration notice as dismissed in local storage.
-  Future<void> setMigrationDismissed() async {
-    await StorageService().saveBool(AppConstants.keyMigrationNoticeDismissed, true);
-  }
-
   /// Initiates purchase flow for the supporter product.
   Future<void> buySupporter() async {
     if (!FlavorConfig().supportsAds) return;

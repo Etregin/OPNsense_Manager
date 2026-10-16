@@ -21,35 +21,42 @@ import '../../models/firewall_rule.dart';
 /// Canonical key used for rules that have no interface (floating/global rules).
 const String kFloatingInterfaceKey = '(floating)';
 
+/// Canonical key used for automatic (system-generated) rules.
+const String kAutomaticInterfaceKey = '(automatic)';
+
 /// Utility class for filtering and grouping firewall rules
 class FirewallRuleFilter {
   /// Filter rules to show only user-created (non-system-generated) rules.
-  /// Kept for any future filtered views; not used in the main display path.
   static List<FirewallRule> filterAutomationRules(List<FirewallRule> rules) {
     return rules.where((rule) => !rule.isSystemGenerated).toList();
   }
 
-  /// Group rules by interface, sorted ascending by sort_order within each group.
+  /// Get automatic (system-generated) rules, sorted ascending by sort_order
+  /// (`<prio_group>.<sequence>`), with unparseable sort_orders placed last and
+  /// original list order preserved for ties.
+  static List<FirewallRule> automaticRules(List<FirewallRule> rules) {
+    final autoRules = rules.where((rule) => rule.isSystemGenerated).toList();
+    return _sortBySortOrder(autoRules);
+  }
+
+  /// Group user-created rules by interface, sorted ascending by sort_order
+  /// (`<prio_group>.<sequence>`) within each group, with unparseable sort_orders
+  /// placed last and original list order preserved for ties.
   /// Rules with an empty interfaceName are placed under [kFloatingInterfaceKey].
+  /// Automatic (system-generated) rules are excluded from all interface buckets.
   /// The returned map's keys are sorted alphabetically.
   static Map<String, List<FirewallRule>> groupByInterface(
       List<FirewallRule> rules) {
-    // Sort: user-created rules first (alphabetically by description),
-    // then automatic rules (alphabetically by description).
-    final sorted = List<FirewallRule>.from(rules)
-      ..sort((a, b) {
-        final aAuto = a.isSystemGenerated ? 1 : 0;
-        final bAuto = b.isSystemGenerated ? 1 : 0;
-        if (aAuto != bAuto) return aAuto.compareTo(bAuto);
-        return a.description.toLowerCase().compareTo(b.description.toLowerCase());
-      });
+    final userRules = rules.where((rule) => !rule.isSystemGenerated).toList();
+    final sorted = _sortBySortOrder(userRules);
 
     final Map<String, List<FirewallRule>> rulesByInterface = {};
 
     for (final rule in sorted) {
       // Normalise to lowercase so 'LAN' and 'lan' collapse into one bucket.
+      // Multi-interface rules (e.g. 'lan,wan') go under floating, not their own bucket.
       final name = rule.interfaceName.toLowerCase();
-      final key = name.isEmpty ? kFloatingInterfaceKey : name;
+      final key = (name.isEmpty || name.contains(',')) ? kFloatingInterfaceKey : name;
       rulesByInterface.putIfAbsent(key, () => []).add(rule);
     }
 
@@ -73,9 +80,55 @@ class FirewallRuleFilter {
     return rulesByInterface.isNotEmpty ? rulesByInterface.keys.first : null;
   }
 
-  /// Group all rules by interface (no filtering — automatic rules are included)
+  /// Group user-created rules by interface (excludes automatic rules).
   static Map<String, List<FirewallRule>> filterAndGroup(
       List<FirewallRule> allRules) {
     return groupByInterface(allRules);
+  }
+
+  /// Sorts a list of rules ascending by parsed sort_order (`<prio_group>.<sequence>`).
+  /// Rules with empty or invalid sort_order sort last.
+  /// Ties and invalid sort_orders maintain their original relative order.
+  static List<FirewallRule> _sortBySortOrder(List<FirewallRule> rules) {
+    final indexed = rules.asMap().entries.toList();
+    indexed.sort((a, b) {
+      final keyA = _SortKey.tryParse(a.value.sortOrder);
+      final keyB = _SortKey.tryParse(b.value.sortOrder);
+      if (keyA != null && keyB != null) {
+        final keyComp = keyA.compareTo(keyB);
+        if (keyComp != 0) return keyComp;
+      } else if (keyA != null) {
+        return -1;
+      } else if (keyB != null) {
+        return 1;
+      }
+      return a.key.compareTo(b.key);
+    });
+    return indexed.map((e) => e.value).toList();
+  }
+}
+
+/// Parsed representation of a firewall rule's sort_order (`<prio_group>.<sequence>`).
+class _SortKey implements Comparable<_SortKey> {
+  final int prioGroup;
+  final int sequence;
+
+  const _SortKey(this.prioGroup, this.sequence);
+
+  static _SortKey? tryParse(String sortOrder) {
+    if (sortOrder.isEmpty) return null;
+    final parts = sortOrder.split('.');
+    if (parts.length != 2) return null;
+    final prioGroup = int.tryParse(parts[0]);
+    final sequence = int.tryParse(parts[1]);
+    if (prioGroup == null || sequence == null) return null;
+    return _SortKey(prioGroup, sequence);
+  }
+
+  @override
+  int compareTo(_SortKey other) {
+    final prioDiff = prioGroup.compareTo(other.prioGroup);
+    if (prioDiff != 0) return prioDiff;
+    return sequence.compareTo(other.sequence);
   }
 }

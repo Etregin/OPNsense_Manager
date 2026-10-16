@@ -20,8 +20,9 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../models/openvpn_route.dart';
 import '../services/demo_api_service.dart';
+import '../utils/app_colors.dart';
 
-/// Tab widget for displaying OpenVPN routes
+/// Tab widget for displaying active OpenVPN routes
 class OpenvpnRoutesTab extends StatefulWidget {
   final DemoApiService apiService;
   final void Function(VoidCallback)? onRegisterRefresh;
@@ -83,9 +84,7 @@ class _OpenvpnRoutesTabState extends State<OpenvpnRoutesTab> {
     final l10n = AppLocalizations.of(context)!;
 
     if (_isLoading && _routes.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (_error != null) {
@@ -152,68 +151,110 @@ class _OpenvpnRoutesTabState extends State<OpenvpnRoutesTab> {
         itemCount: _routes.length,
         itemBuilder: (context, index) {
           final route = _routes[index];
-
           return Card(
             margin: const EdgeInsets.only(bottom: 12),
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                child: Icon(
-                  Icons.route,
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
-                ),
-              ),
-              title: Text(
-                route.network ?? 'Unknown Network',
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              subtitle: Column(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (route.gateway != null) ...[
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.router,
-                          size: 16,
-                          color: Theme.of(context).colorScheme.secondary,
+                  // Title row — virtual address + type badge
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.primaryContainer,
+                        child: Icon(
+                          Icons.route,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onPrimaryContainer,
                         ),
-                        const SizedBox(width: 4),
-                        Text('Gateway: ${route.gateway}'),
-                      ],
-                    ),
-                  ],
-                  if (route.description != null && route.description!.isNotEmpty) ...[
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.description_outlined,
-                          size: 16,
-                          color: Theme.of(context).colorScheme.secondary,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          route.virtualAddress ?? l10n.unknown,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(width: 4),
-                        Expanded(
+                      ),
+                      if (route.type != null)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(
+                                alpha: AppColors.opacitySubtle),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                                color: AppColors.primary, width: 1),
+                          ),
                           child: Text(
-                            route.description!,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                            route.type!,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary,
+                            ),
                           ),
                         ),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  const Divider(),
+                  const SizedBox(height: 4),
+                  if (route.commonName != null &&
+                      route.commonName!.isNotEmpty)
+                    _buildInfoRow(
+                        context, l10n.commonName, route.commonName!),
+                  if (route.realAddress != null &&
+                      route.realAddress!.isNotEmpty)
+                    _buildInfoRow(
+                        context, l10n.realAddress, route.realAddress!),
+                  if (route.lastRef != null && route.lastRef!.isNotEmpty)
+                    _buildInfoRow(
+                        context, l10n.lastReferenced, route.lastRef!),
+                  if (route.description != null &&
+                      route.description!.isNotEmpty)
+                    _buildInfoRow(
+                        context, l10n.description, route.description!),
                 ],
               ),
-              isThreeLine: route.gateway != null || 
-                          (route.description != null && route.description!.isNotEmpty),
             ),
           );
         },
       ),
     );
   }
+
+  Widget _buildInfoRow(BuildContext context, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 130,
+            child: Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
-
-
