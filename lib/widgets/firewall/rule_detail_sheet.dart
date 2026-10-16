@@ -88,7 +88,7 @@ class RuleDetailSheet extends StatelessWidget {
               const SizedBox(height: 16),
               DetailRow(label: l10n.description, value: rule.description, labelWidth: 140, topPadding: 8, appendColon: false, labelColor: AppColors.disabled),
               DetailRow(label: l10n.type, value: rule.typeDisplayName, labelWidth: 140, topPadding: 8, appendColon: false, labelColor: AppColors.disabled),
-              DetailRow(label: l10n.interface, value: rule.interfaceDisplayName, labelWidth: 140, topPadding: 8, appendColon: false, labelColor: AppColors.disabled),
+              DetailRow(label: l10n.interface, value: rule.interfaceName, labelWidth: 140, topPadding: 8, appendColon: false, labelColor: AppColors.disabled),
               DetailRow(label: l10n.protocol, value: rule.protocolDisplayName, labelWidth: 140, topPadding: 8, appendColon: false, labelColor: AppColors.disabled),
               DetailRow(
                 label: l10n.source,

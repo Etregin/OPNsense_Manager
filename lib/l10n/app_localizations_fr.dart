@@ -4492,18 +4492,34 @@ class AppLocalizationsFr extends AppLocalizations {
       'Supprimer ce rapport collecté ? Les données du graphique pour cette entrée seront perdues.';
 
   @override
+  String get migrationDialogTitle => 'OPNsense Manager devient gratuit !';
+
+  @override
+  String get migrationDialogWhyTitle => 'Pourquoi ce changement ?';
+
+  @override
+  String get migrationDialogWhyBody =>
+      'Rendre l\'application gratuite élargit l\'adoption par la communauté et soutient le développement open-source.';
+
+  @override
+  String get migrationDialogAdsTitle => 'À propos des publicités';
+
+  @override
+  String get migrationDialogAdsBody =>
+      'Des bannières publicitaires apparaîtront sur les écrans informatifs comme le Tableau de bord et les Paramètres. Elles n\'apparaîtront jamais sur les écrans critiques comme l\'édition de règles de pare-feu ou les contrôles VPN.';
+
+  @override
+  String get migrationDialogLegacyTitle => 'Déjà un utilisateur payant ?';
+
+  @override
+  String get migrationDialogLegacyBody =>
+      'Si vous avez précédemment acheté l\'application, votre expérience reste 100% sans publicité. Appuyez sur \"Réclamer l\'accès hérité\" pour nous envoyer votre numéro de commande par e-mail et recevoir un code promo.';
+
+  @override
   String get claimLegacyAccess => 'Réclamer l\'accès hérité';
 
   @override
-  String whatsNewTitle(String version) {
-    return 'Nouveautés de la v$version';
-  }
-
-  @override
-  String get changelog => 'Journal des modifications';
-
-  @override
-  String get changelogUnreleased => 'Non publié';
+  String get continueToApp => 'Continuer vers l\'application';
 
   @override
   String get supporterAndAdRemoval => 'Supporter et suppression des publicités';
@@ -4543,44 +4559,4 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get supporterPurchaseFailed =>
       'L\'achat a échoué. Veuillez réessayer.';
-
-  @override
-  String get editDashboard => 'Modifier le tableau de bord';
-
-  @override
-  String get topDevices => 'Principaux appareils';
-
-  @override
-  String get viewAll => 'Voir tout';
-
-  @override
-  String get noActiveDevices => 'Aucun appareil actif';
-
-  @override
-  String get realAddress => 'Adresse Réelle';
-
-  @override
-  String get lastReferenced => 'Dernière Référence';
-
-  @override
-  String get username => 'Nom d\'utilisateur';
-
-  @override
-  String get dataChannelCipher => 'Chiffrement du Canal de Données';
-
-  @override
-  String get killSession => 'Terminer la Session';
-
-  @override
-  String confirmKillSession(String name) {
-    return 'Voulez-vous vraiment terminer la session de $name ?';
-  }
-
-  @override
-  String get sessionKilledSuccessfully => 'Session terminée avec succès';
-
-  @override
-  String errorKillingSession(String error) {
-    return 'Erreur lors de la fin de la session : $error';
-  }
 }

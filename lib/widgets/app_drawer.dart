@@ -21,7 +21,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../constants/routes.dart';
 import '../models/system_info.dart';
-import '../screens/changelog_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/system_info_screen.dart';
 import '../screens/system_log_audit_screen.dart';
@@ -292,16 +291,7 @@ class _AppDrawerState extends State<AppDrawer> {
               _launchGitHubIssues(context);
             },
           ),
-          // 10. Changelog
-          NavigationTile(
-            icon: Icons.history,
-            title: l10n.changelog,
-            currentRoute: widget.currentRoute,
-            targetRoute: Routes.changelog,
-            destination: const ChangelogScreen(),
-          ),
-
-          // 11. About (individual tile)
+          // 10. About (individual tile)
           ListTile(
             leading: const Icon(Icons.help_outline),
             title: Text(l10n.about),

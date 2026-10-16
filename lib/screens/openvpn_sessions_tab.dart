@@ -21,9 +21,7 @@ import '../l10n/app_localizations.dart';
 import '../models/openvpn_session.dart';
 import '../services/demo_api_service.dart';
 import '../utils/app_colors.dart';
-import '../utils/formatters.dart';
 import '../utils/snackbar_helper.dart';
-import '../widgets/common/confirmation_dialog.dart';
 
 /// Tab widget for displaying OpenVPN sessions
 class OpenvpnSessionsTab extends StatefulWidget {
@@ -147,45 +145,6 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
     }
   }
 
-  Future<void> _killSession(OpenvpnSession session) async {
-    final sessionId = session.killSessionId;
-    if (sessionId == null) return;
-
-    final l10n = AppLocalizations.of(context)!;
-    final confirmed = await ConfirmationDialog.show(
-      context: context,
-      title: l10n.killSession,
-      message: l10n.confirmKillSession(sessionId),
-      confirmText: l10n.killSession,
-      cancelText: l10n.cancel,
-      isDestructive: true,
-    );
-    if (!confirmed || !mounted) return;
-
-    setState(() {
-      _actionLoading[session.id] = true;
-    });
-
-    try {
-      await widget.apiService.killSession(session.serverId, sessionId);
-
-      if (mounted) {
-        SnackBarHelper.showSuccess(context, l10n.sessionKilledSuccessfully);
-        await _loadSessions();
-      }
-    } catch (e) {
-      if (mounted) {
-        SnackBarHelper.showError(context, l10n.errorKillingSession(e.toString()));
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _actionLoading.remove(session.id);
-        });
-      }
-    }
-  }
-
   Future<void> _restartService(String id) async {
     setState(() {
       _actionLoading[id] = true;
@@ -239,7 +198,7 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
             ),
             const SizedBox(height: 16),
             Text(
-              l10n.errorLoadingSessions,
+              'Error loading sessions',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
@@ -271,12 +230,12 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
             ),
             const SizedBox(height: 16),
             Text(
-              l10n.noSessionsFound,
+              'No sessions found',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Text(
-              l10n.noOpenvpnSessionsConfigured,
+              'There are no OpenVPN sessions configured',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
@@ -312,54 +271,34 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.category_outlined,
+                                  size: 16,
+                                  color: Theme.of(context).colorScheme.secondary,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Type: ${session.type}',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
-                      _buildStatusBadge(session, l10n),
+                      _buildStatusBadge(session),
                     ],
                   ),
                   const SizedBox(height: 12),
                   const Divider(),
-                  const SizedBox(height: 4),
-                  _buildInfoRow(context, l10n.type, session.type),
-                  if (session.hasClientInfo) ...[
-                    _buildInfoRow(context, l10n.commonName, session.commonName),
-                    _buildInfoRow(context, l10n.username, session.username),
-                    _buildInfoRow(context, l10n.realAddress, session.realAddress),
-                    _buildInfoRow(context, l10n.virtualAddress, session.virtualAddress),
-                    _buildInfoRow(context, l10n.connectedSince, session.connectedSince),
-                    _buildInfoRow(
-                      context,
-                      l10n.bytesSent,
-                      session.bytesSent == null ? null : Formatters.formatBytes(session.bytesSent!),
-                    ),
-                    _buildInfoRow(
-                      context,
-                      l10n.bytesReceived,
-                      session.bytesReceived == null ? null : Formatters.formatBytes(session.bytesReceived!),
-                    ),
-                    _buildInfoRow(context, l10n.dataChannelCipher, session.dataChannelCipher),
-                  ],
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      if (session.hasClientInfo)
-                        OutlinedButton.icon(
-                          onPressed: isLoading ? null : () => _killSession(session),
-                          icon: isLoading
-                              ? const SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
-                                )
-                              : const Icon(Icons.link_off, size: 18),
-                          label: Text(l10n.killSession),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.error,
-                          ),
-                        )
-                      else if (session.canStopOrRestart) ...[
+                      if (session.canStopOrRestart) ...[
                         OutlinedButton.icon(
                           onPressed: isLoading ? null : () => _restartService(session.id),
                           icon: isLoading
@@ -369,7 +308,7 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
                                   child: CircularProgressIndicator(strokeWidth: 2),
                                 )
                               : const Icon(Icons.restart_alt, size: 18),
-                          label: Text(l10n.restart),
+                          label: const Text('Restart'),
                         ),
                         const SizedBox(width: 8),
                         OutlinedButton.icon(
@@ -381,7 +320,7 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
                                   child: CircularProgressIndicator(strokeWidth: 2),
                                 )
                               : const Icon(Icons.stop, size: 18),
-                          label: Text(l10n.stop),
+                          label: const Text('Stop'),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: AppColors.error,
                           ),
@@ -396,7 +335,7 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
                                   child: CircularProgressIndicator(strokeWidth: 2),
                                 )
                               : const Icon(Icons.play_arrow, size: 18),
-                          label: Text(l10n.start),
+                          label: const Text('Start'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.success,
                             foregroundColor: AppColors.onPrimary,
@@ -414,52 +353,22 @@ class _OpenvpnSessionsTabState extends State<OpenvpnSessionsTab> {
     );
   }
 
-  Widget _buildInfoRow(BuildContext context, String label, String? value) {
-    if (value == null || value.isEmpty) return const SizedBox.shrink();
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 130,
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatusBadge(OpenvpnSession session, AppLocalizations l10n) {
+  Widget _buildStatusBadge(OpenvpnSession session) {
     final Color color;
     final String label;
     final IconData icon;
 
     if (session.status == 'ok') {
       color = AppColors.success;
-      label = l10n.ok;
+      label = 'Running';
       icon = Icons.check_circle;
     } else if (session.status == null) {
       color = AppColors.disabled;
-      label = l10n.stopped;
+      label = 'Stopped';
       icon = Icons.stop_circle;
     } else {
       color = AppColors.warning;
-      label = session.status ?? l10n.unknown;
+      label = session.status ?? 'Unknown';
       icon = Icons.warning;
     }
 

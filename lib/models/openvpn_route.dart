@@ -16,38 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/// Model representing an active OpenVPN route entry.
-///
-/// Maps the `search_routes` API response fields:
-/// `virtual_address`, `common_name`, `real_address`, `last_ref`,
-/// `type`, `id`, `description`.
+/// Model representing an OpenVPN route
 class OpenvpnRoute {
   final String? id;
-  final String? virtualAddress;
-  final String? commonName;
-  final String? realAddress;
-  final String? lastRef;
-  final String? type;
+  final String? network;
+  final String? gateway;
   final String? description;
 
   OpenvpnRoute({
     this.id,
-    this.virtualAddress,
-    this.commonName,
-    this.realAddress,
-    this.lastRef,
-    this.type,
+    this.network,
+    this.gateway,
     this.description,
   });
 
   factory OpenvpnRoute.fromJson(Map<String, dynamic> json) {
     return OpenvpnRoute(
       id: json['id'] as String?,
-      virtualAddress: json['virtual_address'] as String?,
-      commonName: json['common_name'] as String?,
-      realAddress: json['real_address'] as String?,
-      lastRef: json['last_ref'] as String?,
-      type: json['type'] as String?,
+      network: json['network'] as String?,
+      gateway: json['gateway'] as String?,
       description: json['description'] as String?,
     );
   }
@@ -55,12 +42,11 @@ class OpenvpnRoute {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'virtual_address': virtualAddress,
-      'common_name': commonName,
-      'real_address': realAddress,
-      'last_ref': lastRef,
-      'type': type,
+      'network': network,
+      'gateway': gateway,
       'description': description,
     };
   }
 }
+
+

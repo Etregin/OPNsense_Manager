@@ -26,25 +26,12 @@ class FirewallRulesViewModel extends BaseListViewModel<FirewallRule> {
   final DemoApiService _apiService;
 
   Map<String, List<FirewallRule>> _rulesByInterface = {};
-  List<FirewallRule> _automaticRules = [];
   String? _selectedInterface;
-  Map<String, String> _interfaceDisplayNames = {};
 
   FirewallRulesViewModel(this._apiService);
 
-  /// User-created rules grouped by interface (automatic rules excluded).
   Map<String, List<FirewallRule>> get rulesByInterface => _rulesByInterface;
-
-  /// Automatic (system-generated) rules, ordered by sort_order.
-  List<FirewallRule> get automaticRules => _automaticRules;
-
-  /// Selected chip key: an interface key, [kFloatingInterfaceKey] or
-  /// [kAutomaticInterfaceKey].
   String? get selectedInterface => _selectedInterface;
-
-  /// Human-readable display name for each interface bucket key.
-  /// Keyed by the same lowercase internal ID used in [rulesByInterface].
-  Map<String, String> get interfaceDisplayNames => _interfaceDisplayNames;
 
   void selectInterface(String? interface) {
     _selectedInterface = interface;
@@ -57,24 +44,10 @@ class FirewallRulesViewModel extends BaseListViewModel<FirewallRule> {
     final rulesByInterface = FirewallRuleFilter.filterAndGroup(allRules);
 
     _rulesByInterface = rulesByInterface;
-    _automaticRules = FirewallRuleFilter.automaticRules(allRules);
 
-    // Build a display-name map: for each bucket, take the first rule's interfaceDisplayName.
-    _interfaceDisplayNames = {
-      for (final entry in rulesByInterface.entries)
-        entry.key: entry.value.first.interfaceDisplayName,
-    };
-
-    // Default to the first interface chip; fall back to Automatic only when
-    // there are no user rules. Also recover if the selection no longer exists.
-    final selectionValid = _selectedInterface != null &&
-        (rulesByInterface.containsKey(_selectedInterface) ||
-            (_selectedInterface == kAutomaticInterfaceKey &&
-                _automaticRules.isNotEmpty));
-    if (!selectionValid) {
-      _selectedInterface = rulesByInterface.isNotEmpty
-          ? FirewallRuleFilter.getFirstInterface(rulesByInterface)
-          : (_automaticRules.isNotEmpty ? kAutomaticInterfaceKey : null);
+    // Set default selected interface to the first one if not yet chosen
+    if (_selectedInterface == null && rulesByInterface.isNotEmpty) {
+      _selectedInterface = FirewallRuleFilter.getFirstInterface(rulesByInterface);
     }
 
     return allRules;
@@ -84,8 +57,7 @@ class FirewallRulesViewModel extends BaseListViewModel<FirewallRule> {
   bool matchesFilter(FirewallRule rule, String query) {
     final lower = query.toLowerCase();
     return rule.description.toLowerCase().contains(lower) ||
-        rule.interfaceName.toLowerCase().contains(lower) ||
-        rule.interfaceDisplayName.toLowerCase().contains(lower);
+        rule.interfaceName.toLowerCase().contains(lower);
   }
 
   /// Toggle a firewall rule enabled/disabled state

@@ -22,22 +22,15 @@ import '../../utils/constants.dart';
 import '../../l10n/app_localizations.dart';
 import 'rule_filter_chip.dart';
 
-/// Widget for selecting firewall rule interfaces.
-///
-/// Interface chips are followed by a divider and a dedicated Automatic chip
-/// (key [kAutomaticInterfaceKey]) when [automaticRuleCount] is greater than 0.
+/// Widget for selecting firewall rule interfaces
 class InterfaceSelector extends StatelessWidget {
   final Map<String, int> interfaceRuleCounts;
-  final Map<String, String> interfaceDisplayNames;
-  final int automaticRuleCount;
   final String? selectedInterface;
   final ValueChanged<String> onInterfaceSelected;
 
   const InterfaceSelector({
     super.key,
     required this.interfaceRuleCounts,
-    this.interfaceDisplayNames = const {},
-    this.automaticRuleCount = 0,
     required this.selectedInterface,
     required this.onInterfaceSelected,
   });
@@ -72,39 +65,20 @@ class InterfaceSelector extends StatelessWidget {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
-              children: [
-                ...interfaceRuleCounts.entries.map((entry) {
-                  final label = entry.key == kFloatingInterfaceKey
-                      ? l10n.floatingInterface
-                      : (interfaceDisplayNames[entry.key] ?? entry.key.toUpperCase());
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: RuleFilterChip(
-                      label: label,
-                      count: entry.value,
-                      isSelected: entry.key == selectedInterface,
-                      onSelected: () => onInterfaceSelected(entry.key),
-                    ),
-                  );
-                }),
-                if (automaticRuleCount > 0) ...[
-                  if (interfaceRuleCounts.isNotEmpty)
-                    SizedBox(
-                      height: 24,
-                      child: VerticalDivider(
-                        width: 16,
-                        color: colorScheme.outline,
-                      ),
-                    ),
-                  RuleFilterChip(
-                    label: l10n.automaticRule,
-                    count: automaticRuleCount,
-                    icon: Icons.settings_suggest_outlined,
-                    isSelected: selectedInterface == kAutomaticInterfaceKey,
-                    onSelected: () => onInterfaceSelected(kAutomaticInterfaceKey),
+              children: interfaceRuleCounts.entries.map((entry) {
+                final label = entry.key == kFloatingInterfaceKey
+                    ? l10n.floatingInterface
+                    : entry.key.toUpperCase();
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: RuleFilterChip(
+                    label: label,
+                    count: entry.value,
+                    isSelected: entry.key == selectedInterface,
+                    onSelected: () => onInterfaceSelected(entry.key),
                   ),
-                ],
-              ],
+                );
+              }).toList(),
             ),
           ),
         ],

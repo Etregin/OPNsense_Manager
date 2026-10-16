@@ -27,8 +27,7 @@ import '../../constants/api_endpoints.dart';
 /// Service for firewall rule operations
 class FirewallService extends BaseOPNsenseService {
   /// Fetch all firewall rules via POST /firewall/filter/search_rule.
-  /// Returns rules in the order the API provides them. Ordering by sort_order
-  /// and grouping happen in FirewallRuleFilter so the list matches the web UI.
+  /// Returns rules sorted by sort_order so the list matches the web UI order.
   Future<List<FirewallRule>> getFirewallRules() async {
     ensureInitialized();
 
@@ -191,10 +190,7 @@ class FirewallService extends BaseOPNsenseService {
       // leave empty — port options are optional, form still works
     }
 
-    final seq = ruleObj?['sequence'];
-
     return FirewallFormOptions(
-      defaultSequence: seq is String || seq is num ? seq.toString() : '',
       gateways:    _extractOptions(ruleObj?['gateway'],   '', 'None'),
       replyTo:     _extractOptions(ruleObj?['replyto'],   '', 'None'),
       divertTo:    _extractOptions(ruleObj?['divert-to'], '', 'None'),
@@ -285,10 +281,6 @@ class FirewallService extends BaseOPNsenseService {
 
     // interface: raw key (e.g. 'lan', 'wan', '') — '' means any/floating
     final String interfaceName = r['interface']?.toString() ?? '';
-    // %interface: human-readable display name; absent on legacy/automatic rules
-    final String rawDisplayName = r['%interface']?.toString() ?? '';
-    final String interfaceDisplayName =
-        rawDisplayName.isNotEmpty ? rawDisplayName : interfaceName;
 
     // protocol: raw lowercase (e.g. 'tcp', 'udp', 'any', '')
     String protocol = r['protocol']?.toString() ?? '';
@@ -337,10 +329,9 @@ class FirewallService extends BaseOPNsenseService {
     final String interfaceNot   = r['interfacenot']?.toString()    ?? '0';
 
     return FirewallRule(
-      uuid:                 r['uuid']?.toString() ?? '',
-      type:                 type,
-      interfaceName:        interfaceName,
-      interfaceDisplayName: interfaceDisplayName,
+      uuid:            r['uuid']?.toString() ?? '',
+      type:            type,
+      interfaceName:   interfaceName,
       protocol:        protocol,
       source:          source,
       destination:     destination,

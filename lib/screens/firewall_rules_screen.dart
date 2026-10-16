@@ -159,9 +159,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen>
         final errorMessage = _viewModel.errorMessage;
         final rules = _viewModel.items;
         final rulesByInterface = _viewModel.rulesByInterface;
-        final automaticRules = _viewModel.automaticRules;
         final selectedInterface = _viewModel.selectedInterface;
-        final interfaceDisplayNames = _viewModel.interfaceDisplayNames;
 
         return Scaffold(
           appBar: AppBar(
@@ -183,9 +181,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen>
             errorMessage: errorMessage,
             rules: rules,
             rulesByInterface: rulesByInterface,
-            automaticRules: automaticRules,
             selectedInterface: selectedInterface,
-            interfaceDisplayNames: interfaceDisplayNames,
           ),
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () async {
@@ -210,9 +206,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen>
     required String? errorMessage,
     required List<FirewallRule> rules,
     required Map<String, List<FirewallRule>> rulesByInterface,
-    required List<FirewallRule> automaticRules,
     required String? selectedInterface,
-    required Map<String, String> interfaceDisplayNames,
   }) {
     if (isLoading) {
       return const Center(child: CircularProgressIndicator());
@@ -230,7 +224,7 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen>
       );
     }
 
-    if (rulesByInterface.isEmpty && automaticRules.isEmpty) {
+    if (rulesByInterface.isEmpty) {
       return _buildNoInterfacesState(l10n);
     }
 
@@ -240,8 +234,6 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen>
           interfaceRuleCounts: rulesByInterface.map(
             (key, value) => MapEntry(key, value.length),
           ),
-          interfaceDisplayNames: interfaceDisplayNames,
-          automaticRuleCount: automaticRules.length,
           selectedInterface: selectedInterface,
           onInterfaceSelected: _viewModel.selectInterface,
         ),
@@ -249,7 +241,6 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen>
           child: _buildRulesList(
             l10n: l10n,
             rulesByInterface: rulesByInterface,
-            automaticRules: automaticRules,
             selectedInterface: selectedInterface,
           ),
         ),
@@ -276,19 +267,16 @@ class _FirewallRulesScreenState extends State<FirewallRulesScreen>
   Widget _buildRulesList({
     required AppLocalizations l10n,
     required Map<String, List<FirewallRule>> rulesByInterface,
-    required List<FirewallRule> automaticRules,
     required String? selectedInterface,
   }) {
     if (selectedInterface == null) {
       return Center(child: Text(l10n.selectInterfaceToViewRules));
     }
 
-    final rules = selectedInterface == kAutomaticInterfaceKey
-        ? automaticRules
-        : FirewallRuleFilter.getRulesForInterface(
-            rulesByInterface,
-            selectedInterface,
-          );
+    final rules = FirewallRuleFilter.getRulesForInterface(
+      rulesByInterface,
+      selectedInterface,
+    );
 
     if (rules.isEmpty) {
       return Center(

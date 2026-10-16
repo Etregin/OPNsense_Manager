@@ -50,28 +50,40 @@ class _ServicesSectionState extends State<ServicesSection> {
     final l10n = AppLocalizations.of(context)!;
     final services = widget.servicesData['services'] as List<dynamic>? ?? [];
 
-    return Card(
-      child: Column(
-        children: [
-          ListTile(
-            leading: const Icon(Icons.apps),
-            title: Text(l10n.services),
-            subtitle: Text('${services.length} ${l10n.services}'),
-            trailing: Icon(
-              _isExpanded ? Icons.expand_less : Icons.expand_more,
-            ),
-            onTap: () {
-              setState(() {
-                _isExpanded = !_isExpanded;
-              });
-            },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.services,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        const SizedBox(height: 12),
+        Card(
+          child: Column(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.apps),
+                title: Text(l10n.services),
+                subtitle: Text('${services.length} ${l10n.services}'),
+                trailing: Icon(
+                  _isExpanded ? Icons.expand_less : Icons.expand_more,
+                ),
+                onTap: () {
+                  setState(() {
+                    _isExpanded = !_isExpanded;
+                  });
+                },
+              ),
+              if (_isExpanded) ...[
+                const Divider(height: 1),
+                ...services.map((service) => _buildServiceTile(service)),
+              ],
+            ],
           ),
-          if (_isExpanded) ...[
-            const Divider(height: 1),
-            ...services.map((service) => _buildServiceTile(service)),
-          ],
-        ],
-      ),
+        ),
+      ],
     );
   }
 
