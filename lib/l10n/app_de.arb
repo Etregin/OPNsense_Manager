@@ -3691,24 +3691,18 @@
   "@healthResetConfirmMessage": {},
   "healthDeleteReportConfirmMessage": "Diesen gesammelten Bericht löschen? Die Graphdaten für diesen Eintrag gehen verloren.",
   "@healthDeleteReportConfirmMessage": {},
-  "migrationDialogTitle": "OPNsense Manager wird kostenlos!",
-  "@migrationDialogTitle": {},
-  "migrationDialogWhyTitle": "Warum diese Änderung?",
-  "@migrationDialogWhyTitle": {},
-  "migrationDialogWhyBody": "Die App kostenlos zu machen erweitert die Community und unterstützt die Open-Source-Entwicklung.",
-  "@migrationDialogWhyBody": {},
-  "migrationDialogAdsTitle": "Über Werbung",
-  "@migrationDialogAdsTitle": {},
-  "migrationDialogAdsBody": "Banner-Werbung erscheint auf informativen Bildschirmen wie Dashboard und Einstellungen. Sie erscheint niemals auf kritischen Bildschirmen wie der Bearbeitung von Firewall-Regeln oder VPN-Steuerelementen.",
-  "@migrationDialogAdsBody": {},
-  "migrationDialogLegacyTitle": "Bereits ein zahlender Nutzer?",
-  "@migrationDialogLegacyTitle": {},
-  "migrationDialogLegacyBody": "Wenn Sie die App zuvor gekauft haben, bleibt Ihre Erfahrung 100% werbefrei. Drücken Sie auf \"Legacy-Zugang beanspruchen\", um uns Ihre Bestellnummer per E-Mail zu senden und einen Promo-Code zu erhalten.",
-  "@migrationDialogLegacyBody": {},
   "claimLegacyAccess": "Legacy-Zugang beanspruchen",
   "@claimLegacyAccess": {},
-  "continueToApp": "Weiter zur App",
-  "@continueToApp": {},
+  "whatsNewTitle": "Neu in v{version}",
+  "@whatsNewTitle": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "changelog": "Änderungsprotokoll",
+  "@changelog": {},
+  "changelogUnreleased": "Unveröffentlicht",
+  "@changelogUnreleased": {},
   "supporterAndAdRemoval": "Unterstützer & Werbung entfernen",
   "@supporterAndAdRemoval": {},
   "supporterActiveStatus": "Unterstützer aktiv",
@@ -3730,6 +3724,41 @@
   "supporterRestoreNotFound": "Kein früherer Kauf gefunden.",
   "@supporterRestoreNotFound": {},
   "supporterPurchaseFailed": "Kauf fehlgeschlagen. Bitte versuchen Sie es erneut.",
-  "@supporterPurchaseFailed": {}
+  "@supporterPurchaseFailed": {},
+  "editDashboard": "Dashboard bearbeiten",
+  "@editDashboard": {},
+  "topDevices": "Top-Geräte",
+  "@topDevices": {},
+  "viewAll": "Alle anzeigen",
+  "@viewAll": {},
+  "noActiveDevices": "Keine aktiven Geräte",
+  "@noActiveDevices": {},
+  "realAddress": "Reale Adresse",
+  "@realAddress": {},
+  "lastReferenced": "Zuletzt referenziert",
+  "@lastReferenced": {},
+  "username": "Benutzername",
+  "@username": {},
+  "dataChannelCipher": "Datenkanal-Chiffre",
+  "@dataChannelCipher": {},
+  "killSession": "Sitzung beenden",
+  "@killSession": {},
+  "confirmKillSession": "Möchten Sie die Sitzung von {name} wirklich beenden?",
+  "@confirmKillSession": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionKilledSuccessfully": "Sitzung erfolgreich beendet",
+  "@sessionKilledSuccessfully": {},
+  "errorKillingSession": "Fehler beim Beenden der Sitzung: {error}",
+  "@errorKillingSession": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }
-

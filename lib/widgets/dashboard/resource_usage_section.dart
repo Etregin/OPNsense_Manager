@@ -25,79 +25,59 @@ import '../../utils/constants.dart';
 import '../../widgets/stat_card.dart';
 import '../../l10n/app_localizations.dart';
 
-/// Widget for displaying resource usage (CPU, Memory, Disk)
-class ResourceUsageSection extends StatelessWidget {
+// ---------------------------------------------------------------------------
+// Individual resource cards — each renders as a standalone card with no
+// section-level header, suitable for independent dashboard placement.
+// ---------------------------------------------------------------------------
+
+/// CPU usage card.
+class CpuUsageCard extends StatelessWidget {
   final SystemInfo systemInfo;
 
-  const ResourceUsageSection({
-    super.key,
-    required this.systemInfo,
-  });
+  const CpuUsageCard({super.key, required this.systemInfo});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    return ProgressStatCard(
+      title: l10n.cpuUsage,
+      value: '${systemInfo.cpuUsage.toStringAsFixed(1)}%',
+      progress: systemInfo.cpuUsage / 100,
+      icon: Icons.speed,
+    );
+  }
+}
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n.cpuUsage,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(height: 12),
-        _buildResourceCards(context, l10n),
-      ],
+/// Memory usage card (with ARC cache visualization).
+class MemoryUsageCard extends StatelessWidget {
+  final SystemInfo systemInfo;
+
+  const MemoryUsageCard({super.key, required this.systemInfo});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return StackedProgressStatCard(
+      title: l10n.memoryUsage,
+      value: '${_formatSize(systemInfo.memoryActualUsed)} / '
+          '${_formatSize(systemInfo.memoryTotal)}',
+      primaryProgress: systemInfo.memoryUsagePercentage / 100,
+      secondaryProgress: systemInfo.memoryTotal > 0
+          ? (systemInfo.memoryArc / systemInfo.memoryTotal)
+          : 0.0,
+      icon: Icons.memory,
+      primaryLabel: l10n.actualUsed,
+      primaryValue:
+          '${systemInfo.memoryUsagePercentage.toStringAsFixed(1)}% '
+          '(${_formatSize(systemInfo.memoryActualUsed)})',
+      secondaryLabel: systemInfo.memoryArc > 0 ? l10n.arcCache : null,
+      secondaryValue: systemInfo.memoryArc > 0
+          ? '${((systemInfo.memoryArc / systemInfo.memoryTotal) * 100).toStringAsFixed(1)}% '
+              '(${_formatSize(systemInfo.memoryArc)})'
+          : null,
     );
   }
 
-  Widget _buildResourceCards(BuildContext context, AppLocalizations l10n) {
-    return Column(
-      children: [
-        // CPU Usage
-        ProgressStatCard(
-          title: l10n.cpuUsage,
-          value: '${systemInfo.cpuUsage.toStringAsFixed(1)}%',
-          progress: systemInfo.cpuUsage / 100,
-          icon: Icons.speed,
-        ),
-        const SizedBox(height: 12),
-
-        // Memory Usage with ARC visualization
-        StackedProgressStatCard(
-          title: l10n.memoryUsage,
-          value: '${_formatSize(systemInfo.memoryActualUsed)} / '
-              '${_formatSize(systemInfo.memoryTotal)}',
-          primaryProgress: systemInfo.memoryUsagePercentage / 100,
-          secondaryProgress: systemInfo.memoryTotal > 0
-              ? (systemInfo.memoryArc / systemInfo.memoryTotal)
-              : 0.0,
-          icon: Icons.memory,
-          primaryLabel: l10n.actualUsed,
-          primaryValue: '${systemInfo.memoryUsagePercentage.toStringAsFixed(1)}% '
-              '(${_formatSize(systemInfo.memoryActualUsed)})',
-          secondaryLabel: systemInfo.memoryArc > 0 ? l10n.arcCache : null,
-          secondaryValue: systemInfo.memoryArc > 0
-              ? '${((systemInfo.memoryArc / systemInfo.memoryTotal) * 100).toStringAsFixed(1)}% '
-                  '(${_formatSize(systemInfo.memoryArc)})'
-              : null,
-        ),
-
-        // Expandable Disk Usage Card
-        if (systemInfo.diskDevices.isNotEmpty) ...[
-          const SizedBox(height: 12),
-          ExpandableDiskCard(
-            diskDevices: systemInfo.diskDevices,
-            rootDisk: systemInfo.rootDisk,
-          ),
-        ],
-      ],
-    );
-  }
-
-  /// Format bytes to a human-readable string (KB/MB/GB).
   String _formatSize(int bytes) {
     if (bytes >= 1024 * 1024 * 1024) {
       return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB';
@@ -106,6 +86,22 @@ class ResourceUsageSection extends StatelessWidget {
     } else {
       return '${(bytes / 1024).toStringAsFixed(1)} KB';
     }
+  }
+}
+
+/// Disk usage card (expandable to show all filesystems).
+class DiskUsageCard extends StatelessWidget {
+  final SystemInfo systemInfo;
+
+  const DiskUsageCard({super.key, required this.systemInfo});
+
+  @override
+  Widget build(BuildContext context) {
+    if (systemInfo.diskDevices.isEmpty) return const SizedBox.shrink();
+    return ExpandableDiskCard(
+      diskDevices: systemInfo.diskDevices,
+      rootDisk: systemInfo.rootDisk,
+    );
   }
 }
 

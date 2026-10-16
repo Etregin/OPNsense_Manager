@@ -43,7 +43,7 @@ class AppConstants {
   static const String keyNetworkMonitorBandwidthLimit = 'network_monitor_bandwidth_limit';
   static const String keyNetworkMonitorInterfaces     = 'network_monitor_interfaces';
   static const String keySupporterActive              = 'supporter_active';
-  static const String keyMigrationNoticeDismissed     = 'migration_notice_dismissed';
+  static const String keyLastSeenChangelogVersion     = 'last_seen_changelog_version';
 
   // UI Constants
   static const double standardPadding = 16.0;
@@ -154,8 +154,6 @@ class StringConstants {
     return Uri.parse('mailto:$supportEmail?subject=$subject&body=$body');
   }
 
-  // Pre-encoded mailto: URI string for backwards compatibility
-  static String get legacyClaimMailtoUri => legacyClaimUri.toString();
   static const String donationCryptoTokens = 'USDT / USDC';
   static const String donationCryptoNetworks = 'BEP20, BSC, ERC20, Base, Polygon, Arbitrum, Avalanche C-Chain';
 

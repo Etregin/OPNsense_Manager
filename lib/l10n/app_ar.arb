@@ -3682,24 +3682,18 @@
   "@healthResetConfirmMessage": {},
   "healthDeleteReportConfirmMessage": "حذف هذا التقرير المجمّع؟ ستُفقد بيانات الرسم البياني لهذا الإدخال.",
   "@healthDeleteReportConfirmMessage": {},
-  "migrationDialogTitle": "OPNsense Manager ينتقل إلى المجانية!",
-  "@migrationDialogTitle": {},
-  "migrationDialogWhyTitle": "لماذا هذا التغيير؟",
-  "@migrationDialogWhyTitle": {},
-  "migrationDialogWhyBody": "جعل التطبيق مجانيًا يوسّع انتشار المجتمع ويدعم التطوير مفتوح المصدر.",
-  "@migrationDialogWhyBody": {},
-  "migrationDialogAdsTitle": "بشأن الإعلانات",
-  "@migrationDialogAdsTitle": {},
-  "migrationDialogAdsBody": "ستظهر إعلانات البانر على الشاشات المعلوماتية كلوحة التحكم والإعدادات. لن تظهر أبدًا على الشاشات الحساسة كتحرير قواعد جدار الحماية أو ضوابط VPN.",
-  "@migrationDialogAdsBody": {},
-  "migrationDialogLegacyTitle": "هل اشتريت التطبيق مسبقًا؟",
-  "@migrationDialogLegacyTitle": {},
-  "migrationDialogLegacyBody": "إن كنت قد اشتريت التطبيق سابقًا، تبقى تجربتك خالية من الإعلانات بالكامل. اضغط على \"المطالبة بالوصول القديم\" لإرسال رقم طلبك بالبريد الإلكتروني والحصول على رمز ترويجي.",
-  "@migrationDialogLegacyBody": {},
   "claimLegacyAccess": "المطالبة بالوصول القديم",
   "@claimLegacyAccess": {},
-  "continueToApp": "الاستمرار إلى التطبيق",
-  "@continueToApp": {},
+  "whatsNewTitle": "الجديد في الإصدار {version}",
+  "@whatsNewTitle": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "changelog": "سجل التغييرات",
+  "@changelog": {},
+  "changelogUnreleased": "غير منشور",
+  "@changelogUnreleased": {},
   "supporterAndAdRemoval": "الداعم وإزالة الإعلانات",
   "@supporterAndAdRemoval": {},
   "supporterActiveStatus": "الداعم مفعّل",
@@ -3721,5 +3715,41 @@
   "supporterRestoreNotFound": "لم يُعثر على أي عملية شراء سابقة.",
   "@supporterRestoreNotFound": {},
   "supporterPurchaseFailed": "فشل الشراء. يرجى المحاولة مرة أخرى.",
-  "@supporterPurchaseFailed": {}
+  "@supporterPurchaseFailed": {},
+  "editDashboard": "تعديل لوحة التحكم",
+  "@editDashboard": {},
+  "topDevices": "أفضل الأجهزة",
+  "@topDevices": {},
+  "viewAll": "عرض الكل",
+  "@viewAll": {},
+  "noActiveDevices": "لا توجد أجهزة نشطة",
+  "@noActiveDevices": {},
+  "realAddress": "العنوان الفعلي",
+  "@realAddress": {},
+  "lastReferenced": "آخر مرجع",
+  "@lastReferenced": {},
+  "username": "اسم المستخدم",
+  "@username": {},
+  "dataChannelCipher": "تشفير قناة البيانات",
+  "@dataChannelCipher": {},
+  "killSession": "إنهاء الجلسة",
+  "@killSession": {},
+  "confirmKillSession": "هل أنت متأكد أنك تريد إنهاء الجلسة الخاصة بـ {name}؟",
+  "@confirmKillSession": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionKilledSuccessfully": "تم إنهاء الجلسة بنجاح",
+  "@sessionKilledSuccessfully": {},
+  "errorKillingSession": "خطأ في إنهاء الجلسة: {error}",
+  "@errorKillingSession": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

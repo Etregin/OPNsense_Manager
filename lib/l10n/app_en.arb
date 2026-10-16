@@ -3638,24 +3638,18 @@
   "@healthResetConfirmMessage": {},
   "healthDeleteReportConfirmMessage": "Delete this collected report? The graph data for this entry will be lost.",
   "@healthDeleteReportConfirmMessage": {},
-  "migrationDialogTitle": "OPNsense Manager is Moving to Free!",
-  "@migrationDialogTitle": {},
-  "migrationDialogWhyTitle": "Why the change?",
-  "@migrationDialogWhyTitle": {},
-  "migrationDialogWhyBody": "Making the app free expands community adoption and supports open-source development.",
-  "@migrationDialogWhyBody": {},
-  "migrationDialogAdsTitle": "About ads",
-  "@migrationDialogAdsTitle": {},
-  "migrationDialogAdsBody": "Banner ads will appear on informational screens like Dashboard and Settings. They will never appear on critical screens like firewall rule editing or VPN controls.",
-  "@migrationDialogAdsBody": {},
-  "migrationDialogLegacyTitle": "Already a paid user?",
-  "@migrationDialogLegacyTitle": {},
-  "migrationDialogLegacyBody": "If you previously purchased the app, your experience stays 100% ad-free. Press on 'Claim Legacy Access' to email us your order number for the app purchase to get a promo code.",
-  "@migrationDialogLegacyBody": {},
   "claimLegacyAccess": "Claim Legacy Access",
   "@claimLegacyAccess": {},
-  "continueToApp": "Continue to App",
-  "@continueToApp": {},
+  "whatsNewTitle": "What's New in v{version}",
+  "@whatsNewTitle": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "changelog": "Changelog",
+  "@changelog": {},
+  "changelogUnreleased": "Unreleased",
+  "@changelogUnreleased": {},
   "supporterAndAdRemoval": "Supporter & Ad Removal",
   "@supporterAndAdRemoval": {},
   "supporterActiveStatus": "Supporter Active",
@@ -3677,5 +3671,41 @@
   "supporterRestoreNotFound": "No previous purchase found.",
   "@supporterRestoreNotFound": {},
   "supporterPurchaseFailed": "Purchase failed. Please try again.",
-  "@supporterPurchaseFailed": {}
+  "@supporterPurchaseFailed": {},
+  "editDashboard": "Edit Dashboard",
+  "@editDashboard": {},
+  "topDevices": "Top Devices",
+  "@topDevices": {},
+  "viewAll": "View All",
+  "@viewAll": {},
+  "noActiveDevices": "No active devices",
+  "@noActiveDevices": {},
+  "realAddress": "Real Address",
+  "@realAddress": {},
+  "lastReferenced": "Last Referenced",
+  "@lastReferenced": {},
+  "username": "Username",
+  "@username": {},
+  "dataChannelCipher": "Data Channel Cipher",
+  "@dataChannelCipher": {},
+  "killSession": "Kill Session",
+  "@killSession": {},
+  "confirmKillSession": "Are you sure you want to kill the session for {name}?",
+  "@confirmKillSession": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionKilledSuccessfully": "Session killed successfully",
+  "@sessionKilledSuccessfully": {},
+  "errorKillingSession": "Error killing session: {error}",
+  "@errorKillingSession": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

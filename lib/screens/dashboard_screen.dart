@@ -18,9 +18,12 @@
 
 
 import 'dart:async';
-import '../utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../utils/app_colors.dart';
+import '../models/dashboard_layout.dart';
+import '../screens/live_network_monitor_screen.dart';
+import '../services/dashboard/dashboard_layout_service.dart';
 import '../services/demo_api_service.dart';
 import '../services/opnsense_api_service.dart';
 import '../utils/auto_refresh_mixin.dart';
@@ -28,14 +31,17 @@ import '../utils/single_init_mixin.dart';
 import '../services/profile_service.dart';
 import '../utils/constants.dart';
 import '../utils/snackbar_helper.dart';
+import '../viewmodels/dashboard_layout_view_model.dart';
 import '../viewmodels/dashboard_view_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/common/confirmation_dialog.dart';
 import '../widgets/common/demo_mode_banner.dart';
-import '../widgets/dashboard/resource_usage_section.dart';
+import '../widgets/dashboard/resource_usage_section.dart'
+    show CpuUsageCard, MemoryUsageCard, DiskUsageCard;
 import '../widgets/dashboard/services_section.dart';
 import '../widgets/dashboard/gateways_section.dart';
 import '../widgets/dashboard/thermal_sensors_section.dart';
+import '../widgets/dashboard/network_cards.dart';
 import '../l10n/app_localizations.dart';
 import '../widgets/common/app_banner_ad_widget.dart';
 
@@ -48,14 +54,77 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen>
-    with AutoRefreshMixin, SingleInitMixin {
+    with AutoRefreshMixin, SingleInitMixin, WidgetsBindingObserver {
   late DashboardViewModel _viewModel;
+  late DashboardLayoutViewModel _layoutViewModel;
+
+  /// Fast 2-second timer that keeps only the network cards live.
+  Timer? _networkRefreshTimer;
 
   @override
   void onFirstDependency() {
+    WidgetsBinding.instance.addObserver(this);
     _viewModel = DashboardViewModel(context.read<DemoApiService>());
+    _layoutViewModel = DashboardLayoutViewModel(
+      context.read<DashboardLayoutService>(),
+      context.read<ProfileService>(),
+    );
     _initializeAndLoad();
-    startAutoRefresh(AppConstants.dashboardRefreshInterval, _viewModel.loadDashboardData);
+    startAutoRefresh(AppConstants.dashboardRefreshInterval, _viewModel.refreshSystemData);
+    _startNetworkTimer();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Network refresh timer helpers
+  // ---------------------------------------------------------------------------
+
+  /// Extracts the set of interface IDs currently selected by network cards.
+  Set<String> _requestedNetworkInterfaces() {
+    final interfaces = _layoutViewModel.allCards
+        .where((c) =>
+            c.type == DashboardCardType.networkTotals ||
+            c.type == DashboardCardType.topDevices)
+        .map((c) => c.selectedInterface ?? 'lan')
+        .toSet();
+    return interfaces.isEmpty ? const {'lan'} : interfaces;
+  }
+
+  void _startNetworkTimer() {
+    _networkRefreshTimer?.cancel();
+    _networkRefreshTimer = Timer.periodic(
+      const Duration(seconds: 2),
+      (_) => _refreshNetworkDataIfVisible(),
+    );
+  }
+
+  void _stopNetworkTimer() {
+    _networkRefreshTimer?.cancel();
+    _networkRefreshTimer = null;
+  }
+
+  /// Fires on every 2-second tick — skips the fetch when the dashboard is not
+  /// the active route or when a frame is still pending.
+  Future<void> _refreshNetworkDataIfVisible() async {
+    if (!mounted) return;
+    // Skip if another route is on top (e.g. navigated via drawer).
+    final route = ModalRoute.of(context);
+    if (route == null || !route.isCurrent) return;
+    await _viewModel.refreshNetworkData(
+      requestedInterfaces: _requestedNetworkInterfaces(),
+    );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        _startNetworkTimer();
+      case AppLifecycleState.paused:
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.hidden:
+      case AppLifecycleState.detached:
+        _stopNetworkTimer();
+    }
   }
 
   Future<void> _initializeAndLoad() async {
@@ -67,12 +136,30 @@ class _DashboardScreenState extends State<DashboardScreen>
       apiService.init(activeProfile.toOPNsenseConfig());
     }
 
-    await _viewModel.loadDashboardData();
+    await _layoutViewModel.loadLayout();
+    await _loadDataWithLayout();
+  }
+
+  Future<void> _loadDataWithLayout() async {
+    final requestedInterfaces = _layoutViewModel.allCards
+        .where((c) =>
+            c.type == DashboardCardType.networkTotals ||
+            c.type == DashboardCardType.topDevices)
+        .map((c) => c.selectedInterface ?? 'lan')
+        .toSet();
+    await _viewModel.loadDashboardData(
+      requestedInterfaces: requestedInterfaces.isEmpty
+          ? const {'lan'}
+          : requestedInterfaces,
+    );
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _stopNetworkTimer();
     _viewModel.dispose();
+    _layoutViewModel.dispose();
     super.dispose();
   }
 
@@ -114,7 +201,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           SnackBarHelper.showSuccess(context, successMsg);
           await Future.delayed(AppConstants.postActionRefreshDelay);
           if (mounted) {
-            unawaited(_viewModel.loadDashboardData());
+            unawaited(_loadDataWithLayout());
           }
         } else {
           SnackBarHelper.showError(context, l10n.serviceActionFailed);
@@ -134,17 +221,29 @@ class _DashboardScreenState extends State<DashboardScreen>
     final isDemoMode = demoApiService.isDemoMode;
 
     return ListenableBuilder(
-      listenable: _viewModel,
+      listenable: Listenable.merge([_viewModel, _layoutViewModel]),
       builder: (context, _) {
         return Scaffold(
           appBar: AppBar(
             title: const Text(AppConstants.appName),
             actions: [
+              // Edit / Done toggle
+              IconButton(
+                icon: Icon(
+                  _layoutViewModel.isEditMode
+                      ? Icons.check
+                      : Icons.edit_outlined,
+                ),
+                tooltip: _layoutViewModel.isEditMode
+                    ? l10n.done
+                    : l10n.editDashboard,
+                onPressed: _layoutViewModel.toggleEditMode,
+              ),
               IconButton(
                 icon: const Icon(Icons.refresh),
                 onPressed: _viewModel.isLoading
                     ? null
-                    : _viewModel.loadDashboardData,
+                    : _loadDataWithLayout,
                 tooltip: l10n.refresh,
               ),
             ],
@@ -156,10 +255,11 @@ class _DashboardScreenState extends State<DashboardScreen>
           body: Column(
             children: [
               if (isDemoMode) const DemoModeBanner(),
-              // Main content
+              if (_layoutViewModel.isEditMode)
+                _EditModeBanner(l10n: l10n),
               Expanded(
                 child: RefreshIndicator(
-                  onRefresh: _viewModel.loadDashboardData,
+                  onRefresh: _loadDataWithLayout,
                   child: _buildBody(l10n),
                 ),
               ),
@@ -180,24 +280,109 @@ class _DashboardScreenState extends State<DashboardScreen>
       return _buildErrorState(l10n);
     }
 
-    return ListView(
+    final cards = _layoutViewModel.isEditMode
+        ? _layoutViewModel.allCards
+        : _layoutViewModel.visibleCards;
+
+    if (_layoutViewModel.isEditMode) {
+      return ReorderableListView.builder(
+        padding: const EdgeInsets.all(AppConstants.standardPadding),
+        buildDefaultDragHandles: false,
+        itemCount: cards.length,
+        itemBuilder: (context, index) {
+          final card = cards[index];
+          return _EditModeCardWrapper(
+            key: ValueKey(card.type),
+            index: index,
+            config: card,
+            onVisibilityToggle: (visible) =>
+                _layoutViewModel.setCardVisible(card.type, visible),
+            child: _buildCardContent(card, l10n),
+          );
+        },
+        onReorderItem: _layoutViewModel.reorderCards,
+      );
+    }
+
+    return ListView.builder(
       padding: const EdgeInsets.all(AppConstants.standardPadding),
-      children: [
-        if (_viewModel.systemInfo != null)
-          ResourceUsageSection(systemInfo: _viewModel.systemInfo!),
-        const SizedBox(height: 24),
-        if (_viewModel.thermalSensors != null)
-          ThermalSensorsSection(sensors: _viewModel.thermalSensors!),
-        if (_viewModel.thermalSensors != null) const SizedBox(height: 24),
-        ServicesSection(
+      itemCount: cards.length,
+      itemBuilder: (context, index) {
+        final card = cards[index];
+        return Padding(
+          key: ValueKey(card.type),
+          padding: const EdgeInsets.only(bottom: 24),
+          child: _buildCardContent(card, l10n),
+        );
+      },
+    );
+  }
+
+  /// Maps a [DashboardCardConfig] to its corresponding section widget.
+  Widget _buildCardContent(DashboardCardConfig card, AppLocalizations l10n) {
+    switch (card.type) {
+      case DashboardCardType.cpuUsage:
+        if (_viewModel.systemInfo == null) return const SizedBox.shrink();
+        return CpuUsageCard(systemInfo: _viewModel.systemInfo!);
+
+      case DashboardCardType.memoryUsage:
+        if (_viewModel.systemInfo == null) return const SizedBox.shrink();
+        return MemoryUsageCard(systemInfo: _viewModel.systemInfo!);
+
+      case DashboardCardType.diskUsage:
+        if (_viewModel.systemInfo == null) return const SizedBox.shrink();
+        return DiskUsageCard(systemInfo: _viewModel.systemInfo!);
+
+      case DashboardCardType.thermalSensors:
+        return ThermalSensorsSection(sensors: _viewModel.thermalSensors);
+
+      case DashboardCardType.services:
+        return ServicesSection(
           servicesData: _viewModel.servicesData,
           onServiceControl: _controlService,
-        ),
-        const SizedBox(height: 24),
-        GatewaysSection(gateways: _viewModel.gateways),
-        const SizedBox(height: 24),
-      ],
-    );
+        );
+
+      case DashboardCardType.gateways:
+        return GatewaysSection(gateways: _viewModel.gateways);
+
+      case DashboardCardType.networkTotals:
+        final iface = card.selectedInterface ?? 'lan';
+        return NetworkTotalsCard(
+          hosts: _viewModel.getHostsForInterface(iface),
+          isLoading: _viewModel.isInterfaceLoading(iface),
+          availableInterfaces: _viewModel.availableInterfaces,
+          selectedInterface: iface,
+          onInterfaceChanged: (newIface) async {
+            await _layoutViewModel.setCardInterface(card.type, newIface);
+            await _loadDataWithLayout();
+          },
+          onViewAll: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const LiveNetworkMonitorScreen(),
+            ),
+          ),
+        );
+
+      case DashboardCardType.topDevices:
+        final iface = card.selectedInterface ?? 'lan';
+        return TopDevicesCard(
+          hosts: _viewModel.getHostsForInterface(iface),
+          isLoading: _viewModel.isInterfaceLoading(iface),
+          availableInterfaces: _viewModel.availableInterfaces,
+          selectedInterface: iface,
+          onInterfaceChanged: (newIface) async {
+            await _layoutViewModel.setCardInterface(card.type, newIface);
+            await _loadDataWithLayout();
+          },
+          onViewAll: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const LiveNetworkMonitorScreen(),
+            ),
+          ),
+        );
+    }
   }
 
   Widget _buildErrorState(AppLocalizations l10n) {
@@ -219,9 +404,99 @@ class _DashboardScreenState extends State<DashboardScreen>
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
-            onPressed: _viewModel.loadDashboardData,
+            onPressed: _loadDataWithLayout,
             icon: const Icon(Icons.refresh),
             label: Text(l10n.retry),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Edit mode UI helpers
+// ---------------------------------------------------------------------------
+
+/// Subtle informational banner shown at the top of the screen during edit mode.
+class _EditModeBanner extends StatelessWidget {
+  final AppLocalizations l10n;
+
+  const _EditModeBanner({required this.l10n});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      color: Theme.of(context).colorScheme.primaryContainer,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppConstants.standardPadding,
+        vertical: AppConstants.compactPadding,
+      ),
+      child: Text(
+        l10n.editDashboard,
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
+              fontWeight: FontWeight.w600,
+            ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+}
+
+/// Wraps a card in edit mode, adding a drag handle and visibility toggle.
+class _EditModeCardWrapper extends StatelessWidget {
+  final int index;
+  final DashboardCardConfig config;
+  final ValueChanged<bool> onVisibilityToggle;
+  final Widget child;
+
+  const _EditModeCardWrapper({
+    super.key,
+    required this.index,
+    required this.config,
+    required this.onVisibilityToggle,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Visibility toggle
+          Padding(
+            padding: const EdgeInsets.only(top: 4, right: 4),
+            child: IconButton(
+              icon: Icon(
+                config.isVisible
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
+                color: config.isVisible
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              onPressed: () => onVisibilityToggle(!config.isVisible),
+              tooltip: config.isVisible ? 'Hide' : 'Show',
+            ),
+          ),
+          // Card content
+          Expanded(
+            child: Opacity(
+              opacity: config.isVisible ? 1.0 : AppColors.opacityStrong,
+              child: child,
+            ),
+          ),
+          // Drag handle
+          Padding(
+            padding: const EdgeInsets.only(top: 4, left: 4),
+            child: ReorderableDragStartListener(
+              index: index,
+              child: const Icon(Icons.drag_handle),
+            ),
           ),
         ],
       ),
