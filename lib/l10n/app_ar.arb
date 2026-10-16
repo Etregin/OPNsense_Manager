@@ -3723,5 +3723,33 @@
   "viewAll": "عرض الكل",
   "@viewAll": {},
   "noActiveDevices": "لا توجد أجهزة نشطة",
-  "@noActiveDevices": {}
+  "@noActiveDevices": {},
+  "realAddress": "العنوان الفعلي",
+  "@realAddress": {},
+  "lastReferenced": "آخر مرجع",
+  "@lastReferenced": {},
+  "username": "اسم المستخدم",
+  "@username": {},
+  "dataChannelCipher": "تشفير قناة البيانات",
+  "@dataChannelCipher": {},
+  "killSession": "إنهاء الجلسة",
+  "@killSession": {},
+  "confirmKillSession": "هل أنت متأكد أنك تريد إنهاء الجلسة الخاصة بـ {name}؟",
+  "@confirmKillSession": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionKilledSuccessfully": "تم إنهاء الجلسة بنجاح",
+  "@sessionKilledSuccessfully": {},
+  "errorKillingSession": "خطأ في إنهاء الجلسة: {error}",
+  "@errorKillingSession": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

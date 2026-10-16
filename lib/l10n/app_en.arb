@@ -3679,5 +3679,33 @@
   "viewAll": "View All",
   "@viewAll": {},
   "noActiveDevices": "No active devices",
-  "@noActiveDevices": {}
+  "@noActiveDevices": {},
+  "realAddress": "Real Address",
+  "@realAddress": {},
+  "lastReferenced": "Last Referenced",
+  "@lastReferenced": {},
+  "username": "Username",
+  "@username": {},
+  "dataChannelCipher": "Data Channel Cipher",
+  "@dataChannelCipher": {},
+  "killSession": "Kill Session",
+  "@killSession": {},
+  "confirmKillSession": "Are you sure you want to kill the session for {name}?",
+  "@confirmKillSession": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionKilledSuccessfully": "Session killed successfully",
+  "@sessionKilledSuccessfully": {},
+  "errorKillingSession": "Error killing session: {error}",
+  "@errorKillingSession": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

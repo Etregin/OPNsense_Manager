@@ -1658,6 +1658,15 @@ ${List.generate(16, (i) => List.generate(32, (j) => '0123456789abcdef'[(i * 32 +
         delayMs: 500,
       );
 
+  /// Kill a connected OpenVPN client session
+  Future<Map<String, dynamic>> killSession(String serverId, String sessionId) =>
+      DemoApiDecorator.execute(
+        isDemoMode: _isDemoMode,
+        demoAction: () async => {'status': 'killed', 'clients': 1},
+        realAction: () => _realApiService.killSession(serverId, sessionId),
+        delayMs: 500,
+      );
+
   // ==================== Firmware Updates ====================
 
   /// Trigger a firmware update check

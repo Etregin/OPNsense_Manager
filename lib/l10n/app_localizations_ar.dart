@@ -4483,4 +4483,32 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noActiveDevices => 'لا توجد أجهزة نشطة';
+
+  @override
+  String get realAddress => 'العنوان الفعلي';
+
+  @override
+  String get lastReferenced => 'آخر مرجع';
+
+  @override
+  String get username => 'اسم المستخدم';
+
+  @override
+  String get dataChannelCipher => 'تشفير قناة البيانات';
+
+  @override
+  String get killSession => 'إنهاء الجلسة';
+
+  @override
+  String confirmKillSession(String name) {
+    return 'هل أنت متأكد أنك تريد إنهاء الجلسة الخاصة بـ $name؟';
+  }
+
+  @override
+  String get sessionKilledSuccessfully => 'تم إنهاء الجلسة بنجاح';
+
+  @override
+  String errorKillingSession(String error) {
+    return 'خطأ في إنهاء الجلسة: $error';
+  }
 }

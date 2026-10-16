@@ -8119,6 +8119,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No active devices'**
   String get noActiveDevices;
+
+  /// No description provided for @realAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Real Address'**
+  String get realAddress;
+
+  /// No description provided for @lastReferenced.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Referenced'**
+  String get lastReferenced;
+
+  /// No description provided for @username.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get username;
+
+  /// No description provided for @dataChannelCipher.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Channel Cipher'**
+  String get dataChannelCipher;
+
+  /// No description provided for @killSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Kill Session'**
+  String get killSession;
+
+  /// No description provided for @confirmKillSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to kill the session for {name}?'**
+  String confirmKillSession(String name);
+
+  /// No description provided for @sessionKilledSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Session killed successfully'**
+  String get sessionKilledSuccessfully;
+
+  /// No description provided for @errorKillingSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Error killing session: {error}'**
+  String errorKillingSession(String error);
 }
 
 class _AppLocalizationsDelegate

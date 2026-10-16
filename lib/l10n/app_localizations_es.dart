@@ -4557,4 +4557,32 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get noActiveDevices => 'No hay dispositivos activos';
+
+  @override
+  String get realAddress => 'Dirección Real';
+
+  @override
+  String get lastReferenced => 'Última Referencia';
+
+  @override
+  String get username => 'Nombre de Usuario';
+
+  @override
+  String get dataChannelCipher => 'Cifrado del Canal de Datos';
+
+  @override
+  String get killSession => 'Finalizar Sesión';
+
+  @override
+  String confirmKillSession(String name) {
+    return '¿Está seguro de que desea finalizar la sesión de $name?';
+  }
+
+  @override
+  String get sessionKilledSuccessfully => 'Sesión finalizada correctamente';
+
+  @override
+  String errorKillingSession(String error) {
+    return 'Error al finalizar la sesión: $error';
+  }
 }

@@ -666,6 +666,9 @@ class OPNsenseApiService {
 
   Future<Map<String, dynamic>> restartService(String id) => _openvpnService.restartService(id);
 
+  Future<Map<String, dynamic>> killSession(String serverId, String sessionId) =>
+      _openvpnService.killSession(serverId, sessionId);
+
   Future<OpenvpnRouteSearchResponse> searchRoutes({
     int current = 1,
     int rowCount = 50,
