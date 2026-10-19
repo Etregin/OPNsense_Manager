@@ -1,7 +1,14 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- Required permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    
+    <!-- Advertising ID — declared here so the Play Store bundle (playstore
+         flavor, which uses this main manifest) includes it. The fdroid and
+         github flavors explicitly remove it via their own AndroidManifest.xml
+         files. -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
     
     <!-- Biometric authentication permissions -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
@@ -39,6 +46,21 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Disable androidx.work.WorkManagerInitializer via androidx.startup.
+             WorkManager is only a transitive dependency and is not used by this
+             app. Its WorkDatabase fails to be created on 16 KB page size devices
+             (Android 15+), crashing the process at startup via
+             androidx.startup.InitializationProvider. Disabling the initializer
+             avoids the crash entirely. -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="disabled"
+                tools:replace="android:value" />
+        </provider>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and
