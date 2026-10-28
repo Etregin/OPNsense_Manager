@@ -327,6 +327,14 @@
       }
     }
   },
+  "installUpdateConfirmMessageNoReboot": "This will upgrade {count} package(s). Continue?",
+  "@installUpdateConfirmMessageNoReboot": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "cannotBeUndone": "Esta acción no se puede deshacer.",
   "@cannotBeUndone": {},
   "cannotDeleteLastConnection": "No se puede eliminar el último punto de conexión",

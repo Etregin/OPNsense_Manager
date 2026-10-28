@@ -320,6 +320,14 @@
       }
     }
   },
+  "installUpdateConfirmMessageNoReboot": "This will upgrade {count} {count, plural, =1{package} other{packages}}. Continue?",
+  "@installUpdateConfirmMessageNoReboot": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "cannotBeUndone": "This action cannot be undone.",
   "@cannotBeUndone": {},
   "cannotDeleteLastConnection": "Cannot delete the last connection endpoint",

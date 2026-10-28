@@ -2,6 +2,12 @@
 
 All notable changes to OPNsense Manager will be documented in this file.
 
+## [1.9.1]
+
+### Fixed
+
+- Fixed firmware update confirm dialog always saying "requires a reboot" even when the update does not require one.
+
 ## [1.9.0]
 
 ### Added

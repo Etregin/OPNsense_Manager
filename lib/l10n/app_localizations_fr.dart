@@ -444,6 +444,11 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String installUpdateConfirmMessageNoReboot(int count) {
+    return 'This will upgrade $count package(s). Continue?';
+  }
+
+  @override
   String get cannotBeUndone => 'Cette action ne peut pas être annulée.';
 
   @override
