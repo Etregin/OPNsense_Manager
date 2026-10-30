@@ -431,6 +431,11 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String installUpdateConfirmMessageNoReboot(int count) {
+    return 'This will upgrade $count package(s). Continue?';
+  }
+
+  @override
   String get cannotBeUndone => 'لا يمكن التراجع عن هذا الإجراء.';
 
   @override

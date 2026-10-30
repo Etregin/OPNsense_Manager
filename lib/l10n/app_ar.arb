@@ -327,6 +327,14 @@
       }
     }
   },
+  "installUpdateConfirmMessageNoReboot": "This will upgrade {count} package(s). Continue?",
+  "@installUpdateConfirmMessageNoReboot": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "cannotBeUndone": "لا يمكن التراجع عن هذا الإجراء.",
   "@cannotBeUndone": {},
   "cannotDeleteLastConnection": "لا يمكن حذف نقطة الاتصال الأخيرة",

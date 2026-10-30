@@ -327,6 +327,14 @@
       }
     }
   },
+  "installUpdateConfirmMessageNoReboot": "This will upgrade {count} package(s). Continue?",
+  "@installUpdateConfirmMessageNoReboot": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "cannotBeUndone": "Cette action ne peut pas être annulée.",
   "@cannotBeUndone": {},
   "cannotDeleteLastConnection": "Impossible de supprimer le dernier point de terminaison de connexion",

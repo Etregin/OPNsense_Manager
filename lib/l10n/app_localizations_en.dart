@@ -440,6 +440,17 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String installUpdateConfirmMessageNoReboot(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'packages',
+      one: 'package',
+    );
+    return 'This will upgrade $count $_temp0. Continue?';
+  }
+
+  @override
   String get cannotBeUndone => 'This action cannot be undone.';
 
   @override

@@ -896,6 +896,12 @@ abstract class AppLocalizations {
   /// **'This will upgrade {count} {count, plural, =1{package} other{packages}} and requires a reboot to complete. Continue?'**
   String installUpdateConfirmMessage(int count);
 
+  /// No description provided for @installUpdateConfirmMessageNoReboot.
+  ///
+  /// In en, this message translates to:
+  /// **'This will upgrade {count} {count, plural, =1{package} other{packages}}. Continue?'**
+  String installUpdateConfirmMessageNoReboot(int count);
+
   /// No description provided for @cannotBeUndone.
   ///
   /// In en, this message translates to:

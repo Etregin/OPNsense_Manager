@@ -507,7 +507,9 @@ class _FirmwareUpdateScreenState extends State<FirmwareUpdateScreen>
     final confirmed = await ConfirmationDialog.show(
       context: context,
       title: l10n.installUpdateConfirmTitle,
-      message: l10n.installUpdateConfirmMessage(status.totalPackageCount),
+      message: status.needsReboot
+          ? l10n.installUpdateConfirmMessage(status.totalPackageCount)
+          : l10n.installUpdateConfirmMessageNoReboot(status.totalPackageCount),
       confirmText: l10n.installUpdate,
       cancelText: l10n.cancel,
       isDestructive: true,
